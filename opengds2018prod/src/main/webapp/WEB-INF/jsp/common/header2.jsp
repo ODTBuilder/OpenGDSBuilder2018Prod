@@ -26,11 +26,11 @@
 				</c:choose>
 				<c:choose>
 					<c:when test="${username eq null}">
-						<li><a href="${pageContext.request.contextPath}/signin.do"><span class="glyphicon glyphicon-log-in"></span>
+						<li><a href="${pageContext.request.contextPath}/user/signin.do"><span class="glyphicon glyphicon-log-in"></span>
 								로그인</a></li>
 					</c:when>
 					<c:when test="${username ne null}">
-						<li><a href="${pageContext.request.contextPath}/signout.do"><span class="glyphicon glyphicon-log-out"></span>
+						<li><a href="${pageContext.request.contextPath}/user/signout.do"><span class="glyphicon glyphicon-log-out"></span>
 								로그아웃</a></li>
 					</c:when>
 				</c:choose>

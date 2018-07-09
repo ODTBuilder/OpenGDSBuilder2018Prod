@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gitrnd.qaproducer.mapper.ValidationResultMapper">
+
+	<select id="retrieveValidationResultByUidx" parameterType="int"
+		resultType="com.gitrnd.qaproducer.domain.ValidationResult">
+		SELECT
+		p_idx as "pidx",
+		tb_progress.uidx,
+		tb_progress.fidx,
+		tb_file.fname as
+		"zipName",
+		date_trunc('second', tb_file.ctime)
+		as "createTime",
+		date_trunc('second', end_time)
+		as
+		"endTime",
+		qa_type as
+		"qaType",
+		file_format
+		as "format",
+		state,
+		err_file_name as "errName",
+		err_file_dir
+		as
+		"errFileDir",
+		tb_progress.comment as "comment"
+		FROM
+		tb_progress,
+		tb_file
+		WHERE
+		tb_progress.uidx =
+		#{idx}
+		AND
+		tb_file.fid =
+		tb_progress.fidx
+		ORDER BY
+		tb_file.ctime DESC
+	</select>
+	
+	<select id="retrieveValidationResultByPidx" parameterType="int"
+		resultType="com.gitrnd.qaproducer.domain.ValidationResult">
+		SELECT
+		p_idx as "pidx",
+		tb_progress.uidx,
+		tb_progress.fidx,
+		tb_file.fname as
+		"zipName",
+		date_trunc('second', tb_file.ctime)
+		as "createTime",
+		date_trunc('second', end_time)
+		as
+		"endTime",
+		qa_type as
+		"qaType",
+		file_format
+		as "format",
+		state,
+		err_file_name as "errName",
+		err_file_dir
+		as
+		"errFileDir",
+		tb_file.comment as "comment"
+		FROM
+		tb_progress,
+		tb_file
+		WHERE
+		tb_progress.p_idx =
+		#{idx}
+		AND
+		tb_file.fid =
+		tb_progress.fidx
+	</select>
+	
+	<delete id="deleteValidationResult">
+		DELETE FROM tb_progress 
+		WHERE
+		p_idx IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			${list[index].pidx}
+		</foreach>
+		AND
+		uidx IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			${list[index].uidx}
+		</foreach>
+	</delete>
+</mapper>

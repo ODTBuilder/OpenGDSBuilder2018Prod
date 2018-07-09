@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gitrnd.qaproducer.mapper.UserMapper">
+<mapper namespace="com.gitrnd.qaproducer.user.mapper.UserMapper">
 
 	<select id="retrieveUserById" parameterType="String"
-		resultType="com.gitrnd.qaproducer.domain.User">
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -29,7 +29,7 @@
 	</select>
 
 	<select id="retrieveUserByIdx" parameterType="int"
-		resultType="com.gitrnd.qaproducer.domain.User">
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -52,7 +52,7 @@
 		tb_user.active = true
 	</select>
 
-	<insert id="createUser" parameterType="com.gitrnd.qaproducer.domain.User">
+	<insert id="createUser" parameterType="com.gitrnd.qaproducer.user.domain.User">
 		INSERT INTO tb_user (
 		uid,
 		email,
@@ -71,8 +71,8 @@
 		)
 	</insert>
 
-	<select id="checkUserById" parameterType="com.gitrnd.qaproducer.domain.User"
-		resultType="com.gitrnd.qaproducer.domain.User">
+	<select id="checkUserById" parameterType="com.gitrnd.qaproducer.user.domain.User"
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -91,7 +91,7 @@
 	</select>
 
 	<select id="checkDuplicatedById" parameterType="String"
-		resultType="com.gitrnd.qaproducer.domain.User">
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -106,8 +106,8 @@
 		#{uid}
 	</select>
 
-	<select id="checkUserByEmail" parameterType="com.gitrnd.qaproducer.domain.User"
-		resultType="com.gitrnd.qaproducer.domain.User">
+	<select id="checkUserByEmail" parameterType="com.gitrnd.qaproducer.user.domain.User"
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -127,7 +127,7 @@
 	</select>
 
 	<select id="checkDuplicatedByEmail" parameterType="String"
-		resultType="com.gitrnd.qaproducer.domain.User">
+		resultType="com.gitrnd.qaproducer.user.domain.User">
 		SELECT
 		idx,
 		uid,
@@ -142,7 +142,7 @@
 		#{email}
 	</select>
 
-	<update id="setActiveUserById" parameterType="com.gitrnd.qaproducer.domain.User">
+	<update id="setActiveUserById" parameterType="com.gitrnd.qaproducer.user.domain.User">
 		update
 		tb_user
 		set

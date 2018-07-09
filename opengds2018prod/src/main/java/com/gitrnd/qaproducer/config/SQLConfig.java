@@ -23,7 +23,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
-@MapperScan(basePackages = { "com.gitrnd.qaproducer.mapper" })
+@MapperScan(basePackages = { "com.gitrnd.qaproducer" })
 @PropertySources({ @PropertySource(value = "classpath:application.yml", ignoreResourceNotFound = true),
 		@PropertySource(value = "file:./application.yml", ignoreResourceNotFound = true) })
 public class SQLConfig extends HikariConfig {
@@ -93,7 +93,7 @@ public class SQLConfig extends HikariConfig {
 	public SqlSessionFactory sqlSessionFactory() throws Exception {
 		SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource());
-		sessionFactoryBean.setTypeAliasesPackage("com.gitrnd.qaproducer.domain");
+		sessionFactoryBean.setTypeAliasesPackage("com.gitrnd.qaproducer");
 		sessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:config/mybatis.xml"));
 		sessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:sql/*.xml"));
 		return sessionFactoryBean.getObject();

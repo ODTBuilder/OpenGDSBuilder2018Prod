@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gitrnd.qaproducer.mapper.ValidationResultMapper">
+<mapper namespace="com.gitrnd.qaproducer.qa.mapper.ValidationResultMapper">
 
 	<select id="retrieveValidationResultByUidx" parameterType="int"
-		resultType="com.gitrnd.qaproducer.domain.ValidationResult">
+		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
 		SELECT
 		p_idx as "pidx",
 		tb_progress.uidx,
@@ -13,7 +13,8 @@
 		tb_file.fname as
 		"zipName",
 		date_trunc('second', tb_file.ctime)
-		as "createTime",
+		as
+		"createTime",
 		date_trunc('second', end_time)
 		as
 		"endTime",
@@ -39,9 +40,9 @@
 		ORDER BY
 		tb_file.ctime DESC
 	</select>
-	
+
 	<select id="retrieveValidationResultByPidx" parameterType="int"
-		resultType="com.gitrnd.qaproducer.domain.ValidationResult">
+		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
 		SELECT
 		p_idx as "pidx",
 		tb_progress.uidx,
@@ -49,7 +50,8 @@
 		tb_file.fname as
 		"zipName",
 		date_trunc('second', tb_file.ctime)
-		as "createTime",
+		as
+		"createTime",
 		date_trunc('second', end_time)
 		as
 		"endTime",
@@ -73,17 +75,19 @@
 		tb_file.fid =
 		tb_progress.fidx
 	</select>
-	
+
 	<delete id="deleteValidationResult">
-		DELETE FROM tb_progress 
+		DELETE FROM tb_progress
 		WHERE
 		p_idx IN
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
 			${list[index].pidx}
 		</foreach>
 		AND
 		uidx IN
-		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+		<foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
 			${list[index].uidx}
 		</foreach>
 	</delete>

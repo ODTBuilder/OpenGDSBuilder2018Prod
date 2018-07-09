@@ -28,7 +28,7 @@ public class LoginUser extends org.springframework.security.core.userdetails.Use
 	@Setter
 	private Boolean active;
 
-	public LoginUser(com.gitrnd.qaproducer.domain.User user) {
+	public LoginUser(com.gitrnd.qaproducer.user.domain.User user) {
 		super(user.getUid(), user.getPw(), AuthorityUtils.createAuthorityList(user.getAuth()));
 		this.idx = user.getIdx();
 		this.active = user.getActive();

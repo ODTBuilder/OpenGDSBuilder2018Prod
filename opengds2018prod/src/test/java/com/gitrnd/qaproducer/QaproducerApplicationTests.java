@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.gitrnd.qaproducer.service.UserService;
+import com.gitrnd.qaproducer.user.service.UserService;
 import com.gitrnd.qaproducer.worker.Producer;
 
 @RunWith(SpringRunner.class)

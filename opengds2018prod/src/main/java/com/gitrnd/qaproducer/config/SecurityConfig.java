@@ -34,9 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/downloaderror.do").authenticated().antMatchers("/upload.do").authenticated()
 				.antMatchers("/user/userinfo.do").authenticated().antMatchers("/user/deactivateuser.ajax")
 				.authenticated();
-		http.formLogin().loginPage("/signin.do").permitAll().loginProcessingUrl("/signinProcess.do")
-				.defaultSuccessUrl("/validation.do").failureUrl("/signin.do");
-		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/signout.do")).logoutSuccessUrl("/main.do");
+		http.formLogin().loginPage("/user/signin.do").permitAll().loginProcessingUrl("/user/signinProcess.do")
+				.defaultSuccessUrl("/validation.do").failureUrl("/user/signin.do");
+		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/user/signout.do")).logoutSuccessUrl("/main.do");
 		http.csrf().ignoringAntMatchers("/uploaderror.do").and();
 	}
 

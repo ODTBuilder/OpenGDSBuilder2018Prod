@@ -91,7 +91,7 @@
 							<div style="display: none" id="login-alert" class="alert alert-danger col-sm-12"></div>
 
 							<form id="loginform" class="form-horizontal" role="form"
-								action="${pageContext.request.contextPath}/signinProcess.do" method="post">
+								action="${pageContext.request.contextPath}/user/signinProcess.do" method="post">
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<div style="margin-bottom: 25px" class="input-group">
 									<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span> <input id="login-username"
@@ -143,7 +143,7 @@
 							</div>
 						</div>
 						<div class="panel-body">
-							<form id="signupform" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/signup.do"
+							<form id="signupform" class="form-horizontal" role="form" action="${pageContext.request.contextPath}/user/signup.do"
 								method="post">
 								<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 								<div id="signupalert" style="display: none" class="alert alert-danger">

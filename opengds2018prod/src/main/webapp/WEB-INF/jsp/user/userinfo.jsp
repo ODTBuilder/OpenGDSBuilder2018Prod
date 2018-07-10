@@ -33,7 +33,7 @@
 									confirmButtonText : "확인",
 								}).then(function(confirm) {
 									if (confirm.value) {
-										location.href = "${pageContext.request.contextPath}/signout.do";
+										location.href = "${pageContext.request.contextPath}/user/signout.do";
 									}
 								});
 							} else {

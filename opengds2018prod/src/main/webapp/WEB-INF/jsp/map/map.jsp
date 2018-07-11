@@ -151,29 +151,20 @@ html {
 		<span class="text-muted">OpenGDS Builder/Validator</span> <span class="text-muted"><a href="#" class="epsg-now"></a></span>
 	</nav>
 	<script type="text/javascript">
-		/* var projection = ol.proj.get('EPSG:3857');
+		// 		var projection = ol.proj.get('EPSG:3857');
 
-		var view = new ol.View({
-			center : ol.proj.fromLonLat([ 37.41, 8.82 ]),
-			zoom : 4
-		});
-
-		var map = new ol.Map({
-			target : 'builderMap',
-			layers : [],
-			view : view,
-			controls : [ new ol.control.Zoom(), new ol.control.ZoomSlider() ]
-		});
-
-		var map2 = new ol.Map({
-			target : 'builderBaseMap',
-			controls : [],
-			layers : [],
-			view : view
-		}); */
-		var gbmap = new gb.Map({
+		var gbMap = new gb.Map({
 			"target" : $(".bind")[0]
 		});
+
+		var gbBaseMap = new gb.style.BaseMap({
+			"map" : gbMap.getLowerMap()
+		});
+
+		$("#changeBase").click(function() {
+			gbBaseMap.open();
+		});
+
 		var gitrnd = {
 			resize : function() {
 				//현재 보이는 브라우저 내부 영역의 높이
@@ -196,7 +187,7 @@ html {
 				//편집영역의 높이 지정
 				$(".builderContent").outerHeight(conHeight);
 				//컨텐츠 영역의 너비 지정
-				gbmap.setSize(mapWidth, conHeight);
+				gbMap.setSize(mapWidth, conHeight);
 				//컨텐츠 영역(겹친 지도 부분, 베이스맵과 편집영역을 겹쳐서 베이스맵이 편집에 영향이 없도록하기 위함)의 위치를 같게함
 				var str = "-" + conHeight + "px";
 				// 				$("#builderBaseMap").css("top", str);

@@ -37,11 +37,7 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
 <!-- gb map -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
-<!-- gb 임베드 베이스 -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/embed/base.js"></script>
-<!-- gb 레이어 정의 -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/embed/layerdefinition.js"></script>
-<!-- gb 옵션 정의 -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/embed/optiondefinition.js"></script>
-<!-- gb 검수 파일 정보 -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/modal/detailinformation.js"></script>
+<!-- gb modal base -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
+<!-- gb basemap -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>

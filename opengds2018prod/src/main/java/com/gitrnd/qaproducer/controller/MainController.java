@@ -66,6 +66,25 @@ public class MainController {
 		return mav;
 	}
 
+	@RequestMapping(value = "/map.do", method = RequestMethod.GET)
+	public ModelAndView mapView(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
+		LOGGER.info("access: /map.do");
+		ModelAndView mav = new ModelAndView();
+		if (loginUser != null) {
+			mav.addObject("username", loginUser.getUsername());
+			mav.addObject("fname", loginUser.getFname());
+			mav.addObject("lname", loginUser.getLname());
+		}
+		mav.setViewName("/map/map");
+		String header = request.getHeader("User-Agent");
+		if (header != null) {
+			if (header.indexOf("Trident") > -1) {
+				mav.addObject("browser", "MSIE");
+			}
+		}
+		return mav;
+	}
+
 	@RequestMapping(value = "/setting.do", method = RequestMethod.GET)
 	public ModelAndView settingView(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
 		LOGGER.info("access: /setting.do");

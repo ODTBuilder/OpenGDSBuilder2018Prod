@@ -25,8 +25,18 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/dropzone/dropzone.css">
 <!-- 다운로드 js-->
 <script src="${pageContext.request.contextPath}/resources/js/download/download.js"></script>
+<!-- proj4js -->
+<script src="${pageContext.request.contextPath}/resources/js/proj4js/dist/proj4-src.js"></script>
+<%-- 오픈 레이어스3 --%>
+<script src="${pageContext.request.contextPath}/resources/js/ol3/ol-debug.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/ol3/ol.css">
+
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
+<!-- gb namespace -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
+<!-- gb map -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
 <!-- gb 임베드 베이스 -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/embed/base.js"></script>
 <!-- gb 레이어 정의 -->

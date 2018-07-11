@@ -1,35 +1,43 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<nav id="mainHeader" class="navbar" style="margin-bottom: 0; border-radius: 0;">
+<nav class="navbar navbar-default mainHeader">
 	<div class="container-fluid">
-		<div class="navbar-default">
-			<a class="navbar-brand" href="/opengds/main.do"> <img
-				src="${pageContext.request.contextPath}/resources/img/logo379.png" style="height: 22px; width: auto;">
-			</a>
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/main.do"><img
+				style="height: 20px; width: auto; display: inline; margin-right: 10px; padding: 0;"
+				src="${pageContext.request.contextPath}/resources/img/onlyglobe.png" alt="GeoDT Online">GeoDT Online</a>
 		</div>
 
-		<div class="collapse navbar-collapse " id="myNavbar">
-			<ul class="nav navbar-nav ">
-				<li class="active"><a href="/opengds/main.do">Home</a></li>
-				<li><a href="/opengds/builder.do">Map</a></li>
-				<li><a href="#">Contact</a></li>
-			</ul>
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
+				<li><a href="${pageContext.request.contextPath}/map.do"> Editor</a></li>
+				<li><a href="${pageContext.request.contextPath}/validation.do"> Validation</a></li>
+				<li><a href="${pageContext.request.contextPath}/list.do"> Result</a></li>
+				<li><a href="${pageContext.request.contextPath}/settinglist.do"> Setting</a></li>
 				<c:choose>
-					<c:when test="${user ne null}">
-						<li><a href="#"><i class="fa fa-user-circle-o"></i>&nbsp;${user.id}</a></li>
+					<c:when test="${username ne null}">
+						<li><a href="${pageContext.request.contextPath}/user/userinfo.do"><i class="fas fa-user-circle"></i>&nbsp;${fname}&nbsp;${lname}</a></li>
 					</c:when>
 				</c:choose>
 				<c:choose>
-					<c:when test="${user eq null}">
-						<li><a href="/opengds/user/loginView.do"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+					<c:when test="${username eq null}">
+						<li><a href="${pageContext.request.contextPath}/user/signin.do"><span class="glyphicon glyphicon-log-in"></span>
+								Sign-in</a></li>
 					</c:when>
-					<c:when test="${user ne null}">
-						<li><a href="javascript:logoutPopup()"><span class="glyphicon glyphicon-log-out"></span> Login-out</a></li>
+					<c:when test="${username ne null}">
+						<li><a href="${pageContext.request.contextPath}/user/signout.do"><span
+								class="glyphicon glyphicon-log-out"></span> Sign-out</a></li>
 					</c:when>
 				</c:choose>
-				<li><a href="http://www.git.co.kr/main/main.html" target="_blank"><img
-						src="${pageContext.request.contextPath}/resources/img/geo.png" height="20px"></a></li>
 			</ul>
 		</div>
+		<!-- /.navbar-collapse -->
 	</div>
+	<!-- /.container-fluid -->
 </nav>

@@ -1,17 +1,26 @@
 /**
  * 모달 객체를 정의한다.
  * 
- * @author yijun.so
- * @date 2017. 07.26
- * @version 0.01
  * @class gb.modal.Base
- * @constructor
+ * @memberof gb.modal
+ * @param {Object}
+ *            obj - 생성자 옵션을 담은 객체
+ * @param {String}
+ *            obj.title - 모달의 제목
+ * @param {Number}
+ *            obj.width - 모달의 너비 (픽셀)
+ * @param {Number}
+ *            obj.height - 모달의 높이 (픽셀)
+ * @param {Boolean}
+ *            obj.autoOpen - 선언과 동시에 표출 할 것인지 선택
+ * @param {Function |
+ *            String | DOM} obj.body - Modal 본문에 삽입될 내용
+ * @param {Function |
+ *            String | DOM} obj.footer- Modal 푸터에 삽입될 내용
+ * @version 0.01
+ * @author SOYIJUN
+ * @date 2017. 07.26
  */
-var gb;
-if (!gb)
-	gb = {};
-if (!gb.modal)
-	gb.modal = {};
 gb.modal.Base = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
@@ -26,9 +35,14 @@ gb.modal.Base = function(obj) {
 	this.titleArea = $("<span>").addClass("gb-modal-title").text(this.title);
 	this.modalHead = $("<div>").addClass("gb-modal-head").append(this.titleArea).append(btn);
 	var body = typeof options.body === "function" ? options.body() : options.body;
+	var footer = typeof options.footer === "function" ? options.footer() : options.footer;
 	this.modalBody = $("<div>").addClass("gb-modal-body");
 	if (body) {
 		$(this.modalBody).append(body);
+	}
+	this.modalFooter = $("<div>").addClass("gb-modal-footer");
+	if (footer) {
+		$(this.modalFooter).append(footer);
 	}
 // this.buttonArea = $("<span>").addClass("gb-modal-buttons");
 // this.modalFooter =
@@ -38,7 +52,7 @@ gb.modal.Base = function(obj) {
 		"height" : typeof this.height === "number" ? this.height+"px" : this.height,
 		"position" : "absolute",
 		"z-Index" : "999"
-	}).append(this.modalHead).append(this.modalBody);
+	}).append(this.modalHead).append(this.modalBody).append(this.modalFooter);
 
 	if (!$(".gb-modal-background")[0]) {
 		this.background = $("<div>").addClass("gb-modal-background");
@@ -55,17 +69,18 @@ gb.modal.Base = function(obj) {
 /**
  * 모달 바디를 반환한다.
  * 
- * @method getModalBody
- * @param {DOM}
+ * @method gb.modal.Base#getModalBody
+ * @return {DOM} 모달 본문에 해당하는 DOM
  */
 gb.modal.Base.prototype.getModalBody = function() {
-	return this.modalBody;;
+	return this.modalBody;
 };
 /**
  * 모달 바디를 설정한다.
  * 
- * @method setModalBody
- * @param {DOM}
+ * @method gb.modal.Base#setModalBody
+ * @param {DOM |
+ *            function} body - 모달 본문으로 삽입될 내용
  */
 gb.modal.Base.prototype.setModalBody = function(body) {
 	if (typeof body === "function") {
@@ -75,10 +90,33 @@ gb.modal.Base.prototype.setModalBody = function(body) {
 	}
 };
 /**
+ * 모달 푸터를 반환한다.
+ * 
+ * @method gb.modal.Base#getModalFooter
+ * @return {DOM} 모달 푸터에 해당하는 DOM
+ */
+gb.modal.Base.prototype.getModalFooter= function() {
+	return this.modalFooter;
+};
+/**
+ * 모달 푸터를 설정한다.
+ * 
+ * @method gb.modal.Base#setModalFooter
+ * @param {DOM |
+ *            function} footer - 모달 푸터로 삽입될 내용
+ */
+gb.modal.Base.prototype.setModalFooter = function(footer) {
+	if (typeof footer === "function") {
+		$(this.modalFooter).append(footer());
+	} else {
+		$(this.modalFooter).append(footer);
+	}
+};
+/**
  * 모달을 반환한다.
  * 
- * @method getmodal
- * @return {DOM}
+ * @method gb.modal.Base#getModal
+ * @return {DOM} 모달의 DOM
  */
 gb.modal.Base.prototype.getModal = function() {
 	return this.modal;
@@ -86,7 +124,7 @@ gb.modal.Base.prototype.getModal = function() {
 /**
  * 모달을 나타낸다.
  * 
- * @method open
+ * @method gb.modal.Base#open
  */
 gb.modal.Base.prototype.open = function() {
 	$(".gb-modal-background").css("display", "block");
@@ -96,7 +134,7 @@ gb.modal.Base.prototype.open = function() {
 /**
  * 모달을 숨긴다.
  * 
- * @method open
+ * @method gb.modal.Base#close
  */
 gb.modal.Base.prototype.close = function() {
 	$(".gb-modal-background").css("display", "none");
@@ -105,7 +143,7 @@ gb.modal.Base.prototype.close = function() {
 /**
  * 모달위치를 최신화한다.
  * 
- * @method refreshPosition
+ * @method gb.modal.Base#refreshPosition
  */
 gb.modal.Base.prototype.refreshPosition = function() {
 	$(this.modal).css({
@@ -116,9 +154,9 @@ gb.modal.Base.prototype.refreshPosition = function() {
 /**
  * 너비를 설정한다.
  * 
- * @method setWidth
- * @param {
- *            Number } width - modal width
+ * @method gb.modal.Base#setWidth
+ * @param {Number}
+ *            width - 모달의 너비(픽셀)
  */
 gb.modal.Base.prototype.setWidth = function(width) {
 	this.width = width;
@@ -138,8 +176,8 @@ gb.modal.Base.prototype.setWidth = function(width) {
 /**
  * 너비를 반환한다.
  * 
- * @method getWidth
- * @return { Number } modal width
+ * @method gb.modal.Base#getWidth
+ * @return {Number} 모달의 너비(픽셀)
  */
 gb.modal.Base.prototype.getWidth = function() {
 	return $(this.modal).outerWidth();
@@ -147,9 +185,9 @@ gb.modal.Base.prototype.getWidth = function() {
 /**
  * 높이를 설정한다.
  * 
- * @method setHeight
+ * @method gb.modal.Base#setHeight
  * @param {Number}
- *            height - modal height
+ *            height - 모달의 높이(픽셀)
  */
 gb.modal.Base.prototype.setHeight = function(height) {
 	this.height = height;
@@ -170,8 +208,8 @@ gb.modal.Base.prototype.setHeight = function(height) {
 /**
  * 높이를 반환한다.
  * 
- * @method getHeight
- * @return {Number} modal height
+ * @method gb.modal.Base#getHeight
+ * @return {Number} 모달의 높이(픽셀)
  */
 gb.modal.Base.prototype.getHeight = function() {
 	return $(this.modal).outerHeight();

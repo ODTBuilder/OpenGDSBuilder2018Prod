@@ -73,7 +73,7 @@
 </head>
 <body>
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/common/header2.jsp" />
+		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
 		<div>
 			<section>
 				<div id="loginbox" style="margin-top: 50px; margin-bottom: 30px;"

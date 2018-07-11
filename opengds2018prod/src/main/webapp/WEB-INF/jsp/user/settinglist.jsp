@@ -53,8 +53,8 @@
 					confirmButtonText : "확인",
 					cancelButtonColor : "#d33",
 					cancelButtonText : "취소"
-				}).then(function(result){
-					if(result.value){
+				}).then(function(result) {
+					if (result.value) {
 						var selectList = "";
 
 						// 선택된 행들에 대하여 반복문 실행
@@ -152,7 +152,7 @@
 	</script>
 
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/common/header2.jsp" />
+		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
 
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -206,13 +206,7 @@
 			</div>
 		</div>
 		<section class="SettingSection">
-			<div>
-				<address>
-					<img src="${pageContext.request.contextPath}/resources/img/git_new_logo.png" /> <strong style="font-size: 1.1em;">
-						공간정보기술(주) </strong><br> 경기도 성남시 분당구 판교로 228번길 15(삼평동, 판교7벤처밸리1) 3동 6층 <br> <abbr title="Phone">P:</abbr> (031)
-					622-3826
-				</address>
-			</div>
+			<jsp:include page="/WEB-INF/jsp/common/footer.jsp" />
 		</section>
 		<div class="Message"></div>
 	</div>

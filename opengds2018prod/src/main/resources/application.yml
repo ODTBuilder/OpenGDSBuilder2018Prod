@@ -1,15 +1,14 @@
 spring:
   rabbitmq:
-    host: YOUR_RABBITMQ_ADDRESS # EX) 127.0.0.1
-    port: YOUR_RABBITMQ_PORT # EX) 1234
-    username: YOUR_RABBITMQ_USERNAME # EX) user
-    password: YOUR_RABBITMQ_PASSWORD # EX) password
+    host: 175.116.181.42
+    port: 5672
+    username: qaguest
+    password: gitrnd!
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://YOUR_POSTGRESQL_URL:PORT/DBNAME?charSet=UTF-8&prepareThreshold=1
-    # EX) jdbc:postgresql://127.0.0.1:1234/mydb?charSet=UTF-8&prepareThreshold=1
-    username: DB_USERNAME # EX) user
-    password: DB_PASSWORD # EX) password
+    url: jdbc:postgresql://175.116.181.42:5433/opengds_2018?charSet=UTF-8&prepareThreshold=1
+    username: qaguest
+    password: gitrnd!
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-test-query: SELECT 1
@@ -23,24 +22,24 @@ spring:
       suffix: .jsp
   http:
     multipart:
-      max-file-size: 10485760KB # UPLOAD_LIMIT
-      max-request-size: 10485760KB # UPLOAD_LIMIT 
+      max-file-size: 10485760KB
+      max-request-size: 10485760KB
 server:
-  port: 8080 # EX) THE_PORT_OF_WEB_SITE
-  context-path: /geodt # EX) THE_CONTEXT_PATH_OF_WEB_SITE
+  port: 8080
+  context-path: /geodt
   error:
     whitelabel:
       enabled: false
 gitrnd:
-  serverhost: PUBLIC_IP_OF_THIS_SERVER_NOT_LOCALHOST # EX) 175.111.222.34
+  serverhost: 175.116.181.34
   apache:
-    host: 127.0.0.1 #APACHE MUST BE INSTALLED IN THE SAME LOCATION WITH PROD SERVER
-    port: APACHE_PORT # EX) 8888
-    basedir: gdofiles # THE_DIRECTORY_NAME_OF_UPLOADED_FILE
-    basedrive: C # THE_DRIVE_WHERE_USER_UPLOAD_FILE
+    host: 127.0.0.1
+    port: 8888
+    basedir: gdofiles
+    basedrive: C
   rabbitmq:
-    exchange: YOUR_RABBITMQ_EXCHANGE # EX) opengds_ex 
-    routingKey: YOUR_RABBITMQ_KEY # EX) opengds_k
+    exchange: opengds_qa_exchange
+    routingKey: opengds_qa_key
 mybatis:
   config-location: classpath:config/mybatis.xml
   mapper-location: classpath:sql/*.xml

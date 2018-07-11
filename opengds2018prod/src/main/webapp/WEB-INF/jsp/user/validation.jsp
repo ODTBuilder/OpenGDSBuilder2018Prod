@@ -173,50 +173,50 @@ div.table .file-row:nth-child(odd) {
 		$(document).ready(
 				function() {
 					console.log("ready!");
-					
+
 					// Tooltip template 함수
 					// options : object 또는 string.
 					// options.title : 툴팁의 가장 상단 부분 내용
 					// options.img : 이미지가 포함된 div 생성. object 또는 Array
 					// options.img.url : 이미지 local 경로
 					// options.img.title : 이미지 title
-					function template(options){
+					function template(options) {
 						// 최상단 element 생성
 						var template = $('<div class="popover" role="tooltip">');
 						// 툴팁 element의 화살표 생성
 						template.append($('<div class="arrow">'));
-						
+
 						// options가 object일때 실행
-						if(typeof options === 'object'){
-							
+						if (typeof options === 'object') {
+
 							// title 부분 생성
 							template.append($('<div class="popover-content">').append(options.title));
-							
+
 							// image에 대한 파라미터값이 있을때 실행
-							if(!!options.img){
+							if (!!options.img) {
 								var imgArr = [];
-								if(Array.isArray(options.img)){
+								if (Array.isArray(options.img)) {
 									imgArr = options.img;
 								} else {
 									// options.img 가 object일 때 imgArr 변수에 push
 									imgArr.push(options.img);
 								}
-								
+
 								var row;
 								var column;
 								var thumb;
-								
+
 								// 부트스트랩 thumbnail 생성. imgArr 배열의 개수만큼 vertical 형식으로 thumbnail을 생성
-								for(var i in imgArr){
+								for ( var i in imgArr) {
 									row = $('<div class="row">');
 									column = $('<div class="col-md-12">');
 									thumb = $('<div class="thumbnail">');
-									
+
 									thumb.append($('<img class="img-responsive" src="' + imgArr[i].url + '">'));
 									thumb.append($('<div class="caption">').append($('<p>' + imgArr[i].title + '</p>')));
 									column.append(thumb);
 									row.append(column);
-									
+
 									template.append(row);
 								}
 							}
@@ -224,55 +224,53 @@ div.table .file-row:nth-child(odd) {
 							// options가 string일때
 							template.append($('<div class="popover-content">').append(options));
 						}
-						
+
 						return template;
 					}
-					
+
 					$(".QA-User-Setting").tooltip({
 						"html" : true,
 						"template" : template("사용자 설정 검수 옵션을 선택합니다"),
-						"title": "tooltip",
+						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-type-sect").tooltip({
 						"html" : true,
 						"template" : template("검수 종류를 선택합니다"),
-						"title": "tooltip",
+						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-detail-sect").tooltip({
 						"html" : true,
 						"template" : template("검수 편집 종류를 선택합니다"),
-						"title": "tooltip",
+						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-sub-options").tooltip({
 						"html" : true,
 						"template" : template("검수를 수행할 파일의 형식과 좌표계를 선택합니다"),
-						"title": "tooltip",
+						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					var fileToolTip = template({
-						title: $("<span>").html("검수를 수행할 파일을 업로드합니다<br>zip형식의 파일만 업로드할 수 있습니다"),
-						img: [{
-								url: "${pageContext.request.contextPath}/resources/img/forest_file_tree.png",
-								title: "<em>임상도 zip파일 트리 구조 예시</em>"
-							},
-							{
-								url: "${pageContext.request.contextPath}/resources/img/underline_file_tree.png",
-								title: "<em>지하시설물, ngi, dxf zip파일 트리 구조 예시</em>"
-							}
-						]
+						title : $("<span>").html("검수를 수행할 파일을 업로드합니다<br>zip형식의 파일만 업로드할 수 있습니다"),
+						img : [ {
+							url : "${pageContext.request.contextPath}/resources/img/forest_file_tree.png",
+							title : "<em>임상도 zip파일 트리 구조 예시</em>"
+						}, {
+							url : "${pageContext.request.contextPath}/resources/img/underline_file_tree.png",
+							title : "<em>지하시설물, ngi, dxf zip파일 트리 구조 예시</em>"
+						} ]
 					})
-					
+
 					$(".QA-Upload-Area").tooltip({
 						"html" : true,
 						"template" : fileToolTip,
-						"title": "tooltip",
+						"title" : "tooltip",
 						"placement" : "right"
 					});
 
@@ -575,7 +573,7 @@ div.table .file-row:nth-child(odd) {
 	</script>
 
 	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/common/header2.jsp" />
+		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
 
 		<div class="panel panel-default">
 			<div class="panel-body">
@@ -727,13 +725,7 @@ div.table .file-row:nth-child(odd) {
 			</div>
 		</div>
 		<section class="SettingSection">
-			<div>
-				<address>
-					<img src="${pageContext.request.contextPath}/resources/img/git_new_logo.png" /> <strong style="font-size: 1.1em;">
-						공간정보기술(주) </strong><br> 경기도 성남시 분당구 판교로 228번길 15(삼평동, 판교7벤처밸리1) 3동 6층 <br> <abbr title="Phone">P:</abbr> (031)
-					622-3826
-				</address>
-			</div>
+			<jsp:include page="/WEB-INF/jsp/common/footer.jsp" />
 		</section>
 		<div class="Message"></div>
 	</div>

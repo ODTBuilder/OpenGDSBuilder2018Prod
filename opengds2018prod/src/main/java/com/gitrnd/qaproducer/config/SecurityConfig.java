@@ -28,14 +28,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		//
-		http.authorizeRequests().antMatchers("/validation.do").authenticated().antMatchers("/list.do").authenticated()
-				.antMatchers("/setting.do").authenticated().antMatchers("/createpreset.do").authenticated()
-				.antMatchers("/settinglist.do").authenticated().antMatchers("/option/**").authenticated()
-				.antMatchers("/downloaderror.do").authenticated().antMatchers("/upload.do").authenticated()
-				.antMatchers("/user/userinfo.do").authenticated().antMatchers("/user/deactivateuser.ajax")
-				.authenticated();
+		http.authorizeRequests().antMatchers("/map.do").authenticated().antMatchers("/validation.do").authenticated()
+				.antMatchers("/list.do").authenticated().antMatchers("/setting.do").authenticated()
+				.antMatchers("/createpreset.do").authenticated().antMatchers("/settinglist.do").authenticated()
+				.antMatchers("/option/**").authenticated().antMatchers("/downloaderror.do").authenticated()
+				.antMatchers("/upload.do").authenticated().antMatchers("/user/userinfo.do").authenticated()
+				.antMatchers("/user/deactivateuser.ajax").authenticated();
 		http.formLogin().loginPage("/user/signin.do").permitAll().loginProcessingUrl("/user/signinProcess.do")
-				.defaultSuccessUrl("/validation.do").failureUrl("/user/signin.do");
+				.defaultSuccessUrl("/map.do").failureUrl("/user/signin.do");
 		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/user/signout.do")).logoutSuccessUrl("/main.do");
 		http.csrf().ignoringAntMatchers("/uploaderror.do").and();
 	}

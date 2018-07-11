@@ -25,44 +25,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "none",
 			"noparam" : false,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
-				"name" : true,
+				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 
 			}
@@ -77,44 +77,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -128,44 +128,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -179,44 +179,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -230,44 +230,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "adjacent",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -281,44 +281,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -332,44 +332,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "adjacent",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -383,44 +383,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "adjacent",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -434,44 +434,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -485,44 +485,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -536,44 +536,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -587,44 +587,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -638,44 +638,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -689,44 +689,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -740,44 +740,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -791,44 +791,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -842,44 +842,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -893,44 +893,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 2,
-				"condition" : 2,
-				"interval" : 2
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : true,
+				"condition" : true,
+				"interval" : true
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -944,44 +944,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -995,44 +995,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1046,44 +1046,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1097,44 +1097,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1148,44 +1148,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1199,44 +1199,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1250,44 +1250,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1301,44 +1301,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 2,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : true,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1352,44 +1352,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1403,44 +1403,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1454,44 +1454,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1505,44 +1505,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1556,44 +1556,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1607,44 +1607,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1658,44 +1658,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 2,
-					"key" : 2,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : true,
+					"key" : true,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1709,44 +1709,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1760,44 +1760,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1811,44 +1811,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1862,44 +1862,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "adjacent",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 2,
-				"value" : 2,
-				"condition" : 2,
-				"interval" : 0
+				"code" : true,
+				"value" : true,
+				"condition" : true,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -1913,44 +1913,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 2,
-					"value" : 2,
-					"condition" : 2,
-					"interval" : 2
+					"code" : true,
+					"value" : true,
+					"condition" : true,
+					"interval" : true
 				}
 			}
 		},
@@ -1964,44 +1964,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 2
+				"code" : false,
+				"key" : true,
+				"values" : true
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 2,
-					"key" : 2,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : true,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2015,44 +2015,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2066,44 +2066,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2117,44 +2117,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2168,44 +2168,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 2
+				"code" : false,
+				"key" : true,
+				"values" : true
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2219,44 +2219,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2270,44 +2270,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : true,
 			"filter" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2321,44 +2321,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "graphic",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 0,
-				"key" : 0,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"key" : false,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : true,
 				"filter" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2372,44 +2372,44 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
-				"values" : 0,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : true,
+				"key" : true,
+				"values" : false,
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
 				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		},
@@ -2423,44 +2423,43 @@ gb.embed.OptionDefinition = function(obj) {
 			"purpose" : "attribute",
 			"noparam" : false,
 			"filter" : {
-				"code" : 1,
-				"key" : 1,
-				"values" : 1
+				"code" : false,
+				"key" : false,
+				"values" : false
 			},
 			"figure" : {
-				"code" : 2,
-				"key" : 2,
+				"code" : true,
+				"key" : true,
 				"values" : true,
-				"number" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"number" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"tolerance" : {
-				"code" : 0,
-				"value" : 0,
-				"condition" : 0,
-				"interval" : 0
+				"code" : false,
+				"value" : false,
+				"condition" : false,
+				"interval" : false
 			},
 			"relation" : {
-				"name" : false,
 				"filter" : {
-					"code" : 1,
-					"key" : 1,
-					"values" : 1
+					"code" : false,
+					"key" : false,
+					"values" : false
 				},
 				"figure" : {
-					"code" : 0,
-					"key" : 0,
-					"values" : 0,
-					"number" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
 				},
 				"tolerance" : {
-					"code" : 0,
-					"value" : 0,
-					"condition" : 0,
-					"interval" : 0
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
 				}
 			}
 		}
@@ -7709,12 +7708,6 @@ gb.embed.OptionDefinition.prototype.setNoParamOption = function(check, all) {
 
 gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-	if (this.optItem[this.nowOption.alias]["filter"]["code"] > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(codeCol1).prepend(req);
-	}
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7766,12 +7759,6 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 
 gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-	if (this.optItem[this.nowOption.alias]["figure"]["code"] > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(codeCol1).prepend(req);
-	}
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7822,12 +7809,6 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 
 gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-	if (this.optItem[this.nowOption.alias]["tolerance"]["code"] > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(codeCol1).prepend(req);
-	}
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7882,12 +7863,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 			"type" : "number",
 			"placeholder" : "숫자형 기준값"
 		}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
-		if (optItem.relation.tolerance.value > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(numCol1).prepend(req);
-		} else if (optItem.relation.tolerance.value === 0) {
+		if (!optItem.relation.tolerance.value) {
 			$(inputNum).prop("disabled", true);
 		}
 		var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -7899,12 +7875,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var optionOver = $("<option>").text("초과").attr("value", "over");
 		var optionUnder = $("<option>").text("미만").attr("value", "under");
 		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
-		if (optItem.relation.tolerance.condition > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(codeCol1).prepend(req);
-		} else if (optItem.relation.tolerance.condition === 0) {
+		if (!optItem.relation.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
 		var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
@@ -7915,12 +7886,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 			"type" : "number",
 			"placeholder" : "숫자형 기준값"
 		}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
-		if (optItem.relation.tolerance.interval > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(numCol1).prepend(req);
-		} else if (optItem.relation.tolerance.interval === 0) {
+		if (!optItem.relation.tolerance.interval) {
 			$(inputNum).prop("disabled", true);
 		}
 		var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -7935,12 +7901,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 			"type" : "number",
 			"placeholder" : "숫자형 기준값"
 		}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
-		if (optItem.tolerance.value > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(numCol1).prepend(req);
-		} else if (optItem.tolerance.value === 0) {
+		if (!optItem.tolerance.value) {
 			$(inputNum).prop("disabled", true);
 		}
 		var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -7953,12 +7914,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var optionOver = $("<option>").text("초과").attr("value", "over");
 		var optionUnder = $("<option>").text("미만").attr("value", "under");
 		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
-		if (optItem.tolerance.condition > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(codeCol1).prepend(req);
-		} else if (optItem.tolerance.condition === 0) {
+		if (!optItem.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
 		var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
@@ -7969,12 +7925,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 			"type" : "number",
 			"placeholder" : "숫자형 기준값"
 		}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
-		if (optItem.tolerance.interval > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(numCol1).prepend(req);
-		} else if (optItem.tolerance.interval === 0) {
+		if (!optItem.tolerance.interval) {
 			$(inputNum).prop("disabled", true);
 		}
 		var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -8118,14 +8069,8 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 	}
 	var optItem = this.optItem[this.nowOption.alias];
 	var row = $("<div>").addClass("row");
-	if (optItem.filter.key > 0) {
+	if (optItem.filter.key) {
 		var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
-		if (optItem.filter.key > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(attrCol1).prepend(req);
-		}
 		var inputAttr = $("<input>").attr({
 			"type" : "text",
 			"placeholder" : "속성명 EX) 재질"
@@ -8134,14 +8079,8 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 
 		$(row).append(attrCol1).append(attrCol2);
 	}
-	if (optItem.filter.values > 0) {
+	if (optItem.filter.values) {
 		var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
-		if (optItem.filter.values > 1) {
-			var req = $("<span>").text("*").css({
-				"color" : "#FF0000"
-			});
-			$(filterCol1).prepend(req);
-		}
 		var inputValues = $("<input>").attr({
 			"type" : "text",
 			"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
@@ -8170,12 +8109,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 		"type" : "text",
 		"placeholder" : "속성명 EX) 재질"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurekey");
-	if (optItem.figure.key > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(attrCol1).prepend(req);
-	} else if (optItem.figure.key === 0) {
+	if (!optItem.figure.key) {
 		$(inputAttr).prop("disabled", true);
 	}
 	var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
@@ -8187,12 +8121,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 		"type" : "text",
 		"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurevalues");
-	if (optItem.figure.values > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(filterCol1).prepend(req);
-	} else if (optItem.figure.values === 0) {
+	if (!optItem.figure.values) {
 		$(inputValues).prop("disabled", true);
 	}
 	var filterCol2 = $("<div>").addClass("col-md-8").append(inputValues);
@@ -8205,12 +8134,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 		"type" : "number",
 		"placeholder" : "숫자형 기준값"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurenumber");
-	if (optItem.figure.number > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(numCol1).prepend(req);
-	} else if (optItem.figure.number === 0) {
+	if (!optItem.figure.number) {
 		$(inputNum).prop("disabled", true);
 	}
 	var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -8223,12 +8147,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 	var optionOver = $("<option>").text("초과").attr("value", "over");
 	var optionUnder = $("<option>").text("미만").attr("value", "under");
 	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
-	if (optItem.figure.condition > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(codeCol1).prepend(req);
-	} else if (optItem.figure.condition === 0) {
+	if (!optItem.figure.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
 	var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
@@ -8239,12 +8158,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 		"type" : "number",
 		"placeholder" : "숫자형 기준값"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figureinterval");
-	if (optItem.figure.interval > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(numCol1).prepend(req);
-	} else if (optItem.figure.interval === 0) {
+	if (!optItem.figure.interval) {
 		$(inputNum).prop("disabled", true);
 	}
 	var numCol2 = $("<div>").addClass("col-md-2").append(inputNum);
@@ -8272,12 +8186,7 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 		"type" : "number",
 		"placeholder" : "숫자형 기준값"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
-	if (optItem.tolerance.value > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(numCol1).prepend(req);
-	} else if (optItem.tolerance.value === 0) {
+	if (!optItem.tolerance.value) {
 		$(inputNum).prop("disabled", true);
 	}
 	var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -8290,12 +8199,7 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	var optionOver = $("<option>").text("초과").attr("value", "over");
 	var optionUnder = $("<option>").text("미만").attr("value", "under");
 	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
-	if (optItem.tolerance.condition > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(codeCol1).prepend(req);
-	} else if (optItem.tolerance.condition === 0) {
+	if (!optItem.tolerance.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
 	var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
@@ -8306,12 +8210,7 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 		"type" : "number",
 		"placeholder" : "숫자형 기준값"
 	}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
-	if (optItem.tolerance.interval > 1) {
-		var req = $("<span>").text("*").css({
-			"color" : "#FF0000"
-		});
-		$(numCol1).prepend(req);
-	} else if (optItem.tolerance.interval === 0) {
+	if (!optItem.tolerance.interval) {
 		$(inputNum).prop("disabled", true);
 	}
 	var numCol2 = $("<div>").addClass("col-md-2").append(inputNum);
@@ -8711,34 +8610,32 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 		if (sec) {
 			if (all) {
 				className = "gb-optiondefinition-btn-relationdetailcategory";
-				if (optItem.relation.filter.code > 0 || optItem.relation.filter.key > 0 || optItem.relation.filter.values > 0) {
+				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"속성 필터").attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
-				if (optItem.relation.figure.code > 0 || optItem.relation.figure.key > 0 || optItem.relation.figure.values > 0
-						|| optItem.relation.figure.number > 0 || optItem.relation.figure.condition > 0
-						|| optItem.relation.figure.interval > 0) {
+				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
+						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
 					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"속성 검수").attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
-				if (optItem.relation.tolerance.code > 0 || optItem.relation.tolerance.value > 0 || optItem.relation.tolerance.condition > 0
-						|| optItem.relation.tolerance.interval > 0) {
+				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
+						|| optItem.relation.tolerance.interval) {
 					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"수치 조건").attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.name
-						&& (optItem.relation.filter.code === 0 && optItem.relation.filter.key === 0 && optItem.relation.filter.values === 0
-								&& optItem.relation.figure.code === 0 && optItem.relation.figure.key === 0
-								&& optItem.relation.figure.values === 0 && optItem.relation.figure.number === 0
-								&& optItem.relation.figure.condition === 0 && optItem.relation.figure.interval === 0
-								&& optItem.relation.tolerance.code === 0 && optItem.relation.tolerance.value === 0
-								&& optItem.relation.tolerance.condition === 0 && optItem.relation.tolerance.interval === 0)) {
+						&& (!optItem.relation.filter.code && !optItem.relation.filter.key && !optItem.relation.filter.values
+								&& !optItem.relation.figure.code && !optItem.relation.figure.key && !optItem.relation.figure.values
+								&& !optItem.relation.figure.number && !optItem.relation.figure.condition
+								&& !optItem.relation.figure.interval && !optItem.relation.tolerance.code
+								&& !optItem.relation.tolerance.value && !optItem.relation.tolerance.condition && !optItem.relation.tolerance.interval)) {
 					var strc = this.getStructure();
 					var layerDef = this.getLayerDefinition().getStructure();
 					var names = [];
@@ -8788,34 +8685,32 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				}
 			} else {
 				className = "gb-optiondefinition-btn-relationdetailcategory";
-				if (optItem.relation.filter.code > 0 || optItem.relation.filter.key > 0 || optItem.relation.filter.values > 0) {
+				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"속성 필터").attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
-				if (optItem.relation.figure.code > 0 || optItem.relation.figure.key > 0 || optItem.relation.figure.values > 0
-						|| optItem.relation.figure.number > 0 || optItem.relation.figure.condition > 0
-						|| optItem.relation.figure.interval > 0) {
+				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
+						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
 					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"속성 검수").attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
-				if (optItem.relation.tolerance.code > 0 || optItem.relation.tolerance.value > 0 || optItem.relation.tolerance.condition > 0
-						|| optItem.relation.tolerance.interval > 0) {
+				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
+						|| optItem.relation.tolerance.interval) {
 					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
 							"수치 조건").attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.name
-						&& (optItem.relation.filter.code === 0 && optItem.relation.filter.key === 0 && optItem.relation.filter.values === 0
-								&& optItem.relation.figure.code === 0 && optItem.relation.figure.key === 0
-								&& optItem.relation.figure.values === 0 && optItem.relation.figure.number === 0
-								&& optItem.relation.figure.condition === 0 && optItem.relation.figure.interval === 0
-								&& optItem.relation.tolerance.code === 0 && optItem.relation.tolerance.value === 0
-								&& optItem.relation.tolerance.condition === 0 && optItem.relation.tolerance.interval === 0)) {
+						&& (!optItem.relation.filter.code && !optItem.relation.filter.key && !optItem.relation.filter.values
+								&& !optItem.relation.figure.code && !optItem.relation.figure.key && !optItem.relation.figure.values
+								&& !optItem.relation.figure.number && !optItem.relation.figure.condition
+								&& !optItem.relation.figure.interval && !optItem.relation.tolerance.code
+								&& !optItem.relation.tolerance.value && !optItem.relation.tolerance.condition && !optItem.relation.tolerance.interval)) {
 					var strc = this.getStructure();
 					var flag = false;
 					if (strc["definition"].length > 0) {
@@ -8886,33 +8781,31 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				$(row).append(col);
 			}
 
-			if (optItem.filter.code > 0 || optItem.filter.key > 0 || optItem.filter.values > 0) {
+			if (optItem.filter.code || optItem.filter.key || optItem.filter.values) {
 				var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%")
 						.text("속성 필터").attr("value", "filter");
 				var col = $("<div>").addClass("col-md-3").append(filterBtn);
 				$(row).append(col);
 			}
-			if (optItem.figure.code > 0 || optItem.figure.key > 0 || optItem.figure.values > 0 || optItem.figure.number > 0
-					|| optItem.figure.condition > 0 || optItem.figure.interval > 0) {
+			if (optItem.figure.code || optItem.figure.key || optItem.figure.values || optItem.figure.number || optItem.figure.condition
+					|| optItem.figure.interval) {
 				var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text("속성 검수")
 						.attr("value", "figure");
 				var col = $("<div>").addClass("col-md-3").append(figBtn);
 				$(row).append(col);
 			}
-			if (optItem.tolerance.code > 0 || optItem.tolerance.value > 0 || optItem.tolerance.condition > 0
-					|| optItem.tolerance.interval > 0) {
+			if (optItem.tolerance.code || optItem.tolerance.value || optItem.tolerance.condition || optItem.tolerance.interval) {
 				var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text("수치 조건")
 						.attr("value", "tolerance");
 				var col = $("<div>").addClass("col-md-3").append(tolBtn);
 				$(row).append(col);
 			}
 			if (!optItem.noparam
-					&& (optItem.relation.name || ((optItem.relation.filter.code > 0 || optItem.relation.filter.key > 0
-							|| optItem.relation.filter.values > 0 || optItem.relation.figure.code > 0 || optItem.relation.figure.key > 0
-							|| optItem.relation.figure.values > 0 || optItem.relation.figure.number > 0
-							|| optItem.relation.figure.condition > 0 || optItem.relation.figure.interval > 0
-							|| optItem.relation.tolerance.code > 0 || optItem.relation.tolerance.value > 0
-							|| optItem.relation.tolerance.condition > 0 || optItem.relation.tolerance.interval > 0) && !sec))) {
+					&& (optItem.relation.name || ((optItem.relation.filter.code || optItem.relation.filter.key
+							|| optItem.relation.filter.values || optItem.relation.figure.code || optItem.relation.figure.key
+							|| optItem.relation.figure.values || optItem.relation.figure.number || optItem.relation.figure.condition
+							|| optItem.relation.figure.interval || optItem.relation.tolerance.code || optItem.relation.tolerance.value
+							|| optItem.relation.tolerance.condition || optItem.relation.tolerance.interval) && !sec))) {
 				var relBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-detailcategory").css(
 						"width", "100%").text("레이어 관계").attr("value", "relation");
 				var col = $("<div>").addClass("col-md-3").append(relBtn);
@@ -8989,21 +8882,13 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							}
 						}
 					} else {
-						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
-							if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
-								nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
-							}
+						if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
+							nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
 						}
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
 						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-						if (this.optItem[this.nowOption.alias][type]["code"] > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(codeCol1).prepend(req);
-						}
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -9054,14 +8939,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						for (var b = 0; b < nowFilter[a].attribute.length; b++) {
 							var optItem = this.optItem[this.nowOption.alias];
 							var row = $("<div>").addClass("row");
-							if (optItem.filter.key > 0) {
+							if (optItem.filter.key) {
 								var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
-								if (optItem.filter.key > 1) {
-									var req = $("<span>").text("*").css({
-										"color" : "#FF0000"
-									});
-									$(attrCol1).prepend(req);
-								}
 								var inputAttr = $("<input>").attr({
 									"type" : "text",
 									"placeholder" : "속성명 EX) 재질"
@@ -9073,14 +8952,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 
 								$(row).append(attrCol1).append(attrCol2);
 							}
-							if (optItem.filter.values > 0) {
+							if (optItem.filter.values) {
 								var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
-								if (optItem.filter.values > 1) {
-									var req = $("<span>").text("*").css({
-										"color" : "#FF0000"
-									});
-									$(filterCol1).prepend(req);
-								}
 								var inputValues = $("<input>").attr({
 									"type" : "text",
 									"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
@@ -9174,12 +9047,6 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
 						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-						if (this.optItem[this.nowOption.alias][type]["code"] > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(codeCol1).prepend(req);
-						}
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -9237,12 +9104,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							if (nowFilter[a].attribute[b].key !== undefined && nowFilter[a].attribute[b].key !== null) {
 								$(inputAttr).val(nowFilter[a].attribute[b].key);
 							}
-							if (optItem.figure.key > 1) {
-								var req = $("<span>").text("*").css({
-									"color" : "#FF0000"
-								});
-								$(attrCol1).prepend(req);
-							} else if (optItem.figure.key === 0) {
+							if (!optItem.figure.key) {
 								$(inputAttr).prop("disabled", true);
 							}
 							var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
@@ -9257,12 +9119,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							if (nowFilter[a].attribute[b].values !== undefined && nowFilter[a].attribute[b].values !== null) {
 								$(inputValues).val(nowFilter[a].attribute[b].values.toString());
 							}
-							if (optItem.figure.values > 1) {
-								var req = $("<span>").text("*").css({
-									"color" : "#FF0000"
-								});
-								$(filterCol1).prepend(req);
-							} else if (optItem.figure.values === 0) {
+							if (!optItem.figure.values) {
 								$(inputValues).prop("disabled", true);
 							}
 							var filterCol2 = $("<div>").addClass("col-md-8").append(inputValues);
@@ -9278,12 +9135,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							if (nowFilter[a].attribute[b].number !== undefined && nowFilter[a].attribute[b].number !== null) {
 								$(inputNum).val(nowFilter[a].attribute[b].number);
 							}
-							if (optItem.figure.number > 1) {
-								var req = $("<span>").text("*").css({
-									"color" : "#FF0000"
-								});
-								$(numCol1).prepend(req);
-							} else if (optItem.figure.number === 0) {
+							if (!optItem.figure.number) {
 								$(inputNum).prop("disabled", true);
 							}
 							var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -9298,12 +9150,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							if (nowFilter[a].attribute[b].condition !== undefined && nowFilter[a].attribute[b].condition !== null) {
 								$(codeSelect).val(nowFilter[a].attribute[b].condition);
 							}
-							if (optItem.figure.condition > 1) {
-								var req = $("<span>").text("*").css({
-									"color" : "#FF0000"
-								});
-								$(codeCol1).prepend(req);
-							} else if (optItem.figure.condition === 0) {
+							if (!optItem.figure.condition) {
 								$(codeSelect).prop("disabled", true);
 							}
 							var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
@@ -9317,12 +9164,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							if (nowFilter[a].attribute[b].interval !== undefined && nowFilter[a].attribute[b].interval !== null) {
 								$(inputNum).val(nowFilter[a].attribute[b].interval);
 							}
-							if (optItem.figure.interval > 1) {
-								var req = $("<span>").text("*").css({
-									"color" : "#FF0000"
-								});
-								$(numCol1).prepend(req);
-							} else if (optItem.figure.interval === 0) {
+							if (!optItem.figure.interval) {
 								$(inputNum).prop("disabled", true);
 							}
 							var numCol2 = $("<div>").addClass("col-md-2").append(inputNum);
@@ -9387,12 +9229,6 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
 						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
-						if (this.optItem[this.nowOption.alias][type]["code"] > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(codeCol1).prepend(req);
-						}
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -9449,12 +9285,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						if (nowFilter[a].value !== undefined && nowFilter[a].value !== null) {
 							$(inputNum).val(nowFilter[a].value);
 						}
-						if (optItem.tolerance.value > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(numCol1).prepend(req);
-						} else if (optItem.tolerance.value === 0) {
+						if (!optItem.tolerance.value) {
 							$(inputNum).prop("disabled", true);
 						}
 						var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
@@ -9469,12 +9300,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						if (nowFilter[a].condition !== undefined && nowFilter[a].condition !== null) {
 							$(codeSelect).val(nowFilter[a].condition);
 						}
-						if (optItem.tolerance.condition > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(codeCol1).prepend(req);
-						} else if (optItem.tolerance.condition === 0) {
+						if (!optItem.tolerance.condition) {
 							$(codeSelect).prop("disabled", true);
 						}
 						var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
@@ -9488,12 +9314,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						if (nowFilter[a].interval !== undefined && nowFilter[a].interval !== null) {
 							$(inputNum).val(nowFilter[a].interval);
 						}
-						if (optItem.tolerance.interval > 1) {
-							var req = $("<span>").text("*").css({
-								"color" : "#FF0000"
-							});
-							$(numCol1).prepend(req);
-						} else if (optItem.tolerance.interval === 0) {
+						if (!optItem.tolerance.interval) {
 							$(inputNum).prop("disabled", true);
 						}
 						var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);

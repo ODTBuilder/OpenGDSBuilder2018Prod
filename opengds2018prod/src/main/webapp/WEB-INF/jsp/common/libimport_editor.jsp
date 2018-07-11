@@ -30,7 +30,10 @@
 <%-- 오픈 레이어스3 --%>
 <script src="${pageContext.request.contextPath}/resources/js/ol3/ol-debug.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/ol3/ol.css">
-
+<%-- jsTree geoserver--%>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsTree/jstree.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/jsTree/themes/default/style.css" />
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
@@ -39,5 +42,9 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
 <!-- gb modal base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
+<!-- gb panel  base -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
 <!-- gb basemap -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
+<!-- gb geoserver -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>

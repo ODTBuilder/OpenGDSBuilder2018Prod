@@ -165,6 +165,11 @@ html {
 			gbBaseMap.open();
 		});
 
+		var gtree = new gb.tree.GeoServer({
+			"append" : $(".builderLayerGeoServerPanel")[0],
+			"map" : gbMap.getUpperMap()
+		});
+
 		var gitrnd = {
 			resize : function() {
 				//현재 보이는 브라우저 내부 영역의 높이

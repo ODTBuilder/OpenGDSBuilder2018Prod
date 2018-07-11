@@ -1074,8 +1074,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
  * @memberof gb.tree
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
- * @param {String}
- *            obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class
+ * @param {String |
+ *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
+ * @param {ol.Map}
+ *            obj.map - 편집 영역을 담당하는 ol.Map
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
@@ -1148,6 +1150,8 @@ gb.tree.GeoServer = function(obj) {
 	}).append(this.panelHead).append(this.panelBody);
 	if (typeof options.append === "string") {
 		$(options.append).append(this.panel);
+	} else if ($(options.append).is("div")) {
+		$(options.append).append(this.panel);
 	}
 
 	$(document).ready(function() {
@@ -1175,18 +1179,18 @@ gb.tree.GeoServer = function(obj) {
 					}
 				},
 				"geoserver" : {
-					"map" : map,
+					"map" : options.map instanceof ol.Map ? options.map : undefined,
 					"user" : "admin",
-					"layerInfo" : layerInfo,
+					"layerInfo" : undefined,
 					"layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
 					"groupLayerInfoURL" : "geoserver/getGeoGroupLayerInfoList.ajax",
 					"WMSLayerURL" : "http://175.116.181.42:9990/geoserver/wms",
-					"createLayer" : createLayer,
-					"deleteGroupLayer" : deleteGroupLayer,
-					"deleteLayer" : deleteLayer,
+					"createLayer" : undefined,
+					"deleteGroupLayer" : undefined,
+					"deleteLayer" : undefined,
 					"downloadNGIDXF" : "fileExport/fileExport.ajax",
 					"downloadGeoserver" : "geoserver/downloadRequest.do",
-					"clientRefer" : $('#builderClientLayer').jstreeol3(true)
+					"clientRefer" : undefined
 				},
 				"search" : {
 					show_only_matches : true

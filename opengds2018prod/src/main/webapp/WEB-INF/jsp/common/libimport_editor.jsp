@@ -37,6 +37,18 @@
 <%-- jsTree geoserver plugin--%>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geoserver.js"></script>
+<%-- jsTree openlayers3--%>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/themes/default/style.css" />
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree-visibility.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree-layerproperties.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree-legends.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree-functionmarker.js"></script>
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
@@ -49,7 +61,9 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
 <!-- gb basemap -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
-<!-- gb geoserver -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
 <!-- gb.crs.BaseCRS -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>
+<!-- gb geoserver -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
+<!-- gb openlayers -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/tree/openlayers.js"></script>

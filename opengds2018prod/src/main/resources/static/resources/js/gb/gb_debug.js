@@ -28,3 +28,9 @@ if (!gb.edit)
  */
 if (!gb.crs)
 	gb.crs = {};
+/**
+ * @namespace {Object} gb.tree
+ * @memberof gb
+ */
+if (!gb.tree)
+	gb.tree = {};

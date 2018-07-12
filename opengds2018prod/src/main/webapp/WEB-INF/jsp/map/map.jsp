@@ -68,6 +68,7 @@ html {
 	border-radius: 0;
 	position: relative;
 	height: 30px;
+	padding: 0 8px;
 }
 
 .builderLayerGeoServerPanel {
@@ -91,6 +92,10 @@ html {
 .builderHeader .navbar-nav>li>a {
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.gb-footer-span {
+	margin-right: 15px;
 }
 </style>
 </head>
@@ -132,7 +137,8 @@ html {
 	<div class="builderContent">
 		<div class="builderLayer">
 			<div class="builderLayerGeoServerPanel"></div>
-			<div class="panel panel-default builderLayerClientPanel">
+			<div class="builderLayerClientPanel"></div>
+			<!-- <div class="panel panel-default builderLayerClientPanel">
 				<div class="panel-heading">
 					<h3 class="panel-title" style="display: inline-block;">Layer</h3>
 					<button id="crefresh" class="pull-right gitbuilder-clearbtn">
@@ -143,22 +149,27 @@ html {
 					<input type="text" class="form-control builder-tree-search" id="inputSearchClient" />
 					<div id="builderClientLayer" class="gitbuilder-layer-panel"></div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="text-muted">OpenGDS Builder/Validator</span> <span class="text-muted"><a href="#" class="epsg-now"></a></span>
+		<span class="gb-footer-span"><i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>123123,
+				123123</span></span><span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1
+				: 5000</span></span> <span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
+			class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
-		// 		var projection = ol.proj.get('EPSG:3857');
-
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0]
 		});
 
 		var gbBaseMap = new gb.style.BaseMap({
 			"map" : gbMap.getLowerMap()
+		});
+
+		$("#changeBase").click(function() {
+			gbBaseMap.open();
 		});
 
 		var crs = new gb.crs.BaseCRS({
@@ -173,12 +184,13 @@ html {
 			crs.open();
 		});
 
-		$("#changeBase").click(function() {
-			gbBaseMap.open();
-		});
-
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
+			"map" : gbMap.getUpperMap()
+		});
+
+		var otree = new gb.tree.OpenLayers({
+			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap()
 		});
 
@@ -216,7 +228,7 @@ html {
 				// 				41은 패널 헤더의 높이
 				var treeHeight = listHeight - (41);
 				var searchHeight = $(".builder-tree-search").outerHeight();
-				$(".gitbuilder-layer-panel").outerHeight(treeHeight - searchHeight);
+				// 				$(".gitbuilder-layer-panel").outerHeight(treeHeight - searchHeight);
 				$(".builderLayerGeoServerPanel").outerHeight(listHeight);
 				$(".builderLayerClientPanel").outerHeight(listHeight);
 			}

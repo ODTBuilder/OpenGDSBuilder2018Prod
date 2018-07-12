@@ -144,7 +144,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 		return response.json();
 	}).then(function(json) {
 		if (json.number_result !== 1) {
-			$(that.getMessage()).text("Error: Couldn't find EPSG Code. [EPSG:" + that.getEPSGCode() + "]");
+			$(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:" + that.getEPSGCode());
 			that.close();
 			console.error("no crs");
 			return;
@@ -206,7 +206,7 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 	}
 	this.setEPSGCode(code);
 	var newProjCode = 'EPSG:' + code;
-	$(this.getMessage()).text("[" + newProjCode + "]");
+	$(this.getMessage()).text(newProjCode);
 	proj4.defs(newProjCode, proj4def);
 	var newProj = ol.proj.get(newProjCode);
 	var fromLonLat = ol.proj.getTransform('EPSG:4326', newProj);

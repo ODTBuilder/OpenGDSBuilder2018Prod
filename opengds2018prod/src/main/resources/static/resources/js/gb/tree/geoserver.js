@@ -19,11 +19,6 @@
  * @version 0.01
  * 
  */
-var gb;
-if (!gb)
-	gb = {};
-if (!gb.tree)
-	gb.tree = {};
 gb.tree.GeoServer = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
@@ -41,7 +36,7 @@ gb.tree.GeoServer = function(obj) {
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
 	}).click(function() {
-		that.refreshGeoServer();
+		that.refreshList();
 	});
 	var searchIcon = $("<i>").addClass("fas").addClass("fa-search");
 	this.searchBtn = $("<button>").addClass("gb-button-clear").append(searchIcon).css({
@@ -1049,10 +1044,10 @@ gb.tree.GeoServer.prototype.deleteGeoServer = function() {
 /**
  * GeoServer 목록을 새로고침한다.
  * 
- * @method gb.tree.GeoServer#refreshGeoServer
+ * @method gb.tree.GeoServer#refreshList
  */
-gb.tree.GeoServer.prototype.refreshGeoServer = function() {
-	console.log("refresh geoserver");
+gb.tree.GeoServer.prototype.refreshList = function() {
+	console.log("refresh list");
 	this.getJSTree().refresh();
 };
 /**

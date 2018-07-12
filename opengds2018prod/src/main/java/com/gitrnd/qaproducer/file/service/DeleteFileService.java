@@ -13,9 +13,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.filestatus.service.FileStatusService;
-import com.gitrnd.qaproducer.security.LoginUser;
 
 
 @Service

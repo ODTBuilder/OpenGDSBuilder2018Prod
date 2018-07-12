@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.qaproducer.common.worker.Producer;
 import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.filestatus.service.FileStatusService;
 import com.gitrnd.qaproducer.preset.domain.Preset;
@@ -15,7 +16,6 @@ import com.gitrnd.qaproducer.qa.service.QACategoryService;
 import com.gitrnd.qaproducer.qa.service.QAProgressService;
 import com.gitrnd.qaproducer.user.domain.User;
 import com.gitrnd.qaproducer.user.service.UserService;
-import com.gitrnd.qaproducer.worker.Producer;
 
 @Service
 public class RequestService {

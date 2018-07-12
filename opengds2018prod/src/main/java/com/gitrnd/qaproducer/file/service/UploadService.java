@@ -20,9 +20,9 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.filestatus.service.FileStatusService;
-import com.gitrnd.qaproducer.security.LoginUser;
 
 @Service
 @PropertySources({ @PropertySource(value = "classpath:application.yml", ignoreResourceNotFound = true),

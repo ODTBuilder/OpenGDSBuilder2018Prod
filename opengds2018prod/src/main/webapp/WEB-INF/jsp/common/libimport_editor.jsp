@@ -30,10 +30,13 @@
 <%-- 오픈 레이어스3 --%>
 <script src="${pageContext.request.contextPath}/resources/js/ol3/ol-debug.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/ol3/ol.css">
-<%-- jsTree geoserver--%>
+<%-- jsTree--%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsTree/jstree.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/js/jsTree/themes/default/style.css" />
+<%-- jsTree geoserver plugin--%>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geoserver.js"></script>
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->

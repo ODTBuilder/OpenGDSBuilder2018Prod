@@ -1,3 +1,9 @@
+// =================================소이준===================================
+/**
+ * ### Geoserver plugin
+ * 
+ * 레이어에 따라 다른 컨텍스트 메뉴 및 요청을 처리
+ */
 /**
  * stores all defaults for the geoserver plugin
  * 
@@ -78,9 +84,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									'LAYERS' : obj.refer.get_node(data[i].name).children.toString(),
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].bbox.minx.toString() + "," + data[i].bbox.miny.toString() + ","
 											+ data[i].bbox.maxx.toString() + "," + data[i].bbox.maxy.toString()
 								},
@@ -107,23 +113,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							case "POINT":
 								geom = "Point";
 								break;
-							case "MULTIPOINT":
-								geom = "MultiPoint";
-								break;
 							case "INSERT":
 								geom = "Point";
 								break;
 							case "POLYGON":
 								geom = "Polygon";
 								break;
-							case "MULTIPOLYGON":
-								geom = "MultiPolygon";
-								break;
 							case "LINESTRING":
 								geom = "LineString";
-								break;
-							case "MULTILINESTRING":
-								geom = "MultiLineString";
 								break;
 							case "TEXT":
 								geom = "Point";
@@ -221,9 +218,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									// ":" + data[i].name,
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].bbox.minx.toString() + "," + data[i].bbox.miny.toString() + ","
 											+ data[i].bbox.maxx.toString() + "," + data[i].bbox.maxy.toString()
 								},
@@ -251,23 +248,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							case "POINT":
 								geom = "Point";
 								break;
-							case "MULTIPOINT":
-								geom = "MultiPoint";
-								break;
 							case "INSERT":
 								geom = "Point";
 								break;
 							case "POLYGON":
 								geom = "Polygon";
 								break;
-							case "MULTIPOLYGON":
-								geom = "MultiPolygon";
-								break;
 							case "LINESTRING":
 								geom = "LineString";
-								break;
-							case "MULTILINESTRING":
-								geom = "MultiLineString";
 								break;
 							case "TEXT":
 								geom = "Point";
@@ -422,9 +410,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									// ":" + data[i].name,
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].bbox.minx.toString() + "," + data[i].bbox.miny.toString() + ","
 											+ data[i].bbox.maxx.toString() + "," + data[i].bbox.maxy.toString()
 								},
@@ -478,9 +466,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											'LAYERS' : data2[i].lName,
 											'TILED' : true,
 											'FORMAT' : 'image/png8',
-											'VERSION' : '1.1.0',
-											'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-											'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+											'VERSION' : '1.0.0',
+											'CRS' : 'EPSG:5186',
+											'SRS' : 'EPSG:5186',
 											'BBOX' : data2[i].nbBox.minx.toString() + "," + data2[i].nbBox.miny.toString() + ","
 													+ data2[i].nbBox.maxx.toString() + "," + data2[i].nbBox.maxy.toString()
 										},
@@ -615,9 +603,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									'LAYERS' : data[i].lName,
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString()
 								},
@@ -630,9 +618,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							"editable" : true,
 							"attribute" : data[i].attInfo
 						}
-						// wms.set("name",
-						// obj.refer.get_node(data[i].lName).text);
-						wms.set("name", data[i].lName);
+						wms.set("name", obj.refer.get_node(data[i].lName).text);
 						wms.set("id", data[i].lName);
 						console.log(wms.get("id"));
 						// wms.set("type", "ImageTile");
@@ -729,9 +715,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									// ":" + data[i].name,
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].bbox.minx.toString() + "," + data[i].bbox.miny.toString() + ","
 											+ data[i].bbox.maxx.toString() + "," + data[i].bbox.maxy.toString()
 								},
@@ -786,9 +772,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 												'LAYERS' : data2[i].lName,
 												'TILED' : true,
 												'FORMAT' : 'image/png8',
-												'VERSION' : '1.1.0',
-												'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-												'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+												'VERSION' : '1.0.0',
+												'CRS' : 'EPSG:5186',
+												'SRS' : 'EPSG:5186',
 												'BBOX' : data2[i].nbBox.minx.toString() + "," + data2[i].nbBox.miny.toString() + ","
 														+ data2[i].nbBox.maxx.toString() + "," + data2[i].nbBox.maxy.toString()
 											},
@@ -929,9 +915,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									// ":" + data[i].name,
 									'TILED' : true,
 									'FORMAT' : 'image/png8',
-									'VERSION' : '1.1.0',
-									'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-									'SRS' : that._data.geoserver.map.getView().getProjection().getCode(),
+									'VERSION' : '1.0.0',
+									'CRS' : 'EPSG:5186',
+									'SRS' : 'EPSG:5186',
 									'BBOX' : data[i].bbox.minx.toString() + "," + data[i].bbox.miny.toString() + ","
 											+ data[i].bbox.maxx.toString() + "," + data[i].bbox.maxy.toString()
 								},
@@ -970,3 +956,4 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 };
 // $.jstree.defaults.plugins.push("geoserver");
+// =================================소이준===================================

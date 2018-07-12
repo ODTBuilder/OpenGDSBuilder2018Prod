@@ -95,14 +95,22 @@ gb.tree.OpenLayers = function(obj) {
 	$(document).ready(function() {
 		var parentHeight = $(that.panel).parent().innerHeight();
 		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
-		var bodyHeight = parentHeight - 40;
+		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
 	});
 	$(window).resize(function() {
 		var parentHeight = $(that.panel).parent().innerHeight();
-		var bodyHeight = parentHeight - 40;
+		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
 	});
+	setTimeout(function() {
+		var parentHeight = $(that.panel).parent().innerHeight();
+		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+		var bodyHeight = parentHeight - headHeight;
+		$(that.panelBody).outerHeight(bodyHeight);
+	}, 3000);
+
 	$(this.panelBody).jstreeol3({
 		"core" : {
 			"map" : options.map ? options.map : undefined,
@@ -188,12 +196,12 @@ gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
 /**
  * GeoServer 삭제 확인창을 연다.
  * 
- * @method gb.tree.OpenLayers#openDeleteGeoServer
+ * @method gb.tree.OpenLayers#openDeleteLayer
  */
 gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 	console.log("open delete geoserver");
 	var msg1 = $("<div>").text("Are you sure to delete this server?");
-	var msg2 = $("<div>").text('"' + geoserver + '"');
+	var msg2 = $("<div>").text('"' + layer + '"');
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"

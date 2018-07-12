@@ -87,14 +87,23 @@ gb.tree.GeoServer = function(obj) {
 
 	$(document).ready(function() {
 		var parentHeight = $(that.panel).parent().innerHeight();
-		var bodyHeight = parentHeight - 40;
+		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
 	});
 	$(window).resize(function() {
 		var parentHeight = $(that.panel).parent().innerHeight();
-		var bodyHeight = parentHeight - 40;
+		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
 	});
+	setTimeout(function() {
+		var parentHeight = $(that.panel).parent().innerHeight();
+		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+		var bodyHeight = parentHeight - headHeight;
+		$(that.panelBody).outerHeight(bodyHeight);
+	}, 3000);
+
 	$(this.panelBody).jstree(
 			{
 				"core" : {

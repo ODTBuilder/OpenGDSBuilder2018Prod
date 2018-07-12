@@ -1,4 +1,9 @@
 /**
+ * 지오서버 커스텀 플러그인 로드 필요
+ * @external "jsTree-geoserver plugin"
+ */
+
+/**
  * 지오서버 레이어 목록을 표시한다.
  * 
  * @class gb.tree.GeoServer
@@ -859,7 +864,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"vertical-align" : "middle"
 	});
 	var gNameInput = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : "EX) Geoserver"
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -882,7 +888,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"vertical-align" : "middle"
 	});
 	var gURLInput = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : "EX) http://127.0.0.1:9990/geoserver"
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -905,7 +912,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"vertical-align" : "middle"
 	});
 	var gIDInput = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : "EX) admin"
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -928,7 +936,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"vertical-align" : "middle"
 	});
 	var gPassInput = $("<input>").attr({
-		"type" : "password"
+		"type" : "password",
+		"placeholder" : "EX) geoserver"
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -956,7 +965,9 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 
 	var gBody = $("<div>").append(gNameArea).append(gURLArea).append(gIDArea).append(gPassArea).css({
 		"display" : "table",
-		"padding" : "10px"
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "250px"
 	});
 	var addGeoServerModal = new gb.modal.Base({
 		"title" : "Add GeoServer",

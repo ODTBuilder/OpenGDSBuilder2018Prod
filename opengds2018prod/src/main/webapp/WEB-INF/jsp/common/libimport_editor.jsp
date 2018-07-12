@@ -51,3 +51,5 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
 <!-- gb geoserver -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
+<!-- gb.crs.BaseCRS -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>

@@ -22,3 +22,9 @@ if (!gb.modal)
  */
 if (!gb.edit)
 	gb.edit = {};
+/**
+ * @namespace {Object} gb.crs
+ * @memberof gb
+ */
+if (!gb.crs)
+	gb.crs = {};

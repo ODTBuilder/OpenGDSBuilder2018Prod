@@ -161,6 +161,18 @@ html {
 			"map" : gbMap.getLowerMap()
 		});
 
+		var crs = new gb.crs.BaseCRS({
+			"autoOpen" : false,
+			"title" : "Base CRS",
+			"message" : $(".epsg-now"),
+			"map" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
+			"epsg" : "3857"
+		});
+
+		$(".epsg-now").click(function() {
+			crs.open();
+		});
+
 		$("#changeBase").click(function() {
 			gbBaseMap.open();
 		});

@@ -102,7 +102,7 @@ gb.tree.GeoServer = function(obj) {
 		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
 		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
-	}, 3000);
+	}, 1000);
 
 	$(this.panelBody).jstree(
 			{
@@ -112,11 +112,46 @@ gb.tree.GeoServer = function(obj) {
 					"themes" : {
 						"stripes" : true
 					},
-					'data' : {
-						'url' : function() {
-							return 'geoserver/getGeolayerCollectionTree.ajax?treeType=all';
-						}
-					}
+					'data' : [ {
+						"id" : "geoserver1",
+						"parent" : "#",
+						"text" : "geoserver1",
+						"type" : "geoserver"
+					}, {
+						"id" : "workspace1",
+						"parent" : "geoserver1",
+						"text" : "workspace1",
+						"type" : "workspace"
+					}, {
+						"id" : "datastore1",
+						"parent" : "workspace1",
+						"text" : "datastore1",
+						"type" : "datastore"
+					}, {
+						"id" : "layer1",
+						"parent" : "datastore1",
+						"text" : "layer1",
+						"type" : "polygon"
+					}, {
+						"id" : "layer2",
+						"parent" : "datastore1",
+						"text" : "layer2",
+						"type" : "linestring"
+					}, {
+						"id" : "layer3",
+						"parent" : "datastore1",
+						"text" : "layer3",
+						"type" : "point"
+					}, {
+						"id" : "raster1",
+						"parent" : "datastore1",
+						"text" : "raster1",
+						"type" : "raster"
+					} ]
+				/*
+				 * 'data' : { 'url' : function() { return
+				 * 'geoserver/getGeolayerCollectionTree.ajax?treeType=all'; } }
+				 */
 				},
 				"geoserver" : {
 					"map" : options.map instanceof ol.Map ? options.map : undefined,
@@ -160,59 +195,6 @@ gb.tree.GeoServer = function(obj) {
 												"parent" : inst.get_parent(obj)
 											}
 											inst.import_image(wmsInfo);
-											/*
-											 * if (obj.type === "n_ngi_layer_pt" ||
-											 * obj.type === "n_ngi_layer_ln" ||
-											 * obj.type === "n_ngi_layer_pg" ||
-											 * obj.type === "n_ngi_layer_txt") {
-											 * var arr = inst.get_selected(); if
-											 * (inst.get_node(inst.get_parent(obj)).type
-											 * === "n_ngi_group") { var wmsInfo = {
-											 * "refer" : inst, "arr" : arr,
-											 * "parent" : inst.get_parent(obj) } //
-											 * inst.import_fake_image(wmsInfo);
-											 * inst.import_fake_image_notload(wmsInfo); } }
-											 * else if (obj.type ===
-											 * "n_dxf_layer_arc" || obj.type ===
-											 * "n_dxf_layer_cir" || obj.type ===
-											 * "n_dxf_layer_ins" || obj.type ===
-											 * "n_dxf_layer_lpl" || obj.type ===
-											 * "n_dxf_layer_pl" || obj.type ===
-											 * "n_dxf_layer_txt") { var arr =
-											 * inst.get_selected(); if
-											 * (inst.get_node(inst.get_parent(obj)).type
-											 * === "n_dxf_group") { var wmsInfo = {
-											 * "refer" : inst, "arr" : arr,
-											 * "parent" : inst.get_parent(obj) } //
-											 * inst.import_fake_image(wmsInfo);
-											 * inst.import_fake_image_notload(wmsInfo); } }
-											 * else if (obj.type ===
-											 * "n_shp_layer_pt" || obj.type ===
-											 * "n_shp_layer_ln" || obj.type ===
-											 * "n_shp_layer_pg" || obj.type ===
-											 * "n_shp_layer_mpt" || obj.type ===
-											 * "n_shp_layer_mln" || obj.type ===
-											 * "n_shp_layer_mpg") { var arr =
-											 * inst.get_selected(); if
-											 * (inst.get_node(inst.get_parent(obj)).type
-											 * === "n_shp_group") { var wmsInfo = {
-											 * "refer" : inst, "arr" : arr,
-											 * "parent" : inst.get_parent(obj) } //
-											 * inst.import_fake_image(wmsInfo);
-											 * inst.import_fake_image_notload(wmsInfo); } }
-											 * else if (obj.type ===
-											 * "n_ngi_group" || obj.type ===
-											 * "n_dxf_group" || obj.type ===
-											 * "n_shp_group") { var arr =
-											 * inst.get_selected(); // var arr2 =
-											 * []; // for (var i = 0; i <
-											 * arr.length; // i++) { //
-											 * arr2.push(inst.get_node(arr[i]).id); // }
-											 * var obj = { "refer" : inst, "arr" :
-											 * arr }; //
-											 * inst.import_fake_group(obj);
-											 * inst.import_fake_group_notload(obj); }
-											 */
 										}
 									},
 									"wfs" : {
@@ -581,6 +563,26 @@ gb.tree.GeoServer = function(obj) {
 									}
 								}
 							},
+							"upload" : {
+								"separator_before" : false,
+								"icon" : "fas fa-upload",
+								"separator_after" : false,
+								"_disabled" : false, // (this.check("rename_node",
+								// data.reference,
+								// this.get_parent(data.reference),
+								// "")),
+								"label" : "Upload",
+								/*
+								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
+								 * "icon" : "glyphicon glyphicon-leaf",
+								 */
+								"action" : function(data) {
+									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									if (obj.type === "default") {
+										that.openDeleteGeoServer(obj.id);
+									}
+								}
+							},
 							"delete" : {
 								"separator_before" : false,
 								"icon" : "fa fa-trash",
@@ -599,136 +601,6 @@ gb.tree.GeoServer = function(obj) {
 									if (obj.type === "default") {
 										that.openDeleteGeoServer(obj.id);
 									}
-									/*
-									 * var getPosition = function(str,
-									 * subString, index) { return
-									 * str.split(subString,
-									 * index).join(subString).length; } var arr =
-									 * inst.get_selected(); var
-									 * sameGroupParentDXF = {}; var
-									 * sameGroupParentNGI = {}; var
-									 * sameGroupParentSHP = {}; var sameParent =
-									 * []; var editingtCheck = []; for (var i =
-									 * 0; i < arr.length; i++) { var node =
-									 * inst.get_node(arr[i]); var parent =
-									 * inst.get_node(node.parent); if
-									 * (parent.type === "n_ngi_group") { if
-									 * (!sameGroupParentNGI.hasOwnProperty(parent.id)) {
-									 * sameGroupParentNGI[parent.id] = {}; }
-									 * sameGroupParentNGI[parent.id][node.id] =
-									 * node; editingtCheck.push(node.id); } else
-									 * if (parent.type === "n_dxf_group") { if
-									 * (!sameGroupParentDXF.hasOwnProperty(parent.id)) {
-									 * sameGroupParentDXF[parent.id] = {}; }
-									 * sameGroupParentDXF[parent.id][node.id] =
-									 * node; editingtCheck.push(node.id); } else
-									 * if (parent.type === "n_shp_group") { if
-									 * (!sameGroupParentSHP.hasOwnProperty(parent.id)) {
-									 * sameGroupParentSHP[parent.id] = {}; }
-									 * sameGroupParentSHP[parent.id][node.id] =
-									 * node; editingtCheck.push(node.id); } else
-									 * if (parent.type === "n_ngi") { var
-									 * children = node.children; editingtCheck =
-									 * children.concat(children); var substr =
-									 * []; for (var i = 0; i < children.length;
-									 * i++) { var position =
-									 * getPosition(children[i], "_", 3);
-									 * substr.push(node.children[i].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("ngi",
-									 * node.text, "all", substr); } else if
-									 * (parent.type === "n_dxf") { var children =
-									 * node.children; editingtCheck =
-									 * children.concat(children); var substr =
-									 * []; for (var i = 0; i < children.length;
-									 * i++) { var position =
-									 * getPosition(children[i], "_", 3);
-									 * substr.push(node.children[i].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("dxf",
-									 * node.text, "all", substr); } else if
-									 * (parent.type === "n_shp") { var children =
-									 * node.children; editingtCheck =
-									 * children.concat(children); var substr =
-									 * []; for (var i = 0; i < children.length;
-									 * i++) { var position =
-									 * getPosition(children[i], "_", 3);
-									 * substr.push(node.children[i].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("shp",
-									 * node.text, "all", substr); } // else if
-									 * (parent.type === // "n_shp" || //
-									 * parent.type === "e_ngi" || // parent.type //
-									 * === "e_dxf" // || parent.type ===
-									 * "e_shp") { // sameParent.push(node); // } }
-									 */
-
-									// if (sameParent.length > 0) {
-									// var part = [];
-									// for (var j = 0; j <
-									// sameParent.length; j++) {
-									// part.push(sameParent[j].id);
-									// }
-									// inst._data.geoserver.deleteLayer.addStructure("part",
-									// part);
-									// }
-									/*
-									 * var pkeys =
-									 * Object.keys(sameGroupParentNGI); if
-									 * (pkeys.length > 0) { for (var i = 0; i <
-									 * pkeys.length; i++) { var parent =
-									 * inst.get_node(pkeys[i]); var group = [];
-									 * var ckeys =
-									 * Object.keys(sameGroupParentNGI[pkeys[i]]);
-									 * for (var j = 0; j < ckeys.length; j++) {
-									 * var position = getPosition(ckeys[j], "_",
-									 * 3);
-									 * group.push(ckeys[j].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("ngi",
-									 * parent.text, Object
-									 * .keys(sameGroupParentNGI[pkeys[i]]).length
-									 * === parent.children.length ? "all" :
-									 * "part", group); } } pkeys =
-									 * Object.keys(sameGroupParentDXF); if
-									 * (pkeys.length > 0) { for (var i = 0; i <
-									 * pkeys.length; i++) { var parent =
-									 * inst.get_node(pkeys[i]); var group = [];
-									 * var ckeys =
-									 * Object.keys(sameGroupParentDXF[pkeys[i]]);
-									 * for (var j = 0; j < ckeys.length; j++) {
-									 * var position = getPosition(ckeys[j], "_",
-									 * 3);
-									 * group.push(ckeys[j].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("dxf",
-									 * parent.text, Object
-									 * .keys(sameGroupParentDXF[pkeys[i]]).length
-									 * === parent.children.length ? "all" :
-									 * "part", group); } } pkeys =
-									 * Object.keys(sameGroupParentSHP); if
-									 * (pkeys.length > 0) { for (var i = 0; i <
-									 * pkeys.length; i++) { var parent =
-									 * inst.get_node(pkeys[i]); var group = [];
-									 * var ckeys =
-									 * Object.keys(sameGroupParentSHP[pkeys[i]]);
-									 * for (var j = 0; j < ckeys.length; j++) {
-									 * var position = getPosition(ckeys[j], "_",
-									 * 3);
-									 * group.push(ckeys[j].substring(position +
-									 * 1)); }
-									 * inst._data.geoserver.deleteLayer.addStructure("shp",
-									 * parent.text, Object
-									 * .keys(sameGroupParentSHP[pkeys[i]]).length
-									 * === parent.children.length ? "all" :
-									 * "part", group); } }
-									 * console.log(inst._data.geoserver.deleteLayer.getStructure());
-									 * inst._data.geoserver.deleteLayer.setReference(inst);
-									 * inst._data.geoserver.deleteLayer.setClientReference(inst._data.geoserver.clientRefer);
-									 * var isEditing =
-									 * inst._data.geoserver.deleteLayer.isEditing(editingtCheck);
-									 * inst._data.geoserver.deleteLayer.alert();
-									 */
 								}
 							}
 						};
@@ -766,76 +638,11 @@ gb.tree.GeoServer = function(obj) {
 						"icon" : "fas fa-minus"
 					},
 					"point" : {
-						"icon" : "fas fa-circle"
+						"icon" : "fas fa-circle fa-xs"
 					},
 					"multipoint" : {
 						"icon" : "fas fa-circle"
 					}
-				/*
-				 * "#" : { "valid_children" : [ "default", "normal", "error",
-				 * "generalization" ] }, "default" : { "icon" : "fa fa-file-o",
-				 * "valid_children" : [ "default" ] }, "normal" : { "icon" : "fa
-				 * fa-folder-o", "valid_children" : [ "n_ngi", "n_dxf", "n_shp" ] },
-				 * "n_ngi" : { "icon" : "fa fa-folder-o", "valid_children" : [
-				 * "n_ngi_group" ] }, "n_dxf" : { "icon" : "fa fa-folder-o",
-				 * "valid_children" : [ "n_dxf_group" ] }, "n_shp" : { "icon" :
-				 * "fa fa-folder-o", "valid_children" : [ "n_shp_group" ] },
-				 * "n_ngi_group" : { "icon" : "fa fa-map-o", "valid_children" : [
-				 * "n_ngi_layer_pt", "n_ngi_layer_ln", "n_ngi_layer_pg",
-				 * "n_ngi_layer_mpt", "n_ngi_layer_mln", "n_ngi_layer_mpg",
-				 * "n_ngi_layer_txt" ] }, "n_dxf_group" : { "icon" : "fa
-				 * fa-map-o", "valid_children" : [ "n_dxf_layer_arc",
-				 * "n_dxf_layer_cir", "n_dxf_layer_ins", "n_dxf_layer_lpl",
-				 * "n_dxf_layer_pl", "n_dxf_layer_txt" ] }, "n_shp_group" : {
-				 * "icon" : "fa fa-map-o", "valid_children" : [
-				 * "n_shp_layer_pt", "n_shp_layer_ln", "n_shp_layer_pg",
-				 * "n_shp_layer_mpt", "n_shp_layer_mln", "n_shp_layer_mpg" ] },
-				 * "n_ngi_layer_pt" : { "icon" : "fa fa-circle",
-				 * "valid_children" : [] }, "n_ngi_layer_ln" : { "icon" : "fa
-				 * fa-minus", "valid_children" : [] }, "n_ngi_layer_pg" : {
-				 * "icon" : "fa fa-square", "valid_children" : [] },
-				 * "n_ngi_layer_mpt" : { "icon" : "fa fa-circle",
-				 * "valid_children" : [] }, "n_ngi_layer_mln" : { "icon" : "fa
-				 * fa-minus", "valid_children" : [] }, "n_ngi_layer_mpg" : {
-				 * "icon" : "fa fa-square", "valid_children" : [] },
-				 * "n_ngi_layer_txt" : { "icon" : "fa fa-font", "valid_children" : [] },
-				 * "n_dxf_layer_arc" : { "icon" : "fa fa-circle-o-notch",
-				 * "valid_children" : [] }, "n_dxf_layer_cir" : { "icon" : "fa
-				 * fa-circle-o", "valid_children" : [] }, "n_dxf_layer_ins" : {
-				 * "icon" : "fa fa-map-pin", "valid_children" : [] },
-				 * "n_dxf_layer_lpl" : { "icon" : "fa fa-minus",
-				 * "valid_children" : [] }, "n_dxf_layer_pl" : { "icon" :
-				 * "fa-window-minimize", "valid_children" : [] },
-				 * "n_dxf_layer_txt" : { "icon" : "fa fa-font", "valid_children" : [] },
-				 * "n_shp_layer_pt" : { "icon" : "fa fa-circle",
-				 * "valid_children" : [] }, "n_shp_layer_ln" : { "icon" : "fa
-				 * fa-minus", "valid_children" : [] }, "n_shp_layer_pg" : {
-				 * "icon" : "fa fa-square", "valid_children" : [] },
-				 * "n_shp_layer_mpt" : { "icon" : "fa fa-circle",
-				 * "valid_children" : [] }, "n_shp_layer_mln" : { "icon" : "fa
-				 * fa-minus", "valid_children" : [] }, "n_shp_layer_mpg" : {
-				 * "icon" : "fa fa-square", "valid_children" : [] }, "error" : {
-				 * "icon" : "fa fa-folder-o", "valid_children" : [ "e_ngi",
-				 * "e_dxf", "e_shp" ] }, "e_ngi" : { "icon" : "fa fa-folder-o",
-				 * "valid_children" : [ "e_ngi_layer" ] }, "e_dxf" : { "icon" :
-				 * "fa fa-folder-o", "valid_children" : [ "e_dxf_layer" ] },
-				 * "e_shp" : { "icon" : "fa fa-folder-o", "valid_children" : [
-				 * "e_shp_layer" ] }, "e_ngi_layer" : { "icon" : "fa
-				 * fa-file-image-o", "valid_children" : [] }, "e_dxf_layer" : {
-				 * "icon" : "fa fa-file-image-o", "valid_children" : [] },
-				 * "e_shp_layer" : { "icon" : "fa fa-file-image-o",
-				 * "valid_children" : [] }, "generalization" : { "icon" : "fa
-				 * fa-folder-o", "valid_children" : [ "g_ngi_layer",
-				 * "g_dxf_layer", "g_shp_layer" ] }, "g_ngi" : { "icon" : "fa
-				 * fa-folder-o", "valid_children" : [ "g_ngi_layer" ] }, "g_dxf" : {
-				 * "icon" : "fa fa-folder-o", "valid_children" : [ "g_dxf_layer" ] },
-				 * "g_shp" : { "icon" : "fa fa-folder-o", "valid_children" : [
-				 * "g_shp_layer" ] }, "g_ngi_layer" : { "icon" : "fa
-				 * fa-file-image-o", "valid_children" : [] }, "g_dxf_layer" : {
-				 * "icon" : "fa fa-file-image-o", "valid_children" : [] },
-				 * "g_shp_layer" : { "icon" : "fa fa-file-image-o",
-				 * "valid_children" : [] }
-				 */
 				},
 				"plugins" : [ "contextmenu", "search", "state", "types", "geoserver" ]
 			});

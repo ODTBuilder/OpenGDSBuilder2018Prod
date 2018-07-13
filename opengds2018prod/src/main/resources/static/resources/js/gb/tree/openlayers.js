@@ -109,7 +109,7 @@ gb.tree.OpenLayers = function(obj) {
 		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
 		var bodyHeight = parentHeight - headHeight;
 		$(that.panelBody).outerHeight(bodyHeight);
-	}, 3000);
+	}, 1000);
 
 	$(this.panelBody).jstreeol3({
 		"core" : {

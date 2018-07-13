@@ -37,6 +37,9 @@
 <%-- jsTree geoserver plugin--%>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geoserver.js"></script>
+<%-- jsTree geogig plugin--%>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geogigfunction.js"></script>
 <%-- jsTree openlayers3--%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree.js"></script>
 <link rel="stylesheet" type="text/css"

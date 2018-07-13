@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
-import com.gitrnd.gdsbuilder.geoserver.data.GeoserverLayerCollectionTree.TreeType;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geoserver.service.GeoserverLayerProxyService;
@@ -64,13 +64,20 @@ public class GeoserverController extends AbstractController {
 	@Qualifier("proService")
 	private GeoserverLayerProxyService proService;
 
-	@RequestMapping(value = "/addGeoserver.do")
-	public boolean addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
+	@RequestMapping(value = "/addGeoserver.ajax")
+	public long addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestGeoserverDataOutput(loginUser, request, response);
-		return false;
+		return super.addGeoserverToSession(request, loginUser);
+	}
+	
+	@RequestMapping(value = "/removeGeoserver.ajax")
+	public long removeGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		return super.removeGeoserverToSession(request, loginUser);
 	}
 	
 	@RequestMapping(value = "/downloadRequest.do")
@@ -81,41 +88,46 @@ public class GeoserverController extends AbstractController {
 		proService.requestGeoserverDataOutput(loginUser, request, response);
 	}
 
+	
 	/**
-	 * 트리 형태의 GeoLayerCollection 객체 생성
-	 * 
-	 * @author JY.Kim
-	 * @Date 2017. 4. 7. 오후 5:31:59
-	 * @return JSONObject - 트리 형태의 GeoLayerCollection 객체
-	 */
+	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청 
+	 * @author SG.Lee
+	 * @Date 2018. 7. 13. 오후 5:00:28
+	 * @param request
+	 * @param loginUser
+	 * @param wsName
+	 * @return JSONArray
+	 * */
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value = "/getGeolayerCollectionTree.ajax")
 	@ResponseBody
 	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "treeType", required = false) String type) {
+			@RequestParam(value = "serverName", required = false) String serverName) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-
-		TreeType treeType = null;
-		if (type != null) {
-			if (type.equals(treeType.ALL.getTreeType())) {
-				treeType = TreeType.ALL;
-			} else if (type.equals(treeType.QA10.getTreeType())) {
-				treeType = TreeType.QA10;
-			} else if (type.equals(treeType.QA20.getTreeType())) {
-				treeType = TreeType.QA20;
-			} else if (type.equals(treeType.SHP.getTreeType())) {
-				treeType = TreeType.SHP;
-			} else {
-				return null;
-			}
-		} else
-			return null;
-
-//		JSONArray array = geoserverService.getGeoserverLayerCollectionTree(loginUser, treeType);
-		JSONArray array = null;
-		return array;
+		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
+		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, serverName);
+	}
+	
+	/**
+	 * @Description 트리생성 
+	 * @author SG.Lee
+	 * @Date 2018. 7. 13. 오후 5:00:28
+	 * @param request
+	 * @param loginUser
+	 * @param wsName
+	 * @return JSONArray
+	 * */
+	@SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value = "/getGeolayerCollectionTrees.ajax")
+	@ResponseBody
+	public JSONArray getGeolayerCollectionTrees(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
+		return geoserverService.getGeoserverLayerCollectionTrees(sessionGMList);
 	}
 
 

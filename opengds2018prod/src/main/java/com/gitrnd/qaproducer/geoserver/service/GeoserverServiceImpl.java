@@ -20,7 +20,6 @@ package com.gitrnd.qaproducer.geoserver.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -37,6 +36,8 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.gitrnd.qaproducer.geoserver.data.style.GeoserverSldTextType;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -61,44 +62,11 @@ import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
  */
 @Service("geoService")
 public class GeoserverServiceImpl implements GeoserverService {
-/*	private static final String URL;
-	private static final String ID;
-	private static final String PW;
-	private static DTGeoserverReader dtReader;
-	private static DTGeoserverPublisher dtPublisher;
 
-    private final String workspace;
-
-	static {
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		 StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
-		 encryptor.setPassword("gitrnd");
-//		Properties properties = new Properties();
-		 Properties properties = new EncryptableProperties(encryptor);
-		try {
-			properties.load(classLoader.getResourceAsStream("geoserver.properties"));
-			
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		URL = properties.getProperty("url");
-		ID = properties.getProperty("id");
-		PW = properties.getProperty("pw");
-		try {
-			dtReader = new DTGeoserverReader(URL, ID, PW);
-			dtPublisher = new DTGeoserverPublisher(URL, ID, PW);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-	
 	
 	private DTGeoserverReader dtReader;
 	private DTGeoserverPublisher dtPublisher;
-	
-	
+
 	/**
 	 *
 	 * @author SG.Lee
@@ -116,7 +84,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}else{
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
 		
 		String fileName = layerInfo.getFileName();
 		List<String> layerNameList = layerInfo.getLayerNames();
@@ -470,18 +437,54 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	/**
-	 * @since 2018. 7. 5.
+	 * @since 2018. 7. 13.
 	 * @author SG.Lee
 	 * @param dtGeoManagers
+	 * @param serverName
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(java.util.Map)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList, java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getGeoserverLayerCollectionTree(Map<String,DTGeoserverManager> dtGeoManagers) {
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String serverName) {
+		JSONArray jsonArray = new JSONArray();
+		try {
+			DTGeoserverManager dtGeoManager = dtGeoManagers.get(serverName);
+			jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoManager.getReader());
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			JSONObject errorJSON = new JSONObject();
+			errorJSON.put("id", 500);
+			errorJSON.put("parent", "#");
+			errorJSON.put("text", "Geoserver를 추가해주세요");
+			errorJSON.put("type", "error");
+			jsonArray.add(errorJSON);
+		}
+		return jsonArray;
+	}
+	
+	/**
+	 * @since 2018. 7. 13.
+	 * @author SG.Lee
+	 * @param dtGeoserverMList
+	 * @return
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList)
+	 */
+	@SuppressWarnings("unchecked")
+	public JSONArray getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverMList){
+		JSONArray jsonArray = new JSONArray();
 		
-		/*GeoserverLayerCollectionTree collectionTree = dtReader.getGeoserverLayerCollectionTree(userVO.getId(),
-				treeType);*/
-		return null;
+		if(dtGeoserverMList!=null){
+			jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverMList);
+		}else{
+			JSONObject errorJSON = new JSONObject();
+			errorJSON.put("id", 500);
+			errorJSON.put("parent", "#");
+			errorJSON.put("text", "Geoserver를 다시 추가해주세요");
+			errorJSON.put("type", "error");
+			jsonArray.add(errorJSON);
+		}
+		return jsonArray;
 	}
 
 	/**

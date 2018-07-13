@@ -16,7 +16,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Ping;
  * @author GIT
  *
  */
-@Service
+@Service("reposService")
 public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 
 	/*

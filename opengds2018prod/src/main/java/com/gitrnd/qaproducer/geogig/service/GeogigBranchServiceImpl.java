@@ -15,7 +15,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
  * @author GIT
  *
  */
-@Service
+@Service("branchService")
 public class GeogigBranchServiceImpl implements GeogigBranchService {
 
 	/*

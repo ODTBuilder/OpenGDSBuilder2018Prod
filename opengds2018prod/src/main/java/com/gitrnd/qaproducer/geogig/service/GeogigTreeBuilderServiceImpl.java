@@ -14,7 +14,7 @@ import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
  * @author GIT
  *
  */
-@Service
+@Service("treeService")
 public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 
 	/*

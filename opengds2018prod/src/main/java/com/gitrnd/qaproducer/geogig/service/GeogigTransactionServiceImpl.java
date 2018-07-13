@@ -13,7 +13,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
  * @author GIT
  *
  */
-@Service
+@Service("transactionService")
 public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 
 	/*

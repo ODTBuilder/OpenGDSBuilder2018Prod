@@ -5,6 +5,7 @@ package com.gitrnd.qaproducer.geogig.controller;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,7 @@ import com.gitrnd.qaproducer.geogig.service.GeogigTransactionService;
 public class GeogigTransactionController {
 
 	@Autowired
+	@Qualifier("transactionService")
 	GeogigTransactionService transactionService;
 
 	@RequestMapping(value = "/beginTransaction.do", method = RequestMethod.POST)

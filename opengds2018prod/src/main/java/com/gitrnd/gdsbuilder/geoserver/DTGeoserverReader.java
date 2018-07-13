@@ -53,8 +53,10 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
-import com.gitrnd.gdsbuilder.geoserver.data.GeoserverLayerCollectionTree;
-import com.gitrnd.gdsbuilder.geoserver.data.GeoserverLayerCollectionTree.TreeType;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
+import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
+import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.HTTPUtils;
@@ -154,14 +156,18 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return groupLayerList;
 	};
 	
-	public GeoserverLayerCollectionTree getGeoserverLayerCollectionTree(String workspace, TreeType treeType){
-		if(workspace ==null || workspace.isEmpty()){
+	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverReader dtGeoserverReader){
+		if(dtGeoserverReader ==null){
 			throw new IllegalArgumentException("Workspace may not be null");
 		}
-		RESTFeatureTypeList typeList = super.getFeatureTypes(workspace);
-		GeoserverLayerCollectionTree collectionTree = null;
-		collectionTree = new GeoserverLayerCollectionTree(typeList,treeType);
-		return collectionTree;
+		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverReader);
+	}
+	
+	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList){
+		if(dtGeoserverList ==null){
+			throw new IllegalArgumentException("DTGeoserverList may not be null");
+		}
+		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverList);
 	}
 	
 	public List<String> getGeoserverContainNames(String workspace,String name){
@@ -179,6 +185,15 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		}
 		return containNames;
 	}
+	
+	
+    public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
+        String url = "/rest/workspaces/" + workspace + "/datastores/"+datastores+"/featuretypes.xml";
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("### Retrieving featuretypes from " + url);
+        }
+        return RESTFeatureTypeList.build(load(url));
+    }
 	
     private String load(String url) {
         LOGGER.info("Loading from REST path " + url);

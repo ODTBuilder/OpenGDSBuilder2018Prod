@@ -20,7 +20,6 @@ package com.gitrnd.qaproducer.geoserver.service;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -29,6 +28,7 @@ import com.gitrnd.gdsbuilder.fileread.FileMeta;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 
 
@@ -73,15 +73,24 @@ public interface GeoserverService {
 	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String wsName, String dsName, GeoLayerInfo layerInfo);
 	
 	/**
-	 * 검토해야함
-	 * 
-	 * 
-	 * Tree 형태의 GeoaerverLayerCollection JSONObject 객체
-	 * @author JY.Kim
-	 * @Date 2017. 4. 10. 오후 3:17:23
-	 * @return JSONObject - Tree 형태의 GeoaerverLayerCollection JSONObject 객체 반환
+	 * @Description Workspace 조건에 따른 Workspace단위 트리생성
+	 * @author SG.Lee
+	 * @Date 2018. 7. 13. 오후 4:48:25
+	 * @param dtGeoManagers
+	 * @param serverName 서버명
+	 * @return JSONArray
 	 * */
-	public JSONArray getGeoserverLayerCollectionTree(Map<String,DTGeoserverManager> dtGeoManagers);
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String serverName);
+	
+	/**
+	 * @Description 전체 트리생성 
+	 * @author SG.Lee
+	 * @Date 2018. 7. 13. 오후 4:58:43
+	 * @param dtGeoserverMList
+	 * @return JSONArray
+	 * */
+	public JSONArray getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverMList);
+	
 	
 	/**
 	 * 레이어를 중복체크한다.

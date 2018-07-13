@@ -20,7 +20,6 @@ package com.gitrnd.qaproducer.controller;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.factory.DTGeoserverFactory;
 import com.gitrnd.gdsbuilder.geoserver.factory.impl.DTGeoserverFactoryImpl;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -121,7 +121,6 @@ public class AbstractController {
 		String id="";
 		String pw="";
 		
-		
 		//사용자 로그인 세션체크
 		LoginUser user = loginUser;
 		if(user==null){
@@ -129,7 +128,7 @@ public class AbstractController {
 		}
 		
 		//input 파라미터 체크
-		int flagNum = 0;
+		int flagNum = 4;
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
@@ -150,20 +149,16 @@ public class AbstractController {
 			}
 		}
 		
-		
-		Map<String, DTGeoserverManager> dtGeoManagers = (Map<String, DTGeoserverManager>) this.getSession(request, "geoserver");
+		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
 		if(dtGeoManagers==null){
 			return 603;
 		}
 		
 		
 		//서버이름 중복체크
-		Iterator<String> keys = dtGeoManagers.keySet().iterator();
-        while( keys.hasNext() ){
-            String key = keys.next();
-            if(serverName.equals(key)){
-            	return 602;
-            }
+		
+        if(dtGeoManagers.duplicateCheck(serverName)){
+        	return 602;
         }
 		
 		//Geoserver 체크
@@ -195,7 +190,7 @@ public class AbstractController {
 	 *         603 : Geoserver 세션없음
 	 *         605 : 서버이름존재 X 
 	 * */
-	public long deleteGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
+	public long removeGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
 		String serverName = "";
 		
 		
@@ -217,7 +212,7 @@ public class AbstractController {
 			} 
 		}
 		
-		Map<String, DTGeoserverManager> dtGeoManagers = (Map<String, DTGeoserverManager>) this.getSession(request, "geoserver");
+		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
 		if(dtGeoManagers==null){
 			return 603;
 		}
@@ -272,7 +267,7 @@ public class AbstractController {
 			} 
 		}
 		
-		Map<String, DTGeoserverManager> dtGeoManagers = (Map<String, DTGeoserverManager>) this.getSession(request, "geoserver");
+		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
 		if(dtGeoManagers==null){
 			LOGGER.error("Geoserver 세션 존재 X");
 			return null;
@@ -294,5 +289,31 @@ public class AbstractController {
 	        }
 		}
 		return dtGeoserverManager;
+	}
+	
+	/**
+	 *
+	 * @author SG.Lee
+	 * @Date 2018. 7. 6. 오후 5:36:50
+	 * @param request
+	 * @return DTGeoserverManager
+	 * */
+	public DTGeoserverManagerList getGeoserverManagersToSession(HttpServletRequest request, LoginUser loginUser){
+		DTGeoserverManagerList dtGeoserverManagers = null;
+		
+		//사용자 로그인 세션체크
+		LoginUser user = loginUser;
+		if(user==null){
+			LOGGER.error("사용자 세션 존재 X");
+			return null;
+		}
+		
+		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
+		if(dtGeoManagers==null){
+			LOGGER.error("Geoserver 세션 존재 X");
+			return null;
+		}
+		
+		return dtGeoserverManagers;
 	}
 }

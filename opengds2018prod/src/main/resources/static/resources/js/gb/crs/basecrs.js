@@ -145,8 +145,13 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 	}).then(function(json) {
 		if (json.number_result !== 1) {
 			$(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:" + that.getEPSGCode());
-			that.close();
 			console.error("no crs");
+			that.close();
+			return;
+		} else if (json.number_result < 1) {
+			$(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:" + that.getEPSGCode());
+			console.error("no crs");
+			that.close();
 			return;
 		}
 		var results = json['results'];
@@ -159,10 +164,16 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 						that.setProjection(code, name, proj4def, bbox);
 						that.close();
 						return;
+					} else {
+						$(that.getMessage()).text("Error: Not support EPSG Code. EPSG:" + that.getEPSGCode());
+						console.error("no crs");
+						that.close();
+						return;
 					}
 				}
 			}
 		}
+		that.close();
 		return;
 	});
 };

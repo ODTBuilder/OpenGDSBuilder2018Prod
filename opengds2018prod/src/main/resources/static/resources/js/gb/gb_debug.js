@@ -34,3 +34,9 @@ if (!gb.crs)
  */
 if (!gb.tree)
 	gb.tree = {};
+/**
+ * @namespace {Object} gb.versioning
+ * @memberof gb
+ */
+if (!gb.versioning)
+	gb.versioning = {};

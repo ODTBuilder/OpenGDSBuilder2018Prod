@@ -63,7 +63,9 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
 <!-- gb.crs.BaseCRS -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>
-<!-- gb geoserver -->
+<!-- gb.tree.geoserver -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
-<!-- gb openlayers -->
+<!-- gb.tree.openlayers -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/openlayers.js"></script>
+<!-- gb.versioning.repository  -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/versioning/repository.js"></script>

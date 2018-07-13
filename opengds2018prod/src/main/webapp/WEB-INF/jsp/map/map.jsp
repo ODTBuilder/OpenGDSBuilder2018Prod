@@ -147,7 +147,15 @@ html {
 	</nav>
 	<script type="text/javascript">
 		var gbMap = new gb.Map({
-			"target" : $(".bind")[0]
+			"target" : $(".bind")[0],
+			"upperMap" : {
+				"controls" : [],
+				"layers" : []
+			},
+			"lowerMap" : {
+				"controls" : [],
+				"layers" : []
+			}
 		});
 
 		var gbBaseMap = new gb.style.BaseMap({

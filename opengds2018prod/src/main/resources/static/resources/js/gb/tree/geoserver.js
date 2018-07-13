@@ -748,7 +748,7 @@ gb.tree.GeoServer = function(obj) {
 					},
 					"datastore" : {
 						"icon" : "fas fa-hdd",
-						"valid_children" : [ "raster", "polygon", "linestring", "point" ]
+						"valid_children" : [ "raster", "polygon", "multipolygon", "linestring", "multilinestring", "point", "multipoint" ]
 					},
 					"raster" : {
 						"icon" : "fas fa-chess-board"
@@ -756,10 +756,19 @@ gb.tree.GeoServer = function(obj) {
 					"polygon" : {
 						"icon" : "fas fa-square-full"
 					},
+					"multipolygon" : {
+						"icon" : "fas fa-square-full"
+					},
 					"linestring" : {
 						"icon" : "fas fa-minus"
 					},
+					"multilinestring" : {
+						"icon" : "fas fa-minus"
+					},
 					"point" : {
+						"icon" : "fas fa-circle"
+					},
+					"multipoint" : {
 						"icon" : "fas fa-circle"
 					}
 				/*

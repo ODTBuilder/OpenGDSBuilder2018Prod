@@ -14,6 +14,14 @@
  *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
  * @param {ol.Map}
  *            obj.map - 편집 영역을 담당하는 ol.Map
+ * @param {Object}
+ *            obj.url - 요청을 처리하기 위한 URL 객체
+ * @param {String}
+ *            obj.url.getTree - 지오서버 트리 구조를 요청하기 위한 URL
+ * @param {String}
+ *            obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
+ * @param {String}
+ *            obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
@@ -22,6 +30,10 @@
 gb.tree.GeoServer = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	var url = options.url ? options.url : undefined;
+	this.getTreeURL = url.getTree ? url.getTree : undefined;
+	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
+	this.deleteGepServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -824,6 +836,23 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 	console.log(url);
 	console.log(id);
 	console.log(password);
+	$.ajax({
+		url : this.getFeature,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+
+		}
+	});
 };
 
 /**
@@ -902,4 +931,52 @@ gb.tree.GeoServer.prototype.closeSearchBar = function() {
 	$(this.searchArea).css({
 		"display" : "none"
 	});
+};
+/**
+ * 지오서버 추가를 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getAddGeoServerURL
+ */
+gb.tree.GeoServer.prototype.getAddGeoServerURL = function() {
+	return this.addGeoServerURL;
+};
+/**
+ * 지오서버 추가를 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setAddGeoServerURL
+ */
+gb.tree.GeoServer.prototype.getAddGeoServerURL = function(url) {
+	this.addGeoServerURL = url;
+};
+/**
+ * 지오서버 삭제를 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getDeleteGepServerURL
+ */
+gb.tree.GeoServer.prototype.getDeleteGepServerURL = function() {
+	return this.deleteGepServerURL;
+};
+/**
+ * 지오서버 삭제를 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setDeleteGepServerURL
+ */
+gb.tree.GeoServer.prototype.setDeleteGepServerURL = function(url) {
+	this.deleteGepServerURL = url;
+};
+/**
+ * 지오서버 트리구조 요청을 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getGetTreeURL
+ */
+gb.tree.GeoServer.prototype.getGetTreeURL = function() {
+	return this.getTreeURL;
+};
+/**
+ * 지오서버 트리구조 요청을 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setGetTreeURL
+ */
+gb.tree.GeoServer.prototype.setGetTreeURL = function(url) {
+	this.getTreeURL = url;
 };

@@ -180,7 +180,12 @@ html {
 
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
-			"map" : gbMap.getUpperMap()
+			"map" : gbMap.getUpperMap(),
+			"url" : {
+				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax",
+				"addGeoServer" : "geoserver/addGeoserver.ajax",
+				"deleteGeoServer" : "geoserver/removeGeoserver.ajax"
+			}
 		});
 
 		var otree = new gb.tree.OpenLayers({

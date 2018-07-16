@@ -13,7 +13,8 @@ $.jstree.defaults.geogigfunction = {
 	"checkout" : "fas fa-check",
 	"unstaged" : "gb-geogig-unstaged",
 	"staged" : "gb-geogig-staged",
-	"unmerged" : "gb-geogig-unmerged"
+	"unmerged" : "gb-geogig-unmerged",
+	"merged" : "gb-geogig-merged"
 };
 
 $.jstree.plugins.geogigfunction = function(options, parent) {
@@ -23,7 +24,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		for (var i = 0; i < optKeys.length; i++) {
 			this._data.geogigfunction[optKeys[i]] = {
 				"list" : [],
-				"icon" : options.geogigfunction[optKeys[i]]
+				"css" : options.geogigfunction[optKeys[i]]
 			};
 		}
 		console.log(this._data.geogigfunction);
@@ -45,7 +46,18 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					}
 				}
 			}
-		}, this)).on('delete_node_layer.jstree', $.proxy(function(e, data) {
+		}, this)).on('delete_node.jstree', $.proxy(function(e, data) {
+			console.log("delete layer");
+			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+			for (var k = 0; k < optKeys.length; k++) {
+				var list = this._data.geogigfunction[optKeys[k]].list;
+				for (var l = 0; l < list.length; l++) {
+					if (list.indexOf(node.id) !== -1) {
+						list.splice(list.indexOf(node.id), 1);
+					}
+				}
+			}
+		}, this)).on('select_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
 			for (var k = 0; k < optKeys.length; k++) {
@@ -62,19 +74,32 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 	};
 	this.redraw_node = function(obj, deep, is_callback, force_render) {
 		obj = parent.redraw_node.apply(this, arguments);
+		console.log(this.get_node(obj.id));
 		if (obj) {
 			var fnmks = Object.keys(this._data.geogigfunction);
 			for (var i = 0; i < fnmks.length; i++) {
 				var nobj = this.get_node(obj.id);
 				if (nobj.state[fnmks[i]]) {
 					if (fnmks[i] === "checkout") {
-
+						var ic = $("<i>").attr({
+							"role" : "presentation"
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(this._data.geogigfunction[fnmks[i]].css);
+						$(obj.childNodes[1]).append(ic);
 					} else if (fnmks[i] === "staged") {
-
+						var ic = $("<span>").text(" [Staged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						$(obj.childNodes[1]).append(ic);
 					} else if (fnmks[i] === "unstaged") {
-
+						var ic = $("<span>").text(" [Unstaged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						$(obj.childNodes[1]).append(ic);
 					} else if (fnmks[i] === "unmerged") {
-
+						var ic = $("<span>").text(" [Unmerged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						$(obj.childNodes[1]).append(ic);
 					}
 					/*
 					 * var ic = $("<i>").attr({ "role" : "presentation"

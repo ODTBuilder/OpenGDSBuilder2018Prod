@@ -45,7 +45,7 @@
  * @date 2018. 07.13
  */
 gb.versioning.Repository = function(obj) {
-	obj.width = 610;
+	obj.width = 730;
 	obj.height = 450;
 	obj.title = "GeoGig";
 	obj.autoOpen = false;
@@ -69,31 +69,303 @@ gb.versioning.Repository = function(obj) {
 				"stripes" : true
 			},
 			'data' : [ {
-				"id" : "geoserver1",
 				"parent" : "#",
-				"text" : "geoserver1",
+				"id" : "geoserver",
+				"text" : "geoserver",
 				"type" : "geoserver"
 			}, {
-				"id" : "repository1",
-				"parent" : "geoserver1",
-				"text" : "repository1",
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test15",
+				"text" : "repository_test15",
 				"type" : "repository"
 			}, {
-				"id" : "branch1",
-				"parent" : "repository1",
+				"parent" : "geoserver/repository_test15",
+				"id" : "geoserver/repository_test15/branch1",
 				"text" : "branch1",
-				"type" : "branch"
+				"type" : "branch",
+				"status" : null
 			}, {
-				"id" : "layer1",
-				"parent" : "branch1",
-				"text" : "layer1",
-				"type" : "polygon"
+				"parent" : "geoserver/repository_test15",
+				"id" : "geoserver/repository_test15/branch2",
+				"text" : "branch2",
+				"type" : "branch",
+				"status" : null
 			}, {
-				"id" : "layer2",
-				"parent" : "branch1",
-				"text" : "layer2",
-				"type" : "linestring"
-			}, ]
+				"parent" : "geoserver/repository_test15",
+				"id" : "geoserver/repository_test15/branch3",
+				"text" : "branch3",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test15",
+				"id" : "geoserver/repository_test15/branch4",
+				"text" : "branch4",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test15",
+				"id" : "geoserver/repository_test15/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : "Merged"
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test3",
+				"text" : "repository_test3",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test3",
+				"id" : "geoserver/repository_test3/branch1",
+				"text" : "branch1",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test3",
+				"id" : "geoserver/repository_test3/branch2",
+				"text" : "branch2",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test3",
+				"id" : "geoserver/repository_test3/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test5",
+				"text" : "repository_test5",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test5",
+				"id" : "geoserver/repository_test5/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test10",
+				"text" : "repository_test10",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test10",
+				"id" : "geoserver/repository_test10/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test6",
+				"text" : "repository_test6",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test6",
+				"id" : "geoserver/repository_test6/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "file",
+				"id" : "geoserver/test",
+				"text" : "test",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/test",
+				"id" : "geoserver/test/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test17",
+				"text" : "repository_test17",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test17",
+				"id" : "geoserver/repository_test17/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/testpostgis",
+				"text" : "testpostgis",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/testpostgis",
+				"id" : "geoserver/testpostgis/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test4",
+				"text" : "repository_test4",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test4",
+				"id" : "geoserver/repository_test4/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_remote",
+				"text" : "repository_remote",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_remote",
+				"id" : "geoserver/repository_remote/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test8",
+				"text" : "repository_test8",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test8",
+				"id" : "geoserver/repository_test8/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test9",
+				"text" : "repository_test9",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test9",
+				"id" : "geoserver/repository_test9/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test",
+				"text" : "repository_test",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test",
+				"id" : "geoserver/repository_test/branch1",
+				"text" : "branch1",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test",
+				"id" : "geoserver/repository_test/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository",
+				"text" : "repository",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository",
+				"id" : "geoserver/repository/branch1",
+				"text" : "branch1",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository",
+				"id" : "geoserver/repository/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test13",
+				"text" : "repository_test13",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test13",
+				"id" : "geoserver/repository_test13/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test14",
+				"text" : "repository_test14",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test14",
+				"id" : "geoserver/repository_test14/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test16",
+				"text" : "repository_test16",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test16",
+				"id" : "geoserver/repository_test16/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver",
+				"repoType" : "postgres",
+				"id" : "geoserver/repository_test7",
+				"text" : "repository_test7",
+				"type" : "repository"
+			}, {
+				"parent" : "geoserver/repository_test7",
+				"id" : "geoserver/repository_test7/branc!!!!!!!",
+				"text" : "branc!!!!!!!",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test7",
+				"id" : "geoserver/repository_test7/branch",
+				"text" : "branch",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test7",
+				"id" : "geoserver/repository_test7/branch1",
+				"text" : "branch1",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test7",
+				"id" : "geoserver/repository_test7/master",
+				"text" : "master",
+				"type" : "branch",
+				"status" : null
+			}, {
+				"parent" : "geoserver/repository_test15/master",
+				"id" : "geoserver/repository_test15/master/raleigh_park_locations_1",
+				"text" : "raleigh_park_locations_1",
+				"type" : "layer"
+			}, {
+				"parent" : "geoserver/repository_test15/master",
+				"id" : "geoserver/repository_test15/master/raleigh_park_locations_2",
+				"text" : "raleigh_park_locations_2",
+				"type" : "layer"
+			} ]
 		/*
 		 * 'data' : { 'url' : function() { return
 		 * 'geoserver/getGeolayerCollectionTree.ajax?treeType=all'; } }
@@ -116,25 +388,10 @@ gb.versioning.Repository = function(obj) {
 			},
 			"branch" : {
 				"icon" : "fas fa-code-branch",
-				"valid_children" : [ "polygon", "multipolygon", "linestring", "multilinestring", "point", "multipoint" ]
+				"valid_children" : [ "layer" ]
 			},
-			"polygon" : {
-				"icon" : "fas fa-square-full"
-			},
-			"multipolygon" : {
-				"icon" : "fas fa-square-full"
-			},
-			"linestring" : {
-				"icon" : "fas fa-minus"
-			},
-			"multilinestring" : {
-				"icon" : "fas fa-minus"
-			},
-			"point" : {
-				"icon" : "fas fa-circle"
-			},
-			"multipoint" : {
-				"icon" : "fas fa-circle"
+			"layer" : {
+				"icon" : "fas fa-file"
 			}
 		},
 		geogigfunction : {
@@ -143,7 +400,11 @@ gb.versioning.Repository = function(obj) {
 		"plugins" : [ "search", "state", "types", "geogigfunction" ]
 	});
 	this.jstree = $(this.treeArea).jstree(true);
-	var body = $("<div>").append(this.treeArea);
+	var body = $("<div>").css({
+		"height" : "313px",
+		"overflow-y" : "auto",
+		"width" : "100%"
+	}).append(this.treeArea);
 	this.mbody = $("<div>").append(head).append(body);
 	this.setModalBody(this.mbody);
 
@@ -195,36 +456,10 @@ gb.versioning.Repository.prototype.getWorkingTree = function(serverName, repoNam
 };
 
 /**
- * 등록한 지오서버의 GeoGig repository 워킹트리를 불러온다
+ * GeoGig 목록을 새로고침한다.
  * 
- * @method gb.versioning.Repository#getWorkingTree
- * @param {String}
- *            serverName - 등록한 서버 이름
- * @param {String}
- *            repoName - GeoGig repository 이름
- * @param {String}
- *            reference - 체크아웃한 브랜치 이름
- * @param {String}
- *            transactionId - 요청에 필요한 트랜잭션 ID
- * @return {Object[]} 트리 목록에 추가할 워킹트리
- * 
+ * @method gb.versioning.Repository#refreshList
  */
-gb.versioning.Repository.prototype.getWorkingTree = function(serverName, repoName, reference, transactionId) {
-	$.ajax({
-		url : this.getFeature,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		data : params,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			$("body").css("cursor", "wait");
-		},
-		complete : function() {
-			$("body").css("cursor", "default");
-		},
-		success : function(data) {
-
-		}
-	});
+gb.versioning.Repository.prototype.refreshList = function() {
+	this.jstree.refresh();
 };

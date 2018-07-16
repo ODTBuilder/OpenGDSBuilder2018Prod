@@ -632,16 +632,16 @@ gb.tree.GeoServer = function(obj) {
 						"icon" : "fas fa-square-full"
 					},
 					"linestring" : {
-						"icon" : "fas fa-minus"
+						"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
 					},
 					"multilinestring" : {
-						"icon" : "fas fa-minus"
+						"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
 					},
 					"point" : {
-						"icon" : "fas fa-circle fa-xs"
+						"icon" : "fas fa-circle gb-fa-xxs"
 					},
 					"multipoint" : {
-						"icon" : "fas fa-circle"
+						"icon" : "fas fa-circle gb-fa-xxs"
 					}
 				},
 				"plugins" : [ "contextmenu", "search", "state", "types", "geoserver" ]

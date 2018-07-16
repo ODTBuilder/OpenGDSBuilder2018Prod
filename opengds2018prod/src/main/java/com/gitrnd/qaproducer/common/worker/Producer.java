@@ -16,10 +16,16 @@ public class Producer {
 	@Value("${gitrnd.rabbitmq.routingKey}")
 	private String routingKey;
 
-	public Object produceMsg(String msg) {
+	public void produceMsg(String msg) {
 		System.out.println("Send msg = " + msg);
-		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-		System.out.println("Reply msg = " + response.toJSONString());
-		return response;
+		amqpTemplate.convertAndSend(exchange, routingKey, msg);
 	}
+
+//	public Object produceMobileMsg(String msg) {
+//		System.out.println("Send msg = " + msg);
+//		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
+//		System.out.println("Reply msg = " + response.toJSONString());
+//		return response;
+//	}
+
 }

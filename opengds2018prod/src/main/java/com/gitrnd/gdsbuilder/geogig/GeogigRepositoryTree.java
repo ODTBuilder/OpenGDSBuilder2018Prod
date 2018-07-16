@@ -17,13 +17,14 @@ public class GeogigRepositoryTree extends JSONArray {
 
 	/**
 	 * @param server
+	 * @param serverName
 	 */
-	public void bulid(String server) {
+	public void bulid(String server, String serverName) {
 		this.server = server;
 		JSONObject geoserver = new JSONObject(); // baseURL
 		geoserver.put("id", server);
 		geoserver.put("parent", "#");
-		geoserver.put("text", server);
+		geoserver.put("text", serverName);
 		super.add(geoserver);
 	}
 
@@ -31,10 +32,10 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param parent
 	 * @param text
 	 */
-	public void add(String parent, String text) {
+	public void add(String parent, String id, String text) {
 		JSONObject repoJson = new JSONObject();
-		repoJson.put("id", text);
 		repoJson.put("parent", parent);
+		repoJson.put("id", id);
 		repoJson.put("text", text);
 		super.add(repoJson);
 	}
@@ -44,10 +45,10 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param text
 	 * @param type
 	 */
-	public void addRepo(String parent, String text, String type) {
+	public void addRepo(String parent, String id, String text, String type) {
 		JSONObject repoJson = new JSONObject();
-		repoJson.put("id", text);
 		repoJson.put("parent", parent);
+		repoJson.put("id", id);
 		repoJson.put("text", text);
 		repoJson.put("type", type);
 		super.add(repoJson);
@@ -58,10 +59,10 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param text
 	 * @param status
 	 */
-	public void addBranch(String parent, String text, String status) {
+	public void addBranch(String parent, String id, String text, String status) {
 		JSONObject repoJson = new JSONObject();
-		repoJson.put("id", text);
 		repoJson.put("parent", parent);
+		repoJson.put("id", id);
 		repoJson.put("text", text);
 		repoJson.put("status", status);
 		super.add(repoJson);

@@ -16,8 +16,8 @@ import com.gitrnd.qaproducer.common.worker.Producer;
 @Service("mobileService")
 public class QAMobileService {
 
-	@Autowired
-	private Producer producer;
+	// @Autowired
+	// private Producer producer;
 
 	/**
 	 * @param param
@@ -25,6 +25,7 @@ public class QAMobileService {
 	 */
 	public JSONObject validate(JSONObject param) {
 
-		return (JSONObject) producer.produceMsg(param.toString());
+		// return (JSONObject) producer.produceMobileMsg(param.toString());
+		return null;
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.file.service.DeleteFileService;
 import com.gitrnd.qaproducer.file.service.DownloadService;
 import com.gitrnd.qaproducer.file.service.RequestService;
@@ -22,7 +23,6 @@ import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
-import com.gitrnd.qaproducer.security.LoginUser;
 
 @Controller
 public class MainController {

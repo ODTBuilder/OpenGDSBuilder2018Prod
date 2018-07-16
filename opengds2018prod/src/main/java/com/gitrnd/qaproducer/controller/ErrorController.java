@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gitrnd.qaproducer.exception.ValidationAuthException;
-import com.gitrnd.qaproducer.security.LoginUser;
+import com.gitrnd.qaproducer.common.exception.ValidationAuthException;
+import com.gitrnd.qaproducer.common.security.LoginUser;
+
 
 @Controller
 @RequestMapping(value = "/error")

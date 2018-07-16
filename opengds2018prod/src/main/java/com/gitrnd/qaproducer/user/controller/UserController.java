@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gitrnd.qaproducer.security.LoginUser;
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.user.domain.User;
 import com.gitrnd.qaproducer.user.service.UserService;
 
@@ -27,6 +27,8 @@ public class UserController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+	
+	//로그인
 	@RequestMapping(value = "/signin.do", method = RequestMethod.GET)
 	public String signinView(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
 		LOGGER.info("access: /signin.do");
@@ -39,6 +41,8 @@ public class UserController {
 		return redir;
 	}
 
+	
+	//가입
 	@RequestMapping(value = "/signup.do", method = RequestMethod.POST)
 	public String signupProcess(@RequestParam("email") String email, @RequestParam("userid") String uid,
 			@RequestParam("firstname") String fname, @RequestParam("lastname") String lname,

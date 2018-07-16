@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.gitrnd.qaproducer.exception.ValidationAuthException;
+import com.gitrnd.qaproducer.common.exception.ValidationAuthException;
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.file.service.DeleteFileService;
 import com.gitrnd.qaproducer.file.service.DownloadService;
 import com.gitrnd.qaproducer.file.service.RequestService;
@@ -30,7 +31,6 @@ import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
-import com.gitrnd.qaproducer.security.LoginUser;
 
 @Controller
 public class FileController {

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
-import com.gitrnd.qaproducer.security.LoginUser;
 
 @Controller
 @RequestMapping("/option")

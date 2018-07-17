@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gitrnd.qaproducer.qareport.details.domain.QADetailReportList;
 import com.gitrnd.qaproducer.qareport.details.repository.QADetailReportRepository;
 
-@Service
+@Service("detatilReportService")
 @Transactional
 public class QADetailReportService {
 

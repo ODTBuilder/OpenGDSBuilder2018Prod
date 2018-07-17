@@ -17,14 +17,14 @@ import com.gitrnd.qaproducer.qareport.details.service.QADetailReportService;
  * @author GIT
  *
  */
-@Controller("/qa")
+@Controller("/qaDetailReport")
 public class QADetailReportController {
 
 	@Autowired
 	@Qualifier("detatilReportService")
 	QADetailReportService detailService;
 
-	@RequestMapping(value = "/detatilReport.ajax", method = RequestMethod.POST)
+	@RequestMapping(value = "/detailReport.ajax", method = RequestMethod.POST)
 	public QADetailReportList retrieveQADetailReportByPId(JSONObject param) {
 		return detailService.retrieveQADetailReportByPId(param);
 	}

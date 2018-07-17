@@ -59,7 +59,24 @@ gb.versioning.Repository = function(obj) {
 	}).click(function() {
 		that.refreshList();
 	});
-	var head = $("<div>").append(this.refBtn);
+	this.searchInput = $("<input>").attr({
+		"type" : "text"
+	}).css({
+		"border" : "0",
+		"border-bottom" : "solid 1px #909090",
+		"background-color" : "transparent",
+		"width" : "94%"
+	});
+	$(this.searchInput).keyup(function() {
+		if (that.tout) {
+			clearTimeout(that.tout);
+		}
+		that.tout = setTimeout(function() {
+			var v = $(that.searchInput).val();
+			that.getJSTree().search(v);
+		}, 250);
+	});
+	var head = $("<div>").addClass("gb-article-head").append(this.searchInput).append(this.refBtn);
 	this.treeArea = $("<div>");
 	$(this.treeArea).jstree({
 		"core" : {
@@ -401,13 +418,15 @@ gb.versioning.Repository = function(obj) {
 	});
 	this.jstree = $(this.treeArea).jstree(true);
 	var body = $("<div>").css({
-		"height" : "313px",
+		"height" : "306px",
 		"overflow-y" : "auto",
 		"width" : "100%"
 	}).append(this.treeArea);
 	this.mbody = $("<div>").append(head).append(body);
 	this.setModalBody(this.mbody);
-
+	$(this.getModalBody()).css({
+		"padding" : "0"
+	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
@@ -462,4 +481,14 @@ gb.versioning.Repository.prototype.getWorkingTree = function(serverName, repoNam
  */
 gb.versioning.Repository.prototype.refreshList = function() {
 	this.jstree.refresh();
+};
+
+/**
+ * jsTree 객체를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getJSTree
+ * @return
+ */
+gb.versioning.Repository.prototype.getJSTree = function() {
+	return this.jstree;
 };

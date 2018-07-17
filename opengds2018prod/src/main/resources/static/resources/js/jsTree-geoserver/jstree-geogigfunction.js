@@ -34,7 +34,15 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		parent.refresh.call(this, skip_loading, forget_state);
 	};
 	this.bind = function() {
-		this.element.on('model.jstree', $.proxy(function(e, data) {
+		this.element.on('loaded.jstree', $.proxy(function(e, data) {
+			console.log("loaded");
+			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+			console.log(node);
+			var rawData = data.instance.settings.core.data;
+			if (Array.isArray(rawData)) {
+
+			}
+		}, this)).on('model.jstree', $.proxy(function(e, data) {
 			var m = this._model.data, dpc = data.nodes, i, j, c = 'default', k, optKeys = Object.keys(this._data.geogigfunction);
 			for (i = 0, j = dpc.length; i < j; i++) {
 				for (var k = 0; k < optKeys.length; k++) {
@@ -68,6 +76,10 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					}
 				}
 			}
+		}, this)).on('load_node.jstree', $.proxy(function(e, data) {
+			console.log("delete layer");
+			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+			console.log(data);
 		}, this));
 
 		parent.bind.call(this);
@@ -92,6 +104,11 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						$(obj.childNodes[1]).append(ic);
 					} else if (fnmks[i] === "unstaged") {
 						var ic = $("<span>").text(" [Unstaged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						$(obj.childNodes[1]).append(ic);
+					} else if (fnmks[i] === "merged") {
+						var ic = $("<span>").text(" [Merged]").attr({
 							"role" : "presentation"
 						}).addClass(this._data.geogigfunction[fnmks[i]].css);
 						$(obj.childNodes[1]).append(ic);

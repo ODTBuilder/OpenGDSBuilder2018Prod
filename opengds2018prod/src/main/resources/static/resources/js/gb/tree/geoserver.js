@@ -668,6 +668,7 @@ gb.tree.GeoServer.prototype.constructor = gb.tree.GeoServer;
  * jstree 객체를 반환한다.
  * 
  * @method gb.tree.GeoServer#getJSTree
+ * @return {$.jstree} GeoServer 목록을 표출할 jsTree 객체
  */
 gb.tree.GeoServer.prototype.getJSTree = function() {
 	return this.jstree;

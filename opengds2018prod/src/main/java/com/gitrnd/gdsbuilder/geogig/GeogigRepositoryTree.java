@@ -13,18 +13,16 @@ import org.json.simple.JSONObject;
 @SuppressWarnings("serial")
 public class GeogigRepositoryTree extends JSONArray {
 
-	private String server;
-
 	/**
 	 * @param server
 	 * @param serverName
 	 */
-	public void bulid(String server, String serverName) {
-		this.server = server;
+	public void bulid(String serverName) {
 		JSONObject geoserver = new JSONObject(); // baseURL
-		geoserver.put("id", server);
+		geoserver.put("id", serverName);
 		geoserver.put("parent", "#");
 		geoserver.put("text", serverName);
+		geoserver.put("type", "geoserver");
 		super.add(geoserver);
 	}
 
@@ -32,11 +30,12 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param parent
 	 * @param text
 	 */
-	public void add(String parent, String id, String text) {
+	public void addTree(String parent, String id, String text) {
 		JSONObject repoJson = new JSONObject();
 		repoJson.put("parent", parent);
 		repoJson.put("id", id);
 		repoJson.put("text", text);
+		repoJson.put("type", "layer");
 		super.add(repoJson);
 	}
 
@@ -50,7 +49,8 @@ public class GeogigRepositoryTree extends JSONArray {
 		repoJson.put("parent", parent);
 		repoJson.put("id", id);
 		repoJson.put("text", text);
-		repoJson.put("type", type);
+		repoJson.put("repoType", type);
+		repoJson.put("type", "repository");
 		super.add(repoJson);
 	}
 
@@ -65,6 +65,7 @@ public class GeogigRepositoryTree extends JSONArray {
 		repoJson.put("id", id);
 		repoJson.put("text", text);
 		repoJson.put("status", status);
+		repoJson.put("type", "branch");
 		super.add(repoJson);
 	}
 }

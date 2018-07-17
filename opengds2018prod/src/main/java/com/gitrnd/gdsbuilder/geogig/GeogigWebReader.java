@@ -117,12 +117,12 @@ public class GeogigWebReader {
 	 */
 	public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
 			String transactionId) {
-
-		String referenceId = baseURL + "/" + repoName + "/" + "master"; // default
+		
+		String referenceId = serverName + "/" + repoName + "/" + reference; 
 
 		// json tree
 		GeogigRepositoryTree reposTree = new GeogigRepositoryTree();
-		reposTree.bulid(baseURL, serverName);
+		reposTree.bulid(serverName);
 
 		// repository
 		ListRepository listRepos = new ListRepository();
@@ -145,8 +145,8 @@ public class GeogigWebReader {
 				}
 			}
 
-			String reposId = baseURL + "/" + name;
-			reposTree.addRepo(baseURL, reposId, name, storageType);
+			String reposId = serverName + "/" + name;
+			reposTree.addRepo(serverName, reposId, name, storageType);
 			ListBranch listBranch = new ListBranch();
 			GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name);
 			List<Branch> localList = branches.getLocalBranchList();
@@ -157,11 +157,9 @@ public class GeogigWebReader {
 				GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName, transactionId);
 				Header header = status.getHeader();
 				String headerBranch = header.getBranch();
-				String branchId = reposId + branchName;
-				if (branchName.equalsIgnoreCase(reference)) {
-					referenceId = branchId;
-				}
+				String branchId = reposId + "/" + branchName;
 				if (repoName.equalsIgnoreCase(name) && branchName.equalsIgnoreCase(headerBranch)) {
+					referenceId = branchId;
 					if (status.getUnmerged() != null) {
 						reposTree.addBranch(reposId, branchId, branchName, "UnMerged");
 					} else {
@@ -179,7 +177,8 @@ public class GeogigWebReader {
 		List<Node> nodes = revisionTree.getNodes();
 		for (Node node : nodes) {
 			String path = node.getPath();
-			reposTree.add(reference, referenceId, path);
+			String pathId = referenceId + "/" + path;
+			reposTree.addTree(referenceId, pathId, path);
 		}
 		return reposTree;
 	}

@@ -6,13 +6,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gitrnd.qaproducer.common.security.LoginUser;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 
 public interface GeoserverLayerProxyService {
-	public void requestWMSLayer(LoginUser userVO, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
-	public void requestGetFeature(LoginUser userVO, HttpServletRequest request, HttpServletResponse response);
-	public void requestGetFeatureInfo(LoginUser userVO, HttpServletRequest request, HttpServletResponse response);
-	public void requestWMSGetLegendGraphic(LoginUser userVO, HttpServletRequest request, HttpServletResponse response);
-	public void requestGeoserverDataOutput(LoginUser userVO, HttpServletRequest request, HttpServletResponse response);
+	public void requestGetMap(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+	public void requestGetFeature(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException;
+	public void requestGetFeatureInfo(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException;
+	public void requestWMSGetLegendGraphic(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException;
+	public void requestGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response) throws IOException;
+	
+//	public void requestGeoserverDataOutput(LoginUser userVO, DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response);
 }

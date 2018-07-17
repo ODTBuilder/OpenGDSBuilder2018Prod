@@ -128,7 +128,7 @@ public class AbstractController {
 		}
 		
 		//input 파라미터 체크
-		int flagNum = 4;
+		int flagNum = 0;
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
@@ -209,6 +209,7 @@ public class AbstractController {
 			if (key.toLowerCase().equals("serverName")) {
 				serverName = value;
 				flagNum++;
+				break;
 			} 
 		}
 		
@@ -243,10 +244,8 @@ public class AbstractController {
 	 * @param request
 	 * @return DTGeoserverManager
 	 * */
-	public DTGeoserverManager getGeoserverManagerToSession(HttpServletRequest request, LoginUser loginUser){
+	public DTGeoserverManager getGeoserverManagerToSession(HttpServletRequest request, LoginUser loginUser, String serverName){
 		DTGeoserverManager dtGeoserverManager = null;
-		String serverName = "";
-		
 		
 		//사용자 로그인 세션체크
 		LoginUser user = loginUser;
@@ -256,29 +255,14 @@ public class AbstractController {
 		}
 		
 		//input 파라미터 체크
-		int flagNum = 0;
-		Enumeration paramNames = request.getParameterNames();
-		while (paramNames.hasMoreElements()) {
-			String key = paramNames.nextElement().toString();
-			String value = request.getParameter(key);
-			if (key.toLowerCase().equals("serverName")) {
-				serverName = value;
-				flagNum++;
-			} 
-		}
-		
-		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
-		if(dtGeoManagers==null){
-			LOGGER.error("Geoserver 세션 존재 X");
-			return null;
-		}
-		
-		//Geoserver 체크
-		if(flagNum!=1){
-			LOGGER.error("파라미터 존재X");
-			return null;
-		}
-		else{
+		if(!serverName.equals("")&&serverName!=null){
+			DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
+			if(dtGeoManagers==null){
+				LOGGER.error("Geoserver 세션 존재 X");
+				return null;
+			}
+			
+			//Geoserver 체크
 			//해당 조건에 맞는 DTGeoManager 객체 리턴
 			Iterator<String> keys = dtGeoManagers.keySet().iterator();
 	        while( keys.hasNext() ){
@@ -287,16 +271,20 @@ public class AbstractController {
 	            	return dtGeoManagers.get(key);
 	            }
 	        }
+		}else{
+			LOGGER.error("서버이름 입력 X");
+			return null;
 		}
 		return dtGeoserverManager;
 	}
 	
 	/**
-	 *
+	 * @Description Geoserver 세션 리스트조회
 	 * @author SG.Lee
-	 * @Date 2018. 7. 6. 오후 5:36:50
+	 * @Date 2018. 7. 16. 오전 9:59:52
 	 * @param request
-	 * @return DTGeoserverManager
+	 * @param loginUser
+	 * @return DTGeoserverManagerList
 	 * */
 	public DTGeoserverManagerList getGeoserverManagersToSession(HttpServletRequest request, LoginUser loginUser){
 		DTGeoserverManagerList dtGeoserverManagers = null;
@@ -315,5 +303,51 @@ public class AbstractController {
 		}
 		
 		return dtGeoserverManagers;
+	}
+	
+	
+	/**
+	 * @Description 
+	 * @author SG.Lee
+	 * @Date 2018. 7. 16. 오전 10:03:14
+	 * @param request
+	 * @param loginUser
+	 * @return long
+	 * */
+	public boolean checkUserGeoserver(HttpServletRequest request, LoginUser loginUser){
+		boolean flag = false;
+		
+		String serverName = "";
+		Enumeration paramNames = request.getParameterNames();
+		while (paramNames.hasMoreElements()) {
+			String key = paramNames.nextElement().toString();
+			String value = request.getParameter(key);
+			if (key.toLowerCase().equals("serverName")) {
+				serverName = value;
+				break;
+			} 
+		}
+		
+		if(serverName.equals("")){
+			LOGGER.error("Geoserver 이름이 입력되지 않음");
+			return false;
+		}
+		
+		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
+		if(dtGeoManagers==null){
+			LOGGER.error("Geoserver 세션 존재 X");
+			return false;
+		}else{
+			Iterator<String> keys = dtGeoManagers.keySet().iterator();
+	        while( keys.hasNext() ){
+	            String key = keys.next();
+	            //세션에 같은 이름이 존재할시 
+	            if(serverName.equals(key)){
+	            	flag = true;
+	            	break;
+	            }
+	        }
+		}
+		return flag;
 	}
 }

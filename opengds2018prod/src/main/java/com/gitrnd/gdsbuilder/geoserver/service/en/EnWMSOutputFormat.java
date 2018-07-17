@@ -18,29 +18,51 @@ public enum EnWMSOutputFormat {
 	PDF("PDF", "application/pdf"),
 	GEORSS("GEORSS", "rss"),
 	KML("KML", "kml"),
-	KMZ("KMZ", "kmz"); 
-	String state;
-	String stateName;
+	KMZ("KMZ", "kmz"),
+	UNKNOWN(null,null);
 	
-	EnWMSOutputFormat(String state, String stateName) {
-		this.state = state;
-		this.stateName = stateName;
+	String type;
+	String typeName;
+	
+	private EnWMSOutputFormat(String type, String typeName) {
+		this.type = type;
+		this.typeName = typeName;
 	}
 	
-	public String getState() {
-		return state;
-		
+	public static EnWMSOutputFormat getFromType(String type) {
+		for (EnWMSOutputFormat format : values()) {
+			if(format == UNKNOWN)
+				continue;
+			if(format.type.equals(type))
+				return format;
+		}
+		return UNKNOWN;
+	}
+	
+	public static EnWMSOutputFormat getFromTypeName(String typeName) {
+		for (EnWMSOutputFormat format : values()) {
+			if(format == UNKNOWN)
+				continue;
+			if(format.typeName.equals(typeName))
+				return format;
+		}
+		return UNKNOWN;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public String getType() {
+		return type;
 	}
 
-	public String getStateName() {
-		return stateName;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setStateName(String stateName) {
-		this.stateName = stateName;
+	public String getTypeName() {
+		return typeName;
 	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+	
 }

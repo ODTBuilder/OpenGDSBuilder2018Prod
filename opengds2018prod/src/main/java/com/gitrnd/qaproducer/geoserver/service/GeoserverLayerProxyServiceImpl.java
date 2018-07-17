@@ -28,7 +28,6 @@ package com.gitrnd.qaproducer.geoserver.service;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,14 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.service.DTGeoserverServiceManager;
-import com.gitrnd.gdsbuilder.geoserver.service.en.EnGeoserverService;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnWFSOutputFormat;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnWMSOutputFormat;
 import com.gitrnd.gdsbuilder.geoserver.service.impl.DTGeoserverServiceManagerImpl;
+import com.gitrnd.gdsbuilder.geoserver.service.inf.DTGeoserverInfo;
+import com.gitrnd.gdsbuilder.geoserver.service.inf.DTGeoserverInfo.EnGeoserverInfo;
 import com.gitrnd.gdsbuilder.geoserver.service.wfs.WFSGetFeature;
 import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetFeatureInfo;
 import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetLegendGraphic;
 import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetMap;
-import com.gitrnd.qaproducer.common.security.LoginUser;
 
 /**
  * 프록시서버 요청에 대한 요청을 처리하는 클래스
@@ -56,53 +58,32 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GeoserverLayerProxyServiceImpl.class);
 	
+
 	@Override
-	public void requestGeoserverDataOutput(LoginUser userVO, HttpServletRequest request, HttpServletResponse response) {
-		String serviceType = "";
-
-		serviceType = request.getParameter("serviceType");
-
-		if (serviceType.toLowerCase().equals(EnGeoserverService.WFS.getStateName())) {
-			this.requestGetFeature(userVO, request, response);
-		} else if (serviceType.toLowerCase().equals(EnGeoserverService.WMS.getStateName())) {
-			try {
-				this.requestWMSLayer(userVO, request, response);
-			} catch (ServletException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	public void requestGetMap(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException{
+		if(dtGeoManager==null){
+			response.sendError(500, "Null Geoserver");
+		}else{
+			if(!workspace.equals("")&&workspace!=null){
+				WMSGetMap wmsGetMap = this.createWMSGetMap(dtGeoManager, workspace, request);
+				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
+				geoserverService.requestWMSGetMap(wmsGetMap);
+			}else{
+				response.sendError(500, "workspace를 입력해주세요.");
 			}
-		} else
-			LOGGER.error("다운로드 요청 실패");
-
-		/*
-		 * try { this.requestTestWMSLayer(request,response); } catch
-		 * (ServletException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 */
+		}
 	}
 
-	@Override
-	public void requestWMSLayer(LoginUser userVO, HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		WMSGetMap wmsGetMap = this.createWMSGetMap(userVO, request);
-		DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
-		geoserverService.requestWMSGetMap(wmsGetMap);
-	}
-
-	private WMSGetMap createWMSGetMap(LoginUser userVO, HttpServletRequest request) {
-//		String serverURL = this.URL + "/" + userVO.getId() + "/wms";
-		String serverURL = "";
+	private WMSGetMap createWMSGetMap(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request) {
+		String serverURL = dtGeoManager.getRestURL() +"/"+workspace+"/wms";
 		String version = "";
-		String format = "";
+		EnWMSOutputFormat format = null;
 		String layers = "";
 		String tiled = "";
 		String transparent = "";
 		String bgcolor = "";
 		String crs = "";
+		String srs = "";
 		String bbox = "";
 		int width = 0;
 		int height = 0;
@@ -118,9 +99,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			String value = request.getParameter(key);
 			
 			
-			if (key.toLowerCase().equals("serverURL")) {
-				serverURL = value;
-			}else if (key.toLowerCase().equals("layers")) {
+			if (key.toLowerCase().equals("layers")) {
 				layers = value;
 			} else if (key.toLowerCase().equals("version")) {
 				version = value;
@@ -129,7 +108,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			} else if (key.toLowerCase().equals("crs")) {
 				crs = value;
 			} else if (key.toLowerCase().equals("format")) {
-				format = value;
+				format = EnWMSOutputFormat.getFromType(value);
 			} else if (key.toLowerCase().equals("layers")) {
 				layers = value;
 			} else if (key.toLowerCase().equals("tiled")) {
@@ -140,7 +119,9 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				bgcolor = value;
 			} else if (key.toLowerCase().equals("crs")) {
 				crs = value;
-			} else if (key.toLowerCase().equals("bbox")) {
+			} else if (key.toLowerCase().equals("srs")) {
+				srs = value;
+			}  else if (key.toLowerCase().equals("bbox")) {
 				bbox = value;
 			} else if (key.toLowerCase().equals("width")) {
 				width = Integer.parseInt(value);
@@ -158,28 +139,39 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				sld_body = value;
 			}
 		}
-		return new WMSGetMap(serverURL, version, format, layers, tiled, transparent, bgcolor, crs, bbox, width, height,
+		
+		return new WMSGetMap(serverURL, version, format, layers, tiled, transparent, bgcolor, crs, srs, bbox, width, height,
 				styles, exceptions, time, sld, sld_body);
 	}
 
 	@Override
-	public void requestGetFeature(LoginUser userVO, HttpServletRequest request, HttpServletResponse response) {
+	public void requestGetFeature(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// String urlParam = this.createGetFeatureInfoURL(request);
-		WFSGetFeature wfsGetFeature = this.createWFSGetFeature(userVO, request);
-		DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
-		geoserverService.requestWFSGetFeature(wfsGetFeature);
+		if(dtGeoManager==null){
+			response.sendError(500, "Null Geoserver");
+		}else{
+			if(!workspace.equals("")&&workspace!=null){
+				WFSGetFeature wfsGetFeature = this.createWFSGetFeature(dtGeoManager, workspace, request);
+				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
+				geoserverService.requestWFSGetFeature(wfsGetFeature);
+			}else{
+				response.sendError(500, "workspace를 입력해주세요.");
+			}
+		}
 	};
 
 	@SuppressWarnings("unused")
-	private WFSGetFeature createWFSGetFeature(LoginUser userVO, HttpServletRequest request) {
-		String serverURL = "";
+	private WFSGetFeature createWFSGetFeature(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request) {
+		String serverURL = dtGeoManager.getRestURL() +"/"+workspace+"/wfs";
 		String version = "";
 		String typeName = "";
 		int maxFeatures = 0;
 		String bbox = "";
-		String outputformat = "";
+		EnWFSOutputFormat outputformat = null;
 		String format_options = "";
 		String featureID = "";
+		String sortBy = "";
+		String propertyName = "";
 
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
@@ -187,37 +179,47 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			String value = request.getParameter(key);
 
 			
-			if (key.equals("serverURL")) {
-				serverURL = value;
-			}else if (key.equals("version")) {
+			if (key.equals("version")) {
 				version = value;
 			} else if (key.equals("typeName")) {
 				typeName = value;
 			} else if (key.equals("bbox")) {
 				bbox = value;
 			} else if (key.equals("outputformat")) {
-				outputformat = value;
+				outputformat = EnWFSOutputFormat.getFromType(value);
 			} else if (key.equals("maxFeatures")) {
 				maxFeatures = Integer.parseInt(value);
 			} else if (key.equals("format_options")) {
 				format_options = value;
 			} else if (key.equals("featureID")) {
 				featureID = value;
+			} else if (key.equals("sortBy")) {
+				sortBy = value;
+			} else if (key.equals("propertyName")) {
+				propertyName = value;
 			}
 		}
 		return new WFSGetFeature(serverURL, version, typeName, outputformat, maxFeatures, bbox, format_options,
-				featureID);
+				featureID, sortBy, propertyName);
 	}
 
 	@Override
-	public void requestGetFeatureInfo(LoginUser userVO, HttpServletRequest request, HttpServletResponse response) {
-		WMSGetFeatureInfo getFeatureInfo = this.getWMSGetFeatureInfo(userVO, request);
-		DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
-		geoserverService.requestWMSGetFeatureInfo(getFeatureInfo);
+	public void requestGetFeatureInfo(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		if(dtGeoManager==null){
+			response.sendError(500, "Null Geoserver");
+		}else{
+			if(!workspace.equals("")&&workspace!=null){
+				WMSGetFeatureInfo getFeatureInfo = this.getWMSGetFeatureInfo(dtGeoManager, workspace, request);
+				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
+				geoserverService.requestWMSGetFeatureInfo(getFeatureInfo);
+			}else{
+				response.sendError(500, "workspace를 입력해주세요.");
+			}
+		}
 	}
 
-	private WMSGetFeatureInfo getWMSGetFeatureInfo(LoginUser userVO, HttpServletRequest request) {
-		String serverURL = "";
+	private WMSGetFeatureInfo getWMSGetFeatureInfo(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request) {
+		String serverURL = dtGeoManager.getRestURL() +"/"+workspace+"/wms";
 		String version = "1.0.0";
 		String layers = "";
 		String styles = "";
@@ -232,6 +234,8 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		int feature_count = 0;
 		int x = 0;
 		int y = 0;
+		int i = 0; //1.3.0 버전일경우 x->i
+		int j = 0; //1.3.0 버전일경우 y->j
 		String exceptions = "application/vnd.ogc.se_xml";
 
 		Enumeration paramNames = request.getParameterNames();
@@ -240,9 +244,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			String value = request.getParameter(key);
 
 			
-			if (key.toLowerCase().equals("serverURL")) {
-				serverURL = value;
-			}else if (key.toLowerCase().equals("version")) {
+			if (key.toLowerCase().equals("version")) {
 				version = value;
 			} else if (key.toLowerCase().equals("layers")) {
 				layers = value;
@@ -271,24 +273,36 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				x = Integer.parseInt(value);
 			} else if (key.toLowerCase().equals("y")) {
 				y = Integer.parseInt(value);
-			} else if (key.toLowerCase().equals("exceptions")) {
+			} else if (key.toLowerCase().equals("i")) {
+				i = Integer.parseInt(value);
+			} else if (key.toLowerCase().equals("j")) {
+				j = Integer.parseInt(value);
+			}else if (key.toLowerCase().equals("exceptions")) {
 				exceptions = value;
 			}
 		}
 		return new WMSGetFeatureInfo(serverURL, version, layers, styles, srs, crs, bbox, width, height, query_layers,
-				info_format, format_options, feature_count, x, y, exceptions);
+				info_format, format_options, feature_count, x, y, i, j, exceptions);
 	}
 	
 	
 	@Override
-	public void requestWMSGetLegendGraphic(LoginUser userVO, HttpServletRequest request, HttpServletResponse response) {
-		WMSGetLegendGraphic getLegendGraphic = this.getWMSGetLegendGraphic(userVO, request);
-		DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
-		geoserverService.requestWMSGetLegendGraphic(getLegendGraphic);
+	public void requestWMSGetLegendGraphic(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
+		if(dtGeoManager==null){
+			response.sendError(500, "Null Geoserver");
+		}else{
+			if(!workspace.equals("")&&workspace!=null){
+				WMSGetLegendGraphic getLegendGraphic = this.getWMSGetLegendGraphic(dtGeoManager, workspace, request);
+				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
+				geoserverService.requestWMSGetLegendGraphic(getLegendGraphic);
+			}else{
+				response.sendError(500, "workspace를 입력해주세요.");
+			}
+		}
 	}
 
-	private WMSGetLegendGraphic getWMSGetLegendGraphic(LoginUser userVO, HttpServletRequest request) {
-		String serverURL = "";
+	private WMSGetLegendGraphic getWMSGetLegendGraphic(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request) {
+		String serverURL = dtGeoManager.getRestURL() +"/"+workspace+"/wms";
 		String version = "1.0.0";
 		String format = "";
 		String legend_options = "";
@@ -302,9 +316,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
 
-			if (key.toLowerCase().equals("serverURL")) {
-				serverURL = value;
-			} else if (key.toLowerCase().equals("version")) {
+			if (key.toLowerCase().equals("version")) {
 				version = value;
 			} else if (key.toLowerCase().equals("format")) {
 				format = value;
@@ -322,4 +334,60 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		}
 		return new WMSGetLegendGraphic(serverURL, version, format, width, height, layer, scale, legend_options);
 	}
+	
+	@Override
+	public void requestGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response) throws IOException{
+		if(dtGeoManager==null){
+			response.sendError(500, "Null Geoserver");
+		}else{
+			DTGeoserverInfo dtGeoserverInfo = this.getDTGeoserverInfo(dtGeoManager, request);
+			DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
+			geoserverService.requestGeoserverInfo(dtGeoserverInfo);
+		}
+		
+	}
+	
+	private DTGeoserverInfo getDTGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request) {
+		DTGeoserverInfo dtGeoInfo = null;
+		
+		EnGeoserverInfo type = null;
+		
+		String serverURL = dtGeoManager.getRestURL();
+		String workspace ="";
+		String datastore="";
+		String layers="";
+		String fileFormat="";
+
+		Enumeration paramNames = request.getParameterNames();
+		while (paramNames.hasMoreElements()) {
+			String key = paramNames.nextElement().toString();
+			String value = request.getParameter(key);
+
+			if (key.toLowerCase().equals("workspace")) {
+				workspace = value;
+			} else if (key.toLowerCase().equals("format")) {
+				type = EnGeoserverInfo.getFromType(value);
+			} else if (key.toLowerCase().equals("workspace")) {
+				workspace = value;
+			} else if (key.toLowerCase().equals("datastore")) {
+				datastore = value;
+			} else if (key.toLowerCase().equals("layers")) {
+				layers = value;
+			} else if (key.toLowerCase().equals("fileFormat")) {
+				fileFormat = value;
+			}
+		}
+		if(type!=null){
+			if(type==EnGeoserverInfo.SERVER){
+				dtGeoInfo = new DTGeoserverInfo(type,serverURL,fileFormat);
+			}else if(type==EnGeoserverInfo.WORKSPACE){
+				dtGeoInfo = new DTGeoserverInfo(type,serverURL,workspace,fileFormat);
+			}else if(type==EnGeoserverInfo.DATASTORE){
+				dtGeoInfo = new DTGeoserverInfo(type,serverURL,workspace,datastore,fileFormat);
+			}else if(type==EnGeoserverInfo.LAYER){
+				dtGeoInfo = new DTGeoserverInfo(type,serverURL,workspace,datastore,layers,fileFormat);
+			}
+		}
+		return dtGeoInfo;
+	} 
 }

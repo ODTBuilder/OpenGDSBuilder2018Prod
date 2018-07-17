@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gitrnd.gdsbuilder.geoserver.service.DTGeoserverServiceManager;
+import com.gitrnd.gdsbuilder.geoserver.service.inf.DTGeoserverInfo;
 import com.gitrnd.gdsbuilder.geoserver.service.wfs.WFSGetFeature;
 import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetFeatureInfo;
 import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetLegendGraphic;
@@ -46,6 +47,11 @@ public class DTGeoserverServiceManagerImpl implements DTGeoserverServiceManager 
 		this.requestProxyService(url);
 	};
 	
+	@Override
+	public void requestGeoserverInfo(DTGeoserverInfo dtGeoInfo){
+		String url = dtGeoInfo.getDTGeoserverInfoURL();
+		this.requestProxyService(url);
+	}
 	
 	private void requestProxyService(String url) {
 		try {

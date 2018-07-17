@@ -1,17 +1,20 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wms;
 
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnWMSOutputFormat;
+
 public class WMSGetMap {
 	private final static String SERVICE = "WMS";
 	private final static String REQUEST = "GetMap";
 	
 	private String serverURL ="";
 	private String version="1.0.0";
-	private String format="";
+	private EnWMSOutputFormat format=null;
 	private String layers="";
 	private String tiled="";
 	private String transparent="";
 	private String bgcolor="";
-	private String crs="";
+	private String crs=""; //1.0.0 , 1.1.0 , 1.1.1 버전일경우
+	private String srs=""; //1.3.0 버전일경우
 	private String bbox="";
 	private int width=0;
 	private int height=0;
@@ -23,8 +26,8 @@ public class WMSGetMap {
 	
 	public WMSGetMap(){};
 	
-	public WMSGetMap(String serverURL, String version, String format, String layers, String tiled, String transparent,
-			String bgcolor, String crs, String bbox, int width, int height, String styles, String exceptions,
+	public WMSGetMap(String serverURL, String version, EnWMSOutputFormat format, String layers, String tiled, String transparent,
+			String bgcolor, String crs, String srs, String bbox, int width, int height, String styles, String exceptions,
 			String time, String sld, String sld_body) {
 		super();
 		if (!serverURL.trim().equals("")) {
@@ -33,7 +36,7 @@ public class WMSGetMap {
 		if (!version.trim().equals("")) {
 			this.version = version;
 		}
-		if (!format.trim().equals("")) {
+		if (format!=null) {
 			this.format = format;
 		}
 		if (!layers.trim().equals("")) {
@@ -41,6 +44,9 @@ public class WMSGetMap {
 		}
 		if (!crs.trim().equals("")) {
 			this.crs = crs;
+		}
+		if (!srs.trim().equals("")) {
+			this.srs = srs;
 		}
 		if (!bbox.trim().equals("")) {
 			this.bbox = bbox;
@@ -75,7 +81,7 @@ public class WMSGetMap {
 		
 	}
 	
-	public WMSGetMap(String serverURL, String version, String format, String layers, String tiled, String crs, String bbox, int width, int height, String styles) {
+	public WMSGetMap(String serverURL, String version, EnWMSOutputFormat format, String layers, String tiled, String crs, String srs, String bbox, int width, int height, String styles) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -83,7 +89,7 @@ public class WMSGetMap {
 		if (!version.trim().equals("")) {
 			this.version = version;
 		}
-		if (!format.trim().equals("")) {
+		if (format!=null) {
 			this.format = format;
 		}
 		if (!layers.trim().equals("")) {
@@ -94,6 +100,9 @@ public class WMSGetMap {
 		}
 		if (!crs.trim().equals("")) {
 			this.crs = crs;
+		}
+		if (!srs.trim().equals("")) {
+			this.srs = srs;
 		}
 		if (!bbox.trim().equals("")) {
 			this.bbox = bbox;
@@ -109,6 +118,7 @@ public class WMSGetMap {
 		}
 	}
 	
+	
 	public String getServerURL() {
 		return serverURL;
 	}
@@ -121,10 +131,10 @@ public class WMSGetMap {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public String getFormat() {
+	public EnWMSOutputFormat getFormat() {
 		return format;
 	}
-	public void setFormat(String format) {
+	public void setFormat(EnWMSOutputFormat format) {
 		this.format = format;
 	}
 	public String getLayers() {
@@ -156,6 +166,12 @@ public class WMSGetMap {
 	}
 	public void setCrs(String crs) {
 		this.crs = crs;
+	}
+	public String getSrs() {
+		return srs;
+	}
+	public void setSrs(String srs) {
+		this.srs = srs;
 	}
 	public String getBbox() {
 		return bbox;
@@ -211,10 +227,20 @@ public class WMSGetMap {
 	public static String getRequest() {
 		return REQUEST;
 	}
+	public String getTiled() {
+		return tiled;
+	}
+
+	public String getTransparent() {
+		return transparent;
+	}
 	
 	public String getWMSGetMapURL(){
 		StringBuffer urlBuffer = new StringBuffer();
 		if(!this.serverURL.trim().equals("")){
+			if(serverURL.equals("")||version.equals("")||layers.equals("")||styles.equals("")||crs.equals("")||bbox.equals("")||width==0||height==0||format.equals("")){
+				throw new NullPointerException("필수값을 입력하지 않았습니다.");
+			}
 			urlBuffer.append(serverURL);
 			urlBuffer.append("?");
 			urlBuffer.append("request="+REQUEST);
@@ -224,9 +250,9 @@ public class WMSGetMap {
 				urlBuffer.append("&");
 				urlBuffer.append("version="+version);
 			}
-			if(!this.format.trim().equals("")){
+			if(format!=null){
 				urlBuffer.append("&");
-				urlBuffer.append("format="+format);
+				urlBuffer.append("format="+format.getTypeName());
 			}
 			if(!this.layers.trim().equals("")){
 				urlBuffer.append("&");
@@ -239,6 +265,14 @@ public class WMSGetMap {
 			if(!this.crs.trim().equals("")){
 				urlBuffer.append("&");
 				urlBuffer.append("crs="+crs);
+			}
+			if(!this.crs.trim().equals("")||!this.srs.trim().equals("")){
+				urlBuffer.append("&");
+				if(version.equals("1.3.0")){
+					urlBuffer.append("crs="+crs);
+				}else{
+					urlBuffer.append("srs="+srs);
+				}
 			}
 			if(!this.bbox.trim().equals("")){
 				urlBuffer.append("&");
@@ -280,7 +314,6 @@ public class WMSGetMap {
 				urlBuffer.append("&");
 				urlBuffer.append("height="+String.valueOf(this.height));
 			}
-			
 		}
 		else
 			return "";

@@ -1,6 +1,7 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wfs;
 
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnGeoserverService;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnWFSOutputFormat;
 
 public class WFSGetFeature {
 	private final static String SERVICE = EnGeoserverService.WFS.getState();
@@ -9,16 +10,18 @@ public class WFSGetFeature {
 	private String serverURL ="";
 	private String version="1.1.1";
 	private String typeName="";
-	private String outputformat="text/javascript";
+	private EnWFSOutputFormat outputformat=null;
 	private int maxFeatures = 0; 
 	private String bbox="";
 	private String format_options="";
 	private String featureID = "";
+	private String sortBy = "";
+	private String propertyName = "";
 
 	public WFSGetFeature(){};
 	
-	public WFSGetFeature(String serverURL, String version, String typeName, String outputformat, int maxFeatures, String bbox,
-			String format_options, String featureID) {
+	public WFSGetFeature(String serverURL, String version, String typeName, EnWFSOutputFormat outputformat, int maxFeatures, String bbox,
+			String format_options, String featureID, String sortBy, String propertyName) {
 		super();
 		if(!serverURL.trim().equals("")){
 			this.serverURL = serverURL;
@@ -29,7 +32,7 @@ public class WFSGetFeature {
 		if (!typeName.trim().equals("")) {
 			this.typeName = typeName;
 		}
-		if (!outputformat.trim().equals("")) {
+		if (outputformat!=null) {
 			this.outputformat = outputformat;
 		}
 		if (maxFeatures!=0) {
@@ -44,9 +47,15 @@ public class WFSGetFeature {
 		if (!featureID.trim().equals("")) {
 			this.featureID = featureID;
 		}
+		if (!sortBy.trim().equals("")) {
+			this.sortBy = sortBy;
+		}
+		if (!propertyName.trim().equals("")) {
+			this.propertyName = propertyName;
+		}
 	}
 	
-	public WFSGetFeature(String serverURL, String version, String typeName, String bbox) {
+	public WFSGetFeature(String serverURL, String version, String typeName) {
 		super();
 		if(!serverURL.trim().equals("")){
 			this.serverURL = serverURL;
@@ -56,9 +65,6 @@ public class WFSGetFeature {
 		}
 		if (!typeName.trim().equals("")) {
 			this.typeName = typeName;
-		}
-		if (!bbox.trim().equals("")) {
-			this.bbox = bbox;
 		}
 	}
 	
@@ -80,10 +86,10 @@ public class WFSGetFeature {
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
 	}
-	public String getOutputformat() {
+	public EnWFSOutputFormat getOutputformat() {
 		return outputformat;
 	}
-	public void setOutputformat(String outputformat) {
+	public void setOutputformat(EnWFSOutputFormat outputformat) {
 		this.outputformat = outputformat;
 	}
 	public int getMaxFeatures() {
@@ -113,14 +119,34 @@ public class WFSGetFeature {
 	public String getFeatureID() {
 		return featureID;
 	}
-
 	public void setFeatureID(String featureID) {
 		this.featureID = featureID;
+	}
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
+
+	public String getPropertyName() {
+		return propertyName;
+	}
+
+	public void setPropertyName(String propertyName) {
+		this.propertyName = propertyName;
 	}
 	
 	public String getWFSGetFeatureURL(){
 		StringBuffer urlBuffer = new StringBuffer();
 		if(!this.serverURL.trim().equals("")){
+			
+			if(serverURL.equals("")||version.equals("")||typeName.equals("")){
+				throw new NullPointerException("필수값을 입력하지 않았습니다.");
+			}
+			
+			
 			urlBuffer.append(serverURL);
 			urlBuffer.append("?");
 			urlBuffer.append("request="+REQUEST);
@@ -134,9 +160,9 @@ public class WFSGetFeature {
 				urlBuffer.append("&");
 				urlBuffer.append("typeName="+typeName);
 			}
-			if(!this.outputformat.trim().equals("")){
+			if(this.outputformat!=null){
 				urlBuffer.append("&");
-				urlBuffer.append("outputformat="+outputformat);
+				urlBuffer.append("outputformat="+outputformat.getTypeName());
 			}
 			if(this.maxFeatures!=0){
 				urlBuffer.append("&");
@@ -153,6 +179,14 @@ public class WFSGetFeature {
 			if(!this.featureID.trim().equals("")){
 				urlBuffer.append("&");
 				urlBuffer.append("featureID="+featureID);
+			}
+			if(!this.sortBy.trim().equals("")){
+				urlBuffer.append("&");
+				urlBuffer.append("sortBy="+sortBy);
+			}
+			if(!this.propertyName.trim().equals("")){
+				urlBuffer.append("&");
+				urlBuffer.append("propertyName="+propertyName);
 			}
 		}
 		else

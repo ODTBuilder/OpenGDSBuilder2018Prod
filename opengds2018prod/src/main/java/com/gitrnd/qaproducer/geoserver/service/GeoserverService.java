@@ -51,26 +51,26 @@ public interface GeoserverService {
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오전 10:23:12
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param dsName - Geoserver Datasource명
 	 * @param layerInfo - 레이어 정보객체
 	 * @return FileMeta - file 정보를 담은 객체
 	 * @throws IllegalArgumentException
 	 * @throws MalformedURLException FileMeta
 	 * */
-	public FileMeta dbLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String wsName, String dsName, GeoLayerInfo layerInfo);
+	public FileMeta dbLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo layerInfo);
 
 	/**
 	 *
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오전 10:26:25
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param dsName - Geoserver Datasource명
 	 * @param layerInfo - 레이어 정보객체
 	 * @return boolean
 	 * */
-	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String wsName, String dsName, GeoLayerInfo layerInfo);
+	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo layerInfo);
 	
 	/**
 	 * @Description Workspace 조건에 따른 Workspace단위 트리생성
@@ -97,69 +97,69 @@ public interface GeoserverService {
 	 * @author SG.Lee
 	 * @Date 2017. 7
 	 * @param dtGeoManager - DTGeoserverManager Object 
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param layerList - 중복체크할 레이어명 리스트
 	 * @return JSONObject - {레이어명 : 중복여부}
 	 * */
-	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> layerList);
+	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList);
 	
 	/**
 	 * DTGeoLayerList를 조회한다.
 	 * @author SG.Lee
 	 * @Date 2017. 4
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param layerList - 레이어명 리스트
 	 * @return DTGeoLayerList
 	 * */
-	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> layerList);
+	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList);
 	
 	/**
 	 * DTGeoGroupLayerList를 조회한다.
 	 * @author SG.Lee 
 	 * @Date 2017. 4
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param groupList - 그룹레이어명 리스트
 	 * @return DTGeoGroupLayerList
 	 * */
-	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> groupList);
+	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> groupList);
 	
 	/**
 	 * 그룹레이어 삭제
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오후 1:17:28
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param dsName - Geoserver Datasource명
 	 * @param groupLayerName - 그룹레이어명
 	 * @param layerName - 레이어명
 	 * @return boolean
 	 * */
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String wsName, String dsName, String groupLayerName, String layerName);
+	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, String groupLayerName, String layerName);
 	
 	/**
 	 * 다중 레이어를 삭제
 	 * @author SG.Lee
 	 * @Date 2017. 6. 5. 오전 10:40:17
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
 	 * @return boolean - 삭제여부
 	 * */
-	public boolean removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String wsName, List<String> layerNameList);
+	public boolean removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
 	
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제
 	 * @author SG.Lee
 	 * @Date 2017. 6. 5. 오전 11:08:03
 	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param wsName - Geoserver Workspace명
+	 * @param workspace - Geoserver Workspace명
 	 * @param dsName - Geoserver Datasource명
 	 * @param groupLayerName 삭제할 그룹레이어
 	 * @return boolean - 삭제여부
 	 * */
-	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String wsName, String dsName, final String groupLayerName);
+	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String groupLayerName);
 	
 	
 	/**
@@ -218,7 +218,7 @@ public interface GeoserverService {
 	 * @param attChangeFlag
 	 * @return boolean
 	 * */
-	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String wsName, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String style, boolean attChangeFlag);
+	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String style, boolean attChangeFlag);
 }
 
 

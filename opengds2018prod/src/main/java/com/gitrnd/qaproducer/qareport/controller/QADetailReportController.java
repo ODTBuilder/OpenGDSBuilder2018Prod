@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.gitrnd.qaproducer.qareport.details.domain.QADetailReportList;
 import com.gitrnd.qaproducer.qareport.details.service.QADetailReportService;
 
 /**
@@ -23,8 +24,8 @@ public class QADetailReportController {
 	@Qualifier("detatilReportService")
 	QADetailReportService detailService;
 
-	@RequestMapping(value = "/report.ajax", method = RequestMethod.POST)
-	public JSONObject retrieveQADetailReportByPId(JSONObject param) {
+	@RequestMapping(value = "/detatilReport.ajax", method = RequestMethod.POST)
+	public QADetailReportList retrieveQADetailReportByPId(JSONObject param) {
 		return detailService.retrieveQADetailReportByPId(param);
 	}
 }

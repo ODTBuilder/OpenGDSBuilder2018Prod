@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.service.DTGeoserverServiceManager;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnGetFeatureInfoFormat;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnWFSOutputFormat;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnWMSOutputFormat;
 import com.gitrnd.gdsbuilder.geoserver.service.impl.DTGeoserverServiceManagerImpl;
@@ -230,7 +231,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		int width = 0;
 		int height = 0;
 		String query_layers = "";
-		String info_format = "application/json";
+		EnGetFeatureInfoFormat info_format = null;
 		int feature_count = 0;
 		int x = 0;
 		int y = 0;
@@ -266,7 +267,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			} else if (key.toLowerCase().equals("query_layers")) {
 				query_layers = value;
 			} else if (key.toLowerCase().equals("info_format")) {
-				info_format = value;
+				info_format = EnGetFeatureInfoFormat.getFromType(value);
 			} else if (key.toLowerCase().equals("feature_count")) {
 				feature_count = Integer.parseInt(value);
 			} else if (key.toLowerCase().equals("x")) {

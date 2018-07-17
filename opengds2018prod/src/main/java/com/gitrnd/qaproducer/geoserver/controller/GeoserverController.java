@@ -90,7 +90,7 @@ public class GeoserverController extends AbstractController {
 
 	
 	/**
-	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청 
+	 * @Description 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부) 
 	 * @author SG.Lee
 	 * @Date 2018. 7. 13. 오후 5:00:28
 	 * @param request
@@ -111,7 +111,7 @@ public class GeoserverController extends AbstractController {
 	}
 	
 	/**
-	 * @Description 트리생성 
+	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청  
 	 * @author SG.Lee
 	 * @Date 2018. 7. 13. 오후 5:00:28
 	 * @param request

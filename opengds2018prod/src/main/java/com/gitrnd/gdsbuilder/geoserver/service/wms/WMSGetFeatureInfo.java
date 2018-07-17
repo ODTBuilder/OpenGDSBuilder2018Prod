@@ -1,5 +1,7 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wms;
 
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnGetFeatureInfoFormat;
+
 /**
  * @Description  
  * @author SG.Lee
@@ -18,7 +20,7 @@ public class WMSGetFeatureInfo {
 	private int width = 0;
 	private int height = 0;
 	private String query_layers = "";
-	private String info_format = "";
+	private EnGetFeatureInfoFormat info_format = null;
 	private String format_options = "";
 	private int feature_count = 0;
 	private int x = 0;
@@ -28,7 +30,7 @@ public class WMSGetFeatureInfo {
 	private String exceptions = "";
 
 	public WMSGetFeatureInfo(String serverURL, String version, String layers, String styles, String srs, String crs,String bbox,
-			int width, int height, String query_layers, String info_format,String format_options,  int feature_count, int x, int y, int i, int j, String exceptions) {
+			int width, int height, String query_layers, EnGetFeatureInfoFormat info_format,String format_options,  int feature_count, int x, int y, int i, int j, String exceptions) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -60,7 +62,7 @@ public class WMSGetFeatureInfo {
 		if (!query_layers.trim().equals("")) {
 			this.query_layers = query_layers;
 		}
-		if (!info_format.trim().equals("")) {
+		if (info_format!=null) {
 			this.info_format = info_format;
 		}
 		if (!format_options.trim().equals("")) {
@@ -231,11 +233,11 @@ public class WMSGetFeatureInfo {
 		this.query_layers = query_layers;
 	}
 
-	public String getInfo_format() {
+	public EnGetFeatureInfoFormat getInfo_format() {
 		return info_format;
 	}
 
-	public void setInfo_format(String info_format) {
+	public void setInfo_format(EnGetFeatureInfoFormat info_format) {
 		this.info_format = info_format;
 	}
 	public String getCrs() {
@@ -326,9 +328,9 @@ public class WMSGetFeatureInfo {
 				urlBuffer.append("&");
 				urlBuffer.append("styles=" + styles);
 			}
-			if (!this.info_format.equals("")) {
+			if (this.info_format!=null) {
 				urlBuffer.append("&");
-				urlBuffer.append("info_format=" + info_format);
+				urlBuffer.append("info_format=" + info_format.getTypeName());
 			}
 			if (!this.format_options.equals("")) {
 				urlBuffer.append("&");

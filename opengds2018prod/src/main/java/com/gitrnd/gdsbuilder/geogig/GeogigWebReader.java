@@ -117,6 +117,8 @@ public class GeogigWebReader {
 	 */
 	public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
 			String transactionId) {
+		
+		String referenceId = serverName + "/" + repoName + "/" + reference; 
 
 		// json tree
 		GeogigRepositoryTree reposTree = new GeogigRepositoryTree();
@@ -130,8 +132,10 @@ public class GeogigWebReader {
 		// branch
 		for (Repo repo : repos) {
 			String name = repo.getName();
-			String storageType = null;
+			System.out.println(name);
 
+			String storageType = null;
+			// repos type
 			ConfigRepository configRepos = new ConfigRepository();
 			GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password, name, null);
 			List<Config> configs = geogigConfig.getConfigs();
@@ -141,39 +145,40 @@ public class GeogigWebReader {
 				}
 			}
 
-			reposTree.addRepo(serverName, name, storageType);
+			String reposId = serverName + "/" + name;
+			reposTree.addRepo(serverName, reposId, name, storageType);
 			ListBranch listBranch = new ListBranch();
 			GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name);
 			List<Branch> localList = branches.getLocalBranchList();
 			for (Branch localBranch : localList) {
 				String branchName = localBranch.getName();
-				if (branchName.equalsIgnoreCase(reference)) {
-					StatusRepository stausCommand = new StatusRepository();
-					GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName,
-							transactionId);
-					Header header = status.getHeader();
-					String headerBranch = header.getBranch();
-					if (branchName.equalsIgnoreCase(headerBranch)) {
-						if (status.getUnmerged() != null) {
-							reposTree.addBranch(name, branchName, "UnMerged");
-						}
-						if (status.getUnmerged() != null) {
 
-						} else {
-							reposTree.addBranch(name, branchName, "Merged");
-						}
+				StatusRepository stausCommand = new StatusRepository();
+				GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName, transactionId);
+				Header header = status.getHeader();
+				String headerBranch = header.getBranch();
+				String branchId = reposId + "/" + branchName;
+				if (repoName.equalsIgnoreCase(name) && branchName.equalsIgnoreCase(headerBranch)) {
+					referenceId = branchId;
+					if (status.getUnmerged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "UnMerged");
+					} else {
+						reposTree.addBranch(reposId, branchId, branchName, "Merged");
 					}
+				} else {
+					reposTree.addBranch(reposId, branchId, branchName, null);
 				}
 			}
-		}
 
+		}
 		// branch ls-tree : default master
 		LsTreeRepository lsTree = new LsTreeRepository();
 		GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repoName, reference);
 		List<Node> nodes = revisionTree.getNodes();
 		for (Node node : nodes) {
 			String path = node.getPath();
-			reposTree.add(reference, path);
+			String pathId = referenceId + "/" + path;
+			reposTree.addTree(referenceId, pathId, path);
 		}
 		return reposTree;
 	}

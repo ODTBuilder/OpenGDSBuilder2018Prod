@@ -117,8 +117,8 @@ public class GeogigWebReader {
 	 */
 	public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
 			String transactionId) {
-		
-		String referenceId = serverName + "/" + repoName + "/" + reference; 
+
+		String referenceId = serverName + "/" + repoName + "/" + reference;
 
 		// json tree
 		GeogigRepositoryTree reposTree = new GeogigRepositoryTree();
@@ -132,8 +132,6 @@ public class GeogigWebReader {
 		// branch
 		for (Repo repo : repos) {
 			String name = repo.getName();
-			System.out.println(name);
-
 			String storageType = null;
 			// repos type
 			ConfigRepository configRepos = new ConfigRepository();
@@ -144,7 +142,6 @@ public class GeogigWebReader {
 					storageType = config.getValue();
 				}
 			}
-
 			String reposId = serverName + "/" + name;
 			reposTree.addRepo(serverName, reposId, name, storageType);
 			ListBranch listBranch = new ListBranch();
@@ -152,7 +149,6 @@ public class GeogigWebReader {
 			List<Branch> localList = branches.getLocalBranchList();
 			for (Branch localBranch : localList) {
 				String branchName = localBranch.getName();
-
 				StatusRepository stausCommand = new StatusRepository();
 				GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName, transactionId);
 				Header header = status.getHeader();

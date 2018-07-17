@@ -124,60 +124,42 @@ gb.tree.GeoServer = function(obj) {
 					"themes" : {
 						"stripes" : true
 					},
-					'data' : [ {
-						"id" : "geoserver1",
-						"parent" : "#",
-						"text" : "geoserver1",
-						"type" : "geoserver"
-					}, {
-						"id" : "workspace1",
-						"parent" : "geoserver1",
-						"text" : "workspace1",
-						"type" : "workspace"
-					}, {
-						"id" : "datastore1",
-						"parent" : "workspace1",
-						"text" : "datastore1",
-						"type" : "datastore"
-					}, {
-						"id" : "layer1",
-						"parent" : "datastore1",
-						"text" : "layer1",
-						"type" : "polygon"
-					}, {
-						"id" : "layer2",
-						"parent" : "datastore1",
-						"text" : "layer2",
-						"type" : "linestring"
-					}, {
-						"id" : "layer3",
-						"parent" : "datastore1",
-						"text" : "layer3",
-						"type" : "point"
-					}, {
-						"id" : "raster1",
-						"parent" : "datastore1",
-						"text" : "raster1",
-						"type" : "raster"
-					} ]
-				/*
-				 * 'data' : { 'url' : function() { return
-				 * 'geoserver/getGeolayerCollectionTree.ajax?treeType=all'; } }
-				 */
+					/*
+					 * 'data' : [ { "id" : "geoserver1", "parent" : "#", "text" :
+					 * "geoserver1", "type" : "geoserver" }, { "id" :
+					 * "workspace1", "parent" : "geoserver1", "text" :
+					 * "workspace1", "type" : "workspace" }, { "id" :
+					 * "datastore1", "parent" : "workspace1", "text" :
+					 * "datastore1", "type" : "datastore" }, { "id" : "layer1",
+					 * "parent" : "datastore1", "text" : "layer1", "type" :
+					 * "polygon" }, { "id" : "layer2", "parent" : "datastore1",
+					 * "text" : "layer2", "type" : "linestring" }, { "id" :
+					 * "layer3", "parent" : "datastore1", "text" : "layer3",
+					 * "type" : "point" }, { "id" : "raster1", "parent" :
+					 * "datastore1", "text" : "raster1", "type" : "raster" } ]
+					 */
+
+					"data" : {
+						'url' : function() {
+							return that.getGetTreeURL();
+						}
+					}
+
 				},
 				"geoserver" : {
 					"map" : options.map instanceof ol.Map ? options.map : undefined,
-					"user" : "admin",
-					"layerInfo" : undefined,
-					"layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
-					"groupLayerInfoURL" : "geoserver/getGeoGroupLayerInfoList.ajax",
-					"WMSLayerURL" : "http://175.116.181.42:9990/geoserver/wms",
-					"createLayer" : undefined,
-					"deleteGroupLayer" : undefined,
-					"deleteLayer" : undefined,
-					"downloadNGIDXF" : "fileExport/fileExport.ajax",
-					"downloadGeoserver" : "geoserver/downloadRequest.do",
-					"clientRefer" : undefined
+				// "user" : "admin",
+				// "layerInfo" : undefined,
+				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
+				// "groupLayerInfoURL" :
+				// "geoserver/getGeoGroupLayerInfoList.ajax",
+				// "WMSLayerURL" : "http://175.116.181.42:9990/geoserver/wms",
+				// "createLayer" : undefined,
+				// "deleteGroupLayer" : undefined,
+				// "deleteLayer" : undefined,
+				// "downloadNGIDXF" : "fileExport/fileExport.ajax",
+				// "downloadGeoserver" : "geoserver/downloadRequest.do",
+				// "clientRefer" : undefined
 				},
 				"search" : {
 					show_only_matches : true
@@ -837,8 +819,14 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 	console.log(url);
 	console.log(id);
 	console.log(password);
+	var params = {
+		"serverName" : name,
+		"serverURL" : url,
+		"Id" : id,
+		"pw" : password
+	};
 	$.ajax({
-		url : this.getFeature,
+		url : this.getAddGeoServerURL(),
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		data : params,
@@ -851,7 +839,7 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 			$("body").css("cursor", "default");
 		},
 		success : function(data) {
-
+			console.log(data);
 		}
 	});
 };

@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.repository.PresetRepository;
 
@@ -22,7 +21,7 @@ public class PresetService {
 	public Preset retrieveBasePreset(int cat) {
 		return presetRepository.retrieveBasePreset(cat);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Preset retrievePridByBasePreset(int cat) {
 		return presetRepository.retrievePridByBasePreset(cat);
@@ -32,7 +31,7 @@ public class PresetService {
 	public Preset retrievePresetById(int pid) {
 		return presetRepository.retrievePresetById(pid);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public Preset retrieveCatByPreset(int pid) {
 		return presetRepository.retrieveCatByPreset(pid);

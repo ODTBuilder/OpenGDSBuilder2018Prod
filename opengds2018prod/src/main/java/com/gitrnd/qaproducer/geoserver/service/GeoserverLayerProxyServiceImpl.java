@@ -305,7 +305,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	private WMSGetLegendGraphic getWMSGetLegendGraphic(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request) {
 		String serverURL = dtGeoManager.getRestURL() +"/"+workspace+"/wms";
 		String version = "1.0.0";
-		String format = "";
+		EnWMSOutputFormat format = null;
 		String legend_options = "";
 		String layer = "";
 		int width = 0;
@@ -324,7 +324,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			if (key.toLowerCase().equals("version")) {
 				version = value;
 			} else if (key.toLowerCase().equals("format")) {
-				format = value;
+				format = EnWMSOutputFormat.getFromType(value);
 			} else if (key.toLowerCase().equals("legend_options")) {
 				legend_options = value;
 			} else if (key.toLowerCase().equals("layer")) {

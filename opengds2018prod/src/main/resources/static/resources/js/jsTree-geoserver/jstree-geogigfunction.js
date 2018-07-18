@@ -42,8 +42,32 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 			for (i = 0, j = dpc.length; i < j; i++) {
 				for (var k = 0; k < optKeys.length; k++) {
 					var list = this._data.geogigfunction[optKeys[k]].list;
-					if (m[dpc[i]].original.type === "branch") {
-						m[dpc[i]].state["unmerged"] = true;
+					if (m[dpc[i]].original.hasOwnProperty("type")) {
+						if (m[dpc[i]].original.type === "geoserver") {
+
+						} else if (m[dpc[i]].original.type === "repository") {
+
+						} else if (m[dpc[i]].original.type === "branch") {
+							if (m[dpc[i]].original.hasOwnProperty("status")) {
+								if (m[dpc[i]].original.status === "unmerged") {
+									m[dpc[i]].state["unmerged"] = true;
+								} else {
+									m[dpc[i]].state["unmerged"] = false;
+								}
+								if (m[dpc[i]].original.status === "unstaged") {
+									m[dpc[i]].state["unstaged"] = true;
+								} else {
+									m[dpc[i]].state["unstaged"] = false;
+								}
+								if (m[dpc[i]].original.status === "staged") {
+									m[dpc[i]].state["staged"] = true;
+								} else {
+									m[dpc[i]].state["staged"] = false;
+								}
+							}
+						} else if (m[dpc[i]].original.type === "layer") {
+
+						}
 					}
 					/*
 					 * if (list.indexOf(m[dpc[i]].id) !== -1) {

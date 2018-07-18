@@ -825,13 +825,12 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 		"Id" : id,
 		"pw" : password
 	};
+
 	$.ajax({
 		url : this.getAddGeoServerURL(),
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		data : params,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
 		beforeSend : function() {
 			$("body").css("cursor", "wait");
 		},
@@ -842,6 +841,7 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 			console.log(data);
 		}
 	});
+
 };
 
 /**

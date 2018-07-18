@@ -182,9 +182,9 @@ html {
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"url" : {
-				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax",
-				"addGeoServer" : "geoserver/addGeoserver.ajax",
-				"deleteGeoServer" : "geoserver/removeGeoserver.ajax"
+				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

@@ -125,16 +125,15 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			throw new IllegalArgumentException("Workspace may not be null");
 		if(layerNames==null)
 			throw new IllegalArgumentException("LayerNames may not be null");
-		if(layerNames.size()==0)
-			throw new IllegalArgumentException("LayerNames may not be null");
 
 		DTGeoLayerList geoLayerList = new DTGeoLayerList();
-		
-		for(String layerName:layerNames){
-			DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
-			RESTLayer layer = getLayer(workspace, layerName);
-//			dtGeoLayer.setStyle(layer.getDefaultStyle());
-			geoLayerList.add(dtGeoLayer);
+		if(layerNames!=null){
+			for(String layerName:layerNames){
+				DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
+				RESTLayer layer = getLayer(workspace, layerName);
+//				dtGeoLayer.setStyle(layer.getDefaultStyle());
+				geoLayerList.add(dtGeoLayer);
+			}
 		}
 		return geoLayerList;
 	}

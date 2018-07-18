@@ -825,12 +825,11 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 		"Id" : id,
 		"pw" : password
 	};
-
 	$.ajax({
-		url : this.getAddGeoServerURL(),
+		url : this.getAddGeoServerURL() + "&" + jQuery.param(params),
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
-		data : params,
+		// data : params,
 		beforeSend : function() {
 			$("body").css("cursor", "wait");
 		},

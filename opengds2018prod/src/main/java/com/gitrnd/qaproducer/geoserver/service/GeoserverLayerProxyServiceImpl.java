@@ -311,6 +311,10 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		int width = 0;
 		int height = 0;
 		int scale = 0;
+		String style = "";
+		String sld = "";
+		String sld_body= "";
+		String exceptions="";
 
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
@@ -331,9 +335,17 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				height = Integer.parseInt(value);
 			} else if (key.toLowerCase().equals("scale")) {
 				scale = Integer.parseInt(value);
+			} else if (key.toLowerCase().equals("style")) {
+				style = value;
+			} else if (key.toLowerCase().equals("sld")) {
+				sld = value;
+			} else if (key.toLowerCase().equals("sld_body")) {
+				sld_body = value;
+			} else if (key.toLowerCase().equals("exceptions")) {
+				exceptions = value;
 			}
 		}
-		return new WMSGetLegendGraphic(serverURL, version, format, width, height, layer, scale, legend_options);
+		return new WMSGetLegendGraphic(serverURL, version, format, width, height, layer, scale, legend_options, style, sld, sld_body, exceptions);
 	}
 	
 	@Override

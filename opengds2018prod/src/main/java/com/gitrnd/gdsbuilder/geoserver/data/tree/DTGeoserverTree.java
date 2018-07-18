@@ -106,11 +106,11 @@ public class DTGeoserverTree extends JSONArray {
 		            	if(dStore!=null){
 		            		String dsType = dStore.getStoreType();
 		            		JSONObject dsTree = new JSONObject();
-			            	dsTree.put("id", dsType);
-			            	dsTree.put("parent", wsName);
-			            	dsTree.put("text", dsName);
-			            	dsTree.put("type", "datastore");
-			            	super.add(dsTree);
+							dsTree.put("id", wsName+"_"+dsName);
+							dsTree.put("parent", wsName);
+							dsTree.put("text", dsName);
+							dsTree.put("type", "datastore");
+							super.add(dsTree);
 			            	dsTree.clear();
 			            	
 			            	RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
@@ -121,12 +121,11 @@ public class DTGeoserverTree extends JSONArray {
 			            	for(DTGeoLayer dtGLayer : dtGLayerList){
 			            		if(dtGLayer!=null){
 			            			JSONObject layerTree = new JSONObject();
-			            			layerTree.put("id", dsType);
-			            			layerTree.put("parent", wsName);
-			            			layerTree.put("text", dsName);
-			            			layerTree.put("type", "datastore");
-			            			super.add(layerTree);
-			            			layerTree.clear();
+									layerTree.put("id", wsName+"_"+dsName+"_"+dtGLayer.getlName());
+									layerTree.put("parent", wsName+"_"+dsName);
+									layerTree.put("text", dtGLayer.getlName());
+									layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
+									super.add(layerTree);
 			            		}
 			            	}
 		            	}

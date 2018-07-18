@@ -4,11 +4,10 @@
 package com.gitrnd.qaproducer.geogig.service;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.GeogigRepositoryTree;
 import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -21,20 +20,20 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigTreeBuilderService#getWorkingTree(org.
-	 * json.simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigTreeBuilderService#getWorkingTree(
+	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public JSONArray getWorkingTree(JSONObject param) {
+	public JSONArray getWorkingTree(DTGeoserverManager geoserverManager, String serverName, String repoName,
+			String reference, String transactionId) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String reference = (String) param.get("reference"); // default : master, null : master
-		String transactionId = (String) param.get("transactionId");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		// tmp default
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		GeogigRepositoryTree tree = reader.getWorkingTree(serverName, repoName, reference, transactionId);
-		return tree;
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.getWorkingTree(serverName, repoName, reference, transactionId);
 	}
+
 }

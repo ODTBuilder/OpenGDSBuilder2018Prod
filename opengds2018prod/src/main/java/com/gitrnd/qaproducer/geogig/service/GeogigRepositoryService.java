@@ -3,11 +3,10 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import org.json.simple.JSONObject;
-
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -16,39 +15,65 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 public interface GeogigRepositoryService {
 
 	/**
-	 * @param param
-	 * @return GeogigRemoteRepository
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param verbose
+	 * @return
 	 */
-	public GeogigRemoteRepository listRemoteRepository(JSONObject param);
+	GeogigRemoteRepository listRemoteRepository(DTGeoserverManager geoserverManager, String repoName, Boolean verbose);
 
 	/**
-	 * @param param
-	 * @return GeogigRemoteRepository
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param remoteName
+	 * @param remoteURL
+	 * @return
 	 */
-	public GeogigRemoteRepository addRemoteRepository(JSONObject param);
+	GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
+			String remoteURL);
 
 	/**
-	 * @param param
-	 * @return GeogigRemoteRepository
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param removeTrue
+	 * @param remoteName
+	 * @return
 	 */
-	public GeogigRemoteRepository removeRemoteRepository(JSONObject param);
+	GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			Boolean removeTrue, String remoteName);
 
 	/**
-	 * @param param
-	 * @return GeogigRemoteRepository
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param remoteName
+	 * @return
 	 */
-	public GeogigRemoteRepository pingRemoteRepository(JSONObject param);
+	GeogigRemoteRepository pingRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			String remoteName);
 
 	/**
-	 * @param param
-	 * @return GeogigPull
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @param remoteName
+	 * @param branchName
+	 * @param remoteBranchName
+	 * @param authorName
+	 * @param authorEmail
+	 * @return
 	 */
-	public GeogigPull pullRepository(JSONObject param);
+	GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String remoteName, String branchName, String remoteBranchName, String authorName, String authorEmail);
 
 	/**
-	 * @param param
-	 * @return GeogigPush
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param remoteName
+	 * @param branchName
+	 * @param remoteBranchName
+	 * @return
 	 */
-	public GeogigPush pushRepository(JSONObject param);
+	GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
+			String branchName, String remoteBranchName);
 
 }

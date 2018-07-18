@@ -1,12 +1,14 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wms;
 
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnWMSOutputFormat;
+
 public class WMSGetLegendGraphic {
 
 	private final static String SERVICE = "WMS";
 	private final static String REQUEST = "GetLegendGraphic";
 	private String serverURL = "";
 	private String version = "1.0.0";
-	private String format = "";
+	private EnWMSOutputFormat format = null;
 	private int width = 0;
 	private int height = 0;
 	private String layer = "";
@@ -18,7 +20,7 @@ public class WMSGetLegendGraphic {
 	private String exceptions="";
 	
 	
-	public WMSGetLegendGraphic(String serverURL, String version, String format, int width, int height, String layer, int scale, String legend_options, String style, String sld, String sld_body, String exceptions){
+	public WMSGetLegendGraphic(String serverURL, String version, EnWMSOutputFormat format, int width, int height, String layer, int scale, String legend_options, String style, String sld, String sld_body, String exceptions){
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -26,7 +28,7 @@ public class WMSGetLegendGraphic {
 		if (!version.trim().equals("")) {
 			this.version = version;
 		}
-		if (!format.trim().equals("")) {
+		if (format!=null) {
 			this.format = format;
 		}
 		if (width != 0) {
@@ -72,10 +74,10 @@ public class WMSGetLegendGraphic {
 	public void setVersion(String version) {
 		this.version = version;
 	}
-	public String getFormat() {
+	public EnWMSOutputFormat getFormat() {
 		return format;
 	}
-	public void setFormat(String format) {
+	public void setFormat(EnWMSOutputFormat format) {
 		this.format = format;
 	}
 	public int getWidth() {

@@ -3,7 +3,6 @@ package com.gitrnd.gdsbuilder.geoserver.data.tree;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,18 +20,24 @@ import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 
+@SuppressWarnings("serial")
 public class DTGeoserverTrees extends JSONArray {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTrees(DTGeoserverManagerList dtGeoserverList) {
-
+		build(dtGeoserverList);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public DTGeoserverTrees build(DTGeoserverManagerList dtGeoserverList){
 		if (dtGeoserverList != null) {
-			Iterator<Entry<String, DTGeoserverManager>> dItor = dtGeoserverList.entrySet().iterator();
-			while (dItor.hasNext()) {
-				String serverName = (String) dItor.next().getKey();
-				DTGeoserverManager dtGeoManager = dItor.next().getValue();
+			Iterator<String> keys = dtGeoserverList.keySet().iterator();
+
+			while (keys.hasNext()) {
+				String serverName = (String) keys.next();
+				DTGeoserverManager dtGeoManager = dtGeoserverList.get(serverName);
 
 				if (dtGeoManager != null) {
 					DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
@@ -55,7 +60,7 @@ public class DTGeoserverTrees extends JSONArray {
 								wsTree.put("text", wsName);
 								wsTree.put("type", "workspace");
 								super.add(wsTree);
-								wsTree.clear();
+//								wsTree.clear();
 
 								RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
 
@@ -66,12 +71,12 @@ public class DTGeoserverTrees extends JSONArray {
 									if (dStore != null) {
 										String dsType = dStore.getStoreType();
 										JSONObject dsTree = new JSONObject();
-										dsTree.put("id", dsType);
+										dsTree.put("id", wsName+"_"+dsName);
 										dsTree.put("parent", wsName);
 										dsTree.put("text", dsName);
 										dsTree.put("type", "datastore");
 										super.add(dsTree);
-										dsTree.clear();
+//										dsTree.clear();
 
 										RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
 										ArrayList<String> layerNames = new ArrayList<String>(ftList.getNames());
@@ -82,12 +87,12 @@ public class DTGeoserverTrees extends JSONArray {
 										for (DTGeoLayer dtGLayer : dtGLayerList) {
 											if (dtGLayer != null) {
 												JSONObject layerTree = new JSONObject();
-												layerTree.put("id", dsType);
-												layerTree.put("parent", wsName);
-												layerTree.put("text", dsName);
-												layerTree.put("type", "datastore");
+												layerTree.put("id", wsName+"_"+dsName+"_"+dtGLayer.getlName());
+												layerTree.put("parent", wsName+"_"+dsName);
+												layerTree.put("text", dtGLayer.getlName());
+												layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
 												super.add(layerTree);
-												layerTree.clear();
+//												layerTree.clear();
 											}
 										}
 									}
@@ -116,5 +121,6 @@ public class DTGeoserverTrees extends JSONArray {
 			super.add(errorJSON);
 			logger.warn("Geoserver를 다시 추가해주세요");
 		}
+		return this;
 	}
 }

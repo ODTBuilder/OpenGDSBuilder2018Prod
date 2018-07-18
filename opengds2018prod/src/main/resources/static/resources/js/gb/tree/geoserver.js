@@ -796,8 +796,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
-		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val());
-		addGeoServerModal.close();
+		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 };
 
@@ -814,7 +813,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
  * @param {String}
  *            password - 지오서버 접속을 위한 비밀번호
  */
-gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
+gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, callback) {
+	var that = this;
 	console.log("add geoserver");
 	console.log(name);
 	console.log(url);
@@ -839,6 +839,8 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 		},
 		success : function(data) {
 			console.log(data);
+			callback.close();
+			that.refreshList();
 		}
 	});
 };

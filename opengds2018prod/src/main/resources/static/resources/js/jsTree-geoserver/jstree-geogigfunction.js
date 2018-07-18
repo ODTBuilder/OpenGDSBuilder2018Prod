@@ -34,13 +34,17 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		parent.refresh.call(this, skip_loading, forget_state);
 	};
 	this.bind = function() {
-		this.element.on('loaded.jstree', $.proxy(function(e, data) {
-			console.log("loaded");
+		this.element.on('ready.jstree', $.proxy(function(e, data) {
+			console.log("ready");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
 			console.log(node);
 			var rawData = data.instance.settings.core.data;
 			if (Array.isArray(rawData)) {
-
+				for (var i = 0; i < rawData.length; i++) {
+					if (rawData[i]["type"] === "repository") {
+						console.log(rawData[i]);
+					}
+				}
 			}
 		}, this)).on('model.jstree', $.proxy(function(e, data) {
 			var m = this._model.data, dpc = data.nodes, i, j, c = 'default', k, optKeys = Object.keys(this._data.geogigfunction);

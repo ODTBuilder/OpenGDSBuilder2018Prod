@@ -20,22 +20,21 @@ import com.gitrnd.qaproducer.user.service.UserService;
 @Service
 public class RequestService {
 
-	
 	// qa progress
 	protected static int fileUpload = 1;
-	
+
 	@Autowired
 	private Producer producer;
-	
+
 	@Autowired
 	private FileStatusService fileStatusService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private QAProgressService qapgService;
-	
+
 	@Autowired
 	private QACategoryService qaCatService;
 
@@ -48,7 +47,8 @@ public class RequestService {
 		}
 	}
 
-	public void requestQAList(List<FileStatus> files, int cid, String fileformat,String crs,String qaVer, String qaType, String bPrid, int prid) {
+	public void requestQAList(List<FileStatus> files, int cid, String fileformat, String crs, String qaVer,
+			String qaType, String bPrid, int prid) {
 		for (int k = 0; k < files.size(); k++) {
 			// file parsing
 			Long fileIdx = (long) files.get(k).getFid();
@@ -78,9 +78,8 @@ public class RequestService {
 			progress.setFileType(fileformat);
 			progress.setPrid(prid);
 			qapgService.insertQARequest(progress);
-			
+
 			int pid = progress.getPIdx();
-			
 			JSONObject json = new JSONObject();
 			json.put("file", files.get(k).getFid());
 			json.put("category", cid);
@@ -89,8 +88,8 @@ public class RequestService {
 			json.put("pid", pid);
 			json.put("prid", bPrid);
 			json.put("fileformat", fileformat);
-			json.put("crs", "EPSG:"+crs);
-			
+			json.put("crs", "EPSG:" + crs);
+
 			producer.produceMsg(json.toString());
 		}
 	}

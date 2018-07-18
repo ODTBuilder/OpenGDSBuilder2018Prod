@@ -33,6 +33,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -64,7 +65,8 @@ public class GeoserverController extends AbstractController {
 	@Qualifier("proService")
 	private GeoserverLayerProxyService proService;
 
-	@RequestMapping(value = "/addGeoserver.ajax")
+	@RequestMapping(value = "/addGeoserver.ajax", method = RequestMethod.POST)
+	@ResponseBody
 	public long addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -72,7 +74,8 @@ public class GeoserverController extends AbstractController {
 		return super.addGeoserverToSession(request, loginUser);
 	}
 	
-	@RequestMapping(value = "/removeGeoserver.ajax")
+	@RequestMapping(value = "/removeGeoserver.ajax", method = RequestMethod.POST)
+	@ResponseBody
 	public long removeGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -85,17 +88,17 @@ public class GeoserverController extends AbstractController {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestGeoserverDataOutput(loginUser, request, response);
+//		proService.requestGeoserverDataOutput(loginUser, request, response);
 	}
 
 	
 	/**
-	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청 
+	 * @Description 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부) 
 	 * @author SG.Lee
 	 * @Date 2018. 7. 13. 오후 5:00:28
 	 * @param request
 	 * @param loginUser
-	 * @param wsName
+	 * @param workspace
 	 * @return JSONArray
 	 * */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -111,12 +114,12 @@ public class GeoserverController extends AbstractController {
 	}
 	
 	/**
-	 * @Description 트리생성 
+	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청  
 	 * @author SG.Lee
 	 * @Date 2018. 7. 13. 오후 5:00:28
 	 * @param request
 	 * @param loginUser
-	 * @param wsName
+	 * @param workspace
 	 * @return JSONArray
 	 * */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -139,14 +142,25 @@ public class GeoserverController extends AbstractController {
 	 * @param response 
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "geoserverWMSLayerLoad.do")
+	@RequestMapping(value = "geoserverWMSGetMap.do")
 	@ResponseBody
-	public void geoserverWMSLoad(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
+	public void geoserverWMSGetMap(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
 			throws Exception {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestWMSLayer(loginUser, request, response);
+		
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		String workspace = request.getParameter("workspace");
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}else if(workspace.equals("")||workspace==null){
+			response.sendError(500, "workspace를 입력하지 않았습니다.");
+		}
+		else{
+			proService.requestGetMap(dtGeoserverManager, workspace, request, response);
+		}
 	}
 
 	/**
@@ -165,7 +179,17 @@ public class GeoserverController extends AbstractController {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestGetFeature(loginUser, request, response);
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		String workspace = request.getParameter("workspace");
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}else if(workspace.equals("")||workspace==null){
+			response.sendError(500, "workspace를 입력하지 않았습니다.");
+		}
+		else{
+			proService.requestGetFeature(dtGeoserverManager, workspace, request, response);
+		}
 	}
 
 	/**
@@ -184,7 +208,17 @@ public class GeoserverController extends AbstractController {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestGetFeatureInfo(loginUser, request, response);
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		String workspace = request.getParameter("workspace");
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}else if(workspace.equals("")||workspace==null){
+			response.sendError(500, "workspace를 입력하지 않았습니다.");
+		}
+		else{
+			proService.requestGetFeatureInfo(dtGeoserverManager, workspace, request, response);
+		}
 	}
 
 	/**
@@ -203,7 +237,17 @@ public class GeoserverController extends AbstractController {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		proService.requestWMSGetLegendGraphic(loginUser, request, response);
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		String workspace = request.getParameter("workspace");
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}else if(workspace.equals("")||workspace==null){
+			response.sendError(500, "workspace를 입력하지 않았습니다.");
+		}
+		else{
+			proService.requestWMSGetLegendGraphic(dtGeoserverManager, workspace, request, response);
+		}
 	}
 
 	/**
@@ -227,9 +271,14 @@ public class GeoserverController extends AbstractController {
 		if (geoLayerList.size() == 0) {
 			return null;
 		} else{
-			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
-			String wsName = request.getParameter("wsName");
-			return geoserverService.getGeoLayerList(dtGeoserverManager, wsName, (ArrayList<String>) geoLayerList);
+			String serverName = (String) jsonObject.get("serverName");
+			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+			if(dtGeoserverManager==null){
+				return null;
+			}else{
+				String workspace = request.getParameter("workspace");
+				return geoserverService.getGeoLayerList(dtGeoserverManager, workspace, (ArrayList<String>) geoLayerList);
+			}
 		}
 	}
 
@@ -254,9 +303,14 @@ public class GeoserverController extends AbstractController {
 		if (layerList.size() == 0) {
 			return null;
 		}else{
-			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
-			String wsName = request.getParameter("wsName");
-			return geoserverService.duplicateCheck(dtGeoserverManager, wsName, (ArrayList<String>) layerList);
+			String serverName = (String) jsonObject.get("serverName");
+			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+			if(dtGeoserverManager==null){
+				return null;
+			}else{
+				String workspace = request.getParameter("workspace");
+				return geoserverService.duplicateCheck(dtGeoserverManager, workspace, (ArrayList<String>) layerList);
+			}
 		}
 	}
 
@@ -279,12 +333,17 @@ public class GeoserverController extends AbstractController {
 		}
 		List<String> geoLayerList = new ArrayList<String>();
 		geoLayerList = (ArrayList<String>) jsonObject.get("geoLayerList");
-		String wsName = (String) jsonObject.get("wsName");
 		if (geoLayerList.size() == 0) {
 			return null;
-		} else{
-			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
-			return geoserverService.getGeoGroupLayerList(dtGeoserverManager, wsName, (ArrayList<String>) geoLayerList);
+		}else{
+			String serverName = (String) jsonObject.get("serverName");
+			DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+			if(dtGeoserverManager==null){
+				return null;
+			}else{
+				String workspace = request.getParameter("workspace");
+				return geoserverService.getGeoGroupLayerList(dtGeoserverManager, workspace, (ArrayList<String>) geoLayerList);
+			}
 		}
 	}
 
@@ -295,7 +354,9 @@ public class GeoserverController extends AbstractController {
 		String sldBody = (String) jsonObject.get("sldBody");
 		String name = (String) jsonObject.get("name");
 
-		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
+		String serverName = (String) jsonObject.get("serverName");
+		
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		
 		geoserverService.publishStyle(dtGeoserverManager, sldBody, name);
 	}
@@ -305,8 +366,9 @@ public class GeoserverController extends AbstractController {
 	public void updateGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String sldBody = (String) jsonObject.get("sldBody");
 		String name = (String) jsonObject.get("name");
+		String serverName = (String) jsonObject.get("serverName");
 
-		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		
 		geoserverService.updateStyle(dtGeoserverManager, sldBody, name);
 	}
@@ -315,8 +377,9 @@ public class GeoserverController extends AbstractController {
 	@ResponseBody
 	public void removeGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String name = (String) jsonObject.get("name");
+		String serverName = (String) jsonObject.get("serverName");
 		
-		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser);
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		
 		geoserverService.removeStyle(dtGeoserverManager, name);
 	}

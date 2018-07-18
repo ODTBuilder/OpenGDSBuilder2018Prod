@@ -1,11 +1,12 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wms;
 
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnGetFeatureInfoFormat;
+
 /**
- * WMS 서버가 제공하는 작업, 서비스, 데이터에 대한 메타데이터 목록을 해당 서버에 요청
- * 
+ * @Description  
  * @author SG.Lee
- * @Date 2017. 5. 29. 오후 2:14:37
- */
+ * @Date 2018. 7. 17. 오후 1:26:26
+ * */
 public class WMSGetFeatureInfo {
 	private final static String SERVICE = "WMS";
 	private final static String REQUEST = "GetFeatureInfo";
@@ -19,15 +20,17 @@ public class WMSGetFeatureInfo {
 	private int width = 0;
 	private int height = 0;
 	private String query_layers = "";
-	private String info_format = "";
+	private EnGetFeatureInfoFormat info_format = null;
 	private String format_options = "";
 	private int feature_count = 0;
 	private int x = 0;
 	private int y = 0;
+	private int i = 0; //1.3.0 버전일경우 x->i
+	private int j = 0; //1.3.0 버전일경우 y->j
 	private String exceptions = "";
 
 	public WMSGetFeatureInfo(String serverURL, String version, String layers, String styles, String srs, String crs,String bbox,
-			int width, int height, String query_layers, String info_format,String format_options,  int feature_count, int x, int y,String exceptions) {
+			int width, int height, String query_layers, EnGetFeatureInfoFormat info_format,String format_options,  int feature_count, int x, int y, int i, int j, String exceptions) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -59,7 +62,7 @@ public class WMSGetFeatureInfo {
 		if (!query_layers.trim().equals("")) {
 			this.query_layers = query_layers;
 		}
-		if (!info_format.trim().equals("")) {
+		if (info_format!=null) {
 			this.info_format = info_format;
 		}
 		if (!format_options.trim().equals("")) {
@@ -74,13 +77,21 @@ public class WMSGetFeatureInfo {
 		if (y != 0) {
 			this.y = y;
 		}
+		if (i != 0) {
+			this.i = i;
+		}
+		if (j != 0) {
+			this.j = j;
+		}
 		if (!exceptions.trim().equals("")) {
 			this.exceptions = exceptions;
 		}
 	}
+	
+	
 
 	public WMSGetFeatureInfo(String serverURL, String version, String layers, String styles, String srs, String crs, String bbox,
-			int width, int height, String query_layers, int x, int y) {
+			int width, int height, String query_layers, int x, int y, int i, int j) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -118,6 +129,28 @@ public class WMSGetFeatureInfo {
 		if (y != 0) {
 			this.y = y;
 		}
+		if (i != 0) {
+			this.i = i;
+		}
+		if (j != 0) {
+			this.j = j;
+		}
+	}
+
+	public int getI() {
+		return i;
+	}
+
+	public void setI(int i) {
+		this.i = i;
+	}
+
+	public int getJ() {
+		return j;
+	}
+
+	public void setJ(int j) {
+		this.j = j;
 	}
 
 	public static String getService() {
@@ -200,11 +233,11 @@ public class WMSGetFeatureInfo {
 		this.query_layers = query_layers;
 	}
 
-	public String getInfo_format() {
+	public EnGetFeatureInfoFormat getInfo_format() {
 		return info_format;
 	}
 
-	public void setInfo_format(String info_format) {
+	public void setInfo_format(EnGetFeatureInfoFormat info_format) {
 		this.info_format = info_format;
 	}
 	public String getCrs() {
@@ -256,6 +289,12 @@ public class WMSGetFeatureInfo {
 	public String getWMSGetFeatureInfoURL() {
 		StringBuffer urlBuffer = new StringBuffer();
 		if (!this.serverURL.equals("")) {
+			
+			if(serverURL.equals("")||version.equals("")||layers.equals("")||styles.equals("")||(crs.equals("")||srs.equals(""))
+					||bbox.equals("")||width==0||height==0||query_layers.equals("")||width==0||height==0||((x==0||y==0)||(i==0||j==0))){
+				throw new NullPointerException("필수값을 입력하지 않았습니다.");
+			}
+			
 			urlBuffer.append(serverURL);
 			urlBuffer.append("?");
 			urlBuffer.append("request=" + REQUEST);
@@ -264,6 +303,22 @@ public class WMSGetFeatureInfo {
 			if (!this.version.equals("")) {
 				urlBuffer.append("&");
 				urlBuffer.append("version=" + version);
+				if(!this.crs.trim().equals("")||!this.srs.trim().equals("")){
+					urlBuffer.append("&");
+					if(version.equals("1.3.0")){
+						urlBuffer.append("crs="+crs);
+						urlBuffer.append("&");
+						urlBuffer.append("i=" + String.valueOf(this.i));
+						urlBuffer.append("&");
+						urlBuffer.append("j=" + String.valueOf(this.j));
+					}else{
+						urlBuffer.append("srs="+srs);
+						urlBuffer.append("&");
+						urlBuffer.append("x=" + String.valueOf(this.x));
+						urlBuffer.append("&");
+						urlBuffer.append("y=" + String.valueOf(this.y));
+					}
+				}
 			}
 			if (!this.layers.equals("")) {
 				urlBuffer.append("&");
@@ -273,17 +328,9 @@ public class WMSGetFeatureInfo {
 				urlBuffer.append("&");
 				urlBuffer.append("styles=" + styles);
 			}
-			if (!this.srs.equals("")) {
+			if (this.info_format!=null) {
 				urlBuffer.append("&");
-				urlBuffer.append("srs=" + srs);
-			}
-			if (!this.crs.equals("")) {
-				urlBuffer.append("&");
-				urlBuffer.append("crs=" + crs);
-			}
-			if (!this.info_format.equals("")) {
-				urlBuffer.append("&");
-				urlBuffer.append("info_format=" + info_format);
+				urlBuffer.append("info_format=" + info_format.getTypeName());
 			}
 			if (!this.format_options.equals("")) {
 				urlBuffer.append("&");
@@ -309,10 +356,7 @@ public class WMSGetFeatureInfo {
 			urlBuffer.append("width=" + String.valueOf(this.width));
 			urlBuffer.append("&");
 			urlBuffer.append("height=" + String.valueOf(this.height));
-			urlBuffer.append("&");
-			urlBuffer.append("x=" + String.valueOf(this.x));
-			urlBuffer.append("&");
-			urlBuffer.append("y=" + String.valueOf(this.y));
+			
 		} else
 			return "";
 		return urlBuffer.toString();

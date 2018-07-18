@@ -7,10 +7,6 @@
 <title>GeoDT Online</title>
 <jsp:include page="/WEB-INF/jsp/common/libimport.jsp" />
 <style>
-/* .navbar-brand { */
-/* 	background-image: url(resources/img/onlyglobe.png); */
-/* 	width: 284px; */
-/* } */
 .crsitem {
 	cursor: pointer;
 }

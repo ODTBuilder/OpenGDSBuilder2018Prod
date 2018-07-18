@@ -110,8 +110,6 @@ html {
 		</div>
 		<div class="collapse navbar-collapse" id="navbar-collapse-2">
 			<ul class="nav navbar-nav">
-				<!-- <li><a href="#">File</a></li> -->
-
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
 					aria-expanded="false" title="Save">Save</a>
 					<ul class="dropdown-menu" role="menu">
@@ -120,8 +118,8 @@ html {
 					</ul></li>
 
 				<li><a href="#" title="Base map" id="changeBase">Base Map</a></li>
-				<li><a href="#">Validation</a></li>
-				<li><a href="#" title="QA Edit" id="qaedit">Navigator</a></li>
+				<li><a href="#" title="Validation">Validation</a></li>
+				<li><a href="#" title="Navigator" id="qaedit">Navigator</a></li>
 				<!-- <li><a href="#" title="QA Status" id="qastat">QA Status</a></li> -->
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
 					aria-expanded="false" title="Generalization">Generalization</a>
@@ -129,7 +127,7 @@ html {
 						<li><a href="#" title="Generalization Process" id="gen">Generalization</a></li>
 						<li><a href="#" title="Generalization Result" id="genstat">Result</a></li>
 					</ul></li>
-
+				<li><a href="#" title="Version Control" id="vermodal">Versioning</a></li>
 				<li><a href="#" title="Information" id="binfo">Information</a></li>
 			</ul>
 		</div>
@@ -138,18 +136,6 @@ html {
 		<div class="builderLayer">
 			<div class="builderLayerGeoServerPanel"></div>
 			<div class="builderLayerClientPanel"></div>
-			<!-- <div class="panel panel-default builderLayerClientPanel">
-				<div class="panel-heading">
-					<h3 class="panel-title" style="display: inline-block;">Layer</h3>
-					<button id="crefresh" class="pull-right gitbuilder-clearbtn">
-						<i class="fas fa-sync-alt"></i>
-					</button>
-				</div>
-				<div class="panel-body" style="padding: 0;">
-					<input type="text" class="form-control builder-tree-search" id="inputSearchClient" />
-					<div id="builderClientLayer" class="gitbuilder-layer-panel"></div>
-				</div>
-			</div> -->
 		</div>
 		<div class="bind"></div>
 	</div>
@@ -161,7 +147,15 @@ html {
 	</nav>
 	<script type="text/javascript">
 		var gbMap = new gb.Map({
-			"target" : $(".bind")[0]
+			"target" : $(".bind")[0],
+			"upperMap" : {
+				"controls" : [],
+				"layers" : []
+			},
+			"lowerMap" : {
+				"controls" : [],
+				"layers" : []
+			}
 		});
 
 		var gbBaseMap = new gb.style.BaseMap({
@@ -186,12 +180,25 @@ html {
 
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
-			"map" : gbMap.getUpperMap()
+			"map" : gbMap.getUpperMap(),
+			"url" : {
+				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax",
+				"addGeoServer" : "geoserver/addGeoserver.ajax",
+				"deleteGeoServer" : "geoserver/removeGeoserver.ajax"
+			}
 		});
 
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap()
+		});
+
+		var vrepo = new gb.versioning.Repository({
+
+		});
+
+		$("#vermodal").click(function() {
+			vrepo.open();
 		});
 
 		var gitrnd = {

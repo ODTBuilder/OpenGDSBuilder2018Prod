@@ -37,6 +37,9 @@
 <%-- jsTree geoserver plugin--%>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geoserver.js"></script>
+<%-- jsTree geogig plugin--%>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/jsTree-geoserver/jstree-geogigfunction.js"></script>
 <%-- jsTree openlayers3--%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree.js"></script>
 <link rel="stylesheet" type="text/css"
@@ -63,7 +66,9 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
 <!-- gb.crs.BaseCRS -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>
-<!-- gb geoserver -->
+<!-- gb.tree.geoserver -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
-<!-- gb openlayers -->
+<!-- gb.tree.openlayers -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/openlayers.js"></script>
+<!-- gb.versioning.repository  -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/versioning/repository.js"></script>

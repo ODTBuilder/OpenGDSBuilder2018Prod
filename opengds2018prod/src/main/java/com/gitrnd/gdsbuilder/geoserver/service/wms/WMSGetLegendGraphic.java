@@ -12,9 +12,13 @@ public class WMSGetLegendGraphic {
 	private String layer = "";
 	private int scale = 0;
 	private String legend_options = "";
+	private String style = "";
+	private String sld = "";
+	private String sld_body= "";
+	private String exceptions="";
 	
 	
-	public WMSGetLegendGraphic(String serverURL, String version, String format, int width, int height, String layer, int scale, String legend_options){
+	public WMSGetLegendGraphic(String serverURL, String version, String format, int width, int height, String layer, int scale, String legend_options, String style, String sld, String sld_body, String exceptions){
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -39,6 +43,18 @@ public class WMSGetLegendGraphic {
 		}
 		if (!legend_options.trim().equals("")) {
 			this.legend_options = legend_options;
+		}
+		if (!style.trim().equals("")) {
+			this.style = style;
+		}
+		if (!sld.trim().equals("")) {
+			this.sld = sld;
+		}
+		if (!sld_body.trim().equals("")) {
+			this.sld_body = sld_body;
+		}
+		if (!exceptions.trim().equals("")) {
+			this.exceptions = exceptions;
 		}
 	}
 	
@@ -121,7 +137,23 @@ public class WMSGetLegendGraphic {
 			}
 			if (!this.legend_options.equals("")) {
 				urlBuffer.append("&");
-				urlBuffer.append("srs=" + legend_options);
+				urlBuffer.append("legend_options=" + legend_options);
+			}
+			if (!this.style.equals("")) {
+				urlBuffer.append("&");
+				urlBuffer.append("style=" + style);
+			}
+			if (!this.sld.equals("")) {
+				urlBuffer.append("&");
+				urlBuffer.append("sld=" + sld);
+			}
+			if (!this.sld_body.equals("")) {
+				urlBuffer.append("&");
+				urlBuffer.append("sld_body=" + sld_body);
+			}
+			if (!this.exceptions.equals("")) {
+				urlBuffer.append("&");
+				urlBuffer.append("exceptions=" + exceptions);
 			}
 			urlBuffer.append("&");
 			urlBuffer.append("width=" + String.valueOf(this.width));

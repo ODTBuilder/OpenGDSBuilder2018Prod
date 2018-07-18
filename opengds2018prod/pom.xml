@@ -48,9 +48,8 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
@@ -145,6 +144,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
@@ -157,7 +162,7 @@
 			<version>1.14.0</version>
 		</dependency>
 
-		
+
 		<!-- JSON -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -169,13 +174,13 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.7</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>it.geosolutions</groupId>
 			<artifactId>geoserver-manager</artifactId>
 			<version>1.7.0</version>
 		</dependency>
-		
+
 		<!-- GeoTools -->
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -233,8 +238,8 @@
 			<version>${geotools.version}</version>
 		</dependency>
 	</dependencies>
-	
-	
+
+
 
 	<build>
 		<plugins>

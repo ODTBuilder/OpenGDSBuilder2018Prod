@@ -71,13 +71,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 *
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오전 11:07:51
-	 * @param wsName
+	 * @param workspace
 	 * @param dsName
 	 * @param layerInfo
 	 * @return FileMeta
 	 * */
 	@SuppressWarnings("unused")
-	public FileMeta dbLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String wsName, String dsName,GeoLayerInfo layerInfo) {
+	public FileMeta dbLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,GeoLayerInfo layerInfo) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
@@ -215,10 +215,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 					layerEncoder.setDefaultStyle("defaultStyle");
 				}
 
-				flag = dtPublisher.publishDBLayer(wsName, dsName, fte, layerEncoder);
+				flag = dtPublisher.publishDBLayer(workspace, dsName, fte, layerEncoder);
 
 				if (flag == true) {
-					RESTLayer layer = dtReader.getLayer(wsName, layerFullName);
+					RESTLayer layer = dtReader.getLayer(workspace, layerFullName);
 					RESTFeatureType featureType = dtReader.getFeatureType(layer);
 
 					double minx = featureType.getNativeBoundingBox().getMinX();
@@ -239,14 +239,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 						Geometry geometry = polygon;
 						result.addGeoCollection(geometry);
 					}
-					result.addLayerName(wsName + ":" + layerFullName);
+					result.addLayerName(workspace + ":" + layerFullName);
 				} else if (flag == false) {
 					result.addFailCount();
 
 					/*
 					 * for (String sucLayerName : successLayerList) {
-					 * dtPublisher.removeLayer(wsName, sucLayerName); }
-					 * dtPublisher.removeLayer(wsName, layerName);
+					 * dtPublisher.removeLayer(workspace, sucLayerName); }
+					 * dtPublisher.removeLayer(workspace, layerName);
 					 * layerInfo.setServerPublishFlag(flag); return layerInfo;
 					 */
 				}
@@ -276,7 +276,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 		if (result.failCount > 0) {
 			for (String sucLayerName : result.successLayerList) {
-				dtPublisher.removeLayer(wsName, sucLayerName);
+				dtPublisher.removeLayer(workspace, sucLayerName);
 			}
 			layerInfo.setServerPublishFlag(false);
 		} else {
@@ -309,7 +309,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 				group.setBounds(originSrc, minx, maxx, miny, maxy);
 
-				dtPublisher.createLayerGroup(wsName, "gro_" + fileType + "_" + fileName, group);
+				dtPublisher.createLayerGroup(workspace, "gro_" + fileType + "_" + fileName, group);
 			}
 			layerInfo.setServerPublishFlag(true);
 		}
@@ -382,7 +382,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		 * layerEncoder.setDefaultStyle(styleName); } else {
 		 * layerEncoder.setDefaultStyle("defaultStyle"); }
 		 * 
-		 * flag = dtPublisher.publishDBLayer(wsName, dsName, fte, layerEncoder);
+		 * flag = dtPublisher.publishDBLayer(workspace, dsName, fte, layerEncoder);
 		 * 
 		 * if (flag == true) { RESTLayer layer =
 		 * dtReader.getLayer(userVO.getId(), layerFullName); RESTFeatureType
@@ -404,8 +404,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 		 * Polygon polygon = geometryFactory.createPolygon(ring, holes);
 		 * Geometry geometry = polygon; geometryCollection.add(geometry); } }
 		 * else if (flag == false) { for (String sucLayerName :
-		 * successLayerList) { dtPublisher.removeLayer(wsName, sucLayerName); }
-		 * dtPublisher.removeLayer(wsName, layerName);
+		 * successLayerList) { dtPublisher.removeLayer(workspace, sucLayerName); }
+		 * dtPublisher.removeLayer(workspace, layerName);
 		 * layerInfo.setServerPublishFlag(flag); return layerInfo; }
 		 * successLayerList.add(userVO.getId() + ":" + layerFullName); }
 		 * 
@@ -429,7 +429,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		 * 
 		 * group.setBounds(originSrc, minx, maxx, miny, maxy);
 		 * 
-		 * dtPublisher.createLayerGroup(wsName, "gro_" + fileType + "_" +
+		 * dtPublisher.createLayerGroup(workspace, "gro_" + fileType + "_" +
 		 * fileName, group); } layerInfo.setServerPublishFlag(flag);
 		 * 
 		 * return layerInfo;
@@ -456,7 +456,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
 			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 추가해주세요");
+			errorJSON.put("text", "No Geoserver");
 			errorJSON.put("type", "error");
 			jsonArray.add(errorJSON);
 		}
@@ -480,7 +480,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
 			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 다시 추가해주세요");
+			errorJSON.put("text", "No Geoserver");
 			errorJSON.put("type", "error");
 			jsonArray.add(errorJSON);
 		}
@@ -491,14 +491,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @since 2018. 7. 5.
 	 * @author SG.Lee
 	 * @param dtGeoManager
-	 * @param wsName
+	 * @param workspace
 	 * @param layerList
 	 * @return
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#duplicateCheck(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.util.ArrayList)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> layerList) {
+	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 		}else{
@@ -508,7 +508,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		
 		JSONObject object = new JSONObject();
 		for (String layerName : layerList) {
-			object.put(layerName, dtReader.existsLayer(wsName, layerName));
+			object.put(layerName, dtReader.existsLayer(workspace, layerName));
 		}
 		
 		return object;
@@ -518,13 +518,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @since 2018. 7. 5.
 	 * @author SG.Lee
 	 * @param dtGeoManager
-	 * @param wsName
+	 * @param workspace
 	 * @param layerList
 	 * @return
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoLayerList(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.util.ArrayList)
 	 */
 	@Override
-	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> layerList) {
+	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 		}else{
@@ -535,7 +535,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			throw new IllegalArgumentException("LayerNames may not be null");
 		if (layerList.size() == 0)
 			throw new IllegalArgumentException("LayerNames may not be null");
-		return dtReader.getDTGeoLayerList(wsName, layerList);
+		return dtReader.getDTGeoLayerList(workspace, layerList);
 	}
 
 	/**
@@ -546,7 +546,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoGroupLayerList(java.util.ArrayList)
 	 */
 	@Override
-	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String wsName, ArrayList<String> groupList) {
+	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> groupList) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 		}else{
@@ -558,7 +558,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			throw new IllegalArgumentException("GroupNames may not be null");
 		if (groupList.size() == 0)
 			throw new IllegalArgumentException("GroupNames may not be null");
-		return dtReader.getDTGeoGroupLayerList(wsName, groupList);
+		return dtReader.getDTGeoGroupLayerList(workspace, groupList);
 	}
 
 	/**
@@ -569,7 +569,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeGeoserverLayer(java.lang.String)
 	 */
 	@Override
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String wsName, String dsName, String groupLayerName, String layerName) {
+	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, String groupLayerName, String layerName) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
@@ -579,7 +579,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		
 		boolean isConfigureGroup = false;
 		boolean isRemoveFeatureType = false;
-		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(wsName, groupLayerName);
+		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(workspace, groupLayerName);
 
 		if (dtGeoGroupLayer != null) {
 			List<String> layerList = dtGeoGroupLayer.getPublishedList().getNames();
@@ -591,14 +591,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 			groupEncoder.setBounds(dtGeoGroupLayer.getCRS(), dtGeoGroupLayer.getMinX(), dtGeoGroupLayer.getMaxY(),
 					dtGeoGroupLayer.getMinY(), dtGeoGroupLayer.getMaxY());
 			for (String name : layerList) {
-				groupEncoder.addLayer(wsName + ":" + name);
+				groupEncoder.addLayer(workspace + ":" + name);
 			}
-			isConfigureGroup = dtPublisher.configureLayerGroup(wsName, groupLayerName, groupEncoder);
-			isRemoveFeatureType = dtPublisher.unpublishFeatureType(wsName, dsName, layerName);
+			isConfigureGroup = dtPublisher.configureLayerGroup(workspace, groupLayerName, groupEncoder);
+			isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName, layerName);
 			// isRemoveLayer = dtPublisher.removeLayer(userVO.getId(),
 			// layerName);
 		} else {
-			isRemoveFeatureType = dtPublisher.unpublishFeatureType(wsName, dsName, layerName);
+			isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName, layerName);
 			if (!isRemoveFeatureType) {
 				return false;
 			}
@@ -613,19 +613,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 	/**
 	 * @since 2018. 7. 5.
 	 * @author SG.Lee
-	 * @param wsName
+	 * @param workspace
 	 * @param layerNameList
 	 * @return
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeDTGeoserverLayers(java.lang.String, java.util.List)
 	 */
 	@Override
-	public boolean removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String wsName, List<String> layerNameList) {
+	public boolean removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList) {
 		if(dtGeoManager!=null){
 			dtPublisher = dtGeoManager.getPublisher();
 		}else{
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		return dtPublisher.removeLayers(wsName, layerNameList);
+		return dtPublisher.removeLayers(workspace, layerNameList);
 	}
 
 	/**
@@ -636,7 +636,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeGeoserverGroupLayer(java.lang.String)
 	 */
 	@Override
-	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String wsName, String dsName, String groupLayerName) {
+	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, String groupLayerName) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
@@ -645,16 +645,16 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		
 		boolean isRemoveFlag = false;
-		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(wsName, groupLayerName);
+		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(workspace, groupLayerName);
 
 		int flagVal = 0;
 		if (dtGeoGroupLayer != null) {
 			List<String> layerList = dtGeoGroupLayer.getPublishedList().getNames();
 
-			dtPublisher.removeLayerGroup(wsName, groupLayerName);
+			dtPublisher.removeLayerGroup(workspace, groupLayerName);
 
 			for (String layerName : layerList) {
-				boolean isRemoveFeatureType = dtPublisher.unpublishFeatureType(wsName, dsName,
+				boolean isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName,
 						layerName);
 				if (isRemoveFeatureType) {
 					flagVal++;
@@ -745,7 +745,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	};
 
 	@Override
-	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String wsName, String dsName, String orginalName, String name, String title,
+	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, String orginalName, String name, String title,
 			String abstractContent, String style, boolean attChangeFlag) {
 		if(dtGeoManager!=null){
 			dtPublisher = dtGeoManager.getPublisher();
@@ -783,7 +783,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 		// boolean flag = dtPublisher.recalculate(workspace, storename,
 		// layerFullName, testFte, testLayerEncoder);
-		updateFlag = dtPublisher.updateFeatureType(wsName, dsName, orginalName, fte, layerEncoder,
+		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, orginalName, fte, layerEncoder,
 				attChangeFlag);
 
 		return updateFlag;
@@ -791,14 +791,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 
 	@Override
-	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String wsName, String dsName, GeoLayerInfo geoLayerInfo) {
+	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo geoLayerInfo) {
 		if(dtGeoManager!=null){
 			dtPublisher = dtGeoManager.getPublisher();
 		}else{
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		// TODO Auto-generated method stub
-		return dtPublisher.publishErrLayer(wsName, dsName, geoLayerInfo);
+		return dtPublisher.publishErrLayer(workspace, dsName, geoLayerInfo);
 	}
 }
 

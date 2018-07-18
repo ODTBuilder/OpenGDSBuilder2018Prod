@@ -87,11 +87,61 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					}
 				}
 			}
-		}, this)).on('select_node.jstree', $.proxy(function(e, data) {
-			console.log("delete layer");
-			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
-			console.log(node.type);
-		}, this)).on('load_node.jstree', $.proxy(function(e, data) {
+		}, this)).on(
+				'select_node.jstree',
+				$.proxy(function(e, data) {
+					console.log("delete layer");
+					var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+					console.log(node);
+					var type = this.get_type(node);
+					console.log(type);
+					var root = this.get_node("#", true);
+					$(root).find(".gb-versioning-repository-btnarea").remove();
+					if (type === "repository") {
+						var branchBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("New branch").css({
+							"display" : "inline-block"
+						});
+						var remoteBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remote repository").css({
+							"display" : "inline-block"
+						});
+
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);
+						var obj = this.get_node(node, true);
+						$(obj[0].childNodes[1]).after(btnArea);
+					} else if (type === "branch") {
+
+						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
+							"display" : "inline-block"
+						});
+						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
+							"display" : "inline-block"
+						});
+						var commitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Commit").css({
+							"display" : "inline-block"
+						});
+						var pullBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Pull").css({
+							"display" : "inline-block"
+						});
+						var pushBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Push").css({
+							"display" : "inline-block"
+						});
+						var mergeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Merge").css({
+							"display" : "inline-block"
+						});
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(addBtn).append(
+								commitBtn).append(pullBtn).append(pushBtn).append(mergeBtn);
+						var obj = this.get_node(node, true);
+						$(obj[0].childNodes[1]).after(btnArea);
+					} else if (type === "layer") {
+						var publishBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Publish").css({
+							"display" : "inline-block"
+						});
+
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(publishBtn);
+						var obj = this.get_node(node, true);
+						$(obj[0].childNodes[1]).after(btnArea);
+					}
+				}, this)).on('load_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
 			console.log(data);

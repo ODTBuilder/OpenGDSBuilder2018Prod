@@ -797,6 +797,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	});
 	$(okBtn).click(function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val());
+		addGeoServerModal.close();
 	});
 };
 
@@ -840,7 +841,6 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 			console.log(data);
 		}
 	});
-
 };
 
 /**

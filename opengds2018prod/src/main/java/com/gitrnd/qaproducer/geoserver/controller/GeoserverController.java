@@ -33,6 +33,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -64,7 +65,8 @@ public class GeoserverController extends AbstractController {
 	@Qualifier("proService")
 	private GeoserverLayerProxyService proService;
 
-	@RequestMapping(value = "/addGeoserver.ajax")
+	@RequestMapping(value = "/addGeoserver.ajax", method = RequestMethod.POST)
+	@ResponseBody
 	public long addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -72,7 +74,8 @@ public class GeoserverController extends AbstractController {
 		return super.addGeoserverToSession(request, loginUser);
 	}
 	
-	@RequestMapping(value = "/removeGeoserver.ajax")
+	@RequestMapping(value = "/removeGeoserver.ajax", method = RequestMethod.POST)
+	@ResponseBody
 	public long removeGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");

@@ -26,6 +26,7 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	@Override
 	public GeogigTransaction beginTransaction(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 
 		// tmp default
@@ -44,6 +45,7 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	@Override
 	public GeogigTransaction endTransaction(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String transactionId = (String) param.get("transactionId");
 
@@ -63,6 +65,7 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	@Override
 	public GeogigTransaction cancelTransaction(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String transactionId = (String) param.get("transactionId");
 

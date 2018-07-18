@@ -28,6 +28,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	@Override
 	public GeogigCheckout checkoutBranch(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String transactionId = (String) param.get("transactionId");
 		String reference = (String) param.get("reference");
@@ -46,6 +47,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	@Override
 	public GeogigBranch createBranch(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String branchName = (String) param.get("branchName");
 		String source = (String) param.get("source");
@@ -63,6 +65,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	@Override
 	public GeogigMerge mergeBranch(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String transactionId = (String) param.get("transactionId");
 		String branchName = (String) param.get("branchName");
@@ -81,6 +84,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	@Override
 	public GeogigBranch listBranch(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 
 		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
@@ -97,6 +101,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	@Override
 	public GeogigCheckout resolveConflict(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String transactionId = (String) param.get("transactionId");
 		String path = (String) param.get("path");
@@ -104,6 +109,25 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 
 		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
 		return reader.checkoutBranch(repoName, transactionId, path, version);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#statusBranch(org.
+	 * json.simple.JSONObject)
+	 */
+	@Override
+	public JSONObject statusBranch(JSONObject param) {
+
+		String serverName = (String) param.get("serverName");
+		String repoName = (String) param.get("repoName");
+		String transactionId = (String) param.get("transactionId");
+		String branchName = (String) param.get("branchName");
+
+		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		return reader.statusBranch(serverName, repoName, transactionId, branchName);
 	}
 
 }

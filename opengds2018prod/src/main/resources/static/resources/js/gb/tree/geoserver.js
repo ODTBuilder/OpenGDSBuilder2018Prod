@@ -79,6 +79,8 @@ gb.tree.GeoServer = function(obj) {
 	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
 		"float" : "right"
 	}).click(function() {
+		$(that.searchInput).val("");
+		that.getJSTree().search("");
 		that.closeSearchBar();
 	});
 	this.searchArea = $("<div>").css({
@@ -86,7 +88,7 @@ gb.tree.GeoServer = function(obj) {
 	}).append(this.searchInput).append(this.closeSearchBtn);
 	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
 	this.panelBody = $("<div>").addClass("gb-article-body").css({
-		"overflow-y" : "hidden"
+		"overflow-y" : "auto"
 	});
 	this.panel = $("<div>").addClass("gb-article").css({
 		"margin" : "0"

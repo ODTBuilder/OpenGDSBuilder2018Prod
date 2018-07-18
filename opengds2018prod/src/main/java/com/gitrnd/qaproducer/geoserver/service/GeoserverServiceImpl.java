@@ -456,7 +456,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
 			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 추가해주세요");
+			errorJSON.put("text", "No Geoserver");
 			errorJSON.put("type", "error");
 			jsonArray.add(errorJSON);
 		}
@@ -480,7 +480,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
 			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 다시 추가해주세요");
+			errorJSON.put("text", "No Geoserver");
 			errorJSON.put("type", "error");
 			jsonArray.add(errorJSON);
 		}

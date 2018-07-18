@@ -162,13 +162,17 @@ public class GeogigWebReader {
 				String branchId = reposId + "/" + branchName;
 				if (repoName.equalsIgnoreCase(name) && branchName.equalsIgnoreCase(headerBranch)) {
 					referenceId = branchId;
-					if (status.getUnmerged() != null) {
-						reposTree.addBranch(reposId, branchId, branchName);
+					if (status.getUnstaged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "Unstaged");
+					} else if (status.getStaged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "Staged");
+					} else if (status.getUnmerged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "UnMerged");
 					} else {
-						reposTree.addBranch(reposId, branchId, branchName);
+						reposTree.addBranch(reposId, branchId, branchName, "Merged");
 					}
 				} else {
-					reposTree.addBranch(reposId, branchId, branchName);
+					reposTree.addBranch(reposId, branchId, branchName, null);
 				}
 			}
 

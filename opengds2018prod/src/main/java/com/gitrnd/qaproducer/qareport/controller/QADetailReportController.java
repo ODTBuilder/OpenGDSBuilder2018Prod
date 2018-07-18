@@ -17,7 +17,8 @@ import com.gitrnd.qaproducer.qareport.details.service.QADetailReportService;
  * @author GIT
  *
  */
-@Controller("/qaDetailReport")
+@Controller
+@RequestMapping(value = "/qaReport")
 public class QADetailReportController {
 
 	@Autowired

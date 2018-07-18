@@ -22,6 +22,8 @@
  *            obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
  * @param {String}
  *            obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
+ * @param {String}
+ *            obj.url.getMapWMS - WMS 레이어를 요청하기 위한 URL
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
@@ -34,6 +36,7 @@ gb.tree.GeoServer = function(obj) {
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
+	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -149,7 +152,8 @@ gb.tree.GeoServer = function(obj) {
 
 				},
 				"geoserver" : {
-					"map" : options.map instanceof ol.Map ? options.map : undefined
+					"map" : options.map instanceof ol.Map ? options.map : undefined,
+					"getMapWMS" : this.getMapWMS
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -184,13 +188,74 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "WMS",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var arr = inst.get_selected();
-											var wmsInfo = {
-												"refer" : inst,
-												"arr" : arr,
-												"parent" : inst.get_parent(obj)
+											var nodes = inst.get_selected();
+											console.log(nodes);
+											var selectedNum = nodes.length;
+											if (selectedNum === 1) {
+												var node = inst.get_node(nodes[0]);
+												var type = inst.get_type(node);
+												if (type === "workspace") {
+
+												} else if (type === "datastore") {
+
+												} else if (type === "point") {
+													console.log(node);
+												} else if (type === "multipoint") {
+													console.log(node);
+												} else if (type === "linestring") {
+													console.log(node);
+												} else if (type === "multilinestring") {
+													console.log(node);
+												} else if (type === "polygon") {
+													console.log(node);
+												} else if (type === "multipolygon") {
+													console.log(node);
+													/*
+													 * var server =
+													 * inst.get_node(node.parents[2]);
+													 * var workspace =
+													 * inst.get_node(node.parents[1]);
+													 * var datastore =
+													 * inst.get_node(node.parents[0]);
+													 * var wmsInfo = { "server" :
+													 * server.text, "workspace" :
+													 * workspace.text, "layers" :
+													 * datastore.text + ":" +
+													 * node.text };
+													 * console.log(wmsInfo);
+													 */
+													inst.import_single_wms(node);
+												}
+											} else if (selectedNum > 1) {
+												var serverNum = 0;
+												var workNum = 0;
+												var storeNum = 0;
+												var layerNum = 0;
+												for (var i = 0; i < nodes.length; i++) {
+													var node = inst.get_node(nodes[i]);
+													var type = inst.get_type(node);
+													if (type === "geoserver") {
+														serverNum++;
+													} else if (type === "workspace") {
+														workNum++;
+													} else if (type === "datastore") {
+														storeNum++;
+													} else if (type === "layer") {
+														layerNum++;
+													}
+												}
+												if (selectedNum !== serverNum && selectedNum !== workNum && selectedNum !== storeNum
+														&& selectedNum !== layerNum) {
+													console.log("");
+												}
 											}
-											inst.import_image(wmsInfo);
+
+											/*
+											 * var wmsInfo = { "refer" : inst,
+											 * "arr" : arr, "parent" :
+											 * inst.get_parent(obj) }
+											 * inst.import_image(wmsInfo);
+											 */
 										}
 									},
 									"wfs" : {

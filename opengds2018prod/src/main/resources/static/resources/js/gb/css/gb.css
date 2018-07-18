@@ -198,6 +198,10 @@ a.gb-list-group-item-info.active, a.gb-list-group-item-info.active:hover, a.gb-l
 	border-radius: 4px;
 }
 
+.gb-button:active, .gb-button.active {
+	background-image: none;
+}
+
 .gb-button-clear {
 	border: 0;
 	background-color: transparent;
@@ -207,6 +211,11 @@ a.gb-list-group-item-info.active, a.gb-list-group-item-info.active:hover, a.gb-l
 	color: #333;
 	background-color: #fff;
 	border-color: #ccc;
+}
+
+.gb-button-default:active, .gb-button-primary:active, .gb-button-default.active, .gb-button-primary.active {
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
 }
 
 .gb-button-primary {

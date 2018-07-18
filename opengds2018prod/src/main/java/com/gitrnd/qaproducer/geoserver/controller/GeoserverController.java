@@ -130,7 +130,8 @@ public class GeoserverController extends AbstractController {
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
-		return geoserverService.getGeoserverLayerCollectionTrees(sessionGMList);
+		JSONArray test = geoserverService.getGeoserverLayerCollectionTrees(sessionGMList); 
+		return test;
 	}
 
 

@@ -170,6 +170,7 @@ public class AbstractController {
 			try {
 				DTGeoserverManager dtManager = factory.createDTGeoserverManager(serverURL, id, pw);
 				dtGeoManagers.put(serverName, dtManager);
+				this.updateSession(request, "geoserver", dtGeoManagers);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				return 604;
@@ -268,7 +269,7 @@ public class AbstractController {
 	        while( keys.hasNext() ){
 	            String key = keys.next();
 	            if(serverName.equals(key)){
-	            	return dtGeoManagers.get(key);
+	            	dtGeoserverManager=  dtGeoManagers.get(key);
 	            }
 	        }
 		}else{
@@ -296,8 +297,8 @@ public class AbstractController {
 			return null;
 		}
 		
-		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
-		if(dtGeoManagers==null){
+		dtGeoserverManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
+		if(dtGeoserverManagers==null){
 			LOGGER.error("Geoserver 세션 존재 X");
 			return null;
 		}

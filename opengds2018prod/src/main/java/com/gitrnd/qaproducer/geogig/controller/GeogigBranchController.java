@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
 import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
 
 /**
@@ -30,6 +31,11 @@ public class GeogigBranchController {
 	@RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
 	public GeogigCheckout checkoutBranch(JSONObject param) {
 		return branchService.checkoutBranch(param);
+	}
+
+	@RequestMapping(value = "/statusBranch.do", method = RequestMethod.POST)
+	public JSONObject statusBranch(JSONObject param) {
+		return branchService.statusBranch(param);
 	}
 
 	@RequestMapping(value = "/createBranch.do", method = RequestMethod.POST)

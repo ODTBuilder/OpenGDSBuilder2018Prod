@@ -2,6 +2,9 @@ package com.gitrnd.gdsbuilder.geogig;
 
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
@@ -36,6 +39,9 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unstaged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 
 public class GeogigWebReader {
@@ -156,7 +162,11 @@ public class GeogigWebReader {
 				String branchId = reposId + "/" + branchName;
 				if (repoName.equalsIgnoreCase(name) && branchName.equalsIgnoreCase(headerBranch)) {
 					referenceId = branchId;
-					if (status.getUnmerged() != null) {
+					if (status.getUnstaged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "Unstaged");
+					} else if (status.getStaged() != null) {
+						reposTree.addBranch(reposId, branchId, branchName, "Staged");
+					} else if (status.getUnmerged() != null) {
 						reposTree.addBranch(reposId, branchId, branchName, "UnMerged");
 					} else {
 						reposTree.addBranch(reposId, branchId, branchName, "Merged");
@@ -177,6 +187,67 @@ public class GeogigWebReader {
 			reposTree.addTree(referenceId, pathId, path);
 		}
 		return reposTree;
+	}
+
+	/**
+	 * @param serverName
+	 * @param repoName
+	 * @param transactionId
+	 * @param branchName
+	 * @return GeogigStatus
+	 */
+	public JSONObject statusBranch(String serverName, String repoName, String transactionId, String branchName) {
+
+		StatusRepository stausCommand = new StatusRepository();
+		GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName, transactionId);
+		Header header = status.getHeader();
+		String headerBranch = header.getBranch();
+		if (branchName.equalsIgnoreCase(headerBranch)) {
+			JSONObject statusObj = new JSONObject();
+			statusObj.put("server", serverName);
+			statusObj.put("repository", repoName);
+			statusObj.put("transactionId", transactionId);
+			statusObj.put("header", headerBranch);
+			List<Staged> stageds = status.getStaged();
+			if (stageds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Staged staged : stageds) {
+					String path = staged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("staged", nodeArry);
+			}
+			List<Unstaged> unStageds = status.getUnstaged();
+			if (unStageds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Unstaged unStaged : unStageds) {
+					String path = unStaged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("unstaged", nodeArry);
+			}
+			List<Unmerged> unMergeds = status.getUnmerged();
+			if (unMergeds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Unmerged unMerged : unMergeds) {
+					String path = unMerged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("unmerged", nodeArry);
+			}
+			return statusObj;
+		} else {
+			return null;
+		}
 	}
 
 	/**

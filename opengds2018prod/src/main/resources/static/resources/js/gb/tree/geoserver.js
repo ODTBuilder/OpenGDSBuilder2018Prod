@@ -934,7 +934,7 @@ gb.tree.GeoServer.prototype.getAddGeoServerURL = function() {
  * 
  * @method gb.tree.GeoServer#setAddGeoServerURL
  */
-gb.tree.GeoServer.prototype.getAddGeoServerURL = function(url) {
+gb.tree.GeoServer.prototype.setAddGeoServerURL = function(url) {
 	this.addGeoServerURL = url;
 };
 /**

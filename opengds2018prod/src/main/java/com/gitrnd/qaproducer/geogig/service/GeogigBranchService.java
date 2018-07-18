@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
 
 /**
  * @author GIT
@@ -44,5 +45,11 @@ public interface GeogigBranchService {
 	 * @return GeogigCheckout
 	 */
 	public GeogigCheckout resolveConflict(JSONObject param);
+
+	/**
+	 * @param param
+	 * @return JSONObject
+	 */
+	public JSONObject statusBranch(JSONObject param);
 
 }

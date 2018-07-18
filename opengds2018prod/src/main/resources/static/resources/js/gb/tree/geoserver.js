@@ -33,7 +33,7 @@ gb.tree.GeoServer = function(obj) {
 	var url = options.url ? options.url : undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
-	this.deleteGepServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
+	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -149,7 +149,7 @@ gb.tree.GeoServer = function(obj) {
 
 				},
 				"geoserver" : {
-					"map" : options.map instanceof ol.Map ? options.map : undefined,
+					"map" : options.map instanceof ol.Map ? options.map : undefined
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -583,10 +583,16 @@ gb.tree.GeoServer = function(obj) {
 								"separator_before" : false,
 								"icon" : "fa fa-trash",
 								"separator_after" : false,
-								"_disabled" : false, // (this.check("rename_node",
-								// data.reference,
-								// this.get_parent(data.reference),
-								// "")),
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "geoserver" || o.type === "point" || o.type === "multipoint" || o.type === "linestring"
+											|| o.type === "multilinestring" || o.type === "polygon" || o.type === "multipolygon") {
+										result = false;
+									}
+									return result;
+								},
 								"label" : "Delete",
 								/*
 								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
@@ -594,7 +600,7 @@ gb.tree.GeoServer = function(obj) {
 								 */
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									if (obj.type === "default") {
+									if (obj.type === "geoserver") {
 										that.openDeleteGeoServer(obj.id);
 									}
 								}
@@ -814,6 +820,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
  *            id - 지오서버 접속을 위한 ID
  * @param {String}
  *            password - 지오서버 접속을 위한 비밀번호
+ * @param {gb.modal.Base}
+ *            callback - 완료 후 창을 닫을 모달 객체
  */
 gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, callback) {
 	var that = this;
@@ -853,18 +861,17 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
  * @method gb.tree.GeoServer#openDeleteGeoServer
  */
 gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
+	var that = this;
 	console.log("open delete geoserver");
 	var msg1 = $("<div>").text("Are you sure to delete this server?");
 	var msg2 = $("<div>").text('"' + geoserver + '"');
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel").click(function() {
-	});
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete").click(function() {
-	});
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
@@ -874,6 +881,12 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 		"autoOpen" : false,
 		"body" : body
 	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		that.deleteGeoServer(geoserver, deleteModal);
+	});
 	$(deleteModal.getModal()).append(modalFooter);
 	deleteModal.open();
 };
@@ -882,9 +895,34 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
  * GeoServer를 삭제한다.
  * 
  * @method gb.tree.GeoServer#deleteGeoServer
+ * @param {String}
+ *            geoserver - 삭제할 지오서버의 이름
+ * @param {gb.modal.Base}
+ *            callback - 완료후 창을 닫을 모달 객체
  */
-gb.tree.GeoServer.prototype.deleteGeoServer = function() {
+gb.tree.GeoServer.prototype.deleteGeoServer = function(geoserver, callback) {
+	var that = this;
 	console.log("delete geoserver");
+	var params = {
+		"serverName" : geoserver
+	};
+	$.ajax({
+		url : this.getDeleteGeoServerURL() + "&" + jQuery.param(params),
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			callback.close();
+			that.refreshList();
+		}
+	});
 };
 
 /**
@@ -943,18 +981,18 @@ gb.tree.GeoServer.prototype.setAddGeoServerURL = function(url) {
 /**
  * 지오서버 삭제를 위한 URL을 반환한다.
  * 
- * @method gb.tree.GeoServer#getDeleteGepServerURL
+ * @method gb.tree.GeoServer#getDeleteGeoServerURL
  */
-gb.tree.GeoServer.prototype.getDeleteGepServerURL = function() {
-	return this.deleteGepServerURL;
+gb.tree.GeoServer.prototype.getDeleteGeoServerURL = function() {
+	return this.deleteGeoServerURL;
 };
 /**
  * 지오서버 삭제를 위한 URL을 설정한다.
  * 
- * @method gb.tree.GeoServer#setDeleteGepServerURL
+ * @method gb.tree.GeoServer#setdeleteGeoServerURL
  */
-gb.tree.GeoServer.prototype.setDeleteGepServerURL = function(url) {
-	this.deleteGepServerURL = url;
+gb.tree.GeoServer.prototype.setdeleteGeoServerURL = function(url) {
+	this.deleteGeoServerURL = url;
 };
 /**
  * 지오서버 트리구조 요청을 위한 URL을 반환한다.

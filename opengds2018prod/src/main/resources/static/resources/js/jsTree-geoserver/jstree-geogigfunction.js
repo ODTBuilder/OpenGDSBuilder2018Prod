@@ -37,25 +37,19 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		this.element.on('ready.jstree', $.proxy(function(e, data) {
 			console.log("ready");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
-			console.log(node);
-			var rawData = data.instance.settings.core.data;
-			if (Array.isArray(rawData)) {
-				for (var i = 0; i < rawData.length; i++) {
-					if (rawData[i]["type"] === "repository") {
-						console.log(rawData[i]);
-					}
-				}
-			}
 		}, this)).on('model.jstree', $.proxy(function(e, data) {
 			var m = this._model.data, dpc = data.nodes, i, j, c = 'default', k, optKeys = Object.keys(this._data.geogigfunction);
 			for (i = 0, j = dpc.length; i < j; i++) {
 				for (var k = 0; k < optKeys.length; k++) {
 					var list = this._data.geogigfunction[optKeys[k]].list;
-					if (list.indexOf(m[dpc[i]].id) !== -1) {
-						m[dpc[i]].state[optKeys[k]] = true;
-					} else {
-						m[dpc[i]].state[optKeys[k]] = false;
+					if (m[dpc[i]].original.type === "branch") {
+						m[dpc[i]].state["unmerged"] = true;
 					}
+					/*
+					 * if (list.indexOf(m[dpc[i]].id) !== -1) {
+					 * m[dpc[i]].state[optKeys[k]] = true; } else {
+					 * m[dpc[i]].state[optKeys[k]] = false; }
+					 */
 				}
 			}
 		}, this)).on('delete_node.jstree', $.proxy(function(e, data) {
@@ -72,14 +66,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		}, this)).on('select_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
-			for (var k = 0; k < optKeys.length; k++) {
-				var list = this._data.geogigfunction[optKeys[k]].list;
-				for (var l = 0; l < list.length; l++) {
-					if (list.indexOf(node.id) !== -1) {
-						list.splice(list.indexOf(node.id), 1);
-					}
-				}
-			}
+			console.log(node.type);
 		}, this)).on('load_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;

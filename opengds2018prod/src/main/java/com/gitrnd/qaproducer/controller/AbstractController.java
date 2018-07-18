@@ -134,10 +134,10 @@ public class AbstractController {
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
 
-			if (key.toLowerCase().equals("serverName")) {
+			if (key.toLowerCase().equals("servername")) {
 				serverName = value;
 				flagNum++;
-			} else if (key.toLowerCase().equals("serverURL")) {
+			} else if (key.toLowerCase().equals("serverurl")) {
 				serverURL = value;
 				flagNum++;
 			} else if (key.toLowerCase().equals("id")) {
@@ -206,7 +206,7 @@ public class AbstractController {
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
-			if (key.toLowerCase().equals("serverName")) {
+			if (key.toLowerCase().equals("servername")) {
 				serverName = value;
 				flagNum++;
 				break;
@@ -322,7 +322,7 @@ public class AbstractController {
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
-			if (key.toLowerCase().equals("serverName")) {
+			if (key.toLowerCase().equals("servername")) {
 				serverName = value;
 				break;
 			} 

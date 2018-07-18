@@ -28,6 +28,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRemoteRepository listRemoteRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		Boolean verbose = (Boolean) param.get("verbose");
 
@@ -45,6 +46,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRemoteRepository addRemoteRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		String remoteName = (String) param.get("remoteName");
 		String remoteURL = (String) param.get("remoteURL");
@@ -69,6 +71,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRemoteRepository removeRemoteRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		Boolean removeTrue = (Boolean) param.get("remove");
 		String remoteName = (String) param.get("remoteName");
@@ -87,6 +90,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRemoteRepository pingRemoteRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		String remoteName = (String) param.get("remoteName");
 
@@ -104,6 +108,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigPull pullRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		String transactionId = (String) param.get("transactionId");
 		String remoteName = (String) param.get("remoteName");
@@ -127,6 +132,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigPush pushRepository(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("reooName");
 		String remoteName = (String) param.get("remoteName");
 		String branchName = (String) param.get("branchName");

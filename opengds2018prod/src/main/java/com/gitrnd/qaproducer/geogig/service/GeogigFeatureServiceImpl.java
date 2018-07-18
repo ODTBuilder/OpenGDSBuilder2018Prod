@@ -26,6 +26,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 	@Override
 	public GeogigBlame blameFeature(JSONObject param) {
 
+		String serverName = (String) param.get("serverName");
 		String repoName = (String) param.get("repoName");
 		String path = (String) param.get("path");
 		String commit = (String) param.get("commit");

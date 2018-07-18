@@ -59,12 +59,11 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param text
 	 * @param status
 	 */
-	public void addBranch(String parent, String id, String text, String status) {
+	public void addBranch(String parent, String id, String text) {
 		JSONObject repoJson = new JSONObject();
 		repoJson.put("parent", parent);
 		repoJson.put("id", id);
 		repoJson.put("text", text);
-		repoJson.put("status", status);
 		repoJson.put("type", "branch");
 		super.add(repoJson);
 	}

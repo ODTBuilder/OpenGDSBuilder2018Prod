@@ -3,6 +3,8 @@
  */
 package com.gitrnd.gdsbuilder.geogig.type;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -22,11 +24,11 @@ public class GeogigStatus {
 
 	private Header header;
 
-	private Staged staged;
+	private List<Staged> staged;
 
-	private Unstaged unstaged;
+	private List<Unstaged> unstaged;
 
-	private Unmerged unmerged;
+	private List<Unmerged> unmerged;
 
 	@XmlElement(name = "success")
 	public String getSuccess() {
@@ -39,17 +41,17 @@ public class GeogigStatus {
 	}
 
 	@XmlElement(name = "staged")
-	public Staged getStaged() {
+	public List<Staged> getStaged() {
 		return staged;
 	}
 
 	@XmlElement(name = "unstaged")
-	public Unstaged getUnstaged() {
+	public List<Unstaged> getUnstaged() {
 		return unstaged;
 	}
 
 	@XmlElement(name = "unmerged")
-	public Unmerged getUnmerged() {
+	public List<Unmerged> getUnmerged() {
 		return unmerged;
 	}
 
@@ -61,15 +63,15 @@ public class GeogigStatus {
 		this.header = header;
 	}
 
-	public void setStaged(Staged staged) {
+	public void setStaged(List<Staged> staged) {
 		this.staged = staged;
 	}
 
-	public void setUnstaged(Unstaged unstaged) {
+	public void setUnstaged(List<Unstaged> unstaged) {
 		this.unstaged = unstaged;
 	}
 
-	public void setUnmerged(Unmerged unmerged) {
+	public void setUnmerged(List<Unmerged> unmerged) {
 		this.unmerged = unmerged;
 	}
 

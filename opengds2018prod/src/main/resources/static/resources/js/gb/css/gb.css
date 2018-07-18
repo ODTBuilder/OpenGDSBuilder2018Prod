@@ -1,5 +1,13 @@
 @CHARSET "UTF-8";
 
+.gb-versioning-repository-btnarea {
+	float: right;
+}
+
+.gb-versioning-repository-btnarea>.gb-button {
+	padding: 0 3px 0 3px;
+}
+
 .gb-geogig-unstaged {
 	color: #a30000;
 }

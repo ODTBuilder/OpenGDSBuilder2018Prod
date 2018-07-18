@@ -79,6 +79,8 @@ gb.tree.GeoServer = function(obj) {
 	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
 		"float" : "right"
 	}).click(function() {
+		$(that.searchInput).val("");
+		that.getJSTree().search("");
 		that.closeSearchBar();
 	});
 	this.searchArea = $("<div>").css({
@@ -86,7 +88,7 @@ gb.tree.GeoServer = function(obj) {
 	}).append(this.searchInput).append(this.closeSearchBtn);
 	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
 	this.panelBody = $("<div>").addClass("gb-article-body").css({
-		"overflow-y" : "hidden"
+		"overflow-y" : "auto"
 	});
 	this.panel = $("<div>").addClass("gb-article").css({
 		"margin" : "0"
@@ -796,7 +798,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
-		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val());
+		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 };
 
@@ -813,7 +815,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
  * @param {String}
  *            password - 지오서버 접속을 위한 비밀번호
  */
-gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
+gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, callback) {
+	var that = this;
 	console.log("add geoserver");
 	console.log(name);
 	console.log(url);
@@ -838,9 +841,10 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password) {
 		},
 		success : function(data) {
 			console.log(data);
+			callback.close();
+			that.refreshList();
 		}
 	});
-
 };
 
 /**

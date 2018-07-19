@@ -143,7 +143,7 @@ public class GeoserverController extends AbstractController {
 	 * @param response 
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "geoserverWMSGetMap.do")
+	@RequestMapping(value = "geoserverWMSGetMap.ajax")
 	@ResponseBody
 	public void geoserverWMSGetMap(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
 			throws Exception {
@@ -349,7 +349,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 
-	@RequestMapping(value = "publishGeoserverStyle.do")
+	@RequestMapping(value = "publishGeoserverStyle.ajax")
 	@ResponseBody
 	public void publishGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String sldBody = (String) jsonObject.get("sldBody");
@@ -362,7 +362,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.publishStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "updateGeoserverStyle.do")
+	@RequestMapping(value = "updateGeoserverStyle.ajax")
 	@ResponseBody
 	public void updateGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String sldBody = (String) jsonObject.get("sldBody");
@@ -374,7 +374,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.updateStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "removeGeoserverStyle.do")
+	@RequestMapping(value = "removeGeoserverStyle.ajax")
 	@ResponseBody
 	public void removeGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String name = (String) jsonObject.get("name");

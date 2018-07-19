@@ -143,8 +143,8 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			throw new IllegalArgumentException("Workspace may not be null");
 		if(groupNames==null)
 			throw new IllegalArgumentException("GroupNames may not be null");
-		if(groupNames.size()==0)
-			throw new IllegalArgumentException("GroupNames may not be null");
+	/*	if(groupNames.size()==0)
+			throw new IllegalArgumentException("GroupNames may not be null");*/
 		
 		DTGeoGroupLayerList groupLayerList = new DTGeoGroupLayerList();
 		

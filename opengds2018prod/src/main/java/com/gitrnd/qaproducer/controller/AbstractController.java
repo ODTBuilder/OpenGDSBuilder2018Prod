@@ -155,9 +155,8 @@ public class AbstractController {
 		}
 		
 		
-		//서버이름 중복체크
-		
-        if(dtGeoManagers.duplicateCheck(serverName)){
+		//서버이름 또는 URL 중복체크
+        if(dtGeoManagers.duplicateCheck(serverName,serverURL)){
         	return 602;
         }
 		

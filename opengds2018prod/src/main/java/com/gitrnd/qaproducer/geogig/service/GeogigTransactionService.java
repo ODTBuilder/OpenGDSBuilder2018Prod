@@ -3,9 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import org.json.simple.JSONObject;
-
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -14,18 +13,27 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 public interface GeogigTransactionService {
 
 	/**
-	 * @param param
+	 * @param geoserverManager
+	 * @param repoName
+	 * @return
 	 */
-	public GeogigTransaction beginTransaction(JSONObject param);
+	public GeogigTransaction beginTransaction(DTGeoserverManager geoserverManager, String repoName);
 
 	/**
-	 * @param param
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @return
 	 */
-	public GeogigTransaction endTransaction(JSONObject param);
+	public GeogigTransaction endTransaction(DTGeoserverManager geoserverManager, String repoName, String transactionId);
 
 	/**
-	 * @param param
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @return
 	 */
-	public GeogigTransaction cancelTransaction(JSONObject param);
+	public GeogigTransaction cancelTransaction(DTGeoserverManager geoserverManager, String repoName,
+			String transactionId);
 
 }

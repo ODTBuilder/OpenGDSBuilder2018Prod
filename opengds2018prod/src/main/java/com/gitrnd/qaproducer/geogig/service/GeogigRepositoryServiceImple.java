@@ -3,7 +3,6 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
@@ -11,6 +10,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Ping;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -22,36 +22,38 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#listRemoteRepository()
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * listRemoteRepository(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	public GeogigRemoteRepository listRemoteRepository(JSONObject param) {
+	public GeogigRemoteRepository listRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			Boolean verbose) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		Boolean verbose = (Boolean) param.get("verbose");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.listRemoteRepository(repoName, verbose);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#addRemoteRepository(
-	 * org.json.simple.JSONObject)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * addRemoteRepository(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigRemoteRepository addRemoteRepository(JSONObject param) {
+	public GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			String remoteName, String remoteURL) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		String remoteName = (String) param.get("remoteName");
-		String remoteURL = (String) param.get("remoteURL");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		GeogigRemoteRepository remoteRepos = reader.addRemoteRepository(repoName, remoteName, remoteURL);
 		String addSuccess = remoteRepos.getSuccess();
 		if (addSuccess.equalsIgnoreCase("true")) {
@@ -64,37 +66,38 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#removeRemoteRepository
-	 * (org.json.simple.JSONObject)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * removeRemoteRepository(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.Boolean, java.lang.String)
 	 */
 	@Override
-	public GeogigRemoteRepository removeRemoteRepository(JSONObject param) {
+	public GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			Boolean removeTrue, String remoteName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		Boolean removeTrue = (Boolean) param.get("remove");
-		String remoteName = (String) param.get("remoteName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.removeRemoteRepository(repoName, remoteName, removeTrue);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#pingRemoteRepository(
-	 * org.json.simple.JSONObject)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * pingRemoteRepository(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigRemoteRepository pingRemoteRepository(JSONObject param) {
+	public GeogigRemoteRepository pingRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
+			String remoteName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		String remoteName = (String) param.get("remoteName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.pingRemoteRepository(repoName, remoteName);
 	}
 
@@ -102,22 +105,20 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#pullRepository(org.
-	 * json.simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#pullRepository(
+	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigPull pullRepository(JSONObject param) {
+	public GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String remoteName, String branchName, String remoteBranchName, String authorName, String authorEmail) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		String transactionId = (String) param.get("transactionId");
-		String remoteName = (String) param.get("remoteName");
-		String branchName = (String) param.get("branchName");
-		String remoteBranchName = (String) param.get("remoteBranchName");
-		String authorName = (String) param.get("authorName");
-		String authorEmail = (String) param.get("authorEmail");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.pullRepository(repoName, transactionId, remoteName, branchName, remoteBranchName, authorName,
 				authorEmail);
 	}
@@ -126,19 +127,19 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigRepositoryService#pushRepository(org.
-	 * json.simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#pushRepository(
+	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigPush pushRepository(JSONObject param) {
+	public GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
+			String branchName, String remoteBranchName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("reooName");
-		String remoteName = (String) param.get("remoteName");
-		String branchName = (String) param.get("branchName");
-		String remoteBranchName = (String) param.get("remoteBranchName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.pushRepository(repoName, remoteName, branchName, remoteBranchName);
 	}
 }

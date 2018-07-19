@@ -10,6 +10,7 @@ import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -26,14 +27,14 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 * simple.JSONObject)
 	 */
 	@Override
-	public GeogigCheckout checkoutBranch(JSONObject param) {
+	public GeogigCheckout checkoutBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String reference) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String reference = (String) param.get("reference");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.checkoutBranch(repoName, transactionId, reference);
 	}
 
@@ -41,53 +42,56 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigBranchService#createBranch(org.json.
-	 * simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#statusBranch(com.
+	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigBranch createBranch(JSONObject param) {
+	public JSONObject statusBranch(DTGeoserverManager geoserverManager, String serverName, String repoName,
+			String transactionId, String branchName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String branchName = (String) param.get("branchName");
-		String source = (String) param.get("source");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		return reader.createBranch(repoName, branchName, source);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.git.opengds.geogig.service.GeogigBranchService#mergeBranch(org.json.
-	 * simple.JSONObject)
-	 */
-	@Override
-	public GeogigMerge mergeBranch(JSONObject param) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String branchName = (String) param.get("branchName");
-
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		return reader.mergeBranch(repoName, transactionId, branchName);
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.statusBranch(serverName, repoName, transactionId, branchName);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigBranchService#listBranch(org.json.simple
-	 * .JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#createBranch(com.
+	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigBranch listBranch(JSONObject param) {
+	public GeogigBranch createBranch(DTGeoserverManager geoserverManager, String repoName, String branchName,
+			String source) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.createBranch(repoName, branchName, source);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigBranchService#listBranch(com.
+	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
+	 */
+	@Override
+	public GeogigBranch listBranch(DTGeoserverManager geoserverManager, String repoName) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
 		return reader.listBranch(repoName);
 	}
 
@@ -95,39 +99,39 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigBranchService#resolveConflict(org.json.
-	 * simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#mergeBranch(com.
+	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigCheckout resolveConflict(JSONObject param) {
+	public GeogigMerge mergeBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String branchName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String path = (String) param.get("path");
-		String version = (String) param.get("version");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		return reader.checkoutBranch(repoName, transactionId, path, version);
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.mergeBranch(repoName, transactionId, branchName);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#statusBranch(org.
-	 * json.simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigBranchService#resolveConflict(com.
+	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public JSONObject statusBranch(JSONObject param) {
+	public GeogigCheckout resolveConflict(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String path, String version) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String branchName = (String) param.get("branchName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		return reader.statusBranch(serverName, repoName, transactionId, branchName);
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.checkoutBranch(repoName, transactionId, path, version);
 	}
-
 }

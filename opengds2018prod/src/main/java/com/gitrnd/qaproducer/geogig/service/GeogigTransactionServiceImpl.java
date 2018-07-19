@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -19,59 +20,58 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigTransactionService#beginTransaction(org.
-	 * json.simple.JSONObject)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigTransactionService#
+	 * beginTransaction(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String)
 	 */
 	@Override
-	public GeogigTransaction beginTransaction(JSONObject param) {
+	public GeogigTransaction beginTransaction(DTGeoserverManager geoserverManager, String repoName) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		// tmp default
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		GeogigTransaction transaction = reader.beginTransaction(repoName);
-		return transaction;
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.beginTransaction(repoName);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * com.git.opengds.geogig.service.GeogigTransactionService#endTransaction(org.
-	 * json.simple.JSONObject)
+	 * com.gitrnd.qaproducer.geogig.service.GeogigTransactionService#endTransaction(
+	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
-	public GeogigTransaction endTransaction(JSONObject param) {
+	public GeogigTransaction endTransaction(DTGeoserverManager geoserverManager, String repoName,
+			String transactionId) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		// tmp default
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		GeogigTransaction transaction = reader.endTransaction(repoName, transactionId);
-		return transaction;
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.endTransaction(repoName, transactionId);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.git.opengds.geogig.service.GeogigTransactionService#cancleTransaction(org
-	 * .json.simple.JSONObject)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigTransactionService#
+	 * cancelTransaction(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigTransaction cancelTransaction(JSONObject param) {
+	public GeogigTransaction cancelTransaction(DTGeoserverManager geoserverManager, String repoName,
+			String transactionId) {
 
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
 
-		// tmp default
-		GeogigWebReader reader = new GeogigWebReader("http://localhost:9999/geoserver/geogig", "admin", "geoserver");
-		GeogigTransaction transaction = reader.cancelTransaction(repoName, transactionId);
-		return transaction;
+		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		return reader.cancelTransaction(repoName, transactionId);
 	}
+
 }

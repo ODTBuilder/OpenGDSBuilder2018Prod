@@ -102,6 +102,9 @@ public class DTGeoLayer {
 	public DTGeoLayer(Element layerElem) {
 		RESTFeatureType featureType = new RESTFeatureType(layerElem);
 		this.nativeName = featureType.getNativeName();
+		if(nativeName.endsWith("geo_shp_37712013_A0070000_POINT")){
+			System.out.println("test");
+		}
 		this.lName = featureType.getName();
 		this.title = featureType.getTitle();
 		this.abstractContent = featureType.getAbstract();

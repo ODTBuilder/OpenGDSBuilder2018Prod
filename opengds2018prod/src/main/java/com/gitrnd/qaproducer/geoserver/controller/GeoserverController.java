@@ -277,7 +277,7 @@ public class GeoserverController extends AbstractController {
 			if(dtGeoserverManager==null){
 				return null;
 			}else{
-				String workspace = request.getParameter("workspace");
+				String workspace = (String) jsonObject.get("workspace");
 				return geoserverService.getGeoLayerList(dtGeoserverManager, workspace, (ArrayList<String>) geoLayerList);
 			}
 		}

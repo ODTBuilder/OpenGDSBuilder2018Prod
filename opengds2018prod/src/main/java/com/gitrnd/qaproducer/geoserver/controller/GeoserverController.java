@@ -104,13 +104,13 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value = "/getGeolayerCollectionTree.ajax")
 	@ResponseBody
-	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "serverName", required = false) String serverName) {
+	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser, @RequestParam(value = "treeId", required = false) String treeId,
+			@RequestParam(value = "type", required = false) String type) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
-		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, serverName);
+		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, treeId, type);
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public class GeoserverController extends AbstractController {
 	 * @param response 
 	 * @throws Exception 
 	 */
-	@RequestMapping(value = "geoserverWMSGetMap.do")
+	@RequestMapping(value = "geoserverWMSGetMap.ajax")
 	@ResponseBody
 	public void geoserverWMSGetMap(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
 			throws Exception {
@@ -277,7 +277,7 @@ public class GeoserverController extends AbstractController {
 			if(dtGeoserverManager==null){
 				return null;
 			}else{
-				String workspace = request.getParameter("workspace");
+				String workspace = (String) jsonObject.get("workspace");
 				return geoserverService.getGeoLayerList(dtGeoserverManager, workspace, (ArrayList<String>) geoLayerList);
 			}
 		}
@@ -349,7 +349,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 
-	@RequestMapping(value = "publishGeoserverStyle.do")
+	@RequestMapping(value = "publishGeoserverStyle.ajax")
 	@ResponseBody
 	public void publishGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String sldBody = (String) jsonObject.get("sldBody");
@@ -362,7 +362,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.publishStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "updateGeoserverStyle.do")
+	@RequestMapping(value = "updateGeoserverStyle.ajax")
 	@ResponseBody
 	public void updateGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String sldBody = (String) jsonObject.get("sldBody");
@@ -374,7 +374,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.updateStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "removeGeoserverStyle.do")
+	@RequestMapping(value = "removeGeoserverStyle.ajax")
 	@ResponseBody
 	public void removeGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		String name = (String) jsonObject.get("name");

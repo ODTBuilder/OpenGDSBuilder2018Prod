@@ -21,66 +21,126 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	this.bind = function() {
 		parent.bind.call(this);
 		this._data.geoserver.map = this.settings.geoserver.map;
-		this._data.geoserver.user = this.settings.geoserver.user;
-		this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
-		this._data.geoserver.layerInfoURL = this.settings.geoserver.layerInfoURL;
-		this._data.geoserver.groupLayerInfoURL = this.settings.geoserver.groupLayerInfoURL;
-		this._data.geoserver.createLayer = this.settings.geoserver.createLayer;
-		this._data.geoserver.deleteLayer = this.settings.geoserver.deleteLayer;
-		this._data.geoserver.downloadNGIDXF = this.settings.geoserver.downloadNGIDXF;
-		this._data.geoserver.downloadGeoserver = this.settings.geoserver.downloadGeoserver;
-		this._data.geoserver.clientRefer = this.settings.geoserver.clientRefer;
+		/*
+		 * this._data.geoserver.user = this.settings.geoserver.user;
+		 * this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
+		 * this._data.geoserver.layerInfoURL =
+		 * this.settings.geoserver.layerInfoURL;
+		 * this._data.geoserver.groupLayerInfoURL =
+		 * this.settings.geoserver.groupLayerInfoURL;
+		 * this._data.geoserver.createLayer =
+		 * this.settings.geoserver.createLayer; this._data.geoserver.deleteLayer =
+		 * this.settings.geoserver.deleteLayer;
+		 * this._data.geoserver.downloadNGIDXF =
+		 * this.settings.geoserver.downloadNGIDXF;
+		 * this._data.geoserver.downloadGeoserver =
+		 * this.settings.geoserver.downloadGeoserver;
+		 * this._data.geoserver.clientRefer =
+		 * this.settings.geoserver.clientRefer;
+		 */
 		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
+		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
 	};
+
 	/**
-	 * WMS 레이어 하나를 임포트 한다.
+	 * 레이어 정보를 조회한다.
 	 * 
-	 * @method import_single_wms
+	 * @method load_each_wms_layer
 	 * @param {Object}
-	 *            obj - WMS 레이어를 임포트하기 위한 정보
-	 * @param {String}
-	 *            obj.server - 서버 이름
-	 * @param {String}
-	 *            obj.workspace - 워크스페이스 이름
-	 * @param {String}
-	 *            obj.layers - 불러올 레이어 이름
+	 *            node - 트리에서 조회한 레이어 노드 객체
+	 * @param {ol.Collection}
+	 *            collection - 레이어를 주입할 콜렉션
 	 */
-	this.import_single_wms = function(obj) {
+	this.load_each_wms_layer = function(node, collection) {
 		var that = this;
-
-		var server = this.get_node(obj.parents[2]);
-		var workspace = this.get_node(obj.parents[1]);
-		var datastore = this.get_node(obj.parents[0]);
-		var wmsInfo = {
-			"server" : server.text,
+		var server = this.get_node(node.parents[2]);
+		var workspace = this.get_node(node.parents[1]);
+		var datastore = this.get_node(node.parents[0]);
+		var params = {
+			"serverName" : server.text,
 			"workspace" : workspace.text,
-			"layers" : datastore.text + ":" + obj.text
+			"geoLayerList" : [ node.text ]
 		};
-		console.log(wmsInfo);
+		console.log(params);
 
-		var wms = new ol.layer.Tile({
-			source : new ol.source.TileWMS({
-				url : that._data.geoserver.getMapWMS,
-				params : {
-					"serverName" : wmsInfo.server,
-					"workspace" : wmsInfo.workspace,
-					'LAYERS' : wmsInfo.layers,
-					'FORMAT' : 'image/png8',
-					'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-					'SRS' : that._data.geoserver.map.getView().getProjection().getCode()
+		$.ajax({
+			url : that._data.geoserver.getLayerInfo,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			data : JSON.stringify(params),
+			beforeSend : function() {
+				$("body").css("cursor", "wait");
+			},
+			complete : function() {
+				$("body").css("cursor", "default");
+			},
+			success : function(data, textStatus, jqXHR) {
+				console.log(data);
+				if (Array.isArray(data)) {
+					for (var i = 0; i < data.length; i++) {
+						var wms = new ol.layer.Tile({
+							source : new ol.source.TileWMS({
+								url : that._data.geoserver.getMapWMS,
+								params : {
+									"serverName" : server.text,
+									"workspace" : workspace.text,
+									"LAYERS" : node.text,
+									"STYLES" : "",
+									"VERSION" : "1.3.0",
+									"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+									"TILED" : true,
+									"FORMAT" : 'image/png8',
+									"CRS" : data[i].srs,
+									"SRS" : data[i].srs
+								}
+							})
+						});
+
+						var git = {
+							"geoserver" : server.text,
+							"workspace" : workspace.text,
+							'layers' : data[i].lName,
+							"geometry" : data[i].geomType,
+							"editable" : true,
+						};
+						wms.set("git", git);
+						wms.set("id", node.id);
+						wms.set("name", node.text);
+						// that._data.geoserver.map.addLayer(wms);
+						if (collection instanceof ol.Collection) {
+							collection.push(wms);
+						} else {
+							console.error("no collection to push wms");
+						}
+					}
 				}
-			})
+			}
 		});
 
-		var git = {
-			"geoserver" : wmsInfo.server,
-			"workspace" : wmsInfo.workspace,
-			'layers' : wmsInfo.layers
-		};
-		wms.set("git", git);
-		wms.set("id", obj.id);
-		wms.set("name", obj.text);
-		that._data.geoserver.map.addLayer(wms);
+	};
+
+	/**
+	 * WMS 레이어를 임포트 한다.
+	 * 
+	 * @method import_each_wms
+	 * @param {Object}
+	 *            obj - WMS 레이어를 임포트하기 위한 정보
+	 */
+	this.import_each_wms = function(node) {
+		var that = this;
+
+		this.load_layer_info();
+		// var server = this.get_node(obj.parents[2]);
+		// var workspace = this.get_node(obj.parents[1]);
+		// var datastore = this.get_node(obj.parents[0]);
+		// var wmsInfo = {
+		// "server" : server.text,
+		// "workspace" : workspace.text,
+		// "layers" : datastore.text + ":" + obj.text
+		// };
+		// console.log(wmsInfo);
+
 	};
 	this.import_fake_group_notload = function(obj) {
 		// // =======================================

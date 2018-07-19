@@ -55,7 +55,7 @@ public class DTGeoserverTrees extends JSONArray {
 							for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
 								String wsName = item.getName();
 								JSONObject wsTree = new JSONObject();
-								wsTree.put("id", wsName);
+								wsTree.put("id", serverName+"_"+wsName);
 								wsTree.put("parent", serverName);
 								wsTree.put("text", wsName);
 								wsTree.put("type", "workspace");
@@ -71,8 +71,8 @@ public class DTGeoserverTrees extends JSONArray {
 									if (dStore != null) {
 										String dsType = dStore.getStoreType();
 										JSONObject dsTree = new JSONObject();
-										dsTree.put("id", wsName+"_"+dsName);
-										dsTree.put("parent", wsName);
+										dsTree.put("id", serverName+"_"+wsName+"_"+dsName);
+										dsTree.put("parent", serverName+"_"+wsName);
 										dsTree.put("text", dsName);
 										dsTree.put("type", "datastore");
 										super.add(dsTree);
@@ -87,8 +87,8 @@ public class DTGeoserverTrees extends JSONArray {
 										for (DTGeoLayer dtGLayer : dtGLayerList) {
 											if (dtGLayer != null) {
 												JSONObject layerTree = new JSONObject();
-												layerTree.put("id", wsName+"_"+dsName+"_"+dtGLayer.getlName());
-												layerTree.put("parent", wsName+"_"+dsName);
+												layerTree.put("id", serverName+"_"+wsName+"_"+dsName+"_"+dtGLayer.getlName());
+												layerTree.put("parent", serverName+"_"+wsName+"_"+dsName);
 												layerTree.put("text", dtGLayer.getlName());
 												layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
 												super.add(layerTree);

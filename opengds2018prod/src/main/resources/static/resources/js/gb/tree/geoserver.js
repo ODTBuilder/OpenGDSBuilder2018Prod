@@ -648,7 +648,10 @@ gb.tree.GeoServer = function(obj) {
 				},
 				types : {
 					"#" : {
-						"valid_children" : [ "geoserver" ]
+						"valid_children" : [ "geoserver", "default" ]
+					},
+					"default" : {
+						"icon" : "fas fa-exclamation-circle"
 					},
 					"geoserver" : {
 						"icon" : "fas fa-globe",

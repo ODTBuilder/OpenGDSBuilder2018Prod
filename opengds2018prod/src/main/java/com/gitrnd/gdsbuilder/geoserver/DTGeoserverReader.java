@@ -54,7 +54,6 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
-import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 
@@ -157,12 +156,6 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return groupLayerList;
 	};
 	
-	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverReader dtGeoserverReader){
-		if(dtGeoserverReader ==null){
-			throw new IllegalArgumentException("Workspace may not be null");
-		}
-		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverReader);
-	}
 	
 	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList){
 		if(dtGeoserverList ==null){

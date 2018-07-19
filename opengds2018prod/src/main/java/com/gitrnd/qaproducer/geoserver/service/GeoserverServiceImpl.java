@@ -449,8 +449,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String treeID, String type) {
 		JSONArray jsonArray = new JSONArray();
 		try {
-			DTGeoserverManager dtGeoManager = dtGeoManagers.get(serverName);
-			jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoManager.getReader());
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 			JSONObject errorJSON = new JSONObject();

@@ -9,18 +9,6 @@ $.jstree.defaults.geoserver = {
 	 * 레이어가 편입될 ol.Map객체
 	 */
 	map : undefined,
-	/**
-	 * 유저정보
-	 */
-	user : undefined,
-	/**
-	 * 레이어 정보
-	 */
-	layerInfo : undefined,
-
-	layerInfoURL : undefined,
-	downloadNGIDXF : undefined,
-	downloadGeoserver : undefined
 };
 
 $.jstree.plugins.geoserver = function(options, parent) {
@@ -33,16 +21,131 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	this.bind = function() {
 		parent.bind.call(this);
 		this._data.geoserver.map = this.settings.geoserver.map;
-		this._data.geoserver.user = this.settings.geoserver.user;
-		this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
-		this._data.geoserver.layerInfoURL = this.settings.geoserver.layerInfoURL;
-		this._data.geoserver.groupLayerInfoURL = this.settings.geoserver.groupLayerInfoURL;
-		this._data.geoserver.createLayer = this.settings.geoserver.createLayer;
-		this._data.geoserver.deleteLayer = this.settings.geoserver.deleteLayer;
-		this._data.geoserver.downloadNGIDXF = this.settings.geoserver.downloadNGIDXF;
-		this._data.geoserver.downloadGeoserver = this.settings.geoserver.downloadGeoserver;
-		this._data.geoserver.clientRefer = this.settings.geoserver.clientRefer;
-		this._data.geoserver.WMSLayerURL = this.settings.geoserver.WMSLayerURL;
+		/*
+		 * this._data.geoserver.user = this.settings.geoserver.user;
+		 * this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
+		 * this._data.geoserver.layerInfoURL =
+		 * this.settings.geoserver.layerInfoURL;
+		 * this._data.geoserver.groupLayerInfoURL =
+		 * this.settings.geoserver.groupLayerInfoURL;
+		 * this._data.geoserver.createLayer =
+		 * this.settings.geoserver.createLayer; this._data.geoserver.deleteLayer =
+		 * this.settings.geoserver.deleteLayer;
+		 * this._data.geoserver.downloadNGIDXF =
+		 * this.settings.geoserver.downloadNGIDXF;
+		 * this._data.geoserver.downloadGeoserver =
+		 * this.settings.geoserver.downloadGeoserver;
+		 * this._data.geoserver.clientRefer =
+		 * this.settings.geoserver.clientRefer;
+		 */
+		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
+		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
+	};
+
+	/**
+	 * 레이어 정보를 조회한다.
+	 * 
+	 * @method load_layer_info
+	 * @param {Object}
+	 *            obj - 레이어 정보를 조회하기 위한 정보 객체
+	 * @param {String}
+	 *            obj.serverName - 레이어들이 저장된 서버이름
+	 * @param {String}
+	 *            obj.workspace - 레이어들이 저장된 워크스페이스 이름
+	 * @param {String[]}
+	 *            obj.geoLayerList - 정보를 조회하기 위한 레이어 이름 배열
+	 * @param {Function}
+	 *            callback - 정보 조회후 레이어를 로드할 콜백함수
+	 */
+	this.load_layer_info = function(node, callback) {
+
+		var server = this.get_node(node.parents[2]);
+		var workspace = this.get_node(node.parents[1]);
+		var datastore = this.get_node(node.parents[0]);
+		var params = {
+			"serverName" : server.text,
+			"workspace" : workspace.text,
+			"geoLayerList" : [ datastore.text + ":" + node.text ]
+		};
+		console.log(params);
+
+		$.ajax({
+			url : that._data.geoserver.getLayerInfo,
+			// url : that._data.geoserver.getLayerInfo + "&" + $.param(params),
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			data : JSON.stringify(params),
+			beforeSend : function() {
+				$("body").css("cursor", "wait");
+			},
+			complete : function() {
+				$("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+
+			}
+		});
+
+		/*
+		 * $.ajax({ url : that._data.geoserver.getLayerInfo, method : "POST",
+		 * contentType : "application/json; charset=UTF-8", data :
+		 * JSON.stringify(arr), beforeSend : function() { // 호출전실행 //
+		 * $("body").css("cursor", "wait"); }, traditional : true, success :
+		 * function(data2, textStatus, jqXHR) { } });
+		 */
+	};
+
+	/**
+	 * WMS 레이어를 임포트 한다.
+	 * 
+	 * @method import_each_wms
+	 * @param {Object}
+	 *            obj - WMS 레이어를 임포트하기 위한 정보
+	 * @param {String}
+	 *            obj.server - 서버 이름
+	 * @param {String}
+	 *            obj.workspace - 워크스페이스 이름
+	 * @param {String}
+	 *            obj.layers - 불러올 레이어 이름
+	 */
+	this.import_each_wms = function(obj) {
+		var that = this;
+
+		var server = this.get_node(obj.parents[2]);
+		var workspace = this.get_node(obj.parents[1]);
+		var datastore = this.get_node(obj.parents[0]);
+		var wmsInfo = {
+			"server" : server.text,
+			"workspace" : workspace.text,
+			"layers" : datastore.text + ":" + obj.text
+		};
+		console.log(wmsInfo);
+
+		var wms = new ol.layer.Tile({
+			source : new ol.source.TileWMS({
+				url : that._data.geoserver.getMapWMS,
+				params : {
+					"serverName" : wmsInfo.server,
+					"workspace" : wmsInfo.workspace,
+					"LAYERS" : wmsInfo.layers,
+					"TILED" : true,
+					"FORMAT" : 'image/png8',
+					"CRS" : that._data.geoserver.map.getView().getProjection().getCode(),
+					"SRS" : that._data.geoserver.map.getView().getProjection().getCode()
+				}
+			})
+		});
+
+		var git = {
+			"geoserver" : wmsInfo.server,
+			"workspace" : wmsInfo.workspace,
+			'layers' : wmsInfo.layers
+		};
+		wms.set("git", git);
+		wms.set("id", obj.id);
+		wms.set("name", obj.text);
+		that._data.geoserver.map.addLayer(wms);
 	};
 	this.import_fake_group_notload = function(obj) {
 		// // =======================================
@@ -72,7 +175,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : obj.refer.get_node(data[i].name).children.toString(),
@@ -211,7 +314,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : obj.arr.toString(),
@@ -347,7 +450,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								});
 								var wms2 = new ol.layer.Tile({
 									source : new ol.source.TileWMS({
-										url : that._data.geoserver.WMSLayerURL,
+										url : that._data.geoserver.getMapWMS,
 										params : befParams,
 										serverType : 'geoserver'
 									})
@@ -413,7 +516,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : obj.arr.toString(),
@@ -472,7 +575,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							for (var i = 0; i < data2.length; i++) {
 								var wms = new ol.layer.Tile({
 									source : new ol.source.TileWMS({
-										url : that._data.geoserver.WMSLayerURL,
+										url : that._data.geoserver.getMapWMS,
 										params : {
 											'TIME' : Date.now(),
 											'LAYERS' : data2[i].lName,
@@ -539,7 +642,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									// });
 									var wms2 = new ol.layer.Tile({
 										source : new ol.source.TileWMS({
-											url : that._data.geoserver.WMSLayerURL,
+											url : that._data.geoserver.getMapWMS,
 											params : befParams,
 											serverType : 'geoserver'
 										})
@@ -609,7 +712,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : data[i].lName,
@@ -720,7 +823,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : obj.refer.get_node(data[i].name).children.toString(),
@@ -780,7 +883,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								for (var i = 0; i < data2.length; i++) {
 									var wms = new ol.layer.Tile({
 										source : new ol.source.TileWMS({
-											url : that._data.geoserver.WMSLayerURL,
+											url : that._data.geoserver.getMapWMS,
 											params : {
 												'TIME' : Date.now(),
 												'LAYERS' : data2[i].lName,
@@ -848,7 +951,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										// });
 										var wms2 = new ol.layer.Tile({
 											source : new ol.source.TileWMS({
-												url : that._data.geoserver.WMSLayerURL,
+												url : that._data.geoserver.getMapWMS,
 												params : befParams,
 												serverType : 'geoserver'
 											})
@@ -920,7 +1023,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					for (var i = 0; i < data.length; i++) {
 						var wms = new ol.layer.Tile({
 							source : new ol.source.TileWMS({
-								url : that._data.geoserver.WMSLayerURL,
+								url : that._data.geoserver.getMapWMS,
 								params : {
 									'TIME' : Date.now(),
 									'LAYERS' : data[i].name,

@@ -48,13 +48,13 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	this.import_single_wms = function(obj) {
 		var that = this;
 
-		var server = inst.get_node(node.parents[2]);
-		var workspace = inst.get_node(node.parents[1]);
-		var datastore = inst.get_node(node.parents[0]);
+		var server = this.get_node(obj.parents[2]);
+		var workspace = this.get_node(obj.parents[1]);
+		var datastore = this.get_node(obj.parents[0]);
 		var wmsInfo = {
 			"server" : server.text,
 			"workspace" : workspace.text,
-			"layers" : datastore.text + ":" + node.text
+			"layers" : datastore.text + ":" + obj.text
 		};
 		console.log(wmsInfo);
 
@@ -62,9 +62,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			source : new ol.source.TileWMS({
 				url : that._data.geoserver.getMapWMS,
 				params : {
-					"serverName" : obj.server,
-					"workspace" : obj.workspace,
-					'LAYERS' : obj.layers,
+					"serverName" : wmsInfo.server,
+					"workspace" : wmsInfo.workspace,
+					'LAYERS' : wmsInfo.layers,
 					'FORMAT' : 'image/png8',
 					'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
 					'SRS' : that._data.geoserver.map.getView().getProjection().getCode()
@@ -73,13 +73,13 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		});
 
 		var git = {
-			"geoserver" : obj.server,
-			"workspace" : obj.workspace,
-			'layers' : obj.layers
+			"geoserver" : wmsInfo.server,
+			"workspace" : wmsInfo.workspace,
+			'layers' : wmsInfo.layers
 		};
-		layer.set("git", git);
-		layer.set("id", id);
-		layer.set("name", name);
+		wms.set("git", git);
+		wms.set("id", obj.id);
+		wms.set("name", obj.text);
 		that._data.geoserver.map.addLayer(wms);
 	};
 	this.import_fake_group_notload = function(obj) {

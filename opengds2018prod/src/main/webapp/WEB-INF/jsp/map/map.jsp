@@ -185,7 +185,7 @@ html {
 				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getMapWMS" : "geoserver/geoserverWMSGetMap.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

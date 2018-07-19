@@ -33,7 +33,7 @@ public enum EnWMSOutputFormat {
 		for (EnWMSOutputFormat format : values()) {
 			if(format == UNKNOWN)
 				continue;
-			if(format.type.equals(type))
+			if(format.type.equals(type.toUpperCase()))
 				return format;
 		}
 		return UNKNOWN;
@@ -43,7 +43,7 @@ public enum EnWMSOutputFormat {
 		for (EnWMSOutputFormat format : values()) {
 			if(format == UNKNOWN)
 				continue;
-			if(format.typeName.equals(typeName))
+			if(format.typeName.equals(typeName.toLowerCase()))
 				return format;
 		}
 		return UNKNOWN;

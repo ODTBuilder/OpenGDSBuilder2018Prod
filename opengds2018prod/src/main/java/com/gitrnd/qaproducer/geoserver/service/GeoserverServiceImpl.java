@@ -446,7 +446,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String serverName) {
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String treeID, String type) {
 		JSONArray jsonArray = new JSONArray();
 		try {
 			DTGeoserverManager dtGeoManager = dtGeoManagers.get(serverName);

@@ -104,13 +104,13 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value = "/getGeolayerCollectionTree.ajax")
 	@ResponseBody
-	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "serverName", required = false) String serverName) {
+	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser, @RequestParam(value = "treeId", required = false) String treeId,
+			@RequestParam(value = "type", required = false) String type) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
-		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, serverName);
+		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, treeId, type);
 	}
 	
 	/**

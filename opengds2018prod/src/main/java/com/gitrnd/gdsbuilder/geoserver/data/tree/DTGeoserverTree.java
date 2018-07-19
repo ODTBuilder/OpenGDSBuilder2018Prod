@@ -66,31 +66,26 @@ import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
  * @Description GeoserverLayer Tree 관련 클래스
  * @author SG.Lee
  * @Date 2018. 7. 12. 오후 6:56:21
- * */
+ */
 @SuppressWarnings("serial")
 public class DTGeoserverTree extends JSONArray {
-	
-	
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	public enum EnTreeType {
-		SERVER("server"), 
-		WORKSPACE("workspace"), 
-		DATASTORE("datastore"),
-		LAYER("layer"),
-		UNKNOWN(null);
-		
+		SERVER("server"), WORKSPACE("workspace"), DATASTORE("datastore"), LAYER("layer"), UNKNOWN(null);
+
 		String type;
-		
+
 		private EnTreeType(String type) {
 			this.type = type;
 		}
-		
+
 		public static EnTreeType getFromType(String type) {
 			for (EnTreeType tt : values()) {
-				if(tt == UNKNOWN)
+				if (tt == UNKNOWN)
 					continue;
-				if(tt.type.equals(type))
+				if (tt.type.equals(type))
 					return tt;
 			}
 			return UNKNOWN;
@@ -104,45 +99,41 @@ public class DTGeoserverTree extends JSONArray {
 			this.type = type;
 		}
 	}
-	
-	
-	
+
 	/**
 	 * type이 EnTreeType.SERVER 일경우에
+	 * 
 	 * @param dtGeoManagers
 	 * @param type
 	 */
 	public DTGeoserverTree(DTGeoserverManagerList dtGeoManagers, EnTreeType type) {
-			if(type==EnTreeType.SERVER){
-				build(dtGeoManagers);
-			}else{
-				logger.error("TreeType이 Server가 아닙니다.");
-			}
+		if (type == EnTreeType.SERVER) {
+			build(dtGeoManagers);
+		} else {
+			logger.error("TreeType이 Server가 아닙니다.");
+		}
 	}
-	
-	
+
 	/**
 	 * type이 EnTreeType.SERVER가 아닐때
 	 * @param dtGeoManagers
-	 * @param treeID
+	 * @param parent
+	 * @param serverName
 	 * @param type
 	 */
-	public DTGeoserverTree(DTGeoserverManagerList dtGeoManagers, String treeID, EnTreeType type) {
-		build(dtGeoManagers, treeID, type);
+	public DTGeoserverTree(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, EnTreeType type) {
+		build(dtGeoManagers, parent, serverName, type);
 	}
 
-	
-	
-	
 	/**
 	 * @Description Server type
 	 * @author SG.Lee
 	 * @Date 2018. 7. 19. 오후 3:42:51
 	 * @param dtGeoManagers
 	 * @return DTGeoserverTree
-	 * */
+	 */
 	@SuppressWarnings("unchecked")
-	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers){
+	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers) {
 		if (dtGeoManagers != null) {
 			Iterator<String> keys = dtGeoManagers.keySet().iterator();
 
@@ -174,184 +165,97 @@ public class DTGeoserverTree extends JSONArray {
 		}
 		return this;
 	}
-	
-	
+
 	/**
-	 * @Description workspace Type
+	 * @Description server Type 외
 	 * @author SG.Lee
 	 * @Date 2018. 7. 19. 오후 3:46:01
 	 * @param dtGeoManagers
-	 * @param parent jstree parent ID
-	 * @param serverName 서버이름
+	 * @param parent
+	 *            jstree parent ID
+	 * @param serverName
+	 *            서버이름
+	 * @param type 
 	 * @return DTGeoserverTree
-	 * */
+	 */
 	@SuppressWarnings("unchecked")
-	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers, String parent, String serverName){
-		if (dtGeoManagers != null) {
+	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, EnTreeType type) {
+		if (dtGeoManagers != null && type!=null) {
 			Iterator<String> keys = dtGeoManagers.keySet().iterator();
-
 			while (keys.hasNext()) {
-				String serverName = (String) keys.next();
-				DTGeoserverManager dtGeoManager = dtGeoManagers.get(serverName);
+				String key = (String) keys.next();
+				if (key.equals(serverName)) {
+					String[] param = parent.split("_");// ex) 테스트서버
 
-				if (dtGeoManager != null) {
-					DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
-					if (dtGeoserverReader != null) {
-						JSONObject serverTree = new JSONObject();
-						serverTree.put("id", serverName);
-						serverTree.put("parent", "#");
-						serverTree.put("text", serverName);
-						serverTree.put("type", "geoserver");
-						super.add(serverTree);
-					}
-				}
-				
-				RESTWorkspaceList restWorkspaceList = dtGeoManagers.getWorkspaces();
+					DTGeoserverManager dtGeoManager = dtGeoManagers.get(serverName);
 
-				if (restWorkspaceList != null) {
-					for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
-						String wsName = item.getName();
-						JSONObject wsTree = new JSONObject();
-						wsTree.put("id", serverName+"_"+wsName);
-						wsTree.put("parent", serverName);
-						wsTree.put("text", wsName);
-						wsTree.put("type", "workspace");
-						super.add(wsTree);
-//						wsTree.clear();
+					if (dtGeoManager != null) {
+						DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
+						
+						if(type==EnTreeType.WORKSPACE){
+							RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
+							if (restWorkspaceList != null) {
+								for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
+									String wsName = item.getName();
+									JSONObject wsTree = new JSONObject();
+									wsTree.put("id", serverName + "_" + wsName);
+									wsTree.put("parent", parent);
+									wsTree.put("text", wsName);
+									wsTree.put("type", "workspace");
+									super.add(wsTree);
+								}
+							}
+						}else if(type==EnTreeType.DATASTORE){
+							if(param!=null){
+								if(param.length>=1){
+									String workspace = param[1];
+									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(workspace);
+									List<String> dsNames = dataStoreList.getNames();
+									for (String dsName : dsNames) {
+										RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, dsName);
+										if (dStore != null) {
+											JSONObject dsTree = new JSONObject();
+											dsTree.put("id", serverName + "_" + workspace + "_" + dsName);
+											dsTree.put("parent", parent);
+											dsTree.put("text", dsName);
+											dsTree.put("type", "datastore");
+											super.add(dsTree);
+										}
+									}
+								}
+							}
+						}else if(type==EnTreeType.LAYER){
+							if(param!=null){
+								if(param.length>=2){
+									String wsName = param[1];
+									String dsName = param[2];
+									
+									RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
+									ArrayList<String> layerNames = new ArrayList<String>(ftList.getNames());
 
-						RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
+									DTGeoLayerList dtGLayerList = dtGeoserverReader.getDTGeoLayerList(wsName,
+											layerNames);
 
-						List<String> dsNames = dataStoreList.getNames();
-
-						for (String dsName : dsNames) {
-							RESTDataStore dStore = dtGeoserverReader.getDatastore(wsName, dsName);
-							if (dStore != null) {
-								String dsType = dStore.getStoreType();
-								JSONObject dsTree = new JSONObject();
-								dsTree.put("id", serverName+"_"+wsName+"_"+dsName);
-								dsTree.put("parent", serverName+"_"+wsName);
-								dsTree.put("text", dsName);
-								dsTree.put("type", "datastore");
-								super.add(dsTree);
-//								dsTree.clear();
-
-								RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
-								ArrayList<String> layerNames = new ArrayList<String>(ftList.getNames());
-
-								DTGeoLayerList dtGLayerList = dtGeoserverReader.getDTGeoLayerList(wsName,
-										layerNames);
-
-								for (DTGeoLayer dtGLayer : dtGLayerList) {
-									if (dtGLayer != null) {
-										JSONObject layerTree = new JSONObject();
-										layerTree.put("id", serverName+"_"+wsName+"_"+dsName+"_"+dtGLayer.getlName());
-										layerTree.put("parent", serverName+"_"+wsName+"_"+dsName);
-										layerTree.put("text", dtGLayer.getlName());
-										layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
-										super.add(layerTree);
-//										layerTree.clear();
+									for (DTGeoLayer dtGLayer : dtGLayerList) {
+										if (dtGLayer != null) {
+											JSONObject layerTree = new JSONObject();
+											layerTree.put("id", serverName + "_" + wsName + "_" + dsName + "_"
+													+ dtGLayer.getlName());
+											layerTree.put("parent", parent);
+											layerTree.put("text", dtGLayer.getlName());
+											layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
+											super.add(layerTree);
+											// layerTree.clear();
+										}
 									}
 								}
 							}
 						}
 					}
-				} else {
-					JSONObject errorJSON = new JSONObject();
-					errorJSON.put("id", 500);
-					errorJSON.put("parent", "#");
-					errorJSON.put("text", "Geoserver에 Workspace가 존재하지 않습니다");
-					errorJSON.put("type", "error");
-
-					super.add(errorJSON);
-					logger.warn("Geoserver에 Workspace가 존재하지 않습니다");
 				}
 			}
-		} else {
-			JSONObject errorJSON = new JSONObject();
-			errorJSON.put("id", 500);
-			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 다시 추가해주세요");
-			errorJSON.put("type", "error");
-
-			super.add(errorJSON);
-			logger.warn("Geoserver를 다시 추가해주세요");
-		}
-		return this;
-	}
-	
-	
-	
-	
-	@SuppressWarnings("unchecked")
-	private DTGeoserverTree build(DTGeoserverReader dtGeoserverReader){
-		
-		if(dtGeoserverReader!=null){
-			RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
-			
-			if(restWorkspaceList!=null){
-				for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
-		            String wsName = item.getName();
-		            JSONObject wsTree = new JSONObject();
-		            wsTree.put("id", wsName);
-		            wsTree.put("parent", "#");
-		            wsTree.put("text", wsName);
-		            wsTree.put("type", "workspace");
-		            super.add(wsTree);
-		            wsTree.clear();
-		            
-		            RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
-		            
-		            List<String> dsNames = dataStoreList.getNames();
-		            
-		            for(String dsName : dsNames){
-		            	RESTDataStore dStore = dtGeoserverReader.getDatastore(wsName, dsName);
-		            	if(dStore!=null){
-		            		String dsType = dStore.getStoreType();
-		            		JSONObject dsTree = new JSONObject();
-							dsTree.put("id", wsName+"_"+dsName);
-							dsTree.put("parent", wsName);
-							dsTree.put("text", dsName);
-							dsTree.put("type", "datastore");
-							super.add(dsTree);
-			            	dsTree.clear();
-			            	
-			            	RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
-			            	ArrayList<String> layerNames = new ArrayList<String>(ftList.getNames());
-			            	
-			            	DTGeoLayerList dtGLayerList = dtGeoserverReader.getDTGeoLayerList(wsName, layerNames);
-			            	
-			            	for(DTGeoLayer dtGLayer : dtGLayerList){
-			            		if(dtGLayer!=null){
-			            			JSONObject layerTree = new JSONObject();
-									layerTree.put("id", wsName+"_"+dsName+"_"+dtGLayer.getlName());
-									layerTree.put("parent", wsName+"_"+dsName);
-									layerTree.put("text", dtGLayer.getlName());
-									layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
-									super.add(layerTree);
-			            		}
-			            	}
-		            	}
-		            }
-		        }
-			}else{
-				JSONObject errorJSON = new JSONObject();
-				errorJSON.put("id", 500);
-				errorJSON.put("parent", "#");
-				errorJSON.put("text", "Geoserver에 Workspace가 존재하지 않습니다");
-				errorJSON.put("type", "error");
-				
-				super.add(errorJSON);
-				logger.warn("Geoserver에 Workspace가 존재하지 않습니다");
-			}
-		}else{
-			JSONObject errorJSON = new JSONObject();
-			errorJSON.put("id", 500);
-			errorJSON.put("parent", "#");
-			errorJSON.put("text", "Geoserver를 다시 추가해주세요");
-			errorJSON.put("type", "error");
-			
-			super.add(errorJSON);
-			logger.warn("Geoserver를 다시 추가해주세요");
+		} else{
+			logger.warn("DTGeoserverManagerList or EnTreeType null");
 		}
 		return this;
 	}

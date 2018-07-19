@@ -155,7 +155,7 @@ gb.tree.GeoServer = function(obj) {
 				"geoserver" : {
 					"map" : options.map instanceof ol.Map ? options.map : undefined,
 					"getMapWMS" : this.getMapWMS,
-					"getLayerInfo" : this.
+					"getLayerInfo" : this.getLayerInfo
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -226,7 +226,8 @@ gb.tree.GeoServer = function(obj) {
 													 * node.text };
 													 * console.log(wmsInfo);
 													 */
-													inst.import_single_wms(node);
+//													inst.import_single_wms(node);
+													inst.load_layer_info(node);
 												}
 											} else if (selectedNum > 1) {
 												var serverNum = 0;

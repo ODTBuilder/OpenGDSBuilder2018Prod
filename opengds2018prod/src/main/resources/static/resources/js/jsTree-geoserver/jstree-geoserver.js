@@ -54,9 +54,46 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 *            obj.workspace - 레이어들이 저장된 워크스페이스 이름
 	 * @param {String[]}
 	 *            obj.geoLayerList - 정보를 조회하기 위한 레이어 이름 배열
-	 *   @param {}         
+	 * @param {Function}
+	 *            callback - 정보 조회후 레이어를 로드할 콜백함수
 	 */
-	this.load_layer_info = function(obj) {
+	this.load_layer_info = function(node, callback) {
+
+		var server = this.get_node(node.parents[2]);
+		var workspace = this.get_node(node.parents[1]);
+		var datastore = this.get_node(node.parents[0]);
+		var params = {
+			"serverName" : server.text,
+			"workspace" : workspace.text,
+			"geoLayerList" : [ datastore.text + ":" + node.text ]
+		};
+		console.log(params);
+
+		$.ajax({
+			url : that._data.geoserver.getLayerInfo,
+			// url : that._data.geoserver.getLayerInfo + "&" + $.param(params),
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			data : JSON.stringify(params),
+			beforeSend : function() {
+				$("body").css("cursor", "wait");
+			},
+			complete : function() {
+				$("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+
+			}
+		});
+
+		/*
+		 * $.ajax({ url : that._data.geoserver.getLayerInfo, method : "POST",
+		 * contentType : "application/json; charset=UTF-8", data :
+		 * JSON.stringify(arr), beforeSend : function() { // 호출전실행 //
+		 * $("body").css("cursor", "wait"); }, traditional : true, success :
+		 * function(data2, textStatus, jqXHR) { } });
+		 */
 	};
 
 	/**

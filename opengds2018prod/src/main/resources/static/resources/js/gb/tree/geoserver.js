@@ -37,6 +37,7 @@ gb.tree.GeoServer = function(obj) {
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
+	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -153,7 +154,8 @@ gb.tree.GeoServer = function(obj) {
 				},
 				"geoserver" : {
 					"map" : options.map instanceof ol.Map ? options.map : undefined,
-					"getMapWMS" : this.getMapWMS
+					"getMapWMS" : this.getMapWMS,
+					"getLayerInfo" : this.
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",

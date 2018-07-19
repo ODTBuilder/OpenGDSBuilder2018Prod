@@ -198,13 +198,13 @@ gb.tree.GeoServer = function(obj) {
 												var node = inst.get_node(nodes[0]);
 												var type = inst.get_type(node);
 												if (type === "workspace") {
-
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												} else if (type === "datastore") {
-
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												} else if (type === "point" || type === "multipoint" || type === "linestring"
 														|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
 													console.log(node);
-													inst.load_each_wms_layer(node, that.map);
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												}
 											} else if (selectedNum > 1) {
 												var serverNum = 0;

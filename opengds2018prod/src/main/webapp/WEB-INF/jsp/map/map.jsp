@@ -171,7 +171,7 @@ html {
 			"title" : "Base CRS",
 			"message" : $(".epsg-now"),
 			"map" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
-			"epsg" : "3857"
+			"epsg" : "5186"
 		});
 
 		$(".epsg-now").click(function() {

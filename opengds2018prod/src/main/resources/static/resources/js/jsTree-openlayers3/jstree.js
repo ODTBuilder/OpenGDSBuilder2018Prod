@@ -615,7 +615,7 @@
 					return lastZidx;
 				},
 				/**
-				 * 레이어에 유일한 아이디를 부여한다.
+				 * 레이어에 유일한 트리 아이디를 부여한다.
 				 * 
 				 * @author 소이준
 				 * @private
@@ -1868,7 +1868,7 @@
 						parent = parentid;
 					}
 					var obj = {
-						id : layer.get("treeid"),
+						id : layer.get("treeid") ? layer.get("treeid") : this._createLayerId(),
 						parent : parent,
 						text : text,
 						type : undefined,
@@ -1915,6 +1915,68 @@
 						}
 						result.push(obj);
 					} else if (layer instanceof ol.layer.Image) {
+						if (layer.get("git")) {
+							var git = layer.get("git");
+							if (git.hasOwnProperty("validation")) {
+								switch (git.validation) {
+								case "Up":
+									obj.type = git.validation;
+									break;
+								case "Down":
+									obj.type = git.validation;
+									break;
+								case "Left":
+									obj.type = git.validation;
+									break;
+								case "Right":
+									obj.type = git.validation;
+									break;
+								case "CenterChild":
+									obj.type = git.validation;
+									break;
+								case "ErrorChild":
+									obj.type = git.validation;
+									break;
+								default:
+									obj.type = "Raster";
+									break;
+								}
+							} else if (git.hasOwnProperty("editable")) {
+								if (git.editable && git.hasOwnProperty("geometry")) {
+									switch (git.geometry) {
+									case "Point":
+										obj.type = git.geometry;
+										break;
+									case "MultiPoint":
+										obj.type = git.geometry;
+										break;
+									case "LineString":
+										obj.type = git.geometry;
+										break;
+									case "MultiLineString":
+										obj.type = git.geometry;
+										break;
+									case "Polygon":
+										obj.type = git.geometry;
+										break;
+									case "MultiPolygon":
+										obj.type = git.geometry;
+										break;
+									default:
+										obj.type = "Raster";
+										break;
+									}
+								} else {
+									obj.type = "Raster";
+								}
+							} else {
+								obj.type = "Raster";
+							}
+						} else {
+							obj.type = "Raster";
+						}
+						result.push(obj);
+					} else if (layer instanceof ol.layer.Tile) {
 						if (layer.get("git")) {
 							var git = layer.get("git");
 							if (git.hasOwnProperty("validation")) {
@@ -2682,6 +2744,7 @@
 								if (!dat[i].children) {
 									dat[i].children = [];
 								}
+								console.log(dat[i]);
 								m[dat[i].id.toString()] = dat[i];
 							}
 							// 2) populate children (foreach)
@@ -4745,6 +4808,10 @@
 					 * @comment 레이어 업데이트 부분추가
 					 * @author 소이준
 					 */
+					for (var j = 0; j < this._data.core.layers.getLength(); j++) {
+						this.setUniqueLayerId(this._data.core.layers.item(j), this._createLayerId());
+					}
+
 					var layerData = [];
 					for (var j = 0; j < this._data.core.layers.getLength(); j++) {
 						layerData = layerData.concat(this._createJSONFromLayer(this._data.core.layers.item(j), "#"));
@@ -4926,10 +4993,10 @@
 					return (!obj || obj.id === $.jstreeol3.root) ? false : obj.text;
 				},
 				/**
-				 * 아이디를 조회한다.
+				 * 트리 아이디를 조회한다.
 				 * 
 				 * @author 소이준
-				 * @name tour_Layers(layer, id)
+				 * @name tour_Layer(layer, id)
 				 * @param {ol.layer.Base}
 				 *            layer - 조회할 레이어
 				 * @param {string}
@@ -4988,10 +5055,10 @@
 					return result;
 				},
 				/**
-				 * 아이디를 조회한다.
+				 * OL 아이디를 조회한다.
 				 * 
 				 * @author 소이준
-				 * @name tour_Layers(layer, id)
+				 * @name tour_Layer_Id(layer, id)
 				 * @param {ol.layer.Base}
 				 *            layer - 조회할 레이어
 				 * @param {string}
@@ -5096,7 +5163,7 @@
 					return num;
 				},
 				/**
-				 * get the layer by id
+				 * get the layer by tree id
 				 * 
 				 * @name get_LayerById(id, [collection])
 				 * @param {String}
@@ -6268,185 +6335,168 @@
 
 						this._node_changed(new_par.id);
 						this.redraw(new_par.id === $.jstreeol3.root);
+					} else {
+						/**
+						 * @comment 변경된 노드 인덱스에 맞춰 ol3 레이어 Z인덱스 변경(부모 노드가 다른 경우)
+						 * @author 소이준
+						 */
+						var movingLayers;
+						var oldLayer;
+						var isUnderRootBefore = false;
+						if (old_par.id === "#" || old_par === "#") {
+							isUnderRootBefore = true;
+						} else {
+							if (typeof old_par === "string") {
+								oldLayer = this.get_LayerById(old_par);
+							} else {
+								oldLayer = this.get_LayerById(old_par.id);
+							}
+						}
+
+						// clean old parent and up
+						tmp = obj.children_d.concat();
+						tmp.push(obj.id);
+						for (i = 0, j = obj.parents.length; i < j; i++) {
+							dpc = [];
+							p = old_ins._model.data[obj.parents[i]].children_d;
+							for (k = 0, l = p.length; k < l; k++) {
+								if ($.inArray(p[k], tmp) === -1) {
+									dpc.push(p[k]);
+								}
+							}
+							old_ins._model.data[obj.parents[i]].children_d = dpc;
+						}
+						old_ins._model.data[old_par].children = $.vakata.array_remove_item(old_ins._model.data[old_par].children, obj.id);
+
+						/**
+						 * 이동한 레이어를 부모 노드에서 잘라낸다
+						 * 
+						 * @author 소이준
+						 */
+						if (isUnderRootBefore) {
+							this.git.isContextmenu = true;
+							movingLayers = this._data.core.map.removeLayer(this.get_LayerById(obj.id));
+						} else {
+							movingLayers = oldLayer.getLayers().remove(this.get_LayerById(obj.id));
+						}
+
+						// insert into new parent and up
+						for (i = 0, j = new_par.parents.length; i < j; i++) {
+							this._model.data[new_par.parents[i]].children_d = this._model.data[new_par.parents[i]].children_d.concat(tmp);
+						}
+						dpc = [];
+						for (i = 0, j = new_par.children.length; i < j; i++) {
+							dpc[i >= pos ? i + 1 : i] = new_par.children[i];
+						}
+						dpc[pos] = obj.id;
+						new_par.children = dpc;
+						new_par.children_d.push(obj.id);
+						new_par.children_d = new_par.children_d.concat(obj.children_d);
+
+						/**
+						 * @comment 이동된 레이어를 부모노드에 포함시킨다.
+						 * @author 소이준
+						 */
+						var newLayer;
+						var isUnderRoot = false;
+						if (new_par.id === "#") {
+							isUnderRoot = true;
+						} else {
+							if (typeof new_par === "string") {
+								newLayer = this.get_LayerById(new_par);
+							} else {
+								newLayer = this.get_LayerById(new_par.id);
+							}
+							if (!newLayer instanceof ol.layer.Group) {
+								console.error("not a group layer");
+							}
+						}
+
+						if (isUnderRoot) {
+							this.git.isContextmenu = true;
+							this._data.core.map.addLayer(movingLayers);
+						} else {
+							newLayer.getLayers().push(movingLayers);
+						}
+
+						// update object
+						obj.parent = new_par.id;
+						tmp = new_par.parents.concat();
+						tmp.unshift(new_par.id);
+						p = obj.parents.length;
+						obj.parents = tmp;
+
+						// update object children
+						tmp = tmp.concat();
+						for (i = 0, j = obj.children_d.length; i < j; i++) {
+							this._model.data[obj.children_d[i]].parents = this._model.data[obj.children_d[i]].parents.slice(0, p * -1);
+							Array.prototype.push.apply(this._model.data[obj.children_d[i]].parents, tmp);
+						}
+
+						// 추가
+						var rootChld = this.get_node("#").children;
+						var idx1;
+						var idx2;
+						var lastPointerTmp;
+						var old_pa;
+						var new_pa;
+						var old_node = this.get_node(old_par);
+						if (old_node.parents.length > 1) {
+							// 이동한 레이어의 #자식노드 부모를 찾는다
+							var underRoot = old_node.parents[old_node.parents.length - 2];
+							// #자식 노드의 인덱스를 찾는다
+							idx1 = rootChld.indexOf(old_node.parents[old_node.parents.length - 2]);
+							// #자식 노드의 레이어를 찾는다
+							old_pa = this.get_LayerById(underRoot);
+						} else {
+							// #자식의 인덱스를 찾는다
+							idx1 = rootChld.indexOf(old_node.id);
+							// 레이어를 찾는다
+							old_pa = this.get_LayerById(old_node.id);
+						}
+
+						// 그룹 레이어의 자식레이어인 경우
+						if (obj.parents.length > 1) {
+							// 이동한 레이어의 #자식노드 부모를 찾는다
+							var underRoot = obj.parents[obj.parents.length - 2];
+							// #자식 노드의 인덱스를 찾는다
+							idx2 = rootChld.indexOf(obj.parents[obj.parents.length - 2]);
+							// #자식 노드의 레이어를 찾는다
+							new_pa = this.get_LayerById(underRoot);
+							// #의 자식 노드일 경우
+						} else {
+							// #자식의 인덱스를 찾는다
+							idx2 = rootChld.indexOf(obj.id);
+							// 레이어를 찾는다
+							new_pa = this.get_LayerById(obj.id);
+						}
+						var start = 0;
+						if (idx1 >= idx2) {
+							start = idx1;
+						} else {
+							start = idx2;
+						}
+						lastPointerTmp = this.get_LayerById(rootChld[start]).getZIndex();
+						for (var i = start; i > -1; i--) {
+							lastPointerTmp = this.setUniqueLayerZIndexByNode(this.get_node(rootChld[i]), lastPointerTmp);
+						}
+						// 여기까지
+
+						if (old_par === $.jstreeol3.root || new_par.id === $.jstreeol3.root) {
+							this._model.force_full_redraw = true;
+						}
+						if (!this._model.force_full_redraw) {
+							this._node_changed(old_par);
+							this._node_changed(new_par.id);
+						}
+						if (!skip_redraw) {
+							this.redraw();
+						}
 					}
-					// else {
-					// /**
-					// * @comment 변경된 노드 인덱스에 맞춰 ol3 레이어 Z인덱스 변경(부모 노드가 다른 경우)
-					// * @author 소이준
-					// */
-					// var movingLayers;
-					// var oldLayer;
-					// var isUnderRootBefore = false;
-					// if (old_par.id === "#" || old_par === "#") {
-					// isUnderRootBefore = true;
-					// } else {
-					// if (typeof old_par === "string") {
-					// oldLayer = this.get_LayerById(old_par);
-					// } else {
-					// oldLayer = this.get_LayerById(old_par.id);
-					// }
-					// }
-					//
-					// // clean old parent and up
-					// tmp = obj.children_d.concat();
-					// tmp.push(obj.id);
-					// for (i = 0, j = obj.parents.length; i < j; i++) {
-					// dpc = [];
-					// p = old_ins._model.data[obj.parents[i]].children_d;
-					// for (k = 0, l = p.length; k < l; k++) {
-					// if ($.inArray(p[k], tmp) === -1) {
-					// dpc.push(p[k]);
-					// }
-					// }
-					// old_ins._model.data[obj.parents[i]].children_d = dpc;
-					// }
-					// old_ins._model.data[old_par].children =
-					// $.vakata.array_remove_item(old_ins._model.data[old_par].children,
-					// obj.id);
-					//
-					// /**
-					// * 이동한 레이어를 부모 노드에서 잘라낸다
-					// *
-					// * @author 소이준
-					// */
-					// if (isUnderRootBefore) {
-					// this.git.isContextmenu = true;
-					// movingLayers =
-					// this._data.core.map.removeLayer(this.get_LayerById(obj.id));
-					// } else {
-					// movingLayers =
-					// oldLayer.getLayers().remove(this.get_LayerById(obj.id));
-					// }
-					//
-					// // insert into new parent and up
-					// for (i = 0, j = new_par.parents.length; i < j; i++) {
-					// this._model.data[new_par.parents[i]].children_d =
-					// this._model.data[new_par.parents[i]].children_d.concat(tmp);
-					// }
-					// dpc = [];
-					// for (i = 0, j = new_par.children.length; i < j; i++) {
-					// dpc[i >= pos ? i + 1 : i] = new_par.children[i];
-					// }
-					// dpc[pos] = obj.id;
-					// new_par.children = dpc;
-					// new_par.children_d.push(obj.id);
-					// new_par.children_d =
-					// new_par.children_d.concat(obj.children_d);
-					//
-					// /**
-					// * @comment 이동된 레이어를 부모노드에 포함시킨다.
-					// * @author 소이준
-					// */
-					// var newLayer;
-					// var isUnderRoot = false;
-					// if (new_par.id === "#") {
-					// isUnderRoot = true;
-					// } else {
-					// if (typeof new_par === "string") {
-					// newLayer = this.get_LayerById(new_par);
-					// } else {
-					// newLayer = this.get_LayerById(new_par.id);
-					// }
-					// if (!newLayer instanceof ol.layer.Group) {
-					// console.error("not a group layer");
-					// }
-					// }
-					//
-					// if (isUnderRoot) {
-					// this.git.isContextmenu = true;
-					// this._data.core.map.addLayer(movingLayers);
-					// } else {
-					// newLayer.getLayers().push(movingLayers);
-					// }
-					//
-					// // update object
-					// obj.parent = new_par.id;
-					// tmp = new_par.parents.concat();
-					// tmp.unshift(new_par.id);
-					// p = obj.parents.length;
-					// obj.parents = tmp;
-					//
-					// // update object children
-					// tmp = tmp.concat();
-					// for (i = 0, j = obj.children_d.length; i < j; i++) {
-					// this._model.data[obj.children_d[i]].parents =
-					// this._model.data[obj.children_d[i]].parents.slice(0, p *
-					// -1);
-					// Array.prototype.push.apply(this._model.data[obj.children_d[i]].parents,
-					// tmp);
-					// }
-					//
-					// // 추가
-					// var rootChld = this.get_node("#").children;
-					// var idx1;
-					// var idx2;
-					// var lastPointerTmp;
-					// var old_pa;
-					// var new_pa;
-					// var old_node = this.get_node(old_par);
-					// if (old_node.parents.length > 1) {
-					// // 이동한 레이어의 #자식노드 부모를 찾는다
-					// var underRoot = old_node.parents[old_node.parents.length
-					// - 2];
-					// // #자식 노드의 인덱스를 찾는다
-					// idx1 =
-					// rootChld.indexOf(old_node.parents[old_node.parents.length
-					// - 2]);
-					// // #자식 노드의 레이어를 찾는다
-					// old_pa = this.get_LayerById(underRoot);
-					// } else {
-					// // #자식의 인덱스를 찾는다
-					// idx1 = rootChld.indexOf(old_node.id);
-					// // 레이어를 찾는다
-					// old_pa = this.get_LayerById(old_node.id);
-					// }
-					//
-					// // 그룹 레이어의 자식레이어인 경우
-					// if (obj.parents.length > 1) {
-					// // 이동한 레이어의 #자식노드 부모를 찾는다
-					// var underRoot = obj.parents[obj.parents.length - 2];
-					// // #자식 노드의 인덱스를 찾는다
-					// idx2 = rootChld.indexOf(obj.parents[obj.parents.length -
-					// 2]);
-					// // #자식 노드의 레이어를 찾는다
-					// new_pa = this.get_LayerById(underRoot);
-					// // #의 자식 노드일 경우
-					// } else {
-					// // #자식의 인덱스를 찾는다
-					// idx2 = rootChld.indexOf(obj.id);
-					// // 레이어를 찾는다
-					// new_pa = this.get_LayerById(obj.id);
-					// }
-					// var start = 0;
-					// if (idx1 >= idx2) {
-					// start = idx1;
-					// } else {
-					// start = idx2;
-					// }
-					// lastPointerTmp =
-					// this.get_LayerById(rootChld[start]).getZIndex();
-					// for (var i = start; i > -1; i--) {
-					// lastPointerTmp =
-					// this.setUniqueLayerZIndexByNode(this.get_node(rootChld[i]),
-					// lastPointerTmp);
-					// }
-					// // 여기까지
-					//
-					// if (old_par === $.jstreeol3.root || new_par.id ===
-					// $.jstreeol3.root) {
-					// this._model.force_full_redraw = true;
-					// }
-					// if (!this._model.force_full_redraw) {
-					// this._node_changed(old_par);
-					// this._node_changed(new_par.id);
-					// }
-					// if (!skip_redraw) {
-					// this.redraw();
-					// }
-					// }
 					if (callback) {
 						callback.call(this, obj, new_par, pos);
 					}
+
 					/**
 					 * triggered when a node is moved
 					 * 
@@ -8743,42 +8793,38 @@
 						 * 
 						 * @author 소이준
 						 */
-						// "group" : {
-						// "separator_before" : false,
-						// "separator_after" : true,
-						// "_disabled" : false, // (this.check("create_node",
-						// // data.reference, {},
-						// // "last")),
-						// "label" : "Create group",
-						// "action" : function(data) {
-						// var inst = $.jstreeol3.reference(data.reference), obj
-						// = inst.get_node(data.reference);
-						// inst.create_group(obj, {}, "first",
-						// function(new_node) {
-						// setTimeout(function() {
-						// inst.edit(new_node);
-						// }, 0);
-						// });
-						// }
-						// },
-						// "create" : {
-						// "separator_before" : false,
-						// "separator_after" : true,
-						// "_disabled" : false, // (this.check("create_node",
-						// // data.reference, {},
-						// // "last")),
-						// "label" : "Create",
-						// "action" : function(data) {
-						// var inst = $.jstreeol3.reference(data.reference), obj
-						// = inst.get_node(data.reference);
-						// inst.create_node(obj, {}, "last", function(new_node)
-						// {
-						// setTimeout(function() {
-						// inst.edit(new_node);
-						// }, 0);
-						// });
-						// }
-						// },
+						"group" : {
+							"separator_before" : false,
+							"separator_after" : true,
+							"_disabled" : false, // (this.check("create_node",
+							// data.reference, {},
+							// "last")),
+							"label" : "Create group",
+							"action" : function(data) {
+								var inst = $.jstreeol3.reference(data.reference), obj = inst.get_node(data.reference);
+								inst.create_group(obj, {}, "first", function(new_node) {
+									setTimeout(function() {
+										inst.edit(new_node);
+									}, 0);
+								});
+							}
+						},
+						"create" : {
+							"separator_before" : false,
+							"separator_after" : true,
+							"_disabled" : false, // (this.check("create_node",
+							// data.reference, {},
+							// "last")),
+							"label" : "Create",
+							"action" : function(data) {
+								var inst = $.jstreeol3.reference(data.reference), obj = inst.get_node(data.reference);
+								inst.create_node(obj, {}, "last", function(new_node) {
+									setTimeout(function() {
+										inst.edit(new_node);
+									}, 0);
+								});
+							}
+						},
 						"zoom" : {
 							"separator_before" : false,
 							"icon" : "fa fa-crosshairs",
@@ -8795,9 +8841,9 @@
 							"action" : function(data) {
 								var inst = $.jstreeol3.reference(data.reference), obj = inst.get_node(data.reference);
 								var layer = inst.get_LayerById(obj.id);
-								inst._data.layerproperties.editingTool.zoomToFit(layer);
+								// inst._data.layerproperties.editingTool.zoomToFit(layer);
 								// inst._data.layerproperties.editingTool.setWMSSource(layer,
-								// inst.zoom_to_fit(obj));
+								inst.zoom_to_fit(obj);
 							}
 						},
 						// "rename" : {

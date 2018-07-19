@@ -29,9 +29,9 @@ gb.crs.BaseCRS = function(obj) {
 	gb.modal.Base.call(this, obj);
 	var that = this;
 	var options = obj ? obj : {};
-	this.message = obj.message ? obj.message : undefined;
-	this.map = obj.map ? obj.map : undefined;
-	this.epsg = obj.epsg ? obj.epsg : "3857";
+	this.message = options.message ? options.message : undefined;
+	this.map = options.map ? options.map : undefined;
+	this.epsg = options.epsg ? options.epsg : "3857";
 
 	this.searchEPSGCode(this.epsg);
 

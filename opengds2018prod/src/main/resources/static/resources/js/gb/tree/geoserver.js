@@ -37,6 +37,7 @@ gb.tree.GeoServer = function(obj) {
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
+	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -153,7 +154,8 @@ gb.tree.GeoServer = function(obj) {
 				},
 				"geoserver" : {
 					"map" : options.map instanceof ol.Map ? options.map : undefined,
-					"getMapWMS" : this.getMapWMS
+					"getMapWMS" : this.getMapWMS,
+					"getLayerInfo" : this.getLayerInfo
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -224,7 +226,8 @@ gb.tree.GeoServer = function(obj) {
 													 * node.text };
 													 * console.log(wmsInfo);
 													 */
-													inst.import_single_wms(node);
+//													inst.import_single_wms(node);
+													inst.load_layer_info(node);
 												}
 											} else if (selectedNum > 1) {
 												var serverNum = 0;

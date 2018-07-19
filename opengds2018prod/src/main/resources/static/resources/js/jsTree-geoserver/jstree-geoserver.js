@@ -21,21 +21,85 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	this.bind = function() {
 		parent.bind.call(this);
 		this._data.geoserver.map = this.settings.geoserver.map;
-		this._data.geoserver.user = this.settings.geoserver.user;
-		this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
-		this._data.geoserver.layerInfoURL = this.settings.geoserver.layerInfoURL;
-		this._data.geoserver.groupLayerInfoURL = this.settings.geoserver.groupLayerInfoURL;
-		this._data.geoserver.createLayer = this.settings.geoserver.createLayer;
-		this._data.geoserver.deleteLayer = this.settings.geoserver.deleteLayer;
-		this._data.geoserver.downloadNGIDXF = this.settings.geoserver.downloadNGIDXF;
-		this._data.geoserver.downloadGeoserver = this.settings.geoserver.downloadGeoserver;
-		this._data.geoserver.clientRefer = this.settings.geoserver.clientRefer;
+		/*
+		 * this._data.geoserver.user = this.settings.geoserver.user;
+		 * this._data.geoserver.layerInfo = this.settings.geoserver.layerInfo;
+		 * this._data.geoserver.layerInfoURL =
+		 * this.settings.geoserver.layerInfoURL;
+		 * this._data.geoserver.groupLayerInfoURL =
+		 * this.settings.geoserver.groupLayerInfoURL;
+		 * this._data.geoserver.createLayer =
+		 * this.settings.geoserver.createLayer; this._data.geoserver.deleteLayer =
+		 * this.settings.geoserver.deleteLayer;
+		 * this._data.geoserver.downloadNGIDXF =
+		 * this.settings.geoserver.downloadNGIDXF;
+		 * this._data.geoserver.downloadGeoserver =
+		 * this.settings.geoserver.downloadGeoserver;
+		 * this._data.geoserver.clientRefer =
+		 * this.settings.geoserver.clientRefer;
+		 */
 		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
+		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
 	};
+
 	/**
-	 * WMS 레이어 하나를 임포트 한다.
+	 * 레이어 정보를 조회한다.
 	 * 
-	 * @method import_single_wms
+	 * @method load_layer_info
+	 * @param {Object}
+	 *            obj - 레이어 정보를 조회하기 위한 정보 객체
+	 * @param {String}
+	 *            obj.serverName - 레이어들이 저장된 서버이름
+	 * @param {String}
+	 *            obj.workspace - 레이어들이 저장된 워크스페이스 이름
+	 * @param {String[]}
+	 *            obj.geoLayerList - 정보를 조회하기 위한 레이어 이름 배열
+	 * @param {Function}
+	 *            callback - 정보 조회후 레이어를 로드할 콜백함수
+	 */
+	this.load_layer_info = function(node, callback) {
+
+		var server = this.get_node(node.parents[2]);
+		var workspace = this.get_node(node.parents[1]);
+		var datastore = this.get_node(node.parents[0]);
+		var params = {
+			"serverName" : server.text,
+			"workspace" : workspace.text,
+			"geoLayerList" : [ datastore.text + ":" + node.text ]
+		};
+		console.log(params);
+
+		$.ajax({
+			url : that._data.geoserver.getLayerInfo,
+			// url : that._data.geoserver.getLayerInfo + "&" + $.param(params),
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			data : JSON.stringify(params),
+			beforeSend : function() {
+				$("body").css("cursor", "wait");
+			},
+			complete : function() {
+				$("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+
+			}
+		});
+
+		/*
+		 * $.ajax({ url : that._data.geoserver.getLayerInfo, method : "POST",
+		 * contentType : "application/json; charset=UTF-8", data :
+		 * JSON.stringify(arr), beforeSend : function() { // 호출전실행 //
+		 * $("body").css("cursor", "wait"); }, traditional : true, success :
+		 * function(data2, textStatus, jqXHR) { } });
+		 */
+	};
+
+	/**
+	 * WMS 레이어를 임포트 한다.
+	 * 
+	 * @method import_each_wms
 	 * @param {Object}
 	 *            obj - WMS 레이어를 임포트하기 위한 정보
 	 * @param {String}
@@ -45,7 +109,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @param {String}
 	 *            obj.layers - 불러올 레이어 이름
 	 */
-	this.import_single_wms = function(obj) {
+	this.import_each_wms = function(obj) {
 		var that = this;
 
 		var server = this.get_node(obj.parents[2]);
@@ -64,10 +128,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				params : {
 					"serverName" : wmsInfo.server,
 					"workspace" : wmsInfo.workspace,
-					'LAYERS' : wmsInfo.layers,
-					'FORMAT' : 'image/png8',
-					'CRS' : that._data.geoserver.map.getView().getProjection().getCode(),
-					'SRS' : that._data.geoserver.map.getView().getProjection().getCode()
+					"LAYERS" : wmsInfo.layers,
+					"TILED" : true,
+					"FORMAT" : 'image/png8',
+					"CRS" : that._data.geoserver.map.getView().getProjection().getCode(),
+					"SRS" : that._data.geoserver.map.getView().getProjection().getCode()
 				}
 			})
 		});

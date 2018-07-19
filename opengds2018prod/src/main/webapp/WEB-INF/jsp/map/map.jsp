@@ -196,7 +196,7 @@ html {
 		});
 
 		var vrepo = new gb.versioning.Repository({
-
+			"url" : {}
 		});
 
 		$("#vermodal").click(function() {

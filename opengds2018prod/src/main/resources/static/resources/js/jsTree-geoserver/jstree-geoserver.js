@@ -65,7 +65,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var params = {
 			"serverName" : server.text,
 			"workspace" : workspace.text,
-			"geoLayerList" : [ datastore.text + ":" + node.text ]
+			"geoLayerList" : [ node.text ]
 		};
 		console.log(params);
 

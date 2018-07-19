@@ -80,7 +80,7 @@ public interface GeoserverService {
 	 * @param serverName 서버명
 	 * @return JSONArray
 	 * */
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String serverName);
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String treeID, String type);
 	
 	/**
 	 * @Description 전체 트리생성 

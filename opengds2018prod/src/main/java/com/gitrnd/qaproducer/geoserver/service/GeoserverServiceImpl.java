@@ -476,12 +476,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 		
 		if(dtGeoserverMList!=null){
 			jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverMList);
+			if(jsonArray.size()==0){
+				JSONObject errorJSON = new JSONObject();
+				errorJSON.put("id", 200);
+				errorJSON.put("parent", "#");
+				errorJSON.put("text", "No Geoserver");
+				errorJSON.put("type", "info");
+				jsonArray.add(errorJSON);
+			}
 		}else{
 			JSONObject errorJSON = new JSONObject();
-			errorJSON.put("id", 500);
+			errorJSON.put("id", 200);
 			errorJSON.put("parent", "#");
 			errorJSON.put("text", "No Geoserver");
-			errorJSON.put("type", "error");
+			errorJSON.put("type", "info");
 			jsonArray.add(errorJSON);
 		}
 		return jsonArray;

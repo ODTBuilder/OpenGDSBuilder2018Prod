@@ -29,12 +29,13 @@ public class DTGeoserverManagerList extends HashMap<String, DTGeoserverManager> 
 	 * @param serverName 서버이름
 	 * @return boolean
 	 * */
-	public boolean duplicateCheck(String serverName){
+	public boolean duplicateCheck(String serverName, String url){
 		boolean flag = false;
 		Iterator<String> keys = super.keySet().iterator();
         while( keys.hasNext() ){
             String key = keys.next();
-            if(serverName.equals(key)){
+            DTGeoserverManager geoManager = super.get(key);
+            if(serverName.equals(key)||url.equals(geoManager.getRestURL())){
             	return true;
             }
         }

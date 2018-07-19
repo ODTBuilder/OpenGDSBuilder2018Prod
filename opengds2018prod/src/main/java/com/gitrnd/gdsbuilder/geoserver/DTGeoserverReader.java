@@ -86,6 +86,8 @@ public class DTGeoserverReader extends GeoServerRESTReader {
     }
 	
 	public DTGeoLayer getDTGeoLayer(String workspace, String name){
+		DTGeoLayer dtGeolayer = null;
+		
 		if (workspace == null || workspace.isEmpty())
             throw new IllegalArgumentException("Workspace may not be null");
         if (name == null || name.isEmpty())
@@ -93,14 +95,14 @@ public class DTGeoserverReader extends GeoServerRESTReader {
         
         RESTLayer layer = getLayer(workspace, name);
         
-        if(layer.getType() != RESTLayer.Type.VECTOR)
-            throw new RuntimeException("Bad layer type for layer " + layer.getName());
-        
-        String response = loadFullURL(layer.getResourceUrl());
-        DTGeoLayer dtGeoLayer = null;
-        dtGeoLayer = DTGeoLayer.build(response);
-        
-        return dtGeoLayer;
+        if(layer!=null){
+        	if(layer.getType() != RESTLayer.Type.VECTOR)
+                throw new RuntimeException("Bad layer type for layer " + layer.getName());
+            
+            String response = loadFullURL(layer.getResourceUrl());
+            dtGeolayer = DTGeoLayer.build(response);
+        }
+        return dtGeolayer;
 	}
 	
 	@SuppressWarnings("unused")
@@ -125,16 +127,15 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			throw new IllegalArgumentException("Workspace may not be null");
 		if(layerNames==null)
 			throw new IllegalArgumentException("LayerNames may not be null");
-		if(layerNames.size()==0)
-			throw new IllegalArgumentException("LayerNames may not be null");
 
 		DTGeoLayerList geoLayerList = new DTGeoLayerList();
-		
-		for(String layerName:layerNames){
-			DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
-			RESTLayer layer = getLayer(workspace, layerName);
-//			dtGeoLayer.setStyle(layer.getDefaultStyle());
-			geoLayerList.add(dtGeoLayer);
+		if(layerNames!=null){
+			for(String layerName:layerNames){
+				DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
+				RESTLayer layer = getLayer(workspace, layerName);
+//				dtGeoLayer.setStyle(layer.getDefaultStyle());
+				geoLayerList.add(dtGeoLayer);
+			}
 		}
 		return geoLayerList;
 	}
@@ -144,8 +145,8 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			throw new IllegalArgumentException("Workspace may not be null");
 		if(groupNames==null)
 			throw new IllegalArgumentException("GroupNames may not be null");
-		if(groupNames.size()==0)
-			throw new IllegalArgumentException("GroupNames may not be null");
+	/*	if(groupNames.size()==0)
+			throw new IllegalArgumentException("GroupNames may not be null");*/
 		
 		DTGeoGroupLayerList groupLayerList = new DTGeoGroupLayerList();
 		

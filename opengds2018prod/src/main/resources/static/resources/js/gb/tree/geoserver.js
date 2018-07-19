@@ -32,6 +32,7 @@
 gb.tree.GeoServer = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	var url = options.url ? options.url : undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
@@ -153,7 +154,7 @@ gb.tree.GeoServer = function(obj) {
 
 				},
 				"geoserver" : {
-					"map" : options.map instanceof ol.Map ? options.map : undefined,
+					"map" : this.map instanceof ol.Map ? this.map : undefined,
 					"getMapWMS" : this.getMapWMS,
 					"getLayerInfo" : this.getLayerInfo
 				// "user" : "admin",
@@ -200,18 +201,10 @@ gb.tree.GeoServer = function(obj) {
 
 												} else if (type === "datastore") {
 
-												} else if (type === "point") {
+												} else if (type === "point" || type === "multipoint" || type === "linestring"
+														|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
 													console.log(node);
-												} else if (type === "multipoint") {
-													console.log(node);
-												} else if (type === "linestring") {
-													console.log(node);
-												} else if (type === "multilinestring") {
-													console.log(node);
-												} else if (type === "polygon") {
-													console.log(node);
-												} else if (type === "multipolygon") {
-													console.log(node);
+
 													/*
 													 * var server =
 													 * inst.get_node(node.parents[2]);
@@ -226,8 +219,9 @@ gb.tree.GeoServer = function(obj) {
 													 * node.text };
 													 * console.log(wmsInfo);
 													 */
-//													inst.import_single_wms(node);
-													inst.load_layer_info(node);
+													// inst.import_single_wms(node);
+													// inst.load_layer_info(node);
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												}
 											} else if (selectedNum > 1) {
 												var serverNum = 0;

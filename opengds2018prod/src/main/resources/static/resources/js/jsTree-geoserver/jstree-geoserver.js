@@ -45,20 +45,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	/**
 	 * 레이어 정보를 조회한다.
 	 * 
-	 * @method load_layer_info
+	 * @method load_each_wms_layer
 	 * @param {Object}
-	 *            obj - 레이어 정보를 조회하기 위한 정보 객체
-	 * @param {String}
-	 *            obj.serverName - 레이어들이 저장된 서버이름
-	 * @param {String}
-	 *            obj.workspace - 레이어들이 저장된 워크스페이스 이름
-	 * @param {String[]}
-	 *            obj.geoLayerList - 정보를 조회하기 위한 레이어 이름 배열
-	 * @param {Function}
-	 *            callback - 정보 조회후 레이어를 로드할 콜백함수
+	 *            node - 트리에서 조회한 레이어 노드 객체
+	 * @param {ol.Collection}
+	 *            collection - 레이어를 주입할 콜렉션
 	 */
-	this.load_layer_info = function(node, callback) {
-
+	this.load_each_wms_layer = function(node, collection) {
+		var that = this;
 		var server = this.get_node(node.parents[2]);
 		var workspace = this.get_node(node.parents[1]);
 		var datastore = this.get_node(node.parents[0]);
@@ -71,7 +65,6 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 		$.ajax({
 			url : that._data.geoserver.getLayerInfo,
-			// url : that._data.geoserver.getLayerInfo + "&" + $.param(params),
 			method : "POST",
 			contentType : "application/json; charset=UTF-8",
 			data : JSON.stringify(params),
@@ -81,19 +74,50 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			complete : function() {
 				$("body").css("cursor", "default");
 			},
-			success : function(data) {
+			success : function(data, textStatus, jqXHR) {
 				console.log(data);
+				if (Array.isArray(data)) {
+					for (var i = 0; i < data.length; i++) {
+						var wms = new ol.layer.Tile({
+							source : new ol.source.TileWMS({
+								url : that._data.geoserver.getMapWMS,
+								params : {
+									"serverName" : server.text,
+									"workspace" : workspace.text,
+									"LAYERS" : node.text,
+									"STYLES" : "",
+									"VERSION" : "1.3.0",
+									"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+									"TILED" : true,
+									"FORMAT" : 'image/png8',
+									"CRS" : data[i].srs,
+									"SRS" : data[i].srs
+								}
+							})
+						});
 
+						var git = {
+							"geoserver" : server.text,
+							"workspace" : workspace.text,
+							'layers' : data[i].lName,
+							"geometry" : data[i].geomType,
+							"editable" : true,
+						};
+						wms.set("git", git);
+						wms.set("id", node.id);
+						wms.set("name", node.text);
+						// that._data.geoserver.map.addLayer(wms);
+						if (collection instanceof ol.Collection) {
+							collection.push(wms);
+						} else {
+							console.error("no collection to push wms");
+						}
+					}
+				}
 			}
 		});
 
-		/*
-		 * $.ajax({ url : that._data.geoserver.getLayerInfo, method : "POST",
-		 * contentType : "application/json; charset=UTF-8", data :
-		 * JSON.stringify(arr), beforeSend : function() { // 호출전실행 //
-		 * $("body").css("cursor", "wait"); }, traditional : true, success :
-		 * function(data2, textStatus, jqXHR) { } });
-		 */
 	};
 
 	/**
@@ -102,50 +126,21 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @method import_each_wms
 	 * @param {Object}
 	 *            obj - WMS 레이어를 임포트하기 위한 정보
-	 * @param {String}
-	 *            obj.server - 서버 이름
-	 * @param {String}
-	 *            obj.workspace - 워크스페이스 이름
-	 * @param {String}
-	 *            obj.layers - 불러올 레이어 이름
 	 */
-	this.import_each_wms = function(obj) {
+	this.import_each_wms = function(node) {
 		var that = this;
 
-		var server = this.get_node(obj.parents[2]);
-		var workspace = this.get_node(obj.parents[1]);
-		var datastore = this.get_node(obj.parents[0]);
-		var wmsInfo = {
-			"server" : server.text,
-			"workspace" : workspace.text,
-			"layers" : datastore.text + ":" + obj.text
-		};
-		console.log(wmsInfo);
+		this.load_layer_info();
+		// var server = this.get_node(obj.parents[2]);
+		// var workspace = this.get_node(obj.parents[1]);
+		// var datastore = this.get_node(obj.parents[0]);
+		// var wmsInfo = {
+		// "server" : server.text,
+		// "workspace" : workspace.text,
+		// "layers" : datastore.text + ":" + obj.text
+		// };
+		// console.log(wmsInfo);
 
-		var wms = new ol.layer.Tile({
-			source : new ol.source.TileWMS({
-				url : that._data.geoserver.getMapWMS,
-				params : {
-					"serverName" : wmsInfo.server,
-					"workspace" : wmsInfo.workspace,
-					"LAYERS" : wmsInfo.layers,
-					"TILED" : true,
-					"FORMAT" : 'image/png8',
-					"CRS" : that._data.geoserver.map.getView().getProjection().getCode(),
-					"SRS" : that._data.geoserver.map.getView().getProjection().getCode()
-				}
-			})
-		});
-
-		var git = {
-			"geoserver" : wmsInfo.server,
-			"workspace" : wmsInfo.workspace,
-			'layers' : wmsInfo.layers
-		};
-		wms.set("git", git);
-		wms.set("id", obj.id);
-		wms.set("name", obj.text);
-		that._data.geoserver.map.addLayer(wms);
 	};
 	this.import_fake_group_notload = function(obj) {
 		// // =======================================

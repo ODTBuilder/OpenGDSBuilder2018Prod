@@ -204,24 +204,7 @@ gb.tree.GeoServer = function(obj) {
 												} else if (type === "point" || type === "multipoint" || type === "linestring"
 														|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
 													console.log(node);
-
-													/*
-													 * var server =
-													 * inst.get_node(node.parents[2]);
-													 * var workspace =
-													 * inst.get_node(node.parents[1]);
-													 * var datastore =
-													 * inst.get_node(node.parents[0]);
-													 * var wmsInfo = { "server" :
-													 * server.text, "workspace" :
-													 * workspace.text, "layers" :
-													 * datastore.text + ":" +
-													 * node.text };
-													 * console.log(wmsInfo);
-													 */
-													// inst.import_single_wms(node);
-													// inst.load_layer_info(node);
-													inst.load_each_wms_layer(node, that.map.getLayers());
+													inst.load_each_wms_layer(node, that.map);
 												}
 											} else if (selectedNum > 1) {
 												var serverNum = 0;
@@ -246,13 +229,6 @@ gb.tree.GeoServer = function(obj) {
 													console.log("");
 												}
 											}
-
-											/*
-											 * var wmsInfo = { "refer" : inst,
-											 * "arr" : arr, "parent" :
-											 * inst.get_parent(obj) }
-											 * inst.import_image(wmsInfo);
-											 */
 										}
 									},
 									"wfs" : {

@@ -91,9 +91,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 									"TILED" : true,
 									"FORMAT" : 'image/png8',
-									"CRS" : data[i].srs,
-									"SRS" : data[i].srs
-								}
+									"CRS" : data[i].srs
+//									"SRS" : that._data.geoserver.map.getView().getProjection().getCode()
+								/*
+								 * "CRS" : data[i].srs, "SRS" : data[i].srs
+								 */
+								},
+								serverType : "geoserver"
+//								projection : that._data.geoserver.map.getView().getProjection().getCode()
 							})
 						});
 
@@ -110,6 +115,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 						// that._data.geoserver.map.addLayer(wms);
 						if (collection instanceof ol.Collection) {
 							collection.push(wms);
+						} else if (collection instanceof ol.Map) {
+							collection.addLayer(wms);
 						} else {
 							console.error("no collection to push wms");
 						}

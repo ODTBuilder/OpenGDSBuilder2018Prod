@@ -4,7 +4,8 @@
 package com.gitrnd.qaproducer.geogig.service;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
  * @author GIT
@@ -12,6 +13,15 @@ import org.json.simple.JSONObject;
  */
 public interface GeogigTreeBuilderService {
 
-	public JSONArray getWorkingTree(JSONObject param);
+	/**
+	 * @param geoserverManager
+	 * @param serverName
+	 * @param repoName
+	 * @param reference
+	 * @param transactionId
+	 * @return
+	 */
+	public JSONArray getWorkingTree(DTGeoserverManager geoserverManager, String serverName, String repoName,
+			String reference, String transactionId);
 
 }

@@ -25,7 +25,7 @@ public class DTGeoserverInfo {
 			for (EnGeoserverInfo format : values()) {
 				if(format == UNKNOWN)
 					continue;
-				if(format.type.equals(type))
+				if(format.type.equals(type.toUpperCase()))
 					return format;
 			}
 			return UNKNOWN;
@@ -35,7 +35,7 @@ public class DTGeoserverInfo {
 			for (EnGeoserverInfo format : values()) {
 				if(format == UNKNOWN)
 					continue;
-				if(format.typeName.equals(typeName))
+				if(format.typeName.equals(typeName.toLowerCase()))
 					return format;
 			}
 			return UNKNOWN;

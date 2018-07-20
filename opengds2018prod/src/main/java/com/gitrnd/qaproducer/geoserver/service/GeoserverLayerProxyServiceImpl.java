@@ -360,6 +360,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		
 	}
 	
+	
 	private DTGeoserverInfo getDTGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request) {
 		DTGeoserverInfo dtGeoInfo = null;
 		
@@ -378,7 +379,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 
 			if (key.toLowerCase().equals("workspace")) {
 				workspace = value;
-			} else if (key.toLowerCase().equals("format")) {
+			} else if (key.toLowerCase().equals("type")) {
 				type = EnGeoserverInfo.getFromType(value);
 			} else if (key.toLowerCase().equals("workspace")) {
 				workspace = value;

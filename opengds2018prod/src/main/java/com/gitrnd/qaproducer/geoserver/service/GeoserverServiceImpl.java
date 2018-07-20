@@ -27,6 +27,8 @@ import java.util.concurrent.Future;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.fileread.FileMeta;
@@ -37,6 +39,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.gitrnd.qaproducer.geoserver.data.style.GeoserverSldTextType;
@@ -63,6 +66,8 @@ import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
 @Service("geoService")
 public class GeoserverServiceImpl implements GeoserverService {
 
+	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private DTGeoserverReader dtReader;
 	private DTGeoserverPublisher dtPublisher;
@@ -446,17 +451,32 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String treeID, String type) {
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverMList, String parent, String serverName, String type) {
 		JSONArray jsonArray = new JSONArray();
+<<<<<<< HEAD
 		try {
 		} catch (NullPointerException e) {
+=======
+		EnTreeType enType = null;
+		if(dtGeoserverMList!=null){
+			if(type.toLowerCase().equals("server")){
+				enType = EnTreeType.SERVER;
+			}else if(type.toLowerCase().equals("workspace")){
+				enType = EnTreeType.WORKSPACE;
+			}else if(type.toLowerCase().equals("datastore")){
+				enType = EnTreeType.DATASTORE;
+			}else if(type.toLowerCase().equals("layer")){
+				enType = EnTreeType.LAYER;
+			}else{
+				logger.warn("DTGeoserverManagerList Null");
+			}
+			if(enType!=null){
+				jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
+			}
+		} else {
+>>>>>>> 0d6024abe02e427b97abb1ba906a3fe62b7a02ef
 			// TODO: handle exception
-			JSONObject errorJSON = new JSONObject();
-			errorJSON.put("id", 500);
-			errorJSON.put("parent", "#");
-			errorJSON.put("text", "No Geoserver");
-			errorJSON.put("type", "error");
-			jsonArray.add(errorJSON);
+			logger.warn("DTGeoserverManagerList Null");
 		}
 		return jsonArray;
 	}
@@ -806,6 +826,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 		// TODO Auto-generated method stub
 		return dtPublisher.publishErrLayer(workspace, dsName, geoLayerInfo);
 	}
+	
+	
 }
 
 /**

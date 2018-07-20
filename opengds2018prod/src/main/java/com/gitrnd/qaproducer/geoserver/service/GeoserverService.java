@@ -80,7 +80,7 @@ public interface GeoserverService {
 	 * @param serverName 서버명
 	 * @return JSONArray
 	 * */
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String treeID, String type);
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, String type);
 	
 	/**
 	 * @Description 전체 트리생성 
@@ -219,6 +219,8 @@ public interface GeoserverService {
 	 * @return boolean
 	 * */
 	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String style, boolean attChangeFlag);
+	
+	
 }
 
 

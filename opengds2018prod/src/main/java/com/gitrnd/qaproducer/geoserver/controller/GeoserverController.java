@@ -104,13 +104,14 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value = "/getGeolayerCollectionTree.ajax")
 	@ResponseBody
-	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser, @RequestParam(value = "treeId", required = false) String treeId,
-			@RequestParam(value = "type", required = false) String type) {
+	public JSONArray getGeolayerCollectionTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser, @RequestParam(value = "parent", required = false) String parent,
+			@RequestParam(value = "type", required = false) String type,
+			@RequestParam(value = "serverName", required = false) String serverName) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
-		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, treeId, type);
+		return geoserverService.getGeoserverLayerCollectionTree(sessionGMList, parent, serverName, type);
 	}
 	
 	/**
@@ -250,6 +251,36 @@ public class GeoserverController extends AbstractController {
 			proService.requestWMSGetLegendGraphic(dtGeoserverManager, workspace, request, response);
 		}
 	}
+	
+	
+	
+	/**
+	 * GeoserverInfo Request
+	 * @author SG.Lee
+	 * @Date 2018. 7. 9. 오후 3:30:17
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException void
+	 * */
+	@RequestMapping(value = "getDTGeoserverInfo.ajax")
+	@ResponseBody
+	public void getDTGeoserverInfo(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
+			throws ServletException, IOException, Exception{
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}
+		else{
+			proService.requestGeoserverInfo(dtGeoserverManager, request, response);
+		}
+	}
+	
+	
 
 	/**
 	 * Geoserver Layer 조회

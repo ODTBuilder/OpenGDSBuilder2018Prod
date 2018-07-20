@@ -14,6 +14,10 @@
  *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
  * @param {ol.Map}
  *            obj.map - 편집 영역을 담당하는 ol.Map
+ * @param {Object}
+ *            url - 요청을 처리할 URL 객체
+ * @param {String}
+ *            obj.url.getLegend - WMS 범례 이미지를 요청할 URL
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
@@ -22,6 +26,10 @@
 gb.tree.OpenLayers = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	this.append = options.append ? options.append : undefined;
+	this.map = options.map instanceof ol.Map ? options.map : undefined;
+	var url = options.url;
+	this.getLegend = url.getLegend ? url.getLegend : undefined;
 	this.panelTitle = $("<p>").text("Now editing").css({
 		"margin" : "0",
 		"float" : "left"
@@ -115,7 +123,7 @@ gb.tree.OpenLayers = function(obj) {
 
 	$(this.panelBody).jstreeol3({
 		"core" : {
-			"map" : options.map ? options.map : undefined,
+			"map" : this.map,
 			"animation" : 0,
 			"themes" : {
 				"stripes" : true
@@ -160,7 +168,7 @@ gb.tree.OpenLayers = function(obj) {
 				}
 			},
 			"geoserver" : {
-				"url" : "geoserver/getWMSGetLegendGraphic.ajax",
+				"url" : this.getLegend,
 				"width" : "15",
 				"height" : "15",
 				"format" : "image/png"

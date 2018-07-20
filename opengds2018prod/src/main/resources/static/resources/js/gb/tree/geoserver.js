@@ -12,6 +12,8 @@
  *            obj - 생성자 옵션을 담은 객체
  * @param {String |
  *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
+ * @param {jstreeol3}
+ *            jstree - 클라이언트 레이어 트리 객체
  * @param {ol.Map}
  *            obj.map - 편집 영역을 담당하는 ol.Map
  * @param {Object}
@@ -34,6 +36,7 @@ gb.tree.GeoServer = function(obj) {
 	var options = obj ? obj : {};
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	var url = options.url ? options.url : undefined;
+	this.clientTree = options.clientTree ? options.clientTree : undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
@@ -156,7 +159,8 @@ gb.tree.GeoServer = function(obj) {
 				"geoserver" : {
 					"map" : this.map instanceof ol.Map ? this.map : undefined,
 					"getMapWMS" : this.getMapWMS,
-					"getLayerInfo" : this.getLayerInfo
+					"getLayerInfo" : this.getLayerInfo,
+					"clientTree" : this.clientTree
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -198,29 +202,12 @@ gb.tree.GeoServer = function(obj) {
 												var node = inst.get_node(nodes[0]);
 												var type = inst.get_type(node);
 												if (type === "workspace") {
-
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												} else if (type === "datastore") {
-
+													inst.load_each_wms_layer(node, that.map.getLayers());
 												} else if (type === "point" || type === "multipoint" || type === "linestring"
 														|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
 													console.log(node);
-
-													/*
-													 * var server =
-													 * inst.get_node(node.parents[2]);
-													 * var workspace =
-													 * inst.get_node(node.parents[1]);
-													 * var datastore =
-													 * inst.get_node(node.parents[0]);
-													 * var wmsInfo = { "server" :
-													 * server.text, "workspace" :
-													 * workspace.text, "layers" :
-													 * datastore.text + ":" +
-													 * node.text };
-													 * console.log(wmsInfo);
-													 */
-													// inst.import_single_wms(node);
-													// inst.load_layer_info(node);
 													inst.load_each_wms_layer(node, that.map.getLayers());
 												}
 											} else if (selectedNum > 1) {
@@ -246,13 +233,6 @@ gb.tree.GeoServer = function(obj) {
 													console.log("");
 												}
 											}
-
-											/*
-											 * var wmsInfo = { "refer" : inst,
-											 * "arr" : arr, "parent" :
-											 * inst.get_parent(obj) }
-											 * inst.import_image(wmsInfo);
-											 */
 										}
 									},
 									"wfs" : {
@@ -672,7 +652,10 @@ gb.tree.GeoServer = function(obj) {
 				},
 				types : {
 					"#" : {
-						"valid_children" : [ "geoserver" ]
+						"valid_children" : [ "geoserver", "default" ]
+					},
+					"default" : {
+						"icon" : "fas fa-exclamation-circle"
 					},
 					"geoserver" : {
 						"icon" : "fas fa-globe",

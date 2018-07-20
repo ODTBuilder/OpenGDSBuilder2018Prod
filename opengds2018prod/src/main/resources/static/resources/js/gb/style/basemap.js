@@ -95,7 +95,7 @@ gb.style.BaseMap = function(obj) {
 			this.map.addLayer(this.bases[keys[i]].layer);
 		}
 	}
-	this.changeLayer("black")
+	this.changeLayer("black");
 
 	var body = $("<div>");
 	$(this.modalBody).append(body);

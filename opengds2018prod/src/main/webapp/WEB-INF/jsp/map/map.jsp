@@ -171,15 +171,24 @@ html {
 			"title" : "Base CRS",
 			"message" : $(".epsg-now"),
 			"map" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
-			"epsg" : "3857"
+			"epsg" : "5186"
 		});
 
 		$(".epsg-now").click(function() {
 			crs.open();
 		});
 
+		var otree = new gb.tree.OpenLayers({
+			"append" : $(".builderLayerClientPanel")[0],
+			"map" : gbMap.getUpperMap(),
+			"url" : {
+				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
+			}
+		});
+
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
+			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax?${_csrf.parameterName}=${_csrf.token}",
@@ -188,11 +197,6 @@ html {
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
-		});
-
-		var otree = new gb.tree.OpenLayers({
-			"append" : $(".builderLayerClientPanel")[0],
-			"map" : gbMap.getUpperMap()
 		});
 
 		var vrepo = new gb.versioning.Repository({

@@ -21,11 +21,11 @@ public class Producer {
 		amqpTemplate.convertAndSend(exchange, routingKey, msg);
 	}
 
-//	public Object produceMobileMsg(String msg) {
-//		System.out.println("Send msg = " + msg);
-//		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-//		System.out.println("Reply msg = " + response.toJSONString());
-//		return response;
-//	}
+	public Object produceMobileMsg(String msg) {
+		System.out.println("Send msg = " + msg);
+		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
+		System.out.println("Reply msg = " + response);
+		return response;
+	}
 
 }

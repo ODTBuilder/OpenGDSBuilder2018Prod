@@ -467,7 +467,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 				logger.warn("DTGeoserverManagerList Null");
 			}
 			if(enType!=null){
-				jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
+				if(enType==EnTreeType.SERVER){
+					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverMList);
+				}else{
+					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
+				}
 			}
 		} else {
 			// TODO: handle exception

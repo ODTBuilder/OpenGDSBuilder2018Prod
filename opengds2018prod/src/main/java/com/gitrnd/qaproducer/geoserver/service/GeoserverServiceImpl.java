@@ -468,7 +468,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			}
 			if(enType!=null){
 				if(enType==EnTreeType.SERVER){
-					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverMList);
+					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList, enType);
 				}else{
 					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
 				}

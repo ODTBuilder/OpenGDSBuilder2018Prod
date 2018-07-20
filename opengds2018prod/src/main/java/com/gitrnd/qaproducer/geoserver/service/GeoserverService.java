@@ -221,6 +221,16 @@ public interface GeoserverService {
 	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String style, boolean attChangeFlag);
 	
 	
+	
+	/**
+	 * @Description WFST 서비스를 요청한다.
+	 * @author SG.Lee
+	 * @Date 2018. 7. 20. 오후 2:47:50
+	 * @param dtGeoManager
+	 * @param wfstXml
+	 * @return String
+	 * */
+	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String wfstXml);
 }
 
 

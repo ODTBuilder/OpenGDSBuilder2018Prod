@@ -822,7 +822,15 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return dtPublisher.publishErrLayer(workspace, dsName, geoLayerInfo);
 	}
 	
-	
+	@Override
+	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String wfstXml){
+		if(dtGeoManager!=null){
+			dtPublisher = dtGeoManager.getPublisher();
+		}else{
+			throw new IllegalArgumentException("Geoserver 정보 없음");
+		}
+		return dtPublisher.requestWFSTransaction(wfstXml);
+	}
 }
 
 /**

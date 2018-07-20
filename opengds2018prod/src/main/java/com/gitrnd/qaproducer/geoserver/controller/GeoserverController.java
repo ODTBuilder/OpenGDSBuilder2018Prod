@@ -131,9 +131,32 @@ public class GeoserverController extends AbstractController {
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		DTGeoserverManagerList sessionGMList = super.getGeoserverManagersToSession(request, loginUser);
-		JSONArray test = geoserverService.getGeoserverLayerCollectionTrees(sessionGMList); 
-		return test;
+		JSONArray trees = geoserverService.getGeoserverLayerCollectionTrees(sessionGMList); 
+		return trees;
 	}
+	
+	
+	/**
+	 * @Description WFST
+	 * @author SG.Lee
+	 * @Date 2018. 7. 20. 오후 2:59:37
+	 * @param request
+	 * @param loginUser
+	 * @return String
+	 * */
+	@SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value = "/geoserverWFSTransaction.ajax")
+	@ResponseBody
+	public String geoserverWFSTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = request.getParameter("serverName");
+		String wfstXml = request.getParameter("wfstXml");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return geoserverService.requestWFSTransaction(dtGeoserverManager,wfstXml);
+	}
+	
 
 
 	/**
@@ -232,9 +255,9 @@ public class GeoserverController extends AbstractController {
 	 * @throws ServletException
 	 * @throws IOException void
 	 * */
-	@RequestMapping(value = "getWMSGetLegendGraphic.ajax")
+	@RequestMapping(value = "geoserverWMSGetLegendGraphic.ajax")
 	@ResponseBody
-	public void getWMSGetLegendGraphic(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
+	public void geoserverWMSGetLegendGraphic(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
 			throws ServletException, IOException{
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");

@@ -1,3 +1,4 @@
+
 package com.gitrnd.gdsbuilder.geoserver;
 
 import java.util.List;
@@ -195,5 +196,20 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher
       LOGGER.info("layer successfully recalculated (layer:" + layername + ")");
     }
     return (updated) && (configured);
+  }
+  
+  
+  public String requestWFSTransaction(String wfstXml){
+	  StringBuilder postUrl = new StringBuilder(restURL).append("/wfs");
+	  String configuredResult = HTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
+              this.gspass);
+      boolean requestFlag = configuredResult != null;
+
+      if (!requestFlag) {
+          LOGGER.warn("WFST 요청 실패");
+      } else {
+          LOGGER.info("WFST 요청 성공");
+      }
+	  return configuredResult;
   }
 }

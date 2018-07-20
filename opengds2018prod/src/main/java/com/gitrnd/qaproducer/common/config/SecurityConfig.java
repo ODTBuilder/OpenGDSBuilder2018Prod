@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("!/map.do").authenticated().antMatchers("/validation.do").authenticated()
+		http.authorizeRequests().antMatchers("/map.do").authenticated().antMatchers("/validation.do").authenticated()
 				.antMatchers("/list.do").authenticated().antMatchers("/setting.do").authenticated()
 				.antMatchers("/createpreset.do").authenticated().antMatchers("/settinglist.do").authenticated()
 				.antMatchers("/option/**").authenticated().antMatchers("/downloaderror.do").authenticated().antMatchers("/geoserver/**").authenticated()

@@ -182,7 +182,7 @@ html {
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"url" : {
-				"getLegend" : "geoserver/getWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

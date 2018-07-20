@@ -324,7 +324,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			if (key.toLowerCase().equals("version")) {
 				version = value;
 			} else if (key.toLowerCase().equals("format")) {
-				format = EnWMSOutputFormat.getFromType(value);
+				format = EnWMSOutputFormat.getFromTypeName(value);
 			} else if (key.toLowerCase().equals("legend_options")) {
 				legend_options = value;
 			} else if (key.toLowerCase().equals("layer")) {

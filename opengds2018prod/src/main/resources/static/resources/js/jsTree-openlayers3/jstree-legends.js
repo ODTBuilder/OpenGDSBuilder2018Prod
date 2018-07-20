@@ -38,7 +38,7 @@ $.jstreeol3.defaults.legends = {
 		}
 	},
 	"geoserver" : {
-		"url" : "http://localhost:9990/geoserver/wms",
+		"url" : "",
 		"width" : "15",
 		"height" : "15",
 		"format" : "image/png"
@@ -93,6 +93,16 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 												var layer = this.get_LayerById(m[dpc[i]].id);
 												if (layer instanceof ol.layer.Base) {
 													var git = layer.get("git");
+													if (layer instanceof ol.layer.Tile) {
+														var source = layer.getSource();
+														if (source instanceof ol.source.TileWMS) {
+															m[dpc[i]].icon = g.url + "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="
+																	+ g.format + "&WIDTH=" + g.width + "&HEIGHT=" + g.height + "&LAYER="
+																	+ git.workspace + ":" + layer.get("name")
+																	+ "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" + "&serverName="
+																	+ git.geoserver + "&workspace=" + git.workspace;
+														}
+													}
 													if (git && git.hasOwnProperty("fake")) {
 														if (git.fake === "child") {
 															m[dpc[i]].icon = g.url + "?" + "REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="

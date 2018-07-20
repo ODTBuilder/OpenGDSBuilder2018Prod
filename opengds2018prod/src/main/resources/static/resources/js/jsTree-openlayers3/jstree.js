@@ -627,43 +627,40 @@
 				 */
 				setUniqueLayerId : function(layer, id) {
 					var that = this;
-					if (typeof layer.get("treeid") !== "string") {
-						if (layer instanceof ol.layer.Group) {
+					if (layer instanceof ol.layer.Group) {
+						if (typeof layer.get("treeid") !== "string") {
 							layer.set("treeid", id);
-							var layers = layer.getLayers();
-							for (var i = 0; i < layers.getLength(); i++) {
-								if (typeof layers.item(i).get("treeid") !== "string") {
-									that.setUniqueLayerId(layers.item(i), that._createLayerId());
-								}
-							}
-						} else if (layer instanceof ol.layer.Base) {
-							var git;
-							if (layer) {
-								git = layer.get("git");
-							}
-							if (!!git) {
-								if (layer.get("git").hasOwnProperty("fake")) {
-									if (git.fake === "parent") {
-										layer.set("treeid", id);
-										var layers = layer.get("git").layers;
-										for (var i = 0; i < layers.getLength(); i++) {
-											if (typeof layers.item(i).get("treeid") !== "string") {
-												that.setUniqueLayerId(layers.item(i), that._createLayerId());
-											}
+						}
+						var layers = layer.getLayers();
+						for (var i = 0; i < layers.getLength(); i++) {
+							that.setUniqueLayerId(layers.item(i), that._createLayerId());
+						}
+					} else if (layer instanceof ol.layer.Base) {
+						if (typeof layer.get("treeid") !== "string") {
+							layer.set("treeid", id);
+						}
+						var git;
+						if (layer) {
+							git = layer.get("git");
+						}
+						if (!!git) {
+							if (layer.get("git").hasOwnProperty("fake")) {
+								if (git.fake === "parent") {
+									var layers = layer.get("git").layers;
+									for (var i = 0; i < layers.getLength(); i++) {
+										if (typeof layers.item(i).get("treeid") !== "string") {
+											that.setUniqueLayerId(layers.item(i), that._createLayerId());
 										}
-									} else if (git.fake === "child") {
-										layer.set("treeid", id);
 									}
-								} else {
+								} else if (git.fake === "child") {
 									layer.set("treeid", id);
 								}
 							} else {
 								layer.set("treeid", id);
 							}
+						} else {
+							layer.set("treeid", id);
 						}
-						// else {
-						// layer.set("treeid", id);
-						// }
 					}
 				},
 				/**
@@ -4787,6 +4784,16 @@
 						return true;
 					}
 					return false;
+				},
+				/**
+				 * 현재 지도상의 모든 레이어에 트리 아이디를 다시 부여한다.
+				 * 
+				 * @emthod initTreeId
+				 */
+				initTreeId : function() {
+					for (var j = 0; j < this._data.core.layers.getLength(); j++) {
+						this.setUniqueLayerId(this._data.core.layers.item(j), this._createLayerId());
+					}
 				},
 				/**
 				 * refreshes the tree - all nodes are reloaded with calls to

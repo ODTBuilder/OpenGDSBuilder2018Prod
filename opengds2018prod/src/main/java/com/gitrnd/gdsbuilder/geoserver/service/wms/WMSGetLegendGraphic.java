@@ -131,7 +131,7 @@ public class WMSGetLegendGraphic {
 			}
 			if (!this.format.equals("")) {
 				urlBuffer.append("&");
-				urlBuffer.append("format=" + format);
+				urlBuffer.append("format=" + format.getTypeName());
 			}
 			if (!this.layer.equals("")) {
 				urlBuffer.append("&");

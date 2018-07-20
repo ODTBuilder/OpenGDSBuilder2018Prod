@@ -40,6 +40,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		 */
 		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
 		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
+		this._data.geoserver.clientTree = this.settings.geoserver.clientTree;
 	};
 
 	/**
@@ -53,7 +54,98 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 */
 	this.load_each_wms_layer = function(node, collection) {
 		var that = this;
-		if (node.type === "workspace") {
+		if (Array.isArray(node)) {
+			var workArr = [];
+			var storeArr = [];
+			var layerArr = [];
+			var params = {
+				"serverName" : undefined,
+				"workspace" : undefined,
+				"geoLayerList" : []
+			};
+			for (var a = 0; a < node.length; a++) {
+				if (node[a].type === "workspace") {
+					console.log("workspace array");
+				} else if (node[a].type === "datastore") {
+					console.log("datastore array");
+				} else if (node[a].type === "point" || node[a].type === "multipoint" || node[a].type === "linestring"
+						|| node[a].type === "multilinestring" || node[a].type === "polygon" || node[a].type === "multipolygon") {
+					var server = this.get_node(node[a].parents[2]);
+					var workspace = this.get_node(node[a].parents[1]);
+					var datastore = this.get_node(node[a].parents[0]);
+					layerArr.push(node[a]);
+					params["serverName"] = server.text;
+					params["workspace"] = workspace.text;
+					params["geoLayerList"].push(node[a].text);
+					console.log(params);
+
+				}
+			}
+			// 배열 길이에 따라 처리
+			if (layerArr.length > 0) {
+				$.ajax({
+					url : that._data.geoserver.getLayerInfo,
+					method : "POST",
+					contentType : "application/json; charset=UTF-8",
+					data : JSON.stringify(params),
+					beforeSend : function() {
+						// $("body").css("cursor", "wait");
+					},
+					complete : function() {
+						// $("body").css("cursor", "default");
+					},
+					success : function(data, textStatus, jqXHR) {
+						console.log(data);
+						if (Array.isArray(data)) {
+							for (var i = 0; i < data.length; i++) {
+								var wms = new ol.layer.Tile({
+									extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
+											data[i].nbBox.maxy.toString() ],
+									source : new ol.source.TileWMS({
+										url : that._data.geoserver.getMapWMS,
+										params : {
+											"serverName" : params["serverName"],
+											"workspace" : params["workspace"],
+											"LAYERS" : data[i].lName,
+											"STYLES" : "",
+											"VERSION" : "1.1.0",
+											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+											"TILED" : true,
+											"FORMAT" : 'image/png8',
+											"CRS" : data[i].srs
+										},
+										serverType : "geoserver"
+									})
+								});
+
+								var git = {
+									"geoserver" : params["serverName"],
+									"workspace" : params["workspace"],
+									'layers' : data[i].lName,
+									"geometry" : data[i].geomType,
+									"editable" : true,
+								};
+								wms.set("git", git);
+								wms.set("id", layerArr[i].id);
+								wms.set("name", layerArr[i].text);
+								if (collection instanceof ol.Collection) {
+									collection.push(wms);
+									that._data.geoserver.clientTree.initTreeId();
+								} else {
+									console.error("no collection to push");
+								}
+
+								if (i === (data.length - 1)) {
+									that._data.geoserver.clientTree.refresh();
+								}
+							}
+						}
+					}
+				});
+			}
+
+		} else if (node.type === "workspace") {
 			var workspace = new ol.layer.Group({});
 			workspace.set("id", node.id);
 			workspace.set("name", node.text);
@@ -74,12 +166,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			datastore.set("name", node.text);
 
 			var children = node.children;
+			var objNodes = [];
 			for (var i = 0; i < children.length; i++) {
 				var layer = this.get_node(children[i]);
-				this.load_each_wms_layer(layer, datastore.getLayers());
+				objNodes.push(layer);
 			}
 			if (collection instanceof ol.Collection) {
 				collection.push(datastore);
+				this.load_each_wms_layer(objNodes, datastore.getLayers());
 			} else {
 				console.error("no collection to push");
 			}
@@ -101,10 +195,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				contentType : "application/json; charset=UTF-8",
 				data : JSON.stringify(params),
 				beforeSend : function() {
-					$("body").css("cursor", "wait");
+					// $("body").css("cursor", "wait");
 				},
 				complete : function() {
-					$("body").css("cursor", "default");
+					// $("body").css("cursor", "default");
 				},
 				success : function(data, textStatus, jqXHR) {
 					console.log(data);
@@ -143,9 +237,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							wms.set("name", node.text);
 							if (collection instanceof ol.Collection) {
 								collection.push(wms);
+								that._data.geoserver.clientTree.initTreeId();
 							} else {
 								console.error("no collection to push");
 							}
+							that._data.geoserver.clientTree.refresh();
 						}
 					}
 				}

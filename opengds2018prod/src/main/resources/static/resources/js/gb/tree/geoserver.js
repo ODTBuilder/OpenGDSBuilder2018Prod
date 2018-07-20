@@ -12,6 +12,8 @@
  *            obj - 생성자 옵션을 담은 객체
  * @param {String |
  *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
+ * @param {jstreeol3}
+ *            jstree - 클라이언트 레이어 트리 객체
  * @param {ol.Map}
  *            obj.map - 편집 영역을 담당하는 ol.Map
  * @param {Object}
@@ -34,6 +36,7 @@ gb.tree.GeoServer = function(obj) {
 	var options = obj ? obj : {};
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	var url = options.url ? options.url : undefined;
+	this.clientTree = options.clientTree ? options.clientTree : undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
@@ -156,7 +159,8 @@ gb.tree.GeoServer = function(obj) {
 				"geoserver" : {
 					"map" : this.map instanceof ol.Map ? this.map : undefined,
 					"getMapWMS" : this.getMapWMS,
-					"getLayerInfo" : this.getLayerInfo
+					"getLayerInfo" : this.getLayerInfo,
+					"clientTree" : this.clientTree
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",

@@ -30,17 +30,6 @@ server:
   error:
     whitelabel:
       enabled: false
-#  tomcat:
-#      additional-tld-skip-patterns: "*.jar"
-#      context:
-#        JarScanner:
-#          scanClassPath: false
-#          JarScanFilter:
-#            defaultPluggabilityScan: "false"
-#      util:
-#        scan:
-#          StandardJarScanFilter:
-#            jarsToSkip: "*"
 gitrnd:
   serverhost: 175.116.181.34
   apache:

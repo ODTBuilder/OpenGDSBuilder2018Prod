@@ -150,8 +150,31 @@ gb.tree.GeoServer = function(obj) {
 					 */
 
 					"data" : {
-						'url' : function() {
-							return that.getGetTreeURL();
+						'url' : function(node) {
+							if (node.id === "#") {
+								return that.getGetTreeURL() + "&type=server";
+							} else if (node.type === "workspace") {
+								return that.getGetTreeURL() + "&type=workspace" + "&parent=" + node.parent + "&serverName=" + node.parent;
+							} else if (node.type === "datastore") {
+								return that.getGetTreeURL() + "&type=datastore" + "&parent=" + node.parent + "&serverName="
+										+ node.parents[1];
+							} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring"
+									|| node.type === "multilinestring" || node.type === "polygon" || node.type === "multipolygon") {
+								return that.getGetTreeURL() + "&type=layer" + "&parent=" + node.parent + "&serverName=" + node.parents[2];
+							}
+							// return that.getGetTreeURL();
+						},
+						"data" : function(node) {
+							var obj = {};
+							if (node.id) {
+								obj["id"] = node.id;
+							}
+							if (node.text) {
+								obj["text"] = node.text;
+							}
+							if (node.parent) {
+								obj["parent"] = node.parent;
+							}
 						}
 					}
 

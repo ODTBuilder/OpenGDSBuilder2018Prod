@@ -178,8 +178,17 @@ html {
 			crs.open();
 		});
 
+		var otree = new gb.tree.OpenLayers({
+			"append" : $(".builderLayerClientPanel")[0],
+			"map" : gbMap.getUpperMap(),
+			"url" : {
+				"getLegend" : "geoserver/getWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
+			}
+		});
+
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
+			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTrees.ajax?${_csrf.parameterName}=${_csrf.token}",
@@ -188,11 +197,6 @@ html {
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
-		});
-
-		var otree = new gb.tree.OpenLayers({
-			"append" : $(".builderLayerClientPanel")[0],
-			"map" : gbMap.getUpperMap()
 		});
 
 		var vrepo = new gb.versioning.Repository({

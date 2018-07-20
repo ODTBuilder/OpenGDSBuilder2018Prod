@@ -54,11 +54,8 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
-<<<<<<< HEAD
-=======
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
->>>>>>> 0d6024abe02e427b97abb1ba906a3fe62b7a02ef
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 
@@ -161,15 +158,12 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return groupLayerList;
 	};
 	
-<<<<<<< HEAD
-=======
 	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverList, String parent, String serverName, EnTreeType type){
 		if(dtGeoserverList ==null){
 			throw new IllegalArgumentException("DTGeoserverList may not be null");
 		}
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverList, parent, serverName, type);
 	}
->>>>>>> 0d6024abe02e427b97abb1ba906a3fe62b7a02ef
 	
 	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList){
 		if(dtGeoserverList ==null){

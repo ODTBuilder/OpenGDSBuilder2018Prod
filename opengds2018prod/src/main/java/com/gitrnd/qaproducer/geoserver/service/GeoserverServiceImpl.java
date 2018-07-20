@@ -453,10 +453,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 	@Override
 	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverMList, String parent, String serverName, String type) {
 		JSONArray jsonArray = new JSONArray();
-<<<<<<< HEAD
-		try {
-		} catch (NullPointerException e) {
-=======
 		EnTreeType enType = null;
 		if(dtGeoserverMList!=null){
 			if(type.toLowerCase().equals("server")){
@@ -474,7 +470,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 				jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
 			}
 		} else {
->>>>>>> 0d6024abe02e427b97abb1ba906a3fe62b7a02ef
 			// TODO: handle exception
 			logger.warn("DTGeoserverManagerList Null");
 		}

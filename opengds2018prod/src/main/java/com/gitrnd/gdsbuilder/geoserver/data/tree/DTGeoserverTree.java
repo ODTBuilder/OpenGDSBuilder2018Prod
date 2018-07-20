@@ -144,11 +144,26 @@ public class DTGeoserverTree extends JSONArray {
 				if (dtGeoManager != null) {
 					DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
 					if (dtGeoserverReader != null) {
+						
 						JSONObject serverTree = new JSONObject();
 						serverTree.put("id", serverName);
 						serverTree.put("parent", "#");
 						serverTree.put("text", serverName);
 						serverTree.put("type", "geoserver");
+						
+						
+						RESTWorkspaceList rwList = dtGeoserverReader.getWorkspaces();
+						
+						if(rwList!=null){
+							if(rwList.size()>0){
+								serverTree.put("children", true);
+							}else{
+								serverTree.put("children", false);
+							}
+						}else{
+							serverTree.put("children", false);
+						}
+						
 						super.add(serverTree);
 					}
 				}
@@ -202,6 +217,17 @@ public class DTGeoserverTree extends JSONArray {
 									wsTree.put("parent", parent);
 									wsTree.put("text", wsName);
 									wsTree.put("type", "workspace");
+									
+									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
+									if(dataStoreList!=null){
+										if(dataStoreList.size()>0){
+											wsTree.put("children", true);
+										}else{
+											wsTree.put("children", false);
+										}
+									}else{
+										wsTree.put("children", false);
+									}
 									super.add(wsTree);
 								}
 							}
@@ -219,6 +245,19 @@ public class DTGeoserverTree extends JSONArray {
 											dsTree.put("parent", parent);
 											dsTree.put("text", dsName);
 											dsTree.put("type", "datastore");
+											
+											RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(workspace, dsName);
+											
+											if(ftList!=null){
+												if(ftList.size()>0){
+													dsTree.put("children", true);
+												}else{
+													dsTree.put("children", false);
+												}
+											}else{
+												dsTree.put("children", false);
+											}
+											
 											super.add(dsTree);
 										}
 									}
@@ -244,6 +283,7 @@ public class DTGeoserverTree extends JSONArray {
 											layerTree.put("parent", parent);
 											layerTree.put("text", dtGLayer.getlName());
 											layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
+											layerTree.put("children", false);
 											super.add(layerTree);
 											// layerTree.clear();
 										}

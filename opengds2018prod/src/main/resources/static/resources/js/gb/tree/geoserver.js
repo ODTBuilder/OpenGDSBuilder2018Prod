@@ -733,7 +733,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	});
 	var gNameInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "EX) Geoserver"
+		"placeholder" : "EX) Geoserver",
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -851,6 +851,11 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	$(okBtn).click(function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
+	
+	gNameInput.val("geoserver");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
+	gIDInput.val("admin");
+	gPassInput.val("geoserver");
 };
 
 /**

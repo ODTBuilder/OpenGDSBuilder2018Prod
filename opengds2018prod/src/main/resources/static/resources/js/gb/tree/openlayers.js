@@ -186,6 +186,15 @@ gb.tree.OpenLayers.prototype = Object.create(gb.tree.OpenLayers.prototype);
 gb.tree.OpenLayers.prototype.constructor = gb.tree.OpenLayers;
 
 /**
+ * jstree가 적용된 jquery 객체를 반환한다.
+ * 
+ * @method gb.tree.OpenLayers#getJSTreeElement
+ */
+gb.tree.OpenLayers.prototype.getJSTreeElement = function() {
+	return $(this.panelBody);
+};
+
+/**
  * jstree 객체를 반환한다.
  * 
  * @method gb.tree.OpenLayers#getJSTree

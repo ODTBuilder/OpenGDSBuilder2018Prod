@@ -233,7 +233,7 @@ public class DTGeoserverTree extends JSONArray {
 							}
 						}else if(type==EnTreeType.DATASTORE){
 							if(param!=null){
-								if(param.length>=1){
+								if(param.length>1){
 									String workspace = param[1];
 									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(workspace);
 									List<String> dsNames = dataStoreList.getNames();
@@ -265,7 +265,7 @@ public class DTGeoserverTree extends JSONArray {
 							}
 						}else if(type==EnTreeType.LAYER){
 							if(param!=null){
-								if(param.length>=2){
+								if(param.length>2){
 									String wsName = param[1];
 									String dsName = param[2];
 									

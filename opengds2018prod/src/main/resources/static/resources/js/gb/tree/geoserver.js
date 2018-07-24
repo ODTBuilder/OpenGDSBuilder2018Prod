@@ -181,15 +181,15 @@ gb.tree.GeoServer = function(obj) {
 							} else if (node.type === "geoserver") {
 								obj["type"] = "workspace";
 								obj["serverName"] = node.id;
-								obj["parent"] = node.id;
+								obj["node"] = node.id;
 							} else if (node.type === "workspace") {
 								obj["type"] = "datastore";
 								obj["serverName"] = node.parent;
-								obj["parent"] = node.parent;
+								obj["node"] = node.id;
 							} else if (node.type === "datastore") {
 								obj["type"] = "layer";
 								obj["serverName"] = node.parents[1];
-								obj["parent"] = node.parent
+								obj["node"] = node.id
 							}
 							// else if (node.type === "point" || node.type ===
 							// "multipoint" || node.type === "linestring"

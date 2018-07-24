@@ -1,9 +1,12 @@
 package com.gitrnd.gdsbuilder.geogig;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
@@ -23,6 +26,8 @@ import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.CancelTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.workingtree.feature.BlameFeature;
+import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree;
+import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree.EnGeogigRepositoryTreeType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
@@ -43,8 +48,13 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unstaged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 
 public class GeogigWebReader {
+
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private String baseURL; // "http://localhost:9999/geoserver/geogig"
 	private String username; // admin
@@ -121,7 +131,7 @@ public class GeogigWebReader {
 	 *            현재 checkout 된 Branch 이름
 	 * @return GeogigRepositoryTree
 	 */
-	public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
+	/*public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
 			String transactionId) {
 
 		String referenceId = serverName + "/" + repoName + "/" + reference;
@@ -187,7 +197,8 @@ public class GeogigWebReader {
 			reposTree.addTree(referenceId, pathId, path);
 		}
 		return reposTree;
-	}
+	}*/
+
 
 	/**
 	 * @param serverName

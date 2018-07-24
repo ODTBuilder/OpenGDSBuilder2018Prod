@@ -1,7 +1,7 @@
 package com.gitrnd.qaproducer.common.worker;
 
-import org.json.simple.JSONObject;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,12 @@ public class Producer {
 
 	public Object produceMobileMsg(String msg) {
 		System.out.println("Send msg = " + msg);
-		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-		System.out.println("Reply msg = " + response);
+		Object response = amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
+		Message message = new Message(body, messageProperties);
+				
+				amqpTemplate.sendAndReceive(msg, msg, message);
+
+		System.out.println("Reply msg = " + response.toString());
 		return response;
 	}
 

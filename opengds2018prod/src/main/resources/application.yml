@@ -26,8 +26,8 @@ spring:
       max-request-size: 10485760KB
 server:
   port: 8080
+  context-path: /geodt
   servlet:
-    context-path: /geodt
     session:
       timeout: 3600
   error:

@@ -31,8 +31,6 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
-import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
-import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 
 /**
  * @author GIT

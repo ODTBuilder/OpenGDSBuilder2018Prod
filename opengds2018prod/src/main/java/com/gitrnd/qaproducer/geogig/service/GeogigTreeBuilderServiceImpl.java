@@ -48,7 +48,6 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 	
 	public GeogigRepositoryTree getWorkingTree(DTGeoserverManagerList dtGeoservers, String serverName,
 			EnGeogigRepositoryTreeType type, String parent, String transactionId) {
-		GeogigRepositoryTree geogigRepositoryTree = (GeogigRepositoryTree) new JSONArray();
 		if(type==EnGeogigRepositoryTreeType.SERVER) {
 			return new GeogigTreeFactoryImpl().createGeogigRepositoryTree(dtGeoservers, type);
 		}else {
@@ -64,16 +63,17 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 				}
 				return new GeogigTreeFactoryImpl().createGeogigRepositoryTree(dtGeoManager, serverName, type, parent, transactionId);
 			}else {
+				JSONArray result = new JSONArray();
 				JSONObject errorJSON = new JSONObject();
 				errorJSON.put("id", 500);
 				errorJSON.put("parent", "#");
 				errorJSON.put("text", "잘못된 요청입니다");
 				errorJSON.put("type", "error");
 
-				geogigRepositoryTree.add(errorJSON);
+				result.add(errorJSON);
 				logger.warn("잘못된 요청입니다.");
+				return (GeogigRepositoryTree) result;
 			}
 		}
-		return geogigRepositoryTree;
 	}
 }

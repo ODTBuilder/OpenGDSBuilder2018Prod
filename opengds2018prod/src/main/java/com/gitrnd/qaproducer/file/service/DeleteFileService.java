@@ -38,7 +38,7 @@ public class DeleteFileService {
 	@Value("${server.port}")
 	private String serverPort;
 
-	@Value("${server.servlet.context-path}")
+	@Value("${server.context-path}")
 	private String context;
 
 	@Value("${gitrnd.apache.basedrive}")

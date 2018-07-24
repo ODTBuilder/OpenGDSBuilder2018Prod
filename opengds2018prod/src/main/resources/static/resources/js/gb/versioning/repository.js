@@ -391,23 +391,19 @@ gb.versioning.Repository = function(obj) {
 			// } ]
 			"data" : {
 				'url' : function(node) {
-					var url;
-					if (node.id === "#") {
-						url = that.getGetServerTreeURL();
-					}
-					console.log(url);
+					var url = that.getGetServerTreeURL();
 					return url;
 				},
 				"data" : function(node) {
 					var obj = {};
 					if (node.id === "#") {
 						obj["type"] = "server";
+					} else if (node.type === "geoserver") {
+						obj["type"] = "repository";
+						obj["serverName"] = node.id;
+						obj["node"] = node.id;
 					}
-					// else if (node.type === "geoserver") {
-					// obj["type"] = "workspace";
-					// obj["serverName"] = node.id;
-					// obj["node"] = node.id;
-					// } else if (node.type === "workspace") {
+					// else if (node.type === "workspace") {
 					// obj["type"] = "datastore";
 					// obj["serverName"] = node.parent;
 					// obj["node"] = node.id;

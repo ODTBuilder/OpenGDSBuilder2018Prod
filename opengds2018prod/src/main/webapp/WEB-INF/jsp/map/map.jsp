@@ -200,7 +200,9 @@ html {
 		});
 
 		var vrepo = new gb.versioning.Repository({
-			"url" : {}
+			"url" : {
+				"getServerTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}"
+			}
 		});
 
 		$("#vermodal").click(function() {

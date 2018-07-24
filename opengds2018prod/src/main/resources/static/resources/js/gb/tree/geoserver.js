@@ -151,30 +151,54 @@ gb.tree.GeoServer = function(obj) {
 
 					"data" : {
 						'url' : function(node) {
-							if (node.id === "#") {
-								return that.getGetTreeURL() + "&type=server";
-							} else if (node.type === "workspace") {
-								return that.getGetTreeURL() + "&type=workspace" + "&parent=" + node.parent + "&serverName=" + node.parent;
-							} else if (node.type === "datastore") {
-								return that.getGetTreeURL() + "&type=datastore" + "&parent=" + node.parent + "&serverName="
-										+ node.parents[1];
-							} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring"
-									|| node.type === "multilinestring" || node.type === "polygon" || node.type === "multipolygon") {
-								return that.getGetTreeURL() + "&type=layer" + "&parent=" + node.parent + "&serverName=" + node.parents[2];
-							}
+							var url = that.getGetTreeURL();
+							// if (node.id === "#") {
+							// url = that.getGetTreeURL() + "&type=server";
+							// } else if (node.type === "workspace") {
+							// url = that.getGetTreeURL() + "&type=workspace" +
+							// "&parent=" + node.parent + "&serverName=" +
+							// node.parent;
+							// } else if (node.type === "datastore") {
+							// url = that.getGetTreeURL() + "&type=datastore" +
+							// "&parent=" + node.parent + "&serverName="
+							// + node.parents[1];
+							// } else if (node.type === "point" || node.type ===
+							// "multipoint" || node.type === "linestring"
+							// || node.type === "multilinestring" || node.type
+							// === "polygon" || node.type === "multipolygon") {
+							// url = that.getGetTreeURL() + "&type=layer" +
+							// "&parent=" + node.parent + "&serverName=" +
+							// node.parents[2];
+							// }
 							// return that.getGetTreeURL();
+							console.log(url);
+							return url;
 						},
 						"data" : function(node) {
 							var obj = {};
-							if (node.id) {
-								obj["id"] = node.id;
+							if (node.id === "#") {
+								obj["type"] = "server";
+							} else if (node.type === "geoserver") {
+								obj["type"] = "workspace";
+								obj["serverName"] = node.id;
+								obj["node"] = node.id;
+							} else if (node.type === "workspace") {
+								obj["type"] = "datastore";
+								obj["serverName"] = node.parent;
+								obj["node"] = node.id;
+							} else if (node.type === "datastore") {
+								obj["type"] = "layer";
+								obj["serverName"] = node.parents[1];
+								obj["node"] = node.id
 							}
-							if (node.text) {
-								obj["text"] = node.text;
-							}
-							if (node.parent) {
-								obj["parent"] = node.parent;
-							}
+							// else if (node.type === "point" || node.type ===
+							// "multipoint" || node.type === "linestring"
+							// || node.type === "multilinestring" || node.type
+							// === "polygon" || node.type === "multipolygon") {
+							//
+							// }
+							console.log(obj);
+							return obj;
 						}
 					}
 

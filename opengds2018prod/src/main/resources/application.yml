@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: 175.116.181.42
+    host: 175.116.181.34
     port: 5672
     username: qaguest
     password: gitrnd!
@@ -25,24 +25,13 @@ spring:
       max-file-size: 10485760KB
       max-request-size: 10485760KB
 server:
-  port: 8080
+  port: 8089
   context-path: /geodt
   error:
     whitelabel:
       enabled: false
-#  tomcat:
-#      additional-tld-skip-patterns: "*.jar"
-#      context:
-#        JarScanner:
-#          scanClassPath: false
-#          JarScanFilter:
-#            defaultPluggabilityScan: "false"
-#      util:
-#        scan:
-#          StandardJarScanFilter:
-#            jarsToSkip: "*"
 gitrnd:
-  serverhost: 175.116.181.34
+  serverhost: 175.116.181.32
   apache:
     host: 127.0.0.1
     port: 8888

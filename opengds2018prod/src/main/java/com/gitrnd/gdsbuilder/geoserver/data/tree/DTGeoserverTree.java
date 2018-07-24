@@ -116,6 +116,7 @@ public class DTGeoserverTree extends JSONArray {
 
 	/**
 	 * type이 EnTreeType.SERVER가 아닐때
+	 * 
 	 * @param dtGeoManagers
 	 * @param parent
 	 * @param serverName
@@ -175,12 +176,13 @@ public class DTGeoserverTree extends JSONArray {
 	 *            jstree parent ID
 	 * @param serverName
 	 *            서버이름
-	 * @param type 
+	 * @param type
 	 * @return DTGeoserverTree
 	 */
 	@SuppressWarnings("unchecked")
-	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, EnTreeType type) {
-		if (dtGeoManagers != null && type!=null) {
+	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers, String parent, String serverName,
+			EnTreeType type) {
+		if (dtGeoManagers != null && type != null) {
 			Iterator<String> keys = dtGeoManagers.keySet().iterator();
 			while (keys.hasNext()) {
 				String key = (String) keys.next();
@@ -191,8 +193,8 @@ public class DTGeoserverTree extends JSONArray {
 
 					if (dtGeoManager != null) {
 						DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
-						
-						if(type==EnTreeType.WORKSPACE){
+
+						if (type == EnTreeType.WORKSPACE) {
 							RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
 							if (restWorkspaceList != null) {
 								for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
@@ -205,9 +207,9 @@ public class DTGeoserverTree extends JSONArray {
 									super.add(wsTree);
 								}
 							}
-						}else if(type==EnTreeType.DATASTORE){
-							if(param!=null){
-								if(param.length>=1){
+						} else if (type == EnTreeType.DATASTORE) {
+							if (param != null) {
+								if (param.length >= 1) {
 									String workspace = param[1];
 									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(workspace);
 									List<String> dsNames = dataStoreList.getNames();
@@ -224,12 +226,12 @@ public class DTGeoserverTree extends JSONArray {
 									}
 								}
 							}
-						}else if(type==EnTreeType.LAYER){
-							if(param!=null){
-								if(param.length>=2){
+						} else if (type == EnTreeType.LAYER) {
+							if (param != null) {
+								if (param.length >= 2) {
 									String wsName = param[1];
 									String dsName = param[2];
-									
+
 									RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(wsName, dsName);
 									ArrayList<String> layerNames = new ArrayList<String>(ftList.getNames());
 
@@ -254,7 +256,7 @@ public class DTGeoserverTree extends JSONArray {
 					}
 				}
 			}
-		} else{
+		} else {
 			logger.warn("DTGeoserverManagerList or EnTreeType null");
 		}
 		return this;

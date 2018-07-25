@@ -14,7 +14,6 @@ if (!gb.footer)
 	 * @constructor
 	 */
 	gb.footer.CommandLine = function(obj) {
-		gb.layer.LayerInfo
 		gb.footer.Base.call(this, obj);
 		
 		var options = obj || {};

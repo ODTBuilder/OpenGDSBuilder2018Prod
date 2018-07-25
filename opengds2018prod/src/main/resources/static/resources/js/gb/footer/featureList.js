@@ -157,6 +157,12 @@ if (!gb.footer)
 			return;
 		}
 		
+		var workspace = options.workspace;
+		if(!workspace){
+			console.error('gb.footer.FeatureList: workspace name is required');
+			return;
+		}
+		
 		var layerName = options.layerName;
 		if(!layerName){
 			console.error('gb.footer.FeatureList: layer name is required');
@@ -169,7 +175,7 @@ if (!gb.footer)
 			service : 'WFS',
 			version : '1.0.0',
 			request : 'GetFeature',
-			typeName : layerName,
+			typeName : workspace + ':' + layerName,
 			outputFormat : 'text/javascript',
 			format_options : 'callback:getJson'
 		};
@@ -207,6 +213,11 @@ if (!gb.footer)
 				
 				that.updateTable(col, data, exceptKeys);
 				that.setTitle(layerName);
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(errorThrown);
+				that.updateTable([{title: "no data", data: "empty"}], [{empty: "no data"}], []);
+				that.setTitle("no data");
 			}
 		});
 	}

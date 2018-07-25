@@ -34,11 +34,6 @@ gb.footer.Base = function(obj) {
 	this.isDisplay = options.isDisplay ? true : false;
 	
 	/**
-	 * footer를 생성할 element ID
-	 */
-	this.elementId = options.elementId;
-	
-	/**
 	 * footer toggle event element class name
 	 */
 	this.toggleTarget = options.toggleTarget || ".footer-toggle-btn";
@@ -46,7 +41,7 @@ gb.footer.Base = function(obj) {
 	/**
 	 * footer를 생성할 element
 	 */
-	this.targetElement = options.elementId ? $("#" + options.elementId) : $("body");
+	this.targetElement = options.targetElement;
 	
 	/**
 	 * footer title

@@ -97,6 +97,10 @@ html {
 .gb-footer-span {
 	margin-right: 15px;
 }
+
+.gb-footer-span:hover {
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -164,10 +168,13 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="gb-footer-span"><i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>123123,
-				123123</span></span><span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1
-				: 5000</span></span> <span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
-			class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>
+		<span class="gb-footer-span">
+			<i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>123123,123123</span></span>
+		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1 : 5000</span></span>
+		<span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span>
+		<span class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>
+		<span id="cmd-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-terminal"></i>Command</span>
+		<span id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
 		var gbMap = new gb.Map({
@@ -286,6 +293,37 @@ html {
 			clickEvent: function(){
 				console.log("mesure length");
 			}
+		});
+		
+		// feature list
+		var featureList = new gb.footer.FeatureList({
+			map: gbMap.getUpperMap(),
+			targetElement: gbMap.getLowerDiv(),
+			title: "All Feature List",
+			toggleTarget: "#feature-toggle-btn",
+			isDisplay: false
+		});
+		
+		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data){
+			var layer;
+			for(i = 0, j = data.selected.length; i < j; i++) {
+				layer = data.instance.get_LayerById(data.selected[i]);
+				featureList.updateFeatureList({
+					url: 'http://175.116.181.42:9990/geoserver/wfs',
+					workspace: layer.get('git').workspace,
+					layerName: layer.get('name'),
+					exceptKeys: ['geometry'/*, 'feature_id', 'ufid' */]
+				});
+			}
+		});
+		
+		// command line
+		var commandLine = new gb.footer.CommandLine({
+			targetElement: gbMap.getLowerDiv(),
+			title: "Command Line",
+			toggleTarget: "#cmd-toggle-btn",
+			isDisplay: false,
+			map: gbMap.getUpperMap()
 		});
 		
 		// geocoder

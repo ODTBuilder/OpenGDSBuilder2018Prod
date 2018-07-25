@@ -425,6 +425,9 @@ gb.versioning.Repository = function(obj) {
 			"#" : {
 				"valid_children" : [ "geoserver" ]
 			},
+			"default" : {
+				"icon" : "fas fa-exclamation-circle"
+			},
 			"geoserver" : {
 				"icon" : "fas fa-globe",
 				"valid_children" : [ "repository" ]

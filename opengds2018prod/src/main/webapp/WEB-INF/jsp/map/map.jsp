@@ -202,7 +202,8 @@ html {
 		var vrepo = new gb.versioning.Repository({
 			"url" : {
 				"getServerTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getTransactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}"
+				"getTransactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

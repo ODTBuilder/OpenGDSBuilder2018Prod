@@ -169,7 +169,7 @@ html {
 	</div>
 	<nav class="navbar navbar-default builderFooter">
 		<span class="gb-footer-span">
-			<i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>123123,123123</span></span>
+			<i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>000000,000000</span></span>
 		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1 : 5000</span></span>
 		<span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span>
 		<span class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>

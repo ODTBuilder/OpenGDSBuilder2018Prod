@@ -1,7 +1,6 @@
 package com.gitrnd.qaproducer.common.worker;
 
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,10 +23,13 @@ public class Producer {
 	public Object produceMobileMsg(String msg) {
 		System.out.println("Send msg = " + msg);
 		Object response = amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-		Message message = new Message(body, messageProperties);
-				
-				amqpTemplate.sendAndReceive(msg, msg, message);
-
+		
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		System.out.println("Reply msg = " + response.toString());
 		return response;
 	}

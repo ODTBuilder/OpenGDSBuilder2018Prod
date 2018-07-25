@@ -246,8 +246,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						}
 					}
 				}
-			}
-			if (type == EnGeogigRepositoryTreeType.LAYER) {
+			} else if (type == EnGeogigRepositoryTreeType.LAYER) {
 				if (param.length > 2) {
 					String repository = param[1];
 					String branch = param[2];

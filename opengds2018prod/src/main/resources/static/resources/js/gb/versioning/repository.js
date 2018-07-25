@@ -510,11 +510,21 @@ gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoN
 		"serverName" : serverName,
 		"repoName" : repoName
 	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getGetTransactionIdURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
 	$.ajax({
-		url : this.getGetTransactionIdURL(),
+		url : tranURL,
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
-		data : params,
+		// data : params,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {

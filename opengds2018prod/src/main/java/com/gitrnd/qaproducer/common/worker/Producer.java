@@ -23,13 +23,11 @@ public class Producer {
 	public Object produceMobileMsg(String msg) {
 		System.out.println("Send msg = " + msg);
 		Object response = amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-		
 		try {
-			
+			Thread.sleep(100000);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
 		System.out.println("Reply msg = " + response.toString());
 		return response;
 	}

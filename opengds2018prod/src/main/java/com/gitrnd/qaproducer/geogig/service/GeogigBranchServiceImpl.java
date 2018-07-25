@@ -35,7 +35,9 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String pw = geoserverManager.getPassword();
 
 		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.checkoutBranch(repoName, transactionId, reference);
+		GeogigCheckout checkout = reader.checkoutBranch(repoName, transactionId, reference);
+		checkout.setTransactionId(transactionId);
+		return checkout;
 	}
 
 	/*

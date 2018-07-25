@@ -47,7 +47,7 @@ public class GeogigBranchController extends AbstractController {
 	public GeogigCheckout checkoutBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "repoName", required = false) String branchName) {
+			@RequestParam(value = "branchName", required = false) String branchName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		GeogigTransaction transaction = transactionService.beginTransaction(geoserverManager, repoName);

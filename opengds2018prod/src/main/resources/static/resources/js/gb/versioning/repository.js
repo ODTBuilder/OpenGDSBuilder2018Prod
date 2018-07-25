@@ -402,16 +402,15 @@ gb.versioning.Repository = function(obj) {
 						obj["type"] = "repository";
 						obj["serverName"] = node.id;
 						obj["node"] = node.id;
+					} else if (node.type === "repository") {
+						obj["type"] = "repository";
+						obj["serverName"] = node.parent;
+						obj["node"] = node.id;
+					} else if (node.type === "branch") {
+						obj["type"] = "layer";
+						obj["serverName"] = node.parents[1];
+						obj["node"] = node.id
 					}
-					// else if (node.type === "workspace") {
-					// obj["type"] = "datastore";
-					// obj["serverName"] = node.parent;
-					// obj["node"] = node.id;
-					// } else if (node.type === "datastore") {
-					// obj["type"] = "layer";
-					// obj["serverName"] = node.parents[1];
-					// obj["node"] = node.id
-					// }
 					console.log(obj);
 					return obj;
 				}

@@ -403,7 +403,7 @@ gb.versioning.Repository = function(obj) {
 						obj["serverName"] = node.id;
 						obj["node"] = node.id;
 					} else if (node.type === "repository") {
-						obj["type"] = "repository";
+						obj["type"] = "branch";
 						obj["serverName"] = node.parent;
 						obj["node"] = node.id;
 					} else if (node.type === "branch") {
@@ -446,7 +446,7 @@ gb.versioning.Repository = function(obj) {
 		geogigfunction : {
 
 		},
-		"plugins" : [ "search", "state", "types", "geogigfunction" ]
+		"plugins" : [ "search", "types", "geogigfunction" ]
 	});
 	this.jstree = $(this.treeArea).jstree(true);
 	var v = this.jstree.get_json('#', {

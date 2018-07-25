@@ -20,6 +20,8 @@ public class GeogigCheckout {
 	 */
 	private String success;
 
+	private String transactionId;
+
 	private String oldTarget;
 
 	private String newTarget;
@@ -71,6 +73,14 @@ public class GeogigCheckout {
 
 	public void setStrategy(String strategy) {
 		this.strategy = strategy;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 }

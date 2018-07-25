@@ -39,7 +39,7 @@ public class GeogigRepositoryTree extends JSONArray {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public enum EnGeogigRepositoryTreeType {
-		SERVER("server"), REPOSITORY("repository"), BRANCH("branch"), LAYER("layer"), STATUS("status"), UNKNOWN(null);
+		SERVER("server"), REPOSITORY("repository"), BRANCH("branch"), LAYER("layer"), UNKNOWN(null);
 
 		String type;
 
@@ -182,7 +182,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						}
 					}
 				}
-			} else if (type == EnGeogigRepositoryTreeType.BRANCH) {
+			} else if (type == EnGeogigRepositoryTreeType.BRANCH && transactionId == null) {
 				if (param.length > 1) {
 					String repository = param[1];
 					ListBranch listBranch = new ListBranch();
@@ -204,7 +204,50 @@ public class GeogigRepositoryTree extends JSONArray {
 						this.addBranch(parent, branchId, branchName, null, children);
 					}
 				}
-			} else if (type == EnGeogigRepositoryTreeType.LAYER) {
+			} else if (type == EnGeogigRepositoryTreeType.BRANCH && transactionId != null) {
+				if (param.length > 1) {
+					String repository = param[1];
+
+					ListBranch listBranch = new ListBranch();
+					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository);
+					List<Branch> localList = branches.getLocalBranchList();
+					for (Branch localBranch : localList) {
+						String branchName = localBranch.getName();
+						StatusRepository stausCommand = new StatusRepository();
+
+						GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repository,
+								transactionId);
+						Header header = status.getHeader();
+						String headerBranch = header.getBranch();
+						String branchId = parent + ":" + branchName;
+						boolean children = false;
+
+						if (repository.equalsIgnoreCase(parent) && branchName.equalsIgnoreCase(headerBranch)) {
+							LsTreeRepository lsTree = new LsTreeRepository();
+							GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password,
+									repository, branchName);
+							List<Node> nodes = revisionTree.getNodes();
+							if (nodes != null) {
+								if (nodes.size() > 0) {
+									children = true;
+								}
+							}
+							if (status.getUnstaged() != null) {
+								this.addBranch(parent, branchId, branchName, "Unstaged", children);
+							} else if (status.getStaged() != null) {
+								this.addBranch(parent, branchId, branchName, "Staged", children);
+							} else if (status.getUnmerged() != null) {
+								this.addBranch(parent, branchId, branchName, "UnMerged", children);
+							} else {
+								this.addBranch(parent, branchId, branchName, "Merged", children);
+							}
+						} else {
+							this.addBranch(parent, branchId, branchName, null, children);
+						}
+					}
+				}
+			}
+			if (type == EnGeogigRepositoryTreeType.LAYER) {
 				if (param.length > 2) {
 					String repository = param[1];
 					String branch = param[2];
@@ -218,40 +261,6 @@ public class GeogigRepositoryTree extends JSONArray {
 						String path = node.getPath();
 						String pathId = parent + ":" + path;
 						this.addTree(parent, pathId, path);
-					}
-				}
-			} else if (type == EnGeogigRepositoryTreeType.STATUS) {
-				if (param.length > 1) {
-					String repository = param[1];
-					String branch = param[2];
-
-					StatusRepository stausCommand = new StatusRepository();
-					GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repository,
-							transactionId);
-					Header header = status.getHeader();
-					String headerBranch = header.getBranch();
-					String branchId = parent + ":" + branch;
-
-					boolean children = false;
-					if (repository.equalsIgnoreCase(parent) && branch.equalsIgnoreCase(headerBranch)) {
-						LsTreeRepository lsTree = new LsTreeRepository();
-						GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repository,
-								branch);
-						List<Node> nodes = revisionTree.getNodes();
-						if (nodes != null) {
-							if (nodes.size() > 0) {
-								children = true;
-							}
-						}
-						if (status.getUnstaged() != null) {
-							this.addBranch(parent, branchId, branch, "Unstaged", children);
-						} else if (status.getStaged() != null) {
-							this.addBranch(parent, branchId, branch, "Staged", children);
-						} else if (status.getUnmerged() != null) {
-							this.addBranch(parent, branchId, branch, "UnMerged", children);
-						} else {
-							this.addBranch(parent, branchId, branch, "Merged", children);
-						}
 					}
 				}
 			} else {

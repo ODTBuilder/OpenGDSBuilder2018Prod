@@ -234,13 +234,16 @@ html {
 			id : "feature_id"
 		});
 		
+		var wfsURL = "http://175.116.181.32:9999/geoserver/wfs";
+		var wmsURL = "http://175.116.181.32:9999/geoserver/wms";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement: gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
-			getFeatureInfo : "http://175.116.181.42:9990/geoserver/wms",
+			wfsURL: wfsURL,
+			getFeatureInfo : wmsURL,
 			layerInfo : "geoserver/getGeoLayerInfoList.ajax",
 			imageTile : "geoserver/geoserverWMSLayerLoad.do",
 			getFeature : "geoserver/geoserverWFSGetFeature.ajax"
@@ -309,8 +312,8 @@ html {
 			for(i = 0, j = data.selected.length; i < j; i++) {
 				layer = data.instance.get_LayerById(data.selected[i]);
 				featureList.updateFeatureList({
-					url: 'http://175.116.181.42:9990/geoserver/wfs',
-					workspace: layer.get('git').workspace,
+					url: wfsURL,
+					workspace: layer.get('git') ? layer.get('git').workspace : "undefined",
 					layerName: layer.get('name'),
 					exceptKeys: ['geometry'/*, 'feature_id', 'ufid' */]
 				});
@@ -321,6 +324,7 @@ html {
 		var commandLine = new gb.footer.CommandLine({
 			targetElement: gbMap.getLowerDiv(),
 			title: "Command Line",
+			serverURL: wfsURL,
 			toggleTarget: "#cmd-toggle-btn",
 			isDisplay: false,
 			map: gbMap.getUpperMap()

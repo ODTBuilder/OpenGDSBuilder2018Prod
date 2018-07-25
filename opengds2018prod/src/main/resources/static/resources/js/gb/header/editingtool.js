@@ -33,6 +33,7 @@ gb.header.EditingTool = function(obj) {
 	this.vectorSourcesOfServer_ = {};
 	this.customVector_ = {};
 	this.copyPaste_ = undefined;
+	this.wfsURL = options.wfsURL;
 	
 	this.snapWMS = [];
 	this.snapSource = new ol.source.Vector();
@@ -2138,6 +2139,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 	var layerid = layerId;
 	var layername = layerName;
 	var treeid = treeId;
+	var url = this.wfsURL;
 	if(!this.getVectorSourceOfServer(treeid)){
 		var vectorSource = new ol.source.Vector({
 			format: new ol.format.GeoJSON(),
@@ -2154,7 +2156,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 				};
 				
 				$.ajax({
-					url : "http://175.116.181.42:9990/geoserver/wfs",
+					url : url,
 					data : params,
 					dataType : 'jsonp',
 					jsonpCallback : layerid,

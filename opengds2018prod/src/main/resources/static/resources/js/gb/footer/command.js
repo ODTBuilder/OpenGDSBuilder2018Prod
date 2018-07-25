@@ -22,6 +22,8 @@ if (!gb.footer)
 		
 		this.map = options.map;
 		
+		this.serverURL = options.serverURL;
+		
 		this.label = undefined;
 		
 		this.workHistory_ = {};
@@ -588,9 +590,9 @@ if (!gb.footer)
 			"format_options" : "callback:getJson"
 		};
 		var feature;
-		
+		var url = this.serverURL;
 		$.ajax({
-			url : "http://175.116.181.42:9990/geoserver/wfs",
+			url : url,
 			data : params,
 			async: false,
 			dataType : 'jsonp',
@@ -603,8 +605,7 @@ if (!gb.footer)
 		var vectorSource = new ol.source.Vector({
 			format: new ol.format.GeoJSON(),
 			url: function(extent){
-				var url = "http://175.116.181.42:9990/geoserver/wfs?service=WFS&" +
-				"version=1.0.0&request=GetFeature&typename=" + layerId + "&" +
+				var url = url + "version=1.0.0&request=GetFeature&typename=" + layerId + "&" +
 				"outputFormat=text/javascript&bbox=" + extent.join(",");
 			}
 		});

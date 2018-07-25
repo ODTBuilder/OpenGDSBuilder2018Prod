@@ -450,17 +450,18 @@ gb.versioning.Repository = function(obj) {
 		"plugins" : [ "search", "types", "geogigfunction" ]
 	});
 	this.jstree = $(this.treeArea).jstree(true);
-	$(this.treeArea).on("select_node.jstree", function(e, data) {
-		console.log(e);
-		console.log(data);
-		var node = data.node;
-		if (node.type === "branch") {
-			var serverName = node.parents[1];
-			var repoName = node.parents[0];
-			that.getTransactionId(serverName, repoName);
-		}
-
-	});
+//	$(this.treeArea).on("select_node.jstree", function(e, data) {
+//		console.log(e);
+//		console.log(data);
+//		var node = data.node;
+//		if (node.type === "branch") {
+//			var server = node.parents[1];
+//			var serverNode = that.jstree.get_node(server);
+//			var repo = node.parents[0];
+//			var repoNode = that.jstree.get_node(repo);
+//			that.getTransactionId(serverNode.id, repoNode.text);
+//		}
+//	});
 
 	var v = this.jstree.get_json('#', {
 		no_state : true,

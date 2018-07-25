@@ -56,6 +56,7 @@ gb.versioning.Repository = function(obj) {
 	var options = obj ? obj : {};
 	var url = options.url ? options.url : {};
 	this.getServerTreeURL = url.getServerTree ? url.getServerTree : undefined;
+	this.getTransactionIdURL = url.getTransactionId ? url.getTransactionId : undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -449,6 +450,18 @@ gb.versioning.Repository = function(obj) {
 		"plugins" : [ "search", "types", "geogigfunction" ]
 	});
 	this.jstree = $(this.treeArea).jstree(true);
+	$(this.treeArea).on("select_node.jstree", function(e, data) {
+		console.log(e);
+		console.log(data);
+		var node = data.node;
+		if (node.type === "branch") {
+			var serverName = node.parents[1];
+			var repoName = node.parents[0];
+			that.getTransactionId(serverName, repoName);
+		}
+
+	});
+
 	var v = this.jstree.get_json('#', {
 		no_state : true,
 		flat : true
@@ -492,22 +505,26 @@ gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
  * @return {Object[]} 트리 목록에 추가할 워킹트리
  * 
  */
-gb.versioning.Repository.prototype.getWorkingTree = function(serverName, repoName, reference, transactionId) {
+gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoName) {
+	var params = {
+		"serverName" : serverName,
+		"repoName" : repoName
+	}
 	$.ajax({
-		url : this.getFeature,
+		url : this.getGetTransactionIdURL(),
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		data : params,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
-			$("body").css("cursor", "wait");
+			// $("body").css("cursor", "wait");
 		},
 		complete : function() {
-			$("body").css("cursor", "default");
+			// $("body").css("cursor", "default");
 		},
 		success : function(data) {
-
+			console.log(data);
 		}
 	});
 };
@@ -539,6 +556,16 @@ gb.versioning.Repository.prototype.getJSTree = function() {
  */
 gb.versioning.Repository.prototype.getGetServerTreeURL = function() {
 	return this.getServerTreeURL;
+};
+
+/**
+ * 트랜잭션 아이디 발급 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getGetTransactionIdURL
+ * @return {String} 트랜잭션 아이디 주소 URL
+ */
+gb.versioning.Repository.prototype.getGetTransactionIdURL = function() {
+	return this.getTransactionIdURL;
 };
 
 /**

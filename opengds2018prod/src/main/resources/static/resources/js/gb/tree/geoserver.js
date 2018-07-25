@@ -738,7 +738,7 @@ gb.tree.GeoServer = function(obj) {
 						"icon" : "fas fa-circle gb-fa-xxs"
 					}
 				},
-				"plugins" : [ "contextmenu", "search", "state", "types", "geoserver" ]
+				"plugins" : [ "contextmenu", "search", "types", "geoserver" ]
 			});
 	this.jstree = $(this.panelBody).jstree(true);
 
@@ -955,8 +955,14 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	var that = this;
 	console.log("open delete geoserver");
-	var msg1 = $("<div>").text("Are you sure to delete this server?");
-	var msg2 = $("<div>").text('"' + geoserver + '"');
+	var msg1 = $("<div>").text("Are you sure to delete this server?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + geoserver + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px"
+	});
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -968,8 +974,8 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
 		"title" : "Delete GeoServer",
-		"width" : 540,
-		"height" : 400,
+		"width" : 310,
+		"height" : 200,
 		"autoOpen" : false,
 		"body" : body
 	});

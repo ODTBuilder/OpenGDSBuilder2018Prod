@@ -422,3 +422,114 @@ gb.edit.FeatureRecord.prototype.getPartStructure = function(bringLayer) {
 	}
 	return obj;
 }
+
+gb.edit.FeatureRecord.prototype.deleteFeatureCreated = function(layerId, featureId) {
+	var feature = undefined;
+	if(!!this.created[layerId]){
+		if(this.created[layerId][featureId] instanceof ol.Feature){
+			feature = this.created[layerId][featureId];
+			delete this.created[layerId][featureId];
+		}
+	}
+	return feature;
+};
+gb.edit.FeatureRecord.prototype.deleteFeatureModified = function(layerId, featureId) {
+	var feature = undefined;
+	if(!!this.modified[layerId]){
+		if(this.modified[layerId][featureId] instanceof ol.Feature){
+			feature = this.modified[layerId][featureId];
+			delete this.modified[layerId][featureId];
+		}
+	}
+	return feature;
+};
+gb.edit.FeatureRecord.prototype.deleteFeatureRemoved = function(layerId, featureId) {
+	var feature = undefined;
+	if(!!this.removed[layerId]){
+		if(this.removed[layerId][featureId] instanceof ol.Feature){
+			feature = this.removed[layerId][featureId];
+			delete this.removed[layerId][featureId];
+		}
+	}
+	return feature;
+};
+
+gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
+	
+	var layers = {};
+	var format = new ol.format.WFS();
+	
+	for(let layer in this.created){
+		for(let feature in this.created[layer]){
+			if(!layers[layer]){
+				layers[layer] = {};
+				layers[layer].created = [];
+				layers[layer].modified = [];
+				layers[layer].removed = [];
+			}
+			layers[layer].created.push(this.created[layer][feature]);
+		}
+	}
+	for(let layer in this.modified){
+		for(let feature in this.modified[layer]){
+			if(!layers[layer]){
+				layers[layer] = {};
+				layers[layer].created = [];
+				layers[layer].modified = [];
+				layers[layer].removed = [];
+			}
+			layers[layer].modified.push(this.modified[layer][feature]);
+		}
+	}
+	for(let layer in this.removed){
+		for(let feature in this.removed[layer]){
+			if(!layers[layer]){
+				layers[layer] = {};
+				layers[layer].created = [];
+				layers[layer].modified = [];
+				layers[layer].removed = [];
+			}
+			layers[layer].removed.push(this.removed[layer][feature]);
+		}
+	}
+	
+	var geoserver, workspace, repo, layername, split, node;
+	for(let layer in layers){
+		split = layer.split("_");
+		geoserver = layer.split("_")[0];
+		workspace = layer.split("_")[1];
+		repo = layer.split("_")[2];
+		layername = "";
+		for(let i in split){
+			if(i > 2){
+				layername += "_" + split[i];
+			}
+		}
+		layername = layername.substring(1);
+		
+		node = format.writeTransaction(layers[layer].created, layers[layer].modified, layers[layer].removed, {
+			featureNS: workspace,
+			featurePrefix: workspace,
+			featureType: layername 
+		});
+		
+		$.ajax({
+			type: "POST",
+			url: CONTEXTPATH + "/geoserver/geoserverWFSTransaction.ajax",
+			data: {
+				serverName: geoserver,
+				wfstXml: new XMLSerializer().serializeToString(node)
+			},
+			contentType: 'text/xml',
+			success: function(data) {
+				var result = format.readTransactionResponse(data);
+				console.log(result);
+			},
+			error: function(e) {
+				var errorMsg = e? (e.status + ' ' + e.statusText) : "";
+				console.log(errorMsg);
+			},
+			context: this
+		});
+	}
+}

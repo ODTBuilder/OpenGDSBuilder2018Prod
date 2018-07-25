@@ -31,7 +31,6 @@ public class GetGeogigTasks {
 
 	private static final Log logger = LogFactory.getLog(GetGeogigTasks.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "tasks";
 
 	public GeogigTasks executeCommand(String baseURL, String username, String password, String taskId) {
@@ -55,7 +54,7 @@ public class GetGeogigTasks {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/" + command + "/" + taskId + ".xml";
+		String url = baseURL + "/" + command + "/" + taskId + ".xml";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

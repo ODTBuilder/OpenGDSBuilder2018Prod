@@ -31,7 +31,6 @@ public class CommitStagingArea {
 
 	private static final Log logger = LogFactory.getLog(CommitStagingArea.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "commit";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_message = "message="; // optional
@@ -60,8 +59,7 @@ public class CommitStagingArea {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
-				+ transactionId;
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId;
 
 		// optional param
 		if (message != null) {

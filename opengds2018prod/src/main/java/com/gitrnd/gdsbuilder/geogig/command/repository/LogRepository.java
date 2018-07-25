@@ -31,7 +31,6 @@ public class LogRepository {
 
 	private static final Log logger = LogFactory.getLog(LogRepository.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "log";
 
 	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository) {
@@ -55,7 +54,7 @@ public class LogRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/repos/" + repository + "/" + command;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

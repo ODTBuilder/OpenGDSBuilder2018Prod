@@ -31,7 +31,6 @@ public class ConfigRepository {
 
 	private static final Log logger = LogFactory.getLog(ConfigRepository.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "config";
 	private static final String param_name = "name="; // optional
 
@@ -57,7 +56,7 @@ public class ConfigRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/repos/" + repository + "/" + command;
 
 		if (configkey != null) {
 			url += "?" + param_name + configkey;

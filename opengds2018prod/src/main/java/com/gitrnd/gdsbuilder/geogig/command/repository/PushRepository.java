@@ -31,7 +31,6 @@ public class PushRepository {
 
 	private static final Log logger = LogFactory.getLog(PushRepository.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "push";
 	private static final String param_remoteName = "remoteName=";
 	private static final String param_ref = "ref=";
@@ -58,8 +57,8 @@ public class PushRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_remoteName
-				+ remoteName + "&" + param_ref + branchName + ":" + remoteBranchName;
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_remoteName + remoteName + "&"
+				+ param_ref + branchName + ":" + remoteBranchName;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

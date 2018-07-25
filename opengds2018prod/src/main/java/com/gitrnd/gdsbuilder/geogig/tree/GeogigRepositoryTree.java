@@ -17,6 +17,7 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig;
@@ -38,13 +39,9 @@ import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 @SuppressWarnings("serial")
 public class GeogigRepositoryTree extends JSONArray {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	public enum EnGeogigRepositoryTreeType {
-		SERVER("server"), 
-		REPOSITORY("repository"), 
-		BRANCH("branch"), 
-		LAYER("layer"), 
-		UNKNOWN(null);
+		SERVER("server"), REPOSITORY("repository"), BRANCH("branch"), LAYER("layer"), UNKNOWN(null);
 
 		String type;
 
@@ -70,8 +67,7 @@ public class GeogigRepositoryTree extends JSONArray {
 			this.type = type;
 		}
 	}
-	
-	
+
 	/**
 	 * type이 EnTreeType.SERVER 일경우에
 	 * 
@@ -85,13 +81,12 @@ public class GeogigRepositoryTree extends JSONArray {
 			logger.error("TreeType이 Server가 아닙니다.");
 		}
 	}
-	
 
-	public GeogigRepositoryTree(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRepositoryTreeType type, String parent, String transactionId) {
+	public GeogigRepositoryTree(DTGeoserverManager dtGeoserver, String serverName, EnGeogigRepositoryTreeType type,
+			String parent, String transactionId) {
 		this.build(dtGeoserver, serverName, type, parent, transactionId);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public GeogigRepositoryTree build(DTGeoserverManagerList dtGeoserverMList, EnGeogigRepositoryTreeType type) {
 		if (dtGeoserverMList != null && type != null) {
@@ -105,7 +100,9 @@ public class GeogigRepositoryTree extends JSONArray {
 						DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
 						if (dtGeoserverReader != null) {
 							ListRepository listRepos = new ListRepository();
-							GeogigRepository geogigRepo = listRepos.executeCommand(dtGeoManager.getRestURL(), dtGeoManager.getUsername(), dtGeoManager.getPassword());
+							GeogigRepository geogigRepo = listRepos.executeCommand(
+									dtGeoManager.getRestURL() + "/geogig", dtGeoManager.getUsername(),
+									dtGeoManager.getPassword());
 							List<Repo> repos = geogigRepo.getRepos();
 							if (repos != null) {
 								if (repos.size() > 0) {
@@ -119,7 +116,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						}
 					}
 				}
-				if(dtGeoserverMList.size()==0) {
+				if (dtGeoserverMList.size() == 0) {
 					JSONObject errorJSON = new JSONObject();
 					errorJSON.put("id", 500);
 					errorJSON.put("parent", "#");
@@ -129,7 +126,7 @@ public class GeogigRepositoryTree extends JSONArray {
 					this.add(errorJSON);
 					logger.warn("Geoserver를 다시 추가해주세요");
 				}
-			} 
+			}
 		} else {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
@@ -142,14 +139,16 @@ public class GeogigRepositoryTree extends JSONArray {
 		}
 		return this;
 	}
-	
+
 	public GeogigRepositoryTree build(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRepositoryTreeType type, String parent, String transactionId){
-		String[] param = parent.split("_");// ex) serverName_repository_brench_layer
-		if(param!=null&&dtGeoserver!=null) {
-			String baseURL = dtGeoserver.getRestURL();
+			EnGeogigRepositoryTreeType type, String parent, String transactionId) {
+		String[] param = parent.split(":");// ex) serverName_repository_brench_layer
+		if (param != null && dtGeoserver != null) {
+
+			String baseURL = dtGeoserver.getRestURL() + "/geogig";
 			String username = dtGeoserver.getUsername();
 			String password = dtGeoserver.getPassword();
+
 			if (type == EnGeogigRepositoryTreeType.REPOSITORY) {
 				if (param.length > 0) {
 					String server = param[0];
@@ -163,29 +162,30 @@ public class GeogigRepositoryTree extends JSONArray {
 						String storageType = null;
 						// repos type
 						ConfigRepository configRepos = new ConfigRepository();
-						GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password, name,
-								null);
+						GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password, name, null);
 						List<Config> configs = geogigConfig.getConfigs();
 						for (Config config : configs) {
 							if (config.getName().equals("storage.refs")) {
 								storageType = config.getValue();
 							}
 						}
+						BeginTransaction beginTransaction = new BeginTransaction();
+						transactionId = beginTransaction.executeCommand(baseURL, username, password, name)
+								.getTransaction().getId();
 
-						String reposId = server + "_" + name;
-
+						String reposId = server + ":" + name;
 						ListBranch listBranch = new ListBranch();
 						GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name);
 						List<Branch> localList = branches.getLocalBranchList();
 
 						if (localList != null) {
 							if (localList.size() > 0) {
-								this.addRepo(parent, reposId, name, storageType, true);
+								this.addRepo(parent, reposId, name, storageType, true, transactionId);
 							} else {
-								this.addRepo(parent, reposId, name, storageType, false);
+								this.addRepo(parent, reposId, name, storageType, false, transactionId);
 							}
 						} else {
-							this.addRepo(parent, reposId, name, storageType, false);
+							this.addRepo(parent, reposId, name, storageType, false, transactionId);
 						}
 					}
 				}
@@ -199,17 +199,12 @@ public class GeogigRepositoryTree extends JSONArray {
 					for (Branch localBranch : localList) {
 						String branchName = localBranch.getName();
 						StatusRepository stausCommand = new StatusRepository();
-						
-						
-						//이준이 개발완료되면 꼭 지워야함 아래 2줄
-						GeogigWebReader reader = new GeogigWebReader(baseURL, username, password);
-						transactionId = reader.beginTransaction(repository).getTransaction().getId();
-						
+
 						GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repository,
 								transactionId);
 						Header header = status.getHeader();
 						String headerBranch = header.getBranch();
-						String branchId = parent + "_" + branchName;
+						String branchId = parent + ":" + branchName;
 						boolean children = false;
 
 						if (repository.equalsIgnoreCase(parent) && branchName.equalsIgnoreCase(headerBranch)) {
@@ -241,14 +236,15 @@ public class GeogigRepositoryTree extends JSONArray {
 				if (param.length > 2) {
 					String repository = param[1];
 					String branch = param[2];
-					
+
 					// branch ls-tree : default master
 					LsTreeRepository lsTree = new LsTreeRepository();
-					GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repository, branch);
+					GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repository,
+							branch);
 					List<Node> nodes = revisionTree.getNodes();
 					for (Node node : nodes) {
 						String path = node.getPath();
-						String pathId = parent + "_" + path;
+						String pathId = parent + ":" + path;
 						this.addTree(parent, pathId, path);
 					}
 				}
@@ -262,7 +258,7 @@ public class GeogigRepositoryTree extends JSONArray {
 				this.add(errorJSON);
 				logger.warn("요청이 잘못되었습니다.");
 			}
-		}else {
+		} else {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 500);
 			errorJSON.put("parent", "#");
@@ -274,8 +270,7 @@ public class GeogigRepositoryTree extends JSONArray {
 		}
 		return this;
 	}
-	
-	
+
 	/**
 	 * @param server
 	 * @param serverName
@@ -309,7 +304,7 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param text
 	 * @param type
 	 */
-	private void addRepo(String parent, String id, String text, String type, boolean children) {
+	private void addRepo(String parent, String id, String text, String type, boolean children, String transactionId) {
 		JSONObject repoJson = new JSONObject();
 		repoJson.put("parent", parent);
 		repoJson.put("id", id);
@@ -317,6 +312,7 @@ public class GeogigRepositoryTree extends JSONArray {
 		repoJson.put("repoType", type);
 		repoJson.put("type", "repository");
 		repoJson.put("children", children);
+		repoJson.put("transactionId", transactionId);
 		super.add(repoJson);
 	}
 

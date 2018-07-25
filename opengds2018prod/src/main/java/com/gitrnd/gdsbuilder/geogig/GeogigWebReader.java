@@ -1,6 +1,5 @@
 package com.gitrnd.gdsbuilder.geogig;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -8,9 +7,6 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
-import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
-import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PullRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PushRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
@@ -26,31 +22,19 @@ import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.CancelTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.workingtree.feature.BlameFeature;
-import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree;
-import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree.EnGeogigRepositoryTreeType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig.Config;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepository;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepository.Repo;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unstaged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
-import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
-import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
-import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 
 public class GeogigWebReader {
 
@@ -72,7 +56,7 @@ public class GeogigWebReader {
 	 */
 	public GeogigWebReader(String baseURL, String username, String password) {
 		super();
-		this.baseURL = baseURL;
+		this.baseURL = baseURL + "/geogig";
 		this.username = username;
 		this.password = password;
 	}
@@ -131,74 +115,52 @@ public class GeogigWebReader {
 	 *            현재 checkout 된 Branch 이름
 	 * @return GeogigRepositoryTree
 	 */
-	/*public GeogigRepositoryTree getWorkingTree(String serverName, String repoName, String reference,
-			String transactionId) {
-
-		String referenceId = serverName + "/" + repoName + "/" + reference;
-
-		// json tree
-		GeogigRepositoryTree reposTree = new GeogigRepositoryTree();
-		reposTree.bulid(serverName);
-
-		// repository
-		ListRepository listRepos = new ListRepository();
-		GeogigRepository geogigRepo = listRepos.executeCommand(baseURL, username, password);
-		List<Repo> repos = geogigRepo.getRepos();
-
-		// branch
-		for (Repo repo : repos) {
-			String name = repo.getName();
-			String storageType = null;
-			// repos type
-			ConfigRepository configRepos = new ConfigRepository();
-			GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password, name, null);
-			List<Config> configs = geogigConfig.getConfigs();
-			for (Config config : configs) {
-				if (config.getName().equals("storage.refs")) {
-					storageType = config.getValue();
-				}
-			}
-			String reposId = serverName + "/" + name;
-			reposTree.addRepo(serverName, reposId, name, storageType);
-			ListBranch listBranch = new ListBranch();
-			GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name);
-			List<Branch> localList = branches.getLocalBranchList();
-			for (Branch localBranch : localList) {
-				String branchName = localBranch.getName();
-				StatusRepository stausCommand = new StatusRepository();
-				GeogigStatus status = stausCommand.executeCommand(baseURL, username, password, repoName, transactionId);
-				Header header = status.getHeader();
-				String headerBranch = header.getBranch();
-				String branchId = reposId + "/" + branchName;
-				if (repoName.equalsIgnoreCase(name) && branchName.equalsIgnoreCase(headerBranch)) {
-					referenceId = branchId;
-					if (status.getUnstaged() != null) {
-						reposTree.addBranch(reposId, branchId, branchName, "Unstaged");
-					} else if (status.getStaged() != null) {
-						reposTree.addBranch(reposId, branchId, branchName, "Staged");
-					} else if (status.getUnmerged() != null) {
-						reposTree.addBranch(reposId, branchId, branchName, "UnMerged");
-					} else {
-						reposTree.addBranch(reposId, branchId, branchName, "Merged");
-					}
-				} else {
-					reposTree.addBranch(reposId, branchId, branchName, null);
-				}
-			}
-
-		}
-		// branch ls-tree : default master
-		LsTreeRepository lsTree = new LsTreeRepository();
-		GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repoName, reference);
-		List<Node> nodes = revisionTree.getNodes();
-		for (Node node : nodes) {
-			String path = node.getPath();
-			String pathId = referenceId + "/" + path;
-			reposTree.addTree(referenceId, pathId, path);
-		}
-		return reposTree;
-	}*/
-
+	/*
+	 * public GeogigRepositoryTree getWorkingTree(String serverName, String
+	 * repoName, String reference, String transactionId) {
+	 * 
+	 * String referenceId = serverName + "/" + repoName + "/" + reference;
+	 * 
+	 * // json tree GeogigRepositoryTree reposTree = new GeogigRepositoryTree();
+	 * reposTree.bulid(serverName);
+	 * 
+	 * // repository ListRepository listRepos = new ListRepository();
+	 * GeogigRepository geogigRepo = listRepos.executeCommand(baseURL, username,
+	 * password); List<Repo> repos = geogigRepo.getRepos();
+	 * 
+	 * // branch for (Repo repo : repos) { String name = repo.getName(); String
+	 * storageType = null; // repos type ConfigRepository configRepos = new
+	 * ConfigRepository(); GeogigConfig geogigConfig =
+	 * configRepos.executeCommand(baseURL, username, password, name, null);
+	 * List<Config> configs = geogigConfig.getConfigs(); for (Config config :
+	 * configs) { if (config.getName().equals("storage.refs")) { storageType =
+	 * config.getValue(); } } String reposId = serverName + "/" + name;
+	 * reposTree.addRepo(serverName, reposId, name, storageType); ListBranch
+	 * listBranch = new ListBranch(); GeogigBranch branches =
+	 * listBranch.executeCommand(baseURL, username, password, name); List<Branch>
+	 * localList = branches.getLocalBranchList(); for (Branch localBranch :
+	 * localList) { String branchName = localBranch.getName(); StatusRepository
+	 * stausCommand = new StatusRepository(); GeogigStatus status =
+	 * stausCommand.executeCommand(baseURL, username, password, repoName,
+	 * transactionId); Header header = status.getHeader(); String headerBranch =
+	 * header.getBranch(); String branchId = reposId + "/" + branchName; if
+	 * (repoName.equalsIgnoreCase(name) &&
+	 * branchName.equalsIgnoreCase(headerBranch)) { referenceId = branchId; if
+	 * (status.getUnstaged() != null) { reposTree.addBranch(reposId, branchId,
+	 * branchName, "Unstaged"); } else if (status.getStaged() != null) {
+	 * reposTree.addBranch(reposId, branchId, branchName, "Staged"); } else if
+	 * (status.getUnmerged() != null) { reposTree.addBranch(reposId, branchId,
+	 * branchName, "UnMerged"); } else { reposTree.addBranch(reposId, branchId,
+	 * branchName, "Merged"); } } else { reposTree.addBranch(reposId, branchId,
+	 * branchName, null); } }
+	 * 
+	 * } // branch ls-tree : default master LsTreeRepository lsTree = new
+	 * LsTreeRepository(); GeogigRevisionTree revisionTree =
+	 * lsTree.executeCommand(baseURL, username, password, repoName, reference);
+	 * List<Node> nodes = revisionTree.getNodes(); for (Node node : nodes) { String
+	 * path = node.getPath(); String pathId = referenceId + "/" + path;
+	 * reposTree.addTree(referenceId, pathId, path); } return reposTree; }
+	 */
 
 	/**
 	 * @param serverName

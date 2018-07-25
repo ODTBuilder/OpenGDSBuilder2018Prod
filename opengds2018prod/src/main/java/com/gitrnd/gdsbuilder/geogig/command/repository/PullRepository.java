@@ -31,7 +31,6 @@ public class PullRepository {
 
 	private static final Log logger = LogFactory.getLog(PullRepository.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "pull";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_remoteName = "remoteName=";
@@ -62,9 +61,8 @@ public class PullRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
-				+ transactionId + "&" + param_remoteName + remoteName + "&" + param_ref + branchName + ":"
-				+ remoteBranchName;
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
+				+ param_remoteName + remoteName + "&" + param_ref + branchName + ":" + remoteBranchName;
 
 		if (authorName != null) {
 			url += "&" + param_authorName + authorName;

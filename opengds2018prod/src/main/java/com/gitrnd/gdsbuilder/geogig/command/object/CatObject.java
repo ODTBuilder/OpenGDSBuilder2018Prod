@@ -31,7 +31,6 @@ public class CatObject {
 
 	private static final Log logger = LogFactory.getLog(CatObject.class);
 
-	private static final String geogig = "geogig";
 	private static final String command = "cat";
 	private static final String param_objectid = "objectid=";
 
@@ -57,7 +56,7 @@ public class CatObject {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_objectid + objectid;
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_objectid + objectid;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

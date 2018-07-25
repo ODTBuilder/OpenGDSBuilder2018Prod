@@ -112,6 +112,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
 							"display" : "inline-block"
+						}).click(function(){
+							console.log("checkout");
 						});
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
 							"display" : "inline-block"

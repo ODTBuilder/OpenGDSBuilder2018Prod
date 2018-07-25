@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
@@ -35,11 +36,9 @@ public class GeogigTransactionController extends AbstractController {
 
 	@RequestMapping(value = "/beginTransaction.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigTransaction beginTransaction(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
+	public GeogigTransaction beginTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.beginTransaction(geoserverManager, repoName);

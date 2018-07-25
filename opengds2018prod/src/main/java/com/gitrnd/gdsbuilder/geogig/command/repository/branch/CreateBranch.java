@@ -31,6 +31,7 @@ public class CreateBranch {
 
 	private static final Log logger = LogFactory.getLog(CreateBranch.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "branch";
 	private static final String param_branchName = "branchName=";
 	private static final String param_source = "source="; // optional
@@ -57,7 +58,8 @@ public class CreateBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_branchName + branchName;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_branchName
+				+ branchName;
 
 		if (source != null) {
 			url += "&" + param_source + source;

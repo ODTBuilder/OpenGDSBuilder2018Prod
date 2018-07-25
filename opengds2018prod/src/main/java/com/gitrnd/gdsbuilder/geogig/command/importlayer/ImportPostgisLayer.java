@@ -31,6 +31,7 @@ public class ImportPostgisLayer {
 
 	private static final Log logger = LogFactory.getLog(ImportPostgisLayer.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "postgis/import";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_fidAttrib = "fidAttrib=";
@@ -65,10 +66,10 @@ public class ImportPostgisLayer {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
-				+ param_fidAttrib + fidAttrib + "&" + param_table + table + "&" + param_host + host + "&" + param_port
-				+ port + "&" + param_schema + schema + "&" + param_database + database + "&" + param_user + dbUser + "&"
-				+ param_password + dbPassword;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
+				+ transactionId + "&" + param_fidAttrib + fidAttrib + "&" + param_table + table + "&" + param_host
+				+ host + "&" + param_port + port + "&" + param_schema + schema + "&" + param_database + database + "&"
+				+ param_user + dbUser + "&" + param_password + dbPassword;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

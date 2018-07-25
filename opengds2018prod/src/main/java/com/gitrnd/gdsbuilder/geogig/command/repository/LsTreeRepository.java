@@ -31,6 +31,7 @@ public class LsTreeRepository {
 
 	private static final Log logger = LogFactory.getLog(LsTreeRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "ls-tree";
 	private static final String param_path = "path="; // optional
 
@@ -56,7 +57,7 @@ public class LsTreeRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
 
 		if (path != null) {
 			url += "?" + param_path + path;

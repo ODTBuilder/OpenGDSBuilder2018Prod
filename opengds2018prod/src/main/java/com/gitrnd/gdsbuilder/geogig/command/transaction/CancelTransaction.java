@@ -31,6 +31,7 @@ public class CancelTransaction {
 
 	private static final Log logger = LogFactory.getLog(CancelTransaction.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "endTransaction";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_cancel = "cancel=true";
@@ -57,8 +58,8 @@ public class CancelTransaction {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
-				+ param_cancel;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
+				+ transactionId + "&" + param_cancel;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

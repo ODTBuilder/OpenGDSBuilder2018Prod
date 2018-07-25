@@ -6,19 +6,15 @@ package com.gitrnd.qaproducer.geogig.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree.EnGeogigRepositoryTreeType;
-import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -37,9 +33,9 @@ public class GeogigTreeBuilderController extends AbstractController {
 	GeogigTreeBuilderService treeService;
 
 	/*
-	 * @RequestMapping(value = "/getWorkingTree.do", method =
-	 * RequestMethod.POST) public JSONArray getWorkingTree(HttpServletRequest
-	 * request, @RequestBody JSONObject param,
+	 * @RequestMapping(value = "/getWorkingTree.do", method = RequestMethod.POST)
+	 * public JSONArray getWorkingTree(HttpServletRequest request, @RequestBody
+	 * JSONObject param,
 	 * 
 	 * @AuthenticationPrincipal LoginUser loginUser) {
 	 * 
@@ -49,9 +45,9 @@ public class GeogigTreeBuilderController extends AbstractController {
 	 * transactionId = (String) param.get("transactionId");
 	 * 
 	 * DTGeoserverManager geoserverManager =
-	 * super.getGeoserverManagerToSession(request, loginUser, serverName);
-	 * return treeService.getWorkingTree(geoserverManager, serverName, repoName,
-	 * reference, transactionId); }
+	 * super.getGeoserverManagerToSession(request, loginUser, serverName); return
+	 * treeService.getWorkingTree(geoserverManager, serverName, repoName, reference,
+	 * transactionId); }
 	 */
 
 	@RequestMapping(value = "/getWorkingTree.ajax")

@@ -31,6 +31,7 @@ public class RemoveRemoteRepository {
 
 	private static final Log logger = LogFactory.getLog(RemoveRemoteRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "remote";
 	private static final String param_remove = "remove=";
 	private static final String param_remoteName = "remoteName=";
@@ -57,7 +58,7 @@ public class RemoveRemoteRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_remove + remove + "&"
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_remove + remove + "&"
 				+ param_remoteName + remoteName;
 
 		// request

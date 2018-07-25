@@ -31,6 +31,7 @@ public class MergeBranch {
 
 	private static final Log logger = LogFactory.getLog(MergeBranch.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "merge";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_commit = "commit=";
@@ -57,8 +58,8 @@ public class MergeBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
-				+ param_commit + branchName;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
+				+ transactionId + "&" + param_commit + branchName;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

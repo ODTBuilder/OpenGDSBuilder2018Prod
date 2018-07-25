@@ -31,6 +31,7 @@ public class ListBranch {
 
 	private static final Log logger = LogFactory.getLog(ListBranch.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "branch";
 	private static final String param_list = "list=";
 
@@ -55,7 +56,7 @@ public class ListBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_list + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

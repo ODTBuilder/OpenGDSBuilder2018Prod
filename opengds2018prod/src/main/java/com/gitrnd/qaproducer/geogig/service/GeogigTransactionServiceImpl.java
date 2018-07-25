@@ -3,7 +3,6 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;

@@ -31,6 +31,7 @@ public class ListRemoteRepository {
 
 	private static final Log logger = LogFactory.getLog(ListRemoteRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "remote";
 	private static final String param_list = "list=";
 	private static final String param_verbose = "verbose="; // optional
@@ -57,7 +58,7 @@ public class ListRemoteRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_list + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
 
 		if (verbose == true) {
 			url += "&" + param_verbose + verbose;

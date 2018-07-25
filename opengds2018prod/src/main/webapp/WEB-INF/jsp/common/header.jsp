@@ -16,10 +16,18 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="${pageContext.request.contextPath}/map.do"> Editor</a></li>
-				<li><a href="${pageContext.request.contextPath}/validation.do"> Validation</a></li>
-				<li><a href="${pageContext.request.contextPath}/list.do"> Result</a></li>
-				<li><a href="${pageContext.request.contextPath}/settinglist.do"> Setting</a></li>
+				<li><a href="${pageContext.request.contextPath}/map.do">
+					<i class="fas fa-edit fa-lg" style="color: #344762;"></i>
+					Editor</a></li>
+				<li><a href="${pageContext.request.contextPath}/validation.do">
+					<i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
+					Validation</a></li>
+				<li><a href="${pageContext.request.contextPath}/list.do">
+					<i class="fas fa-clipboard-list fa-lg" style="color: #344762;"></i>
+					Result</a></li>
+				<li><a href="${pageContext.request.contextPath}/settinglist.do">
+					<i class="fas fa-cog fa-lg" style="color: #344762;"></i>
+					Setting</a></li>
 				<c:choose>
 					<c:when test="${username ne null}">
 						<li><a href="${pageContext.request.contextPath}/user/userinfo.do"><i class="fas fa-user-circle"></i>&nbsp;${fname}&nbsp;${lname}</a></li>

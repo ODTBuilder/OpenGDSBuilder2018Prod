@@ -121,17 +121,6 @@ gb.Map.prototype.getUpperMap = function() {
 };
 
 /**
- * 상위 영역 ol.Map 객체를 반환한다.
- * 
- * @method gb.Map#getUpperMap
- * @function
- * @return {ol.Map} 상위 영역 ol.Map 객체
- */
-gb.Map.prototype.getUpperMap = function() {
-	return this.upperMap;
-};
-
-/**
  * 하위 영역 ol.Map 객체를 반환한다.
  * 
  * @method gb.Map#getLowerMap
@@ -140,6 +129,28 @@ gb.Map.prototype.getUpperMap = function() {
  */
 gb.Map.prototype.getLowerMap = function() {
 	return this.lowerMap;
+};
+
+/**
+ * 상위 영역 Element를 반환한다.
+ * 
+ * @method gb.Map#getUpperDiv
+ * @function
+ * @return {Element} 상위 영역 Element
+ */
+gb.Map.prototype.getUpperDiv = function() {
+	return this.upperDiv;
+};
+
+/**
+ * 하위 영역 Element를 반환한다.
+ * 
+ * @method gb.Map#getLowerDiv
+ * @function
+ * @return {Element} 하위 영역 Element
+ */
+gb.Map.prototype.getLowerDiv = function() {
+	return this.lowerDiv;
 };
 
 /**

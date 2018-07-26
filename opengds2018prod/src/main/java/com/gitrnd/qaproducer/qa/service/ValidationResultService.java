@@ -1,21 +1,14 @@
 package com.gitrnd.qaproducer.qa.service;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gitrnd.qaproducer.common.worker.Producer;
 import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.filestatus.service.FileStatusService;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
@@ -33,28 +26,10 @@ public class ValidationResultService {
 	@Autowired
 	private FileStatusService fileStatusService;
 
-	@Autowired
-	private Producer producer;
 
 	@Transactional(readOnly = true)
 	public LinkedList<ValidationResult> retrieveValidationResultByUidx(int idx) {
 
-		JSONParser parser = new JSONParser();
-		JSONObject json;
-		try {
-			json = (JSONObject) parser.parse(new FileReader("D:\\test.json"));
-			producer.produceMobileMsg(json.toString());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
 		return validationResultRepository.retrieveValidationResultByUidx(idx);
 	}
 

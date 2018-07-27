@@ -211,6 +211,10 @@ html {
 			}
 		});
 
+// 		var importSHP = new gb.geoserver.ImportSHP({
+// 			"url" : "geoserver/geoserverDummy.ajax?${_csrf.parameterName}=${_csrf.token}"
+// 		});
+
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),

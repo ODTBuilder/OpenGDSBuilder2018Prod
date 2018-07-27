@@ -101,8 +101,8 @@ public class GeogigRepositoryTree extends JSONArray {
 							GeogigRepository geogigRepo = listRepos.executeCommand(
 									dtGeoManager.getRestURL() + "/geogig", dtGeoManager.getUsername(),
 									dtGeoManager.getPassword());
-							List<Repo> repos = geogigRepo.getRepos();
-							if (repos != null) {
+							if (geogigRepo != null) {
+								List<Repo> repos = geogigRepo.getRepos();
 								if (repos.size() > 0) {
 									this.addServer(server, true);
 								} else {
@@ -140,7 +140,8 @@ public class GeogigRepositoryTree extends JSONArray {
 
 	public GeogigRepositoryTree build(DTGeoserverManager dtGeoserver, String serverName,
 			EnGeogigRepositoryTreeType type, String parent, String transactionId) {
-		String[] param = parent.split(":");// ex) serverName_repository_brench_layer
+		String[] param = parent.split(":");// ex)
+											// serverName_repository_brench_layer
 		if (param != null && dtGeoserver != null) {
 			String baseURL = dtGeoserver.getRestURL() + "/geogig";
 			String username = dtGeoserver.getUsername();
@@ -222,7 +223,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						String branchId = parent + ":" + branchName;
 						boolean children = false;
 
-						if (repository.equalsIgnoreCase(parent) && branchName.equalsIgnoreCase(headerBranch)) {
+						if (branchName.equalsIgnoreCase(headerBranch)) {
 							LsTreeRepository lsTree = new LsTreeRepository();
 							GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password,
 									repository, branchName);

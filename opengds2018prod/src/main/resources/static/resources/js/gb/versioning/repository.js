@@ -57,6 +57,7 @@ gb.versioning.Repository = function(obj) {
 	var url = options.url ? options.url : {};
 	this.getServerTreeURL = url.getServerTree ? url.getServerTree : undefined;
 	this.getTransactionIdURL = url.getTransactionId ? url.getTransactionId : undefined;
+	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -407,6 +408,10 @@ gb.versioning.Repository = function(obj) {
 						obj["type"] = "branch";
 						obj["serverName"] = node.parent;
 						obj["node"] = node.id;
+						var tranId = that.getJSTree()._data.geogigfunction.transactionId;
+						if (tranId.hasOwnProperty(node.id)) {
+							obj["transactionId"] = tranId[node.id];
+						}
 					} else if (node.type === "branch") {
 						obj["type"] = "layer";
 						obj["serverName"] = node.parents[1];
@@ -445,22 +450,30 @@ gb.versioning.Repository = function(obj) {
 			}
 		},
 		geogigfunction : {
-
+			"repository" : that,
+			"status" : {
+				"checkout" : "fas fa-check",
+				"unstaged" : "gb-geogig-unstaged",
+				"staged" : "gb-geogig-staged",
+				"unmerged" : "gb-geogig-unmerged",
+				"merged" : "gb-geogig-merged"
+			}
 		},
 		"plugins" : [ "search", "types", "geogigfunction" ]
 	});
 	this.jstree = $(this.treeArea).jstree(true);
-	$(this.treeArea).on("select_node.jstree", function(e, data) {
-		console.log(e);
-		console.log(data);
-		var node = data.node;
-		if (node.type === "branch") {
-			var serverName = node.parents[1];
-			var repoName = node.parents[0];
-			that.getTransactionId(serverName, repoName);
-		}
-
-	});
+	// $(this.treeArea).on("select_node.jstree", function(e, data) {
+	// console.log(e);
+	// console.log(data);
+	// var node = data.node;
+	// if (node.type === "branch") {
+	// var server = node.parents[1];
+	// var serverNode = that.jstree.get_node(server);
+	// var repo = node.parents[0];
+	// var repoNode = that.jstree.get_node(repo);
+	// that.getTransactionId(serverNode.id, repoNode.text);
+	// }
+	// });
 
 	var v = this.jstree.get_json('#', {
 		no_state : true,
@@ -579,6 +592,16 @@ gb.versioning.Repository.prototype.getGetTransactionIdURL = function() {
 };
 
 /**
+ * 브랜치 체크아웃 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getGetTransactionIdURL
+ * @return {String} 트랜잭션 아이디 주소 URL
+ */
+gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
+	return this.checkoutURL;
+};
+
+/**
  * 지오긱 모달을 연다.
  * 
  * @method gb.versioning.Repository#open
@@ -587,4 +610,66 @@ gb.versioning.Repository.prototype.getGetTransactionIdURL = function() {
 gb.versioning.Repository.prototype.open = function() {
 	gb.modal.Base.prototype.open.call(this);
 	this.refreshList();
+};
+
+/**
+ * 브랜치를 체크아웃 한다.
+ * 
+ * @method gb.versioning.Repository#checkoutBranch
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
+	var that = this;
+	var params = {
+		"serverName" : server.text,
+		"repoName" : repo.text,
+		"branchName" : branch.text
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getCheckoutBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var transactionId = data.transactionId;
+				var newTarget = data.newTarget;
+				var ggfn = that.getJSTree()._data.geogigfunction;
+				ggfn.transactionId[repo.id] = transactionId;
+				console.log(ggfn);
+				that.getJSTree().refresh_node(repo);
+				// if (repo.data === undefined) {
+				// repo.data = {
+				// "transactionId" : transactionId
+				// }
+				// } else {
+				// repo.data["transactionId"] = transactionId;
+				// }
+			}
+		}
+	});
 };

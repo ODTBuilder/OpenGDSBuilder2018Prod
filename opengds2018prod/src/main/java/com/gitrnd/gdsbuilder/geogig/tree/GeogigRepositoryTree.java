@@ -101,8 +101,8 @@ public class GeogigRepositoryTree extends JSONArray {
 							GeogigRepository geogigRepo = listRepos.executeCommand(
 									dtGeoManager.getRestURL() + "/geogig", dtGeoManager.getUsername(),
 									dtGeoManager.getPassword());
-							List<Repo> repos = geogigRepo.getRepos();
-							if (repos != null) {
+							if (geogigRepo != null) {
+								List<Repo> repos = geogigRepo.getRepos();
 								if (repos.size() > 0) {
 									this.addServer(server, true);
 								} else {

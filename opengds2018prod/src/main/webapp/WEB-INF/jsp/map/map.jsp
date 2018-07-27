@@ -118,40 +118,45 @@ html {
 		<div class="collapse navbar-collapse" id="navbar-collapse-2">
 			<ul class="nav navbar-nav">
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> Save
-				</a>
+					aria-expanded="false" title="Save">
+						<i class="fas fa-save fa-lg" style="color: #4dadf7;"></i>
+						Save</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="#" id="savePart">Save</a></li>
 						<li><a href="#" id="saveAll">Save All</a></li>
 					</ul></li>
-				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> Edit
-				</a></li>
-				<li><a href="#" title="Base map" id="changeBase"> <i class="fas fa-map fa-lg" style="color: #91d050;"></i>
-						Base Map
-				</a></li>
-				<li><a href="#" title="Validation"> <i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
-						Validation
-				</a></li>
-				<li><a href="#" title="Navigator" id="qaedit"> <i class="far fa-compass fa-lg" style="color: #15aabf;"></i>
-						Navigator
-				</a></li>
+				<li>
+					<a href="#" title="Edit" id="editTool">
+						<i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i>
+						Edit</a></li>
+				<li>
+					<a href="#" title="Base map" id="changeBase">
+						<i class="fas fa-map fa-lg" style="color: #91d050;"></i>
+						Base Map</a></li>
+				<li><a href="#" title="Validation">
+					<i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
+					Validation</a></li>
+				<li><a href="#" title="Navigator" id="qaedit">
+					<i class="far fa-compass fa-lg" style="color: #15aabf;"></i>
+					Navigator</a></li>
 				<!-- <li><a href="#" title="QA Status" id="qastat">
 					<i class="fas fa-th-list fa-lg" style="color: #7f7f7f;"></i>
 					QA Status</a></li> -->
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-					aria-expanded="false" title="Generalization"> <i class="fas fa-object-group fa-lg" style="color: #00b0f0;"></i>
-						Generalization
-				</a>
+					aria-expanded="false" title="Generalization">
+						<i class="fas fa-object-group fa-lg" style="color: #00b0f0;"></i>
+						Generalization</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" title="Generalization Process" id="gen">Generalization</a></li>
+						<li>
+							<a href="#" title="Generalization Process" id="gen">Generalization</a></li>
 						<li><a href="#" title="Generalization Result" id="genstat">Result</a></li>
 					</ul></li>
-				<li><a href="#" title="Version Control" id="vermodal"> <i class="fas fa-code-branch fa-lg"
-						style="color: #344762;"></i> Versioning
-				</a></li>
-				<li><a href="#" title="Information" id="binfo"> <i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
-						Information
-				</a></li>
+				<li><a href="#" title="Version Control" id="vermodal">
+					<i class="fas fa-code-branch fa-lg" style="color: #344762;"></i>
+					Versioning</a></li>
+				<li><a href="#" title="Information" id="binfo">
+					<i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
+					Information</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -163,12 +168,13 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>000000,000000</span></span>
-		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1
-				: 5000</span></span> <span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
-			class="text-muted" style="float: right;">OpenGDS Builder/Validator</span> <span id="cmd-toggle-btn"
-			class="gb-footer-span" style="float: right;"><i class="fas fa-terminal"></i>Command</span> <span
-			id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-th"></i>List</span>
+		<span class="gb-footer-span">
+			<i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>123123,123123</span></span>
+		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1 : 5000</span></span>
+		<span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span>
+		<span class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>
+		<span id="cmd-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-terminal"></i>Command</span>
+		<span id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
 		var gbMap = new gb.Map({
@@ -223,125 +229,124 @@ html {
 				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
-
+		
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id"
 		});
-
+		
 		var wfsURL = "http://175.116.181.32:9999/geoserver/wfs";
 		var wmsURL = "http://175.116.181.32:9999/geoserver/wms";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
-			targetElement : gbMap.getLowerDiv(),
+			targetElement: gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
-			wfsURL : wfsURL,
+			wfsURL: wfsURL,
 			getFeatureInfo : wmsURL,
 			layerInfo : "geoserver/getGeoLayerInfoList.ajax",
 			imageTile : "geoserver/geoserverWMSLayerLoad.do",
 			getFeature : "geoserver/geoserverWFSGetFeature.ajax"
 		});
-
-		$("#editTool").click(function(e) {
+		
+		$("#editTool").click(function(e){
 			e.preventDefault();
 			epan.editToolToggle();
 		});
-
+		
 		// 거리, 면적 측정 기능 추가
 		var measureArea = new gb.interaction.MeasureTip({
-			type : "Polygon",
-			map : gbMap.getUpperMap()
+			type:"Polygon",
+			map: gbMap.getUpperMap()
 		});
-
-		measureArea.on("change:active", function(evt) {
-			if (evt.oldValue) {
+		
+		measureArea.on("change:active", function(evt){
+			if(evt.oldValue){
 				gb.undo.setActive(true);
 			} else {
 				gb.undo.setActive(false);
 			}
 		});
-
+		
 		var measureLength = new gb.interaction.MeasureTip({
-			type : "LineString",
-			map : gbMap.getUpperMap()
+			type:"LineString",
+			map: gbMap.getUpperMap()
 		});
-
-		measureLength.on("change:active", function(evt) {
-			if (evt.oldValue) {
+		
+		measureLength.on("change:active", function(evt){
+			if(evt.oldValue){
 				gb.undo.setActive(true);
 			} else {
 				gb.undo.setActive(false);
 			}
 		});
-
+		
 		epan.addInteraction({
-			icon : "fas fa-ruler-combined",
-			content : "Area",
-			interaction : measureArea,
-			"float" : "right"
+			icon: "fas fa-ruler-combined",
+			content: "Area",
+			interaction: measureArea,
+			"float": "right"
 		});
-
+		
 		epan.addInteraction({
-			icon : "fas fa-ruler-vertical",
-			content : "Length",
-			interaction : measureLength,
-			"float" : "right",
-			clickEvent : function() {
+			icon: "fas fa-ruler-vertical",
+			content: "Length",
+			interaction: measureLength,
+			"float": "right",
+			clickEvent: function(){
 				console.log("mesure length");
 			}
 		});
-
+		
 		// feature list
 		var featureList = new gb.footer.FeatureList({
-			map : gbMap.getUpperMap(),
-			targetElement : gbMap.getLowerDiv(),
-			title : "All Feature List",
-			toggleTarget : "#feature-toggle-btn",
-			isDisplay : false
+			map: gbMap.getUpperMap(),
+			targetElement: gbMap.getLowerDiv(),
+			title: "All Feature List",
+			toggleTarget: "#feature-toggle-btn",
+			isDisplay: false
 		});
-
-		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
+		
+		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data){
 			var layer;
-			for (i = 0, j = data.selected.length; i < j; i++) {
+			for(i = 0, j = data.selected.length; i < j; i++) {
 				layer = data.instance.get_LayerById(data.selected[i]);
 				featureList.updateFeatureList({
-					url : wfsURL,
-					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
-					layerName : layer.get('name'),
-					exceptKeys : [ 'geometry'/*, 'feature_id', 'ufid' */]
+					url: wfsURL,
+					workspace: layer.get('git') ? layer.get('git').workspace : "undefined",
+					layerName: layer.get('name'),
+					exceptKeys: ['geometry'/*, 'feature_id', 'ufid' */]
 				});
 			}
 		});
-
+		
 		// command line
 		var commandLine = new gb.footer.CommandLine({
-			targetElement : gbMap.getLowerDiv(),
-			title : "Command Line",
-			serverURL : wfsURL,
-			toggleTarget : "#cmd-toggle-btn",
-			isDisplay : false,
-			map : gbMap.getUpperMap()
+			targetElement: gbMap.getLowerDiv(),
+			title: "Command Line",
+			serverURL: wfsURL,
+			toggleTarget: "#cmd-toggle-btn",
+			isDisplay: false,
+			map: gbMap.getUpperMap()
 		});
-
+		
 		// geocoder
 		var geocoder = new Geocoder('nominatim', {
-			provider : 'osm',
-			countrycodes : 'KR',
-			key : '__some_key__',
-			lang : 'en-US', //pt-BR, fr-FR
-			placeholder : 'Search for ...',
-			targetType : 'glass-button',
-			limit : 5,
-			keepOpen : false
+			provider: 'osm',
+			countrycodes: 'KR',
+			key: '__some_key__',
+			lang: 'en-US', //pt-BR, fr-FR
+			placeholder: 'Search for ...',
+			targetType: 'glass-button',
+			limit: 5,
+			keepOpen: false
 		});
 		gbMap.getUpperMap().addControl(geocoder);
 
 		var vrepo = new gb.versioning.Repository({
 			"url" : {
 				"getServerTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getTransactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"getTransactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

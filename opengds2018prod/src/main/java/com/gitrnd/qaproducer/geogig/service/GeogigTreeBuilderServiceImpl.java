@@ -58,8 +58,8 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 					String key = (String) keys.next();
 					if (key.equals(serverName)) {
 						dtGeoManager = dtGeoservers.get(key);
+						break;
 					}
-					break;
 				}
 				return new GeogigTreeFactoryImpl().createGeogigRepositoryTree(dtGeoManager, serverName, type, parent, transactionId);
 			}else {

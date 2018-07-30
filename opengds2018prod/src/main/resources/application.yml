@@ -1,6 +1,6 @@
 spring:
   rabbitmq:
-    host: 175.116.181.42
+    host: 175.116.181.34
     port: 5672
     username: qaguest
     password: gitrnd!
@@ -27,6 +27,9 @@ spring:
 server:
   port: 8080
   context-path: /geodt
+  servlet:
+    session:
+      timeout: 3600
   error:
     whitelabel:
       enabled: false

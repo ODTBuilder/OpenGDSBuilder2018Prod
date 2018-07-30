@@ -1,7 +1,7 @@
 package com.gitrnd.qaproducer.common.worker;
 
 import org.json.simple.JSONObject;
-import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class Producer {
 
 	@Autowired
-	private AmqpTemplate amqpTemplate;
+	private RabbitTemplate template;
 	@Value("${gitrnd.rabbitmq.exchange}")
 	private String exchange;
 	@Value("${gitrnd.rabbitmq.routingKey}")
@@ -18,13 +18,16 @@ public class Producer {
 
 	public void produceMsg(String msg) {
 		System.out.println("Send msg = " + msg);
-		amqpTemplate.convertAndSend(exchange, routingKey, msg);
+		template.convertSendAndReceive(exchange, routingKey, msg);
 	}
 
-	public Object produceMobileMsg(String msg) {
+	public JSONObject produceMobileMsg(String msg) {
+
 		System.out.println("Send msg = " + msg);
-		JSONObject response = (JSONObject) amqpTemplate.convertSendAndReceive(exchange, routingKey, msg);
-		System.out.println("Reply msg = " + response);
+		template.setReplyTimeout(Long.MAX_VALUE);
+		JSONObject response = (JSONObject) template.convertSendAndReceive(exchange, routingKey, msg);
+		System.out.println(response);
+
 		return response;
 	}
 

@@ -151,30 +151,54 @@ gb.tree.GeoServer = function(obj) {
 
 					"data" : {
 						'url' : function(node) {
-							if (node.id === "#") {
-								return that.getGetTreeURL() + "&type=server";
-							} else if (node.type === "workspace") {
-								return that.getGetTreeURL() + "&type=workspace" + "&parent=" + node.parent + "&serverName=" + node.parent;
-							} else if (node.type === "datastore") {
-								return that.getGetTreeURL() + "&type=datastore" + "&parent=" + node.parent + "&serverName="
-										+ node.parents[1];
-							} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring"
-									|| node.type === "multilinestring" || node.type === "polygon" || node.type === "multipolygon") {
-								return that.getGetTreeURL() + "&type=layer" + "&parent=" + node.parent + "&serverName=" + node.parents[2];
-							}
+							var url = that.getGetTreeURL();
+							// if (node.id === "#") {
+							// url = that.getGetTreeURL() + "&type=server";
+							// } else if (node.type === "workspace") {
+							// url = that.getGetTreeURL() + "&type=workspace" +
+							// "&parent=" + node.parent + "&serverName=" +
+							// node.parent;
+							// } else if (node.type === "datastore") {
+							// url = that.getGetTreeURL() + "&type=datastore" +
+							// "&parent=" + node.parent + "&serverName="
+							// + node.parents[1];
+							// } else if (node.type === "point" || node.type ===
+							// "multipoint" || node.type === "linestring"
+							// || node.type === "multilinestring" || node.type
+							// === "polygon" || node.type === "multipolygon") {
+							// url = that.getGetTreeURL() + "&type=layer" +
+							// "&parent=" + node.parent + "&serverName=" +
+							// node.parents[2];
+							// }
 							// return that.getGetTreeURL();
+							console.log(url);
+							return url;
 						},
 						"data" : function(node) {
 							var obj = {};
-							if (node.id) {
-								obj["id"] = node.id;
+							if (node.id === "#") {
+								obj["type"] = "server";
+							} else if (node.type === "geoserver") {
+								obj["type"] = "workspace";
+								obj["serverName"] = node.id;
+								obj["node"] = node.id;
+							} else if (node.type === "workspace") {
+								obj["type"] = "datastore";
+								obj["serverName"] = node.parent;
+								obj["node"] = node.id;
+							} else if (node.type === "datastore") {
+								obj["type"] = "layer";
+								obj["serverName"] = node.parents[1];
+								obj["node"] = node.id
 							}
-							if (node.text) {
-								obj["text"] = node.text;
-							}
-							if (node.parent) {
-								obj["parent"] = node.parent;
-							}
+							// else if (node.type === "point" || node.type ===
+							// "multipoint" || node.type === "linestring"
+							// || node.type === "multilinestring" || node.type
+							// === "polygon" || node.type === "multipolygon") {
+							//
+							// }
+							console.log(obj);
+							return obj;
 						}
 					}
 
@@ -714,7 +738,7 @@ gb.tree.GeoServer = function(obj) {
 						"icon" : "fas fa-circle gb-fa-xxs"
 					}
 				},
-				"plugins" : [ "contextmenu", "search", "state", "types", "geoserver" ]
+				"plugins" : [ "contextmenu", "search", "types", "geoserver" ]
 			});
 	this.jstree = $(this.panelBody).jstree(true);
 
@@ -756,7 +780,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	});
 	var gNameInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "EX) Geoserver"
+		"placeholder" : "EX) Geoserver",
 	}).css({
 		"width" : "83%",
 		"border" : "none",
@@ -874,6 +898,11 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	$(okBtn).click(function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
+	
+	gNameInput.val("geoserver");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
+	gIDInput.val("admin");
+	gPassInput.val("geoserver");
 };
 
 /**
@@ -931,8 +960,14 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	var that = this;
 	console.log("open delete geoserver");
-	var msg1 = $("<div>").text("Are you sure to delete this server?");
-	var msg2 = $("<div>").text('"' + geoserver + '"');
+	var msg1 = $("<div>").text("Are you sure to delete this server?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + geoserver + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px"
+	});
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -944,8 +979,8 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
 		"title" : "Delete GeoServer",
-		"width" : 540,
-		"height" : 400,
+		"width" : 310,
+		"height" : 200,
 		"autoOpen" : false,
 		"body" : body
 	});

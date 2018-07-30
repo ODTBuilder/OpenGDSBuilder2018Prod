@@ -31,6 +31,7 @@ public class BlameFeature {
 
 	private static final Log logger = LogFactory.getLog(BlameFeature.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "blame";
 	private static final String param_path = "path=";
 	private static final String param_commit = "commit="; // optional commit or branch
@@ -57,7 +58,7 @@ public class BlameFeature {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_path + path;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_path + path;
 
 		if (commit != null) {
 			url += "&" + param_commit + commit;

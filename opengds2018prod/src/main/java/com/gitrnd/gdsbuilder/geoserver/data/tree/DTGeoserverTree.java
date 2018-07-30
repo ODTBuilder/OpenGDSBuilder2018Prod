@@ -217,12 +217,23 @@ public class DTGeoserverTree extends JSONArray {
 									wsTree.put("parent", parent);
 									wsTree.put("text", wsName);
 									wsTree.put("type", "workspace");
+									
+									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
+									if(dataStoreList!=null){
+										if(dataStoreList.size()>0){
+											wsTree.put("children", true);
+										}else{
+											wsTree.put("children", false);
+										}
+									}else{
+										wsTree.put("children", false);
+									}
 									super.add(wsTree);
 								}
 							}
 						}else if(type==EnTreeType.DATASTORE){
 							if(param!=null){
-								if(param.length>=1){
+								if(param.length>1){
 									String workspace = param[1];
 									RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(workspace);
 									List<String> dsNames = dataStoreList.getNames();
@@ -234,6 +245,19 @@ public class DTGeoserverTree extends JSONArray {
 											dsTree.put("parent", parent);
 											dsTree.put("text", dsName);
 											dsTree.put("type", "datastore");
+											
+											RESTFeatureTypeList ftList = dtGeoserverReader.getFeatureTypes(workspace, dsName);
+											
+											if(ftList!=null){
+												if(ftList.size()>0){
+													dsTree.put("children", true);
+												}else{
+													dsTree.put("children", false);
+												}
+											}else{
+												dsTree.put("children", false);
+											}
+											
 											super.add(dsTree);
 										}
 									}
@@ -241,7 +265,7 @@ public class DTGeoserverTree extends JSONArray {
 							}
 						}else if(type==EnTreeType.LAYER){
 							if(param!=null){
-								if(param.length>=2){
+								if(param.length>2){
 									String wsName = param[1];
 									String dsName = param[2];
 									
@@ -259,6 +283,7 @@ public class DTGeoserverTree extends JSONArray {
 											layerTree.put("parent", parent);
 											layerTree.put("text", dtGLayer.getlName());
 											layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
+											layerTree.put("children", false);
 											super.add(layerTree);
 											// layerTree.clear();
 										}

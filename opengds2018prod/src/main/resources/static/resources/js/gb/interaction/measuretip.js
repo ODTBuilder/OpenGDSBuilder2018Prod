@@ -4,39 +4,70 @@ if (!gb)
 if (!gb.interaction)
 	gb.interaction = {};
 
+/**
+ * 길이, 면적을 나타내는 element overlay를 생성한다. 길이, 면적을 측정하기위해 그려지는 feature들은 ol.Map 상에 임시적으로 그려지는 vector layer에 속해있다.
+ * @author hochul.kim
+ * @date 2018. 06. 25
+ * @version 0.01
+ * @class
+ * @constructor
+ * @param {Object} opt_options - gb.interaction.MeasureTip 생성 옵션
+ */
 gb.interaction.MeasureTip = function(opt_options) {
-
-	ol.interaction.Interaction.call(this, {
-		handleEvent : gb.interaction.MeasureTip.prototype.handleEvent
-	});
-
+	
 	var options = opt_options ? opt_options : {};
 
 	/**
-	 * MeasureTip을 적용시킬 feature들을 저장 ol.interaction.Select 객체를 저장하면 선택된 feature만
-	 * 적용시킬 수 있음
-	 * 
-	 * @type {ol.Collection.<ol.Feature>}
+	 * 길이, 면적 측정 기능을 사용할 ol.Map 객체
+	 * @type {ol.Map}
 	 * @private
 	 */
-	this.features_ = options.features;
-
+	this.map = options.map;
+	
+	/**
+	 * 길이, 면적 측정 피쳐 생성을 위한 임시 vector source
+	 * @type {ol.source.Vector}
+	 * @private
+	 */
+	this.source_ = new ol.source.Vector();
+	
+	/**
+	 * 길이, 면적 측정 피쳐 생성을 위한 임시 vector layer
+	 * @type {ol.layer.Vector}
+	 * @private
+	 */
+	this.vector_ = new ol.layer.Vector({
+		source : this.source_,
+		style: new ol.style.Style({
+			fill: new ol.style.Fill({
+				color: 'rgba(255, 255, 255, 0.2)'
+			}),
+			stroke: new ol.style.Stroke({
+				color: '#ffcc33',
+				width: 2
+			}),
+			image: new ol.style.Circle({
+				radius: 7,
+				fill: new ol.style.Fill({
+					color: '#ffcc33'
+				})
+			})
+		})
+	});
+	this.vector_.setMap(this.map);
+	
+	ol.interaction.Draw.call(this, {
+		type: options.type,
+		source: this.source_
+	});
+	
 	/**
 	 * listener
 	 * 
-	 * @type {Array<ol.events.Event>}
+	 * @type {Array.<ol.events.Event>}
 	 * @private
 	 */
 	this.listener_ = [];
-
-	/**
-	 * 이벤트 바인딩은 한번만 시행되어야 하므로 이벤트 바인딩을 하였을때 이 멤버변수를 true설정해주어 이미 이벤트 바인딩이 이루어졌음을
-	 * handleEvent함수에 알려준다
-	 * 
-	 * @type {Boolean}
-	 * @private
-	 */
-	this.constructor_ = false;
 
 	/**
 	 * The measure tooltip element.
@@ -49,18 +80,10 @@ gb.interaction.MeasureTip = function(opt_options) {
 	/**
 	 * Overlay to show the measurement.
 	 * 
-	 * @type {Array<ol.Overlay>}
+	 * @type {Array.<ol.Overlay>}
 	 * @private
 	 */
 	this.measureTipOverlay_ = [];
-
-	/**
-	 * 현재 그리는 중인 feature
-	 * 
-	 * @type {ol.Feature}
-	 * @private
-	 */
-	this.sketch_;
 
 	/**
 	 * measure 수치를 map에 나타내어줄 element와 overlay를 생성한다 두 개를 객체형태로 저장하여 반환한다
@@ -76,6 +99,7 @@ gb.interaction.MeasureTip = function(opt_options) {
 
 		measureTipElement = document.createElement('div');
 		measureTipElement.className = 'tip tip-measure';
+		
 		measureTipOverlay = new ol.Overlay({
 			element : measureTipElement,
 			offset : [ 0, -15 ],
@@ -133,13 +157,14 @@ gb.interaction.MeasureTip = function(opt_options) {
 			}
 		}
 	};
-	// /**
-	// * 인자값으로 주어진 폴리곤 객체에 대한 면적을 계산하여 String 형식으로 반환한다
-	// *
-	// * @type {Function}
-	// * @return {String}
-	// * @private
-	// */
+	
+	/**
+	 * 인자값으로 주어진 폴리곤 객체에 대한 면적을 계산하여 String 형식으로 반환한다
+	 *
+	 * @type {Function}
+	 * @return {String}
+	 * @private
+	 */
 	this.formatArea_ = function(polygon) {
 		var area = polygon.getArea();
 		var output;
@@ -182,135 +207,78 @@ gb.interaction.MeasureTip = function(opt_options) {
 		}
 		return output;
 	};
-};
-ol.inherits(gb.interaction.MeasureTip, ol.interaction.Interaction);
-/**
- * 모든 마우스 이벤트 발생시에 실행되는 함수. this.features_ 멤버변수가 존재한다면 add이벤트와 remove이벤트를 추가로
- * 바인딩 시켜주며 add 이벤트 발생시에는 선택된 feature에 대한 measure tip을 생성하고 remove 이벤트 발생시에는
- * tip을 삭제한다 또한 ol.Collection<ol.interaction> 객체에도 remove 이벤트를 바인딩하여
- * gb.interaction.MeasureTip 객체가 삭제되었을때 모든 element와 overlay들이 삭제되도록 하고 모든 이벤트
- * 리스너를 해제한다.
- * 
- * @param {ol.MapBrowserEvent}
- * @return {Boolean} true가 반환되면 다른 함수들에도 전파된다. false가 반환되면 전파가 중지된다.
- */
-gb.interaction.MeasureTip.prototype.handleEvent = function(evt) {
+	
 	var that = this;
-	var map = evt.map;
-	var interactions = map.getInteractions();
-	var listen;
+	var startEvent = this.on("drawstart", function(evt){
+		var feature = evt.feature;
+		var measureTip = that.createMeasureTip_();
+		var listener = feature.getGeometry().on('change', function(evt) {
+			var geom = evt.target;
+			var output, tipCoord;
 
-	if (!this.constructor_) {
-		if (this.features_) {
-			var listener;
-			// ol.Collection<ol.Feature> 객체에 피쳐가 추가 될때마다 이 이벤트가 실행된다
-			// 추가된 피쳐에 measureTip 엘리먼트를 추가한다
-			listener = this.features_.on('add', function(evt) {
-				that.selectedMeasure(evt.element);
-			});
-
-			this.listener_.push(listener);
-
-			listener = this.features_.on('remove', function(evt) {
-				that.removeMeasureTip_(evt.element);
-			});
-
-			this.listener_.push(listener);
-		}
-		listen = interactions.on('remove', function(evt) {
-			if (evt.element instanceof gb.interaction.MeasureTip) {
-				evt.element.removeMeasureTip_();
-				ol.Observable.unByKey(evt.element.listener_);
-				ol.Observable.unByKey(listen);
+			if (geom instanceof ol.geom.Polygon) {
+				output = that.formatArea_(geom);
+				tipCoord = geom.getInteriorPoint().getCoordinates();
+			} else if (geom instanceof ol.geom.LineString) {
+				output = that.formatLength_(geom);
+				tipCoord = geom.getLastCoordinate();
 			}
+			measureTip.element.innerHTML = output;
+			measureTip.element.style.position = "relative";
+			measureTip.element.style.background = "rgba(0, 0, 0, 0.5)";
+			measureTip.element.style.borderRadius = "4px";
+			measureTip.element.style.color = "white";
+			measureTip.element.style.padding = "4px 8px";
+			measureTip.element.style.opacity = "1";
+			measureTip.element.style.whiteSpace = "nowrap";
+			measureTip.element.style.fontWeight = "bold";
+			measureTip.overlay.setPosition(tipCoord);
 		});
-		this.constructor_ = true;
-	}
-	return true;
-};
-
-/**
- * ol.interaction.Draw객체의 drawStart 이벤트 발생시 실행되는 함수 내부에 적어넣으면 현재 그리고 있는 feature에
- * 대한 면적 또는 길이를 보여준다
- * 
- * @param {ol.interaction.Draw.Event}
- */
-gb.interaction.MeasureTip.prototype.drawStart = function(evt) {
-	var that = this;
-	var measureTip = this.createMeasureTip_();
-	this.sketch_ = evt.feature;
-	var tipCoord = evt.coordinate;
-
-	var listener = this.sketch_.getGeometry().on('change', function(evt) {
-		var geom = evt.target;
-		var output;
-
-		if (geom instanceof ol.geom.Polygon) {
-			output = that.formatArea_(geom);
-			tipCoord = geom.getLastCoordinate();
-		} else if (geom instanceof ol.geom.LineString) {
-			output = that.formatLength_(geom);
-			tipCoord = geom.getLastCoordinate();
-		}
-		measureTip.element.innerHTML = output;
-		measureTip.overlay.setPosition(tipCoord);
+		that.listener_.push(listener);
+		that.vector_.setMap(that.getMap());
 	});
-	this.listener_.push(listener);
+	this.listener_.push(startEvent);
+	
+	var endEvent = this.on("drawend", function(evt){
+		// 배열의 맨마지막에 있는 (가장 최근에 생성되어진) element와 overlay를 가져온다
+		var element = that.measureTipElement_[that.measureTipElement_.length - 1];
+		var overlay = that.measureTipOverlay_[that.measureTipOverlay_.length - 1];
+		var geom = evt.feature.getGeometry();
+
+		if (geom instanceof ol.geom.MultiPolygon) {
+			overlay.setPosition(geom.getInteriorPoints().getCoordinates()[0]);
+		} else if (geom instanceof ol.geom.Polygon) {
+			overlay.setPosition(geom.getInteriorPoint().getCoordinates());
+		}
+
+		// drawing이 끝나면 element를 고정시킨다
+		element.className = 'tip tip-static';
+		element.style.backgroundColor = "#ffcc33";
+		element.style.color = "black";
+		element.style.border = "1px solid white";
+		overlay.setOffset([ 0, -7 ]);
+	});
+	this.listener_.push(endEvent);
+	
+	var interactions = this.map.getInteractions();
+	var listen = interactions.on("remove", function(evt){
+		if (evt.element instanceof gb.interaction.MeasureTip) {
+			evt.element.removeMeasureTip_();
+			that.source_.clear();
+			//ol.Observable.unByKey(evt.element.listener_);
+			//ol.Observable.unByKey(listen);
+		}
+	});
+	
+	this.on("change:active", function(evt){
+		if(evt.oldValue){
+			evt.target.removeMeasureTip_();
+			that.source_.clear();
+		}
+	});
 };
+ol.inherits(gb.interaction.MeasureTip, ol.interaction.Draw);
 
-/**
- * ol.interaction.Draw객체의 drawEnd 이벤트 발생시 실행되는 함수 내부에 적어넣으면 생성된 feature에 대한 면적
- * 또는 길이를 해당 객체에 고정시킨다
- * 
- * @param {ol.interaction.Draw.Event}
- */
-gb.interaction.MeasureTip.prototype.drawEnd = function(evt) {
-	// 배열의 맨마지막에 있는 (가장 최근에 생성되어진) element와 overlay를 가져온다
-	var element = this.measureTipElement_[this.measureTipElement_.length - 1];
-	var overlay = this.measureTipOverlay_[this.measureTipOverlay_.length - 1];
-	var geom = evt.feature.getGeometry();
-
-	if (geom instanceof ol.geom.MultiPolygon) {
-		overlay.setPosition(geom.getInteriorPoints().getCoordinates()[0]);
-	} else if (geom instanceof ol.geom.Polygon) {
-		overlay.setPosition(geom.getInteriorPoints().getCoordinates());
-	}
-
-	// drawing이 끝나면 element를 고정시킨다
-	element.className = 'tip tip-static';
-	overlay.setOffset([ 0, -7 ]);
-	this.sketch_ = null;
-	// 바인딩한 모든 이벤트를 해제시킨다
-	ol.Observable.unByKey(this.listener_);
-};
-
-/**
- * 선택된 객체에 대한 면적 또는 길이를 계산하여 보여준다
- * 
- * @param {ol.Feature}
- */
-gb.interaction.MeasureTip.prototype.selectedMeasure = function(feature) {
-	var output;
-	var tipCoord;
-	var id = feature.getId();
-	var geom = feature.getGeometry();
-	var measureTip = this.createMeasureTip_();
-
-	if (geom instanceof ol.geom.Polygon) {
-		output = this.formatArea_(geom);
-		tipCoord = geom.getInteriorPoint().getCoordinates();
-	} else if (geom instanceof ol.geom.MultiPolygon) {
-		output = this.formatArea_(geom);
-		tipCoord = geom.getInteriorPoints().getCoordinates()[0];
-	} else if (geom instanceof ol.geom.LineString || geom instanceof ol.geom.MultiLineString) {
-		output = this.formatLength_(geom);
-		tipCoord = geom.getLastCoordinate();
-	}
-
-	measureTip.element.innerHTML = output;
-	measureTip.overlay.setPosition(tipCoord);
-	measureTip.element.className = 'tip tip-static';
-	measureTip.element.id = id;
-	measureTip.overlay.set('id', id);
-	measureTip.overlay.setOffset([ 0, -7 ]);
-};
+ol.interaction.Draw.prototype.selectedType = function(){
+	return this.type_;
+}

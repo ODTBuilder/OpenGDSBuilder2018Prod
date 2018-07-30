@@ -13,15 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
+import com.gitrnd.qaproducer.geogig.service.GeogigTransactionService;
 
 /**
  * @author GIT
@@ -32,22 +35,42 @@ import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
 public class GeogigBranchController extends AbstractController {
 
 	@Autowired
+	@Qualifier("transactionService")
+	GeogigTransactionService transactionService;
+
+	@Autowired
 	@Qualifier("branchService")
 	GeogigBranchService branchService;
 
 	@RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigCheckout checkoutBranch(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String reference = (String) param.get("reference");
+	public GeogigCheckout checkoutBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "branchName", required = false) String branchName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return branchService.checkoutBranch(geoserverManager, repoName, transactionId, reference);
+		GeogigTransaction transaction = transactionService.beginTransaction(geoserverManager, repoName);
+		String transactionId = transaction.getTransaction().getId();
+		return branchService.checkoutBranch(geoserverManager, repoName, transactionId, branchName);
 	}
+
+	// @RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
+	// @ResponseBody
+	// public GeogigCheckout checkoutBranch(HttpServletRequest request, @RequestBody
+	// JSONObject param,
+	// @AuthenticationPrincipal LoginUser loginUser) {
+	//
+	// String serverName = (String) param.get("serverName");
+	// String repoName = (String) param.get("repoName");
+	// String transactionId = (String) param.get("transactionId");
+	// String reference = (String) param.get("reference");
+	//
+	// DTGeoserverManager geoserverManager =
+	// super.getGeoserverManagerToSession(request, loginUser, serverName);
+	// return branchService.checkoutBranch(geoserverManager, repoName,
+	// transactionId, reference);
+	// }
 
 	@RequestMapping(value = "/statusBranch.do", method = RequestMethod.POST)
 	@ResponseBody

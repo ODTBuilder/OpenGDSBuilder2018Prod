@@ -10,24 +10,31 @@
  * @author 소이준
  */
 $.jstree.defaults.geogigfunction = {
-	"checkout" : "fas fa-check",
-	"unstaged" : "gb-geogig-unstaged",
-	"staged" : "gb-geogig-staged",
-	"unmerged" : "gb-geogig-unmerged",
-	"merged" : "gb-geogig-merged"
+	"repository" : undefined,
+	"status" : {
+		"checkout" : "fas fa-check",
+		"unstaged" : "gb-geogig-unstaged",
+		"staged" : "gb-geogig-staged",
+		"unmerged" : "gb-geogig-unmerged",
+		"merged" : "gb-geogig-merged"
+	}
 };
 
 $.jstree.plugins.geogigfunction = function(options, parent) {
 	this.init = function(el, options) {
-		this._data.geogigfunction = {};
-		var optKeys = Object.keys(options.geogigfunction);
-		for (var i = 0; i < optKeys.length; i++) {
-			this._data.geogigfunction[optKeys[i]] = {
-				"list" : [],
-				"css" : options.geogigfunction[optKeys[i]]
-			};
-		}
-		console.log(this._data.geogigfunction);
+		this._data.geogigfunction = {
+			"repository" : options.geogigfunction.repository,
+			"status" : options.geogigfunction.status,
+			"transactionId" : {}
+		};
+		// var optKeys = Object.keys(options.geogigfunction.status);
+		// for (var i = 0; i < optKeys.length; i++) {
+		// this._data.geogigfunction.status[optKeys[i]] = {
+		// "list" : [],
+		// "css" : options.geogigfunction[optKeys[i]]
+		// };
+		// }
+		// console.log(this._data.geogigfunction);
 		parent.init.call(this, el, options);
 	};
 	this.refresh = function(skip_loading, forget_state) {
@@ -36,51 +43,60 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 	this.bind = function() {
 		this.element.on('ready.jstree', $.proxy(function(e, data) {
 			console.log("ready");
-			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+			// var optKeys = Object.keys(this._data.geogigfunction), node =
+			// data.node;
 		}, this)).on('model.jstree', $.proxy(function(e, data) {
-			var m = this._model.data, dpc = data.nodes, i, j, c = 'default', k, optKeys = Object.keys(this._data.geogigfunction);
+			var m = this._model.data, dpc = data.nodes, i, j, c = 'default', k;
+			// optKeys = Object.keys(this._data.geogigfunction);
 			for (i = 0, j = dpc.length; i < j; i++) {
-				for (var k = 0; k < optKeys.length; k++) {
-					var list = this._data.geogigfunction[optKeys[k]].list;
-					if (m[dpc[i]].original.hasOwnProperty("type")) {
-						if (m[dpc[i]].original.type === "geoserver") {
+				// for (var k = 0; k < optKeys.length; k++) {
+				// var list = this._data.geogigfunction.status[optKeys[k]].list;
+				if (m[dpc[i]].original.hasOwnProperty("type")) {
+					if (m[dpc[i]].original.type === "geoserver") {
 
-						} else if (m[dpc[i]].original.type === "repository") {
+					} else if (m[dpc[i]].original.type === "repository") {
 
-						} else if (m[dpc[i]].original.type === "branch") {
-							if (m[dpc[i]].original.hasOwnProperty("status")) {
-								if (m[dpc[i]].original.status === "unmerged") {
+					} else if (m[dpc[i]].original.type === "branch") {
+						if (m[dpc[i]].original.hasOwnProperty("status")) {
+							if (m[dpc[i]].original.status !== null && m[dpc[i]].original.status !== undefined) {
+								if (m[dpc[i]].original.status.toLowerCase() === "merged") {
+									m[dpc[i]].state["merged"] = true;
+								} else {
+									m[dpc[i]].state["merged"] = false;
+								}
+								if (m[dpc[i]].original.status.toLowerCase() === "unmerged") {
 									m[dpc[i]].state["unmerged"] = true;
 								} else {
 									m[dpc[i]].state["unmerged"] = false;
 								}
-								if (m[dpc[i]].original.status === "unstaged") {
+								if (m[dpc[i]].original.status.toLowerCase() === "unstaged") {
 									m[dpc[i]].state["unstaged"] = true;
 								} else {
 									m[dpc[i]].state["unstaged"] = false;
 								}
-								if (m[dpc[i]].original.status === "staged") {
+								if (m[dpc[i]].original.status.toLowerCase() === "staged") {
 									m[dpc[i]].state["staged"] = true;
 								} else {
 									m[dpc[i]].state["staged"] = false;
 								}
 							}
-						} else if (m[dpc[i]].original.type === "layer") {
-
 						}
+					} else if (m[dpc[i]].original.type === "layer") {
+
 					}
-					/*
-					 * if (list.indexOf(m[dpc[i]].id) !== -1) {
-					 * m[dpc[i]].state[optKeys[k]] = true; } else {
-					 * m[dpc[i]].state[optKeys[k]] = false; }
-					 */
 				}
+				/*
+				 * if (list.indexOf(m[dpc[i]].id) !== -1) {
+				 * m[dpc[i]].state[optKeys[k]] = true; } else {
+				 * m[dpc[i]].state[optKeys[k]] = false; }
+				 */
+				// }
 			}
 		}, this)).on('delete_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");
 			var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
 			for (var k = 0; k < optKeys.length; k++) {
-				var list = this._data.geogigfunction[optKeys[k]].list;
+				var list = this._data.geogigfunction.status[optKeys[k]].list;
 				for (var l = 0; l < list.length; l++) {
 					if (list.indexOf(node.id) !== -1) {
 						list.splice(list.indexOf(node.id), 1);
@@ -90,8 +106,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		}, this)).on(
 				'select_node.jstree',
 				$.proxy(function(e, data) {
-					console.log("delete layer");
-					var optKeys = Object.keys(this._data.geogigfunction), node = data.node;
+					var geogig = this._data.geogigfunction.repository, node = data.node;
+					var that = this;
 					console.log(node);
 					var type = this.get_type(node);
 					console.log(type);
@@ -112,6 +128,13 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
 							"display" : "inline-block"
+						}).click(function() {
+							console.log("checkout");
+							console.log(node);
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
 						});
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
 							"display" : "inline-block"
@@ -153,39 +176,59 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		obj = parent.redraw_node.apply(this, arguments);
 		console.log(this.get_node(obj.id));
 		if (obj) {
-			var fnmks = Object.keys(this._data.geogigfunction);
+			var fnmks = Object.keys(this._data.geogigfunction.status);
 			for (var i = 0; i < fnmks.length; i++) {
 				var nobj = this.get_node(obj.id);
 				if (nobj.state[fnmks[i]]) {
 					if (fnmks[i] === "checkout") {
 						var ic = $("<i>").attr({
 							"role" : "presentation"
-						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(this._data.geogigfunction[fnmks[i]].css);
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(this._data.geogigfunction.status[fnmks[i]]);
 						$(obj.childNodes[1]).append(ic);
 					} else if (fnmks[i] === "staged") {
-						var ic = $("<span>").text(" [Staged]").attr({
+						var ic = $("<i>").attr({
 							"role" : "presentation"
-						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["checkout"]);
 						$(obj.childNodes[1]).append(ic);
+						var lb = $("<span>").text(" [Staged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
+						$(obj.childNodes[1]).append(lb);
 					} else if (fnmks[i] === "unstaged") {
-						var ic = $("<span>").text(" [Unstaged]").attr({
+						var ic = $("<i>").attr({
 							"role" : "presentation"
-						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["checkout"]);
 						$(obj.childNodes[1]).append(ic);
+						var lb = $("<span>").text(" [Unstaged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
+						$(obj.childNodes[1]).append(lb);
 					} else if (fnmks[i] === "merged") {
-						var ic = $("<span>").text(" [Merged]").attr({
+						var ic = $("<i>").attr({
 							"role" : "presentation"
-						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["checkout"]);
 						$(obj.childNodes[1]).append(ic);
+						var lb = $("<span>").text(" [Merged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
+						$(obj.childNodes[1]).append(lb);
 					} else if (fnmks[i] === "unmerged") {
-						var ic = $("<span>").text(" [Unmerged]").attr({
+						var ic = $("<i>").attr({
 							"role" : "presentation"
-						}).addClass(this._data.geogigfunction[fnmks[i]].css);
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["checkout"]);
 						$(obj.childNodes[1]).append(ic);
+						var lb = $("<span>").text(" [Unmerged]").attr({
+							"role" : "presentation"
+						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
+						$(obj.childNodes[1]).append(lb);
 					}
 					/*
 					 * var ic = $("<i>").attr({ "role" : "presentation"
-					 * }).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(this._data.geogigfunction[fnmks[i]].icon);
+					 * }).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(this._data.geogigfunction.status[fnmks[i]].icon);
 					 * $(obj.childNodes[1]).append(ic);
 					 */
 				}
@@ -202,13 +245,35 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 	this.set_flag = function(obj, funcname, flag) {
 		obj.state[funcname] = flag;
 		if (flag) {
-			var list = this._data.geogigfunction[funcname].list;
+			var list = this._data.geogigfunction.status[funcname].list;
 			if (list.indexOf(obj.id) === -1) {
 				list.push(obj.id);
 				this.redraw_node(obj.id);
 			}
 		} else {
-			var list = this._data.geogigfunction[funcname].list;
+			var list = this._data.geogigfunction.status[funcname].list;
+			if (list.indexOf(obj.id) !== -1) {
+				list.splice(list.indexOf(obj.id), 1);
+				this.redraw_node(obj.id);
+			}
+		}
+	};
+	/**
+	 * 체크아웃을 요청한다.
+	 * 
+	 * @method set_flag
+	 * @plugin geogigfunction
+	 */
+	this.set_flag = function(obj, funcname, flag) {
+		obj.state[funcname] = flag;
+		if (flag) {
+			var list = this._data.geogigfunction.status[funcname].list;
+			if (list.indexOf(obj.id) === -1) {
+				list.push(obj.id);
+				this.redraw_node(obj.id);
+			}
+		} else {
+			var list = this._data.geogigfunction.status[funcname].list;
 			if (list.indexOf(obj.id) !== -1) {
 				list.splice(list.indexOf(obj.id), 1);
 				this.redraw_node(obj.id);

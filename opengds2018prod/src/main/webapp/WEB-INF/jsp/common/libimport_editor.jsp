@@ -53,8 +53,10 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jsTree-openlayers3/jstree-functionmarker.js"></script>
 <%-- 데이터 테이블 --%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/datatables/css/jquery.dataTables.css"/>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/datatables/css/jquery.dataTables.css" />
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
@@ -92,3 +94,5 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/interaction/measuretip.js"></script>
 <!-- gb.geocoder -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
+<!-- gb.geoserver.ImportSHP-->
+<script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>

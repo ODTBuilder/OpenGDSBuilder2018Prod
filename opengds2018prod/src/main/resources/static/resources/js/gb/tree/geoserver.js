@@ -16,6 +16,8 @@
  *            jstree - 클라이언트 레이어 트리 객체
  * @param {ol.Map}
  *            obj.map - 편집 영역을 담당하는 ol.Map
+ * @param {gb.geoserver.UploadSHP}
+ *            obj.uploadSHP - SHP 파일 업로드 객체
  * @param {Object}
  *            obj.url - 요청을 처리하기 위한 URL 객체
  * @param {String}
@@ -42,6 +44,7 @@ gb.tree.GeoServer = function(obj) {
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
+	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -652,7 +655,15 @@ gb.tree.GeoServer = function(obj) {
 								"separator_before" : false,
 								"icon" : "fas fa-upload",
 								"separator_after" : false,
-								"_disabled" : false, // (this.check("rename_node",
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "datastore") {
+										result = false;
+									}
+									return result;
+								},
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
@@ -663,8 +674,18 @@ gb.tree.GeoServer = function(obj) {
 								 */
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									if (obj.type === "default") {
-										that.openDeleteGeoServer(obj.id);
+									if (obj.type === "datastore") {
+										var upload = that.getUploadSHP();
+										var datastore = obj.text;
+										var workspace = inst.get_node(obj.parent).text;
+										var geoserver = inst.get_node(obj.parents[1]).text;
+										console.log(datastore);
+										console.log(workspace);
+										console.log(geoserver);
+										upload.setGeoServer(geoserver);
+										upload.setWorkspace(workspace);
+										upload.setDatastore(datastore);
+										upload.open();
 									}
 								}
 							},
@@ -898,7 +919,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	$(okBtn).click(function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
-	
+
 	gNameInput.val("geoserver");
 	gURLInput.val("http://175.116.181.42:9990/geoserver");
 	gIDInput.val("admin");
@@ -1112,4 +1133,20 @@ gb.tree.GeoServer.prototype.getGetTreeURL = function() {
  */
 gb.tree.GeoServer.prototype.setGetTreeURL = function(url) {
 	this.getTreeURL = url;
+};
+/**
+ * SHP 파일 업로드 객체를 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setUploadSHP
+ */
+gb.tree.GeoServer.prototype.setUploadSHP = function(upload) {
+	this.uploadSHP = upload;
+};
+/**
+ * SHP 파일 업로드 객체를 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getUploadSHP
+ */
+gb.tree.GeoServer.prototype.getUploadSHP = function() {
+	return this.uploadSHP;
 };

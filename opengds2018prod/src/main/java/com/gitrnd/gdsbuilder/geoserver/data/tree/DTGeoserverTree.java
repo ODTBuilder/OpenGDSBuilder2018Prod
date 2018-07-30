@@ -144,11 +144,26 @@ public class DTGeoserverTree extends JSONArray {
 				if (dtGeoManager != null) {
 					DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
 					if (dtGeoserverReader != null) {
+						
 						JSONObject serverTree = new JSONObject();
 						serverTree.put("id", serverName);
 						serverTree.put("parent", "#");
 						serverTree.put("text", serverName);
 						serverTree.put("type", "geoserver");
+						
+						
+						RESTWorkspaceList rwList = dtGeoserverReader.getWorkspaces();
+						
+						if(rwList!=null){
+							if(rwList.size()>0){
+								serverTree.put("children", true);
+							}else{
+								serverTree.put("children", false);
+							}
+						}else{
+							serverTree.put("children", false);
+						}
+						
 						super.add(serverTree);
 					}
 				}

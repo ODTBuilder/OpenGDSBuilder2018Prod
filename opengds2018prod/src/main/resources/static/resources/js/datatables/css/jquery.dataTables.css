@@ -64,6 +64,10 @@ table.dataTable thead .sorting_desc_disabled {
 table.dataTable tbody tr {
   background-color: #ffffff;
 }
+table.dataTable tbody tr:hover {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 20px 0px;
+  cursor: pointer;
+}
 table.dataTable tbody tr.selected {
   background-color: #B0BED9;
 }

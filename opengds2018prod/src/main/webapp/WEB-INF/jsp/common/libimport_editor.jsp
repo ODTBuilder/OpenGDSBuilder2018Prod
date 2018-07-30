@@ -92,3 +92,5 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/interaction/measuretip.js"></script>
 <!-- gb.geocoder -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
+<!-- gb.map.MousePosition -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>

@@ -163,12 +163,12 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span>000000,000000</span></span>
-		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1
-				: 5000</span></span> <span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
-			class="text-muted" style="float: right;">OpenGDS Builder/Validator</span> <span id="cmd-toggle-btn"
-			class="gb-footer-span" style="float: right;"><i class="fas fa-terminal"></i>Command</span> <span
-			id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-th"></i>List</span>
+		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span>1 : 5000</span></span>
+		<span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span>
+		<span class="gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span class="mouse-position" style="display: inline-block;"></span></span>
+		<span class="text-muted" style="float: right;">OpenGDS Builder/Validator</span>
+		<span id="cmd-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-terminal"></i>Command</span>
+		<span id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
 		var gbMap = new gb.Map({
@@ -340,6 +340,10 @@ html {
 			keepOpen : false
 		});
 		gbMap.getUpperMap().addControl(geocoder);
+		
+		var mousePosition = new gb.map.MousePosition({
+			map: gbMap.getUpperMap()
+		});
 
 		var vrepo = new gb.versioning.Repository({
 			"url" : {

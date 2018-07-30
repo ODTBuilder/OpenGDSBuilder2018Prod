@@ -63,7 +63,8 @@ if (!gb.footer)
 			],
 			info: false,
 			paging: false,
-			scrollY: "160px",
+			scrollX: true,
+			scrollY: true,
 			scrollCollapse: true
 		});
 		
@@ -86,6 +87,12 @@ if (!gb.footer)
 			var data = that.dataTable.row(this).data();
 			that.map.getView().fit(data.geometry.getExtent(), that.map.getSize());
 			//that.map.getView().setZoom(14);
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			} else {
+				that.dataTable.$('tr.selected').removeClass('selected');
+				$(this).addClass('selected');
+			}
 		})
 	}
 
@@ -140,12 +147,14 @@ if (!gb.footer)
 			data: data,
 			info: false,
 			paging: false,
-			scrollY: "160px",
+			scrollX: true,
+			scrollY: true,
 			scrollCollapse: true
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
 		this.footerTag.find("label").css("color", "#DDD");
+		this.onResize();
 	}
 	
 	gb.footer.FeatureList.prototype.updateFeatureList = function(opt){

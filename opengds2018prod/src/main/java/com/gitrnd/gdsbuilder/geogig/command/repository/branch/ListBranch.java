@@ -33,8 +33,10 @@ public class ListBranch {
 
 	private static final String command = "branch";
 	private static final String param_list = "list=";
+	private static final String param_remotes = "remotes=";
 
-	public GeogigBranch executeCommand(String baseURL, String username, String password, String repository) {
+	public GeogigBranch executeCommand(String baseURL, String username, String password, String repository,
+			Boolean remotes) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -56,6 +58,10 @@ public class ListBranch {
 
 		// url
 		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_list + "true";
+
+		if (remotes == true) {
+			url += "&" + param_remotes + remotes;
+		}
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

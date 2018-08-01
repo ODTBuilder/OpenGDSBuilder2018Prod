@@ -94,7 +94,9 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String pw = geoserverManager.getPassword();
 
 		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.listBranch(repoName);
+
+		boolean remotes = true;
+		return reader.listBranch(repoName, remotes);
 	}
 
 	/*

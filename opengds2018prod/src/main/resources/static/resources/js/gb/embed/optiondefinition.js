@@ -330,6 +330,14 @@ gb.embed.OptionDefinition = function(obj) {
 			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
 			"en" : "Add a new layer code. then enter the detail figure."
 		},
+		"selectCat" : {
+			"ko" : "분류 설정",
+			"en" : "Select Category"
+		},
+		"chooseYourCat" : {
+			"ko" : "검수할 분류를 선택하세요.",
+			"en" : "Choose the category to validate."
+		}
 	}
 
 	this.optItem = {

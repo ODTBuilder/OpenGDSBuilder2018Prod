@@ -328,7 +328,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"detailGuide" : {
 			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
-			"en" : "Add a new layer code. then enter the detail figure."
+			"en" : "Add a new layer code, then enter the detail figure."
 		},
 		"selectCat" : {
 			"ko" : "분류 설정",
@@ -8570,14 +8570,14 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	for (var i = 0; i < (idx + 1); i++) {
 		if (i === 0) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("분류 설정");
+				var li = $("<li>").addClass("active").text(this.translation.selectCat[this.locale]);
 				$(this.navi).append(li);
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-category");
 				if (this.nowCategory !== undefined) {
 					$(btn).text(this.nowCategory);
 				} else {
-					$(btn).text("분류 설정");
+					$(btn).text(this.translation.selectCat[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
@@ -8684,7 +8684,7 @@ gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
 		this.updateNavigation(3, true);
 		className = "gb-optiondefinition-btn-relationcategory";
 	}
-	this.setMessage("검수할 분류를 선택하세요.");
+	this.setMessage(this.translation.chooseYourCat[this.locale]);
 	$(this.optionArea).empty();
 	if (rel) {
 		var allBtn = $("<button>").text("모든 분류").addClass("btn").addClass("btn-default").addClass(

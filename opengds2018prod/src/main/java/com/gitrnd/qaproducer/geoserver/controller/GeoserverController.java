@@ -368,6 +368,39 @@ public class GeoserverController extends AbstractController {
 			}
 		}
 	}
+	
+	
+	/**
+	 * @Description 레이어 삭제
+	 * @author SG.Lee
+	 * @Date 2018. 8. 2. 오전 10:14:37
+	 * @param request
+	 * @param jsonObject
+	 * @param loginUser
+	 * @return JSONObject
+	 * */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "geoserverRemoveLayers.ajax")
+	@ResponseBody
+	public long geoserverRemoveLayers(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser){
+		long resultFlag = 500;
+		if(loginUser==null){
+			resultFlag = 600; 
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		List<String> layerList = new ArrayList<String>();
+		layerList = (ArrayList<String>) jsonObject.get("layerList");
+		String serverName = (String) jsonObject.get("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if(dtGeoserverManager==null){
+			resultFlag = 603;
+		}else{
+			String workspace = request.getParameter("workspace");
+			resultFlag =  geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, layerList);
+		}
+		return resultFlag;
+	}
+	
 
 	/**
 	 * Geoserver Group레이어 조회 

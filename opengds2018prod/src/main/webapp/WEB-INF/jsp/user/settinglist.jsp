@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -46,13 +47,13 @@
 
 			$(document).on("click", "#select-delete", function() {
 				swal({
-					title : "선택한 옵션내용을 삭제하시겠습니까?",
+					title : "<spring:message code="lang.delOptionQ" />",
 					type : "info",
 					showCancelButton : true,
 					confirmButtonColor : "#3085d6",
-					confirmButtonText : "확인",
+					confirmButtonText : "<spring:message code="lang.confirm" />",
 					cancelButtonColor : "#d33",
-					cancelButtonText : "취소"
+					cancelButtonText : "<spring:message code="lang.cancel" />"
 				}).then(function(result) {
 					if (result.value) {
 						var selectList = "";
@@ -114,7 +115,7 @@
 				var span = $("<span>").attr("aria-hidden", "true").html("&times;");
 				var xbtn = $("<button>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close")
 						.append(span);
-				var head = $("<strong>").text("알림");
+				var head = $("<strong>").text("<spring:message code="lang.notice" />");
 				var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn)
 						.append(head).append(message);
 				$(".Message").append(div);
@@ -163,24 +164,27 @@
 								style="margin-top: 15px; margin-bottom: 10px;">
 								<div class="btn-group" role="group">
 									<a class="btn btn-default" href="${pageContext.request.contextPath}/setting.do"> <i
-										class="far fa-plus-square"></i> 새로 만들기
+										class="far fa-plus-square"></i> <spring:message code="lang.newSetting" />
 									</a>
 								</div>
 								<div class="btn-group" role="group">
 									<button id="all-deselect" class="btn btn-default">
-										<i class="far fa-square"></i> 전체선택해제
+										<i class="far fa-square"></i>
+										<spring:message code="lang.deselall" />
 									</button>
 								</div>
 								<div class="btn-group" role="group">
 									<button id="all-select" class="btn btn-info">
-										<i class="far fa-check-square"></i> 전체선택
+										<i class="far fa-check-square"></i>
+										<spring:message code="lang.selall" />
 									</button>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2 col-md-offset-5">
 							<button id="select-delete" class="btn btn-danger" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<i class="far fa-trash-alt"></i> 선택삭제
+								<i class="far fa-trash-alt"></i>
+								<spring:message code="lang.delsel" />
 							</button>
 						</div>
 					</div>
@@ -189,9 +193,9 @@
 					<table class="table table-striped table-hover text-center">
 						<thead>
 							<tr>
-								<td>번호</td>
-								<td>이름</td>
-								<td>종류</td>
+								<td><spring:message code="lang.no" /></td>
+								<td><spring:message code="lang.settingTitle" /></td>
+								<td><spring:message code="lang.settingCat" /></td>
 							</tr>
 						</thead>
 						<tbody id="settingListArea">

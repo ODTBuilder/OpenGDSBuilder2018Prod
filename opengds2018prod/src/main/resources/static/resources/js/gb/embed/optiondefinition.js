@@ -361,6 +361,10 @@ gb.embed.OptionDefinition = function(obj) {
 		"allCat" : {
 			"ko" : "모든 분류",
 			"en" : "All categorys"
+		},
+		"notice" : {
+			"ko" : "알림",
+			"en" : "Notice"
 		}
 	}
 
@@ -3118,7 +3122,7 @@ gb.embed.OptionDefinition.prototype.setMessagePopup = function(type, message) {
 	var span = $("<span>").attr("aria-hidden", "true").html("&times;");
 	var xbtn = $("<button>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close")
 			.append(span);
-	var head = $("<strong>").text("알림 ");
+	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
 			.append(message);
 	var jclass = "." + this.msg;
@@ -8436,13 +8440,8 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 		var filterCol2 = $("<div>").addClass("col-md-6").append(inputValues);
 		$(row).append(filterCol1).append(filterCol2);
 	}
-	var btnDel = 
-		$("<button>")
-			.addClass("btn")
-			.addClass("btn-default")
-			.addClass("gb-optiondefinition-btn-deletefilterrow")
-			.text(this.translation.deleteFilter[this.locale])
-			.css("width", "100%");
+	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefilterrow").text(
+			this.translation.deleteFilter[this.locale]).css("width", "100%");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row).append(delCol1);
 
@@ -8716,11 +8715,8 @@ gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
 	this.setMessage(this.translation.chooseYourCat[this.locale]);
 	$(this.optionArea).empty();
 	if (rel) {
-		var allBtn = $("<button>").text(this.translation.allCat[this.locale])
-			.addClass("btn")
-			.addClass("btn-default")
-			.addClass("gb-optiondefinition-btn-relationcategory-all")
-			.css("width", "100%");
+		var allBtn = $("<button>").text(this.translation.allCat[this.locale]).addClass("btn").addClass("btn-default").addClass(
+				"gb-optiondefinition-btn-relationcategory-all").css("width", "100%");
 		var col = $("<div>").addClass("col-md-12").css({
 			"margin-top" : "5px",
 			"margin-bottom" : "5px",
@@ -8811,8 +8807,11 @@ gb.embed.OptionDefinition.prototype.printOption = function(cat, navi) {
 			}
 		}
 		if (flag) {
-			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").css("width",
-					"100%").text(this.optItem[keys[i]].title).attr("value", keys[i]);
+			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").css({
+				"width" : "100%",
+				"overflow-x" : "hidden",
+				"text-overflow" : "ellipsis"
+			}).text(this.optItem[keys[i]].title).attr("value", keys[i]);
 			var strc = this.getStructure();
 			// 현재 버튼이 도곽선 설정인지
 			if (this.optItem[keys[i]].alias === "BorderLayer") {
@@ -9321,13 +9320,9 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								var filterCol2 = $("<div>").addClass("col-md-6").append(inputValues);
 								$(row).append(filterCol1).append(filterCol2);
 							}
-							var btnDel = 
-								$("<button>")
-									.addClass("btn")
-									.addClass("btn-default")
-									.addClass("gb-optiondefinition-btn-deletefilterrow")
-									.text(this.translation.deleteFilter[this.locale])
-									.css("width", "100%");
+							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
+									"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).css(
+									"width", "100%");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row).append(delCol1);
 

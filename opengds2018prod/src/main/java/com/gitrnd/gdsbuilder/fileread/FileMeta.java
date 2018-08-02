@@ -17,6 +17,10 @@
 
 package com.gitrnd.gdsbuilder.fileread;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
@@ -32,9 +36,14 @@ public class FileMeta {
 	private String fileSize;
 	private String fileType;
 	private String originSrc;
-	private boolean uploadFlag;
-	private boolean dbInsertFlag;
-	private boolean serverPublishFlag;
+	private long uploadFlag;
+	private List<String> successLayers = new ArrayList<String>();
+	
+	/* 700 - 파일구조 에러
+	 * 701 - 중복에러
+	 * 702 - 발행실패
+	*/
+	private List<Map<String,Long>> failLayers = new ArrayList<Map<String,Long>>();
 
 	private byte[] bytes;
 
@@ -107,28 +116,12 @@ public class FileMeta {
 		this.bytes = bytes;
 	}
 
-	public boolean isUploadFlag() {
+	public long isUploadFlag() {
 		return uploadFlag;
 	}
 
-	public void setUploadFlag(boolean uploadFlag) {
+	public void setUploadFlag(long uploadFlag) {
 		this.uploadFlag = uploadFlag;
-	}
-
-	public boolean isDbInsertFlag() {
-		return dbInsertFlag;
-	}
-
-	public void setDbInsertFlag(boolean dbInsertFlag) {
-		this.dbInsertFlag = dbInsertFlag;
-	}
-
-	public boolean isServerPublishFlag() {
-		return serverPublishFlag;
-	}
-
-	public void setServerPublishFlag(boolean serverPublishFlag) {
-		this.serverPublishFlag = serverPublishFlag;
 	}
 
 	public String getOriginSrc() {
@@ -140,4 +133,20 @@ public class FileMeta {
 	}
 
 	// setters & getters
+	
+	public List<String> getSuccessLayers() {
+		return successLayers;
+	}
+
+	public void setSuccessLayers(List<String> successLayers) {
+		this.successLayers = successLayers;
+	}
+
+	public List<Map<String, Long>> getFailLayers() {
+		return failLayers;
+	}
+
+	public void setFailLayers(List<Map<String, Long>> failLayers) {
+		this.failLayers = failLayers;
+	}
 }

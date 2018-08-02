@@ -47,6 +47,13 @@ public class MainController {
 	@Autowired
 	ValidationResultService validationResultService;
 
+	@RequestMapping(value = "/{locale:en|ko}/locale.do", method = RequestMethod.GET)
+	public String localeMainView(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
+		LOGGER.info("access: /locale.do");
+		String redir = "redirect:/main.do";
+		return redir;
+	}
+
 	@RequestMapping(value = "/main.do", method = RequestMethod.GET)
 	public ModelAndView mainView(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
 		LOGGER.info("access: /main.do");

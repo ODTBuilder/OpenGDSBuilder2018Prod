@@ -17,14 +17,13 @@
 
 package com.gitrnd.qaproducer.geoserver.service;
 
-import java.net.MalformedURLException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.gitrnd.gdsbuilder.fileread.FileMeta;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -47,19 +46,35 @@ public interface GeoserverService {
 	
 	
 	/**
-	 * DB에 저장된 Layer를 Geoserver에 발행하기
+	 * @Description 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 5. 오전 10:23:12
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param workspace - Geoserver Workspace명
-	 * @param dsName - Geoserver Datasource명
-	 * @param layerInfo - 레이어 정보객체
-	 * @return FileMeta - file 정보를 담은 객체
-	 * @throws IllegalArgumentException
-	 * @throws MalformedURLException FileMeta
+	 * @Date 2018. 7. 31. 오전 9:44:27
+	 * @param dtGeoManager 
+	 * @param workspace 작업공간
+	 * @param dsName 저장소
+	 * @param layerName 레이어명
+	 * @param zipFile 대상파일(shp,dxf,shx...)
+	 * @param srs 좌표계
+	 * @return boolean
 	 * */
-	public FileMeta dbLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo layerInfo);
-
+	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs);
+	
+	/**
+	 * @Description 
+	 * @author SG.Lee
+	 * @Date 2018. 7. 31. 오전 9:44:29
+	 * @param dtGeoManager 
+	 * @param workspace 작업공간
+	 * @param dsName 저장소
+	 * @param layerName 레이어명
+	 * @param zipFile 대상파일(shp,dxf,shx...)
+	 * @param srs 좌표계
+	 * @param defaultStyle 스타일
+	 * @return boolean
+	 * */
+	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs, String defaultStyle);
+	
+	
 	/**
 	 *
 	 * @author SG.Lee
@@ -145,9 +160,12 @@ public interface GeoserverService {
 	 * @param dtGeoManager - DTGeoserverManager Object
 	 * @param workspace - Geoserver Workspace명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
-	 * @return boolean - 삭제여부
+	 * @return long - 200 성공
+	 *              - 500 요청실패
+	 *              - 605 해당 조건에 맞는 서버존재X
+	 *              - 606 일부성공 또는 실패
 	 * */
-	public boolean removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
+	public long removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
 	
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제

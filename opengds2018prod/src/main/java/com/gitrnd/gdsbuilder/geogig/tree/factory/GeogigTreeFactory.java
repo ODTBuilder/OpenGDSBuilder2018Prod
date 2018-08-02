@@ -3,6 +3,8 @@
  */
 package com.gitrnd.gdsbuilder.geogig.tree.factory;
 
+import com.gitrnd.gdsbuilder.geogig.tree.GeogigRemoteRepositoryTree;
+import com.gitrnd.gdsbuilder.geogig.tree.GeogigRemoteRepositoryTree.EnGeogigRemoteRepositoryTreeType;
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree;
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree.EnGeogigRepositoryTreeType;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -16,14 +18,17 @@ public interface GeogigTreeFactory {
 
 	/**
 	 * type이 Server 타입일 경우에
+	 * 
 	 * @param dtGeoManagers
 	 * @param type
 	 * @return
 	 */
-	public GeogigRepositoryTree createGeogigRepositoryTree(DTGeoserverManagerList dtGeoManagers, EnGeogigRepositoryTreeType type);
-	
+	public GeogigRepositoryTree createGeogigRepositoryTree(DTGeoserverManagerList dtGeoManagers,
+			EnGeogigRepositoryTreeType type);
+
 	/**
 	 * Server type외
+	 * 
 	 * @param dtGeoserver
 	 * @param serverName
 	 * @param type
@@ -33,4 +38,15 @@ public interface GeogigTreeFactory {
 	 */
 	public GeogigRepositoryTree createGeogigRepositoryTree(DTGeoserverManager dtGeoserver, String serverName,
 			EnGeogigRepositoryTreeType type, String parent, String transactionId);
+
+	/**
+	 * @param dtGeoserver
+	 * @param serverName
+	 * @param type
+	 * @param parent
+	 * @return
+	 */
+	public GeogigRemoteRepositoryTree createGeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver,
+			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent);
+
 }

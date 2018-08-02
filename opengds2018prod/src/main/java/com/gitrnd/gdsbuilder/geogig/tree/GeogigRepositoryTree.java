@@ -154,7 +154,6 @@ public class GeogigRepositoryTree extends JSONArray {
 					ListRepository listRepos = new ListRepository();
 					GeogigRepository geogigRepo = listRepos.executeCommand(baseURL, username, password);
 					List<Repo> repos = geogigRepo.getRepos();
-
 					for (Repo repo : repos) {
 						String name = repo.getName();
 						String storageType = null;
@@ -169,7 +168,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						}
 						String reposId = server + ":" + name;
 						ListBranch listBranch = new ListBranch();
-						GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name);
+						GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name, false);
 						List<Branch> localList = branches.getLocalBranchList();
 
 						if (localList != null) {
@@ -187,7 +186,7 @@ public class GeogigRepositoryTree extends JSONArray {
 				if (param.length > 1) {
 					String repository = param[1];
 					ListBranch listBranch = new ListBranch();
-					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository);
+					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository, false);
 					List<Branch> localList = branches.getLocalBranchList();
 					for (Branch localBranch : localList) {
 						String branchName = localBranch.getName();
@@ -210,7 +209,7 @@ public class GeogigRepositoryTree extends JSONArray {
 					String repository = param[1];
 
 					ListBranch listBranch = new ListBranch();
-					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository);
+					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository, false);
 					List<Branch> localList = branches.getLocalBranchList();
 					for (Branch localBranch : localList) {
 						String branchName = localBranch.getName();

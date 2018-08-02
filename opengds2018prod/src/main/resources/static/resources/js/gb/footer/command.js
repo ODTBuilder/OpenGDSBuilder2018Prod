@@ -24,6 +24,29 @@ if (!gb.footer)
 		
 		this.serverURL = options.serverURL;
 		
+		/**
+		 * 언어 코드
+		 */
+		this.locale = options.locale || "en";
+		
+		/**
+		 * 다국적 언어 지원
+		 */
+		this.translator = {
+			"history": {
+				"en": "History",
+				"ko": "이력"
+			},
+			"log": {
+				"en": "Log",
+				"ko": "로그"
+			},
+			"commandLine": {
+				"en": "Command line",
+				"ko": "명령어 입력"
+			}
+		}
+		
 		this.label = undefined;
 		
 		this.workHistory_ = {};
@@ -34,30 +57,30 @@ if (!gb.footer)
 		
 		this.commandList_ = {
 			createLayer: {
-				tip: "enter layer Map sheet number",
-				paramKey: "sheetNum",
+				tip: "enter the geoserver",
+				paramKey: "geoserver",
 				before: function(value){
-					if(/[0-9]/.test(value)){
+					if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
 						return true;
 					} else {
 						return false;
 					}
 				},
-				beforeFailLog: "You should enter only number",
+				beforeFailLog: "Cannot input special characters",
 				next: {
-					tip: "Enter layer name",
-					paramKey: "layerName",
+					tip: "enter the workspace",
+					paramKey: "workspace",
 					before: function(value){
 						if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-							return false;
-						} else {
 							return true;
+						} else {
+							return false;
 						}
 					},
 					beforeFailLog: "Cannot input special characters",
 					next: {
-						tip: "Enter layer ID",
-						paramKey: "layerID",
+						tip: "Enter the datastore",
+						paramKey: "datastore",
 						before: function(value){
 							if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
 								return false;
@@ -67,31 +90,43 @@ if (!gb.footer)
 						},
 						beforeFailLog: "Cannot input special characters",
 						next: {
-							tip: "Layer type? ( point / lineString / polygon )",
-							point: {
-								end: function(params){
-									createVectorLayer(that.map, "Point", params.sheetNum, params.layerID, params.layerName);
-								},
-								successLog: "create POINT Layer success!",
-								failLog: "create POINT Layer falied!"
+							tip: "Enter layer name",
+							paramKey: "layerName",
+							before: function(value){
+								if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
+									return false;
+								} else {
+									return true;
+								}
 							},
-							lineString: {
-								end: function(params){
-									createVectorLayer(that.map, "LineString", params.sheetNum, params.layerID, params.layerName);
+							beforeFailLog: "Cannot input special characters",
+							next: {
+								tip: "Layer type? ( point / lineString / polygon )",
+								point: {
+									end: function(params){
+										createVectorLayer(that.map, "Point", params.sheetNum, params.layerID, params.layerName);
+									},
+									successLog: "create POINT Layer success!",
+									failLog: "create POINT Layer falied!"
 								},
-								successLog: "create LINESTRING Layer success!",
-								failLog: "create LINESTRING Layer falied!"
-							},
-							polygon: {
-								end: function(params){
-									createVectorLayer(that.map, "Polygon", params.sheetNum, params.layerID, params.layerName);
+								lineString: {
+									end: function(params){
+										createVectorLayer(that.map, "LineString", params.sheetNum, params.layerID, params.layerName);
+									},
+									successLog: "create LINESTRING Layer success!",
+									failLog: "create LINESTRING Layer falied!"
 								},
-								successLog: "create POLYGON Layer success!",
-								failLog: "create POLYGON Layer falied!"
+								polygon: {
+									end: function(params){
+										createVectorLayer(that.map, "Polygon", params.sheetNum, params.layerID, params.layerName);
+									},
+									successLog: "create POLYGON Layer success!",
+									failLog: "create POLYGON Layer falied!"
+								}
 							}
-						}
-					},
-					log: "Enter layer name success!"
+						},
+						log: "Enter layer name success!"
+					}
 				}
 			},
 			createFeature: {

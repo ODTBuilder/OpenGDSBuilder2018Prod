@@ -68,16 +68,58 @@ gb.header.Base = function(obj) {
 	 */
 	var defaultList = [
 		{
-			content: "Select",
-			icon: "fas fa-mouse-pointer fa-lg",
-			color: ""
-		},
-		{
 			content: "Draw",
 			icon: "fas fa-pencil-alt fa-lg",
 			color: ""
 		}
 	];
+	
+	/**
+	 * 언어 코드
+	 */
+	this.locale = options.locale || "en";
+	
+	/**
+	 * 다국적 언어 지원
+	 */
+	this.translator = {
+		"draw": {
+			"en": "Draw",
+			"ko": "그리기"
+		},
+		"move": {
+			"en": "Move",
+			"ko": "이동"
+		},
+		"trans": {
+			"en": "Transform",
+			"ko": "변환"
+		},
+		"modify": {
+			"en": "Modify",
+			"ko": "수정"
+		},
+		"delete": {
+			"en": "Delete",
+			"ko": "삭제"
+		},
+		"undo": {
+			"en": "Undo",
+			"ko": "되돌리기"
+		},
+		"redo": {
+			"en": "Redo",
+			"ko": "다시하기"
+		},
+		"area": {
+			"en": "Area",
+			"ko": "면적"
+		},
+		"length": {
+			"en": "Length",
+			"ko": "길이"
+		}
+	}
 	
 	/**
 	 * header에 표시할 list
@@ -248,7 +290,12 @@ gb.header.Base.prototype.createContent = function(list){
 		adjustStyle(aTag, this.aStyle);
 		adjustStyle(liTag, this.liStyle);
 		
-		aTag.html(list[i].content);
+		if(this.translator[list[i].content]){
+			aTag.html(this.translator[list[i].content][this.locale]);
+		} else {
+			aTag.html(list[i].content);
+		}
+		
 		aTag.prepend(iTag);
 		liTag.append(aTag);
 		

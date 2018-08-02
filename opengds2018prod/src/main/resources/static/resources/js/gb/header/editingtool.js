@@ -185,7 +185,7 @@ gb.header.EditingTool = function(obj) {
 	 */
 	var defaultList = [
 		{
-			content: "Draw",
+			content: "draw",
 			icon: "fas fa-pencil-alt fa-lg",
 			clickEvent: function(){
 				console.log("draw");
@@ -194,7 +194,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "Move",
+			content: "move",
 			icon: "fas fa-arrows-alt fa-lg",
 			clickEvent: function(){
 				console.log("move");
@@ -203,7 +203,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "Multi",
+			content: "trans",
 			icon: "fas fa-object-ungroup fa-lg",
 			clickEvent: function(){
 				console.log("rotate");
@@ -212,7 +212,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "Modify",
+			content: "modify",
 			icon: "fas fa-wrench fa-lg",
 			clickEvent: function(){
 				console.log("modify");
@@ -221,7 +221,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "Delete",
+			content: "delete",
 			icon: "fas fa-eraser fa-lg",
 			clickEvent: function(){
 				console.log("remove");
@@ -230,7 +230,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "Undo",
+			content: "undo",
 			icon: "fas fa-undo-alt fa-lg",
 			clickEvent: function(){
 				gb.undo.undo();
@@ -238,7 +238,7 @@ gb.header.EditingTool = function(obj) {
 			}
 		},
 		{
-			content: "Redo",
+			content: "redo",
 			icon: "fas fa-redo-alt fa-lg",
 			clickEvent: function(){
 				gb.undo.redo();
@@ -2011,7 +2011,12 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	adjustStyle(aTag, this.aStyle);
 	adjustStyle(liTag, this.liStyle);
 	
-	aTag.html(content);
+	if(this.translator[content]){
+		aTag.html(this.translator[content][this.locale]);
+	} else {
+		aTag.html(content);
+	}
+	
 	aTag.prepend(iTag);
 	liTag.append(aTag);
 	

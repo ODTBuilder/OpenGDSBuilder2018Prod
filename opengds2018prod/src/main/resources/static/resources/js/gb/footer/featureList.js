@@ -43,7 +43,9 @@ if (!gb.footer)
 			"height": "100%"
 		};
 		
-		this.tableElement = $("<table>").attr("id", this.tableId);
+		this.tableElement = $("<table>").attr("id", this.tableId).css({
+			width: "100%"
+		});
 		
 		this.createFooter({
 			title: this.title,
@@ -100,6 +102,10 @@ if (!gb.footer)
 	gb.footer.FeatureList.prototype = Object.create(gb.footer.Base.prototype);
 	gb.footer.FeatureList.prototype.constructor = gb.footer.FeatureList;
 	
+	/**
+	 * feature list layout 생성 클릭 이벤트
+	 * @param {jquery} target Target
+	 */
 	gb.footer.FeatureList.prototype.clickEvent = function(target){
 		var that = this;
 		$(target).click(function(){
@@ -110,7 +116,9 @@ if (!gb.footer)
 		});
 	}
 	
-	// 전체 객체 리스트 테이블 크기 재갱신
+	/**
+	 * 전체 객체 리스트 테이블 크기 재갱신
+	 */
 	gb.footer.FeatureList.prototype.onResize = function(){
 		if(!!this.dataTable){
 			this.dataTable.columns.adjust().draw();
@@ -118,7 +126,9 @@ if (!gb.footer)
 		}
 	}
 	
-	// tbody height 재갱신
+	/**
+	 * tbody height 재갱신
+	 */
 	gb.footer.FeatureList.prototype.resizeTbody = function(){
 		var a = this.footerTag.find(".footer-content").height();
 		var b = $("#" + this.tableId + "_filter").height();
@@ -129,6 +139,11 @@ if (!gb.footer)
 		this.footerTag.find(".footer-content #" + this.tableId + "_wrapper .dataTables_scrollBody").css("max-height", height + "px");
 	}
 	
+	/**
+	 * List Table 내용 재설정
+	 * @param {Array.<Object>} col title: table header title, data: key 값
+	 * @param {Array.<Array>} col
+	 */
 	gb.footer.FeatureList.prototype.updateTable = function(col, data, except){
 		this.dataTable.destroy();
 		this.tableElement.empty();
@@ -148,7 +163,7 @@ if (!gb.footer)
 			info: false,
 			paging: false,
 			scrollX: true,
-			scrollY: true,
+			scrollY: "100%",
 			scrollCollapse: true
 		});
 		

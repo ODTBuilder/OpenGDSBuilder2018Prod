@@ -97,8 +97,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.map.MousePosition -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>
-=======
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
->>>>>>> master

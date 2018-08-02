@@ -61,9 +61,9 @@ if (!gb.footer)
 				paramKey: "geoserver",
 				before: function(value){
 					if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-						return true;
-					} else {
 						return false;
+					} else {
+						return true;
 					}
 				},
 				beforeFailLog: "Cannot input special characters",
@@ -72,9 +72,9 @@ if (!gb.footer)
 					paramKey: "workspace",
 					before: function(value){
 						if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-							return true;
-						} else {
 							return false;
+						} else {
+							return true;
 						}
 					},
 					beforeFailLog: "Cannot input special characters",
@@ -100,32 +100,35 @@ if (!gb.footer)
 								}
 							},
 							beforeFailLog: "Cannot input special characters",
+							log: "Enter layer name success!",
 							next: {
 								tip: "Layer type? ( point / lineString / polygon )",
 								point: {
 									end: function(params){
-										createVectorLayer(that.map, "Point", params.sheetNum, params.layerID, params.layerName);
+										createVectorLayer(that.map, params.geoserver, 
+												params.workspace, params.datastore, params.layerName, "Point");
 									},
 									successLog: "create POINT Layer success!",
 									failLog: "create POINT Layer falied!"
 								},
 								lineString: {
 									end: function(params){
-										createVectorLayer(that.map, "LineString", params.sheetNum, params.layerID, params.layerName);
+										createVectorLayer(that.map, params.geoserver, 
+												params.workspace, params.datastore, params.layerName, "LineString");
 									},
 									successLog: "create LINESTRING Layer success!",
 									failLog: "create LINESTRING Layer falied!"
 								},
 								polygon: {
 									end: function(params){
-										createVectorLayer(that.map, "Polygon", params.sheetNum, params.layerID, params.layerName);
+										createVectorLayer(that.map, params.geoserver, 
+												params.workspace, params.datastore, params.layerName, "Polygon");
 									},
 									successLog: "create POLYGON Layer success!",
 									failLog: "create POLYGON Layer falied!"
 								}
 							}
-						},
-						log: "Enter layer name success!"
+						}
 					}
 				}
 			},
@@ -285,6 +288,10 @@ if (!gb.footer)
 				"padding": "8px 16px",
 				"border-bottom": "0.5px solid rgba(255,255,255,.4)"
 			},
+			historyFunction: {
+				"display": "inline-block",
+				"float": "right"
+			},
 			historyContent: {
 				"flex": "1 1 auto",
 				"overflow": "auto",
@@ -356,6 +363,9 @@ if (!gb.footer)
 		this.adjustStyle_(historyTitle, this.elementStyle_.historyTitle);
 		historyTitle.text("History");
 		
+		var historyFunction = $("<div>").addClass("history-function");
+		this.adjustStyle_(historyFunction, this.elementStyle_.historyFunction);
+		
 		this.historyContent = $("<div>").addClass("history-content");
 		this.adjustStyle_(this.historyContent, this.elementStyle_.historyContent);
 		
@@ -384,6 +394,29 @@ if (!gb.footer)
 				this.value = "";
 			}
 		});
+		
+		historyFunction.append(
+			$("<i>")
+				.addClass("fas fa-upload")
+				.mouseenter(function(){
+					$(this).css("cursor", "pointer");
+					$(this).addClass("fa-lg");
+				})
+				.mouseleave(function(){
+					$(this).removeClass("fa-lg");
+				})
+				.css({"margin-right": "10px"}));
+		historyFunction.append(
+			$("<i>")
+				.mouseenter(function(){
+					$(this).css("cursor", "pointer");
+					$(this).addClass("fa-lg");
+				})
+				.mouseleave(function(){
+					$(this).removeClass("fa-lg");
+				})
+				.addClass("fas fa-download"));
+		historyTitle.append(historyFunction);
 		
 		history.append(historyTitle);
 		history.append(this.historyContent);
@@ -561,15 +594,14 @@ if (!gb.footer)
 		return a;
 	}
 	
-	function createVectorLayer(map, type, sheet, id, name){
-		var layer = new gb.layer.LayerInfo({
+	function createVectorLayer(map, geo, work, store, name, type){
+		/*var layer = new gb.layer.LayerInfo({
 			format: "shp",
 			srs: "EPSG:5186",
 			name: name,
-			sheetNum: sheet,
 			geometry: type,
 			isNew: true
-		});
+		});*/
 		var vectorLayer = new ol.layer.Vector({
 			source: new ol.source.Vector()
 		});
@@ -578,11 +610,12 @@ if (!gb.footer)
 			"editable" : true,
 			"geometry" : type,
 			"validation" : false,
-			"information" : layer
+			"geoserver": geo,
+			"workspace": work,
+			"datastore": store
 		};
 		vectorLayer.set("git", gitLayer);
-		groupLayer.set("name", sheet);
-		vectorLayer.set("id", id);
+		groupLayer.set("name", store);
 		vectorLayer.set("name", name);
 		var collect = new ol.Collection();
 		collect.push(vectorLayer);

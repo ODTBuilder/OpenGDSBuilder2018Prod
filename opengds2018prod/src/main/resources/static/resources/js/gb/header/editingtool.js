@@ -1336,27 +1336,24 @@ gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 	if(this.getVectorSourceOfServer(treeId)){
 		source = this.getVectorSourceOfServer(treeId);
 	} else {
-		layers = this.map.getLayers().getArray();
-		for(var i in layers){
-			if(layers[i] instanceof ol.layer.Vector){
-				if(layers[i].get("treeid") === treeId){
-					source = layers[i].getSource();
-					if(!layers[i].get("id")){
-						layers[i].set("id", layers[i].get("treeid"));
-					}
-					if(typeof source.get("git") !== "object"){
-						source.set("git", {
-							layerID: layers[i].get("id"),
-							treeID: layers[i].get("treeid"),
-							layer: layers[i],
-							editable: layers[i].get("git").editable,
-							geometry: layers[i].get("git").geometry
-						});
-					}
-					if(!this.customVector_[layers[i].get("treeid")]){
-						this.customVector_[layers[i].get("treeid")] = source;
-					}
-				}
+		var layer;
+		if(otree.getJSTree().get_LayerById(treeId) instanceof ol.layer.Vector){
+			layer = otree.getJSTree().get_LayerById(treeId);
+			source = layer.getSource();
+			if(!layer.get("id")){
+				layer.set("id", layer.get("treeid"));
+			}
+			if(typeof source.get("git") !== "object"){
+				source.set("git", {
+					layerID: layer.get("id"),
+					treeID: layer.get("treeid"),
+					tempLayer: layer,
+					editable: layer.get("git").editable,
+					geometry: layer.get("git").geometry
+				});
+			}
+			if(!this.customVector_[layer.get("treeid")]){
+				this.customVector_[layer.get("treeid")] = source;
 			}
 		}
 	}

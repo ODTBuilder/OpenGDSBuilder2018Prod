@@ -1,3 +1,9 @@
+var gb;
+if (!gb)
+	gb = {};
+if (!gb.geoserver)
+	gb.geoserver = {};
+
 /**
  * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
  * 

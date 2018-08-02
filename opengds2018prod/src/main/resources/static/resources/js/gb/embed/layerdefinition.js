@@ -19,6 +19,85 @@ gb.embed.LayerDefinition = function(obj) {
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
 	this.dataType = [ "DATE", "DATETIME", "INTEGER", "NUMBER", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
 	var options = obj ? obj : {};
+	this.locale = options.locale ? options.locale : "en";
+	this.translation = {
+		"layerCode": {
+			"en": "Code",
+			"ko": "코드"
+		},
+		"layerType": {
+			"en": "Type",
+			"ko": "유형"
+		},
+		"deleteLayer": {
+			"en": "Delete layer",
+			"ko": "레이어 삭제"
+		},
+		"addLayer": {
+			"en": "Add layer",
+			"ko": "레이어 추가"
+		},
+		"exLayerCodeField": {
+			"en": "Layer code ex) F0010000",
+			"ko": "레이어 코드 예시) F0010000"
+		},
+		"notice": {
+			"en": "Notice",
+			"ko": "알림"
+		},
+		"notSet": {
+			"en": "Not set",
+			"ko": "미설정"
+		},
+		"deleteCategory": {
+			"en": "Delete category",
+			"ko": "분류 삭제"
+		},
+		"exCategoryField": {
+			"en": "Category Name ex) Contour, F001 etc",
+			"ko": "분류명 예시) 등고선, F001 등"
+		},
+		"attrName": {
+			"en": "Attribute name",
+			"ko": "속성명"
+		},
+		"attrType": {
+			"en": "Attribute type",
+			"ko": "속성 유형"
+		},
+		"fixedAttr": {
+			"en": "Fixed Attribute",
+			"ko": "고정 속성"
+		},
+		"addFixedAttr": {
+			"en": "Add fixed attribute",
+			"ko": "고정 속성 추가"
+		},
+		"deleteFixedAttr": {
+			"en": "Delete fixed attribute",
+			"ko": "고정 속성 삭제"
+		},
+		"exFixedAttrNameField": {
+			"en": "Attribute name with fixed value ex) attr1",
+			"ko": "고정 값을 가질 속성명 예시) 구분"
+		},
+		"length": {
+			"en": "Length",
+			"ko": "길이"
+		},
+		"nullAllow": {
+			"en": "Null allowance",
+			"ko": "널 허용"
+		},
+		"allowValue": {
+			"en": "Allowed value",
+			"ko": "허용값"
+		},
+		"exAllowValueField": {
+			"en": "Separate the values ​​that the attribute can have with a comma. ex)value1, value2, value3, ...",
+			"ko": "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
+		}
+	}
 	// this.panelBody = $("<div>").addClass("panel-body");
 	this.panelBody = $("<div>").addClass("gb-layerdefinition-body");
 	// this.panel =
@@ -156,7 +235,7 @@ gb.embed.LayerDefinition.prototype.setMessage = function(type, message) {
 	var span = $("<span>").attr("aria-hidden", "true").html("&times;");
 	var xbtn = $("<button>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close")
 			.append(span);
-	var head = $("<strong>").text("알림 ");
+	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
 			.append(message);
 	var jclass = "." + this.msg;
@@ -181,7 +260,7 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 				.append(toggleIcon);
 		var categoryName = $("<input>").attr({
 			"type" : "text",
-			"placeholder" : "분류명 EX) 등고선, F001 등",
+			"placeholder" : this.translation.exCategoryField[this.locale],
 			"title" : "some tips"
 		}).css({
 			"border" : "0",
@@ -194,8 +273,13 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 		var toggleCol = $("<div>").addClass("col-md-1").addClass("text-right").append(toggleBtn);
 		var categoryHeader = $("<div>").addClass("row").append(catNameCol).append(toggleCol);
 		var deleteCategoryBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-category").text(
-				"분류 삭제");
-		var addLayerBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-layer").text("레이어 추가");
+				this.translation.deleteCategory[this.locale]);
+		var addLayerBtn = 
+			$("<button>")
+				.addClass("btn")
+				.addClass("btn-default")
+				.addClass("gb-layerdefinition-add-layer")
+				.text(this.translation.addLayer[this.locale]);
 		var wrap2 = $("<div>").addClass("col-md-12").addClass("text-right").append(addLayerBtn).append(deleteCategoryBtn);
 		var categoryMid = $("<div>").addClass("row").append(wrap2);
 		var layerArea = $("<div>").addClass("gb-layerdefinition-layerarea");
@@ -204,15 +288,15 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 		var layers = strc[a].layers;
 		if (Array.isArray(layers)) {
 			for (var b = 0; b < layers.length; b++) {
-				var codeCol1 = $("<div>").addClass("col-md-1").append("코드");
+				var codeCol1 = $("<div>").addClass("col-md-1").append(this.translation.layerCode[this.locale]);
 				var code = layers[b].code;
 				var codeInput = $("<input>").attr({
 					"type" : "text",
-					"placeholder" : "레이어 코드 EX) F0010000"
+					"placeholder" : this.translation.exLayerCodeField[this.locale]
 				}).addClass("form-control").addClass("gb-layerdefinition-input-layercode").val(code);
 
 				var codeCol2 = $("<div>").addClass("col-md-6").append(codeInput);
-				var typeCol1 = $("<div>").addClass("col-md-1").text("타입");
+				var typeCol1 = $("<div>").addClass("col-md-1").text(this.translation.layerType[this.locale]);
 				var geomSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-geometry");
 				var geometry = layers[b].geometry;
 				for (var i = 0; i < this.geometryType.length; i++) {
@@ -224,16 +308,16 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 				}
 				var typeCol2 = $("<div>").addClass("col-md-2").append(geomSelect);
 				var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-layer").text(
-						"레이어 삭제").css("width", "100%");
+						this.translation.deleteLayer[this.locale]).css("width", "100%");
 				var deleLayerCol1 = $("<div>").addClass("col-md-2").append(delBtn);
 				var row1o = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(typeCol1).append(typeCol2).append(
 						deleLayerCol1);
 
-				var fixAttr = $("<p>").text("고정 속성").css({
+				var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).css({
 					"float" : "left"
 				});
 				var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute").text(
-						"고정 속성 추가").css({
+						this.translation.addFixedAttr[this.locale]).css({
 					"width" : "100%"
 				});
 				var fixCol1 = $("<div>").addClass("col-md-10").append(fixAttr);
@@ -245,18 +329,18 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 				var fix = layers[b].fix;
 				if (Array.isArray(fix)) {
 					for (var k = 0; k < fix.length; k++) {
-						var r1col1 = $("<div>").addClass("col-md-1").text("속성명");
+						var r1col1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale]);
 
 						var attrName = $("<input>").attr({
 							"type" : "text",
-							"placeholder" : "고정 값을 가질 속성명 EX) 구분"
+							"placeholder" : this.translation.exFixedAttrNameField[this.locale]
 						}).addClass("form-control").addClass("gb-layerdefinition-input-attributename").val(fix[k].name);
 						var r1col2 = $("<div>").addClass("col-md-3").append(attrName);
 
-						var r1col3 = $("<div>").addClass("col-md-1").text("타입");
+						var r1col3 = $("<div>").addClass("col-md-1").text(this.translation.attrType[this.locale]);
 
 						var dtypeSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-attributetype");
-						var nullOption = $("<option>").text("미설정").attr("value", "null");
+						var nullOption = $("<option>").text(this.translation.notSet[this.locale]).attr("value", "null");
 						$(dtypeSelect).append(nullOption);
 						for (var i = 0; i < this.dataType.length; i++) {
 							var option = $("<option>").text(this.dataType[i]).attr("value", this.dataType[i]);
@@ -269,13 +353,13 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 						}
 						var r1col4 = $("<div>").addClass("col-md-2").append(dtypeSelect);
 
-						var r1col5 = $("<div>").addClass("col-md-1").text("길이");
+						var r1col5 = $("<div>").addClass("col-md-1").text(this.translation.length[this.locale]);
 
 						var attrLength = $("<input>").attr("type", "number").addClass("form-control").addClass(
 								"gb-layerdefinition-input-attributelength").val(fix[k].length);
 						var r1col6 = $("<div>").addClass("col-md-2").append(attrLength);
 
-						var r1col7 = $("<div>").addClass("col-md-1").text("널 허용");
+						var r1col7 = $("<div>").addClass("col-md-1").text(this.translation.nullAllow[this.locale]);
 
 						var nullCheck = $("<input>").attr("type", "checkbox").addClass("gb-layerdefinition-check-attributenull");
 						if (fix[k].isnull) {
@@ -286,10 +370,10 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 						var row1 = $("<div>").addClass("row").append(r1col1).append(r1col2).append(r1col3).append(r1col4).append(r1col5)
 								.append(r1col6).append(r1col7).append(r1col8);
 
-						var r2col1 = $("<div>").addClass("col-md-1").text("허용값");
+						var r2col1 = $("<div>").addClass("col-md-1").text(this.translation.allowValue[this.locale]);
 						var values = $("<input>").attr({
 							"type" : "text",
-							"placeholder" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 EX) 주곡선,계곡선,간곡선,조곡선"
+							"placeholder" : this.translation.exAllowValueField[this.locale]
 						}).addClass("form-control").addClass("gb-layerdefinition-input-attributevalues");
 
 						var valuesToString = fix[k].values;
@@ -301,7 +385,7 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 						var row2 = $("<div>").addClass("row").append(r2col1).append(r2col2);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-attribute")
-								.text("고정 속성 삭제");
+								.text(this.translation.deleteFixedAttr[this.locale]);
 						var r3col1 = $("<div>").addClass("col-md-12").addClass("text-right").append(delBtn);
 						var row3 = $("<div>").addClass("row").append(r3col1);
 
@@ -691,7 +775,7 @@ gb.embed.LayerDefinition.prototype.addCategory = function() {
 	var toggleBtn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-layerdefinition-toggle-category").append(toggleIcon);
 	var categoryName = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "분류명 EX) 등고선, F001 등",
+		"placeholder" : this.translation.exCategoryField[this.locale],
 		"title" : "some tips"
 	}).css({
 		"border" : "0",
@@ -704,8 +788,13 @@ gb.embed.LayerDefinition.prototype.addCategory = function() {
 	var toggleCol = $("<div>").addClass("col-md-1").addClass("text-right").append(toggleBtn);
 	var categoryHeader = $("<div>").addClass("row").append(catNameCol).append(toggleCol);
 	var deleteCategoryBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-category").text(
-			"분류 삭제");
-	var addLayerBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-layer").text("레이어 추가");
+			this.translation.deleteCategory[this.locale]);
+	var addLayerBtn = 
+		$("<button>")
+			.addClass("btn")
+			.addClass("btn-default")
+			.addClass("gb-layerdefinition-add-layer")
+			.text(this.translation.addLayer[this.locale]);
 	var wrap2 = $("<div>").addClass("col-md-12").addClass("text-right").append(addLayerBtn).append(deleteCategoryBtn);
 	var categoryMid = $("<div>").addClass("row").append(wrap2);
 
@@ -726,14 +815,14 @@ gb.embed.LayerDefinition.prototype.addCategory = function() {
 };
 
 gb.embed.LayerDefinition.prototype.addLayer = function(btn) {
-	var col1 = $("<div>").addClass("col-md-1").append("코드");
+	var col1 = $("<div>").addClass("col-md-1").append(this.translation.layerCode[this.locale]);
 	var codeInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "레이어 코드 EX) F0010000"
+		"placeholder" : this.translation.exLayerCodeField[this.locale]
 	}).addClass("form-control").addClass("gb-layerdefinition-input-layercode");
 
 	var col2 = $("<div>").addClass("col-md-6").append(codeInput);
-	var col3 = $("<div>").addClass("col-md-1").text("타입");
+	var col3 = $("<div>").addClass("col-md-1").text(this.translation.layerType[this.locale]);
 	var geomSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-geometry");
 	for (var i = 0; i < this.geometryType.length; i++) {
 		var option = $("<option>").text(this.geometryType[i].toUpperCase()).attr("value", this.geometryType[i]);
@@ -743,15 +832,16 @@ gb.embed.LayerDefinition.prototype.addLayer = function(btn) {
 		$(geomSelect).append(option);
 	}
 	var col4 = $("<div>").addClass("col-md-2").append(geomSelect);
-	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-layer").text("레이어 삭제").css(
-			"width", "100%");
+	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-layer")
+		.text(this.translation.deleteLayer[this.locale]).css("width", "100%");
 	var col5 = $("<div>").addClass("col-md-2").append(delBtn);
 	var row1 = $("<div>").addClass("row").append(col1).append(col2).append(col3).append(col4).append(col5);
 
-	var fixAttr = $("<p>").text("고정 속성").css({
+	var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).css({
 		"float" : "left"
 	});
-	var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute").text("고정 속성 추가")
+	var delFixAttr = $("<button>").addClass("btn").addClass("btn-default")
+		.addClass("gb-layerdefinition-add-attribute").text(this.translation.addFixedAttr[this.locale])
 			.css({
 				"width" : "100%"
 			});
@@ -786,18 +876,18 @@ gb.embed.LayerDefinition.prototype.addLayer = function(btn) {
 };
 
 gb.embed.LayerDefinition.prototype.addAttribute = function(btn) {
-	var r1col1 = $("<div>").addClass("col-md-1").text("속성명");
+	var r1col1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale]);
 
 	var attrName = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "고정 값을 가질 속성명 EX) 구분"
+		"placeholder" : this.translation.exFixedAttrNameField[this.locale]
 	}).addClass("form-control").addClass("gb-layerdefinition-input-attributename");
 	var r1col2 = $("<div>").addClass("col-md-3").append(attrName);
 
-	var r1col3 = $("<div>").addClass("col-md-1").text("타입");
+	var r1col3 = $("<div>").addClass("col-md-1").text(this.translation.attrType[this.locale]);
 
 	var dtypeSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-attributetype");
-	var nullOption = $("<option>").text("미설정").attr("value", "null");
+	var nullOption = $("<option>").text(this.translation.notSet[this.locale]).attr("value", "null");
 	$(dtypeSelect).append(nullOption);
 	for (var i = 0; i < this.dataType.length; i++) {
 		var option = $("<option>").text(this.dataType[i]).attr("value", this.dataType[i]);
@@ -808,12 +898,12 @@ gb.embed.LayerDefinition.prototype.addAttribute = function(btn) {
 	}
 	var r1col4 = $("<div>").addClass("col-md-2").append(dtypeSelect);
 
-	var r1col5 = $("<div>").addClass("col-md-1").text("길이");
+	var r1col5 = $("<div>").addClass("col-md-1").text(this.translation.length[this.locale]);
 
 	var attrLength = $("<input>").attr("type", "number").addClass("form-control").addClass("gb-layerdefinition-input-attributelength");
 	var r1col6 = $("<div>").addClass("col-md-2").append(attrLength);
 
-	var r1col7 = $("<div>").addClass("col-md-1").text("널 허용");
+	var r1col7 = $("<div>").addClass("col-md-1").text(this.translation.nullAllow[this.locale]);
 
 	var nullCheck = $("<input>").attr("type", "checkbox").addClass("gb-layerdefinition-check-attributenull");
 	var r1col8 = $("<div>").addClass("col-md-1").append(nullCheck);
@@ -821,15 +911,16 @@ gb.embed.LayerDefinition.prototype.addAttribute = function(btn) {
 	var row1 = $("<div>").addClass("row").append(r1col1).append(r1col2).append(r1col3).append(r1col4).append(r1col5).append(r1col6).append(
 			r1col7).append(r1col8);
 
-	var r2col1 = $("<div>").addClass("col-md-1").text("허용값");
+	var r2col1 = $("<div>").addClass("col-md-1").text(this.translation.allowValue[this.locale]);
 	var values = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 EX) 주곡선,계곡선,간곡선,조곡선"
+		"placeholder" : this.translation.exAllowValueField[this.locale]
 	}).addClass("form-control").addClass("gb-layerdefinition-input-attributevalues");
 	var r2col2 = $("<div>").addClass("col-md-11").append(values);
 	var row2 = $("<div>").addClass("row").append(r2col1).append(r2col2);
 
-	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-attribute").text("고정 속성 삭제");
+	var delBtn = $("<button>").addClass("btn").addClass("btn-default")
+		.addClass("gb-layerdefinition-delete-attribute").text(this.translation.deleteFixedAttr[this.locale]);
 	var r3col1 = $("<div>").addClass("col-md-12").addClass("text-right").append(delBtn);
 	var row3 = $("<div>").addClass("row").append(r3col1);
 

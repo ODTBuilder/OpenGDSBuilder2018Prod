@@ -90,307 +90,6 @@ gb.versioning.Repository = function(obj) {
 			"themes" : {
 				"stripes" : true
 			},
-
-			// 'data' : [ {
-			// "parent" : "#",
-			// "id" : "geoserver",
-			// "text" : "geoserver",
-			// "type" : "geoserver"
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test15",
-			// "text" : "repository_test15",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test15",
-			// "id" : "geoserver/repository_test15/branch1",
-			// "text" : "branch1",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test15",
-			// "id" : "geoserver/repository_test15/branch2",
-			// "text" : "branch2",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test15",
-			// "id" : "geoserver/repository_test15/branch3",
-			// "text" : "branch3",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test15",
-			// "id" : "geoserver/repository_test15/branch4",
-			// "text" : "branch4",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test15",
-			// "id" : "geoserver/repository_test15/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : "Merged"
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test3",
-			// "text" : "repository_test3",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test3",
-			// "id" : "geoserver/repository_test3/branch1",
-			// "text" : "branch1",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test3",
-			// "id" : "geoserver/repository_test3/branch2",
-			// "text" : "branch2",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test3",
-			// "id" : "geoserver/repository_test3/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test5",
-			// "text" : "repository_test5",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test5",
-			// "id" : "geoserver/repository_test5/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test10",
-			// "text" : "repository_test10",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test10",
-			// "id" : "geoserver/repository_test10/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test6",
-			// "text" : "repository_test6",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test6",
-			// "id" : "geoserver/repository_test6/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "file",
-			// "id" : "geoserver/test",
-			// "text" : "test",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/test",
-			// "id" : "geoserver/test/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test17",
-			// "text" : "repository_test17",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test17",
-			// "id" : "geoserver/repository_test17/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/testpostgis",
-			// "text" : "testpostgis",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/testpostgis",
-			// "id" : "geoserver/testpostgis/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test4",
-			// "text" : "repository_test4",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test4",
-			// "id" : "geoserver/repository_test4/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_remote",
-			// "text" : "repository_remote",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_remote",
-			// "id" : "geoserver/repository_remote/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test8",
-			// "text" : "repository_test8",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test8",
-			// "id" : "geoserver/repository_test8/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test9",
-			// "text" : "repository_test9",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test9",
-			// "id" : "geoserver/repository_test9/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test",
-			// "text" : "repository_test",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test",
-			// "id" : "geoserver/repository_test/branch1",
-			// "text" : "branch1",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test",
-			// "id" : "geoserver/repository_test/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository",
-			// "text" : "repository",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository",
-			// "id" : "geoserver/repository/branch1",
-			// "text" : "branch1",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository",
-			// "id" : "geoserver/repository/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test13",
-			// "text" : "repository_test13",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test13",
-			// "id" : "geoserver/repository_test13/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test14",
-			// "text" : "repository_test14",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test14",
-			// "id" : "geoserver/repository_test14/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test16",
-			// "text" : "repository_test16",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test16",
-			// "id" : "geoserver/repository_test16/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver",
-			// "repoType" : "postgres",
-			// "id" : "geoserver/repository_test7",
-			// "text" : "repository_test7",
-			// "type" : "repository"
-			// }, {
-			// "parent" : "geoserver/repository_test7",
-			// "id" : "geoserver/repository_test7/branc!!!!!!!",
-			// "text" : "branc!!!!!!!",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test7",
-			// "id" : "geoserver/repository_test7/branch",
-			// "text" : "branch",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test7",
-			// "id" : "geoserver/repository_test7/branch1",
-			// "text" : "branch1",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test7",
-			// "id" : "geoserver/repository_test7/master",
-			// "text" : "master",
-			// "type" : "branch",
-			// "status" : null
-			// }, {
-			// "parent" : "geoserver/repository_test15/master",
-			// "id" :
-			// "geoserver/repository_test15/master/raleigh_park_locations_1",
-			// "text" : "raleigh_park_locations_1",
-			// "type" : "layer"
-			// }, {
-			// "parent" : "geoserver/repository_test15/master",
-			// "id" :
-			// "geoserver/repository_test15/master/raleigh_park_locations_2",
-			// "text" : "raleigh_park_locations_2",
-			// "type" : "layer"
-			// } ]
 			"data" : {
 				'url' : function(node) {
 					var url = that.getGetServerTreeURL();
@@ -486,7 +185,118 @@ gb.versioning.Repository = function(obj) {
 		"overflow-y" : "auto",
 		"width" : "100%"
 	}).append(this.treeArea);
-	this.mbody = $("<div>").append(head).append(body);
+	this.serverArea = $("<div>").append(head).append(body);
+	var backIcon = $("<i>").addClass("fas").addClass("fa-arrow-left");
+	this.backToTreeBtn = $("<button>").addClass("gb-button-clear").append(backIcon).click(function() {
+		that.transitPage("server");
+	});
+
+	var refRemoteIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	this.refreshRemoteTreeBtn = $("<button>").addClass("gb-button-clear").append(refRemoteIcon).click(function() {
+		that.refreshRemoteList();
+	}).css({
+		"float" : "right"
+	});
+	var addIcon = $("<i>").addClass("fas").addClass("fa-plus");
+	this.addRemoteBtn = $("<button>").addClass("gb-button-clear").append(addIcon).click(function() {
+		console.log("add remote");
+	}).css({
+		"float" : 'right'
+	});
+	this.remoteTitle = $("<span>");
+	this.remoteHead = $("<div>").addClass("gb-article-head").append(this.backToTreeBtn).append(this.remoteTitle).append(this.addRemoteBtn)
+			.append(this.refreshRemoteTreeBtn);
+	this.remoteTree = $("<div>");
+	$(this.remoteTree).jstree({
+		"core" : {
+			"animation" : 0,
+			"check_callback" : true,
+			"themes" : {
+				"stripes" : true
+			},
+			"data" : {
+				'url' : function(node) {
+					var url = that.getGetServerTreeURL();
+					return url;
+				},
+				"data" : function(node) {
+					var obj = {};
+					if (node.id === "#") {
+						obj["type"] = "server";
+					} else if (node.type === "geoserver") {
+						obj["type"] = "repository";
+						obj["serverName"] = node.id;
+						obj["node"] = node.id;
+					} else if (node.type === "repository") {
+						obj["type"] = "branch";
+						obj["serverName"] = node.parent;
+						obj["node"] = node.id;
+						var tranId = that.getJSTree()._data.geogigfunction.transactionId;
+						if (tranId.hasOwnProperty(node.id)) {
+							obj["transactionId"] = tranId[node.id];
+						}
+					} else if (node.type === "branch") {
+						obj["type"] = "layer";
+						obj["serverName"] = node.parents[1];
+						obj["node"] = node.id
+					}
+					console.log(obj);
+					return obj;
+				}
+			}
+
+		},
+		"search" : {
+			show_only_matches : true
+		},
+		types : {
+			"#" : {
+				"valid_children" : [ "geoserver" ]
+			},
+			"default" : {
+				"icon" : "fas fa-exclamation-circle"
+			},
+			"geoserver" : {
+				"icon" : "fas fa-globe",
+				"valid_children" : [ "repository" ]
+			},
+			"repository" : {
+				"icon" : "fas fa-archive",
+				"valid_children" : [ "branch" ]
+			},
+			"branch" : {
+				"icon" : "fas fa-code-branch",
+				"valid_children" : [ "layer" ]
+			},
+			"layer" : {
+				"icon" : "fas fa-file"
+			}
+		},
+		geogigfunction : {
+			"repository" : that,
+			"status" : {
+				"checkout" : "fas fa-check",
+				"unstaged" : "gb-geogig-unstaged",
+				"staged" : "gb-geogig-staged",
+				"unmerged" : "gb-geogig-unmerged",
+				"merged" : "gb-geogig-merged"
+			}
+		},
+		"plugins" : [ "search", "types", "geogigfunction" ]
+	});
+	this.remotejstree = $(this.remoteTree).jstree(true);
+	var remoteBody = $("<div>").css({
+		"height" : "306px",
+		"overflow-y" : "auto",
+		"width" : "100%"
+	}).append(this.remoteTree);
+	this.remoteArea = $("<div>").append(this.remoteHead).append(remoteBody);
+	this.historyArea = $("<div>");
+	this.newBranchArea = $("<div>");
+	this.mergeArea = $("<div>");
+	this.failArea = $("<div>");
+	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.mergeArea).append(
+			this.failArea);
 	this.setModalBody(this.mbody);
 	$(this.getModalBody()).css({
 		"padding" : "0"
@@ -499,9 +309,78 @@ gb.versioning.Repository = function(obj) {
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 	this.setModalFooter(buttonArea);
+	this.getCheckoutBranchURL("server");
 };
 gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
+
+/**
+ * 페이지를 전환한다.
+ * 
+ * @method gb.versioning.Repository#manageRemoteBranch
+ * @param {String}
+ */
+gb.versioning.Repository.prototype.manageRemoteBranch = function(server, repo) {
+	var serverName = server.text;
+	var repoName = repo.text;
+	$(this.remoteTitle).empty();
+	$(this.remoteTitle).text(repoName);
+	this.transitPage("remote");
+};
+
+/**
+ * 페이지를 전환한다.
+ * 
+ * @method gb.versioning.Repository#transitPage
+ * @param {String}
+ *            page - 전환할 페이지 이름 (server, remote, history, newbranch, merge,
+ *            fail)
+ */
+gb.versioning.Repository.prototype.transitPage = function(page) {
+	if (page === "server") {
+		$(this.remoteArea).hide();
+		$(this.historyArea).hide();
+		$(this.newBranchArea).hide();
+		$(this.mergeArea).hide();
+		$(this.failArea).hide();
+		$(this.serverArea).show();
+	} else if (page === "remote") {
+		$(this.historyArea).hide();
+		$(this.newBranchArea).hide();
+		$(this.mergeArea).hide();
+		$(this.failArea).hide();
+		$(this.serverArea).hide();
+		$(this.remoteArea).show();
+	} else if (page === "history") {
+		$(this.remoteArea).hide();
+		$(this.newBranchArea).hide();
+		$(this.mergeArea).hide();
+		$(this.failArea).hide();
+		$(this.serverArea).hide();
+		$(this.historyArea).show();
+	} else if (page === "newbranch") {
+		$(this.remoteArea).hide();
+		$(this.historyArea).hide();
+		$(this.mergeArea).hide();
+		$(this.failArea).hide();
+		$(this.serverArea).hide();
+		$(this.newBranchArea).show();
+	} else if (page === "merge") {
+		$(this.remoteArea).hide();
+		$(this.historyArea).hide();
+		$(this.newBranchArea).hide();
+		$(this.failArea).hide();
+		$(this.serverArea).hide();
+		$(this.mergeArea).show();
+	} else if (page === "fail") {
+		$(this.remoteArea).hide();
+		$(this.historyArea).hide();
+		$(this.newBranchArea).hide();
+		$(this.mergeArea).hide();
+		$(this.serverArea).hide();
+		$(this.failArea).show();
+	}
+};
 
 /**
  * 
@@ -559,6 +438,15 @@ gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoN
  */
 gb.versioning.Repository.prototype.refreshList = function() {
 	this.jstree.refresh();
+};
+
+/**
+ * Remote repository 목록을 새로고침한다.
+ * 
+ * @method gb.versioning.Repository#refreshRemoteList
+ */
+gb.versioning.Repository.prototype.refreshRemoteList = function() {
+	this.remotejstree.refresh();
 };
 
 /**

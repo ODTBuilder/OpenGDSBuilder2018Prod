@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,12 +44,13 @@ import com.gitrnd.qaproducer.upload.service.FileUploadService;
  * @author SG.Lee
  * @Date 2017.04.11
  */
-@Controller
+@Controller("fileUploadController")
 @RequestMapping("/file")
 public class FileUploadController extends AbstractController{
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
 	@Autowired
+	@Qualifier("fileService")
 	private FileUploadService fileService;
 
 	/**

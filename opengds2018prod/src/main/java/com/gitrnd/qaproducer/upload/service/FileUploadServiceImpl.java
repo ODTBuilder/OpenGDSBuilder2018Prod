@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -36,15 +36,17 @@ import com.gitrnd.gdsbuilder.fileread.FileMeta;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
-@Service
-@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/**/*.xml" })
+@Service("fileService")
 public class FileUploadServiceImpl implements FileUploadService {
 
 	private static final String dirPath = System.getProperty("user.home")+"\\.val";
 	
 //	private static final String dirPath = "D:\\files";
 
+	
+	
 	@Autowired
+	@Qualifier("shpFileuploadService")
 	private SHPFileUploadService shpFileService;
 
 

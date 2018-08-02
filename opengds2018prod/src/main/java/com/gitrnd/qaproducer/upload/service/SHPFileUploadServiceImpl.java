@@ -12,10 +12,9 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import javax.inject.Inject;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
 
 import com.gitrnd.gdsbuilder.fileread.FileMeta;
 import com.gitrnd.gdsbuilder.fileread.UnZipFile;
@@ -24,11 +23,11 @@ import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 
 import it.geosolutions.geoserver.rest.Util;
 
-@Service
-@ContextConfiguration(locations = { "file:src/main/webapp/WEB-INF/spring/**/*.xml" })
+@Service("shpFileuploadService")
 public class SHPFileUploadServiceImpl implements SHPFileUploadService {
 
-	@Inject
+	@Autowired
+	@Qualifier("geoService")
 	private GeoserverService geoserverService;
 
 	

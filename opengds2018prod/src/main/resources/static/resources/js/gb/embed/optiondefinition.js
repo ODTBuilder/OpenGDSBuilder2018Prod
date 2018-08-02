@@ -242,9 +242,29 @@ gb.embed.OptionDefinition = function(obj) {
 			"ko" : "속성 필터",
 			"en" : "Filter"
 		},
+		"addFilter" : {
+			"ko" : "필터 추가",
+			"en" : "Add filter"
+		},
+		"deleteFilter" : {
+			"ko" : "필터 삭제",
+			"en" : "Delete filter"
+		},
 		"layerRelation" : {
 			"ko" : "레이어 관계",
 			"en" : "Relation"
+		},
+		"selectRelationLayer" : {
+			"ko" : "관계 레이어 선택",
+			"en" : "Select relationship layer"
+		},
+		"selectRelationLayerDetail" : {
+			"ko" : "관계 레이어 세부 설정 선택",
+			"en" : "Select detail settings for the relationship layer"
+		},
+		"enterRelationLayerDetail" : {
+			"ko" : "관계 레이어 세부 설정 입력",
+			"en" : "Enter detail settings for the relationship layer"
 		},
 		"detailValidationSetting" : {
 			"ko" : "검수 세부 설정 선택",
@@ -337,6 +357,14 @@ gb.embed.OptionDefinition = function(obj) {
 		"chooseYourCat" : {
 			"ko" : "검수할 분류를 선택하세요.",
 			"en" : "Choose the category to validate."
+		},
+		"allCat" : {
+			"ko" : "모든 분류",
+			"en" : "All categorys"
+		},
+		"notice" : {
+			"ko" : "알림",
+			"en" : "Notice"
 		}
 	}
 
@@ -3094,7 +3122,7 @@ gb.embed.OptionDefinition.prototype.setMessagePopup = function(type, message) {
 	var span = $("<span>").attr("aria-hidden", "true").html("&times;");
 	var xbtn = $("<button>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close")
 			.append(span);
-	var head = $("<strong>").text("알림 ");
+	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
 			.append(message);
 	var jclass = "." + this.msg;
@@ -8070,7 +8098,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 
 	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").css({
 		"width" : "100%"
-	}).text("필터 추가");
+	}).text(this.translation.addFilter[this.locale]);
 	var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 	var addFilterRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -8412,8 +8440,8 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 		var filterCol2 = $("<div>").addClass("col-md-6").append(inputValues);
 		$(row).append(filterCol1).append(filterCol2);
 	}
-	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefilterrow").text("필터 삭제")
-			.css("width", "100%");
+	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefilterrow").text(
+			this.translation.deleteFilter[this.locale]).css("width", "100%");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row).append(delCol1);
 
@@ -8614,7 +8642,7 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 		} else if (i === 3) {
 			if (i === idx) {
 				if (rel) {
-					var li = $("<li>").addClass("active").text("관계 레이어 선택");
+					var li = $("<li>").addClass("active").text(this.translation.selectRelationLayer[this.locale]);
 					$(this.navi).append(li);
 				} else {
 					var li = $("<li>").addClass("active").text(this.translation.enterDetailSetting[this.locale]);
@@ -8625,28 +8653,28 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 				if (this.nowRelationCategory !== undefined) {
 					$(btn).text(this.nowRelationCategory);
 				} else {
-					$(btn).text("관계 레이어 세부 설정 선택");
+					$(btn).text(this.translation.selectRelationLayerDetail[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
 		} else if (i === 4) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("관계 레이어 세부 설정 선택");
+				var li = $("<li>").addClass("active").text(this.translation.selectRelationLayerDetail[this.locale]);
 				$(this.navi).append(li);
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-relationdetailcategory");
 				if (this.nowRelationDetailCategory !== undefined) {
 					$(btn).text(this.nowRelationDetailCategory.title);
 				} else {
-					$(btn).text("관계 레이어 세부 설정 선택");
+					$(btn).text(this.translation.selectRelationLayerDetail[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
 		} else if (i === 5) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("관계 레이어 세부 설정 입력");
+				var li = $("<li>").addClass("active").text(this.translation.enterRelationLayerDetail[this.locale]);
 				$(this.navi).append(li);
 			}
 		}
@@ -8687,7 +8715,7 @@ gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
 	this.setMessage(this.translation.chooseYourCat[this.locale]);
 	$(this.optionArea).empty();
 	if (rel) {
-		var allBtn = $("<button>").text("모든 분류").addClass("btn").addClass("btn-default").addClass(
+		var allBtn = $("<button>").text(this.translation.allCat[this.locale]).addClass("btn").addClass("btn-default").addClass(
 				"gb-optiondefinition-btn-relationcategory-all").css("width", "100%");
 		var col = $("<div>").addClass("col-md-12").css({
 			"margin-top" : "5px",
@@ -8779,8 +8807,11 @@ gb.embed.OptionDefinition.prototype.printOption = function(cat, navi) {
 			}
 		}
 		if (flag) {
-			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").css("width",
-					"100%").text(this.optItem[keys[i]].title).attr("value", keys[i]);
+			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").css({
+				"width" : "100%",
+				"overflow-x" : "hidden",
+				"text-overflow" : "ellipsis"
+			}).text(this.optItem[keys[i]].title).attr("value", keys[i]);
 			var strc = this.getStructure();
 			// 현재 버튼이 도곽선 설정인지
 			if (this.optItem[keys[i]].alias === "BorderLayer") {
@@ -9254,7 +9285,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter")
 								.css({
 									"width" : "100%"
-								}).text("필터 추가");
+								}).text(this.translation.addFilter[this.locale]);
 						var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 						var addFilterRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -9290,7 +9321,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								$(row).append(filterCol1).append(filterCol2);
 							}
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefilterrow").text("필터 삭제").css("width", "100%");
+									"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).css(
+									"width", "100%");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row).append(delCol1);
 

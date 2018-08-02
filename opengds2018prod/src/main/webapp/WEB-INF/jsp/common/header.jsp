@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <nav class="navbar navbar-default mainHeader">
 	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -12,22 +13,25 @@
 				style="height: 20px; width: auto; display: inline; margin-right: 10px; padding: 0;"
 				src="${pageContext.request.contextPath}/resources/img/onlyglobe.png" alt="GeoDT Online">GeoDT Online</a>
 		</div>
-
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-1">
+			<ul class="nav navbar-nav navbar-left">
+				<li><a href="${pageContext.request.contextPath}/ko/locale.do"
+					style="display: inline-block; padding-right: 5px;">한국어</a>|<a
+					href="${pageContext.request.contextPath}/en/locale.do" style="display: inline-block; padding-left: 5px;">English</a></li>
+			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="${pageContext.request.contextPath}/map.do">
-					<i class="fas fa-edit fa-lg" style="color: #344762;"></i>
-					Editor</a></li>
-				<li><a href="${pageContext.request.contextPath}/validation.do">
-					<i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
-					Validation</a></li>
-				<li><a href="${pageContext.request.contextPath}/list.do">
-					<i class="fas fa-clipboard-list fa-lg" style="color: #344762;"></i>
-					Result</a></li>
-				<li><a href="${pageContext.request.contextPath}/settinglist.do">
-					<i class="fas fa-cog fa-lg" style="color: #344762;"></i>
-					Setting</a></li>
+				<li><a href="${pageContext.request.contextPath}/map.do"> <i class="fas fa-edit fa-lg"
+						style="color: #344762;"></i> <spring:message code="lang.editor" /></a></li>
+				<li><a href="${pageContext.request.contextPath}/validation.do"> <i class="fas fa-clipboard-check fa-lg"
+						style="color: #344762;"></i> <spring:message code="lang.validation" />
+				</a></li>
+				<li><a href="${pageContext.request.contextPath}/list.do"> <i class="fas fa-clipboard-list fa-lg"
+						style="color: #344762;"></i> <spring:message code="lang.result" />
+				</a></li>
+				<li><a href="${pageContext.request.contextPath}/settinglist.do"> <i class="fas fa-cog fa-lg"
+						style="color: #344762;"></i> <spring:message code="lang.setting" />
+				</a></li>
 				<c:choose>
 					<c:when test="${username ne null}">
 						<li><a href="${pageContext.request.contextPath}/user/userinfo.do"><i class="fas fa-user-circle"></i>&nbsp;${fname}&nbsp;${lname}</a></li>
@@ -36,11 +40,11 @@
 				<c:choose>
 					<c:when test="${username eq null}">
 						<li><a href="${pageContext.request.contextPath}/user/signin.do"><span class="glyphicon glyphicon-log-in"></span>
-								Sign-in</a></li>
+								<spring:message code="lang.signin" /></a></li>
 					</c:when>
 					<c:when test="${username ne null}">
 						<li><a href="${pageContext.request.contextPath}/user/signout.do"><span
-								class="glyphicon glyphicon-log-out"></span> Sign-out</a></li>
+								class="glyphicon glyphicon-log-out"></span> <spring:message code="lang.signout" /></a></li>
 					</c:when>
 				</c:choose>
 			</ul>

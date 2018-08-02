@@ -96,6 +96,38 @@ gb.embed.LayerDefinition = function(obj) {
 		"exAllowValueField": {
 			"en": "Separate the values ​​that the attribute can have with a comma. ex)value1, value2, value3, ...",
 			"ko": "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
+		},
+		"success": {
+			"en": "Success",
+			"ko": "성공"
+		},
+		"danger": {
+			"en": "Danger",
+			"ko": "위험"
+		},
+		"noticeOptionStructError": {
+			"en": "The top-level structure of options is an array.",
+			"ko": "옵션의 최상위 구조는 배열 형태여야 합니다"
+		},
+		"noticeLayerDefUpdate": {
+			"en": "[Layer definition] has changed.",
+			"ko": "[레이어 정의]가 변경 되었습니다"
+		},
+		"noticeNotExistLayer": {
+			"en": "category. There are no layers.",
+			"ko": "번째 분류에 포함된 레이어가 없습니다"
+		},
+		"noticeInvalidKey": {
+			"en": "is not a valid key name",
+			"ko": "은/는 유효한 키 이름이 아닙니다"
+		},
+		"noticeCategoryNameEnter": {
+			"en": "category. You must enter a category name.",
+			"ko": "번째 분류의 분류명을 입력해야 합니다"
+		},
+		"keyName": {
+			"en": "Key name:",
+			"ko": "키 이름:"
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -425,15 +457,19 @@ gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
 			for (var j = 0; j < nameKeys.length; j++) {
 				if (elemName.indexOf(nameKeys[j]) === -1) {
 					isOK = false;
-					this.setMessage("danger", " 키 네임 " + nameKeys[i] + "은/는 유효한 키 네임이 아닙니다.");
-					console.error("키 네임 " + nameKeys[i] + "은/는 유효한 키 네임이 아닙니다.");
+					this.setMessage(this.translation.danger[this.locale],
+							this.translation.keyName[this.locale] + nameKeys[i] + 
+							this.translation.noticeInvalidKey[this.locale]);
+					console.error(this.translation.keyName[this.locale] +
+							nameKeys[i] + this.translation.noticeInvalidKey[this.locale]);
 					break;
 				}
 			}
 			if (!strc[i].hasOwnProperty("name")) {
 				isOK = false;
-				this.setMessage("danger", " " + (i + 1) + "번째 분류의 분류명을 입력해야 합니다.");
-				console.error((i + 1) + "번째 분류의 분류명을 입력해야 합니다.");
+				this.setMessage(this.translation.danger[this.locale]	, " " + (i + 1) + 
+						this.translation.noticeCategoryNameEnter[this.locale]);
+				console.error((i + 1) + this.translation.noticeCategoryNameEnter[this.locale]);
 				break;
 			}
 			if (strc[i].hasOwnProperty("layers")) {
@@ -444,8 +480,11 @@ gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
 						for (var k = 0; k < layerKeys.length; k++) {
 							if (elemLayers.indexOf(layerKeys[k]) === -1) {
 								isOK = false;
-								this.setMessage("danger", " 키 네임 " + layerKeys[k] + "은/는 유효한 키 네임이 아닙니다.");
-								console.error("키 네임 " + layerKeys[k] + "은/는 유효한 키 네임이 아닙니다.");
+								this.setMessage(this.translation.danger[this.locale], 
+										this.translation.keyName[this.locale] + layerKeys[k] + 
+										this.translation.noticeInvalidKey[this.locale]);
+								console.error(this.translation.keyName[this.locale] + layerKeys[k] + 
+										this.translation.noticeInvalidKey[this.locale]);
 								break;
 							}
 						}
@@ -456,8 +495,11 @@ gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
 									for (var l = 0; l < fixKeys.length; l++) {
 										if (elemFix.indexOf(fixKeys[l]) === -1) {
 											isOK = false;
-											this.setMessage("danger", " 키 네임 " + fixKeys[l] + "은/는 유효한 키 네임이 아닙니다.");
-											console.error("키 네임 " + fixKeys[l] + "은/는 유효한 키 네임이 아닙니다.");
+											this.setMessage(this.translation.danger[this.locale], 
+													this.translation.keyName[this.locale] + fixKeys[l] + 
+													this.translation.noticeInvalidKey[this.locale]);
+											console.error(this.translation.keyName[this.locale] + fixKeys[l] + 
+													this.translation.noticeInvalidKey[this.locale]);
 											break;
 										}
 									}
@@ -468,19 +510,20 @@ gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
 				}
 			} else {
 				isOK = false;
-				this.setMessage("danger", " " + (i + 1) + "번째 분류에 포함된 레이어가 없습니다.");
-				console.error((i + 1) + "번째 분류에 포함된 레이어가 없습니다.");
+				this.setMessage(this.translation.danger[this.locale], " " + (i + 1) + 
+						this.translation.noticeNotExistLayer[this.locale]);
+				console.error((i + 1) + this.translation.noticeNotExistLayer[this.locale]);
 				break;
 			}
 		}
 	} else {
 		isOK = false;
-		this.setMessage("danger", " 옵션의 최상위 구조는 배열을 형태여야 합니다.");
-		console.error("옵션의 최상위 구조는 배열을 형태여야 합니다.");
+		this.setMessage(this.translation.danger[this.locale], this.translation.noticeOptionStructError[this.locale]);
+		console.error(this.translation.noticeOptionStructError[this.locale]);
 	}
 	if (isOK) {
 		this.structure = strc;
-		this.setMessage("success", " [레이어 정의]가 변경 되었습니다.");
+		this.setMessage(this.translation.success[this.locale], this.translation.noticeLayerDefUpdate[this.locale]);
 	}
 	return isOK;
 };

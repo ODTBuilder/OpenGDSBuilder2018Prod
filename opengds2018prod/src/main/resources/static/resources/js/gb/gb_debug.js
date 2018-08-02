@@ -40,3 +40,9 @@ if (!gb.tree)
  */
 if (!gb.versioning)
 	gb.versioning = {};
+/**
+ * @namespace {Object} gb.versioning
+ * @memberof gb
+ */
+if (!gb.geoserver)
+	gb.geoserver = {};

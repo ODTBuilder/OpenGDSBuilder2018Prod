@@ -119,6 +119,12 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var remoteBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remote repository").css({
 							"display" : "inline-block"
+						}).click(function() {
+							console.log("checkout");
+							console.log(node);
+							var server = that.get_node(node.parents[0]);
+							var repo = node;
+							that._data.geogigfunction.repository.manageRemoteBranch(server, repo);
 						});
 
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);

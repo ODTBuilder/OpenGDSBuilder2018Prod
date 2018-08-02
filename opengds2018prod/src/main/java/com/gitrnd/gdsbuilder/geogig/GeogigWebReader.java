@@ -256,10 +256,10 @@ public class GeogigWebReader {
 	 * @param repoName
 	 * @return GeogigBranch
 	 */
-	public GeogigBranch listBranch(String repoName) {
+	public GeogigBranch listBranch(String repoName, boolean remotes) {
 
 		ListBranch list = new ListBranch();
-		GeogigBranch branch = list.executeCommand(baseURL, username, password, repoName);
+		GeogigBranch branch = list.executeCommand(baseURL, username, password, repoName, remotes);
 
 		return branch;
 	}

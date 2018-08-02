@@ -15,9 +15,334 @@ if (!gb.embed)
 	gb.embed = {};
 gb.embed.OptionDefinition = function(obj) {
 	var that = this;
+	var options = obj ? obj : {};
+	this.locale = options.locale ? options.locale : "en";
+	this.translation = {
+		"borderLayer" : {
+			"ko" : "도곽선 설정",
+			"en" : "Border Layer"
+		},
+		"dissolve" : {
+			"ko" : "인접 속성 병합 오류",
+			"en" : "Discord of adjacent attribute"
+		},
+		"fEntityInHole" : {
+			"ko" : "홀 존재 오류(임상도)",
+			"en" : "Holes in polygons"
+		},
+		"twistedPolygon" : {
+			"ko" : "꼬인 객체 오류",
+			"en" : "Twisted polygons"
+		},
+		"refAttributeMiss" : {
+			"ko" : "인접 요소 속성 오류",
+			"en" : "Missing attribute of adjacent features"
+		},
+		"nodeMiss" : {
+			"ko" : "노드 오류",
+			"en" : "Missing node"
+		},
+		"dRefEntityNone" : {
+			"ko" : "인접 요소 부재 오류",
+			"en" : "Missing adjacent feature"
+		},
+		"fRefEntityNone" : {
+			"ko" : "인접 요소 부재 오류",
+			"en" : "Missing adjacent feature"
+		},
+		"entityDuplicated" : {
+			"ko" : "요소 중복 오류",
+			"en" : "Duplicated features"
+		},
+		"selfEntity" : {
+			"ko" : "단독 존재 오류",
+			"en" : "Overlaping features"
+		},
+		"outBoundary" : {
+			"ko" : "경계 초과 오류",
+			"en" : "Feature crossing the boundary"
+		},
+		"pointDuplicated" : {
+			"ko" : "중복점 오류",
+			"en" : "Duplicated point"
+		},
+		"smallLength" : {
+			"ko" : "허용 범위 이하 길이",
+			"en" : "Segments under the length tolerance limit"
+		},
+		"smallArea" : {
+			"ko" : "허용 범위 이하 면적",
+			"en" : "Areas under the tolerance limit"
+		},
+		"conIntersected" : {
+			"ko" : "등고선 교차 오류",
+			"en" : "Contour line intersections"
+		},
+		"conOverDegree" : {
+			"ko" : "등고선 꺾임 오류",
+			"en" : "Unsmooth contour line curves"
+		},
+		"conBreak" : {
+			"ko" : "등고선 끊감 오류",
+			"en" : "Contour line disconnections"
+		},
+		"zValueAmbiguous" : {
+			"ko" : "고도값 오류",
+			"en" : "Altitude Error"
+		},
+		"uselessPoint" : {
+			"ko" : "등고선 직선화 미처리",
+			"en" : "Useless points in contour line"
+		},
+		"overshoot" : {
+			"ko" : "기준점 초과",
+			"en" : "Feature crossing the sheet"
+		},
+		"uselessEntity" : {
+			"ko" : "불확실한 요소 사용 오류",
+			"en" : "Uncertain geometry"
+		},
+		"entityOpenMiss" : {
+			"ko" : "객체 폐합 오류",
+			"en" : "Unclosed feature"
+		},
+		"oneAcre" : {
+			"ko" : "지류계 오류",
+			"en" : "Farmland error(Total)"
+		},
+		"oneStage" : {
+			"ko" : "경지계 오류",
+			"en" : "Farmland error(Part)"
+		},
+		"symbolOut" : {
+			"ko" : "객체 포함 오류",
+			"en" : "Symbol crossing the limit"
+		},
+		"buildingSiteMiss" : {
+			"ko" : "건물 부지 오류",
+			"en" : "Uncertain building site"
+		},
+		"boundaryMiss" : {
+			"ko" : "경계 누락 오류",
+			"en" : "Missing boundary"
+		},
+		"centerLineMiss" : {
+			"ko" : "중심선 누락 오류",
+			"en" : "Missing center line"
+		},
+		"entityInHole" : {
+			"ko" : "홀 중복 오류",
+			"en" : "Erroneus entity in hole"
+		},
+		"holeMisplacement" : {
+			"ko" : "홀 존재 오류",
+			"en" : "Misplaced hole"
+		},
+		"linearDisconnection" : {
+			"ko" : "선형 단락 오류",
+			"en" : "Linear disconnection"
+		},
+		"multiPart" : {
+			"ko" : "멀티 파트 오류",
+			"en" : "Multi part"
+		},
+		"bridgeName" : {
+			"ko" : "교량명 오류",
+			"en" : "Bridge name error"
+		},
+		"adminMiss" : {
+			"ko" : "행정 경계 오류",
+			"en" : "Administrative boundary error"
+		},
+		"numericalValue" : {
+			"ko" : "수치값 오류",
+			"en" : "Erroneous numerical value"
+		},
+		"ufidMiss" : {
+			"ko" : "UFID 오류",
+			"en" : "Missing UFID"
+		},
+		"refZValueMiss" : {
+			"ko" : "인접 요소 고도값 오류",
+			"en" : "Altitude error of adjacent feature"
+		},
+		"uavrgdph10" : {
+			"ko" : "평균 심도 오류(정위치)",
+			"en" : "Mean depth error(Graphic) (Underground)"
+		},
+		"uavrgdph20" : {
+			"ko" : "평균 심도 오류(구조화)",
+			"en" : "Mean depth error(Attribute) (Underground)"
+		},
+		"uleaderline" : {
+			"ko" : "지시선 교차 오류",
+			"en" : "Leader intersection (Underground)"
+		},
+		"uNodeMiss" : {
+			"ko" : "시설물 선형 노드 오류",
+			"en" : "Missing node on line (Underground)"
+		},
+		"uSymbolDirection" : {
+			"ko" : "시설물 심볼 방향 오류",
+			"en" : "Uncertain direction of symbol (Underground)"
+		},
+		"uSymbolInLine" : {
+			"ko" : "선형내 심볼 미존재 오류",
+			"en" : "Missing symbol on line (Underground)"
+		},
+		"uLineCross" : {
+			"ko" : "관로 상하월 오류",
+			"en" : "Pipe crossing error (Underground)"
+		},
+		"uSymbolsDistance" : {
+			"ko" : "심볼 간격 오류",
+			"en" : "Distance between symbols (Underground)"
+		},
+		"uSymbolOut" : {
+			"ko" : "심볼 단독 존재 오류",
+			"en" : "Symbol misplaced (Underground)"
+		},
+		"fCodeLogicalAttribute" : {
+			"ko" : "F Code 오류",
+			"en" : "F Code error (Forest)"
+		},
+		"fLabelLogicalAttribute" : {
+			"ko" : "Label 오류",
+			"en" : "F Label error (Forest)"
+		},
+		"valItemSetting" : {
+			"ko" : "검수 항목 설정",
+			"en" : "Validation Items"
+		},
+		"chooseYourItem" : {
+			"ko" : "검수 항목을 선택하세요.",
+			"en" : "Choose your validation item."
+		},
+		"border" : {
+			"ko" : "도곽선",
+			"en" : "Map sheet border"
+		},
+		"notSet" : {
+			"ko" : "미설정",
+			"en" : "Not set"
+		},
+		"simpleCheck" : {
+			"ko" : "검수 수행(세부 설정 불필요)",
+			"en" : "Perform this item"
+		},
+		"attrValidation" : {
+			"ko" : "속성 검수",
+			"en" : "Attribute"
+		},
+		"condValidation" : {
+			"ko" : "수치 조건",
+			"en" : "Condition"
+		},
+		"filterValidation" : {
+			"ko" : "속성 필터",
+			"en" : "Filter"
+		},
+		"layerRelation" : {
+			"ko" : "레이어 관계",
+			"en" : "Relation"
+		},
+		"detailValidationSetting" : {
+			"ko" : "검수 세부 설정 선택",
+			"en" : "Detail setting"
+		},
+		"chooseYourDetail" : {
+			"ko" : "세부 설정 항목을 선택하세요.",
+			"en" : "Choose your detail option"
+		},
+		"addLayerCode" : {
+			"ko" : "레이어 코드 추가",
+			"en" : "Add layer code"
+		},
+		"code" : {
+			"ko" : "코드",
+			"en" : "Code"
+		},
+		"applyAll" : {
+			"ko" : "모두 적용",
+			"en" : "Apply all"
+		},
+		"deleteLayerCode" : {
+			"ko" : "레이어 코드 삭제",
+			"en" : "Delete layer code"
+		},
+		"addAttr" : {
+			"ko" : "속성 추가",
+			"en" : "Add attribute"
+		},
+		"attrName" : {
+			"ko" : "속성명",
+			"en" : "Attribute name"
+		},
+		"attrNameEx" : {
+			"ko" : "속성명 EX) 재질",
+			"en" : "Attribute name EX) material"
+		},
+		"acceptVal" : {
+			"ko" : "허용값",
+			"en" : "Acceptable values"
+		},
+		"acceptValEx" : {
+			"ko" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3",
+			"en" : "Enter acceptable values separated by commas (,) EX) 1,2,3"
+		},
+		"figure" : {
+			"ko" : "수치",
+			"en" : "Figure"
+		},
+		"figureInterEx" : {
+			"ko" : "숫자형 기준값",
+			"en" : "Numeric type reference value"
+		},
+		"condition" : {
+			"ko" : "조건",
+			"en" : "Condition"
+		},
+		"equal" : {
+			"ko" : "같음",
+			"en" : "Equal"
+		},
+		"excess" : {
+			"ko" : "초과",
+			"en" : "Exceeding"
+		},
+		"under" : {
+			"ko" : "미만",
+			"en" : "Under"
+		},
+		"interval" : {
+			"ko" : "간격",
+			"en" : "Interval"
+		},
+		"deleteAttr" : {
+			"ko" : "속성 삭제",
+			"en" : "Delete Attribute"
+		},
+		"enterDetailSetting" : {
+			"ko" : "검수 세부 설정 입력",
+			"en" : "Enter the detail fugure"
+		},
+		"detailGuide" : {
+			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
+			"en" : "Add a new layer code, then enter the detail figure."
+		},
+		"selectCat" : {
+			"ko" : "분류 설정",
+			"en" : "Select Category"
+		},
+		"chooseYourCat" : {
+			"ko" : "검수할 분류를 선택하세요.",
+			"en" : "Choose the category to validate."
+		}
+	}
+
 	this.optItem = {
 		"BorderLayer" : {
-			"title" : "도곽선 설정",
+			"title" : this.translation.borderLayer[this.locale],
 			"alias" : "BorderLayer",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -68,7 +393,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"Dissolve" : {
-			"title" : "인접 속성 병합 오류",
+			"title" : this.translation.dissolve[this.locale],
 			"alias" : "Dissolve",
 			"category" : [ "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -119,7 +444,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"FEntityInHole" : {
-			"title" : "홀 존재 오류(임상도)",
+			"title" : this.translation.fEntityInHole[this.locale],
 			"alias" : "FEntityInHole",
 			"category" : [ "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -170,7 +495,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"TwistedPolygon" : {
-			"title" : "꼬인 객체 오류",
+			"title" : this.translation.twistedPolygon[this.locale],
 			"alias" : "TwistedPolygon",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -221,7 +546,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"RefAttributeMiss" : {
-			"title" : "인접 요소 속성 오류",
+			"title" : this.translation.refAttributeMiss[this.locale],
 			"alias" : "RefAttributeMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -272,7 +597,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"NodeMiss" : {
-			"title" : "노드 오류",
+			"title" : this.translation.nodeMiss[this.locale],
 			"alias" : "NodeMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -323,7 +648,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"DRefEntityNone" : {
-			"title" : "인접 요소 부재 오류",
+			"title" : this.translation.dRefEntityNone[this.locale],
 			"alias" : "RefEntityNone",
 			"category" : [ "numetrical" ],
 			"version" : [ "qa1", "qa2" ],
@@ -374,7 +699,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"FRefEntityNone" : {
-			"title" : "인접 요소 부재 오류",
+			"title" : this.translation.fRefEntityNone[this.locale],
 			"alias" : "RefEntityNone",
 			"category" : [ "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -425,7 +750,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"EntityDuplicated" : {
-			"title" : "요소 중복 오류",
+			"title" : this.translation.entityDuplicated[this.locale],
 			"alias" : "EntityDuplicated",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -476,7 +801,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"SelfEntity" : {
-			"title" : "단독 존재 오류",
+			"title" : this.translation.selfEntity[this.locale],
 			"alias" : "SelfEntity",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -527,7 +852,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"OutBoundary" : {
-			"title" : "경계 초과 오류",
+			"title" : this.translation.outBoundary[this.locale],
 			"alias" : "OutBoundary",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -578,7 +903,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"PointDuplicated" : {
-			"title" : "중복점 오류",
+			"title" : this.translation.pointDuplicated[this.locale],
 			"alias" : "PointDuplicated",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -629,7 +954,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"SmallLength" : {
-			"title" : "허용 범위 이하 길이",
+			"title" : this.translation.smallLength[this.locale],
 			"alias" : "SmallLength",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -680,7 +1005,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"SmallArea" : {
-			"title" : "허용 범위 이하 면적",
+			"title" : this.translation.smallArea[this.locale],
 			"alias" : "SmallArea",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -731,7 +1056,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ConIntersected" : {
-			"title" : "등고선 교차 오류",
+			"title" : this.translation.conIntersected[this.locale],
 			"alias" : "ConIntersected",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -782,7 +1107,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ConOverDegree" : {
-			"title" : "등고선 꺾임 오류",
+			"title" : this.translation.conOverDegree[this.locale],
 			"alias" : "ConOverDegree",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -833,7 +1158,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ConBreak" : {
-			"title" : "등고선 끊김 오류",
+			"title" : this.translation.conBreak[this.locale],
 			"alias" : "ConBreak",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -884,7 +1209,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ZValueAmbiguous" : {
-			"title" : "고도값 오류",
+			"title" : this.translation.zValueAmbiguous[this.locale],
 			"alias" : "ZValueAmbiguous",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -935,7 +1260,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UselessPoint" : {
-			"title" : "등고선 직선화 미처리",
+			"title" : this.translation.uselessPoint[this.locale],
 			"alias" : "UselessPoint",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -986,7 +1311,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"OverShoot" : {
-			"title" : "기준점 초과",
+			"title" : this.translation.overshoot[this.locale],
 			"alias" : "OverShoot",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1037,7 +1362,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UselessEntity" : {
-			"title" : "불확실한 요소 사용 오류",
+			"title" : this.translation.uselessEntity[this.locale],
 			"alias" : "UselessEntity",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1088,7 +1413,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"EntityOpenMiss" : {
-			"title" : "객체 폐합 오류",
+			"title" : this.translation.entityOpenMiss[this.locale],
 			"alias" : "EntityOpenMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1139,7 +1464,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"OneAcre" : {
-			"title" : "지류계 오류",
+			"title" : this.translation.oneAcre[this.locale],
 			"alias" : "OneAcre",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1190,7 +1515,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"OneStage" : {
-			"title" : "경지계 오류",
+			"title" : this.translation.oneStage[this.locale],
 			"alias" : "OneStage",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1241,7 +1566,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"SymbolOut" : {
-			"title" : "객체 포함 오류",
+			"title" : this.translation.symbolOut[this.locale],
 			"alias" : "SymbolOut",
 			"category" : [ "numetrical" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1292,7 +1617,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"BuildingSiteMiss" : {
-			"title" : "건물 부지 오류",
+			"title" : this.translation.buildingSiteMiss[this.locale],
 			"alias" : "BuildingSiteMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1343,7 +1668,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"BoundaryMiss" : {
-			"title" : "경계 누락 오류",
+			"title" : this.translation.boundaryMiss[this.locale],
 			"alias" : "BoundaryMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1394,7 +1719,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"CenterLineMiss" : {
-			"title" : "중심선 누락 오류",
+			"title" : this.translation.centerLineMiss[this.locale],
 			"alias" : "CenterLineMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1445,7 +1770,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"EntityInHole" : {
-			"title" : "홀 중복 오류",
+			"title" : this.translation.entityInHole[this.locale],
 			"alias" : "EntityInHole",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1496,7 +1821,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"HoleMisplacement" : {
-			"title" : "홀 존재 오류",
+			"title" : this.translation.holeMisplacement[this.locale],
 			"alias" : "HoleMisplacement",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1547,7 +1872,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"LinearDisconnection" : {
-			"title" : "선형 단락 오류",
+			"title" : this.translation.linearDisconnection[this.locale],
 			"alias" : "LinearDisconnection",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1598,7 +1923,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"MultiPart" : {
-			"title" : "멀티 파트 오류",
+			"title" : this.translation.multiPart[this.locale],
 			"alias" : "MultiPart",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1649,7 +1974,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"BridgeName" : {
-			"title" : "교량명 오류",
+			"title" : this.translation.bridgeName[this.locale],
 			"alias" : "BridgeName",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1700,7 +2025,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"AdminMiss" : {
-			"title" : "행정 경계 오류",
+			"title" : this.translation.adminMiss[this.locale],
 			"alias" : "AdminMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1751,7 +2076,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"NumericalValue" : {
-			"title" : "수치값 오류",
+			"title" : this.translation.numericalValue[this.locale],
 			"alias" : "NumericalValue",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1802,7 +2127,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UFIDMiss" : {
-			"title" : "UFID 오류",
+			"title" : this.translation.ufidMiss[this.locale],
 			"alias" : "UFIDMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1853,7 +2178,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"RefZValueMiss" : {
-			"title" : "인접 요소 고도값 오류",
+			"title" : this.translation.refZValueMiss[this.locale],
 			"alias" : "RefZValueMiss",
 			"category" : [ "numetrical", "underground", "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -1904,7 +2229,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UAvrgDPH10" : {
-			"title" : "평균 심도 오류(정위치)",
+			"title" : this.translation.uavrgdph10[this.locale],
 			"alias" : "UAvrgDPH10",
 			"category" : [ "underground" ],
 			"version" : [ "qa1" ],
@@ -1955,7 +2280,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UAvrgDPH20" : {
-			"title" : "평균 심도 오류(구조화)",
+			"title" : this.translation.uavrgdph20[this.locale],
 			"alias" : "UAvrgDPH20",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2006,7 +2331,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ULeaderline" : {
-			"title" : "지시선 교차 오류",
+			"title" : this.translation.uleaderline[this.locale],
 			"alias" : "ULeaderline",
 			"category" : [ "underground" ],
 			"version" : [ "qa1" ],
@@ -2057,7 +2382,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"UNodeMiss" : {
-			"title" : "시설물 선형 노드 오류",
+			"title" : this.translation.uNodeMiss[this.locale],
 			"alias" : "UNodeMiss",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2108,7 +2433,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"USymbolDirection" : {
-			"title" : "시설물 심볼 방향 오류",
+			"title" : this.translation.uSymbolDirection[this.locale],
 			"alias" : "USymbolDirection",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2159,7 +2484,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"USymbolInLine" : {
-			"title" : "선형내 심볼 미존재 오류",
+			"title" : this.translation.uSymbolInLine[this.locale],
 			"alias" : "USymbolInLine",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2210,7 +2535,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"ULineCross" : {
-			"title" : "관로 상하월 오류",
+			"title" : this.translation.uLineCross[this.locale],
 			"alias" : "ULineCross",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2261,7 +2586,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"USymbolsDistance" : {
-			"title" : "심볼 간격 오류",
+			"title" : this.translation.uSymbolsDistance[this.locale],
 			"alias" : "USymbolsDistance",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2312,7 +2637,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"USymbolOut" : {
-			"title" : "심볼 단독 존재 오류",
+			"title" : this.translation.uSymbolOut[this.locale],
 			"alias" : "USymbolOut",
 			"category" : [ "underground" ],
 			"version" : [ "qa2" ],
@@ -2363,7 +2688,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"FCodeLogicalAttribute" : {
-			"title" : "F Code 오류",
+			"title" : this.translation.fCodeLogicalAttribute[this.locale],
 			"alias" : "FCodeLogicalAttribute",
 			"category" : [ "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -2414,7 +2739,7 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 		},
 		"FLabelLogicalAttribute" : {
-			"title" : "Label 오류",
+			"title" : this.translation.fLabelLogicalAttribute[this.locale],
 			"alias" : "FLabelLogicalAttribute",
 			"category" : [ "forest" ],
 			"version" : [ "qa1", "qa2" ],
@@ -2478,7 +2803,6 @@ gb.embed.OptionDefinition = function(obj) {
 	// qa1, qa2
 	this.qaVer = undefined;
 
-	var options = obj ? obj : {};
 	this.layerDef = options.layerDefinition ? options.layerDefinition : undefined;
 
 	this.navi = $("<ol>").addClass("breadcrumb").addClass("gb-optiondefinition-navigation");
@@ -7707,7 +8031,7 @@ gb.embed.OptionDefinition.prototype.setNoParamOption = function(check, all) {
 };
 
 gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
-	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7729,7 +8053,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 		for (var i = 0; i < cat.length; i++) {
 			if (cat[i].name === category) {
 				var layers = cat[i].layers;
-				var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 				$(codeSelect).append(allCode);
 				for (var j = 0; j < layers.length; j++) {
 					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
@@ -7741,7 +8065,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfilter").text(
-			"레이어 코드 삭제").css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").css({
@@ -7758,7 +8082,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 };
 
 gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
-	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7780,7 +8104,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 		for (var i = 0; i < cat.length; i++) {
 			if (cat[i].name === category) {
 				var layers = cat[i].layers;
-				var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 				$(codeSelect).append(allCode);
 				for (var j = 0; j < layers.length; j++) {
 					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
@@ -7792,11 +8116,11 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfigure").text(
-			"레이어 코드 삭제").css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn)
 
-	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure").text("속성 추가").css(
-			"width", "100%");
+	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure").text(
+			this.translation.addAttr[this.locale]).css("width", "100%");
 	var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 	var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -7808,7 +8132,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 };
 
 gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
-	var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
 	var cat = this.getLayerDefinition().getStructure();
 
@@ -7830,7 +8154,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		for (var i = 0; i < cat.length; i++) {
 			if (cat[i].name === category) {
 				var layers = cat[i].layers;
-				var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 				$(codeSelect).append(allCode);
 				for (var j = 0; j < layers.length; j++) {
 					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
@@ -7842,7 +8166,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayertolerance").text(
-			"레이어 코드 삭제").css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 	/*
@@ -7858,10 +8182,10 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 
 	if (sec) {
 
-		var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+		var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 		var inputNum = $("<input>").attr({
 			"type" : "number",
-			"placeholder" : "숫자형 기준값"
+			"placeholder" : this.translation.figureInterEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
 		if (!optItem.relation.tolerance.value) {
 			$(inputNum).prop("disabled", true);
@@ -7869,11 +8193,11 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
 		$(row).append(numCol1).append(numCol2);
 
-		var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+		var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
-		var optionEqual = $("<option>").text("같음").attr("value", "equal");
-		var optionOver = $("<option>").text("초과").attr("value", "over");
-		var optionUnder = $("<option>").text("미만").attr("value", "under");
+		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 		if (!optItem.relation.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
@@ -7881,10 +8205,10 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
 		$(row).append(codeCol1).append(codeCol2);
 
-		var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+		var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 		var inputNum = $("<input>").attr({
 			"type" : "number",
-			"placeholder" : "숫자형 기준값"
+			"placeholder" : this.translation.figureInterEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
 		if (!optItem.relation.tolerance.interval) {
 			$(inputNum).prop("disabled", true);
@@ -7896,10 +8220,10 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		$(figureArea).append(row);
 	} else {
 
-		var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+		var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 		var inputNum = $("<input>").attr({
 			"type" : "number",
-			"placeholder" : "숫자형 기준값"
+			"placeholder" : this.translation.figureInterEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
 		if (!optItem.tolerance.value) {
 			$(inputNum).prop("disabled", true);
@@ -7908,11 +8232,11 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 
 		$(row).append(numCol1).append(numCol2);
 
-		var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+		var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
-		var optionEqual = $("<option>").text("같음").attr("value", "equal");
-		var optionOver = $("<option>").text("초과").attr("value", "over");
-		var optionUnder = $("<option>").text("미만").attr("value", "under");
+		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 		if (!optItem.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
@@ -7920,10 +8244,10 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
 		$(row).append(codeCol1).append(codeCol2);
 
-		var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+		var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 		var inputNum = $("<input>").attr({
 			"type" : "number",
-			"placeholder" : "숫자형 기준값"
+			"placeholder" : this.translation.figureInterEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
 		if (!optItem.tolerance.interval) {
 			$(inputNum).prop("disabled", true);
@@ -8070,20 +8394,20 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var row = $("<div>").addClass("row");
 	if (optItem.filter.key) {
-		var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
+		var attrCol1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale] + ":");
 		var inputAttr = $("<input>").attr({
 			"type" : "text",
-			"placeholder" : "속성명 EX) 재질"
+			"placeholder" : this.translation.attrNameEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-filterkey");
 		var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
 
 		$(row).append(attrCol1).append(attrCol2);
 	}
 	if (optItem.filter.values) {
-		var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
+		var filterCol1 = $("<div>").addClass("col-md-1").text(this.translation.acceptVal[this.locale] + ":");
 		var inputValues = $("<input>").attr({
 			"type" : "text",
-			"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
+			"placeholder" : this.translation.acceptValEx[this.locale]
 		}).addClass("form-control").addClass("gb-optiondefinition-input-filtervalues");
 		var filterCol2 = $("<div>").addClass("col-md-6").append(inputValues);
 		$(row).append(filterCol1).append(filterCol2);
@@ -8104,10 +8428,10 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var row = $("<div>").addClass("row");
 
-	var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
+	var attrCol1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale] + ":");
 	var inputAttr = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "속성명 EX) 재질"
+		"placeholder" : this.translation.attrNameEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurekey");
 	if (!optItem.figure.key) {
 		$(inputAttr).prop("disabled", true);
@@ -8116,10 +8440,10 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 
 	$(row).append(attrCol1).append(attrCol2);
 
-	var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
+	var filterCol1 = $("<div>").addClass("col-md-1").text(this.translation.acceptVal[this.locale] + ":");
 	var inputValues = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
+		"placeholder" : this.translation.acceptValEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurevalues");
 	if (!optItem.figure.values) {
 		$(inputValues).prop("disabled", true);
@@ -8129,10 +8453,10 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 
 	var row2 = $("<div>").addClass("row");
 
-	var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+	var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 	var inputNum = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "숫자형 기준값"
+		"placeholder" : this.translation.figureInterEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figurenumber");
 	if (!optItem.figure.number) {
 		$(inputNum).prop("disabled", true);
@@ -8141,11 +8465,11 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 
 	$(row2).append(numCol1).append(numCol2);
 
-	var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecondition");
-	var optionEqual = $("<option>").text("같음").attr("value", "equal");
-	var optionOver = $("<option>").text("초과").attr("value", "over");
-	var optionUnder = $("<option>").text("미만").attr("value", "under");
+	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 	if (!optItem.figure.condition) {
 		$(codeSelect).prop("disabled", true);
@@ -8153,10 +8477,10 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
 	$(row2).append(codeCol1).append(codeCol2);
 
-	var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+	var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 	var inputNum = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "숫자형 기준값"
+		"placeholder" : this.translation.figureInterEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-figureinterval");
 	if (!optItem.figure.interval) {
 		$(inputNum).prop("disabled", true);
@@ -8165,8 +8489,8 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 
 	$(row2).append(numCol1).append(numCol2);
 
-	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefigurerow").text("속성 삭제")
-			.css("width", "100%");
+	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefigurerow").text(
+			this.translation.deleteAttr[this.locale]).css("width", "100%");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row2).append(delCol1);
 
@@ -8181,10 +8505,10 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var row = $("<div>").addClass("row");
 
-	var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+	var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 	var inputNum = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "숫자형 기준값"
+		"placeholder" : this.translation.figureInterEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
 	if (!optItem.tolerance.value) {
 		$(inputNum).prop("disabled", true);
@@ -8193,11 +8517,11 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 
 	$(row).append(numCol1).append(numCol2);
 
-	var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
-	var optionEqual = $("<option>").text("같음").attr("value", "equal");
-	var optionOver = $("<option>").text("초과").attr("value", "over");
-	var optionUnder = $("<option>").text("미만").attr("value", "under");
+	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 	if (!optItem.tolerance.condition) {
 		$(codeSelect).prop("disabled", true);
@@ -8205,10 +8529,10 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
 	$(row).append(codeCol1).append(codeCol2);
 
-	var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+	var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 	var inputNum = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "숫자형 기준값"
+		"placeholder" : this.translation.figureInterEx[this.locale]
 	}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
 	if (!optItem.tolerance.interval) {
 		$(inputNum).prop("disabled", true);
@@ -8246,21 +8570,21 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	for (var i = 0; i < (idx + 1); i++) {
 		if (i === 0) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("분류 설정");
+				var li = $("<li>").addClass("active").text(this.translation.selectCat[this.locale]);
 				$(this.navi).append(li);
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-category");
 				if (this.nowCategory !== undefined) {
 					$(btn).text(this.nowCategory);
 				} else {
-					$(btn).text("분류 설정");
+					$(btn).text(this.translation.selectCat[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
 		} else if (i === 1) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("검수 항목 설정");
+				var li = $("<li>").addClass("active").text(this.translation.valItemSetting[this.locale]);
 				$(this.navi).append(li);
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-option");
@@ -8268,21 +8592,21 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 					$(btn).text(this.nowOption.title);
 					$(btn).attr("value", this.nowOption.alias);
 				} else {
-					$(btn).text("검수 항목 설정");
+					$(btn).text(this.translation.valItemSetting[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
 		} else if (i === 2) {
 			if (i === idx) {
-				var li = $("<li>").addClass("active").text("검수 세부 설정 선택");
+				var li = $("<li>").addClass("active").text(this.translation.detailValidationSetting[this.locale]);
 				$(this.navi).append(li);
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-detailcategory");
 				if (this.nowDetailCategory !== undefined) {
 					$(btn).text(this.nowDetailCategory.title);
 				} else {
-					$(btn).text("검수 세부 설정 선택");
+					$(btn).text(this.translation.detailValidationSetting[this.locale]);
 				}
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
@@ -8293,7 +8617,7 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 					var li = $("<li>").addClass("active").text("관계 레이어 선택");
 					$(this.navi).append(li);
 				} else {
-					var li = $("<li>").addClass("active").text("검수 세부 설정 입력");
+					var li = $("<li>").addClass("active").text(this.translation.enterDetailSetting[this.locale]);
 					$(this.navi).append(li);
 				}
 			} else {
@@ -8360,7 +8684,7 @@ gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
 		this.updateNavigation(3, true);
 		className = "gb-optiondefinition-btn-relationcategory";
 	}
-	this.setMessage("검수할 분류를 선택하세요.");
+	this.setMessage(this.translation.chooseYourCat[this.locale]);
 	$(this.optionArea).empty();
 	if (rel) {
 		var allBtn = $("<button>").text("모든 분류").addClass("btn").addClass("btn-default").addClass(
@@ -8439,7 +8763,7 @@ gb.embed.OptionDefinition.prototype.printOption = function(cat, navi) {
 	this.nowRelationDetailCategory = undefined;
 
 	this.updateNavigation(1);
-	this.setMessage("검수 항목을 선택하세요.");
+	this.setMessage(this.translation.chooseYourItem[this.locale]);
 	$(this.optionArea).empty();
 	var opArea = $("<div>").addClass("row");
 	var keys = Object.keys(this.optItem);
@@ -8569,7 +8893,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 	if (this.nowOption.alias === "BorderLayer" && !sec) {
 		this.setMessage("도곽선으로 사용할 레이어 코드를 선택하세요.");
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-border");
-		var option = $("<option>").attr("geom", "none").text("미설정");
+		var option = $("<option>").attr("geom", "none").text(this.translation.notSet[this.locale]);
 		$(codeSelect).append(option);
 		var cat = this.getLayerDefinition().getStructure();
 		var borderGeom = this.optItem.BorderLayer.geometry;
@@ -8596,12 +8920,12 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				}
 			}
 		}
-		var borderCol1 = $("<div>").addClass("col-md-2").addClass("text-center").text("도곽선");
+		var borderCol1 = $("<div>").addClass("col-md-2").addClass("text-center").text(this.translation.border[this.locale]);
 		var borderCol2 = $("<div>").addClass("col-md-10").append(codeSelect);
 		var row = $("<div>").addClass("row").append(borderCol1).append(borderCol2);
 		$(this.optionArea).append(row);
 	} else {
-		this.setMessage("세부 설정 항목을 선택하세요.");
+		this.setMessage(this.translation.chooseYourDetail[this.locale]);
 		var alias = this.nowOption.alias;
 		var optItem = this.optItem[alias];
 		var type3 = optItem["purpose"];
@@ -8612,21 +8936,21 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"속성 필터").attr("value", "filter");
+							this.translation.filterValidation[this.locale]).attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
 						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
 					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"속성 검수").attr("value", "figure");
+							this.translation.attrValidation[this.locale]).attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
 						|| optItem.relation.tolerance.interval) {
 					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"수치 조건").attr("value", "tolerance");
+							this.translation.condValidation[this.locale]).attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
@@ -8679,7 +9003,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 					var check = $("<input>").attr({
 						"type" : "checkbox"
 					}).addClass("gb-optiondefinition-check-noparamoption-all").prop("checked", flag);
-					var label = $("<label>").append(check).append("검수 수행(세부 설정 불필요)");
+					var label = $("<label>").append(check).append(this.translation.simpleCheck[this.locale]);
 					var col = $("<div>").addClass("col-md-12").append(label);
 					$(row).append(col);
 				}
@@ -8687,21 +9011,21 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"속성 필터").attr("value", "filter");
+							this.translation.filterValidation[this.locale]).attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
 						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
 					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"속성 검수").attr("value", "figure");
+							this.translation.attrValidation[this.locale]).attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
 						|| optItem.relation.tolerance.interval) {
 					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
-							"수치 조건").attr("value", "tolerance");
+							this.translation.condValidation[this.locale]).attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
@@ -8743,7 +9067,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 					var check = $("<input>").attr({
 						"type" : "checkbox"
 					}).addClass("gb-optiondefinition-check-noparamoption").prop("checked", flag);
-					var label = $("<label>").append(check).append("검수 수행(세부 설정 불필요)");
+					var label = $("<label>").append(check).append(this.translation.simpleCheck[this.locale]);
 					var col = $("<div>").addClass("col-md-12").append(label);
 					$(row).append(col);
 				}
@@ -8776,27 +9100,27 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 				var check = $("<input>").attr({
 					"type" : "checkbox"
 				}).addClass("gb-optiondefinition-check-noparamoption").prop("checked", flag);
-				var label = $("<label>").append(check).append("검수 수행(세부 설정 불필요)");
+				var label = $("<label>").append(check).append(this.translation.simpleCheck[this.locale]);
 				var col = $("<div>").addClass("col-md-12").append(label);
 				$(row).append(col);
 			}
 
 			if (optItem.filter.code || optItem.filter.key || optItem.filter.values) {
-				var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%")
-						.text("속성 필터").attr("value", "filter");
+				var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+						this.translation.filterValidation[this.locale]).attr("value", "filter");
 				var col = $("<div>").addClass("col-md-3").append(filterBtn);
 				$(row).append(col);
 			}
 			if (optItem.figure.code || optItem.figure.key || optItem.figure.values || optItem.figure.number || optItem.figure.condition
 					|| optItem.figure.interval) {
-				var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text("속성 검수")
-						.attr("value", "figure");
+				var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+						this.translation.attrValidation[this.locale]).attr("value", "figure");
 				var col = $("<div>").addClass("col-md-3").append(figBtn);
 				$(row).append(col);
 			}
 			if (optItem.tolerance.code || optItem.tolerance.value || optItem.tolerance.condition || optItem.tolerance.interval) {
-				var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text("수치 조건")
-						.attr("value", "tolerance");
+				var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+						this.translation.condValidation[this.locale]).attr("value", "tolerance");
 				var col = $("<div>").addClass("col-md-3").append(tolBtn);
 				$(row).append(col);
 			}
@@ -8807,7 +9131,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 							|| optItem.relation.figure.interval || optItem.relation.tolerance.code || optItem.relation.tolerance.value
 							|| optItem.relation.tolerance.condition || optItem.relation.tolerance.interval) && !sec))) {
 				var relBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-detailcategory").css(
-						"width", "100%").text("레이어 관계").attr("value", "relation");
+						"width", "100%").text(this.translation.layerRelation[this.locale]).attr("value", "relation");
 				var col = $("<div>").addClass("col-md-3").append(relBtn);
 				$(row).append(col);
 			}
@@ -8837,13 +9161,13 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 		}
 	}
 
-	this.setMessage("레이어 코드를 추가한 후, 세부 설정을 입력하세요.");
+	this.setMessage(this.translation.detailGuide[this.locale]);
 	$(this.optionArea).empty();
 
 	var type = $(optcat).attr("value");
 	if (type === "filter") {
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-filteraddcode").text(
-				"레이어 코드 추가").css("width", "100%");
+				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
@@ -8888,7 +9212,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
-						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -8904,7 +9228,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								// 선언된 분류와 비교중 현재 분류와 같은지?
 								if (cat[j].name === category) {
 									var layers = cat[j].layers;
-									var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+									var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 									$(codeSelect).append(allCode);
 									for (var k = 0; k < layers.length; k++) {
 										var option = $("<option>").text(layers[k].code).attr("geom", layers[k].geometry);
@@ -8923,7 +9247,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfilter").text("레이어 코드 삭제").css("width", "100%");
+								"gb-optiondefinition-btn-deletelayerfilter").text(this.translation.deleteLayerCode[this.locale]).css(
+								"width", "100%");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter")
@@ -8940,10 +9265,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							var optItem = this.optItem[this.nowOption.alias];
 							var row = $("<div>").addClass("row");
 							if (optItem.filter.key) {
-								var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
+								var attrCol1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale] + ":");
 								var inputAttr = $("<input>").attr({
 									"type" : "text",
-									"placeholder" : "속성명 EX) 재질"
+									"placeholder" : this.translation.attrNameEx[this.locale]
 								}).addClass("form-control").addClass("gb-optiondefinition-input-filterkey");
 								if (nowFilter[a].attribute[b].key !== undefined && nowFilter[a].attribute[b].key !== null) {
 									$(inputAttr).val(nowFilter[a].attribute[b].key);
@@ -8953,10 +9278,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								$(row).append(attrCol1).append(attrCol2);
 							}
 							if (optItem.filter.values) {
-								var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
+								var filterCol1 = $("<div>").addClass("col-md-1").text(this.translation.acceptVal[this.locale] + ":");
 								var inputValues = $("<input>").attr({
 									"type" : "text",
-									"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
+									"placeholder" : this.translation.acceptValEx[this.locale]
 								}).addClass("form-control").addClass("gb-optiondefinition-input-filtervalues");
 								if (nowFilter[a].attribute[b].values !== undefined && nowFilter[a].attribute[b].values !== null) {
 									$(inputValues).val(nowFilter[a].attribute[b].values.toString());
@@ -9007,7 +9332,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 
 	} else if (type === "figure") {
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-figureaddcode").text(
-				"레이어 코드 추가").css("width", "100%");
+				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
@@ -9046,7 +9371,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
-						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -9062,7 +9387,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								// 선언된 분류와 비교중 현재 분류와 같은지?
 								if (cat[j].name === category) {
 									var layers = cat[j].layers;
-									var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+									var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 									$(codeSelect).append(allCode);
 									for (var k = 0; k < layers.length; k++) {
 										var option = $("<option>").text(layers[k].code).attr("geom", layers[k].geometry);
@@ -9082,11 +9407,12 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfigure").text("레이어 코드 삭제").css("width", "100%");
+								"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).css(
+								"width", "100%");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn)
 
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure")
-								.text("속성 추가").css("width", "100%");
+								.text(this.translation.addAttr[this.locale]).css("width", "100%");
 						var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 						var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -9096,10 +9422,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							var optItem = this.optItem[this.nowOption.alias];
 							var row = $("<div>").addClass("row");
 
-							var attrCol1 = $("<div>").addClass("col-md-1").text("속성명:");
+							var attrCol1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale] + ":");
 							var inputAttr = $("<input>").attr({
 								"type" : "text",
-								"placeholder" : "속성명 EX) 재질"
+								"placeholder" : this.translation.attrNameEx[this.locale]
 							}).addClass("form-control").addClass("gb-optiondefinition-input-figurekey");
 							if (nowFilter[a].attribute[b].key !== undefined && nowFilter[a].attribute[b].key !== null) {
 								$(inputAttr).val(nowFilter[a].attribute[b].key);
@@ -9111,10 +9437,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 
 							$(row).append(attrCol1).append(attrCol2);
 
-							var filterCol1 = $("<div>").addClass("col-md-1").text("허용값:");
+							var filterCol1 = $("<div>").addClass("col-md-1").text(this.translation.acceptVal[this.locale] + ":");
 							var inputValues = $("<input>").attr({
 								"type" : "text",
-								"placeholder" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3"
+								"placeholder" : this.translation.acceptValEx[this.locale]
 							}).addClass("form-control").addClass("gb-optiondefinition-input-figurevalues");
 							if (nowFilter[a].attribute[b].values !== undefined && nowFilter[a].attribute[b].values !== null) {
 								$(inputValues).val(nowFilter[a].attribute[b].values.toString());
@@ -9127,10 +9453,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 
 							var row2 = $("<div>").addClass("row");
 
-							var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+							var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 							var inputNum = $("<input>").attr({
 								"type" : "number",
-								"placeholder" : "숫자형 기준값"
+								"placeholder" : this.translation.figureInterEx[this.locale]
 							}).addClass("form-control").addClass("gb-optiondefinition-input-figurenumber");
 							if (nowFilter[a].attribute[b].number !== undefined && nowFilter[a].attribute[b].number !== null) {
 								$(inputNum).val(nowFilter[a].attribute[b].number);
@@ -9141,11 +9467,11 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
 							$(row2).append(numCol1).append(numCol2);
 
-							var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+							var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 							var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecondition");
-							var optionEqual = $("<option>").text("같음").attr("value", "equal");
-							var optionOver = $("<option>").text("초과").attr("value", "over");
-							var optionUnder = $("<option>").text("미만").attr("value", "under");
+							var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+							var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+							var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 							$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 							if (nowFilter[a].attribute[b].condition !== undefined && nowFilter[a].attribute[b].condition !== null) {
 								$(codeSelect).val(nowFilter[a].attribute[b].condition);
@@ -9156,10 +9482,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							var codeCol2 = $("<div>").addClass("col-md-2").append(codeSelect);
 							$(row2).append(codeCol1).append(codeCol2);
 
-							var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+							var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 							var inputNum = $("<input>").attr({
 								"type" : "number",
-								"placeholder" : "숫자형 기준값"
+								"placeholder" : this.translation.figureInterEx[this.locale]
 							}).addClass("form-control").addClass("gb-optiondefinition-input-figureinterval");
 							if (nowFilter[a].attribute[b].interval !== undefined && nowFilter[a].attribute[b].interval !== null) {
 								$(inputNum).val(nowFilter[a].attribute[b].interval);
@@ -9171,7 +9497,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 							$(row2).append(numCol1).append(numCol2);
 
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefigurerow").text("속성 삭제").css("width", "100%");
+									"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).css("width",
+									"100%");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row2).append(delCol1);
 
@@ -9189,7 +9516,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 		}
 	} else if (type === "tolerance") {
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-toleranceaddcode").text(
-				"레이어 코드 추가").css("width", "100%");
+				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
@@ -9228,7 +9555,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
-						var codeCol1 = $("<div>").addClass("col-md-1").text("코드:");
+						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
 						var cat = this.getLayerDefinition().getStructure();
 
@@ -9244,7 +9571,7 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 								// 선언된 분류와 비교중 현재 분류와 같은지?
 								if (cat[j].name === category) {
 									var layers = cat[j].layers;
-									var allCode = $("<option>").text("모두 적용").attr("geom", "none");
+									var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 									$(codeSelect).append(allCode);
 									for (var k = 0; k < layers.length; k++) {
 										var option = $("<option>").text(layers[k].code).attr("geom", layers[k].geometry);
@@ -9263,7 +9590,8 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayertolerance").text("레이어 코드 삭제").css("width", "100%");
+								"gb-optiondefinition-btn-deletelayertolerance").text(this.translation.deleteLayerCode[this.locale]).css(
+								"width", "100%");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						/*
@@ -9277,10 +9605,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var optItem = this.optItem[this.nowOption.alias];
 						var row = $("<div>").addClass("row");
 
-						var numCol1 = $("<div>").addClass("col-md-1").text("수치:");
+						var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
 						var inputNum = $("<input>").attr({
 							"type" : "number",
-							"placeholder" : "숫자형 기준값"
+							"placeholder" : this.translation.figureInterEx[this.locale]
 						}).addClass("form-control").addClass("gb-optiondefinition-input-tolerancevalue");
 						if (nowFilter[a].value !== undefined && nowFilter[a].value !== null) {
 							$(inputNum).val(nowFilter[a].value);
@@ -9291,11 +9619,11 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
 						$(row).append(numCol1).append(numCol2);
 
-						var codeCol1 = $("<div>").addClass("col-md-1").text("조건:");
+						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 						var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
-						var optionEqual = $("<option>").text("같음").attr("value", "equal");
-						var optionOver = $("<option>").text("초과").attr("value", "over");
-						var optionUnder = $("<option>").text("미만").attr("value", "under");
+						var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+						var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+						var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 						$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
 						if (nowFilter[a].condition !== undefined && nowFilter[a].condition !== null) {
 							$(codeSelect).val(nowFilter[a].condition);
@@ -9306,10 +9634,10 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 						var codeCol2 = $("<div>").addClass("col-md-3").append(codeSelect);
 						$(row).append(codeCol1).append(codeCol2);
 
-						var numCol1 = $("<div>").addClass("col-md-1").text("간격:");
+						var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
 						var inputNum = $("<input>").attr({
 							"type" : "number",
-							"placeholder" : "숫자형 기준값"
+							"placeholder" : this.translation.figureInterEx[this.locale]
 						}).addClass("form-control").addClass("gb-optiondefinition-input-toleranceinterval");
 						if (nowFilter[a].interval !== undefined && nowFilter[a].interval !== null) {
 							$(inputNum).val(nowFilter[a].interval);

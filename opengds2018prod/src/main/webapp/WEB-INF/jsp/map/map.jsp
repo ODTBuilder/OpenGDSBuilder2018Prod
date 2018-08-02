@@ -211,14 +211,15 @@ html {
 			}
 		});
 
-// 		var importSHP = new gb.geoserver.ImportSHP({
-// 			"url" : "geoserver/geoserverDummy.ajax?${_csrf.parameterName}=${_csrf.token}"
-// 		});
+		var uploadSHP = new gb.geoserver.UploadSHP({
+			"url" : "geoserver/geoserverDummy.ajax?${_csrf.parameterName}=${_csrf.token}"
+		});
 
 		var gtree = new gb.tree.GeoServer({
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
+			"uploadSHP" : uploadSHP,
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",

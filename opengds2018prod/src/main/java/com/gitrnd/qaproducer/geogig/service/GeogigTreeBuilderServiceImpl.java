@@ -65,7 +65,7 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 	public GeogigRemoteRepositoryTree getRemoteRepoTree(DTGeoserverManagerList dtGeoservers, String serverName,
 			EnGeogigRemoteRepositoryTreeType type, String parent) {
 
-		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTE) && dtGeoservers != null) {
+		if (dtGeoservers != null) {
 			DTGeoserverManager dtGeoManager = null;
 			Iterator<String> keys = dtGeoservers.keySet().iterator();
 			while (keys.hasNext()) {

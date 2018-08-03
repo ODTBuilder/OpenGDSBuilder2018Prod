@@ -76,11 +76,11 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 					GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
 							repo, true);
 					if (remoteRepos == null) {
-						this.addDefaultRepo(repo);
+						this.addDefaultRepo(node);
 					} else {
 						List<Remote> remoteList = remoteRepos.getRemotes();
 						if (remoteList.size() < 0) {
-							this.addDefaultRepo(repo);
+							this.addDefaultRepo(node);
 						} else {
 							ListBranch listBranch = new ListBranch();
 							GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, repo, true);

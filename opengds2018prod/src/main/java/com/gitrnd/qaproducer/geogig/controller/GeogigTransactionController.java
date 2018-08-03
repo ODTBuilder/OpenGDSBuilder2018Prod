@@ -46,12 +46,10 @@ public class GeogigTransactionController extends AbstractController {
 
 	@RequestMapping(value = "/endTransaction.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigTransaction endTransaction(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
+	public GeogigTransaction endTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.endTransaction(geoserverManager, repoName, transactionId);
@@ -59,12 +57,10 @@ public class GeogigTransactionController extends AbstractController {
 
 	@RequestMapping(value = "/cancelTransaction.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigTransaction cancelTransaction(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
+	public GeogigTransaction cancelTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.cancelTransaction(geoserverManager, repoName, transactionId);

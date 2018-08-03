@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,32 +54,13 @@ public class GeogigBranchController extends AbstractController {
 		return branchService.checkoutBranch(geoserverManager, repoName, transactionId, branchName);
 	}
 
-	// @RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
-	// @ResponseBody
-	// public GeogigCheckout checkoutBranch(HttpServletRequest request, @RequestBody
-	// JSONObject param,
-	// @AuthenticationPrincipal LoginUser loginUser) {
-	//
-	// String serverName = (String) param.get("serverName");
-	// String repoName = (String) param.get("repoName");
-	// String transactionId = (String) param.get("transactionId");
-	// String reference = (String) param.get("reference");
-	//
-	// DTGeoserverManager geoserverManager =
-	// super.getGeoserverManagerToSession(request, loginUser, serverName);
-	// return branchService.checkoutBranch(geoserverManager, repoName,
-	// transactionId, reference);
-	// }
-
 	@RequestMapping(value = "/statusBranch.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject statusBranch(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String branchName = (String) param.get("branchName");
+	public JSONObject statusBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "branchName", required = false) String branchName,
+			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.statusBranch(geoserverManager, serverName, repoName, transactionId, branchName);
@@ -88,13 +68,11 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/createBranch.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigBranch createBranch(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String branchName = (String) param.get("branchName");
-		String source = (String) param.get("source");
+	public GeogigBranch createBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "branchName", required = false) String branchName,
+			@RequestParam(value = "source", required = false) String source) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.createBranch(geoserverManager, repoName, branchName, source);
@@ -102,11 +80,9 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/branchList.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigBranch branchList(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
+	public GeogigBranch branchList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.listBranch(geoserverManager, repoName);
@@ -114,13 +90,11 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/mergeBranch.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigMerge mergeBranch(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String branchName = (String) param.get("branchName");
+	public GeogigMerge mergeBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "branchName", required = false) String branchName,
+			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.mergeBranch(geoserverManager, repoName, transactionId, branchName);
@@ -128,14 +102,12 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/resolveConflict.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigCheckout resolveConflict(HttpServletRequest request, @RequestBody JSONObject param,
-			@AuthenticationPrincipal LoginUser loginUser) {
-
-		String serverName = (String) param.get("serverName");
-		String repoName = (String) param.get("repoName");
-		String transactionId = (String) param.get("transactionId");
-		String path = (String) param.get("path");
-		String version = (String) param.get("version");
+	public GeogigCheckout resolveConflict(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "version", required = false) String version,
+			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.resolveConflict(geoserverManager, repoName, transactionId, path, version);

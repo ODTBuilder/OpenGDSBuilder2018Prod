@@ -72,14 +72,14 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			Boolean removeTrue, String remoteName) {
+			String remoteName) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.removeRemoteRepository(repoName, remoteName, removeTrue);
+		return reader.removeRemoteRepository(repoName, remoteName);
 	}
 
 	/*

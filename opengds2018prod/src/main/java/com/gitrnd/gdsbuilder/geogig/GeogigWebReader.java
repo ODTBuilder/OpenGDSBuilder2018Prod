@@ -325,14 +325,12 @@ public class GeogigWebReader {
 	/**
 	 * @param repoName
 	 * @param remoteName
-	 * @param removeTrue
 	 * @return GeogigRemoteRepository
 	 */
-	public GeogigRemoteRepository removeRemoteRepository(String repoName, String remoteName, Boolean removeTrue) {
+	public GeogigRemoteRepository removeRemoteRepository(String repoName, String remoteName) {
 
 		RemoveRemoteRepository remove = new RemoveRemoteRepository();
-		GeogigRemoteRepository remotes = remove.executeCommand(baseURL, username, password, repoName, remoteName,
-				removeTrue);
+		GeogigRemoteRepository remotes = remove.executeCommand(baseURL, username, password, repoName, remoteName);
 
 		return remotes;
 	}

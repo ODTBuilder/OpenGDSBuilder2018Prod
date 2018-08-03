@@ -54,7 +54,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 		} else {
 			enType = EnGeogigRepositoryTreeType.UNKNOWN;
 		}
-
+		
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
 		return treeService.getWorkingTree(geoserverManagers, serverName, enType, node, transactionId);
 	}

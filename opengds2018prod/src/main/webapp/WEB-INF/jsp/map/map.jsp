@@ -233,8 +233,8 @@ html {
 			id : "feature_id"
 		});
 
-		var wfsURL = "http://175.116.181.42:9990/geoserver/wfs";
-		var wmsURL = "http://175.116.181.42:9990/geoserver/wms";
+		var wfsURL = "http://175.116.181.32:9999/geoserver/wfs";
+		var wmsURL = "http://175.116.181.32:9999/geoserver/wms";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),

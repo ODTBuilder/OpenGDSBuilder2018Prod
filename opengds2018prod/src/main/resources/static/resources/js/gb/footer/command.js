@@ -405,6 +405,9 @@ if (!gb.footer)
 				.mouseleave(function(){
 					$(this).removeClass("fa-lg");
 				})
+				.click(function(){
+					console.log("upload");
+				})
 				.css({"margin-right": "10px"}));
 		historyFunction.append(
 			$("<i>")
@@ -414,6 +417,9 @@ if (!gb.footer)
 				})
 				.mouseleave(function(){
 					$(this).removeClass("fa-lg");
+				})
+				.click(function(){
+					that.downHistory();
 				})
 				.addClass("fas fa-download"));
 		historyTitle.append(historyFunction);
@@ -469,6 +475,19 @@ if (!gb.footer)
 			this.workHistory_[time.flat] = list.slice();
 			this.insertHistoryLayout(time.format, list);
 		}
+	}
+	
+	gb.footer.CommandLine.prototype.downHistory = function(){
+		var text = "";
+		for(let i in this.workHistory_){
+			text += this.workHistory_[i].toString();
+			text += "\n";
+		}
+		var file = new Blob([text], {type: "text/plain"});
+		var down = document.createElement("a");
+		down.setAttribute("href", URL.createObjectURL(file));
+		down.setAttribute("download", "history.txt");
+		down.click();
 	}
 	
 	gb.footer.CommandLine.prototype.insertHistoryLayout = function(time, list){

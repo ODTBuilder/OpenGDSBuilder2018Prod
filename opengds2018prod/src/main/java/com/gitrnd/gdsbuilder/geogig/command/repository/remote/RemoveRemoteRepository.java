@@ -36,7 +36,7 @@ public class RemoveRemoteRepository {
 	private static final String param_remoteName = "remoteName=";
 
 	public GeogigRemoteRepository executeCommand(String baseURL, String username, String password, String repository,
-			String remoteName, Boolean remove) {
+			String remoteName) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -57,7 +57,7 @@ public class RemoveRemoteRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_remove + remove + "&"
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_remove + true + "&"
 				+ param_remoteName + remoteName;
 
 		// request

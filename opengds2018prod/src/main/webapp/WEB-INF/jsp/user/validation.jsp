@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -230,40 +231,40 @@ div.table .file-row:nth-child(odd) {
 
 					$(".QA-User-Setting").tooltip({
 						"html" : true,
-						"template" : template("사용자 설정 검수 옵션을 선택합니다"),
+						"template" : template('<spring:message code="lang.hintUserSettings" />'),
 						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-type-sect").tooltip({
 						"html" : true,
-						"template" : template("검수 종류를 선택합니다"),
+						"template" : template('<spring:message code="lang.hintValidationType" />'),
 						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-detail-sect").tooltip({
 						"html" : true,
-						"template" : template("검수 편집 종류를 선택합니다"),
+						"template" : template('<spring:message code="lang.hintValidationEdit" />'),
 						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					$(".QA-sub-options").tooltip({
 						"html" : true,
-						"template" : template("검수를 수행할 파일의 형식과 좌표계를 선택합니다"),
+						"template" : template('<spring:message code="lang.hintValidationFormatAndCoordSys" />'),
 						"title" : "tooltip",
 						"placement" : "right"
 					});
 
 					var fileToolTip = template({
-						title : $("<span>").html("검수를 수행할 파일을 업로드합니다<br>zip형식의 파일만 업로드할 수 있습니다"),
+						title : $("<span>").html('<spring:message code="lang.hintValidationFileStructure" />'),
 						img : [ {
 							url : "${pageContext.request.contextPath}/resources/img/forest_file_tree.png",
-							title : "<em>임상도 zip파일 트리 구조 예시</em>"
+							title : '<spring:message code="lang.exForestMapFileStruct" />'
 						}, {
 							url : "${pageContext.request.contextPath}/resources/img/underline_file_tree.png",
-							title : "<em>지하시설물, ngi, dxf zip파일 트리 구조 예시</em>"
+							title : '<spring:message code="lang.exUndergroundFileStruct" />'
 						} ]
 					})
 
@@ -368,14 +369,14 @@ div.table .file-row:nth-child(odd) {
 								var children = $("label.QATypeSelect").children();
 								var label = $("label.QATypeSelect");
 								for (var i = 0; i < label.length; i++) {
-									if ($(label[i]).find("div").text().indexOf("수치지도") !== -1) {
-										$(label[i]).find("div").text("수치지도");
+									if ($(label[i]).find("div").text().indexOf('<spring:message code="lang.digitalMap" />') !== -1) {
+										$(label[i]).find("div").text('<spring:message code="lang.digitalMap" />');
 									}
-									if ($(label[i]).find("div").text().indexOf("지하시설물") !== -1) {
-										$(label[i]).find("div").text("지하시설물");
+									if ($(label[i]).find("div").text().indexOf('<spring:message code="lang.underFacility" />') !== -1) {
+										$(label[i]).find("div").text('<spring:message code="lang.underFacility" />');
 									}
-									if ($(label[i]).find("div").text().indexOf("임상도") !== -1) {
-										$(label[i]).find("div").text("임상도");
+									if ($(label[i]).find("div").text().indexOf('<spring:message code="lang.forestMap" />') !== -1) {
+										$(label[i]).find("div").text('<spring:message code="lang.forestMap" />');
 									}
 								}
 								if ($("label.QATypeSelect").children().filter("div").hasClass("QATypeSelect-Selected")) {
@@ -473,7 +474,7 @@ div.table .file-row:nth-child(odd) {
 							});
 
 							this.on("success", function(file) {
-								gitrnd.alert("success", " " + file.name + " 파일의 검수 요청을 완료하였습니다.");
+								gitrnd.alert("success", " " + file.name + '<spring:message code="lang.successRequestValidation" />');
 							});
 
 							this.on("error", function(file, errorMessage) {
@@ -580,11 +581,11 @@ div.table .file-row:nth-child(odd) {
 				<section class="SettingSection QA-User-Setting" title="some tips">
 					<div class="row">
 						<div class="col-md-2 text-center">
-							<label for="quicksetting" class="control-label" style="margin-top: 5px;">사용자 설정</label>
+							<label for="quicksetting" class="control-label" style="margin-top: 5px;"><spring:message code="lang.userSetting" /></label>
 						</div>
 						<div class="col-md-10">
 							<select id="quicksetting" class="form-control">
-								<option value="nonset">미설정</option>
+								<option value="nonset"><spring:message code="lang.notSet" /></option>
 								<c:forEach var="item" items="${presets}" varStatus="status">
 									<option value="${item.pid}" data-support="${item.support}">${item.name}</option>
 								</c:forEach>
@@ -599,26 +600,26 @@ div.table .file-row:nth-child(odd) {
 					<div class="row">
 						<div class="col-md-4">
 							<select id="sel1" class="QATypeSelect">
-								<option value="nm1" disabled="disabled">수치지도 1:1000</option>
-								<option value="nm5" selected>수치지도 1:5000</option>
-								<option value="nm25" disabled="disabled">수치지도 1:25000</option>
-							</select> <label for="sel1" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;">수치지도</div>
+								<option value="nm1" disabled="disabled"><spring:message code="lang.digitalMap" /> 1:1000</option>
+								<option value="nm5" selected><spring:message code="lang.digitalMap" /> 1:5000</option>
+								<option value="nm25" disabled="disabled"><spring:message code="lang.digitalMap" /> 1:25000</option>
+							</select> <label for="sel1" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;"><spring:message code="lang.digitalMap" /></div>
 								<ul style="display: none; list-style-type: none; padding: 0; margin: 0;" class="text-center"></ul> </label>
 						</div>
 						<div class="col-md-4">
 							<select id="sel2" class="QATypeSelect">
-								<option value="ug1" disabled="disabled">지하시설물 1:1000</option>
-								<option value="ug5">지하시설물 1:5000</option>
-								<option value="ug25" disabled="disabled">지하시설물 1:25000</option>
-							</select> <label for="sel2" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;">지하시설물</div>
+								<option value="ug1" disabled="disabled"><spring:message code="lang.underFacility" /> 1:1000</option>
+								<option value="ug5"><spring:message code="lang.underFacility" /> 1:5000</option>
+								<option value="ug25" disabled="disabled"><spring:message code="lang.underFacility" /> 1:25000</option>
+							</select> <label for="sel2" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;"><spring:message code="lang.underFacility" /></div>
 								<ul style="display: none; list-style-type: none; padding: 0; margin: 0;" class="text-center"></ul> </label>
 						</div>
 						<div class="col-md-4">
 							<select id="sel3" class="QATypeSelect">
-								<option value="fr1" disabled="disabled">임상도 1:1000</option>
-								<option value="fr5">임상도 1:5000</option>
-								<option value="fr25" disabled="disabled">임상도 1:25000</option>
-							</select> <label for="sel3" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;">임상도</div>
+								<option value="fr1" disabled="disabled"><spring:message code="lang.forestMap" /> 1:1000</option>
+								<option value="fr5"><spring:message code="lang.forestMap" /> 1:5000</option>
+								<option value="fr25" disabled="disabled"><spring:message code="lang.forestMap" /> 1:25000</option>
+							</select> <label for="sel3" class="QATypeSelect"><div class="QATypeSelect" style="padding: 2px;"><spring:message code="lang.forestMap" /></div>
 								<ul style="display: none; list-style-type: none; padding: 0; margin: 0;" class="text-center"></ul> </label>
 						</div>
 					</div>
@@ -627,10 +628,10 @@ div.table .file-row:nth-child(odd) {
 					<div class="row">
 						<div class="col-md-6">
 							<input type="radio" class="radio" name="qaver" id="qacat1" value="qa1" checked /> <label for="qacat1">
-								정위치 </label>
+								<spring:message code="lang.exactPosition" /> </label>
 						</div>
 						<div class="col-md-6">
-							<input type="radio" class="radio" name="qaver" id="qacat2" value="qa2" /> <label for="qacat2">구조화 </label>
+							<input type="radio" class="radio" name="qaver" id="qacat2" value="qa2" /> <label for="qacat2"><spring:message code="lang.structuring" /> </label>
 						</div>
 					</div>
 					<input type="hidden" id="qatype" value="" />
@@ -660,12 +661,12 @@ div.table .file-row:nth-child(odd) {
 						<div class="row">
 							<div class="col-md-2">
 								<button class="btn btn-success FileBrowse" style="width: 100%">
-									<i class="fas fa-search"></i> 찾아보기
+									<i class="fas fa-search"></i> <spring:message code="lang.browse" />
 								</button>
 							</div>
 							<div class="col-md-2">
 								<button class="btn btn-warning ClearList" style="width: 100%">
-									<i class="fas fa-trash-alt"></i> 모두 삭제
+									<i class="fas fa-trash-alt"></i> <spring:message code="lang.deleteAll" />
 								</button>
 							</div>
 							<div class="col-md-8">
@@ -681,7 +682,7 @@ div.table .file-row:nth-child(odd) {
 									<div class="panel-body" style="padding: 0;">
 										<div id="dropzone" class="DropArea FileBrowse">
 											<div class="dz-message DefaultMessage" data-dz-message>
-												<h3>파일을 드래그&드롭 해주세요.</h3>
+												<h3><spring:message code="lang.hintFileDragDrop" /></h3>
 											</div>
 											<div id="previewContainer" class="table">
 												<div id="previewTemplate" class="file-row" style="cursor: default;">
@@ -718,7 +719,7 @@ div.table .file-row:nth-child(odd) {
 				<section class="SettingSection">
 					<div class="row">
 						<div class="col-md-12">
-							<button type="button" class="btn btn-primary StartUp" style="width: 100%">검수 요청</button>
+							<button type="button" class="btn btn-primary StartUp" style="width: 100%"><spring:message code="lang.requestValidation" /></button>
 						</div>
 					</div>
 				</section>

@@ -35,12 +35,11 @@ public interface GeogigRepositoryService {
 	/**
 	 * @param geoserverManager
 	 * @param repoName
-	 * @param removeTrue
 	 * @param remoteName
 	 * @return
 	 */
 	GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			Boolean removeTrue, String remoteName);
+			String remoteName);
 
 	/**
 	 * @param geoserverManager

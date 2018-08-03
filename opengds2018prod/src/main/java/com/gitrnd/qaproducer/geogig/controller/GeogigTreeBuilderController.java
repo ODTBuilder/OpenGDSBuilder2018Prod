@@ -54,7 +54,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 		} else {
 			enType = EnGeogigRepositoryTreeType.UNKNOWN;
 		}
-		
+
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
 		return treeService.getWorkingTree(geoserverManagers, serverName, enType, node, transactionId);
 	}
@@ -67,10 +67,8 @@ public class GeogigTreeBuilderController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName) {
 
 		EnGeogigRemoteRepositoryTreeType enType = null;
-
-		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTE.getType())) {
-			enType = EnGeogigRemoteRepositoryTreeType.REMOTE;
-		} else if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType())) {
+		
+		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType())) {
 			enType = EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY;
 		} else if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType())) {
 			enType = EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH;

@@ -59,6 +59,8 @@ gb.versioning.Repository = function(obj) {
 	this.transactionIdURL = url.transactionId ? url.transactionId : undefined;
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
+	this.nowRepo = undefined;
+	this.nowRepoServer = undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -231,16 +233,10 @@ gb.versioning.Repository = function(obj) {
 					// } else
 					if (node.id === "#") {
 						obj["type"] = "remoteRepository";
-					} else if (node.type === "repository") {
-						obj["type"] = "branch";
-						obj["serverName"] = node.parent;
-						obj["node"] = node.id;
-						var tranId = that.getJSTree()._data.geogigfunction.transactionId;
-						if (tranId.hasOwnProperty(node.id)) {
-							obj["transactionId"] = tranId[node.id];
-						}
-					} else if (node.type === "branch") {
-						obj["type"] = "layer";
+						obj["node"] = that.getNowRepository();
+						obj["serverName"] = that.getNowRepositoryServer();
+					} else if (node.type === "remoteRepository") {
+						obj["type"] = "remoteBranch";
 						obj["serverName"] = node.parents[1];
 						obj["node"] = node.id
 					}
@@ -321,15 +317,16 @@ gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
 /**
  * 페이지를 전환한다.
  * 
- * @method gb.versioning.Repository#manageRemoteBranch
+ * @method gb.versioning.Repository#manageRemoteRepository
  * @param {String}
  */
-gb.versioning.Repository.prototype.manageRemoteBranch = function(server, repo) {
+gb.versioning.Repository.prototype.manageRemoteRepository = function(server, repo) {
 	var serverName = server.text;
 	var repoName = repo.text;
 	$(this.remoteTitle).empty();
 	$(this.remoteTitle).text(repoName);
 	this.transitPage("remote");
+	this.refreshRemoteList();
 };
 
 /**
@@ -501,6 +498,48 @@ gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
  */
 gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
 	return this.remoteTreeURL;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowRepository
+ * @return {String} 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.getNowRepository = function() {
+	return this.nowRepo;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowRepository
+ * @param {String}
+ *            레파지토리 이름
+ */
+gb.versioning.Repository.prototype.setNowRepository = function(repo) {
+	this.nowRepo = repo;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 서버 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowRepositoryServer
+ * @return {String} 레파지토리 서버 이름
+ */
+gb.versioning.Repository.prototype.getNowRepositoryServer = function() {
+	return this.nowRepoServer;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 서버 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowRepositoryServer
+ * @param {String}
+ *            레파지토리 서버 이름
+ */
+gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
+	this.nowRepoServer = server;
 };
 
 /**

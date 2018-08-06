@@ -91,64 +91,72 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 				String baseURL = dtGeoserver.getRestURL() + "/geogig";
 				String username = dtGeoserver.getUsername();
 				String password = dtGeoserver.getPassword();
-				if (type == EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY) {
-					ListRemoteRepository listRemoteRepos = new ListRemoteRepository();
-					GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
-							node, true);
-					if (remoteRepos == null) {
-						this.addDefaultRepo(node);
-					} else {
-						List<Remote> remoteList = remoteRepos.getRemotes();
-						if (remoteList.size() < 0) {
-							this.addDefaultRepo(node);
+
+				String[] param = node.split(":");
+
+				if (param.length > 0) {
+					String repos = param[0];
+					if (type == EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY) {
+						ListRemoteRepository listRemoteRepos = new ListRemoteRepository();
+						GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
+								repos, true);
+						if (remoteRepos == null) {
+							this.addDefaultRepo(repos);
 						} else {
-							ListBranch listBranch = new ListBranch();
-							GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, node, true);
-							for (Remote remote : remoteList) {
-								String name = remote.getName();
-								String url = remote.getUrl();
-								String remoteId = node + ":" + name; // ex) repository:remoteRepository
-								if (branch != null) {
-									List<Branch> remoteBraches = branch.getRemoteBranchList();
-									int branchSize = 0;
-									for (Branch remoteBranch : remoteBraches) {
-										if (name.equals(remoteBranch.getRemoteName())) {
-											branchSize++;
+							List<Remote> remoteList = remoteRepos.getRemotes();
+							if (remoteList.size() < 0) {
+								this.addDefaultRepo(repos);
+							} else {
+								ListBranch listBranch = new ListBranch();
+								GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, node,
+										true);
+								for (Remote remote : remoteList) {
+									String name = remote.getName();
+									String url = remote.getUrl();
+									String remoteId = repos + ":" + name; // ex) repository:remoteRepository
+									if (branch != null) {
+										List<Branch> remoteBraches = branch.getRemoteBranchList();
+										int branchSize = 0;
+										for (Branch remoteBranch : remoteBraches) {
+											if (name.equals(remoteBranch.getRemoteName())) {
+												branchSize++;
+											}
 										}
-									}
-									if (branchSize > 0) {
-										this.addRemoteRepo(remoteId, name, url, true);
+										if (branchSize > 0) {
+											this.addRemoteRepo(remoteId, name, url, true);
+										} else {
+											this.addRemoteRepo(remoteId, name, url, false);
+										}
 									} else {
 										this.addRemoteRepo(remoteId, name, url, false);
 									}
-								} else {
-									this.addRemoteRepo(remoteId, name, url, false);
 								}
 							}
 						}
-					}
-				} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
-					ListBranch listBranch = new ListBranch();
-					GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, local, true);
-					List<Branch> remoteBraches = branch.getRemoteBranchList();
-					for (Branch remoteBranch : remoteBraches) {
-						if (node.equals(remoteBranch.getRemoteName())) {
-							String branchName = remoteBranch.getName();
-							if (branch.equals("HEAD")) {
-								continue;
+					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
+						String remoteRepos = param[1];
+						ListBranch listBranch = new ListBranch();
+						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, local, true);
+						List<Branch> remoteBraches = branch.getRemoteBranchList();
+						for (Branch remoteBranch : remoteBraches) {
+							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+								String branchName = remoteBranch.getName();
+								if (branch.equals("HEAD")) {
+									continue;
+								}
+								String branchId = node + ":" + branchName;
+								this.addRemoteBranch(remoteRepos, branchId, branchName);
 							}
-							String branchId = node + ":" + branchName;
-							this.addRemoteBranch(node, branchId, branchName);
 						}
+					} else {
+						JSONObject errorJSON = new JSONObject();
+						errorJSON.put("id", 500);
+						errorJSON.put("parent", "#");
+						errorJSON.put("text", "요청이 잘못되었습니다.");
+						errorJSON.put("type", "error");
+						this.add(errorJSON);
+						logger.warn("요청이 잘못되었습니다.");
 					}
-				} else {
-					JSONObject errorJSON = new JSONObject();
-					errorJSON.put("id", 500);
-					errorJSON.put("parent", "#");
-					errorJSON.put("text", "요청이 잘못되었습니다.");
-					errorJSON.put("type", "error");
-					this.add(errorJSON);
-					logger.warn("요청이 잘못되었습니다.");
 				}
 			} else {
 				JSONObject errorJSON = new JSONObject();
@@ -161,6 +169,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 			}
 		}
 		return this;
+
 	}
 
 	/**

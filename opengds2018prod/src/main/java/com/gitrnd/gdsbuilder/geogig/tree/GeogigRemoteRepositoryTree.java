@@ -203,6 +203,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 		remoteBranchJson.put("id", id);
 		remoteBranchJson.put("text", text);
 		remoteBranchJson.put("type", EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType());
+		remoteBranchJson.put("children", false);
 		super.add(remoteBranchJson);
 	}
 }

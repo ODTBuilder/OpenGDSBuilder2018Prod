@@ -33,6 +33,21 @@ public class GeogigTreeBuilderController extends AbstractController {
 	@Qualifier("treeService")
 	GeogigTreeBuilderService treeService;
 
+	/**
+	 * @param request
+	 *            HttpServletRequest
+	 * @param loginUser
+	 *            LoginUser
+	 * @param node
+	 *            node ex) server, server:repository, server:repository:branch
+	 * @param type
+	 *            node type
+	 * @param serverName
+	 *            geoserver 이름
+	 * @param transactionId
+	 *            geogig transactionId
+	 * @return JSONArray
+	 */
 	@RequestMapping(value = "/getWorkingTree.ajax")
 	@ResponseBody
 	public JSONArray getWorkingTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
@@ -59,6 +74,19 @@ public class GeogigTreeBuilderController extends AbstractController {
 		return treeService.getWorkingTree(geoserverManagers, serverName, enType, node, transactionId);
 	}
 
+	/**
+	 * @param request
+	 *            HttpServletRequest
+	 * @param loginUser
+	 *            LoginUser
+	 * @param node
+	 *            node ex) server, server:repository, server:repository:branch
+	 * @param type
+	 *            node type
+	 * @param serverName
+	 *            geoserver 이름
+	 * @return JSONArray
+	 */
 	@RequestMapping(value = "/getRemoteRepoTree.ajax")
 	@ResponseBody
 	public JSONArray getRemoteRepoTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
@@ -67,7 +95,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName) {
 
 		EnGeogigRemoteRepositoryTreeType enType = null;
-		
+
 		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType())) {
 			enType = EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY;
 		} else if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType())) {

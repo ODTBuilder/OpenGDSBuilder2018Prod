@@ -75,12 +75,10 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 					break;
 				}
 			}
-
 			// GeogigRemoteRepositoryTree tt = new
 			// GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager,
 			// serverName, EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH,
 			// "geoserver:repository_test15:repository_test16");
-
 			return new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager, serverName, type, parent);
 		} else {
 			JSONArray result = new JSONArray();

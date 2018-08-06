@@ -28,7 +28,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public enum EnGeogigRemoteRepositoryTreeType {
-		REMOTEREPOSITORY("remoteRepository"), REMOTEBRANCH("remoteBanch"), UNKNOWN(null);
+		REMOTEREPOSITORY("remoteRepository"), REMOTEBRANCH("remoteBranch"), UNKNOWN(null);
 
 		String type;
 

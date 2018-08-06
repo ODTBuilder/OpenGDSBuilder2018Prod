@@ -24,6 +24,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
  */
 @SuppressWarnings("serial")
 public class GeogigRemoteRepositoryTree extends JSONArray {
+
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public enum EnGeogigRemoteRepositoryTreeType {
@@ -54,11 +55,24 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 		}
 	}
 
+	/**
+	 * @param dtGeoserver
+	 * @param serverName
+	 * @param type
+	 * @param node
+	 */
 	public GeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver, String serverName,
 			EnGeogigRemoteRepositoryTreeType type, String node) {
 		this.build(dtGeoserver, serverName, type, node);
 	}
 
+	/**
+	 * @param dtGeoserver
+	 * @param serverName
+	 * @param type
+	 * @param node
+	 * @return
+	 */
 	public GeogigRemoteRepositoryTree build(DTGeoserverManager dtGeoserver, String serverName,
 			EnGeogigRemoteRepositoryTreeType type, String node) {
 
@@ -149,7 +163,6 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 
 	/**
 	 * @param repo
-	 * @param isTrue
 	 */
 	private void addDefaultRepo(String repo) {
 		JSONObject repoJson = new JSONObject();
@@ -161,7 +174,6 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 	}
 
 	/**
-	 * @param parent
 	 * @param id
 	 * @param text
 	 * @param url

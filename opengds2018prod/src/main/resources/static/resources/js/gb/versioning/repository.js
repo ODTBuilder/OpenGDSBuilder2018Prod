@@ -251,20 +251,16 @@ gb.versioning.Repository = function(obj) {
 		},
 		types : {
 			"#" : {
-				"valid_children" : [ "geoserver" ]
+				"valid_children" : [ "remoteRepository", "default" ]
 			},
 			"default" : {
 				"icon" : "fas fa-exclamation-circle"
 			},
-			"geoserver" : {
-				"icon" : "fas fa-globe",
-				"valid_children" : [ "repository" ]
-			},
-			"repository" : {
+			"remoteRepository" : {
 				"icon" : "fas fa-archive",
-				"valid_children" : [ "branch" ]
+				"valid_children" : [ "remoteBranch" ]
 			},
-			"branch" : {
+			"remoteBranch" : {
 				"icon" : "fas fa-code-branch",
 				"valid_children" : [ "layer" ]
 			},

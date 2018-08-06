@@ -95,8 +95,8 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 				String[] param = node.split(":");
 
 				if (param.length > 0) {
-					String repos = param[0];
 					if (type == EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY) {
+						String repos = param[1];
 						ListRemoteRepository listRemoteRepos = new ListRemoteRepository();
 						GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
 								repos, true);
@@ -108,12 +108,12 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								this.addDefaultRepo(repos);
 							} else {
 								ListBranch listBranch = new ListBranch();
-								GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, node,
+								GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, repos,
 										true);
 								for (Remote remote : remoteList) {
 									String name = remote.getName();
 									String url = remote.getUrl();
-									String remoteId = repos + ":" + name; // ex) repository:remoteRepository
+									String remoteId = node + ":" + name; // ex) repository:remoteRepository
 									if (branch != null) {
 										List<Branch> remoteBraches = branch.getRemoteBranchList();
 										int branchSize = 0;
@@ -134,9 +134,12 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 							}
 						}
 					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
-						String remoteRepos = param[1];
+						String remoteRepos = param[0];
+						String[] localParams = local.split(":");
+						String localRepos = localParams[1];
+
 						ListBranch listBranch = new ListBranch();
-						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, local, true);
+						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
 						List<Branch> remoteBraches = branch.getRemoteBranchList();
 						for (Branch remoteBranch : remoteBraches) {
 							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
@@ -144,8 +147,9 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								if (branch.equals("HEAD")) {
 									continue;
 								}
-								String branchId = node + ":" + branchName;
-								this.addRemoteBranch(remoteRepos, branchId, branchName);
+								String parent = local + ":" + node;
+								String branchId = parent + ":" + branchName;
+								this.addRemoteBranch(parent, branchId, branchName);
 							}
 						}
 					} else {

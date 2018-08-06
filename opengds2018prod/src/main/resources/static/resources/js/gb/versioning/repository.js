@@ -239,6 +239,7 @@ gb.versioning.Repository = function(obj) {
 						obj["type"] = "remoteBranch";
 						obj["serverName"] = that.getNowRepositoryServer();
 						obj["node"] = node.text;
+						obj["local"] = that.getNowRepository();
 					}
 					console.log(obj);
 					return obj;

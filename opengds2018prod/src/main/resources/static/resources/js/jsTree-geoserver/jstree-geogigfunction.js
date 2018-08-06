@@ -124,8 +124,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(node);
 							var server = that.get_node(node.parents[0]);
 							var repo = node;
-							that._data.geogigfunction.repository.setNowRepositoryServer(server.text);
-							that._data.geogigfunction.repository.setNowRepository(repo.text);
+							that._data.geogigfunction.repository.setNowRepositoryServer(server.id);
+							that._data.geogigfunction.repository.setNowRepository(repo.id);
 							that._data.geogigfunction.repository.manageRemoteRepository(server, repo);
 						});
 

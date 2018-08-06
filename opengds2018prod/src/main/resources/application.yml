@@ -6,9 +6,9 @@ spring:
     password: gitrnd!
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://175.116.181.42:5433/opengds_2018?charSet=UTF-8&prepareThreshold=1
-    username: qaguest
-    password: gitrnd!
+    url: jdbc:postgresql://175.116.181.34:5432/opengds_2018?charSet=UTF-8&prepareThreshold=1
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-test-query: SELECT 1
@@ -25,7 +25,7 @@ spring:
       max-file-size: 10485760KB
       max-request-size: 10485760KB
 server:
-  port: 8089
+  port: 8080
   context-path: /geodt
   servlet:
     session:

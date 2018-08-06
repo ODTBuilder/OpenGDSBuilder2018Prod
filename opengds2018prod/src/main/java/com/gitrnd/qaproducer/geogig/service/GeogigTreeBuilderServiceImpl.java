@@ -63,7 +63,7 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 
 	@Override
 	public GeogigRemoteRepositoryTree getRemoteRepoTree(DTGeoserverManagerList dtGeoservers, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String parent) {
+			EnGeogigRemoteRepositoryTreeType type, String parent, String local) {
 
 		if (dtGeoservers != null) {
 			DTGeoserverManager dtGeoManager = null;
@@ -79,7 +79,8 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 			// GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager,
 			// serverName, EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH,
 			// "geoserver:repository_test15:repository_test16");
-			return new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager, serverName, type, parent);
+			return new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager, serverName, type, parent,
+					local);
 		} else {
 			JSONArray result = new JSONArray();
 			JSONObject errorJSON = new JSONObject();

@@ -43,5 +43,5 @@ public interface GeogigTreeBuilderService {
 	 * @return GeogigRemoteRepositoryTree
 	 */
 	public GeogigRemoteRepositoryTree getRemoteRepoTree(DTGeoserverManagerList dtGeoservers, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String node);
+			EnGeogigRemoteRepositoryTreeType type, String node, String local);
 }

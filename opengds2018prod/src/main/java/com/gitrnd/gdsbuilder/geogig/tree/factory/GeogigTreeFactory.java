@@ -47,6 +47,6 @@ public interface GeogigTreeFactory {
 	 * @return
 	 */
 	public GeogigRemoteRepositoryTree createGeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver,
-			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent);
+			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent, String local);
 
 }

@@ -25,6 +25,8 @@ public class DTGeoserverTrees extends JSONArray {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	static final String delimiter = ":";
+	
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTrees(DTGeoserverManagerList dtGeoserverList) {
 		build(dtGeoserverList);
@@ -55,7 +57,7 @@ public class DTGeoserverTrees extends JSONArray {
 							for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
 								String wsName = item.getName();
 								JSONObject wsTree = new JSONObject();
-								wsTree.put("id", serverName+"_"+wsName);
+								wsTree.put("id", serverName+delimiter+wsName);
 								wsTree.put("parent", serverName);
 								wsTree.put("text", wsName);
 								wsTree.put("type", "workspace");
@@ -71,8 +73,8 @@ public class DTGeoserverTrees extends JSONArray {
 									if (dStore != null) {
 										String dsType = dStore.getStoreType();
 										JSONObject dsTree = new JSONObject();
-										dsTree.put("id", serverName+"_"+wsName+"_"+dsName);
-										dsTree.put("parent", serverName+"_"+wsName);
+										dsTree.put("id", serverName+delimiter+wsName+delimiter+dsName);
+										dsTree.put("parent", serverName+delimiter+wsName);
 										dsTree.put("text", dsName);
 										dsTree.put("type", "datastore");
 										super.add(dsTree);
@@ -87,8 +89,8 @@ public class DTGeoserverTrees extends JSONArray {
 										for (DTGeoLayer dtGLayer : dtGLayerList) {
 											if (dtGLayer != null) {
 												JSONObject layerTree = new JSONObject();
-												layerTree.put("id", serverName+"_"+wsName+"_"+dsName+"_"+dtGLayer.getlName());
-												layerTree.put("parent", serverName+"_"+wsName+"_"+dsName);
+												layerTree.put("id", serverName+delimiter+wsName+delimiter+dsName+delimiter+dtGLayer.getlName());
+												layerTree.put("parent", serverName+delimiter+wsName+delimiter+dsName);
 												layerTree.put("text", dtGLayer.getlName());
 												layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
 												super.add(layerTree);

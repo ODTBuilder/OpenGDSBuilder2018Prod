@@ -104,31 +104,35 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 							this.addDefaultRepo(repos);
 						} else {
 							List<Remote> remoteList = remoteRepos.getRemotes();
-							if (remoteList.size() < 0) {
+							if (remoteList == null) {
 								this.addDefaultRepo(repos);
 							} else {
-								ListBranch listBranch = new ListBranch();
-								GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, repos,
-										true);
-								for (Remote remote : remoteList) {
-									String name = remote.getName();
-									String url = remote.getUrl();
-									String remoteId = node + ":" + name; // ex) repository:remoteRepository
-									if (branch != null) {
-										List<Branch> remoteBraches = branch.getRemoteBranchList();
-										int branchSize = 0;
-										for (Branch remoteBranch : remoteBraches) {
-											if (name.equals(remoteBranch.getRemoteName())) {
-												branchSize++;
+								if (remoteList.size() < 0) {
+									this.addDefaultRepo(repos);
+								} else {
+									ListBranch listBranch = new ListBranch();
+									GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, repos,
+											true);
+									for (Remote remote : remoteList) {
+										String name = remote.getName();
+										String url = remote.getUrl();
+										String remoteId = node + ":" + name; // ex) repository:remoteRepository
+										if (branch != null) {
+											List<Branch> remoteBraches = branch.getRemoteBranchList();
+											int branchSize = 0;
+											for (Branch remoteBranch : remoteBraches) {
+												if (name.equals(remoteBranch.getRemoteName())) {
+													branchSize++;
+												}
 											}
-										}
-										if (branchSize > 0) {
-											this.addRemoteRepo(remoteId, name, url, true);
+											if (branchSize > 0) {
+												this.addRemoteRepo(remoteId, name, url, true);
+											} else {
+												this.addRemoteRepo(remoteId, name, url, false);
+											}
 										} else {
 											this.addRemoteRepo(remoteId, name, url, false);
 										}
-									} else {
-										this.addRemoteRepo(remoteId, name, url, false);
 									}
 								}
 							}

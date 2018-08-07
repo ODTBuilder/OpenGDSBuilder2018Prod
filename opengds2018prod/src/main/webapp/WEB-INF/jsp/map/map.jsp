@@ -213,7 +213,7 @@ html {
 		});
 
 		var uploadSHP = new gb.geoserver.UploadSHP({
-			"url" : "geoserver/geoserverDummy.ajax?${_csrf.parameterName}=${_csrf.token}"
+			"url" : "file/fileUpload.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
 
 		var gtree = new gb.tree.GeoServer({

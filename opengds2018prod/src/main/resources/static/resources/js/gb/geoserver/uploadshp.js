@@ -248,6 +248,30 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
 gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	console.log(this.getUploadURL());
 	console.log(input);
+	var that = this;
+	var params = {
+		"serverName" : name,
+		"workspace" : url,
+		"datastore" : id,
+		"epsg" : password
+	};
+	// $.ajax({
+	// url : this.getUploadURL() + "&" + jQuery.param(params),
+	// method : "POST",
+	// contentType : "application/json; charset=UTF-8",
+	// // data : params,
+	// beforeSend : function() {
+	// $("body").css("cursor", "wait");
+	// },
+	// complete : function() {
+	// $("body").css("cursor", "default");
+	// },
+	// success : function(data) {
+	// console.log(data);
+	// callback.close();
+	// that.refreshList();
+	// }
+	// });
 }
 
 /**

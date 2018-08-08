@@ -46,12 +46,10 @@ gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
 	var that = this;
 	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
-	var label = $("<span>").text("EPSG:");
-	var epsgInput = $("<input>").attr({
+	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
+	var epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
 		"placeholder" : "EX) 3857"
-	}).css({
-		"display" : "inline"
 	});
 	var validIcon = $("<i>").addClass("fas").addClass("fa-times");
 	var validIconSpan = $("<span>").append(validIcon);

@@ -1,8 +1,6 @@
 @CHARSET "UTF-8";
 
 .gb-geoserver-uploadshp-epsg-label {
-	border: solid 1px #787878;
-	border-right: 0;
 	margin: 5px 0;
 	padding: 5px;
 }
@@ -10,7 +8,26 @@
 .gb-geoserver-uploadshp-epsg-input {
 	display: inline;
 	padding: 3px;
-	border: solid 1px #787878;
+	border: 0;
+	border-bottom: solid 1px #787878;
+	width: 70%;
+}
+
+.gb-geoserver-uploadshp-epsg-valid-icon {
+	color: #5cb85c;
+	text-shadow: #999999 2px 2px 2px;
+	font-size: 1.2em;
+}
+
+.gb-geoserver-uploadshp-epsg-invalid-icon {
+	color: #d9534f;
+	text-shadow: #999999 2px 2px 2px;
+	font-size: 1.2em;
+}
+
+.gb-geoserver-uploadshp-epsg-icon {
+	vertical-align: text-top;
+	padding: 0 9px;
 }
 
 .gb-versioning-repository-btnarea {

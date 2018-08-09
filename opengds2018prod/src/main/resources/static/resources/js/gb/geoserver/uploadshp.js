@@ -250,11 +250,22 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	console.log(input);
 	var that = this;
 	var params = {
-		"serverName" : name,
-		"workspace" : url,
-		"datastore" : id,
-		"epsg" : password
+		"serverName" : this.getGeoServer(),
+		"workspace" : this.getWorkspace(),
+		"datastore" : this.getDatastore(),
+		"epsg" : this.getEPSGCode()
 	};
+	console.log(params);
+	var url = this.getUploadURL();
+	var withoutParamURL = url.substring(0, url.indexOf("?") );
+	if (url.indexOf("?") !== -1) {
+		url += "&";
+		url += jQuery.param(params);
+	} else {
+		url += "?";
+		url += jQuery.param(params);
+	}
+	
 	// $.ajax({
 	// url : this.getUploadURL() + "&" + jQuery.param(params),
 	// method : "POST",

@@ -2,8 +2,12 @@ spring:
   rabbitmq:
     host: 175.116.181.42
     port: 5672
+    virtual-host: only_opengds
     username: qaproducer
     password: qaproducer
+    template:
+      exchange: opengds_qa_exchange
+      routing-key: opengds_qa_key
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://175.116.181.42:5432/opengds_2018?charSet=UTF-8&prepareThreshold=1
@@ -40,9 +44,6 @@ gitrnd:
     port: 8888
     basedir: gdofiles
     basedrive: C
-  rabbitmq:
-    exchange: opengds_qa_exchange
-    routingKey: opengds_qa_key
 mybatis:
   config-location: classpath:config/mybatis.xml
   mapper-location: classpath:sql/*.xml

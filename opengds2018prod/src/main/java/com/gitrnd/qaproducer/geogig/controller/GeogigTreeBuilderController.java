@@ -33,6 +33,21 @@ public class GeogigTreeBuilderController extends AbstractController {
 	@Qualifier("treeService")
 	GeogigTreeBuilderService treeService;
 
+	/**
+	 * @param request
+	 *            HttpServletRequest
+	 * @param loginUser
+	 *            LoginUser
+	 * @param node
+	 *            node ex) server, server:repository, server:repository:branch
+	 * @param type
+	 *            node type
+	 * @param serverName
+	 *            geoserver 이름
+	 * @param transactionId
+	 *            geogig transactionId
+	 * @return JSONArray
+	 */
 	@RequestMapping(value = "/getWorkingTree.ajax")
 	@ResponseBody
 	public JSONArray getWorkingTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
@@ -54,23 +69,31 @@ public class GeogigTreeBuilderController extends AbstractController {
 		} else {
 			enType = EnGeogigRepositoryTreeType.UNKNOWN;
 		}
-		
+
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
 		return treeService.getWorkingTree(geoserverManagers, serverName, enType, node, transactionId);
 	}
 
+	/**
+	 * @param request
+	 * @param loginUser
+	 * @param node
+	 * @param type
+	 * @param serverName
+	 * @param local
+	 * @return
+	 */
 	@RequestMapping(value = "/getRemoteRepoTree.ajax")
 	@ResponseBody
 	public JSONArray getRemoteRepoTree(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "node", required = false) String node,
 			@RequestParam(value = "type", required = false) String type,
-			@RequestParam(value = "serverName", required = false) String serverName) {
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "local", required = false) String local) {
 
 		EnGeogigRemoteRepositoryTreeType enType = null;
 
-		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTE.getType())) {
-			enType = EnGeogigRemoteRepositoryTreeType.REMOTE;
-		} else if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType())) {
+		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType())) {
 			enType = EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY;
 		} else if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType())) {
 			enType = EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH;
@@ -78,7 +101,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 			enType = EnGeogigRemoteRepositoryTreeType.UNKNOWN;
 		}
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
-		return treeService.getRemoteRepoTree(geoserverManagers, serverName, enType, node);
+		return treeService.getRemoteRepoTree(geoserverManagers, serverName, enType, node, local);
 	}
 
 }

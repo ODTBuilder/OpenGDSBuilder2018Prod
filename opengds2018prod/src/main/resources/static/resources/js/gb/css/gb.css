@@ -1,5 +1,18 @@
 @CHARSET "UTF-8";
 
+.gb-geoserver-uploadshp-epsg-label {
+	border: solid 1px #787878;
+	border-right: 0;
+	margin: 5px 0;
+	padding: 5px;
+}
+
+.gb-geoserver-uploadshp-epsg-input {
+	display: inline;
+	padding: 3px;
+	border: solid 1px #787878;
+}
+
 .gb-versioning-repository-btnarea {
 	float: right;
 }

@@ -44,11 +44,6 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 						break;
 					}
 				}
-
-				GeogigRemoteRepositoryTree tt = new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(
-						dtGeoManager, serverName, EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH,
-						"geoserver:repository_test15:repository_test16");
-
 				return new GeogigTreeFactoryImpl().createGeogigRepositoryTree(dtGeoManager, serverName, type, parent,
 						transactionId);
 			} else {
@@ -68,9 +63,9 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 
 	@Override
 	public GeogigRemoteRepositoryTree getRemoteRepoTree(DTGeoserverManagerList dtGeoservers, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String parent) {
+			EnGeogigRemoteRepositoryTreeType type, String parent, String local) {
 
-		if (type.equals(EnGeogigRemoteRepositoryTreeType.REMOTE) && dtGeoservers != null) {
+		if (dtGeoservers != null) {
 			DTGeoserverManager dtGeoManager = null;
 			Iterator<String> keys = dtGeoservers.keySet().iterator();
 			while (keys.hasNext()) {
@@ -80,7 +75,12 @@ public class GeogigTreeBuilderServiceImpl implements GeogigTreeBuilderService {
 					break;
 				}
 			}
-			return new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager, serverName, type, parent);
+			// GeogigRemoteRepositoryTree tt = new
+			// GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager,
+			// serverName, EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH,
+			// "geoserver:repository_test15:repository_test16");
+			return new GeogigTreeFactoryImpl().createGeogigRemoteRepositoryTree(dtGeoManager, serverName, type, parent,
+					local);
 		} else {
 			JSONArray result = new JSONArray();
 			JSONObject errorJSON = new JSONObject();

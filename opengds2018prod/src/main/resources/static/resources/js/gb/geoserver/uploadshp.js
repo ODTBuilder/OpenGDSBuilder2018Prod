@@ -45,13 +45,21 @@ gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
  */
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
 	var that = this;
-	var message = $("<div>").text("Please input SHP file compressed in ZIP file");
-	var messageArea = $("<div>").append(message);
+	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
+	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
+	var epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
+		"type" : "text",
+		"placeholder" : "EX) 3857"
+	});
+	var validIcon = $("<i>").addClass("fas").addClass("fa-times");
+	var validIconSpan = $("<span>").append(validIcon);
+	var inputDiv = $("<div>").append(label).append(epsgInput).append(validIconSpan);
+	var message2 = $("<div>").text("2. Please input SHP file compressed in ZIP format");
 	var file = $("<input>").attr({
 		"type" : "file"
 	});
 	var fileArea = $("<div>").append(file);
-	var bodyArea = $("<div>").append(messageArea).append(fileArea);
+	var bodyArea = $("<div>").append(message1).append(inputDiv).append(message2).append(fileArea);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"

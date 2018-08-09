@@ -56,9 +56,9 @@ public class GeogigTreeFactoryImpl implements GeogigTreeFactory {
 	 */
 	@Override
 	public GeogigRemoteRepositoryTree createGeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver,
-			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent) {
+			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent, String local) {
 		// TODO Auto-generated method stub
-		return new GeogigRemoteRepositoryTree(dtGeoserver, serverName, type, parent);
+		return new GeogigRemoteRepositoryTree(dtGeoserver, serverName, type, parent, local);
 	}
 
 }

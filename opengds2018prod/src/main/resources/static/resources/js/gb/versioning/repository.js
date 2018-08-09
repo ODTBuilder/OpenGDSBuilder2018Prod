@@ -8,7 +8,7 @@
  * @param {Object}
  *            obj.url - 요청을 수행할 URL
  * @param {String}
- *            obj.url.getServerTree - 서버 목록 트리를 요청할 컨트롤러 주소
+ *            obj.url.serverTree - 서버 목록 트리를 요청할 컨트롤러 주소
  * @param {String}
  *            obj.url.beginTransaction - 작업을 수행하기 위한 트랜잭션 ID 발급을 요청할 컨트롤러 주소
  * @param {String}
@@ -17,7 +17,7 @@
  *            obj.url.cancelTransaction - 작업을 수행하기 위한 트랜잭션 ID 미적용 및 해제 요청할 컨트롤러
  *            주소
  * @param {String}
- *            obj.url.getWorkingTree - 등록한 지오서버의 워킹트리 목록 데이터를 요청할 컨트롤러 주소
+ *            obj.url.workingTree - 등록한 지오서버의 워킹트리 목록 데이터를 요청할 컨트롤러 주소
  * @param {String}
  *            obj.url.checkoutBranch- 선택한 브랜치를 체크아웃 요청할 컨트롤러 주소
  * @param {String}
@@ -29,7 +29,7 @@
  * @param {String}
  *            obj.url.resolveConflict - 충돌 문제 해결을 요청할 컨트롤러 주소
  * @param {String}
- *            obj.url.listRemoteRepository - 원격 Repository의 목록을 요청할 컨트롤러 주소
+ *            obj.url.remoteTree - 원격 Repository의 목록을 요청할 컨트롤러 주소
  * @param {String}
  *            obj.url.addRemoteRepository - 원격 Repository의 추가를 요청할 컨트롤러 주소
  * @param {String}
@@ -55,9 +55,12 @@ gb.versioning.Repository = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	var url = options.url ? options.url : {};
-	this.getServerTreeURL = url.getServerTree ? url.getServerTree : undefined;
-	this.getTransactionIdURL = url.getTransactionId ? url.getTransactionId : undefined;
+	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
+	this.transactionIdURL = url.transactionId ? url.transactionId : undefined;
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
+	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
+	this.nowRepo = undefined;
+	this.nowRepoServer = undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -92,7 +95,7 @@ gb.versioning.Repository = function(obj) {
 			},
 			"data" : {
 				'url' : function(node) {
-					var url = that.getGetServerTreeURL();
+					var url = that.getServerTreeURL();
 					return url;
 				},
 				"data" : function(node) {
@@ -216,29 +219,27 @@ gb.versioning.Repository = function(obj) {
 			},
 			"data" : {
 				'url' : function(node) {
-					var url = that.getGetServerTreeURL();
+					var url = that.getRemoteTreeURL();
 					return url;
 				},
 				"data" : function(node) {
 					var obj = {};
+					// if (node.id === "#") {
+					// obj["type"] = "server";
+					// } else if (node.type === "geoserver") {
+					// obj["type"] = "repository";
+					// obj["serverName"] = node.id;
+					// obj["node"] = node.id;
+					// } else
 					if (node.id === "#") {
-						obj["type"] = "server";
-					} else if (node.type === "geoserver") {
-						obj["type"] = "repository";
-						obj["serverName"] = node.id;
-						obj["node"] = node.id;
-					} else if (node.type === "repository") {
-						obj["type"] = "branch";
-						obj["serverName"] = node.parent;
-						obj["node"] = node.id;
-						var tranId = that.getJSTree()._data.geogigfunction.transactionId;
-						if (tranId.hasOwnProperty(node.id)) {
-							obj["transactionId"] = tranId[node.id];
-						}
-					} else if (node.type === "branch") {
-						obj["type"] = "layer";
-						obj["serverName"] = node.parents[1];
-						obj["node"] = node.id
+						obj["type"] = "remoteRepository";
+						obj["node"] = that.getNowRepository();
+						obj["serverName"] = that.getNowRepositoryServer();
+					} else if (node.type === "remoteRepository") {
+						obj["type"] = "remoteBranch";
+						obj["serverName"] = that.getNowRepositoryServer();
+						obj["node"] = node.text;
+						obj["local"] = that.getNowRepository();
 					}
 					console.log(obj);
 					return obj;
@@ -251,20 +252,16 @@ gb.versioning.Repository = function(obj) {
 		},
 		types : {
 			"#" : {
-				"valid_children" : [ "geoserver" ]
+				"valid_children" : [ "remoteRepository", "default" ]
 			},
 			"default" : {
 				"icon" : "fas fa-exclamation-circle"
 			},
-			"geoserver" : {
-				"icon" : "fas fa-globe",
-				"valid_children" : [ "repository" ]
-			},
-			"repository" : {
+			"remoteRepository" : {
 				"icon" : "fas fa-archive",
-				"valid_children" : [ "branch" ]
+				"valid_children" : [ "remoteBranch" ]
 			},
-			"branch" : {
+			"remoteBranch" : {
 				"icon" : "fas fa-code-branch",
 				"valid_children" : [ "layer" ]
 			},
@@ -317,15 +314,16 @@ gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
 /**
  * 페이지를 전환한다.
  * 
- * @method gb.versioning.Repository#manageRemoteBranch
+ * @method gb.versioning.Repository#manageRemoteRepository
  * @param {String}
  */
-gb.versioning.Repository.prototype.manageRemoteBranch = function(server, repo) {
+gb.versioning.Repository.prototype.manageRemoteRepository = function(server, repo) {
 	var serverName = server.text;
 	var repoName = repo.text;
 	$(this.remoteTitle).empty();
 	$(this.remoteTitle).text(repoName);
 	this.transitPage("remote");
+	this.refreshRemoteList();
 };
 
 /**
@@ -403,7 +401,7 @@ gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoN
 		"repoName" : repoName
 	}
 	// + "&" + jQuery.param(params),
-	var tranURL = this.getGetTransactionIdURL();
+	var tranURL = this.getTransactionIdURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
 		tranURL += jQuery.param(params);
@@ -462,31 +460,83 @@ gb.versioning.Repository.prototype.getJSTree = function() {
 /**
  * 서버 목록 트리 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getGetServerTreeURL
+ * @method gb.versioning.Repository#getServerTreeURL
  * @return {String} 서버 목록 주소 URL
  */
-gb.versioning.Repository.prototype.getGetServerTreeURL = function() {
-	return this.getServerTreeURL;
+gb.versioning.Repository.prototype.getServerTreeURL = function() {
+	return this.serverTreeURL;
 };
 
 /**
  * 트랜잭션 아이디 발급 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getGetTransactionIdURL
+ * @method gb.versioning.Repository#getTransactionIdURL
  * @return {String} 트랜잭션 아이디 주소 URL
  */
-gb.versioning.Repository.prototype.getGetTransactionIdURL = function() {
-	return this.getTransactionIdURL;
+gb.versioning.Repository.prototype.getTransactionIdURL = function() {
+	return this.transactionIdURL;
 };
 
 /**
  * 브랜치 체크아웃 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getGetTransactionIdURL
+ * @method gb.versioning.Repository#getTransactionIdURL
  * @return {String} 트랜잭션 아이디 주소 URL
  */
 gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
 	return this.checkoutURL;
+};
+
+/**
+ * 리모트 레파지토리 트리 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getTransactionIdURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
+	return this.remoteTreeURL;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowRepository
+ * @return {String} 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.getNowRepository = function() {
+	return this.nowRepo;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowRepository
+ * @param {String}
+ *            레파지토리 이름
+ */
+gb.versioning.Repository.prototype.setNowRepository = function(repo) {
+	this.nowRepo = repo;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 서버 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowRepositoryServer
+ * @return {String} 레파지토리 서버 이름
+ */
+gb.versioning.Repository.prototype.getNowRepositoryServer = function() {
+	return this.nowRepoServer;
+};
+
+/**
+ * 현재 보고있는 레파지토리의 서버 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowRepositoryServer
+ * @param {String}
+ *            레파지토리 서버 이름
+ */
+gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
+	this.nowRepoServer = server;
 };
 
 /**

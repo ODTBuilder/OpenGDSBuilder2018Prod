@@ -20,17 +20,31 @@ if (!gb.footer)
 		
 		var that = this;
 		
+		/**
+		 * ol.Map 객체
+		 * @type {ol.Map}
+		 * @private
+		 */
 		this.map = options.map;
 		
+		/**
+		 * server url
+		 * @type {string}
+		 * @private
+		 */
 		this.serverURL = options.serverURL;
 		
 		/**
 		 * 언어 코드
+		 * @type {string}
+		 * @private
 		 */
 		this.locale = options.locale || "en";
 		
 		/**
-		 * 다국적 언어 지원
+		 * 번역된 데이터
+		 * @type {Object.<string, Object<string, string>>}
+		 * @private
 		 */
 		this.translator = {
 			"history": {
@@ -47,14 +61,48 @@ if (!gb.footer)
 			}
 		}
 		
+		/**
+		 * 명령어 입력 도우미 영역 jquery instance
+		 * @type {n.fn.init}
+		 * @private
+		 */
 		this.label = undefined;
 		
+		/**
+		 * 작업 이력
+		 * @type {Object.<string, string[]>}
+		 * @private
+		 */
 		this.workHistory_ = {};
 		
+		/**
+		 * input tag 입력 값 임시 저장
+		 * @type {string[]}
+		 * @private
+		 */
 		this.inputHistory_ = [];
 		
+		/**
+		 * input에 입력한 모든 값들을 저장
+		 * @type {Object.<string, string>}
+		 * @private
+		 */
 		this.params_ = {};
 		
+		/**
+		 * Command 작업 리스트
+		 * tip: 명령어 입력 도움말
+		 * paramKey: 입력값을 저장하기위한 Key값
+		 * before: 다음 입력 단계로 넘어가기전에 수행할 함수. return true일때 다음 작업으로 넘어감. false 일시 재입력
+		 * beforeFailLog: before 함수가 false를 return할때의 log
+		 * log: 현재 입력 단계 성공시 log
+		 * next: 다음 입력 단계
+		 * end: 마무리 단계에서 수행할 함수. 현재까지 입력한 값들을 Object에 담아 함수의 인자값으로 전달함
+		 * successLog: 작업 성공시 log. end함수가 true 값을 return할때
+		 * failLog: 작업 실패시 log. end함수가 false 값을 return할때
+		 * @type {Object}
+		 * @private
+		 */
 		this.commandList_ = {
 			createLayer: {
 				tip: "enter the geoserver",
@@ -256,8 +304,18 @@ if (!gb.footer)
 			}
 		}
 		
+		/**
+		 * command 리스트에서의 현재 작업 위치
+		 * @type {Object}
+		 * @private
+		 */
 		this.currentCmd = this.commandList_;
 		
+		/**
+		 * command layout css style
+		 * @type {Object}
+		 * @private
+		 */
 		this.elementStyle_ = {
 			content: {
 				"width": "100%",
@@ -344,6 +402,10 @@ if (!gb.footer)
 	gb.footer.CommandLine.prototype = Object.create(gb.footer.Base.prototype);
 	gb.footer.CommandLine.prototype.constructor = gb.footer.CommandLine;
 	
+	/**
+	 * command layout안에 내용 element를 생성한다.
+	 * @method createContent
+	 */
 	gb.footer.CommandLine.prototype.createContent = function(){
 		var that = this;
 		
@@ -395,6 +457,13 @@ if (!gb.footer)
 			}
 		});
 		
+		// 파일 선택 input
+		var fileSelect = 
+			$("<input type='file' multiple size='50'>")
+				.change(function(){
+					that.uploadHistory(this);
+				});
+		// upload 버튼 추가
 		historyFunction.append(
 			$("<i>")
 				.addClass("fas fa-upload")
@@ -406,9 +475,10 @@ if (!gb.footer)
 					$(this).removeClass("fa-lg");
 				})
 				.click(function(){
-					console.log("upload");
+					fileSelect.click();
 				})
 				.css({"margin-right": "10px"}));
+		// download 버튼 추가
 		historyFunction.append(
 			$("<i>")
 				.mouseenter(function(){
@@ -442,6 +512,11 @@ if (!gb.footer)
 		this.contentTag.append(commandWrapper);
 	}
 	
+	/**
+	 * 명령어 입력 도움글 설정
+	 * @method setLabel
+	 * @param {string} label 명령어 입력 도움글
+	 */
 	gb.footer.CommandLine.prototype.setLabel = function(label){
 		if(typeof label === "string"){
 			this.label.text(label);
@@ -450,12 +525,22 @@ if (!gb.footer)
 		}
 	}
 	
+	/**
+	 * input에 입력된 모든 값을 저장한 변수를 초기화한다.
+	 * @method resetParams
+	 */
 	gb.footer.CommandLine.prototype.resetParams = function(){
 		for(var i in this.params_){
 			delete this.params_[i];
 		}
 	}
 	
+	/**
+	 * input에 입력된 값을 저장
+	 * @method pushParam
+	 * @param {string} value input에 입력된 값
+	 * @return {number}
+	 */
 	gb.footer.CommandLine.prototype.pushParam = function(value){
 		var num = 0;
 		var index = [];
@@ -469,6 +554,11 @@ if (!gb.footer)
 		return num;
 	}
 	
+	/**
+	 * 작업 이력을 저장
+	 * @method pushWorkHistory
+	 * @param {string[]} list - input에 입력된 값들의 배열
+	 */
 	gb.footer.CommandLine.prototype.pushWorkHistory = function(list){
 		var time = getTime();
 		if($.isArray(list)){
@@ -477,6 +567,10 @@ if (!gb.footer)
 		}
 	}
 	
+	/**
+	 * 작업 이력 다운로드
+	 * @method downHistory
+	 */
 	gb.footer.CommandLine.prototype.downHistory = function(){
 		var text = "";
 		for(let i in this.workHistory_){
@@ -488,6 +582,46 @@ if (!gb.footer)
 		down.setAttribute("href", URL.createObjectURL(file));
 		down.setAttribute("download", "history.txt");
 		down.click();
+	}
+	
+	/**
+	 * 작업 이력 업로드
+	 * @method uploadHistory
+	 * @param {DOM} input - 파일을 포함하고 있는 DOM 객체
+	 */
+	gb.footer.CommandLine.prototype.uploadHistory = function(input){
+		var that = this;
+		
+		if("files" in input){
+			var files = input.files;
+			var r = new FileReader();
+			
+			r.onloadend = function(e){
+				if(e.target.readyState === FileReader.DONE){
+					that.parseCmdText(e.target.result);
+				}
+			}
+			
+			for(let i = 0; i < files.length; i++){
+				r.readAsText(files[i]);
+			}
+		}
+	}
+	
+	gb.footer.CommandLine.prototype.parseCmdText = function(text){
+		var lines, cmds;
+		
+		if(typeof text === "string"){
+			lines = text.split("\n").slice();
+			for(let i = 0; i < lines.length; i++){
+				if(!!lines[i].trim()){
+					cmds = lines[i].split(",");
+					for(let j = 0; j < cmds.length; j++){
+						this.executeCommand(cmds[j].trim());
+					}
+				}
+			}
+		}
 	}
 	
 	gb.footer.CommandLine.prototype.insertHistoryLayout = function(time, list){
@@ -580,8 +714,6 @@ if (!gb.footer)
 			} else {
 				this.insertLogLayout(value + " is not command");
 			}
-			
-			
 		} else {
 			this.resetAll();
 		}

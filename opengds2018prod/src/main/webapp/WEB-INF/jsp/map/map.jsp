@@ -298,6 +298,28 @@ html {
 			}
 		});
 
+		// hole draw interaction
+		var hole = new gb.interaction.HoleDraw({
+			selected: epan.selected
+		});
+		
+		hole.on("change:active", function(evt) {
+			if (evt.oldValue) {
+				gb.undo.setActive(true);
+			} else {
+				gb.undo.setActive(false);
+			}
+		});
+		
+		epan.addInteraction({
+			icon : "fab fa-bitbucket",
+			content : "Hole",
+			interaction : hole,
+			"float" : "right",
+			clickEvent : function() {
+				console.log("Hole draw");
+			}
+		});
 		// feature list
 		var featureList = new gb.footer.FeatureList({
 			map : gbMap.getUpperMap(),

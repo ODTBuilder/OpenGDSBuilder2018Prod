@@ -172,7 +172,9 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
-		that.uploadFile(file[0]);
+		that.uploadFile(file[0], function() {
+			uploadModal.close()
+		});
 	});
 };
 
@@ -245,7 +247,7 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
  * @method gb.geoserver.UploadSHP#uploadFile
  * @param {Element}
  */
-gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
+gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	console.log(this.getUploadURL());
 	console.log(input);
 	var that = this;
@@ -272,7 +274,8 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	$.extend(finalParams, params, queryParams);
 	console.log(finalParams);
 
-	var formData = new FormData();
+	var form = $("<form>");
+	var formData = new FormData(form[0]);
 	formData.append("file", input.files[0]);
 	var keys = Object.keys(finalParams);
 	for (var i = 0; i < keys.length; i++) {
@@ -280,47 +283,27 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	}
 	console.log(formData);
 
-	var oReq = new XMLHttpRequest();
-	oReq.open("POST", withoutParamURL, true);
-	var boundary = "blob";
-	// oReq.setRequestHeader('Content-Type', 'multipart/form-data;');
-	oReq.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
-	if (finalParams["_csrf"]) {
-		oReq.setRequestHeader('X-CSRF-TOKEN', finalParams["_csrf"]);
-	}
-	oReq.onload = function(oEvent) {
-		if (oReq.status === 200) {
-			console.log("success", oReq.responseText);
-		} else {
-			console.log("error");
+	$.ajax({
+		url : withoutParamURL,
+		method : "POST",
+		enctype : 'multipart/form-data',
+		contentType : false,
+		data : formData,
+		processData : false,
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			// that.refreshList();
+			if (typeof callback === "function") {
+				callback();
+			}
 		}
-	};
-	oReq.send(formData);
-
-	// if (url.indexOf("?") !== -1) {
-	// url += "&";
-	// url += jQuery.param(params);
-	// } else {
-	// url += "?";
-	// url += jQuery.param(params);
-	// }
-
-	// $.ajax({
-	// url : withoutParamURL,
-	// method : "POST",
-	// contentType : 'multipart/form-data',
-	// data : formData,
-	// beforeSend : function() {
-	// // $("body").css("cursor", "wait");
-	// },
-	// complete : function() {
-	// // $("body").css("cursor", "default");
-	// },
-	// success : function(data) {
-	// console.log(data);
-	// that.refreshList();
-	// }
-	// });
+	});
 }
 
 /**

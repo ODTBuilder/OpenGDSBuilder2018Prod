@@ -138,7 +138,7 @@ gb.modal.Base.prototype.open = function() {
  */
 gb.modal.Base.prototype.close = function() {
 	$(".gb-modal-background").css("display", "none");
-	this.modal.css("display", "none");
+	$(this.modal).css("display", "none");
 };
 /**
  * 모달위치를 최신화한다.

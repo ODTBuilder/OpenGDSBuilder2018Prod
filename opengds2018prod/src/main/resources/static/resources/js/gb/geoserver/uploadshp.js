@@ -279,16 +279,17 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 		formData.append(keys[i], finalParams[keys[i]]);
 	}
 	console.log(formData);
-	var oReq = new XMLHttpRequest();
-	oReq.open("POST", withoutParamURL, true);
-	oReq.onload = function(oEvent) {
-		if (oReq.status === 200) {
-			console.log("success", oReq.responseText);
-		} else {
-			console.log("error");
-		}
-	};
-	oReq.send(formData);
+	// var oReq = new XMLHttpRequest();
+	// oReq.open("POST", withoutParamURL, true);
+	// oReq.onload = function(oEvent) {
+	// if (oReq.status === 200) {
+	// console.log("success", oReq.responseText);
+	// } else {
+	// console.log("error");
+	// }
+	// };
+	// oReq.send(formData);
+
 	// if (url.indexOf("?") !== -1) {
 	// url += "&";
 	// url += jQuery.param(params);
@@ -297,23 +298,22 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	// url += jQuery.param(params);
 	// }
 
-	// $.ajax({
-	// url : this.getUploadURL() + "&" + jQuery.param(params),
-	// method : "POST",
-	// contentType : "application/json; charset=UTF-8",
-	// // data : params,
-	// beforeSend : function() {
-	// $("body").css("cursor", "wait");
-	// },
-	// complete : function() {
-	// $("body").css("cursor", "default");
-	// },
-	// success : function(data) {
-	// console.log(data);
-	// callback.close();
-	// that.refreshList();
-	// }
-	// });
+	$.ajax({
+		url : withoutParamURL,
+		method : "POST",
+		contentType : 'multipart/form-data',
+		data : formData,
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			that.refreshList();
+		}
+	});
 }
 
 /**

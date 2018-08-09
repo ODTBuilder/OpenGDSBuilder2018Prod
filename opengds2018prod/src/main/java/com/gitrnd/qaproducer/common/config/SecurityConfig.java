@@ -15,7 +15,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.gitrnd.qaproducer.common.handler.UserLogoutSuccessHandler;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -36,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/map.do").authenticated().antMatchers("/validation.do").authenticated()
 				.antMatchers("/list.do").authenticated().antMatchers("/setting.do").authenticated()
 				.antMatchers("/createpreset.do").authenticated().antMatchers("/settinglist.do").authenticated()
-				.antMatchers("/option/**").authenticated().antMatchers("/downloaderror.do").authenticated().antMatchers("/geoserver/**").authenticated().antMatchers("/file/**").authenticated()
+				.antMatchers("/option/**").authenticated().antMatchers("/downloaderror.do").authenticated()
+				.antMatchers("/geoserver/**").authenticated().antMatchers("/file/**").authenticated()
 				.antMatchers("/upload.do").authenticated().antMatchers("/user/userinfo.do").authenticated()
 				.antMatchers("/user/deactivateuser.ajax").authenticated();
 		http.formLogin().loginPage("/user/signin.do").permitAll().loginProcessingUrl("/user/signinProcess.do")

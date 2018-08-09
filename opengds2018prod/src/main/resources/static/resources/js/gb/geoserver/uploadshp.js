@@ -23,9 +23,98 @@ gb.geoserver.UploadSHP = function(obj) {
 	this.geoserver;
 	this.workspace;
 	this.datastore;
+	this.validEPSG = false;
+	this.epsg = undefined;
+	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
+
+	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
+		"type" : "text",
+		"placeholder" : "EX) 3857"
+	});
+	this.tout = false;
+	$(this.epsgInput).keyup(function() {
+		if (that.tout) {
+			clearTimeout(that.tout);
+		}
+		that.tout = setTimeout(function() {
+			var v = $(that.epsgInput).val();
+			console.log(v);
+			that.searchEPSGCode(v);
+		}, 250);
+	});
 };
 gb.geoserver.UploadSHP.prototype = Object.create(gb.geoserver.UploadSHP.prototype);
 gb.geoserver.UploadSHP.prototype.constructor = gb.geoserver.UploadSHP;
+
+/**
+ * 현재 검색한 좌표계의 EPSG 코드를 반환한다.
+ * 
+ * @method gb.geoserver.UploadSHP#getEPSGCode
+ * @return {String} 현재 검색한 좌표계의 EPSG 코드
+ */
+gb.geoserver.UploadSHP.prototype.getEPSGCode = function() {
+	return this.epsg;
+};
+
+/**
+ * 현재 검색한 좌표계의 EPSG 코드를 설정한다.
+ * 
+ * @method gb.geoserver.UploadSHP#getEPSGCode
+ * @param {String}
+ *            code - 현재 검색한 좌표계의 EPSG 코드
+ */
+gb.geoserver.UploadSHP.prototype.setEPSGCode = function(code) {
+	this.epsg = code;
+};
+
+/**
+ * epsg 코드의 유효성을 설정한다.
+ * 
+ * @method gb.geoserver.UploadSHP#setValidEPSG
+ * @param {Boolean}
+ *            flag - EPSG 코드 유효성
+ */
+gb.geoserver.UploadSHP.prototype.setValidEPSG = function(flag) {
+	this.validEPSG = flag;
+
+	$(this.validIconSpan).empty();
+
+	if (flag) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-valid-icon");
+		}
+	} else {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		}
+	}
+};
+
+/**
+ * epsg 코드의 유효성을 반환한다.
+ * 
+ * @method gb.geoserver.UploadSHP#getValidEPSG
+ * @return {Boolean} EPSG 코드 유효성
+ */
+gb.geoserver.UploadSHP.prototype.getValidEPSG = function() {
+	return this.validEPSG;
+};
 
 /**
  * 업로드 URL 주소를 반환한다.
@@ -47,18 +136,19 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var that = this;
 	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
 	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
-	var epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
-		"type" : "text",
-		"placeholder" : "EX) 3857"
-	});
-	var validIcon = $("<i>").addClass("fas").addClass("fa-times");
-	var validIconSpan = $("<span>").append(validIcon);
-	var inputDiv = $("<div>").append(label).append(epsgInput).append(validIconSpan);
+
+	this.setValidEPSG(false);
+
+	var inputDiv = $("<div>").css({
+		"margin" : "10px"
+	}).append(label).append(this.epsgInput).append(this.validIconSpan);
 	var message2 = $("<div>").text("2. Please input SHP file compressed in ZIP format");
 	var file = $("<input>").attr({
 		"type" : "file"
 	});
-	var fileArea = $("<div>").append(file);
+	var fileArea = $("<div>").css({
+		"margin" : "10px"
+	}).append(file);
 	var bodyArea = $("<div>").append(message1).append(inputDiv).append(message2).append(fileArea);
 
 	var closeBtn = $("<button>").css({
@@ -72,8 +162,8 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var modalFooter = $("<div>").append(buttonArea);
 	var uploadModal = new gb.modal.Base({
 		"title" : "Upload SHP File",
-		"width" : 540,
-		"height" : 400,
+		"width" : 355,
+		"height" : 286,
 		"autoOpen" : true,
 		"body" : bodyArea,
 		"footer" : modalFooter
@@ -158,4 +248,87 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
 gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	console.log(this.getUploadURL());
 	console.log(input);
+	var that = this;
+	var params = {
+		"serverName" : this.getGeoServer(),
+		"workspace" : this.getWorkspace(),
+		"datastore" : this.getDatastore(),
+		"epsg" : this.getEPSGCode()
+	};
+	console.log(params);
+	var url = this.getUploadURL();
+	var withoutParamURL = url.substring(0, url.indexOf("?") );
+	if (url.indexOf("?") !== -1) {
+		url += "&";
+		url += jQuery.param(params);
+	} else {
+		url += "?";
+		url += jQuery.param(params);
+	}
+	
+	// $.ajax({
+	// url : this.getUploadURL() + "&" + jQuery.param(params),
+	// method : "POST",
+	// contentType : "application/json; charset=UTF-8",
+	// // data : params,
+	// beforeSend : function() {
+	// $("body").css("cursor", "wait");
+	// },
+	// complete : function() {
+	// $("body").css("cursor", "default");
+	// },
+	// success : function(data) {
+	// console.log(data);
+	// callback.close();
+	// that.refreshList();
+	// }
+	// });
 }
+
+/**
+ * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
+ * 
+ * @method gb.geoserver.UploadSHP#searchEPSGCode
+ * @param {String}
+ *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ */
+gb.geoserver.UploadSHP.prototype.searchEPSGCode = function(code) {
+	console.log(code);
+	var that = this;
+	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
+		return response.json();
+	}).then(function(json) {
+		if (json.number_result !== 1) {
+			that.setValidEPSG(false);
+			console.error("no crs");
+			return;
+		} else if (json.number_result < 1) {
+			that.setValidEPSG(false);
+			console.error("no crs");
+			return;
+		}
+		var results = json['results'];
+		if (results && results.length > 0) {
+			for (var i = 0, ii = results.length; i < ii; i++) {
+				var result = results[i];
+				if (result) {
+					var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
+					if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
+						console.log(code);
+						console.log(codes);
+						if (code === codes) {
+							that.setEPSGCode(code);
+							that.setValidEPSG(true);
+						}
+						return;
+					} else {
+						console.error("no crs");
+						that.setValidEPSG(false);
+						return;
+					}
+				}
+			}
+		}
+		return;
+	});
+};

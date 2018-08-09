@@ -257,15 +257,46 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input) {
 	};
 	console.log(params);
 	var url = this.getUploadURL();
-	var withoutParamURL = url.substring(0, url.indexOf("?") );
-	if (url.indexOf("?") !== -1) {
-		url += "&";
-		url += jQuery.param(params);
-	} else {
-		url += "?";
-		url += jQuery.param(params);
+	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
+	console.log(withoutParamURL);
+	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
+	console.log(queryString);
+	var queryParams = {};
+	if (queryString) {
+		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
+			return key === "" ? value : decodeURIComponent(value);
+		});
 	}
-	
+	console.log(queryParams);
+	var finalParams = {};
+	$.extend(finalParams, params, queryParams);
+	console.log(finalParams);
+
+	var formData = new FormData();
+	formData.append("file", input);
+	var keys = Object.keys(finalParams);
+	for (var i = 0; i < keys.length; i++) {
+		formData.append(keys[i], finalParams[keys[i]]);
+	}
+	console.log(formData);
+	var oReq = new XMLHttpRequest();
+	oReq.open("POST", withoutParamURL, true);
+	oReq.onload = function(oEvent) {
+		if (oReq.status === 200) {
+			console.log("success", oReq.responseText);
+		} else {
+			console.log("error");
+		}
+	};
+	oReq.send(formData);
+	// if (url.indexOf("?") !== -1) {
+	// url += "&";
+	// url += jQuery.param(params);
+	// } else {
+	// url += "?";
+	// url += jQuery.param(params);
+	// }
+
 	// $.ajax({
 	// url : this.getUploadURL() + "&" + jQuery.param(params),
 	// method : "POST",

@@ -2152,20 +2152,21 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 			loader: function(extent, resolution, projection){
 				
 				params = {
-					"service" : "WFS",
+					"serverName": git.geoserver,
+					"workspace": git.workspace,
 					"version" : "1.0.0",
-					"request" : "GetFeature",
 					"typeName" : layername,
-					"outputformat" : "text/javascript",
 					"bbox" : extent.join(","),
-					"format_options" : "callback:" + layerid
+					"outputformat" : "JSONP",
+					"format_options" : "callback:" + treeid
 				};
 				
 				$.ajax({
 					url : url,
+					method : "POST",
 					data : params,
 					dataType : 'jsonp',
-					jsonpCallback : layerid,
+					jsonpCallback : treeid,
 					success : function(data) {
 						var features = vectorSource.getFormat().readFeatures(data)
 						vectorSource.addFeatures(features);

@@ -104,9 +104,6 @@ html {
 </style>
 </head>
 <body>
-	<script>
-		const CONTEXTPATH = "${pageContext.request.contextPath}";
-	</script>
 	<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
 	<nav class="navbar navbar-default fixed-top builderHeader">
 		<div class="navbar-header">
@@ -234,8 +231,8 @@ html {
 			id : "feature_id"
 		});
 
-		var wfsURL = "http://175.116.181.32:9999/geoserver/wfs";
-		var wmsURL = "http://175.116.181.32:9999/geoserver/wms";
+		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
+		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -243,10 +240,10 @@ html {
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
 			wfsURL : wfsURL,
-			getFeatureInfo : wmsURL,
-			layerInfo : "geoserver/getGeoLayerInfoList.ajax",
+			getFeatureInfo : infoURL,
+			layerInfo : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
 			imageTile : "geoserver/geoserverWMSLayerLoad.do",
-			getFeature : "geoserver/geoserverWFSGetFeature.ajax",
+			getFeature : "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}",
 			locale : "en"
 		});
 
@@ -336,6 +333,7 @@ html {
 				layer = data.instance.get_LayerById(data.selected[i]);
 				featureList.updateFeatureList({
 					url : wfsURL,
+					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 					layerName : layer.get('name'),
 					exceptKeys : [ 'geometry'/*, 'feature_id', 'ufid' */]

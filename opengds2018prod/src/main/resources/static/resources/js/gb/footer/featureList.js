@@ -181,6 +181,12 @@ if (!gb.footer)
 			return;
 		}
 		
+		var geoserver = options.geoserver;
+		if(!geoserver){
+			console.error('gb.footer.FeatureList: geoserver name is required');
+			return;
+		}
+		
 		var workspace = options.workspace;
 		if(!workspace){
 			console.error('gb.footer.FeatureList: workspace name is required');
@@ -196,17 +202,18 @@ if (!gb.footer)
 		var exceptKeys = options.exceptKeys || [];
 		
 		var defaultParameters = {
-			service : 'WFS',
-			version : '1.0.0',
-			request : 'GetFeature',
-			typeName : workspace + ':' + layerName,
-			outputFormat : 'text/javascript',
-			format_options : 'callback:getJson'
+			"serverName": geoserver,
+			"workspace": workspace,
+			"version" : "1.0.0",
+			"typeName" : layerName,
+			"outputformat" : "JSONP",
+			"format_options" : "callback:getJson"
 		};
 
 		var that = this;
 		$.ajax({
 			url : url,
+			method : "POST",
 			data : defaultParameters,
 			dataType : 'jsonp',
 			jsonpCallback : 'getJson',

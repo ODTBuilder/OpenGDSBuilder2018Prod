@@ -27,6 +27,7 @@ gb.modal.Base = function(obj) {
 	this.title = options.title ? options.title : "";
 	this.width = options.width ? options.width : "auto";
 	this.height = options.height ? options.height : "auto";
+	this.keep = options.keep || false;
 	this.autoOpen = options.autoOpen ? true : false;
 	var span = $("<span>").html("&times;");
 	var btn = $("<button>").append(span).click(function() {
@@ -54,16 +55,10 @@ gb.modal.Base = function(obj) {
 		"z-Index" : "999"
 	}).append(this.modalHead).append(this.modalBody).append(this.modalFooter);
 
-	if (!$(".gb-modal-background")[0]) {
-		this.background = $("<div>").addClass("gb-modal-background");
-		$("body").append(this.background);
-	}
-	$("body").append(this.modal);
-
+	this.background = $("<div>").addClass("gb-modal-background");
+	
 	if (this.autoOpen) {
 		this.open();
-	} else {
-		this.close();
 	}
 };
 /**
@@ -127,7 +122,11 @@ gb.modal.Base.prototype.getModal = function() {
  * @method gb.modal.Base#open
  */
 gb.modal.Base.prototype.open = function() {
-	$(".gb-modal-background").css("display", "block");
+	if(!this.keep){
+		$("body").append(this.modal);
+		$("body").append(this.background);
+	}
+	this.background.css("display", "block");
 	this.modal.css("display", "block");
 	this.refreshPosition();
 };
@@ -137,8 +136,13 @@ gb.modal.Base.prototype.open = function() {
  * @method gb.modal.Base#close
  */
 gb.modal.Base.prototype.close = function() {
-	$(".gb-modal-background").css("display", "none");
-	this.modal.css("display", "none");
+	if(this.keep){
+		this.background.css("display", "none");
+		this.modal.css("display", "none");
+	} else {
+		this.background.remove();
+		this.modal.remove();
+	}
 };
 /**
  * 모달위치를 최신화한다.

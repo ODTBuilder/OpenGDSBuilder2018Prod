@@ -26,6 +26,7 @@
 gb.crs.BaseCRS = function(obj) {
 	obj.width = 435;
 	obj.height = 180;
+	obj.keep = true;
 	gb.modal.Base.call(this, obj);
 	var that = this;
 	var options = obj ? obj : {};
@@ -63,6 +64,9 @@ gb.crs.BaseCRS = function(obj) {
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(this.searchBtn).append(closeBtn);
 
 	this.setModalFooter(buttonArea);
+	
+	$("body").append(this.modal);
+	$("body").append(this.background);
 };
 gb.crs.BaseCRS.prototype = Object.create(gb.modal.Base.prototype);
 gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;

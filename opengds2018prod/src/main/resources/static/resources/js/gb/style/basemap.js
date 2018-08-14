@@ -33,6 +33,7 @@ gb.style.BaseMap = function(obj) {
 	obj.height = 331;
 	obj.autoOpen = false;
 	obj.title = "Base Map";
+	obj.keep = true;
 	gb.modal.Base.call(this, obj);
 	var options = obj ? obj : {};
 	this.map = options.map ? options.map : undefined;
@@ -162,6 +163,8 @@ gb.style.BaseMap = function(obj) {
 	var modalFooter = $("<div>").append(buttonArea);
 	$(this.modalFooter).append(modalFooter);
 
+	$("body").append(this.modal);
+	$("body").append(this.background);
 };
 gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;

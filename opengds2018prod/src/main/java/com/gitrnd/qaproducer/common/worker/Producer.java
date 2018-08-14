@@ -19,11 +19,11 @@ public class Producer {
 
 	public void produceMsg(String msg) {
 		System.out.println("Send msg = " + msg);
-
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
-		template.convertSendAndReceive(msg);
+		boolean isSuccesed = (boolean) template.convertSendAndReceive(msg);
+		System.out.println("");
 	}
 
 	public JSONObject produceMobileMsg(String msg) {

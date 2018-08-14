@@ -57,6 +57,11 @@
 	src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/js/datatables/css/jquery.dataTables.css" />
+<!-- shp2geojson -->
+<script src="${pageContext.request.contextPath}/resources/js/shp2geojson/preview.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/shp2geojson/preprocess.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/shp2geojson/jszip.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/shp2geojson/jszip-utils.js"></script>
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->

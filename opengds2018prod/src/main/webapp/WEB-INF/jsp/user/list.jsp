@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -108,19 +109,19 @@
 								style="margin-top: 15px; margin-bottom: 10px;">
 								<div class="btn-group" role="group">
 									<button id="all-deselect" class="btn btn-default">
-										<i class="far fa-square"></i> 전체선택해제
+										<i class="far fa-square"></i><spring:message code="lang.deselall" />
 									</button>
 								</div>
 								<div class="btn-group" role="group">
 									<button id="all-select" class="btn btn-info">
-										<i class="far fa-check-square"></i> 전체선택
+										<i class="far fa-check-square"></i><spring:message code="lang.selall" />
 									</button>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2 col-md-offset-7">
 							<button id="select-delete" class="btn btn-danger" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<i class="far fa-trash-alt"></i> 선택삭제
+								<i class="far fa-trash-alt"></i><spring:message code="lang.delsel" />
 							</button>
 						</div>
 					</div>
@@ -129,15 +130,15 @@
 					<table class="table table-striped table-hover text-center">
 						<thead>
 							<tr>
-								<td>번호</td>
-								<td>원본</td>
-								<td style="width: 10%;">요청시간</td>
-								<td style="width: 10%;">완료시간</td>
-								<td>검수종류</td>
-								<td>파일포맷</td>
-								<td>상태</td>
-								<td>다운로드</td>
-								<td>비고</td>
+								<td><spring:message code="lang.no" /></td>
+								<td><spring:message code="lang.original" /></td>
+								<td style="width: 10%;"><spring:message code="lang.requestTime" /></td>
+								<td style="width: 10%;"><spring:message code="lang.completeTime" /></td>
+								<td><spring:message code="lang.validationType" /></td>
+								<td><spring:message code="lang.fileFormat" /></td>
+								<td><spring:message code="lang.status" /></td>
+								<td><spring:message code="lang.download" /></td>
+								<td><spring:message code="lang.remarks" /></td>
 							</tr>
 						</thead>
 						<tbody>
@@ -152,25 +153,25 @@
 									<td>${item.format}</td>
 									<c:choose>
 										<c:when test="${item.state eq 1}">
-											<td>대기</td>
+											<td><spring:message code="lang.standby" /></td>
 										</c:when>
 										<c:when test="${item.state eq 2}">
-											<td>검수중</td>
+											<td><spring:message code="lang.nowValidate" /></td>
 										</c:when>
 										<c:when test="${item.state eq 3}">
-											<td>완료</td>
+											<td><spring:message code="lang.success" /></td>
 										</c:when>
 										<c:when test="${item.state eq 4}">
-											<td>실패</td>
+											<td><spring:message code="lang.fail" /></td>
 										</c:when>
 										<c:otherwise>
-											<td>알 수 없음</td>
+											<td><spring:message code="lang.unknown" /></td>
 										</c:otherwise>
 									</c:choose>
 									<td><a href="${item.errFileDir}" class="gb-download-btn">${item.errName}</a></td>
 									<td><c:choose>
 											<c:when test="${item.comment ne null}">
-												<a href="#" class="gb-detailinformation-btn" comment="${item.comment}">상세 정보</a>
+												<a href="#" class="gb-detailinformation-btn" comment="${item.comment}"><spring:message code="lang.detail" /></a>
 											</c:when>
 										</c:choose></td>
 								</tr>

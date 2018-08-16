@@ -188,9 +188,9 @@ gb.style.BaseMap.prototype.open = function() {
 			}
 		}
 	}
-
-	$(".gb-modal-background").css("display", "block");
+	
 	this.modal.css("display", "block");
+	this.background.css("display", "block");
 	this.refreshPosition();
 };
 

@@ -80,6 +80,7 @@ public class DTGeoLayer {
 	private String geomType; // 공간정보타입
 	private JSONObject attInfo = new JSONObject(); // 속성정보
 	private String style;
+	
 
 	/**
 	 * DTGeoLayer Build

@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
@@ -510,6 +511,21 @@ public class GeoserverServiceImpl implements GeoserverService {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return dtPublisher.requestWFSTransaction(wfstXml);
+	}
+	
+	
+	@Override
+	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName){
+		String sld = "";
+		if(dtGeoManager!=null){
+			dtReader = dtGeoManager.getReader();
+			DTGeoLayer dtLayer = dtReader.getDTGeoLayer(workspace, layerName);
+			String style = dtLayer.getStyle();
+			sld = dtReader.getSLD(workspace, style);
+		}else{
+			throw new IllegalArgumentException("Geoserver 정보 없음");
+		}
+		return sld;
 	}
 }
 

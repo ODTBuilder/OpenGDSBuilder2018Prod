@@ -249,6 +249,18 @@ public interface GeoserverService {
 	 * @return String
 	 * */
 	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String wfstXml);
+	
+	
+	/**
+	 * @Description sld 조회
+	 * @author SG.Lee
+	 * @Date 2018. 8. 16. 오후 1:26:03
+	 * @param dtGeoManager
+	 * @param workspace
+	 * @param layerName
+	 * @return String
+	 * */
+	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName);
 }
 
 

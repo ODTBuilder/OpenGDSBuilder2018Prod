@@ -30,7 +30,8 @@ gb.tree.OpenLayers = function(obj) {
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	this.locale = options.locale || "en";
 	var url = options.url;
-	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
+	this.geometryType = [ "point", "linestring", "polygon", "multipoint",
+			"multilinestring", "multipolygon" ];
 	this.translation = {
 		"layerCode" : {
 			"en" : "Code",
@@ -55,45 +56,46 @@ gb.tree.OpenLayers = function(obj) {
 		"float" : "left"
 	});
 	var addIcon = $("<i>").addClass("fas").addClass("fa-plus");
-	this.addBtn = $("<button>").addClass("gb-button-clear").append(addIcon).css({
-		"float" : "right"
-	}).click(function() {
-		that.openAddLayer();
-	});
-	var importFileIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-archive");
-	this.importFileBtn = $("<button>").addClass("gb-button-clear").append(importFileIcon).css({
+	this.addBtn = $("<button>").addClass("gb-button-clear").append(addIcon)
+			.css({
+				"float" : "right"
+			}).click(function() {
+				that.openAddLayer();
+			});
+	var importFileIcon = $("<i>").addClass("far fa-lg").addClass(
+			"fa-file-archive");
+	this.importFileBtn = $("<button>").addClass("gb-button-clear").append(
+			importFileIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.createUploadModal();
 	});
 	var addImgIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-image");
-	this.addImgBtn = $("<button>").addClass("gb-button-clear").append(addImgIcon).css({
+	this.addImgBtn = $("<button>").addClass("gb-button-clear").append(
+			addImgIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.openAddLayer();
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
-	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
-		"float" : "right"
-	}).click(function() {
-		that.refreshList();
-	});
+	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon)
+			.css({
+				"float" : "right"
+			}).click(function() {
+				that.refreshList();
+			});
 	var searchIcon = $("<i>").addClass("fas").addClass("fa-search");
-	this.searchBtn = $("<button>").addClass("gb-button-clear").append(searchIcon).css({
+	this.searchBtn = $("<button>").addClass("gb-button-clear").append(
+			searchIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.openSearchBar();
 	});
-	
-	this.titleArea = 
-		$("<div>")
-			.append(this.panelTitle)
-			.append(this.searchBtn)
-			.append(this.refBtn)
-			.append(this.addImgBtn)
-			.append(this.importFileBtn)
-			.append(this.addBtn);
-	
+
+	this.titleArea = $("<div>").append(this.panelTitle).append(this.searchBtn)
+			.append(this.refBtn).append(this.addImgBtn).append(
+					this.importFileBtn).append(this.addBtn);
+
 	this.searchInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
@@ -113,7 +115,8 @@ gb.tree.OpenLayers = function(obj) {
 		}, 250);
 	});
 	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
-	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
+	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(
+			closeIcon).css({
 		"float" : "right"
 	}).click(function() {
 		$(that.searchInput).val("");
@@ -123,7 +126,8 @@ gb.tree.OpenLayers = function(obj) {
 	this.searchArea = $("<div>").css({
 		"display" : "none"
 	}).append(this.searchInput).append(this.closeSearchBtn);
-	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
+	this.panelHead = $("<div>").addClass("gb-article-head").append(
+			this.titleArea).append(this.searchArea);
 	this.panelBody = $("<div>").addClass("gb-article-body").css({
 		"overflow-y" : "auto"
 	});
@@ -155,64 +159,87 @@ gb.tree.OpenLayers = function(obj) {
 		$(that.panelBody).outerHeight(bodyHeight);
 	}, 1000);
 
-	$(this.panelBody).jstreeol3({
-		"core" : {
-			"map" : this.map,
-			"animation" : 0,
-			"themes" : {
-				"stripes" : true
-			},
-		},
-		"layerproperties" : {
-			"properties" : undefined,
-			"layerRecord" : undefined,
-			"featureRecord" : undefined,
-			"style" : undefined,
-			"editingTool" : undefined
-		},
-		"search" : {
-			show_only_matches : true
-		},
-		"legends" : {
-			"types" : {
-				"#" : {
-					"valid_children" : [ "default", "Group", "Vector", "Raster", "ImageTile" ]
+	$(this.panelBody).jstreeol3(
+			{
+				"core" : {
+					"map" : this.map,
+					"animation" : 0,
+					"themes" : {
+						"stripes" : true
+					},
 				},
-				// 편집도구에서 지원할 타입
-				"Group" : {
-					"icon" : "fa fa-folder-o",
-					"valid_children" : [ "default", "Group", "Vector", "Raster", "ImageTile" ]
+				"layerproperties" : {
+					"properties" : undefined,
+					"layerRecord" : undefined,
+					"featureRecord" : undefined,
+					"style" : undefined,
+					"editingTool" : undefined
 				},
-				// 이외의 기본형
-				"default" : {
-					"icon" : "fa fa-file-o",
-					"valid_children" : []
+				"search" : {
+					show_only_matches : true
 				},
-				"Vector" : {
-					"icon" : "fa fa-file-image-o",
-					"valid_children" : []
+				"legends" : {
+					"types" : {
+						"#" : {
+							"valid_children" : [ "default", "Group", "Raster",
+									"ImageTile", "Polygon", "Multipolygon",
+									"Linestring", "Multilinestring", "Point",
+									"Multipoint" ]
+						},
+						// 편집도구에서 지원할 타입
+						"Group" : {
+							"icon" : "far fa-folder",
+							"valid_children" : [ "default", "Group", "Raster",
+									"ImageTile", "Polygon", "Multipolygon",
+									"Linestring", "Multilinestring", "Point",
+									"Multipoint" ]
+						},
+						// 이외의 기본형
+						"default" : {
+							"icon" : "fas fa-file",
+							"valid_children" : []
+						},
+						"Raster" : {
+							"icon" : "fas fa-file-image",
+							"valid_children" : []
+						},
+						"ImageTile" : {
+							"icon" : "fas fa-file-image",
+							"valid_children" : []
+						},
+						"Polygon" : {
+							"icon" : "gb-icon"
+						},
+						"Multipolygon" : {
+							"icon" : "gb-icon"
+						},
+						"Linestring" : {
+							"icon" : "gb-icon"
+						},
+						"Multilinestring" : {
+							"icon" : "gb-icon"
+						},
+						"Point" : {
+							"icon" : "gb-icon"
+						},
+						"Multipoint" : {
+							"icon" : "gb-icon"
+						}
+					},
+					"geoserver" : {
+						"url" : this.getLegend,
+						"width" : "15",
+						"height" : "15",
+						"format" : "image/png"
+					}
 				},
-				"Raster" : {
-					"icon" : "fa fa-file-image-o",
-					"valid_children" : []
+				"functionmarker" : {
+					"snapping" : "fas fa-magnet"
 				},
-				"ImageTile" : {
-					"icon" : "fa fa-file-image-o",
-					"valid_children" : []
-				}
-			},
-			"geoserver" : {
-				"url" : this.getLegend,
-				"width" : "15",
-				"height" : "15",
-				"format" : "image/png"
-			}
-		},
-		"functionmarker" : {
-			"snapping" : "fa fa-magnet"
-		},
-		plugins : [ "contextmenu", "dnd", "search", "state", "sort", "visibility", "layerproperties", "legends", "functionmarker" ]
-	});
+				plugins : [ "contextmenu", "dnd", "search", "state", "sort",
+						"visibility", "layerproperties", "legends",
+						"functionmarker" ]
+			});
 	this.jstree = $(this.panelBody).jstreeol3(true);
 
 };
@@ -258,13 +285,16 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel").click(function() {
-	});
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel")
+			.click(function() {
+			});
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete").click(function() {
-	});
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete")
+			.click(function() {
+			});
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+			.append(closeBtn);
 	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
 		"title" : "Delete GeoServer",
@@ -322,8 +352,9 @@ gb.tree.OpenLayers.prototype.closeSearchBar = function() {
  */
 gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	var that = this;
-	
-	var col1 = $("<div>").addClass("col-md-2").append(this.translation.layerCode[this.locale]);
+
+	var col1 = $("<div>").addClass("col-md-2").append(
+			this.translation.layerCode[this.locale]);
 	var codeInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : this.translation.exLayerCodeField[this.locale]
@@ -331,13 +362,17 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 
 	var col2 = $("<div>").addClass("col-md-10").append(codeInput);
 	var row1 = $("<div>").addClass("row").append(col1).append(col2).css({
-		"margin-bottom": "15px"
-	});;
-	
-	var col3 = $("<div>").addClass("col-md-2").text(this.translation.layerType[this.locale]);
-	var geomSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-geometry");
+		"margin-bottom" : "15px"
+	});
+	;
+
+	var col3 = $("<div>").addClass("col-md-2").text(
+			this.translation.layerType[this.locale]);
+	var geomSelect = $("<select>").addClass("form-control").addClass(
+			"gb-layerdefinition-select-geometry");
 	for (var i = 0; i < this.geometryType.length; i++) {
-		var option = $("<option>").text(this.geometryType[i].toUpperCase()).attr("value", this.geometryType[i]);
+		var option = $("<option>").text(this.geometryType[i].toUpperCase())
+				.attr("value", this.geometryType[i]);
 		if (i === 0) {
 			$(option).attr("selected", "selected");
 		}
@@ -345,7 +380,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	}
 	var col4 = $("<div>").addClass("col-md-10").append(geomSelect);
 	var row2 = $("<div>").addClass("row").append(col3).append(col4);
-	
+
 	var well = $("<div>").addClass("well").append(row1).append(row2);
 
 	var closeBtn = $("<button>").css({
@@ -355,12 +390,13 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
 
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+			.append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 
 	var gBody = $("<div>").append(well).css({
 		"display" : "table",
-		"width": "100%"
+		"width" : "100%"
 	});
 	var addGeoServerModal = new gb.modal.Base({
 		"title" : this.translation.addLayer[this.locale],
@@ -373,21 +409,23 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	$(closeBtn).click(function() {
 		addGeoServerModal.close();
 	});
-	$(okBtn).click(function() {
-		var vectorLayer = new ol.layer.Vector({
-			source: new ol.source.Vector({})
-		});
-		var type = geomSelect.find("option:selected").val();
-		var gitLayer = {
-			"editable" : true,
-			"geometry" : type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(),
-			"validation" : false
-		};
-		vectorLayer.set("git", gitLayer);
-		vectorLayer.set("name", codeInput.val());
-		that.map.addLayer(vectorLayer);
-		addGeoServerModal.close();
-	});
+	$(okBtn).click(
+			function() {
+				var vectorLayer = new ol.layer.Vector({
+					source : new ol.source.Vector({})
+				});
+				var type = geomSelect.find("option:selected").val();
+				var gitLayer = {
+					"editable" : true,
+					"geometry" : type.charAt(0).toUpperCase()
+							+ type.slice(1).toLowerCase(),
+					"validation" : false
+				};
+				vectorLayer.set("git", gitLayer);
+				vectorLayer.set("name", codeInput.val());
+				that.map.addLayer(vectorLayer);
+				addGeoServerModal.close();
+			});
 };
 
 /**
@@ -397,50 +435,41 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
  */
 gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	var that = this;
-	
+
 	var file;
-	
+
 	// 파일 선택 input
-	var fileSelect = 
-		$("<input type='file' id='layer_shp_file' accept='.zip'>")
-			.change(function(){
-				if(!!this.files){
+	var fileSelect = $("<input type='file' id='layer_shp_file' accept='.zip'>")
+			.change(function() {
+				if (!!this.files) {
 					file = this.files[0];
-					if(file.size > 0) {
-						fileInfo.text(file.name+' , '+file.size+' kb');
+					if (file.size > 0) {
+						fileInfo.text(file.name + ' , ' + file.size + ' kb');
 					}
 				}
 			});
-	
-	var uploadBtn = 
-		$("<button type='button'>")
-			.addClass("btn btn-primary btn-lg btn-block")
-			.text("Upload zip file")
-			.mouseenter(function(){
+
+	var uploadBtn = $("<button type='button'>").addClass(
+			"btn btn-primary btn-lg btn-block").text("Upload zip file")
+			.mouseenter(function() {
 				$(this).css({
-					"background-color": "#00c4bc"
+					"background-color" : "#00c4bc"
 				});
-			})
-			.mouseleave(function(){
+			}).mouseleave(function() {
 				$(this).css({
-					"background-color": "#00b5ad"
+					"background-color" : "#00b5ad"
 				});
-			})
-			.click(function(){
+			}).click(function() {
 				fileSelect.click();
-			})
-			.css({
-				"background-color": "#00b5ad",
-				"border-color": "transparent"
+			}).css({
+				"background-color" : "#00b5ad",
+				"border-color" : "transparent"
 			});
-	
-	var fileInfo = 
-		$("<div role='alert'>")
-			.addClass("alert alert-light")
-			.css({
-				"text-align": "center"
-			});
-	
+
+	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
+		"text-align" : "center"
+	});
+
 	var epsg = $("<div>").addClass("col-md-2").append("EPSG");
 	var epsgInput = $("<input>").attr({
 		"type" : "text",
@@ -449,9 +478,9 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 
 	var col1 = $("<div>").addClass("col-md-10").append(epsgInput);
 	var row1 = $("<div>").addClass("row").append(epsg).append(col1).css({
-		"margin-bottom": "15px"
+		"margin-bottom" : "15px"
 	});
-	
+
 	var encode = $("<div>").addClass("col-md-2").append("Encoding");
 	var encodeInput = $("<input>").attr({
 		"type" : "text",
@@ -460,7 +489,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 
 	var col2 = $("<div>").addClass("col-md-10").append(encodeInput);
 	var row2 = $("<div>").addClass("row").append(encode).append(col2);
-	
+
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Close");
@@ -468,18 +497,16 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
 
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+			.append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 
-	var gBody = 
-		$("<div>")
-			.append(uploadBtn).append(fileInfo)
-			.append(row1).append(row2)
-			.css({
+	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(row1)
+			.append(row2).css({
 				"display" : "table",
-				"width": "100%"
+				"width" : "100%"
 			});
-	
+
 	var addGeoServerModal = new gb.modal.Base({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
@@ -497,23 +524,23 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	});
 };
 
-gb.tree.loadShpZip = function(epsg, encode, file, map){
+gb.tree.loadShpZip = function(epsg, encode, file, map) {
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
 	var fileL = file;
-	if(fileL.name.split(".")[1] === "zip"){
-		
+	if (fileL.name.split(".")[1] === "zip") {
+
 		loadshp({
-			url: fileL,
-			encoding: encode,
-			EPSG: epsg
-		}, function(geojson){
+			url : fileL,
+			encoding : encode,
+			EPSG : epsg
+		}, function(geojson) {
 			var features = (new ol.format.GeoJSON()).readFeatures(geojson);
-			
-			if(!!features.length){
+
+			if (!!features.length) {
 				var vectorLayer = new ol.layer.Vector({
-					source: new ol.source.Vector({
-						features: features
+					source : new ol.source.Vector({
+						features : features
 					})
 				});
 				var gitLayer = {
@@ -524,9 +551,8 @@ gb.tree.loadShpZip = function(epsg, encode, file, map){
 				vectorLayer.set("git", gitLayer);
 				vectorLayer.set("name", fileL.name);
 				map.addLayer(vectorLayer);
-				map.getView().fit([
-					geojson.bbox[1], geojson.bbox[0]], [geojson.bbox[3], geojson.bbox[2]
-				]);
+				map.getView().fit([ geojson.bbox[1], geojson.bbox[0] ],
+						[ geojson.bbox[3], geojson.bbox[2] ]);
 			}
 		});
 	}

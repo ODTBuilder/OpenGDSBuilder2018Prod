@@ -1,8 +1,10 @@
 package com.gitrnd.qaproducer.qa.service;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.filestatus.service.FileStatusService;
+import com.gitrnd.qaproducer.qa.domain.ServerSideVO;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 import com.gitrnd.qaproducer.qa.repository.ValidationResultRepository;
 
@@ -26,11 +29,28 @@ public class ValidationResultService {
 	@Autowired
 	private FileStatusService fileStatusService;
 
-
+	/**
+	 * DataTable Server Side 요청 처리 Service
+	 */
 	@Transactional(readOnly = true)
-	public LinkedList<ValidationResult> retrieveValidationResultByUidx(int idx) {
-
-		return validationResultRepository.retrieveValidationResultByUidx(idx);
+	public JSONObject retrieveValidationResultByUidx(HashMap<String, Object> input, ServerSideVO serverSideVO, int idx) {
+		// 반환할 데이터들
+		JSONObject dataTable = new JSONObject();
+		JSONArray rows = new JSONArray();
+		
+		int draw = serverSideVO.getDrawCount();
+		int start = serverSideVO.getStartIndex();
+		int length = serverSideVO.getDisplayLength();
+		
+		int count = validationResultRepository.countValidationResultByUidx(idx);
+		rows = validationResultRepository.retrieveValidationResultByUidx(draw, start, length, idx);
+		
+		dataTable.put("draw", draw);
+		dataTable.put("recordsTotal", count);
+		dataTable.put("recordsFiltered", count);
+		dataTable.put("data", rows);
+		
+		return dataTable;
 	}
 
 	/**

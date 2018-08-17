@@ -97,6 +97,24 @@
 		$(document).on("click", "#all-deselect", function() {
 			$(".SettingSection > table > tbody > tr").removeClass("info");
 		});
+		
+		$(document).ready(function() {
+			$("#serverDataTable").DataTable({
+				"serverSide" : true,
+				"searching" : false,
+				"processing" : true,
+				"ajax" : {
+					"url" : "${pageContext.request.contextPath}/result/getValidationResult.ajax?${_csrf.parameterName}=${_csrf.token}",
+					"data" : function(d){
+						console.log(d);
+					},
+					"error": function(e){
+						console.log(e);
+					}
+				},
+				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ]
+			});
+		});
 	</script>
 	<div class="container">
 		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
@@ -177,6 +195,21 @@
 								</tr>
 							</c:forEach>
 						</tbody>
+					</table>
+					<table class="table table-bordered" id="serverDataTable" width="100%" cellspacing="0" style="text-align: center">
+						<thead>
+							<tr>
+								<th><spring:message code="lang.no" /></th>
+								<th><spring:message code="lang.original" /></th>
+								<th style="width: 10%;"><spring:message code="lang.requestTime" /></th>
+								<th style="width: 10%;"><spring:message code="lang.completeTime" /></th>
+								<th><spring:message code="lang.validationType" /></th>
+								<th><spring:message code="lang.fileFormat" /></th>
+								<th><spring:message code="lang.status" /></th>
+								<th><spring:message code="lang.download" /></th>
+								<th><spring:message code="lang.remarks" /></th>
+							</tr>
+						</thead>
 					</table>
 				</section>
 			</div>

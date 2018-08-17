@@ -2,6 +2,8 @@ package com.gitrnd.qaproducer.qa.domain;
 
 import java.sql.Timestamp;
 
+import org.json.simple.JSONObject;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -9,7 +11,12 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode
-public class ValidationResult {
+public class ValidationResult extends JSONObject{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public int pidx;
 	public int uidx;
 	public int fidx;

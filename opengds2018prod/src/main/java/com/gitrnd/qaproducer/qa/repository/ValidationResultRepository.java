@@ -1,8 +1,10 @@
 package com.gitrnd.qaproducer.qa.repository;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -15,8 +17,17 @@ public class ValidationResultRepository {
 	@Autowired
 	private ValidationResultMapper validationResultMapper;
 
-	public LinkedList<ValidationResult> retrieveValidationResultByUidx(int idx) {
-		return validationResultMapper.retrieveValidationResultByUidx(idx);
+	public int countValidationResultByUidx(int idx) {
+		return validationResultMapper.countValidationResultByUidx(idx);
+	}
+	
+	public JSONArray retrieveValidationResultByUidx(int draw, int start, int length, int idx) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("start", start);
+		params.put("length", length);
+		params.put("idx", idx);
+		
+		return validationResultMapper.retrieveValidationResultByUidx(params);
 	}
 	
 	public ValidationResult retrieveValidationResultByPidx(int idx){

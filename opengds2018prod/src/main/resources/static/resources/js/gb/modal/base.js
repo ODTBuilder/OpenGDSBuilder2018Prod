@@ -136,10 +136,6 @@ gb.modal.Base.prototype.open = function() {
  * @method gb.modal.Base#close
  */
 gb.modal.Base.prototype.close = function() {
-<<<<<<< HEAD
-	$(".gb-modal-background").css("display", "none");
-	$(this.modal).css("display", "none");
-=======
 	if(this.keep){
 		this.background.css("display", "none");
 		this.modal.css("display", "none");
@@ -147,7 +143,6 @@ gb.modal.Base.prototype.close = function() {
 		this.background.remove();
 		this.modal.remove();
 	}
->>>>>>> 398d18067d1f4d39c9f64e3628cfe60789d7f31f
 };
 /**
  * 모달위치를 최신화한다.

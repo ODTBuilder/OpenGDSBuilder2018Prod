@@ -9,7 +9,7 @@ if (!gb.interaction)
  * @author hochul.kim
  * @date 2018. 06. 25
  * @version 0.01
- * @class
+ * @class gb.interaction.MeasureTip
  * @constructor
  * @param {Object} opt_options - gb.interaction.MeasureTip 생성 옵션
  */

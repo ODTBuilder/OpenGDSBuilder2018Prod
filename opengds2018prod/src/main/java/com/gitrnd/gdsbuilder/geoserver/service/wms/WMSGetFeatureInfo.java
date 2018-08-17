@@ -23,14 +23,14 @@ public class WMSGetFeatureInfo {
 	private EnGetFeatureInfoFormat info_format = null;
 	private String format_options = "";
 	private int feature_count = 0;
-	private int x = 0;
-	private int y = 0;
-	private int i = 0; //1.3.0 버전일경우 x->i
-	private int j = 0; //1.3.0 버전일경우 y->j
+	private Integer x = null;
+	private Integer y = null;
+	private Integer i = null; //1.3.0 버전일경우 x->i
+	private Integer j = null; //1.3.0 버전일경우 y->j
 	private String exceptions = "";
 
 	public WMSGetFeatureInfo(String serverURL, String version, String layers, String styles, String srs, String crs,String bbox,
-			int width, int height, String query_layers, EnGetFeatureInfoFormat info_format,String format_options,  int feature_count, int x, int y, int i, int j, String exceptions) {
+			int width, int height, String query_layers, EnGetFeatureInfoFormat info_format,String format_options,  int feature_count, Integer x, Integer y, Integer i, Integer j, String exceptions) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -71,16 +71,16 @@ public class WMSGetFeatureInfo {
 		if (feature_count != 0) {
 			this.feature_count = feature_count;
 		}
-		if (x != 0) {
+		if (x != null) {
 			this.x = x;
 		}
-		if (y != 0) {
+		if (y != null) {
 			this.y = y;
 		}
-		if (i != 0) {
+		if (i != null) {
 			this.i = i;
 		}
-		if (j != 0) {
+		if (j != null) {
 			this.j = j;
 		}
 		if (!exceptions.trim().equals("")) {
@@ -91,7 +91,7 @@ public class WMSGetFeatureInfo {
 	
 
 	public WMSGetFeatureInfo(String serverURL, String version, String layers, String styles, String srs, String crs, String bbox,
-			int width, int height, String query_layers, int x, int y, int i, int j) {
+			int width, int height, String query_layers, Integer x, Integer y, Integer i, Integer j) {
 		super();
 		if (!serverURL.trim().equals("")) {
 			this.serverURL = serverURL;
@@ -290,8 +290,8 @@ public class WMSGetFeatureInfo {
 		StringBuffer urlBuffer = new StringBuffer();
 		if (!this.serverURL.equals("")) {
 			
-			if(serverURL.equals("")||version.equals("")||layers.equals("")||styles.equals("")||(crs.equals("")||srs.equals(""))
-					||bbox.equals("")||width==0||height==0||query_layers.equals("")||width==0||height==0||((x==0||y==0)||(i==0||j==0))){
+			if(serverURL.equals("")||version.equals("")||layers.equals("")||(crs.equals("")&&srs.equals(""))
+					||bbox.equals("")||width==0||height==0||query_layers.equals("")||((x==null||y==null)&&(i==null||j==null))){
 				throw new NullPointerException("필수값을 입력하지 않았습니다.");
 			}
 			

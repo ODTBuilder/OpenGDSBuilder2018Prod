@@ -471,4 +471,17 @@ public class GeoserverController extends AbstractController {
 		
 		geoserverService.removeStyle(dtGeoserverManager, name);
 	}
+	
+	@RequestMapping(value = "/getLayerStyleSld.ajax")
+	@ResponseBody
+	public String getLayerStyleSld(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser, 
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "workspace", required = false) String workspace,
+			@RequestParam(value = "layerName", required = false) String layerName) {
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return geoserverService.getLayerStyleSld(dtGeoserverManager, workspace, layerName);
+	}
 }

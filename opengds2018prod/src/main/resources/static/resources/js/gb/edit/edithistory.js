@@ -235,6 +235,9 @@ gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 	if (!this.modified) {
 		this.modified = {};
 	}
+	if(!feature.getId()){
+		return;
+	}
 	if (feature.getId().search(".new") !== -1) {
 		this.created[layer.get("id")][feature.getId()] = feature;
 	} else {
@@ -243,9 +246,6 @@ gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 		}
 		this.modified[layer.get("id")][this.id ? feature.get(this.id) : feature.getId()] = feature;
 	}
-	// console.log(this.removed);
-	// console.log(this.created);
-	// console.log(this.modified);
 }
 /**
  * 임시저장중인 편집이력을 JSON 형태로 반환한다.
@@ -515,7 +515,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		
 		$.ajax({
 			type: "POST",
-			url: CONTEXTPATH + "/geoserver/geoserverWFSTransaction.ajax",
+			url: fixUrlPath("/geoserver/geoserverWFSTransaction.ajax"),
 			data: {
 				serverName: geoserver,
 				wfstXml: new XMLSerializer().serializeToString(node)

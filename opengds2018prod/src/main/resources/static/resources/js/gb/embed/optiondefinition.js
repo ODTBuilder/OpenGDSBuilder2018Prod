@@ -18,6 +18,10 @@ gb.embed.OptionDefinition = function(obj) {
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
 	this.translation = {
+		"borderLayerMsg" : {
+			"ko" : "도곽선으로 사용할 레이어 코드를 선택하세요.",
+			"en" : "Choose layer to be used as border layer"
+		},
 		"borderLayer" : {
 			"ko" : "도곽선 설정",
 			"en" : "Border Layer"
@@ -64,7 +68,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"pointDuplicated" : {
 			"ko" : "중복점 오류",
-			"en" : "Duplicated point"
+			"en" : "Duplicated points"
 		},
 		"smallLength" : {
 			"ko" : "허용 범위 이하 길이",
@@ -88,7 +92,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"zValueAmbiguous" : {
 			"ko" : "고도값 오류",
-			"en" : "Elevation"
+			"en" : "Wrong elevation"
 		},
 		"uselessPoint" : {
 			"ko" : "등고선 직선화 미처리",
@@ -97,10 +101,6 @@ gb.embed.OptionDefinition = function(obj) {
 		"overshoot" : {
 			"ko" : "기준점 초과",
 			"en" : "Feature crossing the sheet"
-		},
-		"uselessEntity" : {
-			"ko" : "불확실한 요소 사용 오류",
-			"en" : "Uncertain geometry"
 		},
 		"entityOpenMiss" : {
 			"ko" : "객체 폐합 오류",
@@ -148,7 +148,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"bridgeName" : {
 			"ko" : "교량명 오류",
-			"en" : "Bridge name"
+			"en" : "Wrong bridge name"
 		},
 		"adminMiss" : {
 			"ko" : "행정 경계 오류",
@@ -164,7 +164,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"refZValueMiss" : {
 			"ko" : "인접 요소 고도값 오류",
-			"en" : "Wrong elevation of adjacent same feature"
+			"en" : "Wrong elevation of adjacent feature"
 		},
 		"uavrgdph10" : {
 			"ko" : "평균 심도 오류(정위치)",
@@ -228,7 +228,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"simpleCheck" : {
 			"ko" : "검수 수행(세부 설정 불필요)",
-			"en" : "Perform this item"
+			"en" : "Run"
 		},
 		"attrValidation" : {
 			"ko" : "속성 검수",
@@ -300,15 +300,16 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"attrNameEx" : {
 			"ko" : "속성명 EX) 재질",
-			"en" : "Attribute name EX) material"
+			"en" : ""
+//			"en" : "Attribute name EX) material"
 		},
 		"acceptVal" : {
 			"ko" : "허용값",
 			"en" : "Acceptable values"
 		},
 		"acceptValEx" : {
-			"ko" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3",
-			"en" : "Enter acceptable values separated by commas (,) EX) 1,2,3"
+			"ko" : "허용값들을 쉼표로 구분하여 입력 ex) 1,2,3",
+			"en" : "Enter acceptable values separated by commas. ex) 1,2,3"
 		},
 		"figure" : {
 			"ko" : "수치",
@@ -316,7 +317,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"figureInterEx" : {
 			"ko" : "숫자형 기준값",
-			"en" : "Numeric type reference value"
+			"en" : "Numeric value"
 		},
 		"condition" : {
 			"ko" : "조건",
@@ -348,7 +349,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"detailGuide" : {
 			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
-			"en" : "Add a new layer code, then enter the detail figure."
+			"en" : "Add a new layer code, then enter details."
 		},
 		"selectCat" : {
 			"ko" : "분류 설정",
@@ -1368,57 +1369,6 @@ gb.embed.OptionDefinition = function(obj) {
 			},
 			"relation" : {
 				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UselessEntity" : {
-			"title" : this.translation.uselessEntity[this.locale],
-			"alias" : "UselessEntity",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
-					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
-			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
 				"filter" : {
 					"code" : false,
 					"key" : false,
@@ -8922,7 +8872,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 	$(this.optionArea).empty();
 
 	if (this.nowOption.alias === "BorderLayer" && !sec) {
-		this.setMessage("도곽선으로 사용할 레이어 코드를 선택하세요.");
+		this.setMessage(this.translation.borderLayerMsg[this.locale]);
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-border");
 		var option = $("<option>").attr("geom", "none").text(this.translation.notSet[this.locale]);
 		$(codeSelect).append(option);

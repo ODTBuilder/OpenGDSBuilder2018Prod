@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -23,10 +24,14 @@
 		<div>
 			<section>
 				<div class="jumbotron">
-					<h1>Quality Assurance</h1>
-					<p>수치지도, 지하시설물, 임상도의 정위치 및 구조화 검수를 지원합니다.</p>
+					<h1>
+						<spring:message code="lang.qamain" />
+					</h1>
 					<p>
-						<a class="btn btn-primary btn-lg" href="#" role="button">더 알아보기</a>
+						<spring:message code="lang.qasub" />
+					</p>
+					<p>
+						<a class="btn btn-primary btn-lg" href="#" role="button"><spring:message code="lang.moreInfo" /></a>
 					</p>
 				</div>
 			</section>

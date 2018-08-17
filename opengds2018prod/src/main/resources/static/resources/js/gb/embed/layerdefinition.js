@@ -78,7 +78,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "고정 속성 삭제"
 		},
 		"exFixedAttrNameField" : {
-			"en" : "Attribute name with fixed value ex) attr1",
+			"en" : "",
 			"ko" : "고정 값을 가질 속성명 예시) 구분"
 		},
 		"length" : {
@@ -86,7 +86,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "길이"
 		},
 		"nullAllow" : {
-			"en" : "Null allowance",
+			"en" : "Null value allowed?",
 			"ko" : "널 허용"
 		},
 		"allowValue" : {
@@ -94,7 +94,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "허용값"
 		},
 		"exAllowValueField" : {
-			"en" : "Separate the values ​​that the attribute can have with a comma. ex)value1, value2, value3, ...",
+			"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
 			"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
 		},
 		"success" : {

@@ -56,7 +56,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"selfEntity" : {
 			"ko" : "단독 존재 오류",
-			"en" : "Overlaping features"
+			"en" : "Overlapping features"
 		},
 		"outBoundary" : {
 			"ko" : "경계 초과 오류",
@@ -68,11 +68,11 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"smallLength" : {
 			"ko" : "허용 범위 이하 길이",
-			"en" : "Segments under the length tolerance limit"
+			"en" : "Segments under length tolerance limit"
 		},
 		"smallArea" : {
 			"ko" : "허용 범위 이하 면적",
-			"en" : "Areas under the tolerance limit"
+			"en" : "Areas under tolerance limit"
 		},
 		"conIntersected" : {
 			"ko" : "등고선 교차 오류",
@@ -88,7 +88,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"zValueAmbiguous" : {
 			"ko" : "고도값 오류",
-			"en" : "Altitude Error"
+			"en" : "Elevation"
 		},
 		"uselessPoint" : {
 			"ko" : "등고선 직선화 미처리",
@@ -108,19 +108,19 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"oneAcre" : {
 			"ko" : "지류계 오류",
-			"en" : "Farmland error(Total)"
+			"en" : "Mismatching farmland size (Total)"
 		},
 		"oneStage" : {
 			"ko" : "경지계 오류",
-			"en" : "Farmland error(Part)"
+			"en" : "Excluded farmland (Part)"
 		},
 		"symbolOut" : {
 			"ko" : "객체 포함 오류",
-			"en" : "Symbol crossing the limit"
+			"en" : "Symbol misplacement"
 		},
 		"buildingSiteMiss" : {
 			"ko" : "건물 부지 오류",
-			"en" : "Uncertain building site"
+			"en" : "Land and facility mismatch"
 		},
 		"boundaryMiss" : {
 			"ko" : "경계 누락 오류",
@@ -132,11 +132,11 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"entityInHole" : {
 			"ko" : "홀 중복 오류",
-			"en" : "Erroneus entity in hole"
+			"en" : "Hole with entity"
 		},
 		"holeMisplacement" : {
 			"ko" : "홀 존재 오류",
-			"en" : "Misplaced hole"
+			"en" : "Hole misplacement"
 		},
 		"linearDisconnection" : {
 			"ko" : "선형 단락 오류",
@@ -144,19 +144,19 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"multiPart" : {
 			"ko" : "멀티 파트 오류",
-			"en" : "Multi part"
+			"en" : "Selection of wrong multiple parts"
 		},
 		"bridgeName" : {
 			"ko" : "교량명 오류",
-			"en" : "Bridge name error"
+			"en" : "Bridge name"
 		},
 		"adminMiss" : {
 			"ko" : "행정 경계 오류",
-			"en" : "Administrative boundary error"
+			"en" : "Administrative boundary mismatch"
 		},
 		"numericalValue" : {
 			"ko" : "수치값 오류",
-			"en" : "Erroneous numerical value"
+			"en" : "Wrong numerical value"
 		},
 		"ufidMiss" : {
 			"ko" : "UFID 오류",
@@ -164,19 +164,19 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"refZValueMiss" : {
 			"ko" : "인접 요소 고도값 오류",
-			"en" : "Altitude error of adjacent feature"
+			"en" : "Wrong elevation of adjacent same feature"
 		},
 		"uavrgdph10" : {
 			"ko" : "평균 심도 오류(정위치)",
-			"en" : "Mean depth error(Graphic) (Underground)"
+			"en" : "Wrong mean depth(Graphic) (Underground)"
 		},
 		"uavrgdph20" : {
 			"ko" : "평균 심도 오류(구조화)",
-			"en" : "Mean depth error(Attribute) (Underground)"
+			"en" : "Wrong mean depth(Attribute) (Underground)"
 		},
 		"uleaderline" : {
 			"ko" : "지시선 교차 오류",
-			"en" : "Leader intersection (Underground)"
+			"en" : "Leader line overlapping (Underground)"
 		},
 		"uNodeMiss" : {
 			"ko" : "시설물 선형 노드 오류",
@@ -184,7 +184,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uSymbolDirection" : {
 			"ko" : "시설물 심볼 방향 오류",
-			"en" : "Uncertain direction of symbol (Underground)"
+			"en" : "Mismatching direction of symbol (Underground)"
 		},
 		"uSymbolInLine" : {
 			"ko" : "선형내 심볼 미존재 오류",
@@ -192,7 +192,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uLineCross" : {
 			"ko" : "관로 상하월 오류",
-			"en" : "Pipe crossing error (Underground)"
+			"en" : "Crossing pipes (Underground)"
 		},
 		"uSymbolsDistance" : {
 			"ko" : "심볼 간격 오류",
@@ -200,15 +200,15 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uSymbolOut" : {
 			"ko" : "심볼 단독 존재 오류",
-			"en" : "Symbol misplaced (Underground)"
+			"en" : "Symbol misplacement (Underground)"
 		},
 		"fCodeLogicalAttribute" : {
 			"ko" : "F Code 오류",
-			"en" : "F Code error (Forest)"
+			"en" : "Wrong F Code (Forest)"
 		},
 		"fLabelLogicalAttribute" : {
 			"ko" : "Label 오류",
-			"en" : "F Label error (Forest)"
+			"en" : "Wrong F Label (Forest)"
 		},
 		"valItemSetting" : {
 			"ko" : "검수 항목 설정",

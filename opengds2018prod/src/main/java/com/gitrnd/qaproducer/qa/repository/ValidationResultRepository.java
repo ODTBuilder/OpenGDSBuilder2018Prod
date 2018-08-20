@@ -21,10 +21,12 @@ public class ValidationResultRepository {
 		return validationResultMapper.countValidationResultByUidx(idx);
 	}
 	
-	public JSONArray retrieveValidationResultByUidx(int draw, int start, int length, int idx) {
+	public JSONArray retrieveValidationResultByUidx(int draw, int start, int length, int order_idx, String order_direct, int idx) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("start", start);
 		params.put("length", length);
+		params.put("order_idx", order_idx);
+		params.put("order_direct", order_direct);
 		params.put("idx", idx);
 		
 		return validationResultMapper.retrieveValidationResultByUidx(params);

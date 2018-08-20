@@ -33,24 +33,33 @@ public class ValidationResultService {
 	 * DataTable Server Side 요청 처리 Service
 	 */
 	@Transactional(readOnly = true)
-	public JSONObject retrieveValidationResultByUidx(HashMap<String, Object> input, ServerSideVO serverSideVO, int idx) {
+	public JSONObject retrieveValidationResultByUidx(HashMap<String, Object> input, ServerSideVO serverSideVO,
+			int idx) {
 		// 반환할 데이터들
 		JSONObject dataTable = new JSONObject();
 		JSONArray rows = new JSONArray();
-		
+
 		int draw = serverSideVO.getDrawCount();
 		int start = serverSideVO.getStartIndex();
 		int length = serverSideVO.getDisplayLength();
-		
+		int order_idx = serverSideVO.getOrderColumn();
+		String order_direct = serverSideVO.getOrderDirection();
+
 		int count = validationResultRepository.countValidationResultByUidx(idx);
-		rows = validationResultRepository.retrieveValidationResultByUidx(draw, start, length, idx);
-		
+		rows = parseServerData(validationResultRepository.retrieveValidationResultByUidx(draw, start, length, order_idx,
+				order_direct, idx));
+
 		dataTable.put("draw", draw);
 		dataTable.put("recordsTotal", count);
 		dataTable.put("recordsFiltered", count);
 		dataTable.put("data", rows);
-		
+
 		return dataTable;
+	}
+
+	private JSONArray parseServerData(JSONArray serverDataList) {
+		JSONArray rows = new JSONArray();
+		return rows;
 	}
 
 	/**
@@ -68,8 +77,8 @@ public class ValidationResultService {
 	}
 
 	/**
-	 * 검수 작업 내용을 DB 테이블에서 삭제한다. 작업 내용을 삭제하기전 검수 원본 파일 이력 테이블에서 fid에 적합한 행을 삭제한 후 작업
-	 * 내용을 삭제한다. 삭제할 작업 내용은 배열 형식으로 작업 내용 p_idx 데이터를 받아 삭제한다.
+	 * 검수 작업 내용을 DB 테이블에서 삭제한다. 작업 내용을 삭제하기전 검수 원본 파일 이력 테이블에서 fid에 적합한 행을 삭제한 후
+	 * 작업 내용을 삭제한다. 삭제할 작업 내용은 배열 형식으로 작업 내용 p_idx 데이터를 받아 삭제한다.
 	 * 
 	 * @param userId
 	 * @param list

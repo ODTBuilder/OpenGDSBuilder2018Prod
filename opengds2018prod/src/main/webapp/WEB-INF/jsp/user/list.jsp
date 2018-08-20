@@ -26,8 +26,12 @@
 			e.stopPropagation();
 		});
 
-		$(document).on("click", ".SettingSection > table > tbody > tr", function() {
-			$(this).toggleClass("info");
+		$(document).on("click", "#serverDataTable tbody tr", function() {
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			} else {
+				$(this).addClass('selected');
+			}
 		});
 
 		$(document).on("click", "#select-delete", function() {
@@ -47,7 +51,7 @@
 					var fileNameList = "";
 
 					// 선택된 행들에 대하여 반복문 실행
-					$("tr.info").each(function(index) {
+					$("#serverDataTable tbody tr.selected").each(function(index) {
 
 						if ($(this).data("state") === 1 || $(this).data("state") === 2) {
 
@@ -91,11 +95,11 @@
 		});
 
 		$(document).on("click", "#all-select", function() {
-			$(".SettingSection > table > tbody > tr").addClass("info");
+			$("#serverDataTable tbody tr").addClass("selected");
 		});
 
 		$(document).on("click", "#all-deselect", function() {
-			$(".SettingSection > table > tbody > tr").removeClass("info");
+			$("#serverDataTable tbody tr").removeClass("selected");
 		});
 		
 		$(document).ready(function() {
@@ -112,7 +116,22 @@
 						console.log(e);
 					}
 				},
-				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ]
+				"order" : [0, "desc"],
+				"select" : true,
+				"displayStart" : 0,
+				"pageLength" : 10,
+				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ],
+				"columns" : [
+					{"data" : "no", "title" : "No."},
+					{"data" : "zipName", "title" : "Original file"},
+					{"data" : "createTime", "title" : "Create time"},
+					{"data" : "endTime", "title" : "End time"},
+					{"data" : "qaType", "title" : "Validation type"},
+					{"data" : "format", "title" : "File format"},
+					{"data" : "state", "title" : "Status"},
+					{"data" : "download", "title" : "Download"},
+					{"data" : "comment", "title" : "Notes"}
+				]
 			});
 		});
 	</script>
@@ -145,7 +164,7 @@
 					</div>
 				</section>
 				<section class="SettingSection">
-					<table class="table table-striped table-hover text-center">
+					<%-- <table class="table table-striped table-hover text-center">
 						<thead>
 							<tr>
 								<td><spring:message code="lang.no" /></td>
@@ -195,21 +214,8 @@
 								</tr>
 							</c:forEach>
 						</tbody>
-					</table>
+					</table> --%>
 					<table class="table table-bordered" id="serverDataTable" width="100%" cellspacing="0" style="text-align: center">
-						<thead>
-							<tr>
-								<th><spring:message code="lang.no" /></th>
-								<th><spring:message code="lang.original" /></th>
-								<th style="width: 10%;"><spring:message code="lang.requestTime" /></th>
-								<th style="width: 10%;"><spring:message code="lang.completeTime" /></th>
-								<th><spring:message code="lang.validationType" /></th>
-								<th><spring:message code="lang.fileFormat" /></th>
-								<th><spring:message code="lang.status" /></th>
-								<th><spring:message code="lang.download" /></th>
-								<th><spring:message code="lang.remarks" /></th>
-							</tr>
-						</thead>
 					</table>
 				</section>
 			</div>

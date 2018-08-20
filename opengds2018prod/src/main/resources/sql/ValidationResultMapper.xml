@@ -22,27 +22,31 @@
 	<select id="retrieveValidationResultByUidx" parameterType="HashMap"
 		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
 		SELECT
-		p_idx as "pidx",
-		tb_progress.uidx,
-		tb_progress.fidx,
+		p_idx as "no",
+		uidx,
+		fidx,
 		tb_file.fname as
 		"zipName",
-		date_trunc('second', tb_file.ctime)
+		to_char(tb_file.ctime, 'YYYY-MM-DD HH24:MI:SS')
 		as
 		"createTime",
-		date_trunc('second', end_time)
+		COALESCE(to_char(end_time, 'YYYY-MM-DD HH24:MI:SS'), '')
 		as
 		"endTime",
 		qa_type as
 		"qaType",
 		file_format
 		as "format",
-		state,
-		err_file_name as "errName",
-		err_file_dir
-		as
-		"errFileDir",
-		tb_progress.comment as "comment"
+		state as "stateCode",
+		case when state=1 then 'Stand by'
+			when state=2 then 'Now Validating'
+			when state=3 then 'Success'
+			when state=4 then 'Fail'
+			else 'Unknown'
+		end as "state",
+		err_file_name as "errFileName",
+		'&lt;a href=' || COALESCE(err_file_dir, '#') || '&gt;' || COALESCE(err_file_name, '') || '&lt;/a&gt;' as "download",
+		COALESCE(tb_progress.comment, '') as "comment"
 		FROM
 		tb_progress,
 		tb_file
@@ -53,7 +57,7 @@
 		tb_file.fid =
 		tb_progress.fidx
 		ORDER BY
-		tb_file.ctime DESC
+		${order_idx} ${order_direct}
 		LIMIT
 		${length}
 		OFFSET

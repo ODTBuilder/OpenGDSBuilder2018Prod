@@ -110,7 +110,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
 		},
 		"noticeLayerDefUpdate" : {
-			"en" : "[Layer definition] has changed.",
+			"en" : "[Layer definition] has been changed.",
 			"ko" : "[레이어 정의]가 변경 되었습니다"
 		},
 		"noticeNotExistLayer" : {

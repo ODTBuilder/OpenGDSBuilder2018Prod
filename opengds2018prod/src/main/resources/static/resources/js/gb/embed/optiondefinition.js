@@ -18,6 +18,10 @@ gb.embed.OptionDefinition = function(obj) {
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
 	this.translation = {
+		"validItemChgMsg" : {
+			"ko" : "[검수 항목 정의]가 변경 되었습니다.",
+			"en" : "[Validation Item Definition] has been changed."
+		},
 		"borderLayerMsg" : {
 			"ko" : "도곽선으로 사용할 레이어 코드를 선택하세요.",
 			"en" : "Choose layer to be used as border layer"
@@ -301,7 +305,7 @@ gb.embed.OptionDefinition = function(obj) {
 		"attrNameEx" : {
 			"ko" : "속성명 EX) 재질",
 			"en" : ""
-//			"en" : "Attribute name EX) material"
+		// "en" : "Attribute name EX) material"
 		},
 		"acceptVal" : {
 			"ko" : "허용값",
@@ -10385,7 +10389,7 @@ gb.embed.OptionDefinition.prototype.setStructure = function(strc) {
 	}
 	if (isOK) {
 		this.structure = strc;
-		this.setMessagePopup("success", " [검수 항목 정의]가 변경 되었습니다.");
+		this.setMessagePopup("success", " " + this.translation.validItemChgMsg[this.locale]);
 	}
 };
 

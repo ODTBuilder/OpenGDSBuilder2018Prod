@@ -88,7 +88,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"zValueAmbiguous" : {
 			"ko" : "고도값 오류",
-			"en" : "Elevation"
+			"en" : "Wrong elevation"
 		},
 		"uselessPoint" : {
 			"ko" : "등고선 직선화 미처리",

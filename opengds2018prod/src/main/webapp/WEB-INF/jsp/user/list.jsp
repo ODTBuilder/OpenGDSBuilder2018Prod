@@ -116,7 +116,7 @@
 						console.log(e);
 					}
 				},
-				"order" : [0, "desc"],
+				"order" : [0, "asc"],
 				"select" : true,
 				"displayStart" : 0,
 				"pageLength" : 10,

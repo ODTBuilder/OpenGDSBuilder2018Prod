@@ -114,7 +114,8 @@ public class ValidationResultService {
 			// td tag 부분의 값들을 담은 JSONObject
 			JSONObject rowData = new JSONObject();
 			
-			Long pidx = (Long)data.get("no");
+			Long no = (Long)data.get("no");
+			Long pidx = (Long)data.get("pidx");
 			Long fidx = (Long)data.get("fidx");
 			Long uidx = (Long)data.get("uidx");
 			String zipName = (String)data.get("zipName");
@@ -135,7 +136,7 @@ public class ValidationResultService {
 			rowData.put("filename", errFileName);
 			
 			param.put("DT_RowData", rowData);
-			param.put("no", pidx);
+			param.put("no", no);
 			param.put("zipName", zipName);
 			param.put("createTime", createTime);
 			param.put("endTime", endTime);

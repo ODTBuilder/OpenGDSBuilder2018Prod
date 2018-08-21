@@ -22,7 +22,8 @@
 	<select id="retrieveValidationResultByUidx" parameterType="HashMap"
 		resultType="hashmap">
 		SELECT
-		p_idx as "no",
+		ROW_NUMBER () OVER (ORDER BY ctime DESC) as "no",
+		p_idx as "pidx",
 		tb_file.uidx,
 		fidx,
 		tb_file.fname as

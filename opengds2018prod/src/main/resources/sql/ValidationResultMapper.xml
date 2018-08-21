@@ -23,7 +23,7 @@
 		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
 		SELECT
 		p_idx as "no",
-		uidx,
+		tb_file.uidx,
 		fidx,
 		tb_file.fname as
 		"zipName",
@@ -64,8 +64,7 @@
 		${start}
 	</select>
 
-	<select id="retrieveValidationResultByPidx" parameterType="int"
-		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
+	<select id="retrieveValidationResultByPidx" parameterType="int">
 		SELECT
 		p_idx as "pidx",
 		tb_progress.uidx,

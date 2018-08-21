@@ -2,9 +2,13 @@ package com.gitrnd.qaproducer.qa.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,29 +41,113 @@ public class ValidationResultService {
 			int idx) {
 		// 반환할 데이터들
 		JSONObject dataTable = new JSONObject();
-		JSONArray rows = new JSONArray();
+		JSONArray data = null;
 
 		int draw = serverSideVO.getDrawCount();
+		
+		// DataTables의 테이블이 처음 load 되었을때 페이지의 위치
 		int start = serverSideVO.getStartIndex();
+		
+		// 화면에 보여질 테이블의 행 개수
 		int length = serverSideVO.getDisplayLength();
+		
+		// 정렬을 적용하려는 column의 번호. 첫번째 column은 1
 		int order_idx = serverSideVO.getOrderColumn();
+		
+		// 오름차순 또는 내림차순
 		String order_direct = serverSideVO.getOrderDirection();
 
+		// 전체 행의 개수
 		int count = validationResultRepository.countValidationResultByUidx(idx);
-		rows = parseServerData(validationResultRepository.retrieveValidationResultByUidx(draw, start, length, order_idx,
+		
+		// DB로부터 전달받은 데이터를 DataTables parmeter 형식에 맞게 파싱
+		data = parseServerData(validationResultRepository.retrieveValidationResultByUidx(draw, start, length, order_idx,
 				order_direct, idx));
 
 		dataTable.put("draw", draw);
 		dataTable.put("recordsTotal", count);
 		dataTable.put("recordsFiltered", count);
-		dataTable.put("data", rows);
+		dataTable.put("data", data);
 
 		return dataTable;
 	}
 
+	/**
+	 * DB로부터 전달받은 JSONArray 데이터를 DataTable 형식에 맞게 파싱하는 함수
+	 * 
+	 * @param serverDataList
+	 * @return
+	 * @Author hochul
+	 * @Date 2018. 8. 20.
+	 */
 	private JSONArray parseServerData(JSONArray serverDataList) {
-		JSONArray rows = new JSONArray();
-		return rows;
+		
+		// JSONArray 데이터를 추출하기 위해 DB로부터 전달받은 JSONArray 데이터를 JSONString으로 변환
+		String json = serverDataList.toJSONString();
+		
+		
+		JSONParser parser = new JSONParser();
+		
+		// 추출된 데이터
+		JSONArray list = null;
+		
+		/*
+		 * DataTables "data" parameter 구조에 맞는 JSONArray를 생성
+		 * DataTables 공식 홈페이지 Manual의 serverside-processing 부분 참조
+		 * https://datatables.net/manual/server-side
+		 */
+		JSONArray result = new JSONArray();
+		
+		try {
+			list = (JSONArray)parser.parse(json);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int i = 0; i < list.size(); i++){
+			// row data 추출
+			JSONObject data = (JSONObject)list.get(i);
+			
+			// tr tag 부분에 적용될 값들을 담은 JSONObject
+			JSONObject param = new JSONObject();
+			
+			// td tag 부분의 값들을 담은 JSONObject
+			JSONObject rowData = new JSONObject();
+			
+			Long pidx = (Long)data.get("no");
+			Long fidx = (Long)data.get("fidx");
+			Long uidx = (Long)data.get("uidx");
+			String zipName = (String)data.get("zipName");
+			String createTime = (String)data.get("createTime");
+			String endTime = (String)data.get("endTime");
+			String qaType = (String)data.get("qaType");
+			String format = (String)data.get("format");
+			Long stateCode = (Long)data.get("stateCode");
+			String state = (String)data.get("state");
+			String errFileName = (String)data.get("errFileName");
+			
+			String download = (String)data.get("download");
+			String comment = (String)data.get("comment");
+			
+			rowData.put("value", pidx);
+			rowData.put("fid", fidx);
+			rowData.put("state", stateCode);
+			rowData.put("filename", errFileName);
+			
+			param.put("DT_RowData", rowData);
+			param.put("no", pidx);
+			param.put("zipName", zipName);
+			param.put("createTime", createTime);
+			param.put("endTime", endTime);
+			param.put("qaType", qaType);
+			param.put("format", format);
+			param.put("state", state);
+			param.put("download", download);
+			param.put("comment", comment);
+			
+			result.add(param);
+		}
+		return result;
 	}
 
 	/**

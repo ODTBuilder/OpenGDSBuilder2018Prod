@@ -164,57 +164,6 @@
 					</div>
 				</section>
 				<section class="SettingSection">
-					<%-- <table class="table table-striped table-hover text-center">
-						<thead>
-							<tr>
-								<td><spring:message code="lang.no" /></td>
-								<td><spring:message code="lang.original" /></td>
-								<td style="width: 10%;"><spring:message code="lang.requestTime" /></td>
-								<td style="width: 10%;"><spring:message code="lang.completeTime" /></td>
-								<td><spring:message code="lang.validationType" /></td>
-								<td><spring:message code="lang.fileFormat" /></td>
-								<td><spring:message code="lang.status" /></td>
-								<td><spring:message code="lang.download" /></td>
-								<td><spring:message code="lang.remarks" /></td>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="item" items="${list}" varStatus="status">
-								<tr data-value="${item.pidx}" data-state="${item.state}" data-filename="${item.errName}" data-fid="${item.fidx}"
-									onmouseover="this.style.cursor = 'pointer'">
-									<td>${status.count}</td>
-									<td>${item.zipName}</td>
-									<td>${item.createTime}</td>
-									<td>${item.endTime}</td>
-									<td>${item.qaType}</td>
-									<td>${item.format}</td>
-									<c:choose>
-										<c:when test="${item.state eq 1}">
-											<td><spring:message code="lang.standby" /></td>
-										</c:when>
-										<c:when test="${item.state eq 2}">
-											<td><spring:message code="lang.nowValidate" /></td>
-										</c:when>
-										<c:when test="${item.state eq 3}">
-											<td><spring:message code="lang.success" /></td>
-										</c:when>
-										<c:when test="${item.state eq 4}">
-											<td><spring:message code="lang.fail" /></td>
-										</c:when>
-										<c:otherwise>
-											<td><spring:message code="lang.unknown" /></td>
-										</c:otherwise>
-									</c:choose>
-									<td><a href="${item.errFileDir}" class="gb-download-btn">${item.errName}</a></td>
-									<td><c:choose>
-											<c:when test="${item.comment ne null}">
-												<a href="#" class="gb-detailinformation-btn" comment="${item.comment}"><spring:message code="lang.detail" /></a>
-											</c:when>
-										</c:choose></td>
-								</tr>
-							</c:forEach>
-						</tbody>
-					</table> --%>
 					<table class="table table-bordered" id="serverDataTable" width="100%" cellspacing="0" style="text-align: center">
 					</table>
 				</section>

@@ -20,7 +20,7 @@
 	</select>
 	
 	<select id="retrieveValidationResultByUidx" parameterType="HashMap"
-		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
+		resultType="hashmap">
 		SELECT
 		p_idx as "no",
 		tb_file.uidx,

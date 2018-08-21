@@ -64,7 +64,8 @@
 		${start}
 	</select>
 
-	<select id="retrieveValidationResultByPidx" parameterType="int">
+	<select id="retrieveValidationResultByPidx" parameterType="int"
+		resultType="com.gitrnd.qaproducer.qa.domain.ValidationResult">
 		SELECT
 		p_idx as "pidx",
 		tb_progress.uidx,

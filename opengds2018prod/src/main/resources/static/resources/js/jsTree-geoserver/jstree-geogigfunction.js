@@ -127,19 +127,26 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(node);
 							var server = that.get_node(node.parents[0]);
 							var repo = node;
-							that._data.geogigfunction.repository.setNowRepositoryServer(server.id);
-							that._data.geogigfunction.repository.setNowRepository(repo.id);
-							that._data.geogigfunction.repository.manageRemoteRepository(server, repo);
+							that._data.geogigfunction.repository.setNowRepositoryServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.manageRemoteRepository(server.text, repo.text);
 						});
 
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "remoteRepository") {
+						that._data.geogigfunction.repository.setNowRemoteRepository(node);
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
 							"display" : "inline-block"
 						}).click(function() {
-//							that._data.geogigfunction.repository.removeRemoteRepository();
+							var server = that._data.geogigfunction.repository.getNowRepositoryServer();
+							console.log(server);
+							var repo = that._data.geogigfunction.repository.getNowRepository();
+							console.log(repo);
+							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
+							console.log(remote);
+							that._data.geogigfunction.repository.removeRemoteRepository(server.text, repo.text, remote.text);
 							console.log("hi its remove repo");
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
@@ -155,7 +162,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
 							var branch = node;
-							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
+							that._data.geogigfunction.repository.checkoutBranch(server.text, repo.text, branch.text);
 						});
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
 							"display" : "inline-block"

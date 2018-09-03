@@ -59,7 +59,9 @@ gb.versioning.Repository = function(obj) {
 	this.transactionIdURL = url.transactionId ? url.transactionId : undefined;
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
+	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
 	this.nowRepo = undefined;
+	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
@@ -233,13 +235,13 @@ gb.versioning.Repository = function(obj) {
 					// } else
 					if (node.id === "#") {
 						obj["type"] = "remoteRepository";
-						obj["node"] = that.getNowRepository();
-						obj["serverName"] = that.getNowRepositoryServer();
+						obj["node"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
+						obj["serverName"] = that.getNowRepositoryServer() !== undefined ? that.getNowRepositoryServer().id : undefined;
 					} else if (node.type === "remoteRepository") {
 						obj["type"] = "remoteBranch";
-						obj["serverName"] = that.getNowRepositoryServer();
+						obj["serverName"] = that.getNowRepositoryServer() !== undefined ? that.getNowRepositoryServer().id : undefined;
 						obj["node"] = node.text;
-						obj["local"] = that.getNowRepository();
+						obj["local"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
 					}
 					console.log(obj);
 					return obj;
@@ -318,8 +320,8 @@ gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
  * @param {String}
  */
 gb.versioning.Repository.prototype.manageRemoteRepository = function(server, repo) {
-	var serverName = server.text;
-	var repoName = repo.text;
+	var serverName = server;
+	var repoName = repo;
 	$(this.remoteTitle).empty();
 	$(this.remoteTitle).text(repoName);
 	this.transitPage("remote");
@@ -498,6 +500,37 @@ gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
 };
 
 /**
+ * 리모트 레파지토리 삭제 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRemoveRemoteRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getRemoveRemoteRepositoryURL = function() {
+	return this.removeRemoteRepositoryURL;
+};
+
+/**
+ * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowRemoteRepository
+ * @return {Object} 리모트 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.getNowRemoteRepository = function() {
+	return this.nowRemoteRepo;
+};
+
+/**
+ * 현재 보고있는 리모트 레파지토리의 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowRemoteRepository
+ * @param {Object}
+ *            리모트 레파지토리 노드
+ */
+gb.versioning.Repository.prototype.setNowRemoteRepository = function(repo) {
+	this.nowRemoteRepo = repo;
+};
+
+/**
  * 현재 보고있는 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRepository
@@ -511,8 +544,8 @@ gb.versioning.Repository.prototype.getNowRepository = function() {
  * 현재 보고있는 레파지토리의 이름을 설정한다.
  * 
  * @method gb.versioning.Repository#setNowRepository
- * @param {String}
- *            레파지토리 이름
+ * @param {Object}
+ *            레파지토리 노드
  */
 gb.versioning.Repository.prototype.setNowRepository = function(repo) {
 	this.nowRepo = repo;
@@ -532,8 +565,8 @@ gb.versioning.Repository.prototype.getNowRepositoryServer = function() {
  * 현재 보고있는 레파지토리의 서버 이름을 설정한다.
  * 
  * @method gb.versioning.Repository#setNowRepositoryServer
- * @param {String}
- *            레파지토리 서버 이름
+ * @param {Object}
+ *            레파지토리 서버 노드
  */
 gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
 	this.nowRepoServer = server;
@@ -564,9 +597,9 @@ gb.versioning.Repository.prototype.open = function() {
 gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
 	var that = this;
 	var params = {
-		"serverName" : server.text,
-		"repoName" : repo.text,
-		"branchName" : branch.text
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch
 	}
 	// + "&" + jQuery.param(params),
 	var checkURL = this.getCheckoutBranchURL();
@@ -616,22 +649,22 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
  * 리모트 레파지토리를 삭제한다.
  * 
  * @method gb.versioning.Repository#removeRemoteRepository
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {String}
+ *            server - 작업 중인 서버 이름
+ * @param {String}
+ *            repo - 작업 중인 리포지토리 이름
+ * @param {String}
+ *            remote - 작업 중인 리모트 레파지토리 이름
  */
 gb.versioning.Repository.prototype.removeRemoteRepository = function(server, repo, remote) {
 	var that = this;
 	var params = {
-		"serverName" : server.text,
-		"repoName" : repo.text,
-		"remoteName" : remote.text
+		"serverName" : server,
+		"repoName" : repo,
+		"remoteName" : remote
 	}
 	// + "&" + jQuery.param(params),
-	var checkURL = this.getCheckoutBranchURL();
+	var checkURL = this.getRemoveRemoteRepositoryURL();
 	if (checkURL.indexOf("?") !== -1) {
 		checkURL += "&";
 		checkURL += jQuery.param(params);
@@ -656,12 +689,12 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				var transactionId = data.transactionId;
-				var newTarget = data.newTarget;
-				var ggfn = that.getJSTree()._data.geogigfunction;
-				ggfn.transactionId[repo.id] = transactionId;
-				console.log(ggfn);
-				that.getJSTree().refresh_node(repo);
+				// var transactionId = data.transactionId;
+				// var newTarget = data.newTarget;
+				// var ggfn = that.getJSTree()._data.geogigfunction;
+				// ggfn.transactionId[repo.id] = transactionId;
+				// console.log(ggfn);
+				// that.getJSTree().refresh_node(repo);
 				// if (repo.data === undefined) {
 				// repo.data = {
 				// "transactionId" : transactionId

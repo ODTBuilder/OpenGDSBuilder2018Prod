@@ -228,7 +228,8 @@ html {
 		});
 
 		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id"
+			id : "feature_id",
+			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
 
 		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";

@@ -65,8 +65,7 @@ public class GeogigRepositoryController extends AbstractController {
 			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "remoteName", required = false) String remoteName,
-			@RequestParam(value = "removeTrue", required = false) Boolean removeTrue) {
+			@RequestParam(value = "remoteName", required = false) String remoteName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.removeRemoteRepository(geoserverManager, repoName, remoteName);

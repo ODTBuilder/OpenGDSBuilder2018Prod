@@ -83,7 +83,10 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						}
 					} else if (m[dpc[i]].original.type === "layer") {
 
+					} else if (m[dpc[i]].original.type === "remoteRepository") {
+
 					}
+
 				}
 				/*
 				 * if (list.indexOf(m[dpc[i]].id) !== -1) {
@@ -130,6 +133,16 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);
+						var obj = this.get_node(node, true);
+						$(obj[0].childNodes[1]).after(btnArea);
+					} else if (type === "remoteRepository") {
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
+							"display" : "inline-block"
+						}).click(function() {
+//							that._data.geogigfunction.repository.removeRemoteRepository();
+							console.log("hi its remove repo");
+						});
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "branch") {

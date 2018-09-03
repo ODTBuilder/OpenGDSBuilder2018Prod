@@ -611,3 +611,65 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 		}
 	});
 };
+
+/**
+ * 리모트 레파지토리를 삭제한다.
+ * 
+ * @method gb.versioning.Repository#removeRemoteRepository
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.removeRemoteRepository = function(server, repo, remote) {
+	var that = this;
+	var params = {
+		"serverName" : server.text,
+		"repoName" : repo.text,
+		"remoteName" : remote.text
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getCheckoutBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var transactionId = data.transactionId;
+				var newTarget = data.newTarget;
+				var ggfn = that.getJSTree()._data.geogigfunction;
+				ggfn.transactionId[repo.id] = transactionId;
+				console.log(ggfn);
+				that.getJSTree().refresh_node(repo);
+				// if (repo.data === undefined) {
+				// repo.data = {
+				// "transactionId" : transactionId
+				// }
+				// } else {
+				// repo.data["transactionId"] = transactionId;
+				// }
+			}
+		}
+	});
+};

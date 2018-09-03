@@ -248,7 +248,7 @@ public interface GeoserverService {
 	 * @param wfstXml
 	 * @return String
 	 * */
-	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String wfstXml);
+	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String workspace, String wfstXml);
 	
 	
 	/**

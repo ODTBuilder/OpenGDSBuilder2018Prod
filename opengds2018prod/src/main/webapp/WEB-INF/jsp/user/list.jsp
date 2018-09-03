@@ -26,8 +26,12 @@
 			e.stopPropagation();
 		});
 
-		$(document).on("click", ".SettingSection > table > tbody > tr", function() {
-			$(this).toggleClass("info");
+		$(document).on("click", "#serverDataTable tbody tr", function() {
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			} else {
+				$(this).addClass('selected');
+			}
 		});
 
 		$(document).on("click", "#select-delete", function() {
@@ -47,7 +51,7 @@
 					var fileNameList = "";
 
 					// 선택된 행들에 대하여 반복문 실행
-					$("tr.info").each(function(index) {
+					$("#serverDataTable tbody tr.selected").each(function(index) {
 
 						if ($(this).data("state") === 1 || $(this).data("state") === 2) {
 
@@ -91,11 +95,44 @@
 		});
 
 		$(document).on("click", "#all-select", function() {
-			$(".SettingSection > table > tbody > tr").addClass("info");
+			$("#serverDataTable tbody tr").addClass("selected");
 		});
 
 		$(document).on("click", "#all-deselect", function() {
-			$(".SettingSection > table > tbody > tr").removeClass("info");
+			$("#serverDataTable tbody tr").removeClass("selected");
+		});
+		
+		$(document).ready(function() {
+			$("#serverDataTable").DataTable({
+				"serverSide" : true,
+				"searching" : false,
+				"processing" : true,
+				"ajax" : {
+					"url" : "${pageContext.request.contextPath}/result/getValidationResult.ajax?${_csrf.parameterName}=${_csrf.token}",
+					"data" : function(d){
+						console.log(d);
+					},
+					"error": function(e){
+						console.log(e);
+					}
+				},
+				"order" : [0, "asc"],
+				"select" : true,
+				"displayStart" : 0,
+				"pageLength" : 10,
+				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ],
+				"columns" : [
+					{"data" : "no", "title" : "No."},
+					{"data" : "zipName", "title" : "Original file"},
+					{"data" : "createTime", "title" : "Create time"},
+					{"data" : "endTime", "title" : "End time"},
+					{"data" : "qaType", "title" : "Validation type"},
+					{"data" : "format", "title" : "File format"},
+					{"data" : "state", "title" : "Status"},
+					{"data" : "download", "title" : "Download"},
+					{"data" : "comment", "title" : "Notes"}
+				]
+			});
 		});
 	</script>
 	<div class="container">
@@ -127,56 +164,7 @@
 					</div>
 				</section>
 				<section class="SettingSection">
-					<table class="table table-striped table-hover text-center">
-						<thead>
-							<tr>
-								<td><spring:message code="lang.no" /></td>
-								<td><spring:message code="lang.original" /></td>
-								<td style="width: 10%;"><spring:message code="lang.requestTime" /></td>
-								<td style="width: 10%;"><spring:message code="lang.completeTime" /></td>
-								<td><spring:message code="lang.validationType" /></td>
-								<td><spring:message code="lang.fileFormat" /></td>
-								<td><spring:message code="lang.status" /></td>
-								<td><spring:message code="lang.download" /></td>
-								<td><spring:message code="lang.remarks" /></td>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="item" items="${list}" varStatus="status">
-								<tr data-value="${item.pidx}" data-state="${item.state}" data-filename="${item.errName}" data-fid="${item.fidx}"
-									onmouseover="this.style.cursor = 'pointer'">
-									<td>${status.count}</td>
-									<td>${item.zipName}</td>
-									<td>${item.createTime}</td>
-									<td>${item.endTime}</td>
-									<td>${item.qaType}</td>
-									<td>${item.format}</td>
-									<c:choose>
-										<c:when test="${item.state eq 1}">
-											<td><spring:message code="lang.standby" /></td>
-										</c:when>
-										<c:when test="${item.state eq 2}">
-											<td><spring:message code="lang.nowValidate" /></td>
-										</c:when>
-										<c:when test="${item.state eq 3}">
-											<td><spring:message code="lang.success" /></td>
-										</c:when>
-										<c:when test="${item.state eq 4}">
-											<td><spring:message code="lang.fail" /></td>
-										</c:when>
-										<c:otherwise>
-											<td><spring:message code="lang.unknown" /></td>
-										</c:otherwise>
-									</c:choose>
-									<td><a href="${item.errFileDir}" class="gb-download-btn">${item.errName}</a></td>
-									<td><c:choose>
-											<c:when test="${item.comment ne null}">
-												<a href="#" class="gb-detailinformation-btn" comment="${item.comment}"><spring:message code="lang.detail" /></a>
-											</c:when>
-										</c:choose></td>
-								</tr>
-							</c:forEach>
-						</tbody>
+					<table class="table table-bordered" id="serverDataTable" width="100%" cellspacing="0" style="text-align: center">
 					</table>
 				</section>
 			</div>

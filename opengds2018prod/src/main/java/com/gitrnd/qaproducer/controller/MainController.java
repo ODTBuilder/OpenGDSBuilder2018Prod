@@ -176,8 +176,8 @@ public class MainController {
 				mav.addObject("browser", "MSIE");
 			}
 		}
-		LinkedList<ValidationResult> list = validationResultService.retrieveValidationResultByUidx(loginUser.getIdx());
-		mav.addObject("list", list);
+		// LinkedList<ValidationResult> list = validationResultService.retrieveValidationResultByUidx(loginUser.getIdx());
+		// mav.addObject("list", list);
 		mav.setViewName("/user/list");
 		return mav;
 	}

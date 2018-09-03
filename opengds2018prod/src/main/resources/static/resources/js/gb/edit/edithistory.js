@@ -16,6 +16,7 @@ gb.edit.FeatureRecord = function(obj) {
 	this.modified = {};
 	this.removed = {};
 	this.id = obj.id ? obj.id : false;
+	this.wfstURL = obj.wfstURL || '';
 }
 /**
  * 임시보관 중인 새로운 feature들을 반환한다.
@@ -495,10 +496,10 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 	
 	var geoserver, workspace, repo, layername, split, node;
 	for(let layer in layers){
-		split = layer.split("_");
-		geoserver = layer.split("_")[0];
-		workspace = layer.split("_")[1];
-		repo = layer.split("_")[2];
+		split = layer.split(":");
+		geoserver = layer.split(":")[0];
+		workspace = layer.split(":")[1];
+		repo = layer.split(":")[2];
 		layername = "";
 		for(let i in split){
 			if(i > 2){
@@ -513,14 +514,16 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			featureType: layername 
 		});
 		
+		var param = {
+			serverName: geoserver,
+			workspace: workspace,
+			wfstXml: new XMLSerializer().serializeToString(node)
+		};
 		$.ajax({
 			type: "POST",
-			url: fixUrlPath("/geoserver/geoserverWFSTransaction.ajax"),
-			data: {
-				serverName: geoserver,
-				wfstXml: new XMLSerializer().serializeToString(node)
-			},
-			contentType: 'text/xml',
+			url: this.wfstURL,
+			data: JSON.stringify(param),
+			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
 				console.log(result);

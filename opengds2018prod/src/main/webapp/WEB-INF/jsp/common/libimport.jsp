@@ -23,6 +23,11 @@
 <script src="${pageContext.request.contextPath}/resources/js/dropzone/dropzone.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/dropzone/basic.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/dropzone/dropzone.css">
+<%-- 데이터 테이블 --%>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/datatables/css/dataTables.bootstrap4.css" />
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/datatables/css/select.bootstrap4.min.css" />
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/datatables/js/dataTables.bootstrap4.min.js"></script>
 <!-- 다운로드 js-->
 <script src="${pageContext.request.contextPath}/resources/js/download/download.js"></script>
 <!-- gb CSS -->

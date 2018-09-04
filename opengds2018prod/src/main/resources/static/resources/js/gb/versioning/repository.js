@@ -482,7 +482,7 @@ gb.versioning.Repository.prototype.getTransactionIdURL = function() {
 /**
  * 브랜치 체크아웃 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getTransactionIdURL
+ * @method gb.versioning.Repository#getCheckoutBranchURL
  * @return {String} 트랜잭션 아이디 주소 URL
  */
 gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
@@ -492,7 +492,7 @@ gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
 /**
  * 리모트 레파지토리 트리 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getTransactionIdURL
+ * @method gb.versioning.Repository#getRemoteTreeURL
  * @return {String} 컨트롤러 주소 URL
  */
 gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
@@ -597,9 +597,9 @@ gb.versioning.Repository.prototype.open = function() {
 gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
 	var that = this;
 	var params = {
-		"serverName" : server,
-		"repoName" : repo,
-		"branchName" : branch
+		"serverName" : server.text,
+		"repoName" : repo.text,
+		"branchName" : branch.text
 	}
 	// + "&" + jQuery.param(params),
 	var checkURL = this.getCheckoutBranchURL();

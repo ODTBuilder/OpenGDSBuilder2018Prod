@@ -84,7 +84,16 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					} else if (m[dpc[i]].original.type === "layer") {
 
 					} else if (m[dpc[i]].original.type === "remoteRepository") {
+						if (m[dpc[i]].original.hasOwnProperty("ping")) {
+							if (m[dpc[i]].original.ping !== null && m[dpc[i]].original.ping !== undefined) {
+								if (m[dpc[i]].original.ping === true) {
+									m[dpc[i]].state["ping"] = true;
+								} else {
+									m[dpc[i]].state["ping"] = false;
+								}
 
+							}
+						}
 					}
 
 				}
@@ -147,7 +156,6 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
 							console.log(remote);
 							that._data.geogigfunction.repository.removeRemoteRepository(server.text, repo.text, remote.text);
-							console.log("hi its remove repo");
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
 						var obj = this.get_node(node, true);
@@ -162,7 +170,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
 							var branch = node;
-							that._data.geogigfunction.repository.checkoutBranch(server.text, repo.text, branch.text);
+							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
 						});
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
 							"display" : "inline-block"

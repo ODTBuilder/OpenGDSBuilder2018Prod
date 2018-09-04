@@ -42,9 +42,6 @@ public class ListBranch {
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
-
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
 		factory.setHttpClient(httpClient);
 		RestTemplate restTemplate = new RestTemplate(factory);

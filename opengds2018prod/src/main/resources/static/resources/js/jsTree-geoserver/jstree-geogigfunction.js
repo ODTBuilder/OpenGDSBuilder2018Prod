@@ -16,7 +16,9 @@ $.jstree.defaults.geogigfunction = {
 		"unstaged" : "gb-geogig-unstaged",
 		"staged" : "gb-geogig-staged",
 		"unmerged" : "gb-geogig-unmerged",
-		"merged" : "gb-geogig-merged"
+		"merged" : "gb-geogig-merged",
+		"connected" : "fas fa-link",
+		"disconnected" : "fas fa-unlink"
 	}
 };
 
@@ -87,11 +89,12 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						if (m[dpc[i]].original.hasOwnProperty("ping")) {
 							if (m[dpc[i]].original.ping !== null && m[dpc[i]].original.ping !== undefined) {
 								if (m[dpc[i]].original.ping === true) {
-									m[dpc[i]].state["ping"] = true;
+									m[dpc[i]].state["connected"] = true;
+									m[dpc[i]].state["disconnected"] = false;
 								} else {
-									m[dpc[i]].state["ping"] = false;
+									m[dpc[i]].state["connected"] = false;
+									m[dpc[i]].state["disconnected"] = true;
 								}
-
 							}
 						}
 					}
@@ -261,6 +264,18 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							"role" : "presentation"
 						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
 						$(obj.childNodes[1]).append(lb);
+					} else if (fnmks[i] === "connected") {
+						var ic = $("<i>").attr({
+							"role" : "presentation"
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["connected"]);
+						$(obj.childNodes[1]).append(ic);
+					} else if (fnmks[i] === "disconnected") {
+						var ic = $("<i>").attr({
+							"role" : "presentation"
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["disconnected"]);
+						$(obj.childNodes[1]).append(ic);
 					}
 					/*
 					 * var ic = $("<i>").attr({ "role" : "presentation"

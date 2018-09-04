@@ -130,9 +130,9 @@ gb.versioning.Repository = function(obj) {
 		"search" : {
 			show_only_matches : true
 		},
-		types : {
+		"types" : {
 			"#" : {
-				"valid_children" : [ "geoserver" ]
+				"valid_children" : [ "geoserver", "default" ]
 			},
 			"default" : {
 				"icon" : "fas fa-exclamation-circle"
@@ -153,7 +153,7 @@ gb.versioning.Repository = function(obj) {
 				"icon" : "fas fa-file"
 			}
 		},
-		geogigfunction : {
+		"geogigfunction" : {
 			"repository" : that,
 			"status" : {
 				"checkout" : "fas fa-check",
@@ -252,7 +252,7 @@ gb.versioning.Repository = function(obj) {
 		"search" : {
 			show_only_matches : true
 		},
-		types : {
+		"types" : {
 			"#" : {
 				"valid_children" : [ "remoteRepository", "default" ]
 			},
@@ -271,7 +271,7 @@ gb.versioning.Repository = function(obj) {
 				"icon" : "fas fa-file"
 			}
 		},
-		geogigfunction : {
+		"geogigfunction" : {
 			"repository" : that,
 			"status" : {
 				"checkout" : "fas fa-check",
@@ -309,6 +309,7 @@ gb.versioning.Repository = function(obj) {
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 	this.setModalFooter(buttonArea);
 	this.getCheckoutBranchURL("server");
+	this.transitPage("server");
 };
 gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
@@ -673,36 +674,67 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		checkURL += jQuery.param(params);
 	}
 
-	$.ajax({
-		url : checkURL,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		// data : params,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				// var transactionId = data.transactionId;
-				// var newTarget = data.newTarget;
-				// var ggfn = that.getJSTree()._data.geogigfunction;
-				// ggfn.transactionId[repo.id] = transactionId;
-				// console.log(ggfn);
-				// that.getJSTree().refresh_node(repo);
-				// if (repo.data === undefined) {
-				// repo.data = {
-				// "transactionId" : transactionId
-				// }
-				// } else {
-				// repo.data["transactionId"] = transactionId;
-				// }
+	var msg1 = $("<div>").text("Are you sure to delete this remote repository?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + remote + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var deleteModal = new gb.modal.Base({
+		"title" : "Delete remote repository",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		$.ajax({
+			url : checkURL,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : params,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					that.refreshRemoteList();
+					// var transactionId = data.transactionId;
+					// var newTarget = data.newTarget;
+					// var ggfn = that.getJSTree()._data.geogigfunction;
+					// ggfn.transactionId[repo.id] = transactionId;
+					// console.log(ggfn);
+					// that.getJSTree().refresh_node(repo);
+					// if (repo.data === undefined) {
+					// repo.data = {
+					// "transactionId" : transactionId
+					// }
+					// } else {
+					// repo.data["transactionId"] = transactionId;
+					// }
+				}
 			}
-		}
+		});
 	});
 };

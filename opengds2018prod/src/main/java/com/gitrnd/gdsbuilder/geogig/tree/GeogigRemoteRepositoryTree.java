@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -116,6 +117,19 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 									for (Remote remote : remoteList) {
 										String name = remote.getName();
 										String url = remote.getUrl();
+
+										// ping
+										PingRemoteRepository pingRemote = new PingRemoteRepository();
+										GeogigRemoteRepository pingRepos = pingRemote.executeCommand(baseURL, username,
+												password, repos, name);
+										String pingStr = pingRepos.getPing().getSuccess();
+
+										boolean ping;
+										if (pingStr.equalsIgnoreCase("true")) {
+											ping = true;
+										} else {
+											ping = false;
+										}
 										String remoteId = node + ":" + name; // ex) repository:remoteRepository
 										if (branch != null) {
 											List<Branch> remoteBraches = branch.getRemoteBranchList();
@@ -126,12 +140,12 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 												}
 											}
 											if (branchSize > 0) {
-												this.addRemoteRepo(remoteId, name, url, true);
+												this.addRemoteRepo(remoteId, name, url, true, ping);
 											} else {
-												this.addRemoteRepo(remoteId, name, url, false);
+												this.addRemoteRepo(remoteId, name, url, false, ping);
 											}
 										} else {
-											this.addRemoteRepo(remoteId, name, url, false);
+											this.addRemoteRepo(remoteId, name, url, false, ping);
 										}
 									}
 								}
@@ -196,16 +210,18 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 	 * @param id
 	 * @param text
 	 * @param url
-	 * @param isTrue
+	 * @param children
+	 * @param ping
 	 */
-	private void addRemoteRepo(String id, String text, String url, boolean isTrue) {
+	private void addRemoteRepo(String id, String text, String url, boolean children, boolean ping) {
 		JSONObject remoteRepoJson = new JSONObject();
 		remoteRepoJson.put("parent", "#");
 		remoteRepoJson.put("id", id);
 		remoteRepoJson.put("text", text);
 		remoteRepoJson.put("url", url);
 		remoteRepoJson.put("type", EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType());
-		remoteRepoJson.put("children", isTrue);
+		remoteRepoJson.put("children", children);
+		remoteRepoJson.put("ping", ping);
 		super.add(remoteRepoJson);
 	}
 

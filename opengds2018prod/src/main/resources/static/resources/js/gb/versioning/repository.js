@@ -104,22 +104,33 @@ gb.versioning.Repository = function(obj) {
 					var obj = {};
 					if (node.id === "#") {
 						obj["type"] = "server";
-					} else if (node.type === "geoserver") {
-						obj["type"] = "repository";
-						obj["serverName"] = node.id;
-						obj["node"] = node.id;
-					} else if (node.type === "repository") {
-						obj["type"] = "branch";
-						obj["serverName"] = node.parent;
-						obj["node"] = node.id;
-						var tranId = that.getJSTree()._data.geogigfunction.transactionId;
-						if (tranId.hasOwnProperty(node.id)) {
-							obj["transactionId"] = tranId[node.id];
+					} else {
+						if (!node.hasOwnProperty("type")) {
+							var og = node.original;
+							if (og) {
+								var type = og.type;
+								if (type) {
+									
+								}
+							}
 						}
-					} else if (node.type === "branch") {
-						obj["type"] = "layer";
-						obj["serverName"] = node.parents[1];
-						obj["node"] = node.id
+						if (node.type === "geoserver") {
+							obj["type"] = "repository";
+							obj["serverName"] = node.id;
+							obj["node"] = node.id;
+						} else if (node.type === "repository") {
+							obj["type"] = "branch";
+							obj["serverName"] = node.parent;
+							obj["node"] = node.id;
+							var tranId = that.getJSTree()._data.geogigfunction.transactionId;
+							if (tranId.hasOwnProperty(node.id)) {
+								obj["transactionId"] = tranId[node.id];
+							}
+						} else if (node.type === "branch") {
+							obj["type"] = "layer";
+							obj["serverName"] = node.parents[1];
+							obj["node"] = node.id
+						}
 					}
 					console.log(obj);
 					return obj;
@@ -160,7 +171,9 @@ gb.versioning.Repository = function(obj) {
 				"unstaged" : "gb-geogig-unstaged",
 				"staged" : "gb-geogig-staged",
 				"unmerged" : "gb-geogig-unmerged",
-				"merged" : "gb-geogig-merged"
+				"merged" : "gb-geogig-merged",
+				"connected" : "fas fa-link",
+				"disconnected" : "fas fa-unlink"
 			}
 		},
 		"plugins" : [ "search", "types", "geogigfunction" ]
@@ -278,7 +291,9 @@ gb.versioning.Repository = function(obj) {
 				"unstaged" : "gb-geogig-unstaged",
 				"staged" : "gb-geogig-staged",
 				"unmerged" : "gb-geogig-unmerged",
-				"merged" : "gb-geogig-merged"
+				"merged" : "gb-geogig-merged",
+				"connected" : "fas fa-link",
+				"disconnected" : "fas fa-unlink"
 			}
 		},
 		"plugins" : [ "search", "types", "geogigfunction" ]
@@ -720,19 +735,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				console.log(data);
 				if (data.success === "true") {
 					that.refreshRemoteList();
-					// var transactionId = data.transactionId;
-					// var newTarget = data.newTarget;
-					// var ggfn = that.getJSTree()._data.geogigfunction;
-					// ggfn.transactionId[repo.id] = transactionId;
-					// console.log(ggfn);
-					// that.getJSTree().refresh_node(repo);
-					// if (repo.data === undefined) {
-					// repo.data = {
-					// "transactionId" : transactionId
-					// }
-					// } else {
-					// repo.data["transactionId"] = transactionId;
-					// }
+					deleteModal.close();
 				}
 			}
 		});

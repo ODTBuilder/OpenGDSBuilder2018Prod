@@ -63,6 +63,7 @@ gb.versioning.Repository = function(obj) {
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
+	this.nowBranch = undefined;
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -304,7 +305,26 @@ gb.versioning.Repository = function(obj) {
 	this.remoteArea = $("<div>").append(this.remoteHead).append(remoteBody);
 	this.historyArea = $("<div>");
 	this.newBranchArea = $("<div>");
-	this.mergeArea = $("<div>");
+
+	var mergeTitle = $("<span>").text("Merge");
+	var mergeHead = $("<div>").addClass("gb-article-head").append(mergeTitle);
+	var serverName = $("<span>").text("GeoServer: ");
+	this.geoserverNameVal = $("<span>");
+	var geoserverArea = $("<div>").append(serverName).append(this.geoserverNameVal);
+	var repoName = $("<span>").text("Repository: ");
+	this.repoNameVal = $("<span>");
+	var repoNameArea = $("<div>").append(repoName).append(this.repoNameVal);
+	var cubName = $("<span>").text("Current Branch: ");
+	this.cubNameVal = $("<span>");
+	var cubArea = $("<div>").append(cubName).append(this.cubNameVal);
+	var tabName = $("<div>").text("Target Branch: ");
+	this.tabNameVal = $("<select>");
+	var tabArea = $("<div>").append(tabName).append(this.tabNameVal);
+	var backToListBtn = $("<button>").text("Back");
+	var mergeBtn = $("<button>").text("Merge");
+	var mergeBtnArea = $("<div>").append(backToListBtn).append(mergeBtn);
+	var mergeBody = $("<div>").append(cubArea).append(tabArea).append(mergeBtnArea);
+	this.mergeArea = $("<div>").append(mergeHead).append(mergeBody);
 	this.failArea = $("<div>");
 	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.mergeArea).append(
 			this.failArea);
@@ -327,10 +347,13 @@ gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
 
 /**
- * 페이지를 전환한다.
+ * 리모트 레파지토리로 페이지를 전환한다.
  * 
  * @method gb.versioning.Repository#manageRemoteRepository
  * @param {String}
+ *            server - 지오서버 이름
+ * @param {String}
+ *            repo - 레파지토리 이름
  */
 gb.versioning.Repository.prototype.manageRemoteRepository = function(server, repo) {
 	var serverName = server;
@@ -339,6 +362,24 @@ gb.versioning.Repository.prototype.manageRemoteRepository = function(server, rep
 	$(this.remoteTitle).text(repoName);
 	this.transitPage("remote");
 	this.refreshRemoteList();
+};
+
+/**
+ * 머지로 페이지를 전환한다.
+ * 
+ * @method gb.versioning.Repository#manageMerge
+ * @param {String}
+ *            server - 현재 지오서버
+ * @param {String}
+ *            repo - 현재 레파지토리
+ * @param {String}
+ *            branch - 현재 브랜치
+ */
+gb.versioning.Repository.prototype.manageMerge = function(server, repo, branch) {
+	var serverName = server;
+	var repoName = repo;
+	var branchName = branch;
+	this.transitPage("merge");
 };
 
 /**
@@ -554,6 +595,27 @@ gb.versioning.Repository.prototype.setNowRemoteRepository = function(repo) {
 };
 
 /**
+ * 현재 보고있는 브랜치의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowBranch
+ * @return {String} 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.getNowBranch = function() {
+	return this.nowBranch;
+};
+
+/**
+ * 현재 보고있는 브랜치의 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowBranch
+ * @param {Object}
+ *            레파지토리 노드
+ */
+gb.versioning.Repository.prototype.setNowBranch = function(branch) {
+	this.nowBranch = branch;
+};
+
+/**
  * 현재 보고있는 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRepository
@@ -603,7 +665,7 @@ gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
  */
 gb.versioning.Repository.prototype.open = function() {
 	gb.modal.Base.prototype.open.call(this);
-	// this.refreshList();
+	this.refreshList();
 };
 
 /**

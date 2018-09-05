@@ -105,15 +105,6 @@ gb.versioning.Repository = function(obj) {
 					if (node.id === "#") {
 						obj["type"] = "server";
 					} else {
-						if (!node.hasOwnProperty("type")) {
-							var og = node.original;
-							if (og) {
-								var type = og.type;
-								if (type) {
-									
-								}
-							}
-						}
 						if (node.type === "geoserver") {
 							obj["type"] = "repository";
 							obj["serverName"] = node.id;
@@ -143,9 +134,12 @@ gb.versioning.Repository = function(obj) {
 		},
 		"types" : {
 			"#" : {
-				"valid_children" : [ "geoserver", "default" ]
+				"valid_children" : [ "geoserver", "default", "error" ]
 			},
 			"default" : {
+				"icon" : "fas fa-exclamation-circle"
+			},
+			"error" : {
 				"icon" : "fas fa-exclamation-circle"
 			},
 			"geoserver" : {
@@ -267,9 +261,12 @@ gb.versioning.Repository = function(obj) {
 		},
 		"types" : {
 			"#" : {
-				"valid_children" : [ "remoteRepository", "default" ]
+				"valid_children" : [ "remoteRepository", "default", "error" ]
 			},
 			"default" : {
+				"icon" : "fas fa-exclamation-circle"
+			},
+			"error" : {
 				"icon" : "fas fa-exclamation-circle"
 			},
 			"remoteRepository" : {
@@ -453,7 +450,7 @@ gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoN
  * @method gb.versioning.Repository#refreshList
  */
 gb.versioning.Repository.prototype.refreshList = function() {
-	this.jstree.refresh();
+	this.getJSTree().refresh();
 };
 
 /**
@@ -462,17 +459,27 @@ gb.versioning.Repository.prototype.refreshList = function() {
  * @method gb.versioning.Repository#refreshRemoteList
  */
 gb.versioning.Repository.prototype.refreshRemoteList = function() {
-	this.remotejstree.refresh();
+	this.getRemoteJSTree().refresh();
 };
 
 /**
  * jsTree 객체를 반환한다.
  * 
  * @method gb.versioning.Repository#getJSTree
- * @return
+ * @return {Object}
  */
 gb.versioning.Repository.prototype.getJSTree = function() {
 	return this.jstree;
+};
+
+/**
+ * remote repository jsTree 객체를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRemoteJSTree
+ * @return {Object}
+ */
+gb.versioning.Repository.prototype.getRemoteJSTree = function() {
+	return this.remotejstree;
 };
 
 /**
@@ -596,7 +603,7 @@ gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
  */
 gb.versioning.Repository.prototype.open = function() {
 	gb.modal.Base.prototype.open.call(this);
-	this.refreshList();
+	// this.refreshList();
 };
 
 /**

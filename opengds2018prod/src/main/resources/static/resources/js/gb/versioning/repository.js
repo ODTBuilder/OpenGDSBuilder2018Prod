@@ -60,6 +60,8 @@ gb.versioning.Repository = function(obj) {
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
 	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
+	this.branchListURL = url.branchList ? url.branchList : undefined;
+	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
@@ -320,10 +322,29 @@ gb.versioning.Repository = function(obj) {
 	var tabName = $("<div>").text("Target Branch: ");
 	this.tabNameVal = $("<select>");
 	var tabArea = $("<div>").append(tabName).append(this.tabNameVal);
-	var backToListBtn = $("<button>").text("Back");
-	var mergeBtn = $("<button>").text("Merge");
-	var mergeBtnArea = $("<div>").append(backToListBtn).append(mergeBtn);
-	var mergeBody = $("<div>").append(cubArea).append(tabArea).append(mergeBtnArea);
+	var backToListBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Back").click(function() {
+		that.transitPage("server");
+	});
+	var mergeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Merge").click(function() {
+		var server = that.getNowRepositoryServer();
+		var repo = that.getNowRepository();
+		var tab = $(that.tabNameVal).val();
+		var tid = that.getJSTree().getTransactionId(repo.id);
+		if (!tid) {
+			console.log("you want to check out this branch?");
+		} else if (server.text && repo.text && tab && tid) {
+			console.log("its working");
+			that.mergeBranch(server.text, repo.text, tab, tid);
+		}
+	});
+	var mergeBtnArea = $("<div>").append(mergeBtn).append(backToListBtn);
+	var mergeBody = $("<div>").addClass("gb-article-body").css({
+		"padding" : "10px"
+	}).append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea).append(mergeBtnArea);
 	this.mergeArea = $("<div>").append(mergeHead).append(mergeBody);
 	this.failArea = $("<div>");
 	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.mergeArea).append(
@@ -376,9 +397,17 @@ gb.versioning.Repository.prototype.manageRemoteRepository = function(server, rep
  *            branch - 현재 브랜치
  */
 gb.versioning.Repository.prototype.manageMerge = function(server, repo, branch) {
-	var serverName = server;
-	var repoName = repo;
-	var branchName = branch;
+	$(this.geoserverNameVal).empty();
+	$(this.geoserverNameVal).text(server);
+
+	$(this.repoNameVal).empty();
+	$(this.repoNameVal).text(repo);
+
+	$(this.cubNameVal).empty();
+	$(this.cubNameVal).text(branch);
+
+	$(this.tabNameVal).empty();
+	this.getBranchList(server, repo, branch);
 	this.transitPage("merge");
 };
 
@@ -437,7 +466,7 @@ gb.versioning.Repository.prototype.transitPage = function(page) {
 };
 
 /**
- * 
+ * 트랜잭션 아이디를 요청한다.
  * 
  * @method gb.versioning.Repository#getWorkingTree
  * @param {String}
@@ -481,6 +510,66 @@ gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoN
 		},
 		success : function(data) {
 			console.log(data);
+		}
+	});
+};
+
+/**
+ * 해당 레파지토리의 브랜치 목록을 조회한다.
+ * 
+ * @method gb.versioning.Repository#getBranchList
+ * @param {String}
+ *            serverName - 등록한 서버 이름
+ * @param {String}
+ *            repoName - GeoGig repository 이름
+ * @return {Object} 브랜치 리스트 목록
+ * 
+ */
+gb.versioning.Repository.prototype.getBranchList = function(serverName, repoName, branchName) {
+	var that = this;
+	var params = {
+		"serverName" : serverName,
+		"repoName" : repoName
+	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getBranchListURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var branches = data.localBranchList;
+				if (Array.isArray(branches)) {
+					for (var i = 0; i < branches.length; i++) {
+						var opt = $("<option>").text(branches[i].name);
+						if (branches[i].name === branchName) {
+							$(opt).prop({
+								"disabled" : true
+							});
+						}
+						$(that.tabNameVal).append(opt);
+					}
+				}
+			}
 		}
 	});
 };
@@ -554,6 +643,16 @@ gb.versioning.Repository.prototype.getCheckoutBranchURL = function() {
 };
 
 /**
+ * 브랜치 리스트 조회 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getBranchListURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getBranchListURL = function() {
+	return this.branchListURL;
+};
+
+/**
  * 리모트 레파지토리 트리 컨트롤러 주소를 반환한다.
  * 
  * @method gb.versioning.Repository#getRemoteTreeURL
@@ -571,6 +670,16 @@ gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
  */
 gb.versioning.Repository.prototype.getRemoveRemoteRepositoryURL = function() {
 	return this.removeRemoteRepositoryURL;
+};
+
+/**
+ * 브랜치 머지 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getMergeBranchURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getMergeBranchURL = function() {
+	return this.mergeBranchURL;
 };
 
 /**
@@ -640,7 +749,7 @@ gb.versioning.Repository.prototype.setNowRepository = function(repo) {
  * 현재 보고있는 레파지토리의 서버 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRepositoryServer
- * @return {String} 레파지토리 서버 이름
+ * @return {Object} 레파지토리 서버 노드
  */
 gb.versioning.Repository.prototype.getNowRepositoryServer = function() {
 	return this.nowRepoServer;
@@ -725,6 +834,59 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 				// } else {
 				// repo.data["transactionId"] = transactionId;
 				// }
+			}
+		}
+	});
+};
+
+/**
+ * 브랜치를 머지 한다.
+ * 
+ * @method gb.versioning.Repository#mergeBranch
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            branch - 작업 중인 브랜치
+ * @param {String}
+ *            tid - 트랜잭션 아이디
+ */
+gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, tid) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch,
+		"transactionId" : tid
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getMergeBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+
 			}
 		}
 	});

@@ -32,6 +32,12 @@
 
 .gb-versioning-repository-btnarea {
 	float: right;
+	padding-right: 6px;
+}
+
+.gb-versioning-repository-btnarea>button {
+	height: 23px;
+	vertical-align: baseline;
 }
 
 .gb-versioning-repository-btnarea>.gb-button {

@@ -375,7 +375,9 @@ html {
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

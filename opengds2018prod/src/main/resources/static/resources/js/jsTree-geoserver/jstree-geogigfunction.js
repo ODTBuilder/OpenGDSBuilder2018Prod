@@ -189,14 +189,14 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var mergeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Merge").css({
 							"display" : "inline-block"
-						}).click(function(){
+						}).click(function() {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
 							var branch = node;
 							that._data.geogigfunction.repository.setNowRepositoryServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.manageMerge();
+							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);
 							console.log("hi its merge");
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(addBtn).append(
@@ -317,6 +317,19 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 				this.redraw_node(obj.id);
 			}
 		}
+	};
+	/**
+	 * 노드에 맞는 트랜잭션 아이디를 반환한다.
+	 * 
+	 * @method getTransactionId
+	 * @plugin geogigfunction
+	 * @param {String}
+	 *            nid - 노드 아이디
+	 */
+	this.getTransactionId = function(nid) {
+		var list = this._data.geogigfunction.transactionId;
+		var id = list[nid];
+		return id;
 	};
 	/**
 	 * 체크아웃을 요청한다.

@@ -22,6 +22,7 @@ public class FeatureDiff {
 
 	private static final Log logger = LogFactory.getLog(FeatureDiff.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "featurediff";
 	private static final String param_path = "path=";
 	private static final String param_oldTreeish = "oldTreeish=";
@@ -47,8 +48,8 @@ public class FeatureDiff {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_path + path + "&" + param_oldTreeish
-				+ oldTreeish + "&" + param_newTreeish + newTreeish + "&" + param_all + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_path + path + "&"
+				+ param_oldTreeish + oldTreeish + "&" + param_newTreeish + newTreeish + "&" + param_all + "true";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

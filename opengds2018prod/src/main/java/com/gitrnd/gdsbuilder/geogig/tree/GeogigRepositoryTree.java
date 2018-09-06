@@ -98,9 +98,8 @@ public class GeogigRepositoryTree extends JSONArray {
 						DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
 						if (dtGeoserverReader != null) {
 							ListRepository listRepos = new ListRepository();
-							GeogigRepository geogigRepo = listRepos.executeCommand(
-									dtGeoManager.getRestURL() + "/geogig", dtGeoManager.getUsername(),
-									dtGeoManager.getPassword());
+							GeogigRepository geogigRepo = listRepos.executeCommand(dtGeoManager.getRestURL(),
+									dtGeoManager.getUsername(), dtGeoManager.getPassword());
 							if (geogigRepo != null) {
 								List<Repo> repos = geogigRepo.getRepos();
 								if (repos.size() > 0) {
@@ -143,7 +142,7 @@ public class GeogigRepositoryTree extends JSONArray {
 		String[] param = parent.split(":");// ex)
 											// serverName_repository_brench_layer
 		if (param != null && dtGeoserver != null) {
-			String baseURL = dtGeoserver.getRestURL() + "/geogig";
+			String baseURL = dtGeoserver.getRestURL();
 			String username = dtGeoserver.getUsername();
 			String password = dtGeoserver.getPassword();
 

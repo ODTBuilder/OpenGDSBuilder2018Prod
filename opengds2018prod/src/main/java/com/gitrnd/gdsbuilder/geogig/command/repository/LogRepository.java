@@ -31,6 +31,7 @@ public class LogRepository {
 
 	private static final Log logger = LogFactory.getLog(LogRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "log";
 	private static final String param_path = "path="; // optional (layer or feature)
 
@@ -53,7 +54,7 @@ public class LogRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
 
 		if (path != null) {
 			url += "?" + param_path + path;

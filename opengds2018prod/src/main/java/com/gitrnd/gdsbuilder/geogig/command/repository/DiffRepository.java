@@ -22,6 +22,7 @@ public class DiffRepository {
 
 	private static final Log logger = LogFactory.getLog(DiffRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "diff";
 	private static final String param_oldRef = "oldRefSpec=";
 	private static final String param_newRef = "newRefSpec=";
@@ -46,8 +47,8 @@ public class DiffRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_oldRef + oldObjectId + "&"
-				+ param_newRef + newObjectId;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_oldRef + oldObjectId
+				+ "&" + param_newRef + newObjectId;
 
 		// path
 		if (path != null) {

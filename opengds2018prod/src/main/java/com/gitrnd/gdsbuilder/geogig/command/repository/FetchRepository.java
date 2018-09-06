@@ -22,6 +22,7 @@ public class FetchRepository {
 
 	private static final Log logger = LogFactory.getLog(FetchRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "fetch";
 	private static final String param_all = "all=";
 
@@ -43,7 +44,7 @@ public class FetchRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_all + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_all + "true";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

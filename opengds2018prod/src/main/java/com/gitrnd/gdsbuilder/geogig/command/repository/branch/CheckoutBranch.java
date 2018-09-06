@@ -31,6 +31,7 @@ public class CheckoutBranch {
 
 	private static final Log logger = LogFactory.getLog(CheckoutBranch.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "checkout";
 	private static final String param_transactionId = "transactionId=";
 	private static final String param_branch = "branch=";
@@ -60,7 +61,7 @@ public class CheckoutBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
 				+ param_branch + branchName;
 
 		// request

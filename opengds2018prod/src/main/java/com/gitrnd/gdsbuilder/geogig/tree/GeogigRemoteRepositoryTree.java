@@ -10,12 +10,10 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Remote;
@@ -79,7 +77,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 			logger.warn("요청이 잘못되었습니다.");
 		} else {
 			if (dtGeoserver != null && type != null && node != null) {
-				String baseURL = dtGeoserver.getRestURL() + "/geogig";
+				String baseURL = dtGeoserver.getRestURL();
 				String username = dtGeoserver.getUsername();
 				String password = dtGeoserver.getPassword();
 

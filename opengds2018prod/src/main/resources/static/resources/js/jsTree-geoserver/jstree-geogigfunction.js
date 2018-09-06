@@ -16,7 +16,9 @@ $.jstree.defaults.geogigfunction = {
 		"unstaged" : "gb-geogig-unstaged",
 		"staged" : "gb-geogig-staged",
 		"unmerged" : "gb-geogig-unmerged",
-		"merged" : "gb-geogig-merged"
+		"merged" : "gb-geogig-merged",
+		"connected" : "fas fa-link",
+		"disconnected" : "fas fa-unlink"
 	}
 };
 
@@ -83,7 +85,20 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						}
 					} else if (m[dpc[i]].original.type === "layer") {
 
+					} else if (m[dpc[i]].original.type === "remoteRepository") {
+						if (m[dpc[i]].original.hasOwnProperty("ping")) {
+							if (m[dpc[i]].original.ping !== null && m[dpc[i]].original.ping !== undefined) {
+								if (m[dpc[i]].original.ping === true) {
+									m[dpc[i]].state["connected"] = true;
+									m[dpc[i]].state["disconnected"] = false;
+								} else {
+									m[dpc[i]].state["connected"] = false;
+									m[dpc[i]].state["disconnected"] = true;
+								}
+							}
+						}
 					}
+
 				}
 				/*
 				 * if (list.indexOf(m[dpc[i]].id) !== -1) {
@@ -124,12 +139,28 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(node);
 							var server = that.get_node(node.parents[0]);
 							var repo = node;
-							that._data.geogigfunction.repository.setNowRepositoryServer(server.id);
-							that._data.geogigfunction.repository.setNowRepository(repo.id);
-							that._data.geogigfunction.repository.manageRemoteRepository(server, repo);
+							that._data.geogigfunction.repository.setNowRepositoryServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.manageRemoteRepository(server.text, repo.text);
 						});
 
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);
+						var obj = this.get_node(node, true);
+						$(obj[0].childNodes[1]).after(btnArea);
+					} else if (type === "remoteRepository") {
+						that._data.geogigfunction.repository.setNowRemoteRepository(node);
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
+							"display" : "inline-block"
+						}).click(function() {
+							var server = that._data.geogigfunction.repository.getNowRepositoryServer();
+							console.log(server);
+							var repo = that._data.geogigfunction.repository.getNowRepository();
+							console.log(repo);
+							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
+							console.log(remote);
+							that._data.geogigfunction.repository.removeRemoteRepository(server.text, repo.text, remote.text);
+						});
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "branch") {
@@ -158,6 +189,15 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var mergeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Merge").css({
 							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							that._data.geogigfunction.repository.setNowRepositoryServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.setNowBranch(branch);
+							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);
+							console.log("hi its merge");
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(addBtn).append(
 								commitBtn).append(pullBtn).append(pushBtn).append(mergeBtn);
@@ -233,6 +273,18 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							"role" : "presentation"
 						}).addClass(this._data.geogigfunction.status[fnmks[i]]);
 						$(obj.childNodes[1]).append(lb);
+					} else if (fnmks[i] === "connected") {
+						var ic = $("<i>").attr({
+							"role" : "presentation"
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["connected"]);
+						$(obj.childNodes[1]).append(ic);
+					} else if (fnmks[i] === "disconnected") {
+						var ic = $("<i>").attr({
+							"role" : "presentation"
+						}).addClass("jstree-icon").addClass("jstree-themeicon-custom").addClass(
+								this._data.geogigfunction.status["disconnected"]);
+						$(obj.childNodes[1]).append(ic);
 					}
 					/*
 					 * var ic = $("<i>").attr({ "role" : "presentation"
@@ -265,6 +317,19 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 				this.redraw_node(obj.id);
 			}
 		}
+	};
+	/**
+	 * 노드에 맞는 트랜잭션 아이디를 반환한다.
+	 * 
+	 * @method getTransactionId
+	 * @plugin geogigfunction
+	 * @param {String}
+	 *            nid - 노드 아이디
+	 */
+	this.getTransactionId = function(nid) {
+		var list = this._data.geogigfunction.transactionId;
+		var id = list[nid];
+		return id;
 	};
 	/**
 	 * 체크아웃을 요청한다.

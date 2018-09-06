@@ -163,8 +163,8 @@ gb.style.BaseMap = function(obj) {
 	var modalFooter = $("<div>").append(buttonArea);
 	$(this.modalFooter).append(modalFooter);
 
-	$("body").append(this.modal);
-	$("body").append(this.background);
+//	$("body").append(this.modal);
+//	$("body").append(this.background);
 };
 gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;

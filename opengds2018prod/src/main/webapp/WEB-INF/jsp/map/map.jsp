@@ -299,9 +299,9 @@ html {
 
 		// hole draw interaction
 		var hole = new gb.interaction.HoleDraw({
-			selected: epan.selected
+			selected : epan.selected
 		});
-		
+
 		hole.on("change:active", function(evt) {
 			if (evt.oldValue) {
 				gb.undo.setActive(true);
@@ -309,7 +309,7 @@ html {
 				gb.undo.setActive(false);
 			}
 		});
-		
+
 		epan.addInteraction({
 			icon : "fab fa-bitbucket",
 			content : "Hole",
@@ -374,7 +374,10 @@ html {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

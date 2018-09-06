@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.gitrnd.gdsbuilder.geogig.command.workingtree.feature;
+package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 

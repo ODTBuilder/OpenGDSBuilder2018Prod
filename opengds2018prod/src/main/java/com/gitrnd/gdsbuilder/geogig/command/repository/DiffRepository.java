@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.workingtree;
+package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 
@@ -19,24 +16,19 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 
-/**
- * Geogig Add Command Execution Class
- * 
- * @author GIT
- *
- */
-public class AddWorkingTree {
+public class DiffRepository {
 
-	private static final Log logger = LogFactory.getLog(AddWorkingTree.class);
+	private static final Log logger = LogFactory.getLog(DiffRepository.class);
 
-	private static final String geogig = "geogig";
-	private static final String command = "add";
-	private static final String param_transactionId = "transactionId=";
+	private static final String command = "diff";
+	private static final String param_oldRef = "oldRefSpec=";
+	private static final String param_newRef = "newRefSpec=";
+	private static final String param_pathFilter = "pathFilter="; // optional
 
-	public GeogigAdd executeCommand(String baseURL, String username, String password, String repository,
-			String transactionId) {
+	public GeogigDiff executeCommand(String baseURL, String username, String password, String repository,
+			String oldObjectId, String newObjectId, String path) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -54,14 +46,19 @@ public class AddWorkingTree {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
-				+ transactionId;
+		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_oldRef + oldObjectId + "&"
+				+ param_newRef + newObjectId;
+
+		// path
+		if (path != null) {
+			url += "&" + param_pathFilter + path;
+		}
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigAdd> responseEntity = null;
+		ResponseEntity<GeogigDiff> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigAdd.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigDiff.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -73,4 +70,5 @@ public class AddWorkingTree {
 			return null;
 		}
 	}
+
 }

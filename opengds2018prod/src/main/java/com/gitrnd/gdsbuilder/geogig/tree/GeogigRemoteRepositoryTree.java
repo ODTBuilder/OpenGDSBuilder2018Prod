@@ -10,10 +10,12 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Remote;
@@ -56,28 +58,16 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 		}
 	}
 
-	/**
-	 * @param dtGeoserver
-	 * @param serverName
-	 * @param type
-	 * @param node
-	 * @param local
-	 */
 	public GeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String node, String local) {
-		this.build(dtGeoserver, serverName, type, node, local);
+			EnGeogigRemoteRepositoryTreeType type, String node, String local, boolean fetch) {
+		this.build(dtGeoserver, serverName, type, node, local, fetch);
 	}
 
-	/**
-	 * @param dtGeoserver
-	 * @param serverName
-	 * @param type
-	 * @param node
-	 * @param local
-	 * @return
-	 */
 	public GeogigRemoteRepositoryTree build(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String node, String local) {
+			EnGeogigRemoteRepositoryTreeType type, String node, String local, boolean fetch) {
+
+		// node : repos_postgress_master
+		// local : geoserver32:fetchtest_postgres
 
 		if (dtGeoserver == null || serverName == null || node == null) {
 			JSONObject errorJSON = new JSONObject();
@@ -98,6 +88,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 				if (param.length > 0) {
 					if (type == EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY) {
 						String repos = param[1];
+
 						ListRemoteRepository listRemoteRepos = new ListRemoteRepository();
 						GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
 								repos, true);

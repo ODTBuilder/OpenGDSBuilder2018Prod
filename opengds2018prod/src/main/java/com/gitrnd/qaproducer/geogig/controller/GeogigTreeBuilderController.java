@@ -34,18 +34,13 @@ public class GeogigTreeBuilderController extends AbstractController {
 	GeogigTreeBuilderService treeService;
 
 	/**
-	 * @param request
-	 *            HttpServletRequest
-	 * @param loginUser
-	 *            LoginUser
-	 * @param node
-	 *            node ex) server, server:repository, server:repository:branch
-	 * @param type
-	 *            node type
-	 * @param serverName
-	 *            geoserver 이름
-	 * @param transactionId
-	 *            geogig transactionId
+	 * @param request       HttpServletRequest
+	 * @param loginUser     LoginUser
+	 * @param node          node ex) server, server:repository,
+	 *                      server:repository:branch
+	 * @param type          node type
+	 * @param serverName    geoserver 이름
+	 * @param transactionId geogig transactionId
 	 * @return JSONArray
 	 */
 	@RequestMapping(value = "/getWorkingTree.ajax")
@@ -89,7 +84,8 @@ public class GeogigTreeBuilderController extends AbstractController {
 			@RequestParam(value = "node", required = false) String node,
 			@RequestParam(value = "type", required = false) String type,
 			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "local", required = false) String local) {
+			@RequestParam(value = "local", required = false) String local,
+			@RequestParam(value = "fetch", required = false) boolean fetch) {
 
 		EnGeogigRemoteRepositoryTreeType enType = null;
 
@@ -101,7 +97,6 @@ public class GeogigTreeBuilderController extends AbstractController {
 			enType = EnGeogigRemoteRepositoryTreeType.UNKNOWN;
 		}
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
-		return treeService.getRemoteRepoTree(geoserverManagers, serverName, enType, node, local);
+		return treeService.getRemoteRepoTree(geoserverManagers, serverName, enType, node, local, fetch);
 	}
-
 }

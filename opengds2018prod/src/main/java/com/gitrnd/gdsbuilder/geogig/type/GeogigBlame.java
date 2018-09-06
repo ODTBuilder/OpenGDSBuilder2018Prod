@@ -34,6 +34,14 @@ public class GeogigBlame {
 		this.success = success;
 	}
 
+	public List<Attribute> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(List<Attribute> attributes) {
+		this.attributes = attributes;
+	}
+
 	@XmlRootElement(name = "Attribute")
 	public static class Attribute {
 

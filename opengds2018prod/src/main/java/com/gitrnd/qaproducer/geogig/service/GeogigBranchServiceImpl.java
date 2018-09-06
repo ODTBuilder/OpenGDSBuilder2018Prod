@@ -3,13 +3,25 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import java.util.List;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
+import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
+import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
+import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
+import com.gitrnd.gdsbuilder.geogig.command.repository.branch.MergeBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unstaged;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -34,9 +46,10 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		GeogigCheckout checkout = reader.checkoutBranch(repoName, transactionId, reference);
+		CheckoutBranch checkoutBranch = new CheckoutBranch();
+		GeogigCheckout checkout = checkoutBranch.executeCommand(url, user, pw, repoName, transactionId, reference);
 		checkout.setTransactionId(transactionId);
+
 		return checkout;
 	}
 
@@ -56,8 +69,57 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.statusBranch(serverName, repoName, transactionId, branchName);
+		StatusRepository stausCommand = new StatusRepository();
+		GeogigStatus status = stausCommand.executeCommand(url, user, pw, repoName, transactionId);
+
+		Header header = status.getHeader();
+		String headerBranch = header.getBranch();
+		if (branchName.equalsIgnoreCase(headerBranch)) {
+			JSONObject statusObj = new JSONObject();
+			statusObj.put("server", serverName);
+			statusObj.put("repository", repoName);
+			statusObj.put("transactionId", transactionId);
+			statusObj.put("header", headerBranch);
+			List<Staged> stageds = status.getStaged();
+			if (stageds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Staged staged : stageds) {
+					String path = staged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("staged", nodeArry);
+			}
+			List<Unstaged> unStageds = status.getUnstaged();
+			if (unStageds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Unstaged unStaged : unStageds) {
+					String path = unStaged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("unstaged", nodeArry);
+			}
+			List<Unmerged> unMergeds = status.getUnmerged();
+			if (unMergeds != null) {
+				JSONArray nodeArry = new JSONArray();
+				for (Unmerged unMerged : unMergeds) {
+					String path = unMerged.getPath();
+					String node = path.substring(0, path.indexOf("/"));
+					if (!nodeArry.contains(node)) {
+						nodeArry.add(node);
+					}
+				}
+				statusObj.put("unmerged", nodeArry);
+			}
+			return statusObj;
+		} else {
+			return null;
+		}
 	}
 
 	/*
@@ -76,8 +138,10 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.createBranch(repoName, branchName, source);
+		CreateBranch create = new CreateBranch();
+		GeogigBranch branch = create.executeCommand(url, user, pw, repoName, branchName, source);
+
+		return branch;
 	}
 
 	/*
@@ -93,10 +157,10 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
+		ListBranch list = new ListBranch();
+		GeogigBranch branch = list.executeCommand(url, user, pw, repoName, true);
 
-		boolean remotes = true;
-		return reader.listBranch(repoName, remotes);
+		return branch;
 	}
 
 	/*
@@ -115,8 +179,10 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.mergeBranch(repoName, transactionId, branchName);
+		MergeBranch merge = new MergeBranch();
+		GeogigMerge branch = merge.executeCommand(url, user, pw, repoName, transactionId, branchName);
+
+		return branch;
 	}
 
 	/*
@@ -135,7 +201,9 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.checkoutBranch(repoName, transactionId, path, version);
+		CheckoutBranch checkout = new CheckoutBranch();
+		GeogigCheckout branch = checkout.executeCommand(url, user, pw, repoName, transactionId, path, version);
+
+		return branch;
 	}
 }

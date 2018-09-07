@@ -465,9 +465,16 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			if(!layers[layer]){
 				layers[layer] = {};
 				layers[layer].created = [];
-				layers[layer].modified = [];
-				layers[layer].removed = [];
+				layers[layer].modified = null;
+				layers[layer].removed = null;
+			} else {
+				if(layers[layer].created === null){
+					layers[layer].created = [];
+				}
 			}
+			this.created[layer][feature].setGeometryName("the_geom");
+			this.created[layer][feature].set("the_geom", this.created[layer][feature].get("geometry"));
+			this.created[layer][feature].unset("geometry");
 			layers[layer].created.push(this.created[layer][feature]);
 		}
 	}
@@ -475,10 +482,17 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		for(let feature in this.modified[layer]){
 			if(!layers[layer]){
 				layers[layer] = {};
-				layers[layer].created = [];
+				layers[layer].created = null;
 				layers[layer].modified = [];
-				layers[layer].removed = [];
+				layers[layer].removed = null;
+			} else {
+				if(layers[layer].modified === null){
+					layers[layer].modified = [];
+				}
 			}
+			this.modified[layer][feature].setGeometryName("the_geom");
+			this.modified[layer][feature].set("the_geom", this.modified[layer][feature].get("geometry"));
+			this.modified[layer][feature].unset("geometry");
 			layers[layer].modified.push(this.modified[layer][feature]);
 		}
 	}
@@ -486,10 +500,17 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		for(let feature in this.removed[layer]){
 			if(!layers[layer]){
 				layers[layer] = {};
-				layers[layer].created = [];
-				layers[layer].modified = [];
+				layers[layer].created = null;
+				layers[layer].modified = null;
 				layers[layer].removed = [];
+			} else {
+				if(layers[layer].removed === null){
+					layers[layer].removed = [];
+				}
 			}
+			this.removed[layer][feature].setGeometryName("the_geom");
+			this.removed[layer][feature].set("the_geom", this.removed[layer][feature].get("geometry"));
+			this.removed[layer][feature].unset("geometry");
 			layers[layer].removed.push(this.removed[layer][feature]);
 		}
 	}
@@ -509,15 +530,16 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		layername = layername.substring(1);
 		
 		node = format.writeTransaction(layers[layer].created, layers[layer].modified, layers[layer].removed, {
-			featureNS: workspace,
-			featurePrefix: workspace,
-			featureType: layername 
+			"featureNS": workspace,
+			"featurePrefix": workspace,
+			"featureType": layername,
+			"version": "1.0.0"
 		});
 		
 		var param = {
-			serverName: geoserver,
-			workspace: workspace,
-			wfstXml: new XMLSerializer().serializeToString(node)
+			"serverName": geoserver,
+			"workspace": workspace,
+			"wfstXml": new XMLSerializer().serializeToString(node)
 		};
 		$.ajax({
 			type: "POST",

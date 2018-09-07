@@ -56,7 +56,8 @@ gb.versioning.Repository = function(obj) {
 	var options = obj ? obj : {};
 	var url = options.url ? options.url : {};
 	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
-	this.transactionIdURL = url.transactionId ? url.transactionId : undefined;
+	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
+	this.endTransactionURL = url.endTransaction ? url.endTransaction : undefined;
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
 	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
@@ -468,25 +469,62 @@ gb.versioning.Repository.prototype.transitPage = function(page) {
 /**
  * 트랜잭션 아이디를 요청한다.
  * 
- * @method gb.versioning.Repository#getWorkingTree
+ * @method gb.versioning.Repository#beginTransaction
  * @param {String}
- *            serverName - 등록한 서버 이름
+ *            serverName - 지오서버 이름
  * @param {String}
- *            repoName - GeoGig repository 이름
- * @param {String}
- *            reference - 체크아웃한 브랜치 이름
- * @param {String}
- *            transactionId - 요청에 필요한 트랜잭션 ID
- * @return {Object[]} 트리 목록에 추가할 워킹트리
- * 
+ *            repoName - 레파지토리 이름
+ * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.getTransactionId = function(serverName, repoName) {
+gb.versioning.Repository.prototype.beginTransaction = function(serverName, repoName) {
 	var params = {
 		"serverName" : serverName,
 		"repoName" : repoName
 	}
 	// + "&" + jQuery.param(params),
-	var tranURL = this.getTransactionIdURL();
+	var tranURL = this.getBeginTransactionURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+		}
+	});
+};
+
+/**
+ * 트랜잭션 아이디를 종료한다.
+ * 
+ * @method gb.versioning.Repository#endTransaction
+ * @return {Object} 트랜잭션 아이디 객체
+ * 
+ */
+gb.versioning.Repository.prototype.endTransaction = function(serverName, repoName, tid, callback) {
+	var params = {
+		"serverName" : serverName,
+		"repoName" : repoName,
+		"transactionId" : tid
+	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getEndTransactionURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
 		tranURL += jQuery.param(params);
@@ -625,11 +663,21 @@ gb.versioning.Repository.prototype.getServerTreeURL = function() {
 /**
  * 트랜잭션 아이디 발급 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getTransactionIdURL
+ * @method gb.versioning.Repository#getBeginTransactionURL
  * @return {String} 트랜잭션 아이디 주소 URL
  */
-gb.versioning.Repository.prototype.getTransactionIdURL = function() {
-	return this.transactionIdURL;
+gb.versioning.Repository.prototype.getBeginTransactionURL = function() {
+	return this.beginTransactionURL;
+};
+
+/**
+ * 트랜잭션 아이디 종료 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getEndTransactionURL
+ * @return {String} 트랜잭션 아이디 주소 URL
+ */
+gb.versioning.Repository.prototype.getEndTransactionURL = function() {
+	return this.endTransactionURL;
 };
 
 /**
@@ -886,7 +934,37 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
+				var msg1 = $("<div>").text("Merge is complete.").css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var body = $("<div>").append(msg1).append(msg2);
+				var closeBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+				var okBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
+				var deleteModal = new gb.modal.Base({
+					"title" : "Commit Changes",
+					"width" : 310,
+					"height" : 200,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : buttonArea
+				});
+				$(closeBtn).click(function() {
+					deleteModal.close();
+				});
+				$(okBtn).click(function() {
+					that.endTransaction(server, repo, tid);
+				});
 			}
 		}
 	});

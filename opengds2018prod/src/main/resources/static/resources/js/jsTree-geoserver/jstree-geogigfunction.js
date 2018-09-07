@@ -199,8 +199,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);
 							console.log("hi its merge");
 						});
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(addBtn).append(
-								commitBtn).append(pullBtn).append(pushBtn).append(mergeBtn);
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(pullBtn).append(
+								pushBtn).append(mergeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "layer") {
@@ -330,6 +330,19 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		var list = this._data.geogigfunction.transactionId;
 		var id = list[nid];
 		return id;
+	};
+	/**
+	 * 노드에 맞는 트랜잭션 아이디를 삭제한다.
+	 * 
+	 * @method removeTransactionId
+	 * @plugin geogigfunction
+	 * @param {String}
+	 *            nid - 노드 아이디
+	 * @return {Boolean}
+	 */
+	this.removeTransactionId = function(nid) {
+		var list = this._data.geogigfunction.transactionId;
+		return delete list[nid];
 	};
 	/**
 	 * 체크아웃을 요청한다.

@@ -1,16 +1,19 @@
 package com.gitrnd.qaproducer.qa.mapper;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.json.simple.JSONArray;
 
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 
 @Mapper
 public interface ValidationResultMapper {
 
-	LinkedList<ValidationResult> retrieveValidationResultByUidx(int idx);
+	int countValidationResultByUidx(int idx);
+	
+	JSONArray retrieveValidationResultByUidx(Map<String,Object> params);
 	
 	ValidationResult retrieveValidationResultByPidx(int idx);
 	

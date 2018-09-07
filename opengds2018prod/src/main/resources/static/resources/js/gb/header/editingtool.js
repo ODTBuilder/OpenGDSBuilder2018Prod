@@ -552,6 +552,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 		toggleCondition : ol.events.condition.platformModifierKeyOnly,
 		style : this.selectedStyles
 	});
+	this.selected = this.interaction.select.getFeatures();
 	this.map.addInteraction(this.interaction.select);
 	this.map.removeInteraction(this.interaction.dragbox);
 	this.interaction.dragbox = new ol.interaction.DragBox({
@@ -1991,6 +1992,9 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 			interaction.setActive(false);
 			that.deactiveBtn_(content);
 		} else {
+			if(interaction.setSelectFeatures instanceof Function){
+				interaction.setSelectFeatures(that.selected);
+			}
 			interaction.setActive(true);
 			that.activeBtn_(content);
 		}
@@ -2148,20 +2152,20 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 			loader: function(extent, resolution, projection){
 				
 				params = {
-					"service" : "WFS",
+					"serverName": git.geoserver,
+					"workspace": git.workspace,
 					"version" : "1.0.0",
-					"request" : "GetFeature",
 					"typeName" : layername,
-					"outputformat" : "text/javascript",
 					"bbox" : extent.join(","),
-					"format_options" : "callback:" + layerid
+					"outputformat" : "JSONP",
+					"format_options" : "callback:" + layername
 				};
 				
 				$.ajax({
 					url : url,
 					data : params,
-					dataType : 'jsonp',
-					jsonpCallback : layerid,
+					dataType : "JSONP",
+					jsonpCallback : layername,
 					success : function(data) {
 						var features = vectorSource.getFormat().readFeatures(data)
 						vectorSource.addFeatures(features);

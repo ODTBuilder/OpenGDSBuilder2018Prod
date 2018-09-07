@@ -31,6 +31,7 @@ public class PingRemoteRepository {
 
 	private static final Log logger = LogFactory.getLog(PingRemoteRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "remote";
 	private static final String param_ping = "ping=";
 	private static final String param_remoteName = "remoteName=";
@@ -40,9 +41,6 @@ public class PingRemoteRepository {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -57,7 +55,7 @@ public class PingRemoteRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_ping + "true" + "&"
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_ping + "true" + "&"
 				+ param_remoteName + remoteName;
 
 		// request

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -25,8 +26,12 @@
 			e.stopPropagation();
 		});
 
-		$(document).on("click", ".SettingSection > table > tbody > tr", function() {
-			$(this).toggleClass("info");
+		$(document).on("click", "#serverDataTable tbody tr", function() {
+			if ( $(this).hasClass('selected') ) {
+				$(this).removeClass('selected');
+			} else {
+				$(this).addClass('selected');
+			}
 		});
 
 		$(document).on("click", "#select-delete", function() {
@@ -46,7 +51,7 @@
 					var fileNameList = "";
 
 					// 선택된 행들에 대하여 반복문 실행
-					$("tr.info").each(function(index) {
+					$("#serverDataTable tbody tr.selected").each(function(index) {
 
 						if ($(this).data("state") === 1 || $(this).data("state") === 2) {
 
@@ -90,11 +95,44 @@
 		});
 
 		$(document).on("click", "#all-select", function() {
-			$(".SettingSection > table > tbody > tr").addClass("info");
+			$("#serverDataTable tbody tr").addClass("selected");
 		});
 
 		$(document).on("click", "#all-deselect", function() {
-			$(".SettingSection > table > tbody > tr").removeClass("info");
+			$("#serverDataTable tbody tr").removeClass("selected");
+		});
+		
+		$(document).ready(function() {
+			$("#serverDataTable").DataTable({
+				"serverSide" : true,
+				"searching" : false,
+				"processing" : true,
+				"ajax" : {
+					"url" : "${pageContext.request.contextPath}/result/getValidationResult.ajax?${_csrf.parameterName}=${_csrf.token}",
+					"data" : function(d){
+						console.log(d);
+					},
+					"error": function(e){
+						console.log(e);
+					}
+				},
+				"order" : [0, "asc"],
+				"select" : true,
+				"displayStart" : 0,
+				"pageLength" : 10,
+				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ],
+				"columns" : [
+					{"data" : "no", "title" : "No."},
+					{"data" : "zipName", "title" : "Original file"},
+					{"data" : "createTime", "title" : "Create time"},
+					{"data" : "endTime", "title" : "End time"},
+					{"data" : "qaType", "title" : "Validation type"},
+					{"data" : "format", "title" : "File format"},
+					{"data" : "state", "title" : "Status"},
+					{"data" : "download", "title" : "Download"},
+					{"data" : "comment", "title" : "Notes"}
+				]
+			});
 		});
 	</script>
 	<div class="container">
@@ -108,74 +146,25 @@
 								style="margin-top: 15px; margin-bottom: 10px;">
 								<div class="btn-group" role="group">
 									<button id="all-deselect" class="btn btn-default">
-										<i class="far fa-square"></i> 전체선택해제
+										<i class="far fa-square"></i><spring:message code="lang.deselall" />
 									</button>
 								</div>
 								<div class="btn-group" role="group">
 									<button id="all-select" class="btn btn-info">
-										<i class="far fa-check-square"></i> 전체선택
+										<i class="far fa-check-square"></i><spring:message code="lang.selall" />
 									</button>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2 col-md-offset-7">
 							<button id="select-delete" class="btn btn-danger" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<i class="far fa-trash-alt"></i> 선택삭제
+								<i class="far fa-trash-alt"></i><spring:message code="lang.delsel" />
 							</button>
 						</div>
 					</div>
 				</section>
 				<section class="SettingSection">
-					<table class="table table-striped table-hover text-center">
-						<thead>
-							<tr>
-								<td>번호</td>
-								<td>원본</td>
-								<td style="width: 10%;">요청시간</td>
-								<td style="width: 10%;">완료시간</td>
-								<td>검수종류</td>
-								<td>파일포맷</td>
-								<td>상태</td>
-								<td>다운로드</td>
-								<td>비고</td>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="item" items="${list}" varStatus="status">
-								<tr data-value="${item.pidx}" data-state="${item.state}" data-filename="${item.errName}" data-fid="${item.fidx}"
-									onmouseover="this.style.cursor = 'pointer'">
-									<td>${status.count}</td>
-									<td>${item.zipName}</td>
-									<td>${item.createTime}</td>
-									<td>${item.endTime}</td>
-									<td>${item.qaType}</td>
-									<td>${item.format}</td>
-									<c:choose>
-										<c:when test="${item.state eq 1}">
-											<td>대기</td>
-										</c:when>
-										<c:when test="${item.state eq 2}">
-											<td>검수중</td>
-										</c:when>
-										<c:when test="${item.state eq 3}">
-											<td>완료</td>
-										</c:when>
-										<c:when test="${item.state eq 4}">
-											<td>실패</td>
-										</c:when>
-										<c:otherwise>
-											<td>알 수 없음</td>
-										</c:otherwise>
-									</c:choose>
-									<td><a href="${item.errFileDir}" class="gb-download-btn">${item.errName}</a></td>
-									<td><c:choose>
-											<c:when test="${item.comment ne null}">
-												<a href="#" class="gb-detailinformation-btn" comment="${item.comment}">상세 정보</a>
-											</c:when>
-										</c:choose></td>
-								</tr>
-							</c:forEach>
-						</tbody>
+					<table class="table table-bordered" id="serverDataTable" width="100%" cellspacing="0" style="text-align: center">
 					</table>
 				</section>
 			</div>

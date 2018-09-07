@@ -78,7 +78,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "고정 속성 삭제"
 		},
 		"exFixedAttrNameField" : {
-			"en" : "Attribute name with fixed value ex) attr1",
+			"en" : "",
 			"ko" : "고정 값을 가질 속성명 예시) 구분"
 		},
 		"length" : {
@@ -86,7 +86,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "길이"
 		},
 		"nullAllow" : {
-			"en" : "Null allowance",
+			"en" : "Null value allowed?",
 			"ko" : "널 허용"
 		},
 		"allowValue" : {
@@ -94,7 +94,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "허용값"
 		},
 		"exAllowValueField" : {
-			"en" : "Separate the values ​​that the attribute can have with a comma. ex)value1, value2, value3, ...",
+			"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
 			"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
 		},
 		"success" : {
@@ -110,7 +110,7 @@ gb.embed.LayerDefinition = function(obj) {
 			"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
 		},
 		"noticeLayerDefUpdate" : {
-			"en" : "[Layer definition] has changed.",
+			"en" : "[Layer definition] has been changed.",
 			"ko" : "[레이어 정의]가 변경 되었습니다"
 		},
 		"noticeNotExistLayer" : {
@@ -155,7 +155,8 @@ gb.embed.LayerDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				var obj = JSON.parse(reader.result);
+				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
 				var flag = that.setStructure(obj);
 				that.updateStructure();
 			});
@@ -577,11 +578,22 @@ gb.embed.LayerDefinition.prototype.inputAttributeValues = function(inp) {
 			if (Array.isArray(fix)) {
 				fixElem = fix[attrIdx];
 				if (fixElem !== undefined && fixElem !== null) {
-					fixElem["values"] = $(inp).val().replace(/(\s*)/g, '').split(",");
+					fixElem["values"] = $(inp).val().split(",");
+					var attrValues = fixElem["values"];
+					for (var z = 0; z < attrValues.length; z++) {
+						attrValues[z] = attrValues[z].trim();
+					}
+					// fixElem["values"] = $(inp).val().replace(/(\s*)/g,
+					// '').split(",");
 				} else {
 					var obj = {
-						"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+						"values" : $(inp).val().split(",")
+					// "values" : $(inp).val().replace(/(\s*)/g, '').split(",")
 					};
+					var attrValues = obj.values;
+					for (var z = 0; z < attrValues.length; z++) {
+						attrValues[z] = attrValues[z].trim();
+					}
 				}
 			}
 		}

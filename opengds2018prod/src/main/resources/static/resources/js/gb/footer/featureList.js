@@ -23,6 +23,9 @@ if (!gb.footer)
 		
 		this.map = options.map || undefined;
 		
+		this.attrList = {};
+		
+		this.countId = 0;
 		/**
 		 * footer content에 생성할 table element의 ID
 		 */
@@ -36,6 +39,7 @@ if (!gb.footer)
 			
 		this.titleAreaStyle = {
 			"position": "absolute",
+			"display": "none",
 			"padding": "8px 16px"
 		};
 		
@@ -43,14 +47,7 @@ if (!gb.footer)
 			"height": "100%"
 		};
 		
-		this.tableElement = $("<table>").attr("id", this.tableId).css({
-			width: "100%"
-		});
-		
-		this.createFooter({
-			title: this.title,
-			content: this.tableElement
-		});
+		this.tableElement = this.createTableElement();
 		
 		this.dataTable = this.tableElement.DataTable({
 			columns: [
@@ -87,20 +84,49 @@ if (!gb.footer)
 		
 		$("#" + this.tableId).on("click", "tr", function(){
 			var data = that.dataTable.row(this).data();
-			that.map.getView().fit(data.geometry.getExtent(), that.map.getSize());
+			//that.map.getView().fit(data.geometry.getExtent(), that.map.getSize());
 			//that.map.getView().setZoom(14);
-			if ( $(this).hasClass('selected') ) {
+			/*if ( $(this).hasClass('selected') ) {
 				$(this).removeClass('selected');
 			} else {
 				that.dataTable.$('tr.selected').removeClass('selected');
 				$(this).addClass('selected');
-			}
-		})
+			}*/
+		});
 	}
-
+	
 	// gb.footer.Base 상속
 	gb.footer.FeatureList.prototype = Object.create(gb.footer.Base.prototype);
 	gb.footer.FeatureList.prototype.constructor = gb.footer.FeatureList;
+	
+	gb.footer.FeatureList.prototype.createTableElement = function(){
+		this.removeTableElement();
+		
+		var num = this.countId++;
+		
+		var table = $("<table>").attr("id", this.tableId + num).css({
+			width: "100%"
+		});
+		
+		this.createFooter({
+			title: this.title,
+			content: table
+		});
+		
+		return table;
+	}
+	
+	gb.footer.FeatureList.prototype.removeTableElement = function(){
+		if(!this.tableElement){
+			return;
+		}
+		this.tableElement.remove();
+		delete this.tableElement;
+		
+		$(document).off("click", "#addRowBtn");
+		$(document).off("click", "#editRowBtn");
+		$(document).off("click", "#deleteRowBtn");
+	}
 	
 	/**
 	 * feature list layout 생성 클릭 이벤트
@@ -141,30 +167,50 @@ if (!gb.footer)
 	
 	/**
 	 * List Table 내용 재설정
-	 * @param {Array.<Object>} col title: table header title, data: key 값
+	 * @param {Array.<Object>} col title: table header title
 	 * @param {Array.<Array>} col
 	 */
-	gb.footer.FeatureList.prototype.updateTable = function(col, data, except){
-		this.dataTable.destroy();
-		this.tableElement.empty();
+	gb.footer.FeatureList.prototype.updateTable = function(treeid){
+		var col, data;
 		
-		var columns = [];
-		for(var i in col){
-			if(except.indexOf(col[i].data) === -1){
-				columns.push({
-					title: col[i].title,
-					data: col[i].data
-				});
-			}
+		if(!this.attrList[treeid]){
+			col = [{title:"column"}];
+			data = [["No data"]];
+		} else {
+			col = this.attrList[treeid].col;
+			data = this.attrList[treeid].data;
 		}
+		
+		this.dataTable.clear();
+		this.dataTable.destroy();
+		delete this.dataTable;
+		this.tableElement = this.createTableElement();
+		
 		this.dataTable = this.tableElement.DataTable({
-			columns: columns,
+			columns: col,
 			data: data,
 			info: false,
 			paging: false,
 			scrollX: true,
 			scrollY: "100%",
-			scrollCollapse: true
+			scrollCollapse: true,
+			dom: "Bfrtip",
+			select: "single",
+			altEditor: true,
+			buttons: [{
+				text: "Add",
+				name: "add"
+			},
+			{
+				extend: "selected",
+				text: "Edit",
+				name: "edit"
+			},
+			{
+				extend: "selected",
+				text: "Delete",
+				name: "delete"
+			}]
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
@@ -181,6 +227,12 @@ if (!gb.footer)
 			return;
 		}
 		
+		var geoserver = options.geoserver;
+		if(!geoserver){
+			console.error('gb.footer.FeatureList: geoserver name is required');
+			return;
+		}
+		
 		var workspace = options.workspace;
 		if(!workspace){
 			console.error('gb.footer.FeatureList: workspace name is required');
@@ -193,55 +245,72 @@ if (!gb.footer)
 			return;
 		}
 		
+		var treeid = options.treeid;
+		
+		var list = this.attrList;
+		if(!!list[treeid]){
+			return;
+		}
+		
 		var exceptKeys = options.exceptKeys || [];
 		
 		var defaultParameters = {
-			service : 'WFS',
-			version : '1.0.0',
-			request : 'GetFeature',
-			typeName : workspace + ':' + layerName,
-			outputFormat : 'text/javascript',
-			format_options : 'callback:getJson'
+			"serverName": geoserver,
+			"workspace": workspace,
+			"version" : "1.0.0",
+			"typeName" : layerName,
+			"outputformat" : "JSONP",
+			"format_options" : "callback:" + layerName
 		};
 
 		var that = this;
 		$.ajax({
 			url : url,
 			data : defaultParameters,
-			dataType : 'jsonp',
-			jsonpCallback : 'getJson',
+			dataType : 'JSONP',
+			jsonpCallback : layerName,
 			success : function(errorData, textStatus, jqXHR) {
 				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
 				var th = [],
-					td = undefined,
+					td = [],
 					data = [],
-					col = [];
+					col = [],
+					features = [];
 				
 				for(var i in format){
 					if(!th.length){
 						th = format[i].getKeys();
 						for(var j in th){
+							if(exceptKeys.indexOf(th[j]) !== -1){
+								continue;
+							}
 							col.push({
-								title: th[j],
-								data: th[j]
+								title: th[j]
 							});
 						}
 					}
 					
-					td = {};
+					td = [];
 					for(var j in th){
-						td[th[j]] = format[i].get(th[j]);
+						if(exceptKeys.indexOf(th[j]) !== -1){
+							continue;
+						}
+						td.push(format[i].get(th[j]));
 					}
 					data.push(td);
 				}
 				
-				that.updateTable(col, data, exceptKeys);
-				that.setTitle(layerName);
+				list[treeid] = {};
+				list[treeid].col = col;
+				list[treeid].data = data;
+				
+				/*that.updateTable(col, data);
+				that.setTitle(layerName);*/
 			},
 			error: function(jqXHR, textStatus, errorThrown){
 				console.log(errorThrown);
-				that.updateTable([{title: "no data", data: "empty"}], [{empty: "no data"}], []);
-				that.setTitle("no data");
+				/*that.updateTable([{title: "no data"}], [["no data"]]);
+				that.setTitle("no data");*/
 			}
 		});
 	}

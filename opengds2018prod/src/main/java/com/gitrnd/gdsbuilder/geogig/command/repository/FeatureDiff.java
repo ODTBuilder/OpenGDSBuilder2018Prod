@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.importlayer;
+package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 
@@ -19,38 +16,24 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigTasks;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 
-/**
- * Geogig PostGIS Import Command Execution Class
- * 
- * @author GIT
- *
- */
-public class ImportPostgisLayer {
+public class FeatureDiff {
 
-	private static final Log logger = LogFactory.getLog(ImportPostgisLayer.class);
+	private static final Log logger = LogFactory.getLog(FeatureDiff.class);
 
-	private static final String command = "postgis/import";
-	private static final String param_transactionId = "transactionId=";
-	private static final String param_fidAttrib = "fidAttrib=";
-	private static final String param_table = "table=";
-	private static final String param_host = "host=";
-	private static final String param_port = "port=";
-	private static final String param_schema = "schema=";
-	private static final String param_database = "database=";
-	private static final String param_user = "user=";
-	private static final String param_password = "password=";
+	private static final String geogig = "geogig";
+	private static final String command = "featurediff";
+	private static final String param_path = "path=";
+	private static final String param_oldTreeish = "oldTreeish=";
+	private static final String param_newTreeish = "newTreeish=";
+	private static final String param_all = "all="; // optional
 
-	public GeogigTasks executeCommand(String baseURL, String username, String password, String repository,
-			String transactionId, String fidAttrib, String table, String host, String port, String schema,
-			String database, String dbUser, String dbPassword) {
+	public GeogigFeatureDiff executeCommand(String baseURL, String username, String password, String repository,
+			String path, String oldTreeish, String newTreeish) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -65,16 +48,14 @@ public class ImportPostgisLayer {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
-				+ param_fidAttrib + fidAttrib + "&" + param_table + table + "&" + param_host + host + "&" + param_port
-				+ port + "&" + param_schema + schema + "&" + param_database + database + "&" + param_user + dbUser + "&"
-				+ param_password + dbPassword;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_path + path + "&"
+				+ param_oldTreeish + oldTreeish + "&" + param_newTreeish + newTreeish + "&" + param_all + "true";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigTasks> responseEntity = null;
+		ResponseEntity<GeogigFeatureDiff> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigTasks.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigFeatureDiff.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -86,4 +67,5 @@ public class ImportPostgisLayer {
 			return null;
 		}
 	}
+
 }

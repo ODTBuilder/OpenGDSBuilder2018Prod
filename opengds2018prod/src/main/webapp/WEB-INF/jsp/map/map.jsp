@@ -104,9 +104,6 @@ html {
 </style>
 </head>
 <body>
-	<script>
-		const CONTEXTPATH = "${pageContext.request.contextPath}";
-	</script>
 	<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
 	<nav class="navbar navbar-default fixed-top builderHeader">
 		<div class="navbar-header">
@@ -121,7 +118,7 @@ html {
 					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> Save
 				</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" id="savePart">Save</a></li>
+						<li><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges">Save</a></li>
 						<li><a href="#" id="saveAll">Save All</a></li>
 					</ul></li>
 				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> Edit
@@ -231,11 +228,16 @@ html {
 		});
 
 		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id"
+			id : "feature_id",
+			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
+		});
+		
+		$(document).click("#saveChangesBtn", function(){
+			frecord.sendWFSTTransaction();
 		});
 
-		var wfsURL = "http://175.116.181.42:9990/geoserver/wfs";
-		var wmsURL = "http://175.116.181.42:9990/geoserver/wms";
+		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
+		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -243,10 +245,10 @@ html {
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
 			wfsURL : wfsURL,
-			getFeatureInfo : wmsURL,
-			layerInfo : "geoserver/getGeoLayerInfoList.ajax",
+			getFeatureInfo : infoURL,
+			layerInfo : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
 			imageTile : "geoserver/geoserverWMSLayerLoad.do",
-			getFeature : "geoserver/geoserverWFSGetFeature.ajax",
+			getFeature : "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}",
 			locale : "en"
 		});
 
@@ -299,6 +301,28 @@ html {
 			}
 		});
 
+		// hole draw interaction
+		var hole = new gb.interaction.HoleDraw({
+			selected : epan.selected
+		});
+
+		hole.on("change:active", function(evt) {
+			if (evt.oldValue) {
+				gb.undo.setActive(true);
+			} else {
+				gb.undo.setActive(false);
+			}
+		});
+
+		epan.addInteraction({
+			icon : "fab fa-bitbucket",
+			content : "Hole",
+			interaction : hole,
+			"float" : "right",
+			clickEvent : function() {
+				console.log("Hole draw");
+			}
+		});
 		// feature list
 		var featureList = new gb.footer.FeatureList({
 			map : gbMap.getUpperMap(),
@@ -309,18 +333,28 @@ html {
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
+			featureList.updateTable(data.selected[0]);
+		});
+
+		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
 			var layer;
-			for (i = 0, j = data.selected.length; i < j; i++) {
-				layer = data.instance.get_LayerById(data.selected[i]);
+			var arr = data.node.children_d;
+			
+			for(let i = 0; i < arr.length; i++){
+				layer = data.instance.get_LayerById(arr[i]);
+				if(layer instanceof ol.layer.Group){
+					continue;
+				}
 				featureList.updateFeatureList({
 					url : wfsURL,
+					treeid : arr[i],
+					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 					layerName : layer.get('name'),
-					exceptKeys : [ 'geometry'/*, 'feature_id', 'ufid' */]
+					exceptKeys : ['geometry']
 				});
 			}
 		});
-
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
@@ -353,7 +387,10 @@ html {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

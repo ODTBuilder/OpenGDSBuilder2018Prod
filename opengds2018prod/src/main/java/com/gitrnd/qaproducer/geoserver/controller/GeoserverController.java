@@ -145,16 +145,17 @@ public class GeoserverController extends AbstractController {
 	 * @return String
 	 * */
 	@SuppressWarnings({ "unchecked", "static-access" })
-	@RequestMapping(value = "/geoserverWFSTransaction.ajax")
+	@RequestMapping(value = "/geoserverWFSTransaction.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public String geoserverWFSTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser) {
+	public String geoserverWFSTransaction(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		String serverName = request.getParameter("serverName");
-		String wfstXml = request.getParameter("wfstXml");
+		String serverName = (String) jsonObject.get("serverName");
+		String workspace = (String) jsonObject.get("workspace");
+		String wfstXml = (String) jsonObject.get("wfstXml");
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return geoserverService.requestWFSTransaction(dtGeoserverManager,wfstXml);
+		return geoserverService.requestWFSTransaction(dtGeoserverManager,workspace, wfstXml);
 	}
 	
 

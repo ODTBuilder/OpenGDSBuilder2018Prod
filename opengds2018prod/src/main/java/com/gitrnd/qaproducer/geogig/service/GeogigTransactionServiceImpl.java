@@ -5,7 +5,8 @@ package com.gitrnd.qaproducer.geogig.service;
 
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
@@ -30,8 +31,10 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.beginTransaction(repoName);
+		BeginTransaction begin = new BeginTransaction();
+		GeogigTransaction transaction = begin.executeCommand(url, user, pw, repoName);
+
+		return transaction;
 	}
 
 	/*
@@ -50,8 +53,10 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.endTransaction(repoName, transactionId);
+		EndTransaction end = new EndTransaction();
+		GeogigTransaction transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+
+		return transaction;
 	}
 
 	/*
@@ -69,8 +74,10 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.cancelTransaction(repoName, transactionId);
+		EndTransaction end = new EndTransaction();
+		GeogigTransaction transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+
+		return transaction;
 	}
 
 }

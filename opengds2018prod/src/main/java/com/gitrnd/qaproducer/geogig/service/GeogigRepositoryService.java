@@ -3,6 +3,7 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -74,5 +75,12 @@ public interface GeogigRepositoryService {
 	 */
 	GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
 			String branchName, String remoteBranchName);
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @return GeogigFetch
+	 */
+	GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName);
 
 }

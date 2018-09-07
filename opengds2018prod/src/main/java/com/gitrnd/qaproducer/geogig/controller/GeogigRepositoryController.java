@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -65,8 +66,7 @@ public class GeogigRepositoryController extends AbstractController {
 			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "remoteName", required = false) String remoteName,
-			@RequestParam(value = "removeTrue", required = false) Boolean removeTrue) {
+			@RequestParam(value = "remoteName", required = false) String remoteName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.removeRemoteRepository(geoserverManager, repoName, remoteName);
@@ -112,6 +112,16 @@ public class GeogigRepositoryController extends AbstractController {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.pushRepository(geoserverManager, repoName, remoteName, branchName, remoteBranchName);
+	}
+
+	@RequestMapping(value = "/fetchRepository.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigFetch fetchRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName) {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return reposService.fetchRepository(geoserverManager, repoName);
 	}
 
 }

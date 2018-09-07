@@ -5,11 +5,17 @@ package com.gitrnd.qaproducer.geogig.service;
 
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.GeogigWebReader;
+import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.PullRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.PushRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.AddRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.RemoveRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Ping;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -34,8 +40,10 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.listRemoteRepository(repoName, verbose);
+		ListRemoteRepository list = new ListRemoteRepository();
+		GeogigRemoteRepository remotes = list.executeCommand(url, user, pw, repoName, verbose);
+
+		return remotes;
 	}
 
 	/*
@@ -53,14 +61,10 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		GeogigRemoteRepository remoteRepos = reader.addRemoteRepository(repoName, remoteName, remoteURL);
-		String addSuccess = remoteRepos.getSuccess();
-		if (addSuccess.equalsIgnoreCase("true")) {
-			Ping ping = reader.pingRemoteRepository(repoName, remoteName).getPing();
-			remoteRepos.setPing(ping);
-		}
-		return remoteRepos;
+		AddRemoteRepository add = new AddRemoteRepository();
+		GeogigRemoteRepository remotes = add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
+
+		return remotes;
 	}
 
 	/*
@@ -78,8 +82,10 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.removeRemoteRepository(repoName, remoteName);
+		RemoveRemoteRepository remove = new RemoveRemoteRepository();
+		GeogigRemoteRepository remotes = remove.executeCommand(url, user, pw, repoName, remoteName);
+
+		return remotes;
 	}
 
 	/*
@@ -97,8 +103,10 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.pingRemoteRepository(repoName, remoteName);
+		PingRemoteRepository ping = new PingRemoteRepository();
+		GeogigRemoteRepository remote = ping.executeCommand(url, user, pw, repoName, remoteName);
+
+		return remote;
 	}
 
 	/*
@@ -118,9 +126,11 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.pullRepository(repoName, transactionId, remoteName, branchName, remoteBranchName, authorName,
-				authorEmail);
+		PullRepository pull = new PullRepository();
+		GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,
+				remoteBranchName, authorName, authorEmail);
+
+		return geogigPull;
 	}
 
 	/*
@@ -139,7 +149,29 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		GeogigWebReader reader = new GeogigWebReader(url, user, pw);
-		return reader.pushRepository(repoName, remoteName, branchName, remoteBranchName);
+		PushRepository push = new PushRepository();
+		GeogigPush geogigPush = push.executeCommand(url, user, pw, repoName, remoteName, branchName, remoteBranchName);
+
+		return geogigPush;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#fetchRepository(
+	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
+	 */
+	@Override
+	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		FetchRepository fetch = new FetchRepository();
+		GeogigFetch geogigFetch = fetch.executeCommand(url, user, pw, repoName);
+
+		return geogigFetch;
 	}
 }

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -55,28 +56,16 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 		}
 	}
 
-	/**
-	 * @param dtGeoserver
-	 * @param serverName
-	 * @param type
-	 * @param node
-	 * @param local
-	 */
 	public GeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String node, String local) {
-		this.build(dtGeoserver, serverName, type, node, local);
+			EnGeogigRemoteRepositoryTreeType type, String node, String local, boolean fetch) {
+		this.build(dtGeoserver, serverName, type, node, local, fetch);
 	}
 
-	/**
-	 * @param dtGeoserver
-	 * @param serverName
-	 * @param type
-	 * @param node
-	 * @param local
-	 * @return
-	 */
 	public GeogigRemoteRepositoryTree build(DTGeoserverManager dtGeoserver, String serverName,
-			EnGeogigRemoteRepositoryTreeType type, String node, String local) {
+			EnGeogigRemoteRepositoryTreeType type, String node, String local, boolean fetch) {
+
+		// node : repos_postgress_master
+		// local : geoserver32:fetchtest_postgres
 
 		if (dtGeoserver == null || serverName == null || node == null) {
 			JSONObject errorJSON = new JSONObject();
@@ -88,7 +77,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 			logger.warn("요청이 잘못되었습니다.");
 		} else {
 			if (dtGeoserver != null && type != null && node != null) {
-				String baseURL = dtGeoserver.getRestURL() + "/geogig";
+				String baseURL = dtGeoserver.getRestURL();
 				String username = dtGeoserver.getUsername();
 				String password = dtGeoserver.getPassword();
 
@@ -97,6 +86,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 				if (param.length > 0) {
 					if (type == EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY) {
 						String repos = param[1];
+
 						ListRemoteRepository listRemoteRepos = new ListRemoteRepository();
 						GeogigRemoteRepository remoteRepos = listRemoteRepos.executeCommand(baseURL, username, password,
 								repos, true);
@@ -116,6 +106,19 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 									for (Remote remote : remoteList) {
 										String name = remote.getName();
 										String url = remote.getUrl();
+
+										// ping
+										PingRemoteRepository pingRemote = new PingRemoteRepository();
+										GeogigRemoteRepository pingRepos = pingRemote.executeCommand(baseURL, username,
+												password, repos, name);
+										String pingStr = pingRepos.getPing().getSuccess();
+
+										boolean ping;
+										if (pingStr.equalsIgnoreCase("true")) {
+											ping = true;
+										} else {
+											ping = false;
+										}
 										String remoteId = node + ":" + name; // ex) repository:remoteRepository
 										if (branch != null) {
 											List<Branch> remoteBraches = branch.getRemoteBranchList();
@@ -126,12 +129,12 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 												}
 											}
 											if (branchSize > 0) {
-												this.addRemoteRepo(remoteId, name, url, true);
+												this.addRemoteRepo(remoteId, name, url, true, ping);
 											} else {
-												this.addRemoteRepo(remoteId, name, url, false);
+												this.addRemoteRepo(remoteId, name, url, false, ping);
 											}
 										} else {
-											this.addRemoteRepo(remoteId, name, url, false);
+											this.addRemoteRepo(remoteId, name, url, false, ping);
 										}
 									}
 								}
@@ -196,16 +199,18 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 	 * @param id
 	 * @param text
 	 * @param url
-	 * @param isTrue
+	 * @param children
+	 * @param ping
 	 */
-	private void addRemoteRepo(String id, String text, String url, boolean isTrue) {
+	private void addRemoteRepo(String id, String text, String url, boolean children, boolean ping) {
 		JSONObject remoteRepoJson = new JSONObject();
 		remoteRepoJson.put("parent", "#");
 		remoteRepoJson.put("id", id);
 		remoteRepoJson.put("text", text);
 		remoteRepoJson.put("url", url);
 		remoteRepoJson.put("type", EnGeogigRemoteRepositoryTreeType.REMOTEREPOSITORY.getType());
-		remoteRepoJson.put("children", isTrue);
+		remoteRepoJson.put("children", children);
+		remoteRepoJson.put("ping", ping);
 		super.add(remoteRepoJson);
 	}
 

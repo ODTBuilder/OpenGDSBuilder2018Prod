@@ -32,6 +32,12 @@
 
 .gb-versioning-repository-btnarea {
 	float: right;
+	padding-right: 6px;
+}
+
+.gb-versioning-repository-btnarea>button {
+	height: 23px;
+	vertical-align: baseline;
 }
 
 .gb-versioning-repository-btnarea>.gb-button {
@@ -453,4 +459,37 @@ a.gb-list-group-item-info.active, a.gb-list-group-item-info.active:hover, a.gb-l
 	color: #3c763d;
 	background-color: #dff0d8;
 	border-color: #d6e9c6;
+}
+
+.gb-icon-polygon, .gb-icon-multipolygon {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 12px;
+	height: 12px;
+	background: #666 !important;
+}
+
+.gb-icon-linestring, .gb-icon-multilinestring {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 12px;
+	height: 2.4px;
+	background: #666 !important;
+}
+
+.gb-icon-point, .gb-icon-multipoint {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 12px;
+	height: 12px;
+	background: #666 !important;
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
 }

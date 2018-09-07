@@ -44,9 +44,11 @@ public interface GeogigTreeFactory {
 	 * @param serverName
 	 * @param type
 	 * @param parent
+	 * @param local
+	 * @param fetch
 	 * @return
 	 */
 	public GeogigRemoteRepositoryTree createGeogigRemoteRepositoryTree(DTGeoserverManager dtGeoserver,
-			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent, String local);
+			String serverName, EnGeogigRemoteRepositoryTreeType type, String parent, String local, boolean fetch);
 
 }

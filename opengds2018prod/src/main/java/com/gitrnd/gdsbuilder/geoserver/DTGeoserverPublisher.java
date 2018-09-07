@@ -199,8 +199,8 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher
   }
   
   
-  public String requestWFSTransaction(String wfstXml){
-	  StringBuilder postUrl = new StringBuilder(restURL).append("/wfs");
+  public String requestWFSTransaction(String workspace, String wfstXml){
+	  StringBuilder postUrl = new StringBuilder(restURL).append("/"+workspace).append("/ows");
 	  String configuredResult = HTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
               this.gspass);
 	  

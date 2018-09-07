@@ -173,7 +173,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	});
 	$(okBtn).click(function() {
 		that.uploadFile(file[0], function() {
-			uploadModal.close()
+			uploadModal.close();
 		});
 	});
 };

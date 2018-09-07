@@ -31,15 +31,13 @@ public class ListRepository {
 
 	private static final Log logger = LogFactory.getLog(ListRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "repos";
 
 	public GeogigRepository executeCommand(String baseURL, String username, String password) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -54,7 +52,7 @@ public class ListRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + command;
+		String url = baseURL + "/" + geogig + "/" + command;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

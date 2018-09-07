@@ -31,6 +31,7 @@ public class AddRemoteRepository {
 
 	private static final Log logger = LogFactory.getLog(AddRemoteRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "remote";
 	private static final String param_remoteName = "remoteName=";
 	private static final String param_remoteURL = "remoteURL=";
@@ -40,9 +41,6 @@ public class AddRemoteRepository {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -57,8 +55,8 @@ public class AddRemoteRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_remoteName + remoteName + "&"
-				+ param_remoteURL + remoteURL;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_remoteName
+				+ remoteName + "&" + param_remoteURL + remoteURL;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

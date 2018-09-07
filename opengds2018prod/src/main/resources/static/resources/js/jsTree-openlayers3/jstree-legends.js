@@ -16,25 +16,43 @@ $.jstreeol3.defaults.legends = {
 		},
 		// 편집도구에서 지원할 타입
 		"Group" : {
-			"icon" : "fa fa-folder-o",
+			"icon" : "fas fa-folder-o",
 			"valid_children" : [ "default", "Group", "Vector", "Raster", "ImageTile" ]
 		},
 		// 이외의 기본형
 		"default" : {
-			"icon" : "fa fa-file-o",
+			"icon" : "fas fa-file-o",
 			"valid_children" : []
 		},
 		"Vector" : {
-			"icon" : "fa fa-file-image-o",
+			"icon" : "fas fa-file-image-o",
 			"valid_children" : []
 		},
 		"Raster" : {
-			"icon" : "fa fa-file-image-o",
+			"icon" : "fas fa-file-image-o",
 			"valid_children" : []
 		},
 		"ImageTile" : {
-			"icon" : "fa fa-file-image-o",
+			"icon" : "fas fa-file-image-o",
 			"valid_children" : []
+		},
+		"polygon" : {
+			"icon" : "fas fa-square-full"
+		},
+		"multipolygon" : {
+			"icon" : "fas fa-square-full"
+		},
+		"linestring" : {
+			"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
+		},
+		"multilinestring" : {
+			"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
+		},
+		"point" : {
+			"icon" : "fas fa-circle gb-fa-xxs"
+		},
+		"multipoint" : {
+			"icon" : "fas fa-circle gb-fa-xxs"
 		}
 	},
 	"geoserver" : {

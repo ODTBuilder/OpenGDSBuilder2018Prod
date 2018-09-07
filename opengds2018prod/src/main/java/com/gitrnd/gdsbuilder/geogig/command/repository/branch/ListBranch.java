@@ -31,6 +31,7 @@ public class ListBranch {
 
 	private static final Log logger = LogFactory.getLog(ListBranch.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "branch";
 	private static final String param_list = "list=";
 	private static final String param_remotes = "remotes=";
@@ -40,9 +41,6 @@ public class ListBranch {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -57,7 +55,7 @@ public class ListBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_list + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
 
 		if (remotes == true) {
 			url += "&" + param_remotes + remotes;

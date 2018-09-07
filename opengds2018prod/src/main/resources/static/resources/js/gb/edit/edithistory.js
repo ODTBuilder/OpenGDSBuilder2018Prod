@@ -16,6 +16,7 @@ gb.edit.FeatureRecord = function(obj) {
 	this.modified = {};
 	this.removed = {};
 	this.id = obj.id ? obj.id : false;
+	this.wfstURL = obj.wfstURL || '';
 }
 /**
  * 임시보관 중인 새로운 feature들을 반환한다.
@@ -235,6 +236,9 @@ gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 	if (!this.modified) {
 		this.modified = {};
 	}
+	if(!feature.getId()){
+		return;
+	}
 	if (feature.getId().search(".new") !== -1) {
 		this.created[layer.get("id")][feature.getId()] = feature;
 	} else {
@@ -243,9 +247,6 @@ gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 		}
 		this.modified[layer.get("id")][this.id ? feature.get(this.id) : feature.getId()] = feature;
 	}
-	// console.log(this.removed);
-	// console.log(this.created);
-	// console.log(this.modified);
 }
 /**
  * 임시저장중인 편집이력을 JSON 형태로 반환한다.
@@ -464,9 +465,16 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			if(!layers[layer]){
 				layers[layer] = {};
 				layers[layer].created = [];
-				layers[layer].modified = [];
-				layers[layer].removed = [];
+				layers[layer].modified = null;
+				layers[layer].removed = null;
+			} else {
+				if(layers[layer].created === null){
+					layers[layer].created = [];
+				}
 			}
+			this.created[layer][feature].setGeometryName("the_geom");
+			this.created[layer][feature].set("the_geom", this.created[layer][feature].get("geometry"));
+			this.created[layer][feature].unset("geometry");
 			layers[layer].created.push(this.created[layer][feature]);
 		}
 	}
@@ -474,10 +482,17 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		for(let feature in this.modified[layer]){
 			if(!layers[layer]){
 				layers[layer] = {};
-				layers[layer].created = [];
+				layers[layer].created = null;
 				layers[layer].modified = [];
-				layers[layer].removed = [];
+				layers[layer].removed = null;
+			} else {
+				if(layers[layer].modified === null){
+					layers[layer].modified = [];
+				}
 			}
+			this.modified[layer][feature].setGeometryName("the_geom");
+			this.modified[layer][feature].set("the_geom", this.modified[layer][feature].get("geometry"));
+			this.modified[layer][feature].unset("geometry");
 			layers[layer].modified.push(this.modified[layer][feature]);
 		}
 	}
@@ -485,20 +500,27 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		for(let feature in this.removed[layer]){
 			if(!layers[layer]){
 				layers[layer] = {};
-				layers[layer].created = [];
-				layers[layer].modified = [];
+				layers[layer].created = null;
+				layers[layer].modified = null;
 				layers[layer].removed = [];
+			} else {
+				if(layers[layer].removed === null){
+					layers[layer].removed = [];
+				}
 			}
+			this.removed[layer][feature].setGeometryName("the_geom");
+			this.removed[layer][feature].set("the_geom", this.removed[layer][feature].get("geometry"));
+			this.removed[layer][feature].unset("geometry");
 			layers[layer].removed.push(this.removed[layer][feature]);
 		}
 	}
 	
 	var geoserver, workspace, repo, layername, split, node;
 	for(let layer in layers){
-		split = layer.split("_");
-		geoserver = layer.split("_")[0];
-		workspace = layer.split("_")[1];
-		repo = layer.split("_")[2];
+		split = layer.split(":");
+		geoserver = layer.split(":")[0];
+		workspace = layer.split(":")[1];
+		repo = layer.split(":")[2];
 		layername = "";
 		for(let i in split){
 			if(i > 2){
@@ -508,19 +530,22 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		layername = layername.substring(1);
 		
 		node = format.writeTransaction(layers[layer].created, layers[layer].modified, layers[layer].removed, {
-			featureNS: workspace,
-			featurePrefix: workspace,
-			featureType: layername 
+			"featureNS": workspace,
+			"featurePrefix": workspace,
+			"featureType": layername,
+			"version": "1.0.0"
 		});
 		
+		var param = {
+			"serverName": geoserver,
+			"workspace": workspace,
+			"wfstXml": new XMLSerializer().serializeToString(node)
+		};
 		$.ajax({
 			type: "POST",
-			url: CONTEXTPATH + "/geoserver/geoserverWFSTransaction.ajax",
-			data: {
-				serverName: geoserver,
-				wfstXml: new XMLSerializer().serializeToString(node)
-			},
-			contentType: 'text/xml',
+			url: this.wfstURL,
+			data: JSON.stringify(param),
+			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
 				console.log(result);

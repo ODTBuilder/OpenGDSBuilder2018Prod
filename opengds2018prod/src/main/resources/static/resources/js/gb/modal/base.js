@@ -13,6 +13,9 @@
  *            obj.height - 모달의 높이 (픽셀)
  * @param {Boolean}
  *            obj.autoOpen - 선언과 동시에 표출 할 것인지 선택
+ * @param {Boolean}
+ *            obj.keep - 모달 element를 생성시 미리 body에 append한다. true시 append된
+ *            element를 css를 통해 보이거나 감춤, false시 open때마다 새롭게 body에 append한다.
  * @param {Function |
  *            String | DOM} obj.body - Modal 본문에 삽입될 내용
  * @param {Function |
@@ -27,6 +30,7 @@ gb.modal.Base = function(obj) {
 	this.title = options.title ? options.title : "";
 	this.width = options.width ? options.width : "auto";
 	this.height = options.height ? options.height : "auto";
+	this.keep = options.keep || false;
 	this.autoOpen = options.autoOpen ? true : false;
 	var span = $("<span>").html("&times;");
 	var btn = $("<button>").append(span).click(function() {
@@ -54,16 +58,13 @@ gb.modal.Base = function(obj) {
 		"z-Index" : "999"
 	}).append(this.modalHead).append(this.modalBody).append(this.modalFooter);
 
-	if (!$(".gb-modal-background")[0]) {
-		this.background = $("<div>").addClass("gb-modal-background");
+	this.background = $("<div>").addClass("gb-modal-background");
+	if (this.keep) {
+		$("body").append(this.modal);
 		$("body").append(this.background);
 	}
-	$("body").append(this.modal);
-
 	if (this.autoOpen) {
 		this.open();
-	} else {
-		this.close();
 	}
 };
 /**
@@ -127,7 +128,11 @@ gb.modal.Base.prototype.getModal = function() {
  * @method gb.modal.Base#open
  */
 gb.modal.Base.prototype.open = function() {
-	$(".gb-modal-background").css("display", "block");
+	if(!this.keep){
+		$("body").append(this.modal);
+		$("body").append(this.background);
+	}
+	this.background.css("display", "block");
 	this.modal.css("display", "block");
 	this.refreshPosition();
 };
@@ -137,8 +142,13 @@ gb.modal.Base.prototype.open = function() {
  * @method gb.modal.Base#close
  */
 gb.modal.Base.prototype.close = function() {
-	$(".gb-modal-background").css("display", "none");
-	$(this.modal).css("display", "none");
+	if(this.keep){
+		this.background.css("display", "none");
+		this.modal.css("display", "none");
+	} else {
+		this.background.detach();
+		this.modal.detach();
+	}
 };
 /**
  * 모달위치를 최신화한다.

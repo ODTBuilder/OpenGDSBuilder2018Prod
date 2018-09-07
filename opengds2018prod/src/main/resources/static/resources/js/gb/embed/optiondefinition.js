@@ -18,6 +18,14 @@ gb.embed.OptionDefinition = function(obj) {
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
 	this.translation = {
+		"validItemChgMsg" : {
+			"ko" : "[검수 항목 정의]가 변경 되었습니다.",
+			"en" : "[Validation Item Definition] has been changed."
+		},
+		"borderLayerMsg" : {
+			"ko" : "도곽선으로 사용할 레이어 코드를 선택하세요.",
+			"en" : "Choose layer to be used as border layer"
+		},
 		"borderLayer" : {
 			"ko" : "도곽선 설정",
 			"en" : "Border Layer"
@@ -56,7 +64,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"selfEntity" : {
 			"ko" : "단독 존재 오류",
-			"en" : "Overlaping features"
+			"en" : "Overlapping features"
 		},
 		"outBoundary" : {
 			"ko" : "경계 초과 오류",
@@ -64,15 +72,15 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"pointDuplicated" : {
 			"ko" : "중복점 오류",
-			"en" : "Duplicated point"
+			"en" : "Duplicated points"
 		},
 		"smallLength" : {
 			"ko" : "허용 범위 이하 길이",
-			"en" : "Segments under the length tolerance limit"
+			"en" : "Segments under length tolerance limit"
 		},
 		"smallArea" : {
 			"ko" : "허용 범위 이하 면적",
-			"en" : "Areas under the tolerance limit"
+			"en" : "Areas under tolerance limit"
 		},
 		"conIntersected" : {
 			"ko" : "등고선 교차 오류",
@@ -88,7 +96,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"zValueAmbiguous" : {
 			"ko" : "고도값 오류",
-			"en" : "Altitude Error"
+			"en" : "Wrong elevation"
 		},
 		"uselessPoint" : {
 			"ko" : "등고선 직선화 미처리",
@@ -98,29 +106,25 @@ gb.embed.OptionDefinition = function(obj) {
 			"ko" : "기준점 초과",
 			"en" : "Feature crossing the sheet"
 		},
-		"uselessEntity" : {
-			"ko" : "불확실한 요소 사용 오류",
-			"en" : "Uncertain geometry"
-		},
 		"entityOpenMiss" : {
 			"ko" : "객체 폐합 오류",
 			"en" : "Unclosed feature"
 		},
 		"oneAcre" : {
 			"ko" : "지류계 오류",
-			"en" : "Farmland error(Total)"
+			"en" : "Mismatching farmland size (Total)"
 		},
 		"oneStage" : {
 			"ko" : "경지계 오류",
-			"en" : "Farmland error(Part)"
+			"en" : "Excluded farmland (Part)"
 		},
 		"symbolOut" : {
 			"ko" : "객체 포함 오류",
-			"en" : "Symbol crossing the limit"
+			"en" : "Symbol misplacement"
 		},
 		"buildingSiteMiss" : {
 			"ko" : "건물 부지 오류",
-			"en" : "Uncertain building site"
+			"en" : "Land and facility mismatch"
 		},
 		"boundaryMiss" : {
 			"ko" : "경계 누락 오류",
@@ -132,11 +136,11 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"entityInHole" : {
 			"ko" : "홀 중복 오류",
-			"en" : "Erroneus entity in hole"
+			"en" : "Hole with entity"
 		},
 		"holeMisplacement" : {
 			"ko" : "홀 존재 오류",
-			"en" : "Misplaced hole"
+			"en" : "Hole misplacement"
 		},
 		"linearDisconnection" : {
 			"ko" : "선형 단락 오류",
@@ -144,19 +148,19 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"multiPart" : {
 			"ko" : "멀티 파트 오류",
-			"en" : "Multi part"
+			"en" : "Selection of wrong multiple parts"
 		},
 		"bridgeName" : {
 			"ko" : "교량명 오류",
-			"en" : "Bridge name error"
+			"en" : "Wrong bridge name"
 		},
 		"adminMiss" : {
 			"ko" : "행정 경계 오류",
-			"en" : "Administrative boundary error"
+			"en" : "Administrative boundary mismatch"
 		},
 		"numericalValue" : {
 			"ko" : "수치값 오류",
-			"en" : "Erroneous numerical value"
+			"en" : "Wrong numerical value"
 		},
 		"ufidMiss" : {
 			"ko" : "UFID 오류",
@@ -164,19 +168,19 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"refZValueMiss" : {
 			"ko" : "인접 요소 고도값 오류",
-			"en" : "Altitude error of adjacent feature"
+			"en" : "Wrong elevation of adjacent feature"
 		},
 		"uavrgdph10" : {
 			"ko" : "평균 심도 오류(정위치)",
-			"en" : "Mean depth error(Graphic) (Underground)"
+			"en" : "Wrong mean depth(Graphic) (Underground)"
 		},
 		"uavrgdph20" : {
 			"ko" : "평균 심도 오류(구조화)",
-			"en" : "Mean depth error(Attribute) (Underground)"
+			"en" : "Wrong mean depth(Attribute) (Underground)"
 		},
 		"uleaderline" : {
 			"ko" : "지시선 교차 오류",
-			"en" : "Leader intersection (Underground)"
+			"en" : "Leader line overlapping (Underground)"
 		},
 		"uNodeMiss" : {
 			"ko" : "시설물 선형 노드 오류",
@@ -184,7 +188,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uSymbolDirection" : {
 			"ko" : "시설물 심볼 방향 오류",
-			"en" : "Uncertain direction of symbol (Underground)"
+			"en" : "Mismatching direction of symbol (Underground)"
 		},
 		"uSymbolInLine" : {
 			"ko" : "선형내 심볼 미존재 오류",
@@ -192,7 +196,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uLineCross" : {
 			"ko" : "관로 상하월 오류",
-			"en" : "Pipe crossing error (Underground)"
+			"en" : "Crossing pipes (Underground)"
 		},
 		"uSymbolsDistance" : {
 			"ko" : "심볼 간격 오류",
@@ -200,15 +204,15 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"uSymbolOut" : {
 			"ko" : "심볼 단독 존재 오류",
-			"en" : "Symbol misplaced (Underground)"
+			"en" : "Symbol misplacement (Underground)"
 		},
 		"fCodeLogicalAttribute" : {
 			"ko" : "F Code 오류",
-			"en" : "F Code error (Forest)"
+			"en" : "Wrong F Code (Forest)"
 		},
 		"fLabelLogicalAttribute" : {
 			"ko" : "Label 오류",
-			"en" : "F Label error (Forest)"
+			"en" : "Wrong F Label (Forest)"
 		},
 		"valItemSetting" : {
 			"ko" : "검수 항목 설정",
@@ -228,7 +232,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"simpleCheck" : {
 			"ko" : "검수 수행(세부 설정 불필요)",
-			"en" : "Perform this item"
+			"en" : "Run"
 		},
 		"attrValidation" : {
 			"ko" : "속성 검수",
@@ -300,15 +304,16 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"attrNameEx" : {
 			"ko" : "속성명 EX) 재질",
-			"en" : "Attribute name EX) material"
+			"en" : ""
+		// "en" : "Attribute name EX) material"
 		},
 		"acceptVal" : {
 			"ko" : "허용값",
 			"en" : "Acceptable values"
 		},
 		"acceptValEx" : {
-			"ko" : "허용값들을 콤마(,)로 구분하여 입력 EX) 1,2,3",
-			"en" : "Enter acceptable values separated by commas (,) EX) 1,2,3"
+			"ko" : "허용값들을 쉼표로 구분하여 입력 ex) 1,2,3",
+			"en" : "Enter acceptable values separated by commas. ex) 1,2,3"
 		},
 		"figure" : {
 			"ko" : "수치",
@@ -316,7 +321,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"figureInterEx" : {
 			"ko" : "숫자형 기준값",
-			"en" : "Numeric type reference value"
+			"en" : "Numeric value"
 		},
 		"condition" : {
 			"ko" : "조건",
@@ -348,7 +353,7 @@ gb.embed.OptionDefinition = function(obj) {
 		},
 		"detailGuide" : {
 			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
-			"en" : "Add a new layer code, then enter the detail figure."
+			"en" : "Add a new layer code, then enter details."
 		},
 		"selectCat" : {
 			"ko" : "분류 설정",
@@ -1368,57 +1373,6 @@ gb.embed.OptionDefinition = function(obj) {
 			},
 			"relation" : {
 				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UselessEntity" : {
-			"title" : this.translation.uselessEntity[this.locale],
-			"alias" : "UselessEntity",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
-					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
-			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
 				"filter" : {
 					"code" : false,
 					"key" : false,
@@ -2869,7 +2823,8 @@ gb.embed.OptionDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				var obj = JSON.parse(reader.result);
+				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
 				that.setStructure(obj);
 				that.updateStructure();
 			});
@@ -4565,12 +4520,21 @@ gb.embed.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
-		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g, '');
+		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
+		// attrKey =
+		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+		// '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
+		// attrValues =
+		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+		// '').split(",");
 	}
 	// 수치
 	var number = null;
@@ -4982,12 +4946,21 @@ gb.embed.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 	// 속성명
 	var attrKey = null;
 	if (!$(sel).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
-		attrKey = $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g, '');
+		attrKey = $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
+		// attrKey =
+		// $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+		// '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(sel).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
-		attrValues = $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+		// attrValues =
+		// $(sel).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+		// '').split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
 	}
 	// 수치
 	var number = null;
@@ -5399,12 +5372,21 @@ gb.embed.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("diabled")) {
-		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g, '');
+		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
+		// attrKey =
+		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+		// '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+		// attrValues =
+		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+		// '').split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
 	}
 	// 수치
 	var number = null;
@@ -5816,12 +5798,19 @@ gb.embed.OptionDefinition.prototype.inputFigureKey = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).prop("disabled")) {
-		attrKey = $(inp).val().replace(/(\s*)/g, '');
+		attrKey = $(inp).val().trim();
+		// attrKey = $(inp).val().replace(/(\s*)/g, '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
 		attrValues = $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g, '').split(",");
+		// attrValues =
+		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+		// '').split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
 	}
 	// 수치
 	var number = null;
@@ -6401,12 +6390,19 @@ gb.embed.OptionDefinition.prototype.inputFigureValues = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
-		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g, '');
+		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().trim();
+		// attrKey =
+		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+		// '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).prop("disabled")) {
-		attrValues = $(inp).val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(inp).val().split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
+		// attrValues = $(inp).val().replace(/(\s*)/g, '').split(",");
 	}
 	// 수치
 	var number = null;
@@ -6818,12 +6814,21 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").prop("disabled")) {
-		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val().replace(/(\s*)/g, '');
+		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val().trim();
+		// attrKey =
+		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val().replace(/(\s*)/g,
+		// '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+		// attrValues =
+		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().replace(/(\s*)/g,
+		// '').split(",");
+		for (var i = 0; i < attrValues.length; i++) {
+			attrValues[i] = attrValues[i].trim();
+		}
 	}
 
 	var sec = false;
@@ -6975,15 +6980,27 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 												strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"][filterIdx]["key"] = attrKey;
 												// 허용값 입력
 												strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"][filterIdx]["values"] = $(
-														inp).val().replace(/(\s*)/g, '').split(",");
+														inp).val().split(",");
+												var attrValues = strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"][filterIdx]["values"];
+												for (var z = 0; z < attrValues.length; z++) {
+													attrValues[z] = attrValues[z].trim();
+												}
+												// strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"][filterIdx]["values"]
+												// = $(
+												// inp).val().replace(/(\s*)/g,
+												// '').split(",");
 											} else {
 												// 레이어 코드 입력
 												strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["code"] = layerCode;
 												// 애트리뷰트 키가 배열이 아닐때
 												var obj = {
 													"key" : attrKey,
-													"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+													"values" : $(inp).split(",")
 												};
+												var attrValues = obj["values"];
+												for (var z = 0; z < attrValues.length; z++) {
+													attrValues[z] = attrValues[z].trim();
+												}
 												strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"] = [ obj ];
 											}
 										}
@@ -6996,9 +7013,22 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 												"code" : layerCode,
 												"attribute" : [ {
 													"key" : attrKey,
-													"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+													"values" : $(inp).val().split(",")
 												} ]
 											};
+											var attrValues = obj.attribute.values;
+											for (var z = 0; z < attrValues.length; z++) {
+												attrValues[z] = attrValues[z].trim();
+											}
+											// var obj = {
+											// "code" : layerCode,
+											// "attribute" : [ {
+											// "key" : attrKey,
+											// "values" :
+											// $(inp).val().replace(/(\s*)/g,
+											// '').split(",")
+											// } ]
+											// };
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"] = [ obj ];
 										}
 									}
@@ -7011,9 +7041,16 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 											"code" : layerCode,
 											"attribute" : [ {
 												"key" : attrKey,
-												"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+												"values" : $(inp).val().split(",")
+											// "values" :
+											// $(inp).val().replace(/(\s*)/g,
+											// '').split(",")
 											} ]
 										};
+										var attrValues = obj.attribute.values;
+										for (var z = 0; z < attrValues.length; z++) {
+											attrValues[z] = attrValues[z].trim();
+										}
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"] = [ obj ];
 									}
 								}
@@ -7044,9 +7081,16 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 										"code" : layerCode,
 										"attribute" : [ {
 											"key" : attrKey,
-											"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+											"values" : $(inp).val().split(",")
+										// "values" :
+										// $(inp).val().replace(/(\s*)/g,
+										// '').split(",")
 										} ]
 									};
+									var attrValues = obj.attribute.values;
+									for (var z = 0; z < attrValues.length; z++) {
+										attrValues[z] = attrValues[z].trim();
+									}
 									var filterObj = [ obj ];
 									var optionObj = {
 										"filter" : filterObj
@@ -7083,9 +7127,15 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 									"code" : layerCode,
 									"attribute" : [ {
 										"key" : attrKey,
-										"values" : $(inp).val().replace(/(\s*)/g, '').split(",")
+										"values" : $(inp).val().split(",")
+									// "values" : $(inp).val().replace(/(\s*)/g,
+									// '').split(",")
 									} ]
 								};
+								var attrValues = obj.attribute.values;
+								for (var z = 0; z < attrValues.length; z++) {
+									attrValues[z] = attrValues[z].trim();
+								}
 								var filterObj = [ obj ];
 								var optionObj = {
 									"filter" : filterObj
@@ -7118,12 +7168,19 @@ gb.embed.OptionDefinition.prototype.inputFilterKey = function(inp) {
 	// 속성명
 	var attrKey = null;
 	if (!$(inp).prop("disabled")) {
-		attrKey = $(inp).val().replace(/(\s*)/g, '');
+		attrKey = $(inp).val().trim();
+		// attrKey = $(inp).val().replace(/(\s*)/g, '');
 	}
 	// 허용값
 	var attrValues = null;
 	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().replace(/(\s*)/g, '').split(",");
+		attrValues = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+		// attrValues =
+		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val().replace(/(\s*)/g,
+		// '').split(",");
+		for (var z = 0; z < attrValues.length; z++) {
+			attrValues[z] = attrValues[z].trim();
+		}
 	}
 	var sec = false;
 	if (this.nowDetailCategory !== undefined) {
@@ -8922,7 +8979,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 	$(this.optionArea).empty();
 
 	if (this.nowOption.alias === "BorderLayer" && !sec) {
-		this.setMessage("도곽선으로 사용할 레이어 코드를 선택하세요.");
+		this.setMessage(this.translation.borderLayerMsg[this.locale]);
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-border");
 		var option = $("<option>").attr("geom", "none").text(this.translation.notSet[this.locale]);
 		$(codeSelect).append(option);
@@ -10435,7 +10492,7 @@ gb.embed.OptionDefinition.prototype.setStructure = function(strc) {
 	}
 	if (isOK) {
 		this.structure = strc;
-		this.setMessagePopup("success", " [검수 항목 정의]가 변경 되었습니다.");
+		this.setMessagePopup("success", " " + this.translation.validItemChgMsg[this.locale]);
 	}
 };
 

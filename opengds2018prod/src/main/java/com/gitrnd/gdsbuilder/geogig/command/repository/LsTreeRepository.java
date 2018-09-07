@@ -31,6 +31,7 @@ public class LsTreeRepository {
 
 	private static final Log logger = LogFactory.getLog(LsTreeRepository.class);
 
+	private static final String geogig = "geogig";
 	private static final String command = "ls-tree";
 	private static final String param_path = "path="; // optional
 
@@ -39,9 +40,6 @@ public class LsTreeRepository {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		factory.setReadTimeout(5000);
-		factory.setConnectTimeout(3000);
-
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
 		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
@@ -56,7 +54,7 @@ public class LsTreeRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
 
 		if (path != null) {
 			url += "?" + param_path + path;

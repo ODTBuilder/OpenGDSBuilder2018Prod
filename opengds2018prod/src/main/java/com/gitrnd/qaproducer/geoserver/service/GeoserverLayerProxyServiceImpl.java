@@ -178,12 +178,11 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
-
 			
 			if (key.equals("version")) {
 				version = value;
 			} else if (key.equals("typeName")) {
-				typeName = value;
+				typeName = workspace+":"+value;
 			} else if (key.equals("bbox")) {
 				bbox = value;
 			} else if (key.equals("outputformat")) {
@@ -233,10 +232,10 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		String query_layers = "";
 		EnGetFeatureInfoFormat info_format = null;
 		int feature_count = 0;
-		int x = 0;
-		int y = 0;
-		int i = 0; //1.3.0 버전일경우 x->i
-		int j = 0; //1.3.0 버전일경우 y->j
+		Integer x = null;
+		Integer y = null;
+		Integer i = null; //1.3.0 버전일경우 x->i
+		Integer j = null; //1.3.0 버전일경우 y->j
 		String exceptions = "application/vnd.ogc.se_xml";
 
 		Enumeration paramNames = request.getParameterNames();
@@ -271,13 +270,36 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 			} else if (key.toLowerCase().equals("feature_count")) {
 				feature_count = Integer.parseInt(value);
 			} else if (key.toLowerCase().equals("x")) {
-				x = Integer.parseInt(value);
+				try{
+					x = Integer.parseInt(value);
+				}catch (Exception e) {
+					// TODO: handle exception
+					x=null;
+				}
 			} else if (key.toLowerCase().equals("y")) {
-				y = Integer.parseInt(value);
+				try {
+					y = Integer.parseInt(value);
+				} catch (Exception e) {
+					// TODO: handle exception
+					y = null;
+				}
+				
 			} else if (key.toLowerCase().equals("i")) {
-				i = Integer.parseInt(value);
+				try {
+					i = Integer.parseInt(value);
+				} catch (Exception e) {
+					// TODO: handle exception
+					i=null;
+				}
+				
 			} else if (key.toLowerCase().equals("j")) {
-				j = Integer.parseInt(value);
+				try {
+					j = Integer.parseInt(value);
+				} catch (Exception e) {
+					// TODO: handle exception
+					j=null;
+				}
+				
 			}else if (key.toLowerCase().equals("exceptions")) {
 				exceptions = value;
 			}

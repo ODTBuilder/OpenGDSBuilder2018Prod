@@ -29,7 +29,6 @@ public class ValidationResultService {
 
 	@Transactional(readOnly = true)
 	public LinkedList<ValidationResult> retrieveValidationResultByUidx(int idx) {
-
 		return validationResultRepository.retrieveValidationResultByUidx(idx);
 	}
 

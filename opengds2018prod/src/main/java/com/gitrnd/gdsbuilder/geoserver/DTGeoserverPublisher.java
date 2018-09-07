@@ -203,6 +203,7 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher
 	  StringBuilder postUrl = new StringBuilder(restURL).append("/wfs");
 	  String configuredResult = HTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
               this.gspass);
+	  
       boolean requestFlag = configuredResult != null;
 
       if (!requestFlag) {

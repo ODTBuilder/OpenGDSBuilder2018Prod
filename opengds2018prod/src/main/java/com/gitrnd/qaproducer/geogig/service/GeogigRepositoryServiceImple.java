@@ -5,6 +5,8 @@ package com.gitrnd.qaproducer.geogig.service;
 
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PullRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PushRepository;
@@ -12,6 +14,8 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.remote.AddRemoteRepositor
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.RemoveRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
@@ -24,6 +28,32 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
  */
 @Service("reposService")
 public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
+
+	@Override
+	public GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		AddRepository addRepos = new AddRepository();
+		GeogigAdd geogigAdd = addRepos.executeCommand(url, user, pw, repoName, transactionId);
+		return geogigAdd;
+	}
+
+	@Override
+	public GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String message, String authorName, String authorEmail) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		CommitRepository commitRepos = new CommitRepository();
+		GeogigCommit geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message,
+				authorName, authorEmail);
+		return geogigCommit;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -174,4 +204,5 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 
 		return geogigFetch;
 	}
+
 }

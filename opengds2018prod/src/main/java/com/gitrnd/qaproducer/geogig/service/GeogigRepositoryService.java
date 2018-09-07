@@ -3,6 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
@@ -14,6 +16,26 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
  *
  */
 public interface GeogigRepositoryService {
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @return
+	 */
+	GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId);
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @param message
+	 * @param authorName
+	 * @param authorEmail
+	 * @return
+	 */
+	GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String message, String authorName, String authorEmail);
 
 	/**
 	 * @param geoserverManager

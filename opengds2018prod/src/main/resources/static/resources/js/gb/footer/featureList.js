@@ -82,7 +82,7 @@ if (!gb.footer)
 			that.onResize();
 		});
 		
-		$("#" + this.tableId).on("click", "tr", function(){
+		$("#" + this.tableId + this.countId).on("click", "tr", function(){
 			var data = that.dataTable.row(this).data();
 			//that.map.getView().fit(data.geometry.getExtent(), that.map.getSize());
 			//that.map.getView().setZoom(14);
@@ -102,7 +102,7 @@ if (!gb.footer)
 	gb.footer.FeatureList.prototype.createTableElement = function(){
 		this.removeTableElement();
 		
-		var num = this.countId++;
+		var num = ++this.countId;
 		
 		var table = $("<table>").attr("id", this.tableId + num).css({
 			width: "100%"
@@ -157,12 +157,12 @@ if (!gb.footer)
 	 */
 	gb.footer.FeatureList.prototype.resizeTbody = function(){
 		var a = this.footerTag.find(".footer-content").height();
-		var b = $("#" + this.tableId + "_filter").height();
-		var c = $("#" + this.tableId + "_wrapper .dataTables_scrollHead").height();
+		var b = $("#" + this.tableId + this.countId + "_wrapper").find(".dt-buttons").height();
+		var c = $("#" + this.tableId + this.countId + "_wrapper .dataTables_scrollHead").height();
 		
 		var height = a - b - c;
 		
-		this.footerTag.find(".footer-content #" + this.tableId + "_wrapper .dataTables_scrollBody").css("max-height", height + "px");
+		this.footerTag.find(".footer-content #" + this.tableId + this.countId + "_wrapper .dataTables_scrollBody").css("max-height", height + "px");
 	}
 	
 	/**
@@ -196,6 +196,7 @@ if (!gb.footer)
 			scrollCollapse: true,
 			dom: "Bfrtip",
 			select: "single",
+			responsive: true,
 			altEditor: true,
 			buttons: [{
 				text: "Add",

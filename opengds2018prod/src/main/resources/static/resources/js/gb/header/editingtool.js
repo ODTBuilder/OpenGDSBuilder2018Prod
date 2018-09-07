@@ -2158,15 +2158,14 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 					"typeName" : layername,
 					"bbox" : extent.join(","),
 					"outputformat" : "JSONP",
-					"format_options" : "callback:" + treeid
+					"format_options" : "callback:" + layername
 				};
 				
 				$.ajax({
 					url : url,
-					method : "POST",
 					data : params,
-					dataType : 'jsonp',
-					jsonpCallback : treeid,
+					dataType : "JSONP",
+					jsonpCallback : layername,
 					success : function(data) {
 						var features = vectorSource.getFormat().readFeatures(data)
 						vectorSource.addFeatures(features);

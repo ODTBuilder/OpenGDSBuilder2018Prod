@@ -7,7 +7,6 @@ import org.json.simple.JSONObject;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 

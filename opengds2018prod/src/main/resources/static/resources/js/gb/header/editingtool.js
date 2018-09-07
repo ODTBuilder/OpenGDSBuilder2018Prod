@@ -203,7 +203,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "trans",
+			content: "rotate",
 			icon: "fas fa-object-ungroup fa-lg",
 			clickEvent: function(){
 				console.log("rotate");
@@ -260,7 +260,7 @@ gb.header.EditingTool = function(obj) {
 		"select": "selectBtn",
 		"move": "moveBtn",
 		"draw": "drawBtn",
-		"multi": "rotateBtn",
+		"transform": "rotateBtn",
 		"modify": "modiBtn",
 		"delete": "delBtn"
 	}

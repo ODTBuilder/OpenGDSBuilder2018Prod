@@ -38,11 +38,11 @@ public class GeogigFeatureController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,
-			@RequestParam(value = "oldTreeish", required = false) String oldTreeish,
-			@RequestParam(value = "newTreeish", required = false) String newTreeish) {
+			@RequestParam(value = "newIndex", required = false) int newIndex,
+			@RequestParam(value = "oldIndex", required = false) int oldIndex) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureDiff(geoserverManager, repoName, path, oldTreeish, newTreeish);
+		return featureService.featureDiff(geoserverManager, repoName, path, newIndex, oldIndex);
 	}
 
 }

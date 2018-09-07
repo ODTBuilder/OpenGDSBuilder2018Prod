@@ -74,9 +74,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs){
 		boolean puFlag = false;
 		if(dtGeoManager!=null){
-			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
-			
 			try {
 				puFlag = dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs);
 			} catch (FileNotFoundException e) {

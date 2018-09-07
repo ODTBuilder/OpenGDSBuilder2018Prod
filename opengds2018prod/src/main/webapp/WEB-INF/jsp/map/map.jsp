@@ -118,7 +118,7 @@ html {
 					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> Save
 				</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" id="savePart">Save</a></li>
+						<li><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges">Save</a></li>
 						<li><a href="#" id="saveAll">Save All</a></li>
 					</ul></li>
 				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> Edit
@@ -231,6 +231,10 @@ html {
 			id : "feature_id",
 			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
+		
+		$("#saveChangesBtn").click(function(){
+			frecord.sendWFSTTransaction();
+		});
 
 		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
 		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
@@ -329,19 +333,28 @@ html {
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
+			featureList.updateTable(data.selected[0]);
+		});
+
+		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
 			var layer;
-			for (i = 0, j = data.selected.length; i < j; i++) {
-				layer = data.instance.get_LayerById(data.selected[i]);
+			var arr = data.node.children_d;
+			
+			for(let i = 0; i < arr.length; i++){
+				layer = data.instance.get_LayerById(arr[i]);
+				if(layer instanceof ol.layer.Group){
+					continue;
+				}
 				featureList.updateFeatureList({
 					url : wfsURL,
+					treeid : arr[i],
 					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 					layerName : layer.get('name'),
-					exceptKeys : [ 'geometry'/*, 'feature_id', 'ufid' */]
+					exceptKeys : ['geometry']
 				});
 			}
 		});
-
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),

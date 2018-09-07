@@ -31,15 +31,22 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 	}
 
 	@Override
-	public GeogigDiff diffLayer(DTGeoserverManager geoserverManager, String repoName, String oldObjectId,
-			String newObjectId, String layerName) {
+	public GeogigDiff diffLayer(DTGeoserverManager geoserverManager, String repoName, int oldIndex, int newIndex,
+			String layerName) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
+		String oldTreeish = "HEAD";
+		String newTreeish = "HEAD";
+
+		if (newIndex > 0) {
+			newTreeish += "~" + newIndex;
+		}
+		oldTreeish += "~" + oldIndex;
 		DiffRepository diffRepos = new DiffRepository();
-		GeogigDiff diff = diffRepos.executeCommand(url, user, pw, repoName, oldObjectId, newObjectId, layerName);
+		GeogigDiff diff = diffRepos.executeCommand(url, user, pw, repoName, oldTreeish, newTreeish, layerName);
 		return diff;
 	}
 }

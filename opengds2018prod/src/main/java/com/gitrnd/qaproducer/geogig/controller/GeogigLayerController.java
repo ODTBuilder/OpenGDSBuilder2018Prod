@@ -49,12 +49,12 @@ public class GeogigLayerController extends AbstractController {
 	public GeogigDiff diffLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "newObjectId", required = false) String newObjectId,
-			@RequestParam(value = "oldObjectId", required = false) String oldObjectId,
+			@RequestParam(value = "newIndex", required = false) int newIndex,
+			@RequestParam(value = "oldIndex", required = false) int oldIndex,
 			@RequestParam(value = "layerName", required = false) String layerName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return layerService.diffLayer(geoserverManager, repoName, newObjectId, oldObjectId, layerName);
+		return layerService.diffLayer(geoserverManager, repoName, newIndex, oldIndex, layerName);
 	}
 
 }

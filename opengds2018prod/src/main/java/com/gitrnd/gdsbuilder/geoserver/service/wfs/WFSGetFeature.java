@@ -158,7 +158,7 @@ public class WFSGetFeature {
 			}
 			if(!this.typeName.trim().equals("")){
 				urlBuffer.append("&");
-				urlBuffer.append("typeName="+typeName);
+				urlBuffer.append("typeNames="+typeName);
 			}
 			if(this.outputformat!=null){
 				urlBuffer.append("&");

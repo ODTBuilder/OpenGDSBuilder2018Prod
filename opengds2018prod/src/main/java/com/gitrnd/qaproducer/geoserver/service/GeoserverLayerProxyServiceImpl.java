@@ -178,12 +178,11 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
 			String value = request.getParameter(key);
-
 			
 			if (key.equals("version")) {
 				version = value;
 			} else if (key.equals("typeName")) {
-				typeName = value;
+				typeName = workspace+":"+value;
 			} else if (key.equals("bbox")) {
 				bbox = value;
 			} else if (key.equals("outputformat")) {

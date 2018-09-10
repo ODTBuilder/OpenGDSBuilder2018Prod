@@ -517,7 +517,8 @@ gb.versioning.Repository.prototype.beginTransaction = function(serverName, repoN
  * @return {Object} 트랜잭션 아이디 객체
  * 
  */
-gb.versioning.Repository.prototype.endTransaction = function(serverName, repoName, tid, callback) {
+gb.versioning.Repository.prototype.endTransaction = function(serverName, repoName, tid, modal) {
+	var that = this;
 	var params = {
 		"serverName" : serverName,
 		"repoName" : repoName,
@@ -548,6 +549,15 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
 		},
 		success : function(data) {
 			console.log(data);
+			if (data.success === "true") {
+				var repo = that.getNowRepository();
+				if (repo.text === repoName) {
+					modal.close();
+					that.getJSTree().removeTransactionId(repo.id);
+					that.transitPage("server");
+					that.refreshList();
+				}
+			}
 		}
 	});
 };
@@ -963,7 +973,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					deleteModal.close();
 				});
 				$(okBtn).click(function() {
-					that.endTransaction(server, repo, tid);
+					that.endTransaction(server, repo, tid, deleteModal);
 				});
 			}
 		}

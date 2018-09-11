@@ -3,17 +3,39 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.qaproducer.common.security.LoginUser;
 
 /**
  * @author GIT
  *
  */
 public interface GeogigRepositoryService {
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @return
+	 */
+	GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId);
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param transactionId
+	 * @param message
+	 * @param loginUser
+	 * @return
+	 */
+	GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String message, LoginUser loginUser);
 
 	/**
 	 * @param geoserverManager
@@ -58,12 +80,11 @@ public interface GeogigRepositoryService {
 	 * @param remoteName
 	 * @param branchName
 	 * @param remoteBranchName
-	 * @param authorName
-	 * @param authorEmail
+	 * @param user
 	 * @return
 	 */
 	GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String remoteName, String branchName, String remoteBranchName, String authorName, String authorEmail);
+			String remoteName, String branchName, String remoteBranchName, LoginUser user);
 
 	/**
 	 * @param geoserverManager

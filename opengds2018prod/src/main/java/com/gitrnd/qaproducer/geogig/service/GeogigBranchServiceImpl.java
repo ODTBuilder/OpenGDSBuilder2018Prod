@@ -9,15 +9,21 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.MergeBranch;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
@@ -206,4 +212,5 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 
 		return branch;
 	}
+
 }

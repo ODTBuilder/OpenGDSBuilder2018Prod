@@ -92,13 +92,11 @@ public class GeogigRepositoryController extends AbstractController {
 			@RequestParam(value = "branchName", required = false) String branchName,
 			@RequestParam(value = "remoteName", required = false) String remoteName,
 			@RequestParam(value = "remoteBranchName", required = false) String remoteBranchName,
-			@RequestParam(value = "authorName", required = false) String authorName,
-			@RequestParam(value = "authorEmail", required = false) String authorEmail,
 			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.pullRepository(geoserverManager, repoName, transactionId, remoteName, branchName,
-				remoteBranchName, authorName, authorEmail);
+				remoteBranchName, loginUser);
 	}
 
 	@RequestMapping(value = "/pushRepository.do", method = RequestMethod.POST)

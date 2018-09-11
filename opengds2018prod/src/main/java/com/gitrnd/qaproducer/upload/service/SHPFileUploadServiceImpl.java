@@ -57,15 +57,14 @@ public class SHPFileUploadServiceImpl implements SHPFileUploadService {
 					String fFullName = file.getName();
 					
 					int Idx = fFullName.lastIndexOf(".");
-					String _fileName = fFullName.substring(0, Idx);
+					String _fileName = fFullName.substring(0, Idx).toLowerCase();
 					
-					try {
-						List<String> filePaths = fileNames.get(_fileName);
+					List<String> filePaths = fileNames.get(_fileName);
+					if(filePaths==null){
+						filePaths = new ArrayList<String>();
 						filePaths.add(filePath);
 						fileNames.put(_fileName, filePaths);
-					} catch (NullPointerException e2) {
-						// TODO: handle exception
-						List<String> filePaths = new ArrayList<String>();
+					}else{
 						filePaths.add(filePath);
 						fileNames.put(_fileName, filePaths);
 					}

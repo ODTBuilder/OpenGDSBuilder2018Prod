@@ -23,6 +23,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
+import com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService;
 import com.gitrnd.qaproducer.geogig.service.GeogigTransactionService;
 
 /**
@@ -38,8 +39,30 @@ public class GeogigBranchController extends AbstractController {
 	GeogigTransactionService transactionService;
 
 	@Autowired
+	@Qualifier("reposService")
+	GeogigRepositoryService reposService;
+
+	@Autowired
 	@Qualifier("branchService")
 	GeogigBranchService branchService;
+
+//	@RequestMapping(value = "/commitBranch.do", method = RequestMethod.POST)
+//	@ResponseBody
+//	public GeogigCommit commitBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+//			@RequestParam(value = "serverName", required = false) String serverName,
+//			@RequestParam(value = "repoName", required = false) String repoName,
+//			@RequestParam(value = "transactionId", required = false) String transactionId,
+//			@RequestParam(value = "message", required = false) String message,
+//			@RequestParam(value = "authorName", required = false) String authorName,
+//			@RequestParam(value = "authorEmail", required = false) String authorEmail) {
+//
+//		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+//		reposService.addRepository(geoserverManager, repoName, transactionId);
+//		GeogigCommit commit = reposService.commitRepository(geoserverManager, repoName, transactionId, message,
+//				authorName, authorEmail);
+//		transactionService.endTransaction(geoserverManager, repoName, transactionId);
+//		return commit;
+//	}
 
 	@RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
 	@ResponseBody

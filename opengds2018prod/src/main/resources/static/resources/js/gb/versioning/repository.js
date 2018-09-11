@@ -202,10 +202,6 @@ gb.versioning.Repository = function(obj) {
 		"width" : "100%"
 	}).append(this.treeArea);
 	this.serverArea = $("<div>").append(head).append(body);
-	var backIcon = $("<i>").addClass("fas").addClass("fa-arrow-left");
-	this.backToTreeBtn = $("<button>").addClass("gb-button-clear").append(backIcon).click(function() {
-		that.transitPage("server");
-	});
 
 	var refRemoteIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refreshRemoteTreeBtn = $("<button>").addClass("gb-button-clear").append(refRemoteIcon).click(function() {
@@ -220,8 +216,14 @@ gb.versioning.Repository = function(obj) {
 		"float" : 'right'
 	});
 	this.remoteTitle = $("<span>");
-	this.remoteHead = $("<div>").addClass("gb-article-head").append(this.backToTreeBtn).append(this.remoteTitle).append(this.addRemoteBtn)
-			.append(this.refreshRemoteTreeBtn);
+
+	var backIcon = $("<i>").addClass("fas").addClass("fa-arrow-left");
+	this.backToTreeBtn = $("<button>").addClass("gb-button-clear").append(backIcon).append(" ").append(this.remoteTitle).click(function() {
+		that.transitPage("server");
+	});
+
+	this.remoteHead = $("<div>").addClass("gb-article-head").append(this.backToTreeBtn).append(this.addRemoteBtn).append(
+			this.refreshRemoteTreeBtn);
 	this.remoteTree = $("<div>");
 	$(this.remoteTree).jstree({
 		"core" : {

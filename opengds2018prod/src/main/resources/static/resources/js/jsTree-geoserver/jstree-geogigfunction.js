@@ -164,6 +164,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "branch") {
+						var states = Object.keys(node.state);
 
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
 							"display" : "inline-block"
@@ -199,6 +200,32 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);
 							console.log("hi its merge");
 						});
+						var parent = that.get_node(node.parent);
+
+						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
+								|| states.indexOf("unstaged") !== -1) {
+							$(checkoutBtn).prop("disabled", true);
+							$(pullBtn).prop("disabled", false);
+							$(pushBtn).prop("disabled", false);
+							$(mergeBtn).prop("disabled", false);
+						} else {
+							$(checkoutBtn).prop("disabled", false);
+							$(pullBtn).prop("disabled", true);
+							$(pushBtn).prop("disabled", true);
+							$(mergeBtn).prop("disabled", true);
+						}
+
+						if (parent.children.length === 1 && parent.children[0] === node.id) {
+							$(mergeBtn).prop("disabled", true);
+						} else if (parent.children.length > 1) {
+							if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
+									|| states.indexOf("unstaged") !== -1) {
+								$(mergeBtn).prop("disabled", false);
+							} else {
+								$(mergeBtn).prop("disabled", true);
+							}
+						}
+						
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(pullBtn).append(
 								pushBtn).append(mergeBtn);
 						var obj = this.get_node(node, true);

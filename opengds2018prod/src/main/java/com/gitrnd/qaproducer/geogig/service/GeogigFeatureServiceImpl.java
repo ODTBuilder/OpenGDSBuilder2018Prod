@@ -1,9 +1,12 @@
 package com.gitrnd.qaproducer.geogig.service;
 
+import org.springframework.stereotype.Service;
+
 import com.gitrnd.gdsbuilder.geogig.command.repository.FeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
+@Service("featureService")
 public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override

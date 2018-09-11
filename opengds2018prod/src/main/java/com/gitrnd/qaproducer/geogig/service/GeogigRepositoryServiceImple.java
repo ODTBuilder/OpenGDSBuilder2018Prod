@@ -3,6 +3,7 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import org.geotools.referencing.operation.projection.LambertConformalBelgium;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
@@ -21,6 +22,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.qaproducer.common.security.LoginUser;
 
 /**
  * @author GIT
@@ -43,11 +45,14 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 
 	@Override
 	public GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String message, String authorName, String authorEmail) {
+			String message, LoginUser loginUser) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
+
+		String authorName = loginUser.getUsername();
+		String authorEmail = loginUser.getEmail();
 
 		CommitRepository commitRepos = new CommitRepository();
 		GeogigCommit geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message,
@@ -150,11 +155,14 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String remoteName, String branchName, String remoteBranchName, String authorName, String authorEmail) {
+			String remoteName, String branchName, String remoteBranchName, LoginUser loginUser) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
+
+		String authorName = loginUser.getUsername();
+		String authorEmail = loginUser.getEmail();
 
 		PullRepository pull = new PullRepository();
 		GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,

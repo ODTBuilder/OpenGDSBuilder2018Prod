@@ -10,6 +10,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.qaproducer.common.security.LoginUser;
 
 /**
  * @author GIT
@@ -30,12 +31,11 @@ public interface GeogigRepositoryService {
 	 * @param repoName
 	 * @param transactionId
 	 * @param message
-	 * @param authorName
-	 * @param authorEmail
+	 * @param loginUser
 	 * @return
 	 */
 	GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String message, String authorName, String authorEmail);
+			String message, LoginUser loginUser);
 
 	/**
 	 * @param geoserverManager
@@ -80,12 +80,11 @@ public interface GeogigRepositoryService {
 	 * @param remoteName
 	 * @param branchName
 	 * @param remoteBranchName
-	 * @param authorName
-	 * @param authorEmail
+	 * @param user
 	 * @return
 	 */
 	GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String remoteName, String branchName, String remoteBranchName, String authorName, String authorEmail);
+			String remoteName, String branchName, String remoteBranchName, LoginUser user);
 
 	/**
 	 * @param geoserverManager

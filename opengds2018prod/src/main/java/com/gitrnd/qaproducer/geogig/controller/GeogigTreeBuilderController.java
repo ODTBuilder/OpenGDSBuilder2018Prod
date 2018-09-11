@@ -52,7 +52,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		EnGeogigRepositoryTreeType enType = null;
-
+		
 		if (type.equals(EnGeogigRepositoryTreeType.SERVER.getType())) {
 			enType = EnGeogigRepositoryTreeType.SERVER;
 		} else if (type.equals(EnGeogigRepositoryTreeType.REPOSITORY.getType())) {

@@ -400,6 +400,7 @@ gb.versioning.Repository.prototype.manageRemoteRepository = function(server, rep
  *            branch - 현재 브랜치
  */
 gb.versioning.Repository.prototype.manageMerge = function(server, repo, branch) {
+	var that = this;
 	$(this.geoserverNameVal).empty();
 	$(this.geoserverNameVal).text(server);
 
@@ -410,7 +411,23 @@ gb.versioning.Repository.prototype.manageMerge = function(server, repo, branch) 
 	$(this.cubNameVal).text(branch);
 
 	$(this.tabNameVal).empty();
-	this.getBranchList(server, repo, branch);
+	var callback = function(data) {
+		if (data.success === "true") {
+			var branches = data.localBranchList;
+			if (Array.isArray(branches)) {
+				for (var i = 0; i < branches.length; i++) {
+					var opt = $("<option>").text(branches[i].name);
+					if (branches[i].name === branch) {
+						$(opt).prop({
+							"disabled" : true
+						});
+					}
+					$(that.tabNameVal).append(opt);
+				}
+			}
+		}
+	};
+	this.getBranchList(server, repo, callback);
 	this.transitPage("merge");
 };
 
@@ -572,11 +589,12 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
  *            serverName - 등록한 서버 이름
  * @param {String}
  *            repoName - GeoGig repository 이름
+ * @param {Function}
+ *            callback - 콜백함수
  * @return {Object} 브랜치 리스트 목록
  * 
  */
-gb.versioning.Repository.prototype.getBranchList = function(serverName, repoName, branchName) {
-	var that = this;
+gb.versioning.Repository.prototype.getBranchList = function(serverName, repoName, callback) {
 	var params = {
 		"serverName" : serverName,
 		"repoName" : repoName
@@ -606,20 +624,7 @@ gb.versioning.Repository.prototype.getBranchList = function(serverName, repoName
 		},
 		success : function(data) {
 			console.log(data);
-			if (data.success === "true") {
-				var branches = data.localBranchList;
-				if (Array.isArray(branches)) {
-					for (var i = 0; i < branches.length; i++) {
-						var opt = $("<option>").text(branches[i].name);
-						if (branches[i].name === branchName) {
-							$(opt).prop({
-								"disabled" : true
-							});
-						}
-						$(that.tabNameVal).append(opt);
-					}
-				}
-			}
+			callback(data);
 		}
 	});
 };
@@ -1029,6 +1034,118 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 
 	var deleteModal = new gb.modal.Base({
 		"title" : "Delete remote repository",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		$.ajax({
+			url : checkURL,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : params,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					that.refreshRemoteList();
+					deleteModal.close();
+				}
+			}
+		});
+	});
+};
+
+/**
+ * pull request 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#pullRepositoryModal
+ * @param {String}
+ *            server - 작업 중인 서버 이름
+ * @param {String}
+ *            repo - 작업 중인 리포지토리 이름
+ * @param {String}
+ *            remote - 작업 중인 리모트 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getRemoveRemoteRepositoryURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	var reLabel = $("<div>").text("Remote");
+	this.reRepoSelect = $("<select>");
+	var reRepo = $("<div>").append(this.reRepoSelect);
+	this.reBranchSelect = $("<select>");
+	var reBranch = $("<div>").append(this.reBranchSelect);
+	var remote = $("<div>").css({
+		"float" : "left"
+	}).append(reLabel).append(reRepo).append(reBranch);
+	this.remoteObj = {};
+	var callback = function(data) {
+		if (data.success === "true") {
+			var branches = data.remoteBranchList;
+
+			if (Array.isArray(branches)) {
+				for (var i = 0; i < branches.length; i++) {
+					var branch = branches[i];
+					if (!that.remoteObj.hasOwnProperty(branch.remoteName)) {
+						that.remoteObj[branch.remoteName] = [];
+					}
+					that.remoteObj[branch.remoteName].push(branch.name);
+				}
+			}
+			console.log(that.remoteObj);
+		}
+	};
+	this.getBranchList(server, repo, callback);
+
+	var loLabel = $("<div>").text("Local");
+	var loRepo = $("<div>");
+	var loBranch = $("<div>");
+	var local = $("<div>").css({
+		"float" : "left"
+	}).append(loLabel).append(loRepo).append(loBranch);
+
+	var arrow = $("<i>").addClass("fas").addClass("fa-angle-double-left");
+	var arrowArea = $("<div>").css({
+		"float" : "left"
+	}).append(arrow);
+
+	var wrap = $("<div>").append(local).append(arrowArea).append(remote);
+	var body = $("<div>").append(wrap);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Pull");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var deleteModal = new gb.modal.Base({
+		"title" : "Pull",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,

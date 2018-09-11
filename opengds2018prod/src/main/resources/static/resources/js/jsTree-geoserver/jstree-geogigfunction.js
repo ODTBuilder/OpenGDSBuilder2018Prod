@@ -184,6 +184,10 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var pullBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Pull").css({
 							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							that._data.geogigfunction.repository.pullRepositoryModal(server.text, repo.text);
 						});
 						var pushBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Push").css({
 							"display" : "inline-block"
@@ -225,7 +229,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 								$(mergeBtn).prop("disabled", true);
 							}
 						}
-						
+
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(pullBtn).append(
 								pushBtn).append(mergeBtn);
 						var obj = this.get_node(node, true);

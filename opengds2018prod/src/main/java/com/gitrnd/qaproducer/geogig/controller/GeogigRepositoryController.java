@@ -18,6 +18,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -34,6 +35,23 @@ public class GeogigRepositoryController extends AbstractController {
 	@Autowired
 	@Qualifier("reposService")
 	GeogigRepositoryService reposService;
+
+	@RequestMapping(value = "/initRepository.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigRepositoryInit initRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "dbHost", required = false) String dbHost,
+			@RequestParam(value = "dbPort", required = false) String dbPort,
+			@RequestParam(value = "dbName", required = false) String dbName,
+			@RequestParam(value = "dbSchema", required = false) String dbSchema,
+			@RequestParam(value = "dbUser", required = false) String dbUser,
+			@RequestParam(value = "dbPassword", required = false) String dbPassword) {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return reposService.initRepository(geoserverManager, loginUser, repoName, dbHost, dbPort, dbName, dbSchema, dbUser,
+				dbPassword);
+	}
 
 	@RequestMapping(value = "/listRemoteRepository.do", method = RequestMethod.POST)
 	@ResponseBody

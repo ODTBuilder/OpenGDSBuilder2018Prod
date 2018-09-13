@@ -3,12 +3,12 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import org.geotools.referencing.operation.projection.LambertConformalBelgium;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.InitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PullRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PushRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.AddRemoteRepository;
@@ -21,6 +21,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -30,6 +31,24 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
  */
 @Service("reposService")
 public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
+
+	@Override
+	public GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser,
+			String repoName, String dbHost, String dbPort, String dbName, String dbSchema, String dbUser,
+			String dbPassword) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		String authorName = loginUser.getUsername();
+		String authorEmail = loginUser.getEmail();
+
+		InitRepository initRepos = new InitRepository();
+		GeogigRepositoryInit geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName,
+				dbSchema, dbUser, dbPassword, authorName, authorEmail);
+		return geogigReposInit;
+	}
 
 	@Override
 	public GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId) {

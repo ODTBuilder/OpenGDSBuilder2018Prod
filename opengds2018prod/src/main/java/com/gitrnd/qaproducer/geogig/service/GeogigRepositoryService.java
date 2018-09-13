@@ -9,6 +9,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -103,5 +104,20 @@ public interface GeogigRepositoryService {
 	 * @return GeogigFetch
 	 */
 	GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName);
+
+	/**
+	 * @param geoserverManager
+	 * @param loginUser
+	 * @param repoName
+	 * @param dbHost
+	 * @param dbPort
+	 * @param dbName
+	 * @param dbSchema
+	 * @param dbUser
+	 * @param dbPassword
+	 * @return
+	 */
+	GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser, String repoName,
+			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword);
 
 }

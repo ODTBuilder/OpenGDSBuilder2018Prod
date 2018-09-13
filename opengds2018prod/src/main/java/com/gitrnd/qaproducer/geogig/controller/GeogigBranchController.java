@@ -46,24 +46,6 @@ public class GeogigBranchController extends AbstractController {
 	@Qualifier("branchService")
 	GeogigBranchService branchService;
 
-//	@RequestMapping(value = "/commitBranch.do", method = RequestMethod.POST)
-//	@ResponseBody
-//	public GeogigCommit commitBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-//			@RequestParam(value = "serverName", required = false) String serverName,
-//			@RequestParam(value = "repoName", required = false) String repoName,
-//			@RequestParam(value = "transactionId", required = false) String transactionId,
-//			@RequestParam(value = "message", required = false) String message,
-//			@RequestParam(value = "authorName", required = false) String authorName,
-//			@RequestParam(value = "authorEmail", required = false) String authorEmail) {
-//
-//		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-//		reposService.addRepository(geoserverManager, repoName, transactionId);
-//		GeogigCommit commit = reposService.commitRepository(geoserverManager, repoName, transactionId, message,
-//				authorName, authorEmail);
-//		transactionService.endTransaction(geoserverManager, repoName, transactionId);
-//		return commit;
-//	}
-
 	@RequestMapping(value = "/checkoutBranch.do", method = RequestMethod.POST)
 	@ResponseBody
 	public GeogigCheckout checkoutBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,

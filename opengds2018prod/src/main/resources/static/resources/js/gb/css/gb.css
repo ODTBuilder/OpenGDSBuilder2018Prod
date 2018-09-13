@@ -211,6 +211,24 @@ a.gb-list-group-item-info.active, a.gb-list-group-item-info.active:hover, a.gb-l
 	
 }
 
+button[disabled], html input[disabled] {
+	cursor: default;
+}
+
+input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="radio"].disabled, input[type="checkbox"].disabled,
+	fieldset[disabled] input[type="radio"], fieldset[disabled] input[type="checkbox"] {
+	cursor: not-allowed;
+}
+
+.gb-button.disabled, .gb-button[disabled] {
+	pointer-events: none;
+	cursor: not-allowed;
+	filter: alpha(opacity = 65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	opacity: .65;
+}
+
 .gb-button {
 	margin-left: 4px;
 	display: inline-block;

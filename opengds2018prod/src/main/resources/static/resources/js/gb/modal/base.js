@@ -53,9 +53,9 @@ gb.modal.Base = function(obj) {
 // $("<div>").addClass("gb-modal-footer").append(this.buttonArea);
 	this.modal = $("<div>").addClass("gb-modal").css({
 		"width" : typeof this.width === "number" ? this.width+"px" : this.width,
-		"height" : typeof this.height === "number" ? this.height+"px" : this.height,
-		"position" : "absolute",
-		"z-Index" : "999"
+				"height" : typeof this.height === "number" ? this.height+"px" : this.height,
+						"position" : "absolute",
+						"z-Index" : "999"
 	}).append(this.modalHead).append(this.modalBody).append(this.modalFooter);
 
 	this.background = $("<div>").addClass("gb-modal-background");
@@ -132,8 +132,16 @@ gb.modal.Base.prototype.open = function() {
 		$("body").append(this.modal);
 		$("body").append(this.background);
 	}
-	this.background.css("display", "block");
-	this.modal.css("display", "block");
+	var highz = this.getMaxZIndex();
+	this.background.css({
+		"display" : "block",
+		"z-index" : highz + 1 
+	});
+
+	this.modal.css({
+		"display" : "block",
+		"z-index" : highz + 2 
+	});
 	this.refreshPosition();
 };
 /**
@@ -223,4 +231,23 @@ gb.modal.Base.prototype.setHeight = function(height) {
  */
 gb.modal.Base.prototype.getHeight = function() {
 	return $(this.modal).outerHeight();
+};
+
+/**
+ * 제일 높은 z index 값을 반환한다.
+ * 
+ * @method gb.modal.Base#getMaxZIndex
+ * @return {Number} 모달의 높이(픽셀)
+ */
+gb.modal.Base.prototype.getMaxZIndex = function() {
+	var elems = document.getElementsByTagName("div");
+	var highest = 0;
+	for (var i = 0; i < elems.length; i++) {
+		var zindex=document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index");
+		if ((zindex > highest) && (zindex != 'auto'))
+		{
+			highest = zindex;
+		}
+	}
+	return highest;
 };

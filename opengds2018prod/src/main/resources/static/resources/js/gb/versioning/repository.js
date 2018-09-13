@@ -1179,3 +1179,274 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) 
 		});
 	});
 };
+
+/**
+ * 레파지토리 생성 창을 연다.
+ * 
+ * @method gb.versioning.Repository#createRepositoryModal
+ */
+gb.versioning.Repository.prototype.createRepositoryModal = function() {
+	var that = this;
+
+	var rName = $("<div>").text("Name: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rNameInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Repository name"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rNameInputDiv = $("<div>").append(rNameInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rNameArea = $("<div>").append(rName).append(rNameInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rHost = $("<div>").text("Host: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rHostInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Host addres EX) http://127.0.0.1"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rHostInputDiv = $("<div>").append(rHostInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rHostArea = $("<div>").append(rHost).append(rHostInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rPort = $("<div>").text("Port: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rPortInput = $("<input>").attr({
+		"type" : "number",
+		"placeholder" : "Port number EX) 8080"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rPortInputDiv = $("<div>").append(rPortInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rPortArea = $("<div>").append(rPort).append(rPortInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rDB = $("<div>").text("Database: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rDBInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Database name"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rDBInputDiv = $("<div>").append(rDBInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rDBArea = $("<div>").append(rDB).append(rDBInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rScheme = $("<div>").text("Scheme: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rSchemeInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Scheme name"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rSchemeInputDiv = $("<div>").append(rSchemeInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rSchemeArea = $("<div>").append(rScheme).append(rSchemeInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rID = $("<div>").text("User Name: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rIDInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Database user name"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rIDInputDiv = $("<div>").append(rIDInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rIDArea = $("<div>").append(rID).append(rIDInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rPass = $("<div>").text("Password: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rPassInput = $("<input>").attr({
+		"type" : "password",
+		"placeholder" : "Database password"
+	}).css({
+		"width" : "83%",
+		"border" : "none",
+		"border-bottom" : "solid 1px #a9a9a9",
+		"margin-left" : "8px"
+	});
+	var rPassInputDiv = $("<div>").append(rPassInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rPassArea = $("<div>").append(rPass).append(rPassInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Create");
+
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var rBody = $("<div>").append(rNameArea).append(rHostArea).append(rPortArea).append(rDBArea).append(rSchemeArea).append(rIDArea)
+			.append(rPassArea).css({
+				"display" : "table",
+				"padding" : "10px",
+				"width" : "100%",
+				"height" : "270px"
+			});
+	var createRepoModal = new gb.modal.Base({
+		"title" : "Create Repository",
+		"width" : 540,
+		"height" : 400,
+		"autoOpen" : true,
+		"body" : rBody,
+		"footer" : modalFooter
+	});
+	$(closeBtn).click(function() {
+		createRepoModal.close();
+	});
+	$(okBtn).click(function() {
+		console.log("create repo");
+	});
+};
+
+/**
+ * 레파지토리 생성을 요청한다.
+ * 
+ * @method gb.versioning.Repository#checkoutBranch
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
+	var that = this;
+	var params = {
+		"serverName" : server.text,
+		"repoName" : repo.text,
+		"branchName" : branch.text
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getCheckoutBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var transactionId = data.transactionId;
+				var newTarget = data.newTarget;
+				var ggfn = that.getJSTree()._data.geogigfunction;
+				ggfn.transactionId[repo.id] = transactionId;
+				console.log(ggfn);
+				that.getJSTree().refresh_node(repo);
+				// if (repo.data === undefined) {
+				// repo.data = {
+				// "transactionId" : transactionId
+				// }
+				// } else {
+				// repo.data["transactionId"] = transactionId;
+				// }
+			}
+		}
+	});
+};

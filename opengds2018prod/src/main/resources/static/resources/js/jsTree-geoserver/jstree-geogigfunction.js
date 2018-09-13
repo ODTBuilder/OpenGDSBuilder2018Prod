@@ -128,11 +128,26 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					console.log(type);
 					var root = this.get_node("#", true);
 					$(root).find(".gb-versioning-repository-btnarea").remove();
-					if (type === "repository") {
-						var branchBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("New branch").css({
+					if (type === "geoserver") {
+						if (!!node.children) {
+							var repoBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("New Repository").css({
+								"display" : "inline-block"
+							}).click(function() {
+								console.log("new repo");
+								console.log(node);
+								var server = node;
+								that._data.geogigfunction.repository.setNowRepositoryServer(server);
+								that._data.geogigfunction.repository.createRepositoryModal();
+							});
+							var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(repoBtn);
+							var obj = this.get_node(node, true);
+							$(obj[0].childNodes[1]).after(btnArea);
+						}
+					} else if (type === "repository") {
+						var branchBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("New Branch").css({
 							"display" : "inline-block"
 						});
-						var remoteBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remote repository").css({
+						var remoteBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remote Repository").css({
 							"display" : "inline-block"
 						}).click(function() {
 							console.log("checkout");

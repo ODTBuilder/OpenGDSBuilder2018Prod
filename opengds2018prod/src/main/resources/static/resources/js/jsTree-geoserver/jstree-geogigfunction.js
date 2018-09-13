@@ -136,8 +136,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 								console.log("new repo");
 								console.log(node);
 								var server = node;
-								that._data.geogigfunction.repository.setNowRepositoryServer(server);
-								that._data.geogigfunction.repository.createRepositoryModal();
+								that._data.geogigfunction.repository.setNowServer(server);
+								that._data.geogigfunction.repository.initRepositoryModal();
 							});
 							var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(repoBtn);
 							var obj = this.get_node(node, true);
@@ -154,12 +154,15 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(node);
 							var server = that.get_node(node.parents[0]);
 							var repo = node;
-							that._data.geogigfunction.repository.setNowRepositoryServer(server);
+							that._data.geogigfunction.repository.setNowServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.manageRemoteRepository(server.text, repo.text);
 						});
-
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn);
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
+							"display" : "inline-block"
+						});
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn).append(
+								removeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "remoteRepository") {
@@ -167,7 +170,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
 							"display" : "inline-block"
 						}).click(function() {
-							var server = that._data.geogigfunction.repository.getNowRepositoryServer();
+							var server = that._data.geogigfunction.repository.getNowServer();
 							console.log(server);
 							var repo = that._data.geogigfunction.repository.getNowRepository();
 							console.log(repo);
@@ -202,7 +205,14 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						}).click(function() {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
-							that._data.geogigfunction.repository.pullRepositoryModal(server.text, repo.text);
+							var branch = node;
+							var tid = that.getTransactionId(repo.id);
+							if (typeof tid === "string") {
+								that._data.geogigfunction.repository.setNowServer(server);
+								that._data.geogigfunction.repository.setNowRepository(repo);
+								that._data.geogigfunction.repository.setNowBranch(branch);
+								that._data.geogigfunction.repository.pullRepositoryModal(server.text, repo.text, tid);
+							}
 						});
 						var pushBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Push").css({
 							"display" : "inline-block"
@@ -213,7 +223,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
 							var branch = node;
-							that._data.geogigfunction.repository.setNowRepositoryServer(server);
+							that._data.geogigfunction.repository.setNowServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.setNowBranch(branch);
 							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);

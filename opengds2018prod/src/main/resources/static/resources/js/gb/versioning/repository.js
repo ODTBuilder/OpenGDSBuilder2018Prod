@@ -31,6 +31,8 @@
  * @param {String}
  *            obj.url.remoteTree - 원격 Repository의 목록을 요청할 컨트롤러 주소
  * @param {String}
+ *            obj.url.initRepository - Repository의 추가를 요청할 컨트롤러 주소
+ * @param {String}
  *            obj.url.addRemoteRepository - 원격 Repository의 추가를 요청할 컨트롤러 주소
  * @param {String}
  *            obj.url.removeRemoteRepository - 원격 Repository 삭제를 요청할 컨트롤러 주소
@@ -63,10 +65,23 @@ gb.versioning.Repository = function(obj) {
 	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
 	this.branchListURL = url.branchList ? url.branchList : undefined;
 	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
+	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
+	this.pullRepositoryURL = url.pullRepository ? url.pullRepository : undefined;
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
+	this.reRepoSelect = $("<select>");
+	$(this.reRepoSelect).on("change", function() {
+		console.log(this.value);
+		var branches = that.remoteObj[this.value];
+		$(that.reBranchSelect).empty();
+		for (var i = 0; i < branches.length; i++) {
+			var opt = $("<option>").text(branches[i]);
+			$(that.reBranchSelect).append(opt);
+		}
+	});
+	this.reBranchSelect = $("<select>");
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
@@ -249,10 +264,10 @@ gb.versioning.Repository = function(obj) {
 					if (node.id === "#") {
 						obj["type"] = "remoteRepository";
 						obj["node"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
-						obj["serverName"] = that.getNowRepositoryServer() !== undefined ? that.getNowRepositoryServer().id : undefined;
+						obj["serverName"] = that.getNowServer() !== undefined ? that.getNowServer().id : undefined;
 					} else if (node.type === "remoteRepository") {
 						obj["type"] = "remoteBranch";
-						obj["serverName"] = that.getNowRepositoryServer() !== undefined ? that.getNowRepositoryServer().id : undefined;
+						obj["serverName"] = that.getNowServer() !== undefined ? that.getNowServer().id : undefined;
 						obj["node"] = node.text;
 						obj["local"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
 					}
@@ -333,7 +348,7 @@ gb.versioning.Repository = function(obj) {
 	var mergeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Merge").click(function() {
-		var server = that.getNowRepositoryServer();
+		var server = that.getNowServer();
 		var repo = that.getNowRepository();
 		var tab = $(that.tabNameVal).val();
 		var tid = that.getJSTree().getTransactionId(repo.id);
@@ -748,6 +763,26 @@ gb.versioning.Repository.prototype.getMergeBranchURL = function() {
 };
 
 /**
+ * 레파지토리 생성 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getInitRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getInitRepositoryURL = function() {
+	return this.initRepositoryURL;
+};
+
+/**
+ * pull 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getPullRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getPullRepositoryURL = function() {
+	return this.pullRepositoryURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
@@ -813,21 +848,21 @@ gb.versioning.Repository.prototype.setNowRepository = function(repo) {
 /**
  * 현재 보고있는 레파지토리의 서버 이름을 반환한다.
  * 
- * @method gb.versioning.Repository#getNowRepositoryServer
+ * @method gb.versioning.Repository#getNowServer
  * @return {Object} 레파지토리 서버 노드
  */
-gb.versioning.Repository.prototype.getNowRepositoryServer = function() {
+gb.versioning.Repository.prototype.getNowServer = function() {
 	return this.nowRepoServer;
 };
 
 /**
  * 현재 보고있는 레파지토리의 서버 이름을 설정한다.
  * 
- * @method gb.versioning.Repository#setNowRepositoryServer
+ * @method gb.versioning.Repository#setNowServer
  * @param {Object}
  *            레파지토리 서버 노드
  */
-gb.versioning.Repository.prototype.setNowRepositoryServer = function(server) {
+gb.versioning.Repository.prototype.setNowServer = function(server) {
 	this.nowRepoServer = server;
 };
 
@@ -1069,7 +1104,97 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 };
 
 /**
- * pull request 창을 생성한다.
+ * pull 요청한다.
+ * 
+ * @method gb.versioning.Repository#pullRepository
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            branch - 작업 중인 브랜치
+ * @param {String}
+ *            remoteRepo - 원격 레파지토리
+ * @param {String}
+ *            remoteBranch - 원격 브랜치
+ * @param {String}
+ *            tid - 트랜잭션 아이디
+ */
+gb.versioning.Repository.prototype.pullRepository = function(server, repo, branch, remoteRepo, remoteBranch, tid, modal) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch,
+		"remoteName" : remoteRepo,
+		"remoteBranchName" : remoteBranch,
+		"transactionId" : tid
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getPullRepositoryURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				modal.close();
+				var msg1 = $("<div>").text("Pull is complete.").css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var body = $("<div>").append(msg1).append(msg2);
+				var closeBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+				var okBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+				var commitModal = new gb.modal.Base({
+					"title" : "Commit Changes",
+					"width" : 310,
+					"height" : 200,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : buttonArea
+				});
+				$(closeBtn).click(function() {
+					commitModal.close();
+				});
+				$(okBtn).click(function() {
+					that.endTransaction(server, repo, tid, commitModal);
+				});
+			}
+		}
+	});
+};
+
+/**
+ * pull 요청 창을 생성한다.
  * 
  * @method gb.versioning.Repository#pullRepositoryModal
  * @param {String}
@@ -1077,9 +1202,9 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
  * @param {String}
  *            repo - 작업 중인 리포지토리 이름
  * @param {String}
- *            remote - 작업 중인 리모트 레파지토리 이름
+ *            tid - 작업 중인 레파지토리의 트랜잭션 아이디
  */
-gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) {
+gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, tid) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -1096,9 +1221,9 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) 
 	}
 
 	var reLabel = $("<div>").text("Remote");
-	this.reRepoSelect = $("<select>");
+	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
-	this.reBranchSelect = $("<select>");
+	$(this.reBranchSelect).empty();
 	var reBranch = $("<div>").append(this.reBranchSelect);
 	var remote = $("<div>").css({
 		"float" : "left"
@@ -1118,13 +1243,24 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) 
 				}
 			}
 			console.log(that.remoteObj);
+			var rRepos = Object.keys(that.remoteObj);
+			for (var i = 0; i < rRepos.length; i++) {
+				var opt = $("<option>").text(rRepos[i]);
+				$(that.reRepoSelect).append(opt);
+			}
+			var rbranches = that.remoteObj[$(that.reRepoSelect).val()];
+			$(that.reBranchSelect).empty();
+			for (var i = 0; i < rbranches.length; i++) {
+				var opt = $("<option>").text(rbranches[i]);
+				$(that.reBranchSelect).append(opt);
+			}
 		}
 	};
 	this.getBranchList(server, repo, callback);
 
 	var loLabel = $("<div>").text("Local");
-	var loRepo = $("<div>");
-	var loBranch = $("<div>");
+	var loRepo = $("<div>").append(this.getNowRepository().text);
+	var loBranch = $("<div>").append(this.getNowBranch().text);
 	var local = $("<div>").css({
 		"float" : "left"
 	}).append(loLabel).append(loRepo).append(loBranch);
@@ -1144,7 +1280,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) 
 	}).addClass("gb-button").addClass("gb-button-primary").text("Pull");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var deleteModal = new gb.modal.Base({
+	var commitModal = new gb.modal.Base({
 		"title" : "Pull",
 		"width" : 310,
 		"height" : 200,
@@ -1153,39 +1289,25 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo) 
 		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
-		deleteModal.close();
+		commitModal.close();
 	});
-	$(okBtn).click(function() {
-		$.ajax({
-			url : checkURL,
-			method : "POST",
-			contentType : "application/json; charset=UTF-8",
-			// data : params,
-			// dataType : 'jsonp',
-			// jsonpCallback : 'getJson',
-			beforeSend : function() {
-				// $("body").css("cursor", "wait");
-			},
-			complete : function() {
-				// $("body").css("cursor", "default");
-			},
-			success : function(data) {
-				console.log(data);
-				if (data.success === "true") {
-					that.refreshRemoteList();
-					deleteModal.close();
-				}
-			}
-		});
-	});
+	$(okBtn).click(
+			function() {
+				console.log($(that.reRepoSelect).val());
+				console.log($(that.reBranchSelect).val());
+				console.log(tid);
+
+				that.pullRepository(server, repo, that.getNowBranch().text, $(that.reRepoSelect).val(), $(that.reBranchSelect).val(), tid,
+						commitModal);
+			});
 };
 
 /**
  * 레파지토리 생성 창을 연다.
  * 
- * @method gb.versioning.Repository#createRepositoryModal
+ * @method gb.versioning.Repository#initRepositoryModal
  */
-gb.versioning.Repository.prototype.createRepositoryModal = function() {
+gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var that = this;
 
 	var rName = $("<div>").text("Name: ").css({
@@ -1386,13 +1508,22 @@ gb.versioning.Repository.prototype.createRepositoryModal = function() {
 	});
 	$(okBtn).click(function() {
 		console.log("create repo");
+		var server = that.getNowServer().text;
+		var repo = $(rNameInput).val();
+		var host = $(rHostInput).val();
+		var port = $(rPortInput).val();
+		var dbname = $(rDBInput).val();
+		var scheme = $(rSchemeInput).val();
+		var user = $(rIDInput).val();
+		var pass = $(rPassInput).val();
+		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, createRepoModal);
 	});
 };
 
 /**
  * 레파지토리 생성을 요청한다.
  * 
- * @method gb.versioning.Repository#checkoutBranch
+ * @method gb.versioning.Repository#initRepository
  * @param {Object}
  *            server - 작업 중인 서버 노드
  * @param {Object}
@@ -1400,15 +1531,20 @@ gb.versioning.Repository.prototype.createRepositoryModal = function() {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
+gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, modal) {
 	var that = this;
 	var params = {
-		"serverName" : server.text,
-		"repoName" : repo.text,
-		"branchName" : branch.text
+		"serverName" : server,
+		"repoName" : repo,
+		"dbHost" : host,
+		"dbPort" : port,
+		"dbName" : dbname,
+		"dbSchema" : scheme,
+		"dbUser" : user,
+		"dbPassword" : pass
 	}
 	// + "&" + jQuery.param(params),
-	var checkURL = this.getCheckoutBranchURL();
+	var checkURL = this.getInitRepositoryURL();
 	if (checkURL.indexOf("?") !== -1) {
 		checkURL += "&";
 		checkURL += jQuery.param(params);
@@ -1433,19 +1569,8 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				var transactionId = data.transactionId;
-				var newTarget = data.newTarget;
-				var ggfn = that.getJSTree()._data.geogigfunction;
-				ggfn.transactionId[repo.id] = transactionId;
-				console.log(ggfn);
-				that.getJSTree().refresh_node(repo);
-				// if (repo.data === undefined) {
-				// repo.data = {
-				// "transactionId" : transactionId
-				// }
-				// } else {
-				// repo.data["transactionId"] = transactionId;
-				// }
+				modal.close();
+				that.refreshList();
 			}
 		}
 	});

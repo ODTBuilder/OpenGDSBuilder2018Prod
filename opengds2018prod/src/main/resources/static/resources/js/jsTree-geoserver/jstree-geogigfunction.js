@@ -158,8 +158,14 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.manageRemoteRepository(server.text, repo.text);
 						});
-						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Delete").css({
 							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[0]);
+							var repo = node;
+							that._data.geogigfunction.repository.setNowServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.removeRepositoryModal(repo.text);
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn).append(
 								removeBtn);
@@ -167,7 +173,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "remoteRepository") {
 						that._data.geogigfunction.repository.setNowRemoteRepository(node);
-						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Remove").css({
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Delete").css({
 							"display" : "inline-block"
 						}).click(function() {
 							var server = that._data.geogigfunction.repository.getNowServer();
@@ -226,7 +232,9 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.manageMerge(server.text, repo.text, branch.text);
+							// that._data.geogigfunction.repository.manageMerge(server.text,
+							// repo.text, branch.text);
+							that._data.geogigfunction.repository.mergeModal(server.text, repo.text, branch.text);
 							console.log("hi its merge");
 						});
 						var parent = that.get_node(node.parent);

@@ -1760,3 +1760,79 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 		}
 	});
 };
+
+/**
+ * new branch 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#newBranchModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
+	var that = this;
+
+	this.sourceSelect = $("<select>");
+	var callback = function(data) {
+		if (data.success === "true") {
+			var branches = data.localBranchList;
+			if (Array.isArray(branches)) {
+				for (var i = 0; i < branches.length; i++) {
+					var opt = $("<option>").text(branches[i].name);
+					$(that.sourceSelect).append(opt);
+				}
+			}
+		}
+	};
+	this.getBranchList(server, repo, callback);
+
+	var serverName = $("<span>").text("GeoServer: ");
+	var serverNameVal = $("<span>").text(server);
+	var geoserverArea = $("<div>").append(serverName).append(serverNameVal);
+	var repoName = $("<span>").text("Repository: ");
+	var repoNameVal = $("<span>").text(repo);
+	var repoNameArea = $("<div>").append(repoName).append(repoNameVal);
+	var cubName = $("<span>").text("New Branch: ");
+	var nameInput = $("<input>").attr({
+		"type" : "text"
+	});
+	var cubArea = $("<div>").append(cubName).append(nameInput);
+	var tabName = $("<span>").text("Target Branch: ");
+	var tabArea = $("<div>").append(tabName).append(this.sourceSelect);
+
+	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var createBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Create");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(createBtn).append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : "New Branch",
+		"width" : 370,
+		"height" : 230,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	$(createBtn).click(function() {
+		var server = that.getNowServer();
+		var repo = that.getNowRepository();
+		var tab = $(that.tabNameVal).val();
+		var tid = that.getJSTree().getTransactionId(repo.id);
+		if (!tid) {
+			console.log("you want to check out this branch?");
+		} else if (server.text && repo.text && tab && tid) {
+			console.log("its working");
+			that.mergeBranch(server.text, repo.text, tab, tid, modal);
+		}
+	});
+};

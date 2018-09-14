@@ -54,6 +54,8 @@ public class ListBranch {
 		headers.setContentType(MediaType.APPLICATION_XML);
 		headers.add("Authorization", encodedAuth);
 
+		repository = "ajsjsj";
+
 		// url
 		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
 

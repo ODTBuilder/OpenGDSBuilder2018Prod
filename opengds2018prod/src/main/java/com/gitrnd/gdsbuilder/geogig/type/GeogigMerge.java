@@ -18,6 +18,7 @@ public class GeogigMerge {
 	 * Geogig Command 응답 성공 여부
 	 */
 	private String success;
+
 	/**
 	 * merge 결과
 	 */

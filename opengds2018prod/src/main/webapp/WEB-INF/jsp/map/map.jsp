@@ -393,7 +393,8 @@ html {
 				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
 				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

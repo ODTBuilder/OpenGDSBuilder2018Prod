@@ -238,10 +238,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.setNowBranch(branch);
-							// that._data.geogigfunction.repository.manageMerge(server.text,
-							// repo.text, branch.text);
 							that._data.geogigfunction.repository.mergeModal(server.text, repo.text, branch.text);
-							console.log("hi its merge");
 						});
 						var parent = that.get_node(node.parent);
 

@@ -67,6 +67,7 @@ gb.versioning.Repository = function(obj) {
 	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
 	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
 	this.pullRepositoryURL = url.pullRepository ? url.pullRepository : undefined;
+	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
@@ -362,49 +363,6 @@ gb.versioning.Repository.prototype.manageRemoteRepository = function(server, rep
 };
 
 /**
- * 머지로 페이지를 전환한다.
- * 
- * @method gb.versioning.Repository#manageMerge
- * @param {String}
- *            server - 현재 지오서버
- * @param {String}
- *            repo - 현재 레파지토리
- * @param {String}
- *            branch - 현재 브랜치
- */
-gb.versioning.Repository.prototype.manageMerge = function(server, repo, branch) {
-	var that = this;
-	$(this.geoserverNameVal).empty();
-	$(this.geoserverNameVal).text(server);
-
-	$(this.repoNameVal).empty();
-	$(this.repoNameVal).text(repo);
-
-	$(this.cubNameVal).empty();
-	$(this.cubNameVal).text(branch);
-
-	$(this.tabNameVal).empty();
-	var callback = function(data) {
-		if (data.success === "true") {
-			var branches = data.localBranchList;
-			if (Array.isArray(branches)) {
-				for (var i = 0; i < branches.length; i++) {
-					var opt = $("<option>").text(branches[i].name);
-					if (branches[i].name === branch) {
-						$(opt).prop({
-							"disabled" : true
-						});
-					}
-					$(that.tabNameVal).append(opt);
-				}
-			}
-		}
-	};
-	this.getBranchList(server, repo, callback);
-	this.transitPage("merge");
-};
-
-/**
  * 페이지를 전환한다.
  * 
  * @method gb.versioning.Repository#transitPage
@@ -549,6 +507,11 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
 					that.transitPage("server");
 					that.refreshList();
 				}
+			} else {
+				console.error("error - no remote branch");
+				var title = "Error";
+				var msg = "Transaction is not ended."
+				that.messageModal(title, msg);
 			}
 		}
 	});
@@ -731,6 +694,16 @@ gb.versioning.Repository.prototype.getInitRepositoryURL = function() {
 };
 
 /**
+ * 브랜치 생성 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCreateBranchURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getCreateBranchURL = function() {
+	return this.createBranchURL;
+};
+
+/**
  * pull 요청 컨트롤러 주소를 반환한다.
  * 
  * @method gb.versioning.Repository#getPullRepositoryURL
@@ -892,6 +865,10 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 				// } else {
 				// repo.data["transactionId"] = transactionId;
 				// }
+			} else {
+				var title = "Error";
+				var msg = "Checkout failed."
+				that.messageModal(title, msg);
 			}
 		}
 	});
@@ -976,6 +953,10 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					mModal.close();
 					that.endTransaction(server, repo, tid, commitModal);
 				});
+			} else {
+				var title = "Error";
+				var msg = "Merge failed."
+				that.messageModal(title, msg);
 			}
 		}
 	});
@@ -1056,6 +1037,10 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				if (data.success === "true") {
 					that.refreshRemoteList();
 					deleteModal.close();
+				} else {
+					var title = "Error";
+					var msg = "Remove failed."
+					that.messageModal(title, msg);
 				}
 			}
 		});
@@ -1147,6 +1132,10 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 				$(okBtn).click(function() {
 					that.endTransaction(server, repo, tid, commitModal);
 				});
+			} else {
+				var title = "Error";
+				var msg = "Pull failed."
+				that.messageModal(title, msg);
 			}
 		}
 	});
@@ -1258,9 +1247,8 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 				that.messageModal(title, msg);
 			}
 		} else {
-			console.error("error - server");
 			var title = "Error";
-			var msg = "The request failed."
+			var msg = "Couldn't get branch list."
 			that.messageModal(title, msg);
 		}
 	};
@@ -1536,6 +1524,10 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 			if (data.success === "true") {
 				modal.close();
 				that.refreshList();
+			} else {
+				var title = "Error";
+				var msg = "Init repository failed."
+				that.messageModal(title, msg);
 			}
 		}
 	});
@@ -1714,20 +1706,81 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 					$(that.tabNameVal).append(opt);
 				}
 			}
+		} else {
+			var title = "Error";
+			var msg = "Couldn't get branch list."
+			that.messageModal(title, msg);
 		}
 	};
 	this.getBranchList(server, repo, callback);
 
-	var serverName = $("<span>").text("GeoServer: ");
-	var geoserverArea = $("<div>").append(serverName).append(this.geoserverNameVal);
-	var repoName = $("<span>").text("Repository: ");
-	var repoNameArea = $("<div>").append(repoName).append(this.repoNameVal);
-	var cubName = $("<span>").text("Current Branch: ");
-	var cubArea = $("<div>").append(cubName).append(this.cubNameVal);
-	var tabName = $("<span>").text("Target Branch: ");
-	var tabArea = $("<div>").append(tabName).append(this.tabNameVal);
+	var serverName = $("<span>").text("GeoServer: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var serverNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.geoserverNameVal);
+	var geoserverArea = $("<div>").append(serverName).append(serverNameValArea).css({
+		"display" : "table-row"
+	});
+	var repoName = $("<span>").text("Repository: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var repoNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.repoNameVal);
+	var repoNameArea = $("<div>").append(repoName).append(repoNameValArea).css({
+		"display" : "table-row"
+	});
+	var cubName = $("<span>").text("Current Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var cubNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.cubNameVal);
+	var cubArea = $("<div>").append(cubName).append(cubNameValArea).css({
+		"display" : "table-row"
+	});
+	var tabName = $("<span>").text("Target Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var tabNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.tabNameVal);
+	var tabArea = $("<div>").append(tabName).append(tabNameValArea).css({
+		"display" : "table-row"
+	});
 
-	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea);
+	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea).css({
+		"display" : "table",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "138px"
+	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
@@ -1739,7 +1792,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	var modal = new gb.modal.Base({
 		"title" : "Merge",
 		"width" : 370,
-		"height" : 230,
+		"height" : 268,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -1775,7 +1828,10 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var that = this;
 
-	this.sourceSelect = $("<select>");
+	this.sourceSelect = $("<select>").css({
+		"width" : "95%",
+		"height" : "90%"
+	});
 	var callback = function(data) {
 		if (data.success === "true") {
 			var branches = data.localBranchList;
@@ -1785,25 +1841,89 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 					$(that.sourceSelect).append(opt);
 				}
 			}
+		} else {
+			var title = "Error";
+			var msg = "Couldn't get branch list."
+			that.messageModal(title, msg);
 		}
 	};
 	this.getBranchList(server, repo, callback);
 
-	var serverName = $("<span>").text("GeoServer: ");
-	var serverNameVal = $("<span>").text(server);
-	var geoserverArea = $("<div>").append(serverName).append(serverNameVal);
-	var repoName = $("<span>").text("Repository: ");
-	var repoNameVal = $("<span>").text(repo);
-	var repoNameArea = $("<div>").append(repoName).append(repoNameVal);
-	var cubName = $("<span>").text("New Branch: ");
+	var serverName = $("<span>").text("GeoServer: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var serverNameVal = $("<span>").text(server).css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var geoserverArea = $("<div>").append(serverName).append(serverNameVal).css({
+		"display" : "table-row"
+	});
+	var repoName = $("<span>").text("Repository: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var repoNameVal = $("<span>").text(repo).css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var repoNameArea = $("<div>").append(repoName).append(repoNameVal).css({
+		"display" : "table-row"
+	});
+	var cubName = $("<span>").text("New Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
 	var nameInput = $("<input>").attr({
 		"type" : "text"
+	}).css({
+		"width" : "95%",
+		"border" : "0",
+		"border-bottom" : "1px solid #898989"
 	});
-	var cubArea = $("<div>").append(cubName).append(nameInput);
-	var tabName = $("<span>").text("Target Branch: ");
-	var tabArea = $("<div>").append(tabName).append(this.sourceSelect);
+	var nameArea = $("<div>").append(nameInput).css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var cubArea = $("<div>").append(cubName).append(nameArea).css({
+		"display" : "table-row"
+	});
+	var tabName = $("<span>").text("Target Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var tabSelect = $("<div>").append(this.sourceSelect).css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var tabArea = $("<div>").append(tabName).append(tabSelect).css({
+		"display" : "table-row"
+	});
 
-	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea);
+	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea).css({
+		"display" : "table",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "138px"
+	});
+
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
@@ -1815,7 +1935,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var modal = new gb.modal.Base({
 		"title" : "New Branch",
 		"width" : 370,
-		"height" : 230,
+		"height" : 268,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -1826,13 +1946,64 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	$(createBtn).click(function() {
 		var server = that.getNowServer();
 		var repo = that.getNowRepository();
-		var tab = $(that.tabNameVal).val();
-		var tid = that.getJSTree().getTransactionId(repo.id);
-		if (!tid) {
-			console.log("you want to check out this branch?");
-		} else if (server.text && repo.text && tab && tid) {
-			console.log("its working");
-			that.mergeBranch(server.text, repo.text, tab, tid, modal);
+		var branch = $(nameInput).val();
+		var source = $(that.sourceSelect).val();
+		that.createNewBranch(server.text, repo.text, branch, source, modal);
+	});
+};
+
+/**
+ * 브랜치 생성을 요청한다.
+ * 
+ * @method gb.versioning.Repository#createNewBranch
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.createNewBranch = function(server, repo, branch, source, modal) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch,
+		"source" : source
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getCreateBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				modal.close();
+				that.refreshList();
+			} else {
+				var title = "Error";
+				var msg = "Create new branch failed."
+				that.messageModal(title, msg);
+			}
 		}
 	});
 };

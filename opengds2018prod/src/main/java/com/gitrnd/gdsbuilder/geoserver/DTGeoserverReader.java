@@ -102,6 +102,7 @@ public class DTGeoserverReader extends GeoServerRESTReader {
             
             String response = loadFullURL(layer.getResourceUrl());
             dtGeolayer = DTGeoLayer.build(response);
+            dtGeolayer.setStyle(layer.getDefaultStyle());
         }
         return dtGeolayer;
 	}

@@ -236,7 +236,7 @@ public interface GeoserverService {
 	 * @param attChangeFlag
 	 * @return boolean
 	 * */
-	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String style, boolean attChangeFlag);
+	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, final String orginalName,final String name,final String title,final String abstractContent,final String srs, final String style, boolean attChangeFlag);
 	
 	
 	

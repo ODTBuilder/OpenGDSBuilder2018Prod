@@ -472,8 +472,8 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].created = [];
 				}
 			}
-			this.created[layer][feature].setGeometryName("the_geom");
-			this.created[layer][feature].set("the_geom", this.created[layer][feature].get("geometry"));
+			this.created[layer][feature].setGeometryName("geom");
+			this.created[layer][feature].set("geom", this.created[layer][feature].get("geometry"));
 			this.created[layer][feature].unset("geometry");
 			layers[layer].created.push(this.created[layer][feature]);
 		}
@@ -543,9 +543,11 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		};
 		$.ajax({
 			type: "POST",
-			url: this.wfstURL,
-			data: JSON.stringify(param),
-			contentType: 'application/json; charset=utf-8',
+			url: "http://175.116.181.30:9999/geoserver/shp/ows",
+			service: "WFS",
+			dataType: "xml",
+			data: new XMLSerializer().serializeToString(node),
+			contentType: 'text/xml',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
 				console.log(result);
@@ -556,5 +558,20 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			},
 			context: this
 		});
+	/*	$.ajax({
+			type: "POST",
+			url: this.wfstURL,
+			data: JSON.stringify(param),
+			contentType: 'application/json; charset=x-windows-949',
+			success: function(data) {
+				var result = format.readTransactionResponse(data);
+				console.log(result);
+			},
+			error: function(e) {
+				var errorMsg = e? (e.status + ' ' + e.statusText) : "";
+				console.log(errorMsg);
+			},
+			context: this
+		});*/
 	}
 }

@@ -151,7 +151,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 						for (Branch remoteBranch : remoteBraches) {
 							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
 								String branchName = remoteBranch.getName();
-								if (branch.equals("HEAD")) {
+								if (branchName.equals("HEAD")) {
 									continue;
 								}
 								String parent = local + ":" + node;

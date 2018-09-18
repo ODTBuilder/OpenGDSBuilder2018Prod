@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -34,6 +36,33 @@ public class GeogigRepositoryController extends AbstractController {
 	@Autowired
 	@Qualifier("reposService")
 	GeogigRepositoryService reposService;
+
+	@RequestMapping(value = "/initRepository.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigRepositoryInit initRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "dbHost", required = false) String dbHost,
+			@RequestParam(value = "dbPort", required = false) String dbPort,
+			@RequestParam(value = "dbName", required = false) String dbName,
+			@RequestParam(value = "dbSchema", required = false) String dbSchema,
+			@RequestParam(value = "dbUser", required = false) String dbUser,
+			@RequestParam(value = "dbPassword", required = false) String dbPassword) {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return reposService.initRepository(geoserverManager, loginUser, repoName, dbHost, dbPort, dbName, dbSchema,
+				dbUser, dbPassword);
+	}
+
+	@RequestMapping(value = "/deleteRepository.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigDelete initRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName) {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return reposService.deleteRepository(geoserverManager, repoName);
+	}
 
 	@RequestMapping(value = "/listRemoteRepository.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -92,13 +121,11 @@ public class GeogigRepositoryController extends AbstractController {
 			@RequestParam(value = "branchName", required = false) String branchName,
 			@RequestParam(value = "remoteName", required = false) String remoteName,
 			@RequestParam(value = "remoteBranchName", required = false) String remoteBranchName,
-			@RequestParam(value = "authorName", required = false) String authorName,
-			@RequestParam(value = "authorEmail", required = false) String authorEmail,
 			@RequestParam(value = "transactionId", required = false) String transactionId) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.pullRepository(geoserverManager, repoName, transactionId, remoteName, branchName,
-				remoteBranchName, authorName, authorEmail);
+				remoteBranchName, loginUser);
 	}
 
 	@RequestMapping(value = "/pushRepository.do", method = RequestMethod.POST)

@@ -231,8 +231,8 @@ html {
 			id : "feature_id",
 			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
-		
-		$("#savePart").click(function(){
+
+		$("#saveChangesBtn").click(function() {
 			frecord.sendWFSTTransaction();
 		});
 
@@ -339,10 +339,10 @@ html {
 		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
 			var layer;
 			var arr = data.node.children_d;
-			
-			for(let i = 0; i < arr.length; i++){
+
+			for (let i = 0; i < arr.length; i++) {
 				layer = data.instance.get_LayerById(arr[i]);
-				if(layer instanceof ol.layer.Group){
+				if (layer instanceof ol.layer.Group) {
 					continue;
 				}
 				featureList.updateFeatureList({
@@ -351,7 +351,7 @@ html {
 					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 					layerName : layer.get('name'),
-					exceptKeys : ['geometry']
+					exceptKeys : [ 'geometry' ]
 				});
 			}
 		});
@@ -386,11 +386,14 @@ html {
 			"url" : {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
-				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

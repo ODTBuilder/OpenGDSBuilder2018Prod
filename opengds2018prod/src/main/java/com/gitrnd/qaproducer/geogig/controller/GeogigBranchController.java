@@ -23,6 +23,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
+import com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService;
 import com.gitrnd.qaproducer.geogig.service.GeogigTransactionService;
 
 /**
@@ -36,6 +37,10 @@ public class GeogigBranchController extends AbstractController {
 	@Autowired
 	@Qualifier("transactionService")
 	GeogigTransactionService transactionService;
+
+	@Autowired
+	@Qualifier("reposService")
+	GeogigRepositoryService reposService;
 
 	@Autowired
 	@Qualifier("branchService")

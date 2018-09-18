@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.repository.branch;
+package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 
@@ -19,25 +16,18 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 
-/**
- * Geogig Branch List Command Execution Class
- * 
- * @author GIT
- *
- */
-public class ListBranch {
+public class AddRepository {
 
-	private static final Log logger = LogFactory.getLog(ListBranch.class);
+	private static final Log logger = LogFactory.getLog(AddRepository.class);
 
 	private static final String geogig = "geogig";
-	private static final String command = "branch";
-	private static final String param_list = "list=";
-	private static final String param_remotes = "remotes=";
+	private static final String command = "add";
+	private static final String param_transactionId = "transactionId=";
 
-	public GeogigBranch executeCommand(String baseURL, String username, String password, String repository,
-			Boolean remotes) {
+	public GeogigAdd executeCommand(String baseURL, String username, String password, String repository,
+			String transactionId) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -54,20 +44,15 @@ public class ListBranch {
 		headers.setContentType(MediaType.APPLICATION_XML);
 		headers.add("Authorization", encodedAuth);
 
-		repository = "ajsjsj";
-
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
-
-		if (remotes == true) {
-			url += "&" + param_remotes + remotes;
-		}
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
+				+ transactionId;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigBranch> responseEntity = null;
+		ResponseEntity<GeogigAdd> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigBranch.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigAdd.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

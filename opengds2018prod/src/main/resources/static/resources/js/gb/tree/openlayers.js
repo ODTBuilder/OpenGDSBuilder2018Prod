@@ -28,7 +28,9 @@ gb.tree.OpenLayers = function(obj) {
 	var options = obj ? obj : {};
 	this.append = options.append ? options.append : undefined;
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
+	this.token = options.token || "";
 	this.locale = options.locale || "en";
+	this.createdLayer = {};
 	var url = options.url;
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint",
 			"multilinestring", "multipolygon" ];
@@ -169,9 +171,12 @@ gb.tree.OpenLayers = function(obj) {
 					},
 				},
 				"layerproperties" : {
-					"properties" : undefined,
+					"properties" : new gb.edit.ModifyLayerProperties({
+						featureRecord: options.frecord,
+						token: this.token
+					}),
 					"layerRecord" : undefined,
-					"featureRecord" : undefined,
+					"featureRecord" : options.frecord,
 					"style" : undefined,
 					"editingTool" : undefined
 				},
@@ -241,7 +246,6 @@ gb.tree.OpenLayers = function(obj) {
 						"functionmarker" ]
 			});
 	this.jstree = $(this.panelBody).jstreeol3(true);
-
 };
 gb.tree.OpenLayers.prototype = Object.create(gb.tree.OpenLayers.prototype);
 gb.tree.OpenLayers.prototype.constructor = gb.tree.OpenLayers;

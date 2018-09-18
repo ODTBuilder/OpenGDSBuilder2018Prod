@@ -714,6 +714,28 @@ gb.tree.GeoServer = function(obj) {
 										that.openDeleteGeoServer(obj.id);
 									}
 								}
+							},
+							"properties": {
+								"separator_before" : false,
+								"icon" : "fa fa-info-circle",
+								"separator_after" : false,
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "point" || o.type === "multipoint" || o.type === "linestring"
+											|| o.type === "multilinestring" || o.type === "polygon" || o.type === "multipolygon") {
+										result = false;
+									}
+									return result;
+								},
+								"label" : "Properties",
+								"action" : function(data) {
+									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									if (obj.type === "geoserver") {
+										that.openDeleteGeoServer(obj.id);
+									}
+								}
 							}
 						};
 					}

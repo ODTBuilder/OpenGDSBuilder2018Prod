@@ -3013,6 +3013,14 @@ select[multiple].form-group-sm .form-control, textarea.form-group-sm .form-contr
 	line-height: 1.5
 }
 
+.col-form-label {
+	padding-top: calc(.375rem + 1px);
+	padding-bottom: calc(.375rem + 1px);
+	margin-bottom: 0;
+	font-size: inherit;
+	line-height: 1.5;
+}
+
 .input-lg {
 	height: 46px;
 	padding: 10px 16px;
@@ -3061,6 +3069,19 @@ select[multiple].form-group-lg .form-control, textarea.form-group-lg .form-contr
 
 .has-feedback .form-control {
 	padding-right: 42.5px
+}
+
+.form-control-plaintext {
+	display: block;
+	width: 100%;
+	padding-top: .375rem;
+	padding-bottom: .375rem;
+	margin-bottom: 0;
+	line-height: 1.5;
+	color: #212529;
+	background-color: transparent;
+	border: solid transparent;
+	border-width: 1px 0;
 }
 
 .form-control-feedback {

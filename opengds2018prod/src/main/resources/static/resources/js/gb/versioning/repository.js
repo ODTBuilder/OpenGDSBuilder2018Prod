@@ -67,6 +67,7 @@ gb.versioning.Repository = function(obj) {
 	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
 	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
 	this.pullRepositoryURL = url.pullRepository ? url.pullRepository : undefined;
+	this.pushRepositoryURL = url.pushRepository ? url.pushRepository : undefined;
 	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
@@ -714,6 +715,16 @@ gb.versioning.Repository.prototype.getPullRepositoryURL = function() {
 };
 
 /**
+ * push 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getPushRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getPushRepositoryURL = function() {
+	return this.pushRepositoryURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
@@ -1142,6 +1153,101 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 };
 
 /**
+ * push 요청한다.
+ * 
+ * @method gb.versioning.Repository#pushRepository
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            branch - 작업 중인 브랜치
+ * @param {String}
+ *            remoteRepo - 원격 레파지토리
+ * @param {String}
+ *            remoteBranch - 원격 브랜치
+ * @param {String}
+ *            tid - 트랜잭션 아이디
+ */
+gb.versioning.Repository.prototype.pushRepository = function(server, repo, branch, remoteRepo, remoteBranch, modal) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch,
+		"remoteName" : remoteRepo,
+		"remoteBranchName" : remoteBranch
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getPushRepositoryURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				modal.close();
+				var msg1 = $("<div>").text("Push is complete.").css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				// var msg2 = $("<div>").text('Do you want to commit the changes
+				// to your branch?').css({
+				// "text-align" : "center",
+				// "font-size" : "16px"
+				// });
+				var body = $("<div>").append(msg1);
+				// var closeBtn = $("<button>").css({
+				// "float" : "right"
+				// }).addClass("gb-button").addClass("gb-button-default").text("Later");
+				var okBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+
+				var commitModal = new gb.modal.Base({
+					"title" : "Commit Changes",
+					"width" : 310,
+					"height" : 200,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : buttonArea
+				});
+				// $(closeBtn).click(function() {
+				// commitModal.close();
+				// });
+				$(okBtn).click(function() {
+					// that.endTransaction(server, repo, tid, commitModal);
+					commitModal.close();
+				});
+			} else {
+				var title = "Error";
+				var msg = "Push failed."
+				that.messageModal(title, msg);
+			}
+		}
+	});
+};
+
+/**
  * pull 요청 창을 생성한다.
  * 
  * @method gb.versioning.Repository#pullRepositoryModal
@@ -1213,6 +1319,117 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 				that.pullRepository(server, repo, that.getNowBranch().text, $(that.reRepoSelect).val(), $(that.reBranchSelect).val(), tid,
 						commitModal);
 			});
+	this.remoteObj = {};
+	var callback = function(data) {
+		if (data.success === "true") {
+			var branches = data.remoteBranchList;
+			if (Array.isArray(branches)) {
+				for (var i = 0; i < branches.length; i++) {
+					var branch = branches[i];
+					if (!that.remoteObj.hasOwnProperty(branch.remoteName)) {
+						that.remoteObj[branch.remoteName] = [];
+					}
+					that.remoteObj[branch.remoteName].push(branch.name);
+				}
+			}
+			console.log(that.remoteObj);
+			var rRepos = Object.keys(that.remoteObj);
+			for (var i = 0; i < rRepos.length; i++) {
+				var opt = $("<option>").text(rRepos[i]);
+				$(that.reRepoSelect).append(opt);
+			}
+			var rbranches = that.remoteObj[$(that.reRepoSelect).val()];
+			$(that.reBranchSelect).empty();
+			if (Array.isArray(rbranches)) {
+				for (var i = 0; i < rbranches.length; i++) {
+					var opt = $("<option>").text(rbranches[i]);
+					$(that.reBranchSelect).append(opt);
+				}
+				commitModal.open();
+			} else {
+				console.error("error - no remote branch");
+				var title = "Error";
+				var msg = "There is no remote branch."
+				that.messageModal(title, msg);
+			}
+		} else {
+			var title = "Error";
+			var msg = "Couldn't get branch list."
+			that.messageModal(title, msg);
+		}
+	};
+	this.getBranchList(server, repo, callback);
+};
+
+/**
+ * push 요청 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#pushRepositoryModal
+ * @param {String}
+ *            server - 작업 중인 서버 이름
+ * @param {String}
+ *            repo - 작업 중인 리포지토리 이름
+ * @param {String}
+ *            tid - 작업 중인 레파지토리의 트랜잭션 아이디
+ */
+gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) {
+	var that = this;
+	var reLabel = $("<div>").text("Remote").css({
+		"text-align" : "center",
+		"margin-bottom" : "10px"
+	});
+	$(this.reRepoSelect).empty();
+	var reRepo = $("<div>").append(this.reRepoSelect);
+	$(this.reBranchSelect).empty();
+	var reBranch = $("<div>").append(this.reBranchSelect);
+	var remote = $("<div>").css({
+		"float" : "left",
+		"width" : "45%"
+	}).append(reLabel).append(reRepo).append(reBranch);
+	var loLabel = $("<div>").text("Local").css({
+		"text-align" : "center",
+		"margin-bottom" : "10px"
+	});
+	var loRepo = $("<div>").append(this.getNowRepository().text);
+	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var local = $("<div>").css({
+		"float" : "left",
+		"width" : "45%"
+	}).append(loLabel).append(loRepo).append(loBranch);
+
+	var arrow = $("<i>").addClass("fas").addClass("fa-angle-double-right");
+	var arrowArea = $("<div>").css({
+		"float" : "left",
+		"width" : "10%"
+	}).append(arrow);
+
+	var wrap = $("<div>").append(local).append(arrowArea).append(remote);
+	var body = $("<div>").append(wrap);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Push");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var commitModal = new gb.modal.Base({
+		"title" : "Push",
+		"width" : 410,
+		"height" : 210,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		commitModal.close();
+	});
+	$(okBtn).click(function() {
+		console.log($(that.reRepoSelect).val());
+		console.log($(that.reBranchSelect).val());
+
+		that.pushRepository(server, repo, that.getNowBranch().text, $(that.reRepoSelect).val(), $(that.reBranchSelect).val(), commitModal);
+	});
 	this.remoteObj = {};
 	var callback = function(data) {
 		if (data.success === "true") {

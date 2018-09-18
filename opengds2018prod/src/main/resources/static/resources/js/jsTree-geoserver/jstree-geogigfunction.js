@@ -228,6 +228,17 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var pushBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Push").css({
 							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							var tid = that.getTransactionId(repo.id);
+							if (typeof tid === "string") {
+								that._data.geogigfunction.repository.setNowServer(server);
+								that._data.geogigfunction.repository.setNowRepository(repo);
+								that._data.geogigfunction.repository.setNowBranch(branch);
+								that._data.geogigfunction.repository.pushRepositoryModal(server.text, repo.text);
+							}
 						});
 						var mergeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Merge").css({
 							"display" : "inline-block"

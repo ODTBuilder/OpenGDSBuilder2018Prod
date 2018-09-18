@@ -1286,7 +1286,8 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	var arrow = $("<i>").addClass("fas").addClass("fa-angle-double-left");
 	var arrowArea = $("<div>").css({
 		"float" : "left",
-		"width" : "10%"
+		"width" : "10%",
+		"text-align" : "center"
 	}).append(arrow);
 
 	var wrap = $("<div>").append(local).append(arrowArea).append(remote);
@@ -1400,7 +1401,8 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	var arrow = $("<i>").addClass("fas").addClass("fa-angle-double-right");
 	var arrowArea = $("<div>").css({
 		"float" : "left",
-		"width" : "10%"
+		"width" : "10%",
+		"text-align" : "center"
 	}).append(arrow);
 
 	var wrap = $("<div>").append(local).append(arrowArea).append(remote);

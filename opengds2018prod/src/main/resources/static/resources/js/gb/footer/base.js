@@ -185,7 +185,7 @@ gb.footer.Base.prototype.open = function(){
  */
 gb.footer.Base.prototype.close = function(){
 	this.footerTag.css("display", "none");
-	this.footerTag.removeClass("footer-open");
+	this.footerTag.removeClass("footer-open").trigger("footerclose");
 }
 
 /**

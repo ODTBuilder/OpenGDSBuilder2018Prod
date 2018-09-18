@@ -334,8 +334,10 @@ gb.header.EditingTool = function(obj) {
 	});
 	
 	this.treeElement.on("changed.jstreeol3", function(e, data){
-		if(data.selected.length === 1){
-			that.select(that.updateSelected(data.selected[0]));
+		if(that.map.getView().getZoom() > 11){
+			if(data.selected.length === 1){
+				that.select(that.updateSelected(data.selected[0]));
+			}
 		}
 	});
 };

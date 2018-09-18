@@ -200,10 +200,17 @@ html {
 		$(".epsg-now").click(function() {
 			crs.open();
 		});
+		
+		var frecord = new gb.edit.FeatureRecord({
+			id : "feature_id",
+			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
+		});
 
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
+			"frecord": frecord,
+			"token": "?${_csrf.parameterName}=${_csrf.token}",
 			"url" : {
 				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
@@ -225,11 +232,6 @@ html {
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
-		});
-
-		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id",
-			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
 		
 		$("#savePart").click(function(){
@@ -329,14 +331,34 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
+			wfstURL: "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}",
+			layerInfoURL: "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
 			isDisplay : false
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
-			featureList.updateTable(data.selected[0]);
+			
+			var treeid = data.selected[0];
+			var layer = data.instance.get_LayerById(treeid);
+			
+			if(!layer){
+				return;
+			}
+			
+			if(layer instanceof ol.layer.Group){
+				return;
+			}
+			
+			featureList.updateFeatureList({
+				url : wfsURL,
+				treeid : treeid,
+				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
+				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
+				layerName : layer.get('name')
+			});
 		});
 
-		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
+		/* otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
 			var layer;
 			var arr = data.node.children_d;
 			
@@ -354,7 +376,8 @@ html {
 					exceptKeys : ['geometry']
 				});
 			}
-		});
+		}); */
+		
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),

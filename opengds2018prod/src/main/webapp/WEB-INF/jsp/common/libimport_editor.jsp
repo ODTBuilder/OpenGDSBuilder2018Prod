@@ -169,3 +169,6 @@
 <!-- gb.geoserver.ImportSHP-->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
+<!-- gb.modal.modifylayer-->
+<script
+	src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>

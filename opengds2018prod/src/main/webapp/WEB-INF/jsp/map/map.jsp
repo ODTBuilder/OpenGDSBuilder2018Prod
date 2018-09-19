@@ -333,28 +333,26 @@ html {
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
-			featureList.updateTable(data.selected[0]);
-		});
-
-		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
-			var layer;
-			var arr = data.node.children_d;
-
-			for (let i = 0; i < arr.length; i++) {
-				layer = data.instance.get_LayerById(arr[i]);
-				if (layer instanceof ol.layer.Group) {
-					continue;
-				}
-				featureList.updateFeatureList({
-					url : wfsURL,
-					treeid : arr[i],
-					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
-					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
-					layerName : layer.get('name'),
-					exceptKeys : [ 'geometry' ]
-				});
+			var treeid = data.selected[0];
+			var layer = data.instance.get_LayerById(treeid);
+			
+			if(!layer){
+				return;
 			}
+			
+			if(layer instanceof ol.layer.Group){
+				return;
+			}
+			
+			featureList.updateFeatureList({
+				url : wfsURL,
+				treeid : treeid,
+				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
+				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
+				layerName : layer.get('name')
+			});
 		});
+		
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),

@@ -169,6 +169,14 @@ html {
 			class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
+		var urlList = {
+			token: "?${_csrf.parameterName}=${_csrf.token}",
+			wfst: "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
+			getLayerInfo: "geoserver/getGeoLayerInfoList.ajax",
+			getFeatureInfo: "geoserver/geoserverWFSGetFeature.ajax",
+			getWFSFeature: "geoserver/geoserverWFSGetFeature.ajax",
+			getLayerTile: "geoserver/geoserverWMSLayerLoad.do"
+		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
 			"upperMap" : {
@@ -200,10 +208,17 @@ html {
 		$(".epsg-now").click(function() {
 			crs.open();
 		});
+		
+		var frecord = new gb.edit.FeatureRecord({
+			id : "feature_id",
+			wfstURL : urlList.wfst + urlList.token
+		});
 
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
+			"frecord": frecord,
+			"token": urlList.token,
 			"url" : {
 				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
@@ -223,32 +238,25 @@ html {
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token
 			}
 		});
-
-		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id",
-			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
-		});
-
-		$("#saveChangesBtn").click(function() {
+		
+		$("#savePart").click(function(){
 			frecord.sendWFSTTransaction();
 		});
 
-		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
-		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
-			wfsURL : wfsURL,
-			getFeatureInfo : infoURL,
-			layerInfo : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
-			imageTile : "geoserver/geoserverWMSLayerLoad.do",
-			getFeature : "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}",
+			wfsURL : urlList.getWFSFeature + urlList.token,
+			getFeatureInfo : urlList.getFeatureInfo + urlList.token,
+			layerInfo : urlList.getLayerInfo + urlList.token,
+			imageTile : urlList.getLayerTile,
+			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en"
 		});
 
@@ -303,9 +311,9 @@ html {
 
 		// hole draw interaction
 		var hole = new gb.interaction.HoleDraw({
-			selected : epan.selected
+			selected: epan.selected
 		});
-
+		
 		hole.on("change:active", function(evt) {
 			if (evt.oldValue) {
 				gb.undo.setActive(true);
@@ -313,7 +321,7 @@ html {
 				gb.undo.setActive(false);
 			}
 		});
-
+		
 		epan.addInteraction({
 			icon : "fab fa-bitbucket",
 			content : "Hole",
@@ -329,35 +337,37 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
+			wfstURL: urlList.wfst + urlList.token,
+			layerInfoURL: urlList.getLayerInfo + urlList.token,
 			isDisplay : false
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
 			var treeid = data.selected[0];
 			var layer = data.instance.get_LayerById(treeid);
-
-			if (!layer) {
+			
+			if(!layer){
 				return;
 			}
-
-			if (layer instanceof ol.layer.Group) {
+			
+			if(layer instanceof ol.layer.Group){
 				return;
 			}
-
+			
 			featureList.updateFeatureList({
-				url : wfsURL,
+				url : urlList.getWFSFeature + urlList.token,
 				treeid : treeid,
 				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 				layerName : layer.get('name')
 			});
 		});
-
+		
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
 			title : "Command Line",
-			serverURL : wfsURL,
+			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,
 			map : gbMap.getUpperMap()
@@ -384,18 +394,8 @@ html {
 			"url" : {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
-				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

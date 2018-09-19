@@ -20,6 +20,10 @@ gb.layer.Navigator = function(obj) {
 		return null;
 	}
 	
+	this.token = options.token || "";
+	
+	this.selectedLayer = undefined;
+	
 	this.count = 0;
 	
 	this.td2 = $("<div>").css({
@@ -37,6 +41,53 @@ gb.layer.Navigator = function(obj) {
 	});
 	
 	this.createNavigator_();
+}
+
+gb.layer.Navigator.prototype.setLayer = function(Layer){
+	var layer = Layer;
+	
+	if(layer instanceof ol.layer.Tile){
+		var git = layer.get("git");
+		this.requestLayerInfo(git.geoserver, git.workspace, layer.get("name"), layer.get("treeid"));
+	} else if(layer instanceof ol.layer.Vector){
+		this.selectedLayer = layer;
+		this.updateNavigator();
+	} else {
+		console.error("Not supported layer type");
+		return;
+	}
+}
+
+gb.layer.Navigator.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){
+	var that = this;
+	var treeid = treeid;
+	var a = {
+		serverName: serverName,
+		workspace: workspace,
+		geoLayerList: [layer]
+	};
+	
+	$.ajax({
+		method : "POST",
+		url: "geoserver/getGeoLayerInfoList.ajax" + this.token,
+		data: JSON.stringify(a),
+		contentType: 'application/json; charset=utf-8',
+		success: function(data, textStatus, jqXHR) {
+			that.selectedLayer = data[0];
+			that.updateNavigator();
+		},
+		error: function(e) {
+			var errorMsg = e? (e.status + ' ' + e.statusText) : "";
+			console.log(errorMsg);
+		},
+	});
+}
+
+gb.layer.Navigator.prototype.updateNavigator = function(){
+	var features = this.selectedLayer.getSource().getFeatures();
+	this.count = 0;
+	this.showFeatureInfo(features[this.count]);
+	this.open();
 }
 
 gb.layer.Navigator.prototype.createNavigator_ = function(){
@@ -103,9 +154,6 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 
 	$("body").append(this.naviWindow);
 	$(this.naviWindow).hide();
-	$(this.naviWindow).draggable({
-		appendTo : "body",
-	});
 }
 
 gb.layer.Navigator.prototype.open = function(){
@@ -117,10 +165,6 @@ gb.layer.Navigator.prototype.close = function(){
 }
 
 gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
-	if (!feature) {
-		console.log("no feature maybe there is no error");
-		return;
-	}
 	var fid = feature.getId();
 	$(this.td2).text(fid);
 	var prop = feature.getProperties();
@@ -146,20 +190,26 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 }
 
 gb.layer.Navigator.prototype.prev = function(){
-	if (this.count > 1 && this.count < this.features.length + 1) {
+	var features = this.selectedLayer.getSource().getFeatures();
+	if (this.count > 0 && this.count <= features.length) {
 		this.count--;
+	} else {
+		return;
 	}
-	var feature = this.source.getFeatureById(this.lid + "." + this.count);
+	var feature = features[this.count];
 	if (feature) {
 		this.showFeatureInfo(feature);
 	}
 }
 
 gb.layer.Navigator.prototype.next = function(){
-	if (this.count > 0 && this.count < this.features.length) {
+	var features = this.selectedLayer.getSource().getFeatures();
+	if (this.count >= 0 && this.count < features.length) {
 		this.count++;
+	} else {
+		return;
 	}
-	var feature = this.source.getFeatureById(this.lid + "." + this.count);
+	var feature = features[this.count];
 	if (feature) {
 		this.showFeatureInfo(feature);
 	}

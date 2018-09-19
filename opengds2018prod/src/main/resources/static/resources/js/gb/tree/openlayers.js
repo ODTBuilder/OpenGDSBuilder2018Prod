@@ -175,6 +175,10 @@ gb.tree.OpenLayers = function(obj) {
 						featureRecord: options.frecord,
 						token: this.token
 					}),
+					"navigator": new gb.layer.Navigator({
+						map: this.map,
+						token: this.token
+					}),
 					"layerRecord" : undefined,
 					"featureRecord" : options.frecord,
 					"style" : undefined,

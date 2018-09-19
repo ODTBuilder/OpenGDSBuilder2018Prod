@@ -24,6 +24,7 @@ $.jstreeol3.plugins.layerproperties = function(options, parent) {
 	this.bind = function() {
 		parent.bind.call(this);
 		this._data.layerproperties.properties = this.settings.layerproperties.properties;
+		this._data.layerproperties.navigator = this.settings.layerproperties.navigator;
 		this._data.layerproperties.layerRecord = this.settings.layerproperties.layerRecord;
 		this._data.layerproperties.featureRecord = this.settings.layerproperties.featureRecord;
 		this._data.layerproperties.style = this.settings.layerproperties.style;

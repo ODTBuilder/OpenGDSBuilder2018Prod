@@ -169,6 +169,14 @@ html {
 			class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
+		var urlList = {
+			token: "?${_csrf.parameterName}=${_csrf.token}",
+			wfst: "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
+			getLayerInfo: "geoserver/getGeoLayerInfoList.ajax",
+			getFeatureInfo: "geoserver/geoserverWFSGetFeature.ajax",
+			getWFSFeature: "geoserver/geoserverWFSGetFeature.ajax",
+			getLayerTile: "geoserver/geoserverWMSLayerLoad.do"
+		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
 			"upperMap" : {
@@ -203,14 +211,14 @@ html {
 		
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id",
-			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
+			wfstURL : urlList.wfst + urlList.token
 		});
 
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"frecord": frecord,
-			"token": "?${_csrf.parameterName}=${_csrf.token}",
+			"token": urlList.token,
 			"url" : {
 				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
@@ -230,7 +238,7 @@ html {
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token
 			}
 		});
 		
@@ -238,19 +246,17 @@ html {
 			frecord.sendWFSTTransaction();
 		});
 
-		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
-		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			treeElement : otree.getJSTreeElement(),
-			wfsURL : wfsURL,
-			getFeatureInfo : infoURL,
-			layerInfo : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
-			imageTile : "geoserver/geoserverWMSLayerLoad.do",
-			getFeature : "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}",
+			wfsURL : urlList.getWFSFeature + urlList.token,
+			getFeatureInfo : urlList.getFeatureInfo + urlList.token,
+			layerInfo : urlList.getLayerInfo + urlList.token,
+			imageTile : urlList.getLayerTile,
+			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en"
 		});
 
@@ -331,8 +337,8 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
-			wfstURL: "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}",
-			layerInfoURL: "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
+			wfstURL: urlList.wfst + urlList.token,
+			layerInfoURL: urlList.getLayerInfo + urlList.token,
 			isDisplay : false
 		});
 
@@ -349,39 +355,19 @@ html {
 			}
 			
 			featureList.updateFeatureList({
-				url : wfsURL,
+				url : urlList.getWFSFeature + urlList.token,
 				treeid : treeid,
 				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
 				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
 				layerName : layer.get('name')
 			});
 		});
-
-		/* otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
-			var layer;
-			var arr = data.node.children_d;
-			
-			for(let i = 0; i < arr.length; i++){
-				layer = data.instance.get_LayerById(arr[i]);
-				if(layer instanceof ol.layer.Group){
-					continue;
-				}
-				featureList.updateFeatureList({
-					url : wfsURL,
-					treeid : arr[i],
-					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
-					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
-					layerName : layer.get('name'),
-					exceptKeys : ['geometry']
-				});
-			}
-		}); */
 		
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
 			title : "Command Line",
-			serverURL : wfsURL,
+			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,
 			map : gbMap.getUpperMap()

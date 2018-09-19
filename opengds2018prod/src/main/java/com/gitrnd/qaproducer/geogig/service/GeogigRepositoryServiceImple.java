@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.TEST;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DeleteRepository;
@@ -160,7 +161,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		GeogigCommit geogigCommit = null;
 
 		try {
-			commitRepos.executeCommand(url, user, pw, repoName, transactionId, message, authorName, authorEmail);
+			geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message, authorName,
+					authorEmail);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCommit.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -187,7 +189,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		ListRemoteRepository list = new ListRemoteRepository();
 		GeogigRemoteRepository remotes = null;
 		try {
-			list.executeCommand(url, user, pw, repoName, verbose);
+			remotes = list.executeCommand(url, user, pw, repoName, verbose);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -214,7 +216,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		AddRemoteRepository add = new AddRemoteRepository();
 		GeogigRemoteRepository remotes = null;
 		try {
-			add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
+			remotes = add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
 			BeginTransaction begin = new BeginTransaction();
 			GeogigTransaction transaction = begin.executeCommand(url, user, pw, repoName);
 
@@ -225,7 +227,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			// master pull
 			PullRepository pull = new PullRepository();
 			GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, "master",
-					remoteName, authorName, authorEmail);
+					"master", authorName, authorEmail);
 			if (geogigPull.getPull() != null) {
 				EndTransaction end = new EndTransaction();
 				end.executeCommand(url, user, pw, repoName, transactionId);
@@ -233,7 +235,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			StringReader reader = new StringReader(e.getMessage());
+			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(reader);
 		}
 		return remotes;
 	}
@@ -256,7 +259,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		RemoveRemoteRepository remove = new RemoveRemoteRepository();
 		GeogigRemoteRepository remotes = null;
 		try {
-			remove.executeCommand(url, user, pw, repoName, remoteName);
+			remotes = remove.executeCommand(url, user, pw, repoName, remoteName);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -283,7 +286,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		PingRemoteRepository ping = new PingRemoteRepository();
 		GeogigRemoteRepository remote = null;
 		try {
-			ping.executeCommand(url, user, pw, repoName, remoteName);
+			remote = ping.executeCommand(url, user, pw, repoName, remoteName);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

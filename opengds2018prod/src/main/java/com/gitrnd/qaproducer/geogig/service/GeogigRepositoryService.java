@@ -5,6 +5,7 @@ package com.gitrnd.qaproducer.geogig.service;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
@@ -119,5 +120,12 @@ public interface GeogigRepositoryService {
 	 */
 	GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser, String repoName,
 			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword);
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @return
+	 */
+	GeogigDelete deleteRepository(DTGeoserverManager geoserverManager, String repoName);
 
 }

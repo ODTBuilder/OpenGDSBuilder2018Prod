@@ -91,7 +91,7 @@ gb.header.Base = function(obj) {
 			"en": "Move",
 			"ko": "이동"
 		},
-		"trans": {
+		"rotate": {
 			"en": "Transform",
 			"ko": "변환"
 		},

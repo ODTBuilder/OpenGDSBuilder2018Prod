@@ -203,7 +203,7 @@ gb.header.EditingTool = function(obj) {
 			color: ""
 		},
 		{
-			content: "trans",
+			content: "rotate",
 			icon: "fas fa-object-ungroup fa-lg",
 			clickEvent: function(){
 				console.log("rotate");
@@ -260,7 +260,7 @@ gb.header.EditingTool = function(obj) {
 		"select": "selectBtn",
 		"move": "moveBtn",
 		"draw": "drawBtn",
-		"multi": "rotateBtn",
+		"transform": "rotateBtn",
 		"modify": "modiBtn",
 		"delete": "delBtn"
 	}
@@ -334,8 +334,10 @@ gb.header.EditingTool = function(obj) {
 	});
 	
 	this.treeElement.on("changed.jstreeol3", function(e, data){
-		if(data.selected.length === 1){
-			that.select(that.updateSelected(data.selected[0]));
+		if(that.map.getView().getZoom() > 11){
+			if(data.selected.length === 1){
+				that.select(that.updateSelected(data.selected[0]));
+			}
 		}
 	});
 };

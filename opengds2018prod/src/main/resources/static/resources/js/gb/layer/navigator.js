@@ -13,7 +13,30 @@ if (!gb.layer)
 
 gb.layer.Navigator = function(obj) {
 	var options = obj;
-	this.eventNamespace = ".qaedit";
+	
+	this.map = options.map || false;
+	if(!this.map){
+		console.error("gb.layer.Navigator: ol.map is required");
+		return null;
+	}
+	
+	this.count = 0;
+	
+	this.td2 = $("<div>").css({
+		"display" : "inline-block"
+	});
+	
+	this.tbody = $("<tbody>");
+	
+	this.naviWindow = $("<div>").css({
+		"max-width" : "500px",
+		"top" : "100px",
+		"right" : 0,
+		"position" : "absolute",
+		"z-Index" : "999",
+	});
+	
+	this.createNavigator_();
 }
 
 gb.layer.Navigator.prototype.createNavigator_ = function(){
@@ -23,20 +46,20 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 	
 	var btnPrev = 
 			$("<button>")
-				.addClass("gitbuilder-qaedit-navigator-prev")
+				.addClass("gb-navigator-prev")
 				.addClass("btn").addClass("btn-default")
 				.append(prevIcon), 
 		btnNext = 
 			$("<button>")
-			.addClass("gitbuilder-qaedit-navigator-next")
+			.addClass("gb-navigator-next")
 			.addClass("btn").addClass("btn-default").append(nextIcon);
 	
-	$(document).on("click", this.eventNamespace + " .gitbuilder-qaedit-navigator-prev", function() {
-		that.prevError();
+	$(document).on("click", ".gb-navigator-prev", function() {
+		that.prev();
 	});
 	
-	$(document).on("click", this.eventNamespace + " .gitbuilder-qaedit-navigator-next", function() {
-		that.nextError();
+	$(document).on("click", ".gb-navigator-next", function() {
+		that.next();
 	});
 	
 	var td1 = $("<div>").css({
@@ -46,9 +69,6 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 		"width" : "100px",
 		"display" : "inline-block"
 	}).append(btnNext);
-	this.td2 = $("<div>").css({
-		"display" : "inline-block"
-	});
 	var tr1 = $("<div>").addClass("text-center").append(td1).append(this.td2).append(td3);
 	var thead = $("<div>").css({
 		"margin-bottom" : "10px"
@@ -75,24 +95,25 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 	}).append(xSpan);
 
 	var title = $("<span>").text("Error Navigator");
-	this.tbody = $("<tbody>");
 	var tb = $("<table>").addClass("table").append(this.tbody);
 	var pbd = $("<div>").addClass("panel-body").append(thead).append(tb);
 	var phd = $("<div>").addClass("panel-heading").append(title).append(xBtn);
 	var pdf = $("<div>").addClass("panel").addClass("panel-default").append(phd).append(pbd);
-	this.naviWindow = $("<div>").css({
-		"max-width" : "500px",
-		"top" : "100px",
-		"right" : 0,
-		"position" : "absolute",
-		"z-Index" : "999",
-	}).addClass(this.eventNamespace.substr(1)).append(pdf);
+	this.naviWindow.append(pdf);
 
 	$("body").append(this.naviWindow);
 	$(this.naviWindow).hide();
 	$(this.naviWindow).draggable({
 		appendTo : "body",
 	});
+}
+
+gb.layer.Navigator.prototype.open = function(){
+	$(this.naviWindow).show();
+}
+
+gb.layer.Navigator.prototype.close = function(){
+	$(this.naviWindow).hide();
 }
 
 gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
@@ -108,7 +129,7 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	for (var i = 0; i < keys.length; i++) {
 		var td1 = $("<td>").text(keys[i]);
 		if (keys[i] === this.options.linkKey) {
-			var anc = $("<a>").addClass("gitbuilder-qaedit-navigator-link").attr({
+			var anc = $("<a>").addClass("gb-navigator-link").attr({
 				"href" : "#",
 				"value" : prop[keys[i]]
 			}).text("Move to feature");
@@ -124,7 +145,7 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	this.map.getView().setZoom(16);
 }
 
-gb.layer.Navigator.prototype.prevError = function(){
+gb.layer.Navigator.prototype.prev = function(){
 	if (this.count > 1 && this.count < this.features.length + 1) {
 		this.count--;
 	}
@@ -134,7 +155,7 @@ gb.layer.Navigator.prototype.prevError = function(){
 	}
 }
 
-gb.layer.Navigator.prototype.nextError = function(){
+gb.layer.Navigator.prototype.next = function(){
 	if (this.count > 0 && this.count < this.features.length) {
 		this.count++;
 	}

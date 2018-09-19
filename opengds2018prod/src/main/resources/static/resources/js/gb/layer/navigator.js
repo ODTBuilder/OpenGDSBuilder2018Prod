@@ -69,7 +69,7 @@ gb.layer.Navigator.prototype.requestLayerInfo = function(serverName, workspace, 
 	
 	$.ajax({
 		method : "POST",
-		url: "geoserver/getGeoLayerInfoList.ajax" + this.token,
+		url: "geoserver/geoserverWFSGetFeature.ajax" + this.token,
 		data: JSON.stringify(a),
 		contentType: 'application/json; charset=utf-8',
 		success: function(data, textStatus, jqXHR) {

@@ -353,7 +353,11 @@ html {
 			if (layer instanceof ol.layer.Group) {
 				return;
 			}
-
+			
+			if(featureList.footerTag.css("display") === "none"){
+				return;
+			}
+			
 			featureList.updateFeatureList({
 				url : urlList.getWFSFeature + urlList.token,
 				treeid : treeid,

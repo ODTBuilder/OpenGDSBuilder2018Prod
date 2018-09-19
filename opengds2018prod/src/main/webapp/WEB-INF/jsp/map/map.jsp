@@ -335,15 +335,15 @@ html {
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
 			var treeid = data.selected[0];
 			var layer = data.instance.get_LayerById(treeid);
-			
-			if(!layer){
+
+			if (!layer) {
 				return;
 			}
-			
-			if(layer instanceof ol.layer.Group){
+
+			if (layer instanceof ol.layer.Group) {
 				return;
 			}
-			
+
 			featureList.updateFeatureList({
 				url : wfsURL,
 				treeid : treeid,
@@ -352,7 +352,7 @@ html {
 				layerName : layer.get('name')
 			});
 		});
-		
+
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
@@ -392,6 +392,7 @@ html {
 				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
 				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"

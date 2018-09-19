@@ -35,7 +35,9 @@
  * @param {String}
  *            obj.url.addRemoteRepository - 원격 Repository의 추가를 요청할 컨트롤러 주소
  * @param {String}
- *            obj.url.removeRemoteRepository - 원격 Repository 삭제를 요청할 컨트롤러 주소
+ *            obj.url.removeRemoteRepository - 원격 Repository 삭제를 요청할 컨트롤러 주소 *
+ * @param {String}
+ *            obj.url.removeRepository - Repository 삭제를 요청할 컨트롤러 주소
  * @param {String}
  *            obj.url.pingRemoteRepository - 원격 Repository의 연결상태를 확인할 컨트롤러 주소
  * @param {String}
@@ -63,6 +65,7 @@ gb.versioning.Repository = function(obj) {
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
 	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
+	this.removeRepositoryURL = url.removeRepository ? url.removeRepository : undefined;
 	this.branchListURL = url.branchList ? url.branchList : undefined;
 	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
 	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
@@ -678,6 +681,16 @@ gb.versioning.Repository.prototype.getRemoteTreeURL = function() {
  */
 gb.versioning.Repository.prototype.getRemoveRemoteRepositoryURL = function() {
 	return this.removeRemoteRepositoryURL;
+};
+
+/**
+ * 레파지토리 삭제 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRemoveRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getRemoveRepositoryURL = function() {
+	return this.removeRepositoryURL;
 };
 
 /**
@@ -1800,7 +1813,7 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 		deleteModal.close();
 	});
 	$(okBtn).click(function() {
-		that.removeRepository(undefined, undefined, deleteModal);
+		that.removeRepository(that.getNowServer().text, that.getNowRepository().text, deleteModal);
 	});
 };
 
@@ -1822,7 +1835,7 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
 		"repoName" : repo,
 	}
 	// + "&" + jQuery.param(params),
-	var checkURL = this.getInitRepositoryURL();
+	var checkURL = this.getRemoveRepositoryURL();
 	if (checkURL.indexOf("?") !== -1) {
 		checkURL += "&";
 		checkURL += jQuery.param(params);
@@ -1831,29 +1844,27 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
 		checkURL += jQuery.param(params);
 	}
 
-	// $.ajax({
-	// url : checkURL,
-	// method : "POST",
-	// contentType : "application/json; charset=UTF-8",
-	// // data : params,
-	// // dataType : 'jsonp',
-	// // jsonpCallback : 'getJson',
-	// beforeSend : function() {
-	// // $("body").css("cursor", "wait");
-	// },
-	// complete : function() {
-	// // $("body").css("cursor", "default");
-	// },
-	// success : function(data) {
-	// console.log(data);
-	// if (data.success === "true") {
-	// modal.close();
-	// that.refreshList();
-	// }
-	// }
-	// });
-	modal.close();
-	that.refreshList();
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				modal.close();
+				that.refreshList();
+			}
+		}
+	});
 };
 
 /**

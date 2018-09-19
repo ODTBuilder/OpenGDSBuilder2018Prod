@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.command.repository.InitRepository;
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRemoteRepositoryTree;
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRemoteRepositoryTree.EnGeogigRemoteRepositoryTreeType;
 import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree;

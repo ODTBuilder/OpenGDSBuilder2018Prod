@@ -7,16 +7,12 @@ public class GeogigCommandException extends IllegalArgumentException {
 
 	private HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-	public GeogigCommandException(String message) {
-		super(message);
-	}
-
 	public GeogigCommandException(String message, HttpStatus status) {
 		super(message);
 		this.status = status;
 	}
 
-	public HttpStatus getStatus() {
+	public HttpStatus getStatus() {	
 		return status;
 	}
 

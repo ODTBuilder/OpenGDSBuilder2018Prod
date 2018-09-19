@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class GeogigBranchController extends AbstractController {
 	public GeogigCheckout checkoutBranch(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "branchName", required = false) String branchName) {
+			@RequestParam(value = "branchName", required = false) String branchName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		GeogigTransaction transaction = transactionService.beginTransaction(geoserverManager, repoName);
@@ -77,7 +78,7 @@ public class GeogigBranchController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "branchName", required = false) String branchName,
-			@RequestParam(value = "source", required = false) String source) {
+			@RequestParam(value = "source", required = false) String source) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.createBranch(geoserverManager, repoName, branchName, source);
@@ -87,7 +88,7 @@ public class GeogigBranchController extends AbstractController {
 	@ResponseBody
 	public GeogigBranch branchList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName) {
+			@RequestParam(value = "repoName", required = false) String repoName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.listBranch(geoserverManager, repoName);
@@ -99,7 +100,7 @@ public class GeogigBranchController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "branchName", required = false) String branchName,
-			@RequestParam(value = "transactionId", required = false) String transactionId) {
+			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.mergeBranch(geoserverManager, repoName, transactionId, branchName);
@@ -112,7 +113,7 @@ public class GeogigBranchController extends AbstractController {
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,
 			@RequestParam(value = "version", required = false) String version,
-			@RequestParam(value = "transactionId", required = false) String transactionId) {
+			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return branchService.resolveConflict(geoserverManager, repoName, transactionId, path, version);

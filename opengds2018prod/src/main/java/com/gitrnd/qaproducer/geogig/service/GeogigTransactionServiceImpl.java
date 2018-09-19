@@ -3,8 +3,15 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
@@ -25,15 +32,22 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	 * java.lang.String)
 	 */
 	@Override
-	public GeogigTransaction beginTransaction(DTGeoserverManager geoserverManager, String repoName) {
+	public GeogigTransaction beginTransaction(DTGeoserverManager geoserverManager, String repoName)
+			throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		BeginTransaction begin = new BeginTransaction();
-		GeogigTransaction transaction = begin.executeCommand(url, user, pw, repoName);
-
+		GeogigTransaction transaction = null;
+		try {
+			transaction = begin.executeCommand(url, user, pw, repoName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return transaction;
 	}
 
@@ -46,16 +60,23 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	 * java.lang.String)
 	 */
 	@Override
-	public GeogigTransaction endTransaction(DTGeoserverManager geoserverManager, String repoName,
-			String transactionId) {
+	public GeogigTransaction endTransaction(DTGeoserverManager geoserverManager, String repoName, String transactionId)
+			throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		EndTransaction end = new EndTransaction();
-		GeogigTransaction transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+		GeogigTransaction transaction = null;
 
+		try {
+			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return transaction;
 	}
 
@@ -68,15 +89,22 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 	 */
 	@Override
 	public GeogigTransaction cancelTransaction(DTGeoserverManager geoserverManager, String repoName,
-			String transactionId) {
+			String transactionId) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		EndTransaction end = new EndTransaction();
-		GeogigTransaction transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+		GeogigTransaction transaction = null;
 
+		try {
+			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return transaction;
 	}
 

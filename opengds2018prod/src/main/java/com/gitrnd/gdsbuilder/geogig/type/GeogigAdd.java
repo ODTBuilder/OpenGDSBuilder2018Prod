@@ -24,6 +24,8 @@ public class GeogigAdd {
 	 */
 	private String add;
 
+	private String error;
+
 	/**
 	 * @return the success
 	 */
@@ -33,8 +35,7 @@ public class GeogigAdd {
 	}
 
 	/**
-	 * @param success
-	 *            the success to set
+	 * @param success the success to set
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
@@ -49,11 +50,19 @@ public class GeogigAdd {
 	}
 
 	/**
-	 * @param add
-	 *            the add to set
+	 * @param add the add to set
 	 */
 	public void setAdd(String add) {
 		this.add = add;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }

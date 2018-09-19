@@ -3,8 +3,15 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import java.io.StringReader;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DeleteRepository;
@@ -48,7 +55,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser,
 			String repoName, String dbHost, String dbPort, String dbName, String dbSchema, String dbUser,
-			String dbPassword) {
+			String dbPassword) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -58,9 +65,18 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String authorEmail = loginUser.getEmail();
 
 		InitRepository initRepos = new InitRepository();
-		GeogigRepositoryInit geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName,
-				dbSchema, dbUser, dbPassword, authorName, authorEmail);
+		GeogigRepositoryInit geogigReposInit = null;
+
+		try {
+			geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName, dbSchema,
+					dbUser, dbPassword, authorName, authorEmail);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigReposInit = (GeogigRepositoryInit) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigReposInit;
+
 	}
 
 	/*
@@ -98,14 +114,22 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * java.lang.String)
 	 */
 	@Override
-	public GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId) {
+	public GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId)
+			throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		AddRepository addRepos = new AddRepository();
-		GeogigAdd geogigAdd = addRepos.executeCommand(url, user, pw, repoName, transactionId);
+		GeogigAdd geogigAdd = null;
+		try {
+			geogigAdd = addRepos.executeCommand(url, user, pw, repoName, transactionId);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigAdd.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigAdd = (GeogigAdd) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigAdd;
 	}
 
@@ -120,7 +144,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String message, LoginUser loginUser) {
+			String message, LoginUser loginUser) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -130,8 +154,15 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String authorEmail = loginUser.getEmail();
 
 		CommitRepository commitRepos = new CommitRepository();
-		GeogigCommit geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message,
-				authorName, authorEmail);
+		GeogigCommit geogigCommit = null;
+
+		try {
+			commitRepos.executeCommand(url, user, pw, repoName, transactionId, message, authorName, authorEmail);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCommit.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigCommit = (GeogigCommit) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigCommit;
 	}
 
@@ -144,15 +175,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository listRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			Boolean verbose) {
+			Boolean verbose) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		ListRemoteRepository list = new ListRemoteRepository();
-		GeogigRemoteRepository remotes = list.executeCommand(url, user, pw, repoName, verbose);
-
+		GeogigRemoteRepository remotes = null;
+		try {
+			list.executeCommand(url, user, pw, repoName, verbose);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return remotes;
 	}
 
@@ -165,15 +202,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName, String remoteURL) {
+			String remoteName, String remoteURL) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		AddRemoteRepository add = new AddRemoteRepository();
-		GeogigRemoteRepository remotes = add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
-
+		GeogigRemoteRepository remotes = null;
+		try {
+			add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return remotes;
 	}
 
@@ -186,15 +229,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName) {
+			String remoteName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		RemoveRemoteRepository remove = new RemoveRemoteRepository();
-		GeogigRemoteRepository remotes = remove.executeCommand(url, user, pw, repoName, remoteName);
-
+		GeogigRemoteRepository remotes = null;
+		try {
+			remove.executeCommand(url, user, pw, repoName, remoteName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return remotes;
 	}
 
@@ -207,15 +256,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository pingRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName) {
+			String remoteName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		PingRemoteRepository ping = new PingRemoteRepository();
-		GeogigRemoteRepository remote = ping.executeCommand(url, user, pw, repoName, remoteName);
-
+		GeogigRemoteRepository remote = null;
+		try {
+			ping.executeCommand(url, user, pw, repoName, remoteName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			remote = (GeogigRemoteRepository) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return remote;
 	}
 
@@ -230,7 +285,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String remoteName, String branchName, String remoteBranchName, LoginUser loginUser) {
+			String remoteName, String branchName, String remoteBranchName, LoginUser loginUser) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -240,9 +295,15 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String authorEmail = loginUser.getEmail();
 
 		PullRepository pull = new PullRepository();
-		GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,
-				remoteBranchName, authorName, authorEmail);
-
+		GeogigPull geogigPull = null;
+		try {
+			geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,
+					remoteBranchName, authorName, authorEmail);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPull.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigPull = (GeogigPull) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigPull;
 	}
 
@@ -256,15 +317,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
-			String branchName, String remoteBranchName) {
+			String branchName, String remoteBranchName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		PushRepository push = new PushRepository();
-		GeogigPush geogigPush = push.executeCommand(url, user, pw, repoName, remoteName, branchName, remoteBranchName);
-
+		GeogigPush geogigPush = null;
+		try {
+			geogigPush = push.executeCommand(url, user, pw, repoName, remoteName, branchName, remoteBranchName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPush.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigPush = (GeogigPush) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigPush;
 	}
 
@@ -276,15 +343,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
 	 */
 	@Override
-	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) {
+	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		FetchRepository fetch = new FetchRepository();
-		GeogigFetch geogigFetch = fetch.executeCommand(url, user, pw, repoName);
-
+		GeogigFetch geogigFetch = null;
+		try {
+			geogigFetch = fetch.executeCommand(url, user, pw, repoName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return geogigFetch;
 	}
 

@@ -33,6 +33,8 @@ public class GeogigCommit {
 	 */
 	private String deleted;
 
+	private String error;
+
 	/**
 	 * Geogig Command 응답 성공 여부 반환
 	 * 
@@ -86,8 +88,7 @@ public class GeogigCommit {
 	/**
 	 * Geogig Command 응답 성공 여부 설정
 	 * 
-	 * @param success
-	 *            Geogig Command 응답 성공 여부
+	 * @param success Geogig Command 응답 성공 여부
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
@@ -96,8 +97,7 @@ public class GeogigCommit {
 	/**
 	 * commit id 설정
 	 * 
-	 * @param commitId
-	 *            commit id
+	 * @param commitId commit id
 	 */
 	public void setCommitId(String commitId) {
 		this.commitId = commitId;
@@ -106,8 +106,7 @@ public class GeogigCommit {
 	/**
 	 * 생성 피쳐 개수 설정
 	 * 
-	 * @param added
-	 *            생성 피쳐 개수
+	 * @param added 생성 피쳐 개수
 	 */
 	public void setAdded(String added) {
 		this.added = added;
@@ -116,8 +115,7 @@ public class GeogigCommit {
 	/**
 	 * 수정 피쳐 개수 설정
 	 * 
-	 * @param changed
-	 *            수정 피쳐 개수
+	 * @param changed 수정 피쳐 개수
 	 */
 	public void setChanged(String changed) {
 		this.changed = changed;
@@ -126,11 +124,18 @@ public class GeogigCommit {
 	/**
 	 * 삭제 피쳐 개수 설정
 	 * 
-	 * @param deleted
-	 *            삭제 피쳐 개수
+	 * @param deleted 삭제 피쳐 개수
 	 */
 	public void setDeleted(String deleted) {
 		this.deleted = deleted;
 	}
 
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
 }

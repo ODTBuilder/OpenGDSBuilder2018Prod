@@ -31,6 +31,8 @@ public class GeogigConfig {
 	 */
 	private String value;
 
+	private String error;
+
 	/**
 	 * @return the success
 	 */
@@ -56,27 +58,33 @@ public class GeogigConfig {
 	}
 
 	/**
-	 * @param success
-	 *            the success to set
+	 * @param success the success to set
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
 	}
 
 	/**
-	 * @param configs
-	 *            the configs to set
+	 * @param configs the configs to set
 	 */
 	public void setConfigs(List<Config> configs) {
 		this.configs = configs;
 	}
 
 	/**
-	 * @param value
-	 *            the value to set
+	 * @param value the value to set
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "config")
@@ -100,8 +108,7 @@ public class GeogigConfig {
 		}
 
 		/**
-		 * @param name
-		 *            the name to set
+		 * @param name the name to set
 		 */
 		public void setName(String name) {
 			this.name = name;
@@ -116,8 +123,7 @@ public class GeogigConfig {
 		}
 
 		/**
-		 * @param value
-		 *            the value to set
+		 * @param value the value to set
 		 */
 		public void setValue(String value) {
 			this.value = value;

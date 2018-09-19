@@ -12,7 +12,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -20,7 +19,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
@@ -72,22 +70,10 @@ public class CreateBranch {
 		try {
 			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigBranch.class);
 		} catch (HttpClientErrorException e) {
-			// logger.error(e.getResponseBodyAsString());
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
-			logger.error(e.getResponseBodyAsString());
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-//		catch (UnknownHttpStatusCodeException e) {
-//			logger.error(e.getResponseBodyAsString());
-//			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
-//		}
-		if (responseEntity != null) {
-			HttpStatus statusCode = responseEntity.getStatusCode();
-			logger.info(responseEntity.getStatusCodeValue() + ":" + statusCode.getReasonPhrase());
-			return responseEntity.getBody();
-		} else {
-			return null;
-		}
+		return responseEntity.getBody();
 	}
 }

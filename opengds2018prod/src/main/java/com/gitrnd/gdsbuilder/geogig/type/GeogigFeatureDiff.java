@@ -12,6 +12,8 @@ public class GeogigFeatureDiff {
 
 	private List<Diff> diffs;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -28,6 +30,15 @@ public class GeogigFeatureDiff {
 
 	public void setDiffs(List<Diff> diffs) {
 		this.diffs = diffs;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "diff")

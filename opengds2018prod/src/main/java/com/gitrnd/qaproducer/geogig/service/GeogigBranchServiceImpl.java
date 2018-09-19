@@ -3,27 +3,27 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import java.io.StringReader;
 import java.util.List;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
-import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.MergeBranch;
-import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Unmerged;
@@ -46,16 +46,22 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 */
 	@Override
 	public GeogigCheckout checkoutBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String reference) {
+			String reference) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		CheckoutBranch checkoutBranch = new CheckoutBranch();
-		GeogigCheckout checkout = checkoutBranch.executeCommand(url, user, pw, repoName, transactionId, reference);
-		checkout.setTransactionId(transactionId);
-
+		GeogigCheckout checkout = null;
+		try {
+			checkout = checkoutBranch.executeCommand(url, user, pw, repoName, transactionId, reference);
+			checkout.setTransactionId(transactionId);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCheckout.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			checkout = (GeogigCheckout) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return checkout;
 	}
 
@@ -138,15 +144,21 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 */
 	@Override
 	public GeogigBranch createBranch(DTGeoserverManager geoserverManager, String repoName, String branchName,
-			String source) {
+			String source) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		CreateBranch create = new CreateBranch();
-		GeogigBranch branch = create.executeCommand(url, user, pw, repoName, branchName, source);
-
+		GeogigBranch branch = null;
+		try {
+			branch = create.executeCommand(url, user, pw, repoName, branchName, source);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBranch.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			branch = (GeogigBranch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return branch;
 	}
 
@@ -157,15 +169,21 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 * gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
 	 */
 	@Override
-	public GeogigBranch listBranch(DTGeoserverManager geoserverManager, String repoName) {
+	public GeogigBranch listBranch(DTGeoserverManager geoserverManager, String repoName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		ListBranch list = new ListBranch();
-		GeogigBranch branch = list.executeCommand(url, user, pw, repoName, true);
-
+		GeogigBranch branch = null;
+		try {
+			branch = list.executeCommand(url, user, pw, repoName, true);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBranch.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			branch = (GeogigBranch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return branch;
 	}
 
@@ -179,15 +197,21 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 */
 	@Override
 	public GeogigMerge mergeBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String branchName) {
+			String branchName) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		MergeBranch merge = new MergeBranch();
-		GeogigMerge branch = merge.executeCommand(url, user, pw, repoName, transactionId, branchName);
-
+		GeogigMerge branch = null;
+		try {
+			branch = merge.executeCommand(url, user, pw, repoName, transactionId, branchName);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigMerge.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			branch = (GeogigMerge) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return branch;
 	}
 
@@ -201,15 +225,21 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 */
 	@Override
 	public GeogigCheckout resolveConflict(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String path, String version) {
+			String path, String version) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		CheckoutBranch checkout = new CheckoutBranch();
-		GeogigCheckout branch = checkout.executeCommand(url, user, pw, repoName, transactionId, path, version);
-
+		GeogigCheckout branch = null;
+		try {
+			branch = checkout.executeCommand(url, user, pw, repoName, transactionId, path, version);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCheckout.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			branch = (GeogigCheckout) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		}
 		return branch;
 	}
 

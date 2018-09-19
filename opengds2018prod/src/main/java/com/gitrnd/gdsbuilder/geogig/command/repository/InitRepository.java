@@ -9,12 +9,14 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 
 import net.sf.json.JSONObject;
@@ -45,17 +47,6 @@ public class InitRepository {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.add("Authorization", encodedAuth);
 
-		// body
-//		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-//		bodyObj.put("dbHost", dbHost);
-//		bodyObj.put("dbPort", dbPort);
-//		bodyObj.put("dbName", dbName);
-//		bodyObj.put("dbSchema", dbSchema);
-//		bodyObj.put("dbUser", dbUser);
-//		bodyObj.put("dbPassword", dbPassword);
-//		bodyObj.put("authorName", authorName);
-//		bodyObj.put("authorEmail", authorEmail);
-
 		JSONObject bodyObj = new JSONObject();
 		bodyObj.put("dbHost", dbHost);
 		bodyObj.put("dbPort", dbPort);
@@ -75,15 +66,11 @@ public class InitRepository {
 		ResponseEntity<GeogigRepositoryInit> responseEntity = null;
 		try {
 			responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, GeogigRepositoryInit.class);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (HttpClientErrorException e) {
+			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+		} catch (HttpServerErrorException e) {
+			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-		if (responseEntity != null) {
-			HttpStatus statusCode = responseEntity.getStatusCode();
-			logger.info(responseEntity.getStatusCodeValue() + ":" + statusCode.getReasonPhrase());
-			return responseEntity.getBody();
-		} else {
-			return null;
-		}
+		return responseEntity.getBody();
 	}
 }

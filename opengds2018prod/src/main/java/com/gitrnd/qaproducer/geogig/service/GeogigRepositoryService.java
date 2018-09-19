@@ -3,6 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import javax.xml.bind.JAXBException;
+
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
@@ -26,7 +28,8 @@ public interface GeogigRepositoryService {
 	 * @param transactionId
 	 * @return
 	 */
-	GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId);
+	GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId)
+			throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -35,17 +38,20 @@ public interface GeogigRepositoryService {
 	 * @param message
 	 * @param loginUser
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigCommit commitRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String message, LoginUser loginUser);
+			String message, LoginUser loginUser) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
 	 * @param repoName
 	 * @param verbose
 	 * @return
+	 * @throws JAXBException
 	 */
-	GeogigRemoteRepository listRemoteRepository(DTGeoserverManager geoserverManager, String repoName, Boolean verbose);
+	GeogigRemoteRepository listRemoteRepository(DTGeoserverManager geoserverManager, String repoName, Boolean verbose)
+			throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -53,27 +59,30 @@ public interface GeogigRepositoryService {
 	 * @param remoteName
 	 * @param remoteURL
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
-			String remoteURL);
+			String remoteURL) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
 	 * @param repoName
 	 * @param remoteName
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName);
+			String remoteName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
 	 * @param repoName
 	 * @param remoteName
 	 * @return
+	 * @throws JAXBException
 	 */
-	GeogigRemoteRepository pingRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName);
+	GeogigRemoteRepository pingRemoteRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName)
+			throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -84,9 +93,10 @@ public interface GeogigRepositoryService {
 	 * @param remoteBranchName
 	 * @param user
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String remoteName, String branchName, String remoteBranchName, LoginUser user);
+			String remoteName, String branchName, String remoteBranchName, LoginUser user) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -95,16 +105,18 @@ public interface GeogigRepositoryService {
 	 * @param branchName
 	 * @param remoteBranchName
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
-			String branchName, String remoteBranchName);
+			String branchName, String remoteBranchName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
 	 * @param repoName
 	 * @return GeogigFetch
+	 * @throws JAXBException
 	 */
-	GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName);
+	GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -117,9 +129,11 @@ public interface GeogigRepositoryService {
 	 * @param dbUser
 	 * @param dbPassword
 	 * @return
+	 * @throws JAXBException
 	 */
 	GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser, String repoName,
-			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword);
+			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword)
+			throws JAXBException;
 
 	/**
 	 * @param geoserverManager

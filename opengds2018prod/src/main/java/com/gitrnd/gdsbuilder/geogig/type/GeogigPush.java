@@ -29,6 +29,8 @@ public class GeogigPush {
 	 */
 	private String dataPushed;
 
+	private String error;
+
 	/**
 	 * @return the success
 	 */
@@ -54,27 +56,33 @@ public class GeogigPush {
 	}
 
 	/**
-	 * @param success
-	 *            the success to set
+	 * @param success the success to set
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
 	}
 
 	/**
-	 * @param push
-	 *            the push to set
+	 * @param push the push to set
 	 */
 	public void setPush(String push) {
 		this.push = push;
 	}
 
 	/**
-	 * @param dataPushed
-	 *            the dataPushed to set
+	 * @param dataPushed the dataPushed to set
 	 */
 	public void setDataPushed(String dataPushed) {
 		this.dataPushed = dataPushed;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }

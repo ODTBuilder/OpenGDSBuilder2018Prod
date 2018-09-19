@@ -33,6 +33,8 @@ public class GeogigTasks {
 	 */
 	private Result result;
 
+	private String error;
+
 	/**
 	 * tasks Id 반환
 	 * 
@@ -81,6 +83,15 @@ public class GeogigTasks {
 	@XmlElement(name = "result")
 	public Result getResult() {
 		return result;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	public void setId(String id) {

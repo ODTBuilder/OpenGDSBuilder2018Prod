@@ -465,8 +465,14 @@ gb.versioning.Repository.prototype.beginTransaction = function(serverName, repoN
  * 트랜잭션 아이디를 종료한다.
  * 
  * @method gb.versioning.Repository#endTransaction
- * @return {Object} 트랜잭션 아이디 객체
- * 
+ * @param {String}
+ *            serverName - 등록한 지오서버 이름
+ * @param {String}
+ *            repoName - 레파지토리 이름
+ * @param {Sting}
+ *            tid - 트랜잭션 아이디
+ * @param {gb.modal.Base}
+ *            modal - 작업 완료후 닫을 Modal 객체
  */
 gb.versioning.Repository.prototype.endTransaction = function(serverName, repoName, tid, modal) {
 	var that = this;

@@ -23,6 +23,8 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.remote.AddRemoteRepositor
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.RemoveRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
+import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
@@ -32,6 +34,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -202,7 +205,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 */
 	@Override
 	public GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
-			String remoteName, String remoteURL) throws JAXBException {
+			String remoteName, String remoteURL, LoginUser loginUser) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -212,6 +215,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		GeogigRemoteRepository remotes = null;
 		try {
 			add.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
+			BeginTransaction begin = new BeginTransaction();
+			GeogigTransaction transaction = begin.executeCommand(url, user, pw, repoName);
+
+			String transactionId = transaction.getTransaction().getId();
+			String authorName = loginUser.getUsername();
+			String authorEmail = loginUser.getEmail();
+
+			// master pull
+			PullRepository pull = new PullRepository();
+			GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, "master",
+					remoteName, authorName, authorEmail);
+			if (geogigPull.getPull() != null) {
+				EndTransaction end = new EndTransaction();
+				end.executeCommand(url, user, pw, repoName, transactionId);
+			}
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemoteRepository.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

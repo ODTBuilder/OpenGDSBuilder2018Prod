@@ -58,11 +58,12 @@ public interface GeogigRepositoryService {
 	 * @param repoName
 	 * @param remoteName
 	 * @param remoteURL
+	 * @param loginUser
 	 * @return
 	 * @throws JAXBException
 	 */
 	GeogigRemoteRepository addRemoteRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
-			String remoteURL) throws JAXBException;
+			String remoteURL, LoginUser loginUser) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

@@ -87,7 +87,7 @@ public class GeogigRepositoryController extends AbstractController {
 			@RequestParam(value = "remoteURL", required = false) String remoteURL) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return reposService.addRemoteRepository(geoserverManager, repoName, remoteName, remoteURL);
+		return reposService.addRemoteRepository(geoserverManager, repoName, remoteName, remoteURL, loginUser);
 	}
 
 	@RequestMapping(value = "/removeRemoteRepository.do", method = RequestMethod.POST)

@@ -170,12 +170,12 @@ html {
 	</nav>
 	<script type="text/javascript">
 		var urlList = {
-			token: "?${_csrf.parameterName}=${_csrf.token}",
-			wfst: "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
-			getLayerInfo: "geoserver/getGeoLayerInfoList.ajax",
-			getFeatureInfo: "geoserver/geoserverWFSGetFeature.ajax",
-			getWFSFeature: "geoserver/geoserverWFSGetFeature.ajax",
-			getLayerTile: "geoserver/geoserverWMSLayerLoad.do"
+			token : "?${_csrf.parameterName}=${_csrf.token}",
+			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
+			getLayerInfo : "geoserver/getGeoLayerInfoList.ajax",
+			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
+			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
+			getLayerTile : "geoserver/geoserverWMSLayerLoad.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
@@ -208,7 +208,7 @@ html {
 		$(".epsg-now").click(function() {
 			crs.open();
 		});
-		
+
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id",
 			wfstURL : urlList.wfst + urlList.token
@@ -217,8 +217,8 @@ html {
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
-			"frecord": frecord,
-			"token": urlList.token,
+			"frecord" : frecord,
+			"token" : urlList.token,
 			"url" : {
 				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
@@ -241,8 +241,8 @@ html {
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token
 			}
 		});
-		
-		$("#savePart").click(function(){
+
+		$("#savePart").click(function() {
 			frecord.sendWFSTTransaction();
 		});
 
@@ -311,9 +311,9 @@ html {
 
 		// hole draw interaction
 		var hole = new gb.interaction.HoleDraw({
-			selected: epan.selected
+			selected : epan.selected
 		});
-		
+
 		hole.on("change:active", function(evt) {
 			if (evt.oldValue) {
 				gb.undo.setActive(true);
@@ -321,7 +321,7 @@ html {
 				gb.undo.setActive(false);
 			}
 		});
-		
+
 		epan.addInteraction({
 			icon : "fab fa-bitbucket",
 			content : "Hole",
@@ -337,23 +337,23 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
-			wfstURL: urlList.wfst + urlList.token,
-			layerInfoURL: urlList.getLayerInfo + urlList.token,
+			wfstURL : urlList.wfst + urlList.token,
+			layerInfoURL : urlList.getLayerInfo + urlList.token,
 			isDisplay : false
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
 			var treeid = data.selected[0];
 			var layer = data.instance.get_LayerById(treeid);
-			
-			if(!layer){
+
+			if (!layer) {
 				return;
 			}
-			
-			if(layer instanceof ol.layer.Group){
+
+			if (layer instanceof ol.layer.Group) {
 				return;
 			}
-			
+
 			featureList.updateFeatureList({
 				url : urlList.getWFSFeature + urlList.token,
 				treeid : treeid,
@@ -362,7 +362,7 @@ html {
 				layerName : layer.get('name')
 			});
 		});
-		
+
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
@@ -394,8 +394,18 @@ html {
 			"url" : {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"transactionId" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

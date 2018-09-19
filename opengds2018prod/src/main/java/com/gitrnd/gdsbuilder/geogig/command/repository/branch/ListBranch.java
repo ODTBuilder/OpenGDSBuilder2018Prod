@@ -17,7 +17,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 
@@ -54,8 +57,6 @@ public class ListBranch {
 		headers.setContentType(MediaType.APPLICATION_XML);
 		headers.add("Authorization", encodedAuth);
 
-		repository = "ajsjsj";
-
 		// url
 		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_list + "true";
 
@@ -68,8 +69,12 @@ public class ListBranch {
 		ResponseEntity<GeogigBranch> responseEntity = null;
 		try {
 			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigBranch.class);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (HttpClientErrorException e) {
+			logger.error(e.getResponseBodyAsString());
+		} catch (HttpServerErrorException e) {
+			logger.error(e.getResponseBodyAsString());
+		} catch (UnknownHttpStatusCodeException e) {
+			logger.error(e.getResponseBodyAsString());
 		}
 		if (responseEntity != null) {
 			HttpStatus statusCode = responseEntity.getStatusCode();

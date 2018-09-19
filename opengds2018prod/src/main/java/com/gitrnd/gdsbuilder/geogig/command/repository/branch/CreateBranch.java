@@ -77,10 +77,11 @@ public class CreateBranch {
 		} catch (HttpServerErrorException e) {
 			logger.error(e.getResponseBodyAsString());
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
-		} catch (UnknownHttpStatusCodeException e) {
-			logger.error(e.getResponseBodyAsString());
-			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
+//		catch (UnknownHttpStatusCodeException e) {
+//			logger.error(e.getResponseBodyAsString());
+//			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+//		}
 		if (responseEntity != null) {
 			HttpStatus statusCode = responseEntity.getStatusCode();
 			logger.info(responseEntity.getStatusCodeValue() + ":" + statusCode.getReasonPhrase());

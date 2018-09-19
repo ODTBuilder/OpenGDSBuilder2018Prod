@@ -337,7 +337,6 @@ html {
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
-			
 			var treeid = data.selected[0];
 			var layer = data.instance.get_LayerById(treeid);
 			

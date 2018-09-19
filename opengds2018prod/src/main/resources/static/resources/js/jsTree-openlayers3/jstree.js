@@ -10329,6 +10329,25 @@
 								}
 								console.log("Not yet");
 							}
+						},
+						"navigator" : {
+							"separator_before" : false,
+							"icon" : "fa fa-compass",
+							"separator_after" : false,
+							"_disabled" : false,
+							"label" : "Navigator",
+							"action" : function(data) {
+								var inst = $.jstreeol3.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if (inst.is_selected(obj)) {
+									var layer = inst.get_LayerById(obj.id);
+									
+									inst._data.layerproperties.navigator
+											.setLayer(layer);
+								} else {
+									// inst.delete_node_layer(obj);
+								}
+							}
 						}
 					};
 				}

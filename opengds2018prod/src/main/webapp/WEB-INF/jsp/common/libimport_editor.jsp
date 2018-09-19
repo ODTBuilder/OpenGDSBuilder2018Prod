@@ -107,9 +107,11 @@
 <!-- gb map -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
-<!-- gb modal base -->
+<!-- gb.modal -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
+<script
+	src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>
 <!-- gb panel  base -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
@@ -169,6 +171,6 @@
 <!-- gb.geoserver.ImportSHP-->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
-<!-- gb.modal.modifylayer-->
+<!-- gb.layer-->
 <script
-	src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>
+	src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>

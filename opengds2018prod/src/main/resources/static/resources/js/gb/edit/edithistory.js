@@ -472,8 +472,8 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].created = [];
 				}
 			}
-			this.created[layer][feature].setGeometryName("the_geom");
-			this.created[layer][feature].set("the_geom", this.created[layer][feature].get("geometry"));
+			this.created[layer][feature].setGeometryName("geom");
+			this.created[layer][feature].set("geom", this.created[layer][feature].get("geometry"));
 			this.created[layer][feature].unset("geometry");
 			layers[layer].created.push(this.created[layer][feature]);
 		}
@@ -490,8 +490,8 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].modified = [];
 				}
 			}
-			this.modified[layer][feature].setGeometryName("the_geom");
-			this.modified[layer][feature].set("the_geom", this.modified[layer][feature].get("geometry"));
+			this.modified[layer][feature].setGeometryName("geom");
+			this.modified[layer][feature].set("geom", this.modified[layer][feature].get("geometry"));
 			this.modified[layer][feature].unset("geometry");
 			layers[layer].modified.push(this.modified[layer][feature]);
 		}
@@ -508,8 +508,8 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].removed = [];
 				}
 			}
-			this.removed[layer][feature].setGeometryName("the_geom");
-			this.removed[layer][feature].set("the_geom", this.removed[layer][feature].get("geometry"));
+			this.removed[layer][feature].setGeometryName("geom");
+			this.removed[layer][feature].set("geom", this.removed[layer][feature].get("geometry"));
 			this.removed[layer][feature].unset("geometry");
 			layers[layer].removed.push(this.removed[layer][feature]);
 		}

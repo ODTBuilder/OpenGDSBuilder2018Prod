@@ -1289,7 +1289,7 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 				var commitModal = new gb.modal.Base({
 					"title" : "Message",
 					"width" : 310,
-					"height" : 170,
+					"height" : 190,
 					"autoOpen" : true,
 					"body" : body,
 					"footer" : buttonArea

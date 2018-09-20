@@ -455,10 +455,11 @@ gb.edit.FeatureRecord.prototype.deleteFeatureRemoved = function(layerId, feature
 	return feature;
 };
 
-gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
+gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 	
 	var layers = {};
 	var format = new ol.format.WFS();
+	var edit = editTool;
 	
 	for(let layer in this.created){
 		for(let feature in this.created[layer]){
@@ -548,7 +549,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
-				console.log(result);
+				edit.refreshTileLayer();
 			},
 			error: function(e) {
 				var errorMsg = e? (e.status + ' ' + e.statusText) : "";

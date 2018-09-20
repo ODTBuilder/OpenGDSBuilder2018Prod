@@ -211,7 +211,8 @@ html {
 		
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id",
-			wfstURL : urlList.wfst + urlList.token
+			wfstURL : urlList.wfst + urlList.token,
+			layerInfoURL: urlList.getLayerInfo + urlList.token
 		});
 
 		var otree = new gb.tree.OpenLayers({

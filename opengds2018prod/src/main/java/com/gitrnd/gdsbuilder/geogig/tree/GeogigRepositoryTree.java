@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
@@ -98,16 +99,20 @@ public class GeogigRepositoryTree extends JSONArray {
 						DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
 						if (dtGeoserverReader != null) {
 							ListRepository listRepos = new ListRepository();
-							GeogigRepository geogigRepo = listRepos.executeCommand(dtGeoManager.getRestURL(),
-									dtGeoManager.getUsername(), dtGeoManager.getPassword());
-							if (geogigRepo != null) {
+							try {
+								GeogigRepository geogigRepo = listRepos.executeCommand(dtGeoManager.getRestURL(),
+										dtGeoManager.getUsername(), dtGeoManager.getPassword());
 								List<Repo> repos = geogigRepo.getRepos();
-								if (repos.size() > 0) {
-									this.addServer(server, true);
-								} else {
+								if (repos == null) {
 									this.addServer(server, false);
+								} else {
+									if (repos.size() > 0) {
+										this.addServer(server, true);
+									} else {
+										this.addServer(server, false);
+									}
 								}
-							} else {
+							} catch (GeogigCommandException e) {
 								this.addServer(server, false);
 							}
 						}

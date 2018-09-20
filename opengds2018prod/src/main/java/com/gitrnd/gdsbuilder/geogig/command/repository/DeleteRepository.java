@@ -68,7 +68,7 @@ public class DeleteRepository {
 		}
 	}
 
-	public GeogigDelete executeDeleteCommand(String baseURL, String username, String password, String repository,
+	public void executeDeleteCommand(String baseURL, String username, String password, String repository,
 			String token) {
 
 		// restTemplate
@@ -91,14 +91,12 @@ public class DeleteRepository {
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigDelete> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, GeogigDelete.class);
+			restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-		return responseEntity.getBody();
 	}
 }

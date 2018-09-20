@@ -2138,8 +2138,17 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	var tileLayers = this.getTileLayersInMap(this.map);
 	
-	for(var i in tileLayers){
+	for(var i = 0; i < tileLayers.length; i++){
 		tileLayers[i].setVisible(bool);
+	}
+}
+
+//hochul
+gb.header.EditingTool.prototype.refreshTileLayer = function(){
+	var tileLayers = this.getTileLayersInMap(this.map);
+	
+	for(var i = 0; i < tileLayers.length; i++){
+		tileLayers[i].getSource().refresh();
 	}
 }
 

@@ -211,7 +211,8 @@ html {
 
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id",
-			wfstURL : urlList.wfst + urlList.token
+			wfstURL : urlList.wfst + urlList.token,
+			layerInfoURL: urlList.getLayerInfo + urlList.token
 		});
 
 		var otree = new gb.tree.OpenLayers({
@@ -241,11 +242,7 @@ html {
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token
 			}
 		});
-
-		$("#savePart").click(function() {
-			frecord.sendWFSTTransaction();
-		});
-
+		
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -265,6 +262,10 @@ html {
 			epan.editToolToggle();
 		});
 
+		$("#savePart").click(function(){
+			frecord.sendWFSTTransaction(epan);
+		});
+		
 		// 거리, 면적 측정 기능 추가
 		var measureArea = new gb.interaction.MeasureTip({
 			type : "Polygon",

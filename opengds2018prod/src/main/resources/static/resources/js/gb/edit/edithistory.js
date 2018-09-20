@@ -17,6 +17,7 @@ gb.edit.FeatureRecord = function(obj) {
 	this.removed = {};
 	this.id = obj.id ? obj.id : false;
 	this.wfstURL = obj.wfstURL || '';
+	this.layerInfoURL = obj.layerInfoURL || '';
 }
 /**
  * 임시보관 중인 새로운 feature들을 반환한다.
@@ -160,10 +161,12 @@ gb.edit.FeatureRecord.prototype.isRemoved = function(layer, feature) {
  *            feature - 편집이력에 임시저장할 feature 객체
  */
 gb.edit.FeatureRecord.prototype.create = function(layer, feature) {
-	if (!this.created[layer.get("id")]) {
-		this.created[layer.get("id")] = {};
+	var id = layer.get("id");
+	if (!this.created[id]) {
+		this.created[id] = {};
+		this.requestLayerInfo(id.split(":")[0], id.split(":")[1], id.split(":")[3], this.created[id]);
 	}
-	this.created[layer.get("id")][feature.getId()] = feature;
+	this.created[id][feature.getId()] = feature;
 	// console.log(this.created);
 }
 /**
@@ -177,22 +180,24 @@ gb.edit.FeatureRecord.prototype.create = function(layer, feature) {
  *            feature - 편집이력에 임시저장할 feature 객체
  */
 gb.edit.FeatureRecord.prototype.remove = function(layer, feature) {
-	if (!this.removed[layer.get("id")]) {
-		this.removed[layer.get("id")] = {};
+	var id = layer.get("id");
+	if (!this.removed[id]) {
+		this.removed[id] = {};
+		this.requestLayerInfo(id.split(":")[0], id.split(":")[1], id.split(":")[3], this.removed[id]);
 	}
 	if (feature.getId().search(".new") !== -1) {
-		var keys = Object.keys(this.created[layer.get("id")]);
+		var keys = Object.keys(this.created[id]);
 		for (var i = 0; i < keys.length; i++) {
-			if (this.created[layer.get("id")][keys[i]].getId() === feature.getId()) {
-				delete this.created[layer.get("id")][keys[i]];
+			if (this.created[id][keys[i]].getId() === feature.getId()) {
+				delete this.created[id][keys[i]];
 				break;
 			}
 		}
 	} else {
-		this.removed[layer.get("id")][this.id ? feature.get(this.id) : feature.getId()] = feature;
-		if (this.modified.hasOwnProperty(layer.get("id"))) {
-			if (this.modified[layer.get("id")].hasOwnProperty(this.id ? feature.get(this.id) : feature.getId())) {
-				delete this.modified[layer.get("id")][this.id ? feature.get(this.id) : feature.getId()];
+		this.removed[id][this.id ? feature.get(this.id) : feature.getId()] = feature;
+		if (this.modified.hasOwnProperty(id)) {
+			if (this.modified[id].hasOwnProperty(this.id ? feature.get(this.id) : feature.getId())) {
+				delete this.modified[id][this.id ? feature.get(this.id) : feature.getId()];
 			}
 		}
 	}
@@ -233,6 +238,7 @@ gb.edit.FeatureRecord.prototype.removeByLayer = function(layerId) {
  *            feature - 편집이력에 임시저장할 feature 객체
  */
 gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
+	var id = layer.get("id");
 	if (!this.modified) {
 		this.modified = {};
 	}
@@ -240,14 +246,54 @@ gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 		return;
 	}
 	if (feature.getId().search(".new") !== -1) {
-		this.created[layer.get("id")][feature.getId()] = feature;
+		this.created[id][feature.getId()] = feature;
 	} else {
-		if (!this.modified[layer.get("id")]) {
-			this.modified[layer.get("id")] = {};
+		if (!this.modified[id]) {
+			this.modified[id] = {};
+			this.requestLayerInfo(id.split(":")[0], id.split(":")[1], id.split(":")[3], this.modified[id]);
 		}
-		this.modified[layer.get("id")][this.id ? feature.get(this.id) : feature.getId()] = feature;
+		this.modified[id][this.id ? feature.get(this.id) : feature.getId()] = feature;
 	}
 }
+
+/**
+ * Layer의 Geometry Key 값을 요청하여 저장한다.
+ * 
+ * @method gb.edit.FeatureRecord#requestLayerInfo
+ * @function
+ * @param {String}
+ *            serverName - Geoserver name
+ * @param {String}
+ *            workspace - Workspace name
+ * @param {String}
+ *            layer - Layer name
+ * @param {Object}
+ *            object - Geometry Key 값을 저장할 객체
+ */
+gb.edit.FeatureRecord.prototype.requestLayerInfo = function(serverName, workspace, layer, object){
+	var obj = object;
+	var a = {
+		serverName: serverName,
+		workspace: workspace,
+		geoLayerList: [layer]
+	};
+	
+	$.ajax({
+		method : "POST",
+		url: this.layerInfoURL,
+		data: JSON.stringify(a),
+		contentType: 'application/json; charset=utf-8',
+		success: function(data, textStatus, jqXHR) {
+			var geomKey = data[0].geomkey;
+			obj.geomKey = geomKey;
+		},
+		error: function(e) {
+			var errorMsg = e? (e.status + ' ' + e.statusText) : "";
+			console.log(errorMsg);
+		},
+	});
+}
+
 /**
  * 임시저장중인 편집이력을 JSON 형태로 반환한다.
  * 
@@ -455,13 +501,17 @@ gb.edit.FeatureRecord.prototype.deleteFeatureRemoved = function(layerId, feature
 	return feature;
 };
 
-gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
+gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 	
 	var layers = {};
 	var format = new ol.format.WFS();
+	var edit = editTool;
 	
 	for(let layer in this.created){
 		for(let feature in this.created[layer]){
+			if(feature === "geomKey"){
+				continue;
+			}
 			if(!layers[layer]){
 				layers[layer] = {};
 				layers[layer].created = [];
@@ -472,14 +522,18 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].created = [];
 				}
 			}
-			this.created[layer][feature].setGeometryName("the_geom");
-			this.created[layer][feature].set("the_geom", this.created[layer][feature].get("geometry"));
-			this.created[layer][feature].unset("geometry");
+			var geomKey = this.created[layer][feature].getGeometryName();
+			this.created[layer][feature].setGeometryName(this.created[layer].geomKey);
+			this.created[layer][feature].set(this.created[layer].geomKey, this.created[layer][feature].get(geomKey));
+			this.created[layer][feature].unset(geomKey);
 			layers[layer].created.push(this.created[layer][feature]);
 		}
 	}
 	for(let layer in this.modified){
 		for(let feature in this.modified[layer]){
+			if(feature === "geomKey"){
+				continue;
+			}
 			if(!layers[layer]){
 				layers[layer] = {};
 				layers[layer].created = null;
@@ -490,14 +544,18 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].modified = [];
 				}
 			}
-			this.modified[layer][feature].setGeometryName("the_geom");
-			this.modified[layer][feature].set("the_geom", this.modified[layer][feature].get("geometry"));
-			this.modified[layer][feature].unset("geometry");
+			var geomKey = this.modified[layer][feature].getGeometryName();
+			this.modified[layer][feature].setGeometryName(this.modified[layer].geomKey);
+			this.modified[layer][feature].set(this.modified[layer].geomKey, this.modified[layer][feature].get(geomKey));
+			this.modified[layer][feature].unset(geomKey);
 			layers[layer].modified.push(this.modified[layer][feature]);
 		}
 	}
 	for(let layer in this.removed){
 		for(let feature in this.removed[layer]){
+			if(feature === "geomKey"){
+				continue;
+			}
 			if(!layers[layer]){
 				layers[layer] = {};
 				layers[layer].created = null;
@@ -508,9 +566,10 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 					layers[layer].removed = [];
 				}
 			}
-			this.removed[layer][feature].setGeometryName("the_geom");
-			this.removed[layer][feature].set("the_geom", this.removed[layer][feature].get("geometry"));
-			this.removed[layer][feature].unset("geometry");
+			var geomKey = this.removed[layer][feature].getGeometryName();
+			this.removed[layer][feature].setGeometryName(this.removed[layer].geomKey);
+			this.removed[layer][feature].set(this.removed[layer].geomKey, this.removed[layer][feature].get(geomKey));
+			this.removed[layer][feature].unset(geomKey);
 			layers[layer].removed.push(this.removed[layer][feature]);
 		}
 	}
@@ -548,7 +607,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
-				console.log(result);
+				edit.refreshTileLayer();
 			},
 			error: function(e) {
 				var errorMsg = e? (e.status + ' ' + e.statusText) : "";

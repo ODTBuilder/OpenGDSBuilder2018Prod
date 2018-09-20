@@ -20,6 +20,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -57,9 +58,10 @@ public class GeogigRepositoryController extends AbstractController {
 
 	@RequestMapping(value = "/deleteRepository.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigDelete initRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigRepositoryDelete initRepository(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName) {
+			@RequestParam(value = "repoName", required = false) String repoName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.deleteRepository(geoserverManager, repoName);

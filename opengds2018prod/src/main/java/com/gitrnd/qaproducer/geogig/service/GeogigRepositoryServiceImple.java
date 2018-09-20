@@ -12,7 +12,6 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.TEST;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DeleteRepository;
@@ -28,7 +27,6 @@ import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
@@ -91,22 +89,25 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * (com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
 	 */
 	@Override
-	public GeogigDelete deleteRepository(DTGeoserverManager geoserverManager, String repoName) {
+	public GeogigRepositoryDelete deleteRepository(DTGeoserverManager geoserverManager, String repoName)
+			throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		DeleteRepository deleteReops = new DeleteRepository();
-		GeogigRepositoryDelete geogigRepos = deleteReops.executeGetCommand(url, user, pw, repoName);
-
-		if (geogigRepos != null) {
+		GeogigRepositoryDelete geogigRepos = null;
+		try {
+			geogigRepos = deleteReops.executeGetCommand(url, user, pw, repoName);
 			String token = geogigRepos.getToken();
-			GeogigDelete geogigDelete = deleteReops.executeDeleteCommand(url, user, pw, repoName, token);
-			return geogigDelete;
-		} else {
-			return null;
+			deleteReops.executeDeleteCommand(url, user, pw, repoName, token);
+		} catch (GeogigCommandException e) {
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryDelete.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			geogigRepos = (GeogigRepositoryDelete) unmarshaller.unmarshal(new StringReader(e.getMessage()));
 		}
+		return geogigRepos;
 	}
 
 	/*

@@ -126,7 +126,7 @@ html {
 				<li><a href="#" title="Base map" id="changeBase"> <i class="fas fa-map fa-lg" style="color: #91d050;"></i>
 						Base Map
 				</a></li>
-				<li><a href="#" title="Validation"> <i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
+				<li><a href="#" title="Validation" id="validation"> <i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
 						Validation
 				</a></li>
 				<li><a href="#" title="Navigator" id="qaedit"> <i class="far fa-compass fa-lg" style="color: #15aabf;"></i>
@@ -207,6 +207,17 @@ html {
 
 		$(".epsg-now").click(function() {
 			crs.open();
+		});
+		
+		// 검수 수행 Modal 생성
+		var validation = new gb.modal.Validation({
+			"token": urlList.token,
+			"autoOpen" : false,
+			"title" : "Validation"
+		});
+
+		$("#validation").click(function() {
+			validation.open();
 		});
 		
 		var frecord = new gb.edit.FeatureRecord({

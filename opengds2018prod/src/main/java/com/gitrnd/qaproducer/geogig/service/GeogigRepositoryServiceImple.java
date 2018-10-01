@@ -238,6 +238,9 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			StringReader reader = new StringReader(e.getMessage());
 			remotes = (GeogigRemoteRepository) unmarshaller.unmarshal(reader);
+			// delete remote
+			RemoveRemoteRepository remove = new RemoveRemoteRepository();
+			remove.executeCommand(url, user, pw, repoName, remoteName);
 		}
 		return remotes;
 	}

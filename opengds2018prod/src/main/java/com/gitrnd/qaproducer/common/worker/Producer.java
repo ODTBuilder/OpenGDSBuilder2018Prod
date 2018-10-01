@@ -22,11 +22,23 @@ public class Producer {
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
-		boolean isSuccesed = (boolean) template.convertSendAndReceive(msg);
+		template.convertSendAndReceive(msg);
 		System.out.println("");
 	}
 
 	public JSONObject produceMobileMsg(String msg) {
+
+		System.out.println("Send msg = " + msg);
+
+		template.setExchange(exchange);
+		template.setRoutingKey(routingKey);
+		template.setReplyTimeout(Long.MAX_VALUE);
+
+		JSONObject response = (JSONObject) template.convertSendAndReceive(msg);
+		return response;
+	}
+
+	public JSONObject produceWebMsg(String msg) {
 
 		System.out.println("Send msg = " + msg);
 

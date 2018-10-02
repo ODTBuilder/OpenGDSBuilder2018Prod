@@ -2537,66 +2537,66 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var that = this;
 
 	var serverName = $("<span>").text("GeoServer: ").css({
-		"display" : "table-cell",
-		"width" : "20%",
+		// "display" : "table-cell",
+		// "width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
 	var serverNameVal = $("<span>").text(server).css({
-		"display" : "table-cell",
-		"width" : "80%",
+		// "display" : "table-cell",
+		// "width" : "80%",
 		"vertical-align" : "middle",
 		"padding-left" : "5px"
 	});
-	var geoserverArea = $("<div>").append(serverName).append(serverNameVal).css({
-		"display" : "table-row"
+	var geoserverArea = $("<span>").append(serverName).append(serverNameVal).css({
+	// "display" : "table-row"
 	});
 	var repoName = $("<span>").text("Repository: ").css({
-		"display" : "table-cell",
-		"width" : "20%",
+		// "display" : "table-cell",
+		// "width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
 	var repoNameVal = $("<span>").text(repo).css({
-		"display" : "table-cell",
-		"width" : "80%",
+		// "display" : "table-cell",
+		// "width" : "80%",
 		"vertical-align" : "middle",
 		"padding-left" : "5px"
 	});
-	var repoNameArea = $("<div>").append(repoName).append(repoNameVal).css({
-		"display" : "table-row"
+	var repoNameArea = $("<span>").append(repoName).append(repoNameVal).css({
+	// "display" : "table-row"
 	});
 
 	var cubName = $("<span>").text("Current branch: ").css({
-		"display" : "table-cell",
-		"width" : "20%",
+		// "display" : "table-cell",
+		// "width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
 	var cubNameVal = $("<span>").text(cub).css({
-		"display" : "table-cell",
-		"width" : "80%",
+		// "display" : "table-cell",
+		// "width" : "80%",
 		"vertical-align" : "middle",
 		"padding-left" : "5px"
 	});
-	var cubNameArea = $("<div>").append(cubName).append(cubNameVal).css({
-		"display" : "table-row"
+	var cubNameArea = $("<span>").append(cubName).append(cubNameVal).css({
+	// "display" : "table-row"
 	});
 
 	var tabName = $("<span>").text("Target branch: ").css({
-		"display" : "table-cell",
-		"width" : "20%",
+		// "display" : "table-cell",
+		// "width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
-	var tabNameVal = $("<div>").text(tab).css({
-		"display" : "table-cell",
-		"width" : "80%",
+	var tabNameVal = $("<span>").text(tab).css({
+		// "display" : "table-cell",
+		// "width" : "80%",
 		"vertical-align" : "middle",
 		"padding-left" : "5px"
 	});
-	var tabNameArea = $("<div>").append(tabName).append(tabNameVal).css({
-		"display" : "table-row"
+	var tabNameArea = $("<span>").append(tabName).append(tabNameVal).css({
+	// "display" : "table-row"
 	});
 
 	var col1 = $("<th>");
@@ -2610,17 +2610,17 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var tbody = $("<tbody>");
 	var table = $("<table>").append(thead).append(tbody);
 	var tableArea = $("<div>").append(table).css({
-		"display" : "table-row",
 		"width" : "100%",
 	});
 
-	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubNameArea).append(tabNameArea).append(tableArea).css({
-		"display" : "table",
+	var infoBody = $("<div>").append(geoserverArea).append(repoNameArea).append(cubNameArea).append(tabNameArea).css({
+		// "display" : "table",
 		"padding" : "10px",
 		"width" : "100%",
 		"height" : "138px"
 	});
 
+	var body = $("<div>").append(tableArea);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
@@ -2637,19 +2637,47 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		"body" : body,
 		"footer" : buttonArea
 	});
-
+	var data = [];
+	for (var i = 0; i < features.length; i++) {
+		var layer = features[i].id.substring(0, features[i].id.indexOf("/"));
+		var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
+		var item = [ "", i + 1, layer, fid, "", "" ];
+		data.push(item);
+	}
+	console.log(data);
 	$(table).DataTable({
-		autoWidth : true,
-		columnDefs : [ {
-			orderable : false,
-			className : 'select-checkbox',
-			targets : 0
-		} ],
-		select : {
-			style : 'os',
-			selector : 'td:first-child'
+		"data" : data,
+		"columnDefs" : [ {
+			"targets" : 0,
+			"orderable" : false,
+			"className" : 'select-checkbox'
 		},
-		order : [ [ 1, 'asc' ] ]
+		// {
+		// "targets" : 4,
+		// "orderable" : false,
+		// "data" : null,
+		// "defaultContent" : "<button class='btn btn-default'>Click</button>"
+		// },
+		{
+			"targets" : 5,
+			"orderable" : false,
+			"data" : null,
+			"defaultContent" : "<button class='btn btn-default'>Click</button>"
+		} ],
+		"colums" : [ null, null, null, null, {
+			"render" : function(d, t, r) {
+				var $select = $("<select></select>", {
+					"id" : r[0] + "start",
+					"value" : d
+				});
+				return $select.prop("outerHTML");
+			}
+		}, null ],
+		"select" : {
+			"style" : 'os',
+			"selector" : 'td:first-child'
+		},
+		"order" : [ [ 1, 'asc' ] ]
 	});
 
 	$(closeBtn).click(function() {

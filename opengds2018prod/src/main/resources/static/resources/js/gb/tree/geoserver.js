@@ -39,6 +39,7 @@ gb.tree.GeoServer = function(obj) {
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	var url = options.url ? options.url : undefined;
 	this.clientTree = options.clientTree ? options.clientTree : undefined;
+	this.properties = options.properties || undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
@@ -732,8 +733,19 @@ gb.tree.GeoServer = function(obj) {
 								"label" : "Properties",
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									if (obj.type === "geoserver") {
+									/*if (obj.type === "geoserver") {
 										that.openDeleteGeoServer(obj.id);
+									}*/
+									if (inst.is_selected(obj)) {
+										that.properties.setForm({
+											geoserver: obj.id.split(":")[0],
+											workspace: obj.id.split(":")[1],
+											datastore: obj.id.split(":")[2],
+											layername: obj.id.split(":")[3]
+										});
+										that.properties.open();
+									} else {
+										// inst.delete_node_layer(obj);
 									}
 								}
 							}

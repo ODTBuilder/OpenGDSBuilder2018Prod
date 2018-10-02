@@ -244,6 +244,11 @@ html {
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
+			"properties": new gb.edit.ModifyLayerProperties({
+				token: urlList.token,
+				featureRecord: frecord,
+				refer: gtree
+			}),
 			"uploadSHP" : uploadSHP,
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",

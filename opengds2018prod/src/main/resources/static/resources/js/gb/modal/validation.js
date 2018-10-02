@@ -21,6 +21,9 @@ if (!gb.modal)
 	
 		this.token = options.token || "";
 		
+		this.geoserverTree = undefined;
+		this.workingTree = undefined;
+		
 		this.presetSelectTag = $("<select class='form-control'>");
 		
 		this.formatSelectTag = $("<select class='form-control validation-format-select'>");
@@ -134,7 +137,7 @@ if (!gb.modal)
 				.append(left)
 				.append(right)
 				.css({
-					"width": "600px"
+					"width": "700px"
 				});
 		this.setModalBody(body);
 		// <<<<<<<<<<<<<<<<<<<< Create Modal Body HTML End ========================
@@ -149,12 +152,15 @@ if (!gb.modal)
 	}
 	
 	gb.modal.Validation.prototype.createJSTreePanel = function() {
+		var that = this;
+		
 		var treeContent = 
 			$("<div>")
 				.addClass("validation-geoserver-panel")
 				.css({
 					"min-height": "500px"
 				});
+		
 		var gtree = new gb.tree.GeoServer({
 			"append" : treeContent[0],
 			"url" : {
@@ -169,6 +175,8 @@ if (!gb.modal)
 						+ this.token
 			}
 		});
+		
+		this.geoserverTree = gtree.getJSTree();
 		
 		var icon = 
 			$("<i class='fas fa-plus'>")
@@ -198,19 +206,68 @@ if (!gb.modal)
 					})
 				})
 				.append(icon)
-				.append("Add")
+				.append("Add");
+		
+		panelFooter.on("click", function(e){
+			var i;
+			var tree = that.geoserverTree;
+			var workTree = that.workingTree;
+			var selects = tree.get_selected(true);
+			
+			for(i = 0; i < selects.length; i++){
+				if(!workTree.get_node(selects[i].id)){
+					if(!workTree.get_node(selects[i].parent)){
+						workTree.create_node("#", selects[i].original, "last", false, false);
+					} else {
+						workTree.create_node(selects[i].parent, selects[i].original, "last", false, false);
+					}
+					
+					if(selects[i].children.length > 0){
+						updateChildren(tree, workTree, selects[i].children);
+					}
+				}
+			}
+			
+			workTree.open_all();
+		});
 		
 		treeContent.append(panelFooter);
 		
 		return treeContent;
 	}
 	
+	function updateChildren(geoTree, workingTree, children){
+		var i, node;
+		var tree = geoTree;
+		var workTree = workingTree;
+		var list = children;
+		for(i = 0; i < list.length; i++){
+			node = tree.get_node(list[i]);
+			if(!workTree.get_node(list[i])){
+				if(!workTree.get_node(node.parent)){
+					workTree.create_node("#", node.original, "last", false, false);
+				} else {
+					workTree.create_node(node.parent, node.original, "last", false, false);
+				}
+				
+				if(node.children.length > 0){
+					updateChildren(tree, workTree, node.children);
+				}
+			} else {
+				workTree.move_node(list[i], node.parent);
+			}
+		}
+	}
+	
 	gb.modal.Validation.prototype.createWorkTreePanel = function() {
+		var that = this;
+		
 		var treeContent = 
 			$("<div>")
-				.addClass("validation-worktree-panel")
+				.addClass("gb-article-body")
 				.css({
-					"min-height": "400px"
+					"height": "365px",
+					"overflow-y": "auto"
 				});
 		
 		treeContent.jstree({
@@ -218,45 +275,101 @@ if (!gb.modal)
 				"animation" : 0,
 				"check_callback" : true,
 				"themes" : { "stripes" : true },
-				'data' : [
-					"root",
-					{
-						"id": "node_2",
-						"text": "Root node",
-						"state": {
-							"opened": true,
-							"selected": true
-						},
-						"children": [{
-							"text": "Child 1"
-						}, "Child 2"]
-					}
-				]
+				'data' : []
 			},
 			"types" : {
-			"#" : {
-				"max_children" : 1,
-				"max_depth" : 4,
-				"valid_children" : ["root"]
-			},
-			"root" : {
-				"icon" : "/static/3.3.6/assets/images/tree_icon.png",
-				"valid_children" : ["default"]
-			},
-			"default" : {
-				"valid_children" : ["default","file"]
-			},
-			"file" : {
-				"icon" : "glyphicon glyphicon-file",
-				"valid_children" : []
-			}
+				"default" : {
+					"icon" : "fas fa-exclamation-circle"
+				},
+				"geoserver" : {
+					"icon" : "fas fa-globe",
+					"valid_children" : [ "workspace" ]
+				},
+				"workspace" : {
+					"icon" : "fas fa-archive",
+					"valid_children" : [ "datastore" ]
+				},
+				"datastore" : {
+					"icon" : "fas fa-hdd",
+					"valid_children" : [ "raster", "polygon", "multipolygon", "linestring", "multilinestring", "point", "multipoint" ]
+				},
+				"raster" : {
+					"icon" : "fas fa-chess-board"
+				},
+				"polygon" : {
+					"icon" : "fas fa-square-full"
+				},
+				"multipolygon" : {
+					"icon" : "fas fa-square-full"
+				},
+				"linestring" : {
+					"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
+				},
+				"multilinestring" : {
+					"icon" : "fas fa-minus fa-lg gb-fa-rotate-135"
+				},
+				"point" : {
+					"icon" : "fas fa-circle gb-fa-xxs"
+				},
+				"multipoint" : {
+					"icon" : "fas fa-circle gb-fa-xxs"
+				}
 			},
 			"plugins" : [
-			"contextmenu", "dnd", "search",
-			"state", "types", "wholerow"
+				"contextmenu", "dnd", "search",
+				"state", "types", "wholerow"
 			]
-		})
-		return treeContent;
+		});
+		
+		this.workingTree = treeContent.jstree(true);
+		
+		var panelTitle = $("<p>").text("Validate List").css({
+			"margin" : "0",
+			"float" : "left"
+		});
+		var titleArea = $("<div>").append(panelTitle)
+		var panelHead = $("<div>").addClass("gb-article-head").append(titleArea);
+		
+		var panelFooter = 
+			$("<div>")
+				.css({
+					"margin": "-2px 1px 0",
+					"cursor": "pointer",
+					"box-shadow": "0 0 0 1px rgba(34,36,38,.15)",
+					"border-bottom-left-radius": "3px",
+					"border-bottom-right-radius": "3px",
+					"background": "#e0e1e2 none",
+					"padding": ".78571429em 1.5em .78571429em",
+					"font-weight": "700",
+					"text-align": "center"
+				})
+				.hover(function(){
+					$(this).css({
+						"background-color": "#cacbcd",
+						"color": "rgba(0,0,0,.8)"
+					})
+				}, function(){
+					$(this).css({
+						"background-color": "#e0e1e2",
+						"color": "#333"
+					})
+				})
+				.append($("<i class='fas fa-minus'>"))
+				.append("Remove");
+		
+		panelFooter.on("click", function(e){
+			var workTree = that.workingTree;
+			var selects = workTree.get_selected();
+			
+			workTree.delete_node(selects);
+		});
+		
+		var panel = $("<div>").addClass("gb-article").css({
+			"margin" : "0"
+		}).append(panelHead).append(treeContent).append(panelFooter);
+		
+		var div = $("<div>").addClass("validation-worktree-panel").append(panel);
+		return div;
 	}
 	
 	gb.modal.Validation.prototype.createOptionPanel = function() {
@@ -283,10 +396,6 @@ if (!gb.modal)
 				});
 		var div = $("<div>").addClass("validation-option-panel").append(article);
 		return div;
-	}
-	
-	gb.modal.Validation.prototype.createProgressPanel = function() {
-		
 	}
 	
 	gb.modal.Validation.prototype.createModalFooter = function() {

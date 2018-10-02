@@ -978,38 +978,76 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				var msg1 = $("<div>").text("Merge is complete.").css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var body = $("<div>").append(msg1).append(msg2);
-				var closeBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-default").text("Later");
-				var okBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
-				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+				if (data.merge.conflicts === null) {
+					var msg1 = $("<div>").text("Merge is complete.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-				var commitModal = new gb.modal.Base({
-					"title" : "Commit Changes",
-					"width" : 310,
-					"height" : 200,
-					"autoOpen" : true,
-					"body" : body,
-					"footer" : buttonArea
-				});
-				$(closeBtn).click(function() {
-					commitModal.close();
-				});
-				$(okBtn).click(function() {
-					mModal.close();
-					that.endTransaction(server, repo, tid, commitModal);
-				});
+					var commitModal = new gb.modal.Base({
+						"title" : "Commit Changes",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(function() {
+						mModal.close();
+						that.endTransaction(server, repo, tid, commitModal);
+					});
+				} else {
+					var confl = parseInt(data.merge.conflicts);
+					console.log(confl);
+					var msg1 = $("<div>").text("There are conflicting features.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Conflict",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(function() {
+						mModal.close();
+						// that.endTransaction(server, repo, tid, commitModal);
+						that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.features, commitModal);
+					});
+				}
 			} else {
 				var title = "Error";
 				var msg = "Merge failed."
@@ -1289,7 +1327,7 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 				var commitModal = new gb.modal.Base({
 					"title" : "Message",
 					"width" : 310,
-					"height" : 170,
+					"height" : 190,
 					"autoOpen" : true,
 					"body" : body,
 					"footer" : buttonArea
@@ -2481,5 +2519,176 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 		error : function(jqXHR, textStatus, errorThrown) {
 
 		}
+	});
+};
+
+/**
+ * resolve conflict 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#resolveConflictModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, features, cmodal) {
+	var that = this;
+
+	var serverName = $("<span>").text("GeoServer: ").css({
+		// "display" : "table-cell",
+		// "width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var serverNameVal = $("<span>").text(server).css({
+		// "display" : "table-cell",
+		// "width" : "80%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var geoserverArea = $("<span>").append(serverName).append(serverNameVal).css({
+	// "display" : "table-row"
+	});
+	var repoName = $("<span>").text("Repository: ").css({
+		// "display" : "table-cell",
+		// "width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var repoNameVal = $("<span>").text(repo).css({
+		// "display" : "table-cell",
+		// "width" : "80%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var repoNameArea = $("<span>").append(repoName).append(repoNameVal).css({
+	// "display" : "table-row"
+	});
+
+	var cubName = $("<span>").text("Current branch: ").css({
+		// "display" : "table-cell",
+		// "width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var cubNameVal = $("<span>").text(cub).css({
+		// "display" : "table-cell",
+		// "width" : "80%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var cubNameArea = $("<span>").append(cubName).append(cubNameVal).css({
+	// "display" : "table-row"
+	});
+
+	var tabName = $("<span>").text("Target branch: ").css({
+		// "display" : "table-cell",
+		// "width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var tabNameVal = $("<span>").text(tab).css({
+		// "display" : "table-cell",
+		// "width" : "80%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	});
+	var tabNameArea = $("<span>").append(tabName).append(tabNameVal).css({
+	// "display" : "table-row"
+	});
+
+	var col1 = $("<th>");
+	var col2 = $("<th>").text("No");
+	var col3 = $("<th>").text("Layer");
+	var col4 = $("<th>").text("Feature ID");
+	var col5 = $("<th>").text("Resolution");
+	var col6 = $("<th>").text("Detail");
+	var row1 = $("<tr>").append(col1).append(col2).append(col3).append(col4).append(col5).append(col6);
+	var thead = $("<thead>").append(row1);
+	var tbody = $("<tbody>");
+	var table = $("<table>").append(thead).append(tbody);
+	var tableArea = $("<div>").append(table).css({
+		"width" : "100%",
+	});
+
+	var infoBody = $("<div>").append(geoserverArea).append(repoNameArea).append(cubNameArea).append(tabNameArea).css({
+		// "display" : "table",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "138px"
+	});
+
+	var body = $("<div>").append(tableArea);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : "Resolve Conflicts",
+		"width" : 770,
+		"height" : 580,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	var data = [];
+	for (var i = 0; i < features.length; i++) {
+		var layer = features[i].id.substring(0, features[i].id.indexOf("/"));
+		var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
+		var item = [ "", i + 1, layer, fid, "", "" ];
+		data.push(item);
+	}
+	console.log(data);
+	$(table).DataTable({
+		"data" : data,
+		"columnDefs" : [ {
+			"targets" : 0,
+			"orderable" : false,
+			"className" : 'select-checkbox'
+		},
+		// {
+		// "targets" : 4,
+		// "orderable" : false,
+		// "data" : null,
+		// "defaultContent" : "<button class='btn btn-default'>Click</button>"
+		// },
+		{
+			"targets" : 5,
+			"orderable" : false,
+			"data" : null,
+			"defaultContent" : "<button class='btn btn-default'>Click</button>"
+		} ],
+		"colums" : [ null, null, null, null, {
+			"render" : function(d, t, r) {
+				var $select = $("<select></select>", {
+					"id" : r[0] + "start",
+					"value" : d
+				});
+				return $select.prop("outerHTML");
+			}
+		}, null ],
+		"select" : {
+			"style" : 'os',
+			"selector" : 'td:first-child'
+		},
+		"order" : [ [ 1, 'asc' ] ]
+	});
+
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	$(okBtn).click(function() {
+		cmodal.close();
+		// var server = that.getNowServer();
+		// var repo = that.getNowRepository();
+		// var name = $(nameInput).val();
+		// var url = $(remoteURLInput).val();
+		// that.addRemoteRepository(server.text, repo.text, name, url, modal);
 	});
 };

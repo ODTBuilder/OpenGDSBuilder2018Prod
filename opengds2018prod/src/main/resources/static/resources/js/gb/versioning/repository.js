@@ -2598,8 +2598,10 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var tabNameArea = $("<span>").append(tabName).append(tabNameVal).css({
 	// "display" : "table-row"
 	});
-
-	var col1 = $("<th>");
+	var rowcheck = $("<input>").attr({
+		"type" : "checkbox"
+	});
+	var col1 = $("<th>").append(rowcheck);
 	var col2 = $("<th>").text("No");
 	var col3 = $("<th>").text("Layer");
 	var col4 = $("<th>").text("Feature ID");
@@ -2626,13 +2628,13 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
 		"title" : "Resolve Conflicts",
 		"width" : 770,
-		"height" : 580,
+		"height" : 800,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -2644,47 +2646,83 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		var item = [ "", i + 1, layer, fid, "", "" ];
 		data.push(item);
 	}
+
+	var select;
+	var optcub;
+	var opttab;
+
 	console.log(data);
 	$(table).DataTable({
 		"data" : data,
-		"columnDefs" : [ {
-			"targets" : 0,
+		"columns" : [ {
+			'searchable' : false,
+			'orderable' : false,
+			'className' : 'select-checkbox'
+		}, {
+			"title" : "No"
+		}, {
+			"title" : "Layer"
+		}, {
+			"title" : "Feature ID"
+		}, {
+			"title" : "Resolution",
+			'searchable' : false,
 			"orderable" : false,
-			"className" : 'select-checkbox'
-		},
-		// {
-		// "targets" : 4,
-		// "orderable" : false,
-		// "data" : null,
-		// "defaultContent" : "<button class='btn btn-default'>Click</button>"
-		// },
-		{
-			"targets" : 5,
+			"render" : function(d, t, r, m) {
+				select = $("<select>").addClass("gb-repository-instead-branch");
+
+				var optcub = $("<option>").text("Use [" + cub + "]").attr({
+					"value" : cub
+				});
+				var opttab = $("<option>").text("Use [" + tab + "]").attr({
+					"value" : tab
+				});
+
+				$(select).append(optcub);
+				$(select).append(opttab);
+
+				if (d === $(optcub).val() || d === "") {
+					$(select).val(cub);
+				} else if (d === $(opttab).val()) {
+					$(select).val(tab);
+				}
+
+				console.log(d);
+				console.log(t);
+				console.log(r);
+				console.log(m);
+				return $(select).prop("outerHTML");
+			}
+		}, {
+			"title" : "Detail",
+			'searchable' : false,
 			"orderable" : false,
 			"data" : null,
-			"defaultContent" : "<button class='btn btn-default'>Click</button>"
+			"defaultContent" : "<button class='gb-button gb-button-default'>Click</button>"
 		} ],
-		"colums" : [ null, null, null, null, {
-			"render" : function(d, t, r) {
-				var $select = $("<select></select>", {
-					"id" : r[0] + "start",
-					"value" : d
-				});
-				return $select.prop("outerHTML");
-			}
-		}, null ],
 		"select" : {
-			"style" : 'os',
+			"style" : 'multi',
 			"selector" : 'td:first-child'
 		},
 		"order" : [ [ 1, 'asc' ] ]
+	});
+
+	var tableObj = $(table).DataTable();
+
+//	$(body).find(".gb-repository-instead-branch").off();
+
+	$(table).find("tbody").on("change", ".gb-repository-instead-branch", function() {
+		console.log($(this).val());
+		// console.log($(this).parents(2)[0]);
+		console.log(tableObj.row($(this).parents(3)).index());
 	});
 
 	$(closeBtn).click(function() {
 		modal.close();
 	});
 	$(okBtn).click(function() {
-		cmodal.close();
+		console.log($(table).DataTable().data());
+		// cmodal.close();
 		// var server = that.getNowServer();
 		// var repo = that.getNowRepository();
 		// var name = $(nameInput).val();

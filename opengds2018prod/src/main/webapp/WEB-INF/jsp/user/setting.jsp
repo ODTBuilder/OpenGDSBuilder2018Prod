@@ -70,6 +70,7 @@ input.radio:checked+label::before {
 </head>
 <body>
 	<script>
+	var locale = '<spring:message code="lang.localeCode" />';
 	var pid = undefined;
 	var title = undefined;
 	var name = undefined;
@@ -229,14 +230,16 @@ input.radio:checked+label::before {
 			var layerDef = new gb.embed.LayerDefinition({
 				"append" : ".LayerDefinitionArea",
 				"fileClass" : "layerSetting",
-				"msgClass" : "Message"
+				"msgClass" : "Message",
+				"locale" : locale
 			});
 
 			var optionDef = new gb.embed.OptionDefinition({
 				"layerDefinition" : layerDef,
 				"append" : ".OptionDefinitionArea",
 				"fileClass" : "optionSetting",
-				"msgClass" : "Message"
+				"msgClass" : "Message",
+				"locale" : locale
 			});
 
 			<c:choose>

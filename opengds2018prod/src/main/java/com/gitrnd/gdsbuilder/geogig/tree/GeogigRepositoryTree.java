@@ -3,6 +3,7 @@
  */
 package com.gitrnd.gdsbuilder.geogig.tree;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
@@ -21,6 +23,8 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig.Config;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepository.Repo;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
@@ -146,6 +150,7 @@ public class GeogigRepositoryTree extends JSONArray {
 			EnGeogigRepositoryTreeType type, String parent, String transactionId) {
 		String[] param = parent.split(":");// ex)
 											// serverName_repository_brench_layer
+
 		if (param != null && dtGeoserver != null) {
 			String baseURL = dtGeoserver.getRestURL();
 			String username = dtGeoserver.getUsername();

@@ -43,7 +43,7 @@ public class LocaleConfig extends WebMvcConfigurerAdapter {
 		// CookieLocaleResolver localeResolver = new CookieLocaleResolver();
 
 		// 최초 기본 로케일을 강제로 설정이 가능 하다.
-		localeResolver.setDefaultLocale(new Locale("en_US"));
+//		localeResolver.setDefaultLocale(new Locale("en_US"));
 		return localeResolver;
 	}
 

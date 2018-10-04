@@ -19,6 +19,7 @@ import com.gitrnd.gdsbuilder.geogig.tree.GeogigRepositoryTree.EnGeogigRepository
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
+import com.gitrnd.qaproducer.geogig.service.GeogigLayerService;
 import com.gitrnd.qaproducer.geogig.service.GeogigTreeBuilderService;
 
 /**
@@ -66,6 +67,7 @@ public class GeogigTreeBuilderController extends AbstractController {
 		}
 
 		DTGeoserverManagerList geoserverManagers = super.getGeoserverManagersToSession(request, loginUser);
+
 		return treeService.getWorkingTree(geoserverManagers, serverName, enType, node, transactionId);
 	}
 

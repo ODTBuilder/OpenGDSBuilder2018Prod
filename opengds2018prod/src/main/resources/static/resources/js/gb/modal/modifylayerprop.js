@@ -14,10 +14,8 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	var that = this;
 	var options = obj;
 	this.window;
-	this.format = undefined;
-	this.type = undefined;
-	this.info = undefined;
 	this.layer = undefined;
+	this.serverInfo = undefined;
 	this.layerName = undefined;
 	this.srs = undefined;
 	this.layerRecord = options.layerRecord ? options.layerRecord : undefined;
@@ -121,7 +119,19 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		}
 	});
 	
-	formTag.append(group1).append(group2).append(group3).append(group4).append(group5).append(group6);
+	var group7 = this.createFormGroup({
+		label: {
+			"text": "Datastore"
+		},
+		input: {
+			"class": "form-control-plaintext",
+			"id": "layer-prop-datastore",
+			"readonly": true,
+			"type": "text"
+		}
+	});
+	
+	formTag.append(group1).append(group2).append(group3).append(group4).append(group5).append(group6).append(group7);
 
 	this.body = $("<div>").append(formTag);
 	
@@ -148,6 +158,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		"disabled": true
 	}).on("click", function() {
 		//var opt = that.getDefinitionForm();
+		that.saveLayerProperties();
 		that.close();
 		that.refresh();
 	});
@@ -277,11 +288,15 @@ gb.edit.ModifyLayerProperties.prototype.refresh = function() {
 };
 gb.edit.ModifyLayerProperties.prototype.setLayer = function(layer) {
 	this.layer = layer;
-	this.setInformation(layer);
-	this.setForm();
 };
 gb.edit.ModifyLayerProperties.prototype.getLayer = function() {
 	return this.layer;
+};
+gb.edit.ModifyLayerProperties.prototype.setServerInfo = function(info) {
+	this.serverInfo = info;
+};
+gb.edit.ModifyLayerProperties.prototype.getServerInfo = function() {
+	return this.serverInfo;
 };
 gb.edit.ModifyLayerProperties.prototype.setInformation = function(info) {
 	this.information = info;
@@ -291,21 +306,30 @@ gb.edit.ModifyLayerProperties.prototype.getInformation = function() {
 };
 
 
-gb.edit.ModifyLayerProperties.prototype.setForm = function() {
-	var info = this.getInformation();
+gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
+	this.setInformation(info);
 	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
 };
 
-gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, layer) {
+gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	var that = this;
-	var arr = {
-		"serverName": layer.get("git").geoserver,
-		"workspace": layer.get("git").workspace,
-		"geoLayerList" : [ layer.get("name") ]
+	var geoserver = info.geoserver || false,
+		workspace = info.workspace || false,
+		datastore = info.datastore || false,
+		layername = info.layername || false;
+	
+	if(!geoserver || !workspace || !datastore || !layername){
+		console.error("Missed Parameter");
+		return;
 	}
-	var names = [];
-	// console.log(JSON.stringify(arr));
-	var info;
+	
+	this.setServerInfo(info);
+	
+	var arr = {
+		"serverName": geoserver,
+		"workspace": workspace,
+		"geoLayerList" : [ layername ]
+	}
 	$.ajax({
 		url : url + this.token,
 		method : "POST",
@@ -320,11 +344,11 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, layer) 
 		},
 		traditional : true,
 		success : function(data, textStatus, jqXHR) {
-			console.log(data);
 			if (Array.isArray(data)) {
 				if (data.length === 1) {
 					var arra = [];
 					
+					that.setLayer(data[0]);
 					that.layerName = data[0].lName;
 					that.srs = data[0].srs;
 					
@@ -332,8 +356,9 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, layer) 
 					$("#layer-prop-geom").val(data[0].geomType);
 					$("#layer-prop-geomkey").val(data[0].geomkey);
 					$("#layer-prop-srs").val(data[0].srs);
-					$("#layer-prop-geoserver").val(arr.serverName);
-					$("#layer-prop-workspace").val(arr.workspace);
+					$("#layer-prop-geoserver").val(geoserver);
+					$("#layer-prop-workspace").val(workspace);
+					$("#layer-prop-datastore").val(datastore);
 				}
 
 				$("body").css("cursor", "default");
@@ -341,3 +366,28 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, layer) 
 		}
 	});
 };
+
+gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
+	var layer = this.layer;
+	var serverInfo = this.getServerInfo();
+	var arr = {
+		"serverName": serverInfo.geoserver,
+		"workspace": serverInfo.workspace,
+		"datastore": serverInfo.workspace,
+		"originalName": serverInfo.layername,
+		"name": $("#layer-prop-name").val(),
+		"title": $("#layer-prop-name").val(),
+		"srs": $("#layer-prop-srs").val()
+	}
+	
+	$.ajax({
+		url : "geoserver/updateLayer.ajax" + this.token,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : JSON.stringify(arr),
+		success: function(data, textStatus, jqXHR){
+			console.log(data);
+		}
+	});
+}

@@ -35,14 +35,15 @@ if (!gb.footer)
 		this.serverURL = options.serverURL;
 		
 		/**
-		 * 언어 코드
+		 * 언어 코드.
+		 * ko: 한글, en: 영어
 		 * @type {string}
 		 * @private
 		 */
 		this.locale = options.locale || "en";
 		
 		/**
-		 * 번역된 데이터
+		 * 번역
 		 * @type {Object.<string, Object<string, string>>}
 		 * @private
 		 */
@@ -62,7 +63,8 @@ if (!gb.footer)
 		}
 		
 		/**
-		 * 명령어 입력 도우미 영역 jquery instance
+		 * 명령어 입력 도우미 영역 jquery instance.
+		 * input Tag 왼쪽 부분의 영역에 표시될 데이터.
 		 * @type {n.fn.init}
 		 * @private
 		 */
@@ -76,7 +78,7 @@ if (!gb.footer)
 		this.workHistory_ = {};
 		
 		/**
-		 * input tag 입력 값 임시 저장
+		 * input tag 입력된 값 임시 저장
 		 * @type {string[]}
 		 * @private
 		 */
@@ -377,7 +379,8 @@ if (!gb.footer)
 				"width": "100%",
 				"height": "20%",
 				"border-top": "1px solid #838383",
-				"display": "flex"
+				"display": "flex",
+				"position": "relative"
 			},
 			label: {
 				"background-color": "rgba(0, 181, 173, .6)",
@@ -396,6 +399,7 @@ if (!gb.footer)
 		}
 		
 		this.createContent();
+		this.autocomplete();
 	}
 
 	// gb.footer.Base 상속
@@ -448,7 +452,7 @@ if (!gb.footer)
 		this.setLabel();
 		this.adjustStyle_(this.label, this.elementStyle_.label);
 		
-		var line = $("<input placeholder='Command Line'>").addClass("command-line");
+		var line = this.input = $("<input id='commandInput' placeholder='Command Line'>").addClass("command-line");
 		this.adjustStyle_(line, this.elementStyle_.line);
 		line.keypress(function(e){
 			if(e.which === 13){
@@ -853,5 +857,131 @@ if (!gb.footer)
 		time.format = year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
 		time.flat = year + month + day + hour + min + sec;
 		return time;
+	}
+	
+	/**
+	 * 명령어 자동 완성 기능 활성화
+	 * @method autocomplete
+	 */
+	gb.footer.CommandLine.prototype.autocomplete = function(){
+		var that = this;
+		var except = ["tip", "paramKey", "before", "beforeFailLog", "log", "next", "end", "successLog", "failLog"];
+		/*the autocomplete function takes two arguments,
+		the text field element and an array of possible autocompleted values:*/
+		var currentFocus;
+		/*execute a function when someone writes in the text field:*/
+		var inp = this.input[0];
+		inp.addEventListener("input", function(e) {
+			var a, b, i, val = this.value;
+			// 명령어 목록 배열
+			var arr = Object.keys(that.currentCmd);
+			
+			var labelWidth = this.parentNode.getElementsByClassName("command-label")[0].clientWidth;
+			/*close any already open lists of autocompleted values*/
+			closeAllLists();
+			if (!val) { return false;}
+			currentFocus = -1;
+			/*create a DIV element that will contain the items (values):*/
+			a = document.createElement("DIV");
+			a.setAttribute("id", this.id + "autocomplete-list");
+			a.setAttribute("class", "autocomplete-items");
+			a.style["position"] = "absolute";
+			a.style["border"] = "1px solid #d4d4d4";
+			a.style["border-bottom"] = "none";
+			a.style["border-top"] = "none";
+			a.style["z-index"] = "99";
+			/*position the autocomplete items to be the same width as the container =*/
+			a.style["bottom"] = "100%";
+			a.style["left"] = labelWidth + "px";
+			a.style["right"] = "auto";
+			a.style["color"] = "rgba(0, 0, 0, 0.87)";
+			/*append the DIV element as a child of the autocomplete container:*/
+			this.parentNode.appendChild(a);
+			/*for each item in the array...*/
+			for (i = 0; i < arr.length; i++) {
+				if(except.indexOf(arr[i]) !== -1){
+					continue;
+				}
+				/*check if the item starts with the same letters as the text field value:*/
+				if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+					/*create a DIV element for each matching element:*/
+					b = document.createElement("DIV");
+					/*make the matching letters bold:*/
+					b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+					b.innerHTML += arr[i].substr(val.length);
+					/*insert a input field that will hold the current array item's value:*/
+					b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+					/*execute a function when someone clicks on the item value (DIV element):*/
+					b.style["padding"] = "10px";
+					b.style["cursor"] = "pointer";
+					b.style["background-color"] = "#fff";
+					b.style["border-bottom"] = "1px solid #d4d4d4";
+					b.addEventListener("click", function(e) {
+						/*insert the value for the autocomplete text field:*/
+						inp.value = this.getElementsByTagName("input")[0].value;
+						/*close the list of autocompleted values,
+						(or any other open lists of autocompleted values:*/
+						closeAllLists();
+					});
+					a.appendChild(b);
+				}
+			}
+		});
+		
+		/*execute a function presses a key on the keyboard:*/
+		inp.addEventListener("keydown", function(e) {
+			var x = document.getElementById(this.id + "autocomplete-list");
+			if (x) x = x.getElementsByTagName("div");
+			if (e.keyCode == 40) {
+				/*If the arrow DOWN key is pressed,
+				increase the currentFocus variable:*/
+				currentFocus++;
+				/*and and make the current item more visible:*/
+				addActive(x);
+			} else if (e.keyCode == 38) { //up
+				/*If the arrow UP key is pressed,
+				decrease the currentFocus variable:*/
+				currentFocus--;
+				/*and and make the current item more visible:*/
+				addActive(x);
+			} else if (e.keyCode == 13) {
+				/*If the ENTER key is pressed, prevent the form from being submitted,*/
+				if (currentFocus > -1) {
+					/*and simulate a click on the "active" item:*/
+					if (x) x[currentFocus].click();
+				}
+			}
+		});
+		
+		function addActive(x) {
+			/*a function to classify an item as "active":*/
+			if (!x) return false;
+			/*start by removing the "active" class on all items:*/
+			removeActive(x);
+			if (currentFocus >= x.length) currentFocus = 0;
+			if (currentFocus < 0) currentFocus = (x.length - 1);
+			/*add class "autocomplete-active":*/
+			x[currentFocus].classList.add("autocomplete-active");
+			x[currentFocus].style.backgroundColor = "DodgerBlue";
+		}
+		
+		function removeActive(x) {
+			/*a function to remove the "active" class from all autocomplete items:*/
+			for (var i = 0; i < x.length; i++) {
+				x[i].classList.remove("autocomplete-active");
+				x[i].style.backgroundColor = "#fff";
+			}
+		}
+		
+		function closeAllLists(elmnt) {
+			/*close all autocomplete lists in the document,
+			except the one passed as an argument:*/
+			var x = document.getElementsByClassName("autocomplete-items");
+			for (var i = 0; i < x.length; i++) {
+				if (elmnt != x[i] && elmnt != inp) {
+					x[i].parentNode.removeChild(x[i]);
+				}
+			}
+		}
 	}
 }(jQuery));

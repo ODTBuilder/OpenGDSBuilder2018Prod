@@ -22,7 +22,7 @@ gb.layer.Navigator = function(obj) {
 	
 	this.token = options.token || "";
 	
-	this.selectedLayer = undefined;
+	this.featureList = undefined;
 	
 	this.count = 0;
 	
@@ -43,14 +43,14 @@ gb.layer.Navigator = function(obj) {
 	this.createNavigator_();
 }
 
-gb.layer.Navigator.prototype.setLayer = function(Layer){
+gb.layer.Navigator.prototype.setFeatures = function(Layer){
 	var layer = Layer;
 	
 	if(layer instanceof ol.layer.Tile){
 		var git = layer.get("git");
-		this.requestLayerInfo(git.geoserver, git.workspace, layer.get("name"), layer.get("treeid"));
+		this.requestFeatureList(git.geoserver, git.workspace, layer.get("name"));
 	} else if(layer instanceof ol.layer.Vector){
-		this.selectedLayer = layer;
+		this.featureList = layer.getSource().getFeatures();
 		this.updateNavigator();
 	} else {
 		console.error("Not supported layer type");
@@ -58,22 +58,22 @@ gb.layer.Navigator.prototype.setLayer = function(Layer){
 	}
 }
 
-gb.layer.Navigator.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){
+gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace, layer){
 	var that = this;
-	var treeid = treeid;
 	var a = {
 		serverName: serverName,
 		workspace: workspace,
-		geoLayerList: [layer]
+		typeName: layer,
+		version: "1.0.0",
+		outputformat: "JSON"
 	};
 	
 	$.ajax({
-		method : "POST",
 		url: "geoserver/geoserverWFSGetFeature.ajax" + this.token,
-		data: JSON.stringify(a),
-		contentType: 'application/json; charset=utf-8',
+		data: a,
+		dataType: "JSON",
 		success: function(data, textStatus, jqXHR) {
-			that.selectedLayer = data[0];
+			that.featureList = new ol.format.GeoJSON().readFeatures(JSON.stringify(data));
 			that.updateNavigator();
 		},
 		error: function(e) {
@@ -84,7 +84,7 @@ gb.layer.Navigator.prototype.requestLayerInfo = function(serverName, workspace, 
 }
 
 gb.layer.Navigator.prototype.updateNavigator = function(){
-	var features = this.selectedLayer.getSource().getFeatures();
+	var features = this.featureList;
 	this.count = 0;
 	this.showFeatureInfo(features[this.count]);
 	this.open();
@@ -145,7 +145,7 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 		"color" : "#ccc"
 	}).append(xSpan);
 
-	var title = $("<span>").text("Error Navigator");
+	var title = $("<span>").text("Feature Navigator");
 	var tb = $("<table>").addClass("table").append(this.tbody);
 	var pbd = $("<div>").addClass("panel-body").append(thead).append(tb);
 	var phd = $("<div>").addClass("panel-heading").append(title).append(xBtn);
@@ -172,15 +172,7 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	$(this.tbody).empty();
 	for (var i = 0; i < keys.length; i++) {
 		var td1 = $("<td>").text(keys[i]);
-		if (keys[i] === this.options.linkKey) {
-			var anc = $("<a>").addClass("gb-navigator-link").attr({
-				"href" : "#",
-				"value" : prop[keys[i]]
-			}).text("Move to feature");
-			var td2 = $("<td>").attr("colspan", 2).append(anc);
-		} else {
-			var td2 = $("<td>").attr("colspan", 2).text(prop[keys[i]]);
-		}
+		var td2 = $("<td>").attr("colspan", 2).text(prop[keys[i]]);
 		var tr1 = $("<tr>").append(td1).append(td2);
 		$(this.tbody).append(tr1);
 	}
@@ -190,7 +182,7 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 }
 
 gb.layer.Navigator.prototype.prev = function(){
-	var features = this.selectedLayer.getSource().getFeatures();
+	var features = this.featureList;
 	if (this.count > 0 && this.count <= features.length) {
 		this.count--;
 	} else {
@@ -203,7 +195,7 @@ gb.layer.Navigator.prototype.prev = function(){
 }
 
 gb.layer.Navigator.prototype.next = function(){
-	var features = this.selectedLayer.getSource().getFeatures();
+	var features = this.featureList;
 	if (this.count >= 0 && this.count < features.length) {
 		this.count++;
 	} else {

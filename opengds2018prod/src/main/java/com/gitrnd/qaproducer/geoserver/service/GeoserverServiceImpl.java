@@ -198,7 +198,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		
-		
 		JSONObject object = new JSONObject();
 		for (String layerName : layerList) {
 			object.put(layerName, dtReader.existsLayer(workspace, layerName));

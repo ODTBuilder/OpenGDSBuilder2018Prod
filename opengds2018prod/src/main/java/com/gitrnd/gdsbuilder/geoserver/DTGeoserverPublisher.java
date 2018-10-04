@@ -204,12 +204,10 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher
   public String requestWFSTransaction(String workspace, String wfstXml){
 	  StringBuilder postUrl = new StringBuilder(restURL).append("/"+workspace).append("/ows");
 	  
-	  Charset CP949 = Charset.forName("x-windows-949");
-      System.out.println(CP949.name());
-	  
+	  Charset charset = Charset.forName("utf-8");
 	  
 	  String configuredResult = DTHTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
-              this.gspass, CP949.name());
+              this.gspass, charset.name());
 	  
       boolean requestFlag = configuredResult != null;
 

@@ -539,15 +539,13 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 		var param = {
 			"serverName": geoserver,
 			"workspace": workspace,
-			"wfstXml": new XMLSerializer().serializeToString(node)
+			"wfstXml": '<?xml version="1.0" encoding="utf-8"?>'+new XMLSerializer().serializeToString(node)
 		};
 		$.ajax({
 			type: "POST",
-			url: "http://175.116.181.30:9999/geoserver/shp/ows",
-			service: "WFS",
-			dataType: "xml",
-			data: new XMLSerializer().serializeToString(node),
-			contentType: 'text/xml',
+			url: this.wfstURL,
+			data: JSON.stringify(param),
+			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
 				console.log(result);
@@ -558,20 +556,5 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(){
 			},
 			context: this
 		});
-	/*	$.ajax({
-			type: "POST",
-			url: this.wfstURL,
-			data: JSON.stringify(param),
-			contentType: 'application/json; charset=x-windows-949',
-			success: function(data) {
-				var result = format.readTransactionResponse(data);
-				console.log(result);
-			},
-			error: function(e) {
-				var errorMsg = e? (e.status + ' ' + e.statusText) : "";
-				console.log(errorMsg);
-			},
-			context: this
-		});*/
 	}
 }

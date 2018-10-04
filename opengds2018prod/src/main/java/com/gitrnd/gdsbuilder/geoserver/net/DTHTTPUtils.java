@@ -100,7 +100,7 @@ public class DTHTTPUtils extends HTTPUtils{
      * @return the HTTP response or <TT>null</TT> on errors.
      */
     public static String post(String url, RequestEntity requestEntity, String username, String pw, String charset) {
-        return send(new PostMethod(url), url, requestEntity, username, pw, charset);
+        return send(new PostMethod(url), url, requestEntity, username, pw);
     }
 
     /**
@@ -119,17 +119,13 @@ public class DTHTTPUtils extends HTTPUtils{
      * @return the HTTP response or <TT>null</TT> on errors.
      */
     private static String send(final EntityEnclosingMethod httpMethod, String url,
-                               RequestEntity requestEntity, String username, String pw, String charset) {
+                               RequestEntity requestEntity, String username, String pw) {
         HttpClient client = new HttpClient();
         HttpConnectionManager connectionManager = client.getHttpConnectionManager();
         try {
             setAuth(client, url, username, pw);
             connectionManager.getParams().setConnectionTimeout(5000);
             if (requestEntity != null){
-//            	httpMethod.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset="+charset);
-            	
-            	System.out.println(requestEntity.getContentType());
-            	
                 httpMethod.setRequestEntity(requestEntity);
             }
             int status = client.executeMethod(httpMethod);

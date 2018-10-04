@@ -232,7 +232,7 @@ html {
 			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
 		});
 
-		$("#saveChangesBtn").click(function() {
+		$("#savePart").click(function() {
 			frecord.sendWFSTTransaction();
 		});
 

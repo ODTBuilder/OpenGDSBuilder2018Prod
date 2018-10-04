@@ -212,7 +212,7 @@ html {
 		var frecord = new gb.edit.FeatureRecord({
 			id : "feature_id",
 			wfstURL : urlList.wfst + urlList.token,
-			layerInfoURL: urlList.getLayerInfo + urlList.token
+			layerInfoURL : urlList.getLayerInfo + urlList.token
 		});
 
 		var otree = new gb.tree.OpenLayers({
@@ -242,7 +242,7 @@ html {
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token
 			}
 		});
-		
+
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -262,10 +262,10 @@ html {
 			epan.editToolToggle();
 		});
 
-		$("#savePart").click(function(){
+		$("#savePart").click(function() {
 			frecord.sendWFSTTransaction(epan);
 		});
-		
+
 		// 거리, 면적 측정 기능 추가
 		var measureArea = new gb.interaction.MeasureTip({
 			type : "Polygon",
@@ -354,11 +354,11 @@ html {
 			if (layer instanceof ol.layer.Group) {
 				return;
 			}
-			
-			if(featureList.footerTag.css("display") === "none"){
+
+			if (featureList.footerTag.css("display") === "none") {
 				return;
 			}
-			
+
 			featureList.updateFeatureList({
 				url : urlList.getWFSFeature + urlList.token,
 				treeid : treeid,
@@ -410,7 +410,8 @@ html {
 				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"
+				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

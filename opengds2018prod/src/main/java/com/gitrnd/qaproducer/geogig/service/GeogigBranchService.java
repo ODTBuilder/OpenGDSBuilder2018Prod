@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
@@ -75,12 +76,12 @@ public interface GeogigBranchService {
 	 * @param geoserverManager
 	 * @param repoName
 	 * @param transactionId
-	 * @param path
+	 * @param featuresArr
 	 * @param version
 	 * @return List<GeogigCheckout>
 	 * @throws JAXBException
 	 */
 	public List<GeogigCheckout> resolveConflict(DTGeoserverManager geoserverManager, String repoName,
-			String transactionId, JSONObject path) throws JAXBException;
+			String transactionId, JSONArray featuresArr) throws JAXBException;
 
 }

@@ -226,7 +226,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 */
 	@Override
 	public List<GeogigCheckout> resolveConflict(DTGeoserverManager geoserverManager, String repoName,
-			String transactionId, JSONObject pathObj) throws JAXBException {
+			String transactionId, JSONArray featureArr) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -235,10 +235,9 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 		CheckoutBranch checkout = new CheckoutBranch();
 		List<GeogigCheckout> checkoutList = new ArrayList<>();
 
-		JSONArray pathArry = (JSONArray) pathObj.get("features");
-		int arrySize = pathArry.size();
+		int arrySize = featureArr.size();
 		for (int i = 0; i < arrySize; i++) {
-			JSONObject resolvePath = (JSONObject) pathArry.get(i);
+			JSONObject resolvePath = (JSONObject) featureArr.get(i);
 			String path = (String) resolvePath.get("path");
 			String version = (String) resolvePath.get("version");
 			GeogigCheckout branch = null;

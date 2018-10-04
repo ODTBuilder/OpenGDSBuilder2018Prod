@@ -171,10 +171,7 @@ gb.tree.OpenLayers = function(obj) {
 					},
 				},
 				"layerproperties" : {
-					"properties" : new gb.edit.ModifyLayerProperties({
-						featureRecord: options.frecord,
-						token: this.token
-					}),
+					"properties" : undefined,
 					"navigator": new gb.layer.Navigator({
 						map: this.map,
 						token: this.token

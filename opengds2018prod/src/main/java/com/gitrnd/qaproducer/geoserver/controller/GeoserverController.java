@@ -158,6 +158,49 @@ public class GeoserverController extends AbstractController {
 		return geoserverService.requestWFSTransaction(dtGeoserverManager,workspace, wfstXml);
 	}
 	
+	/**
+	 * @Description WFST
+	 * @author SG.Lee
+	 * @Date 2018. 7. 20. 오후 2:59:37
+	 * @param request
+	 * @param loginUser
+	 * @return String
+	 * @throws IOException 
+	 * */
+	@SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value = "/updateLayer.ajax", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean updateLayer(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) throws IOException {
+		boolean flag = false;
+		
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = (String) jsonObject.get("serverName");
+		String workspace = (String) jsonObject.get("workspace");
+		String datastore = (String) jsonObject.get("datastore");
+		String originalName = (String) jsonObject.get("originalName");
+		String name = (String) jsonObject.get("name");
+		String title = (String) jsonObject.get("title");
+		String abstractContent = (String) jsonObject.get("abstractContent");
+		String srs = (String) jsonObject.get("srs");
+		String style = (String) jsonObject.get("style");
+		
+		
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}
+		
+		if(serverName==null||serverName.isEmpty()||workspace==null||workspace.isEmpty()||datastore==null||datastore.isEmpty()||originalName==null||originalName.isEmpty()){
+			response.sendError(500, "필수값을 입력하지 않았습니다.");
+		}else{
+			flag = geoserverService.updateFeatureType(dtGeoserverManager, workspace, datastore, originalName, name, title, abstractContent, srs, style, false);
+		}
+		
+		return flag;
+	}
+	
 
 
 	/**

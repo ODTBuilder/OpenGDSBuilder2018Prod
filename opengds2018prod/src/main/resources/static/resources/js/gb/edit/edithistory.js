@@ -522,6 +522,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 					layers[layer].created = [];
 				}
 			}
+			
 			var geomKey = this.created[layer][feature].getGeometryName();
 			this.created[layer][feature].setGeometryName(this.created[layer].geomKey);
 			this.created[layer][feature].set(this.created[layer].geomKey, this.created[layer][feature].get(geomKey));
@@ -598,7 +599,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 		var param = {
 			"serverName": geoserver,
 			"workspace": workspace,
-			"wfstXml": new XMLSerializer().serializeToString(node)
+			"wfstXml": '<?xml version="1.0" encoding="utf-8"?>'+new XMLSerializer().serializeToString(node)
 		};
 		$.ajax({
 			type: "POST",

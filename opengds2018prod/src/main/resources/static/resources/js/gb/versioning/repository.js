@@ -2839,9 +2839,15 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 		},
 		success : function(data) {
 			console.log(data);
-			if (data.success === "true") {
-				modal.close();
-
+			var success = true;
+			if (Array.isArray(data)) {
+				for (var i = 0; i < data.length; i++) {
+					if (data[i].success !== "true") {
+						success = false;
+					}
+				}
+			}
+			if (success === true) {
 				var msg1 = $("<div>").text("Merge is complete.").css({
 					"text-align" : "center",
 					"font-size" : "16px"
@@ -2871,9 +2877,13 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 					commitModal.close();
 				});
 				$(okBtn).click(function() {
-					mModal.close();
+					modal.close();
 					that.endTransaction(server, repo, tid, commitModal);
 				});
+			} else {
+				var title = "Error";
+				var msg = "Override failed. Please try again."
+				that.messageModal(title, msg);
 			}
 		}
 	});

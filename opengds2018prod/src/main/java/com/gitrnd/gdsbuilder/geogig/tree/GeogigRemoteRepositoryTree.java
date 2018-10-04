@@ -144,30 +144,26 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								}
 							}
 						}
-						// } else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch ==
-						// false) {
-//					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch == false) {
-//						String remoteRepos = param[0];
-//						String[] localParams = local.split(":");
-//						String localRepos = localParams[1];
-//
-//						ListBranch listBranch = new ListBranch();
-//						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
-//						List<Branch> remoteBraches = branch.getRemoteBranchList();
-//						for (Branch remoteBranch : remoteBraches) {
-//							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
-//								String branchName = remoteBranch.getName();
-//								if (branchName.equals("HEAD")) {
-//									continue;
-//								}
-//								String parent = local + ":" + node;
-//								String branchId = parent + ":" + branchName;
-//								this.addRemoteBranch(parent, branchId, branchName);
-//							}
-//						}
-						// } else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch ==
-						// true) {
 					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
+						String remoteRepos = param[0];
+						String[] localParams = local.split(":");
+						String localRepos = localParams[1];
+
+						ListBranch listBranch = new ListBranch();
+						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
+						List<Branch> remoteBraches = branch.getRemoteBranchList();
+						for (Branch remoteBranch : remoteBraches) {
+							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+								String branchName = remoteBranch.getName();
+								if (branchName.equals("HEAD")) {
+									continue;
+								}
+								String parent = local + ":" + node;
+								String branchId = parent + ":" + branchName;
+								this.addRemoteBranch(parent, branchId, branchName);
+							}
+						}
+					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch == true) {
 						String remoteRepos = param[0];
 						String[] localParams = local.split(":");
 						String localRepos = localParams[1];
@@ -203,11 +199,14 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 												String nextPage = geogigDiff.getNextPage();
 												if (nextPage != null) {
 													Integer page = 1;
-													while (nextPage == null) {
-														geogigDiff = diffRepos.executeCommand(baseURL, username,
-																password, localRepos, fetchBranch.getOldValue(),
-																fetchBranch.getNewValue(), null, page);
-														fetchSize += geogigDiff.getDiffs().size();
+													while (nextPage != null) {
+														GeogigDiff nextDiff = diffRepos.executeCommand(baseURL,
+																username, password, localRepos,
+																fetchBranch.getOldValue(), fetchBranch.getNewValue(),
+																null, page);
+														fetchSize += nextDiff.getDiffs().size();
+														nextPage = nextDiff.getNextPage();
+														page++;
 													}
 												}
 												this.addFeatchRemoteBranch(parent, branchId, branchName, fetchSize);
@@ -220,8 +219,6 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 									}
 								}
 							}
-						} else {
-
 						}
 					} else {
 						JSONObject errorJSON = new JSONObject();

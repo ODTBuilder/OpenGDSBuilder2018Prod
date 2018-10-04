@@ -32,6 +32,8 @@ public class GeogigRepositoryLog {
 
 	private String error;
 
+	private String nextPage;
+
 	/**
 	 * Geogig Command 응답 성공 여부 반환
 	 * 
@@ -95,6 +97,15 @@ public class GeogigRepositoryLog {
 
 	public void setError(String error) {
 		this.error = error;
+	}
+
+	@XmlElement(name = "nextPage")
+	public String getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(String nextPage) {
+		this.nextPage = nextPage;
 	}
 
 	/**

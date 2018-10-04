@@ -63,7 +63,7 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 		DiffRepository diffRepos = new DiffRepository();
 		GeogigDiff diff = null;
 		try {
-			diff = diffRepos.executeCommand(url, user, pw, repoName, oldTreeish, newTreeish, layerName);
+			diff = diffRepos.executeCommand(url, user, pw, repoName, oldTreeish, newTreeish, layerName, null);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

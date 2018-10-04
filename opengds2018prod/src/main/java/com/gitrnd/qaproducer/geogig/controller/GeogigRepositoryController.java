@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;

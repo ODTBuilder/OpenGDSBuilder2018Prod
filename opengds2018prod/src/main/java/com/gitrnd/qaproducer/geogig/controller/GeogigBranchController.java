@@ -3,6 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 
@@ -108,15 +110,14 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/resolveConflict.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigCheckout resolveConflict(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public List<GeogigCheckout> resolveConflict(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "path", required = false) String path,
-			@RequestParam(value = "version", required = false) String version,
+			@RequestParam(value = "path", required = false) JSONObject path,
 			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return branchService.resolveConflict(geoserverManager, repoName, transactionId, path, version);
+		return branchService.resolveConflict(geoserverManager, repoName, transactionId, path);
 	}
-
 }

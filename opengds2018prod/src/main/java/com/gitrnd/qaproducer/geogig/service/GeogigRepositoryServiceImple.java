@@ -370,20 +370,22 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException {
 
-		String url = geoserverManager.getRestURL();
-		String user = geoserverManager.getUsername();
-		String pw = geoserverManager.getPassword();
+//		String url = geoserverManager.getRestURL();
+//		String user = geoserverManager.getUsername();
+//		String pw = geoserverManager.getPassword();
+//
+//		FetchRepository fetch = new FetchRepository();
+//		GeogigFetch geogigFetch = null;
+//		try {
+//			geogigFetch = fetch.executeCommand(url, user, pw, repoName);
+//		} catch (GeogigCommandException e) {
+//			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
+//			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+//			geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+//		}
+//		return geogigFetch;
 
-		FetchRepository fetch = new FetchRepository();
-		GeogigFetch geogigFetch = null;
-		try {
-			geogigFetch = fetch.executeCommand(url, user, pw, repoName);
-		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
-		}
-		return geogigFetch;
+		return null;
 	}
 
 }

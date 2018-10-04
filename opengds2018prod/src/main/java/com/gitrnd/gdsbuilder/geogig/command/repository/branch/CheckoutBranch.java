@@ -110,9 +110,9 @@ public class CheckoutBranch {
 				+ param_path + path;
 
 		if (version.equalsIgnoreCase(CHEKCOUT_OURS)) {
-			url += "&" + param_ours + version;
+			url += "&" + param_ours + true;
 		} else if (version.equalsIgnoreCase(CHEKCOUT_THEIRS)) {
-			url += "&" + param_theirs + version;
+			url += "&" + param_theirs + true;
 		}
 
 		// request

@@ -3,6 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import java.util.List;
+
 import javax.xml.bind.JAXBException;
 
 import org.json.simple.JSONObject;
@@ -75,10 +77,10 @@ public interface GeogigBranchService {
 	 * @param transactionId
 	 * @param path
 	 * @param version
-	 * @return GeogigCheckout
+	 * @return List<GeogigCheckout>
 	 * @throws JAXBException
 	 */
-	public GeogigCheckout resolveConflict(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String path, String version) throws JAXBException;
+	public List<GeogigCheckout> resolveConflict(DTGeoserverManager geoserverManager, String repoName,
+			String transactionId, JSONObject path) throws JAXBException;
 
 }

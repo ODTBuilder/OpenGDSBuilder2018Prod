@@ -10,11 +10,15 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.FetchRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.ListRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.remote.PingRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository.Remote;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -140,6 +144,29 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								}
 							}
 						}
+						// } else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch ==
+						// false) {
+//					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch == false) {
+//						String remoteRepos = param[0];
+//						String[] localParams = local.split(":");
+//						String localRepos = localParams[1];
+//
+//						ListBranch listBranch = new ListBranch();
+//						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
+//						List<Branch> remoteBraches = branch.getRemoteBranchList();
+//						for (Branch remoteBranch : remoteBraches) {
+//							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+//								String branchName = remoteBranch.getName();
+//								if (branchName.equals("HEAD")) {
+//									continue;
+//								}
+//								String parent = local + ":" + node;
+//								String branchId = parent + ":" + branchName;
+//								this.addRemoteBranch(parent, branchId, branchName);
+//							}
+//						}
+						// } else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch ==
+						// true) {
 					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
 						String remoteRepos = param[0];
 						String[] localParams = local.split(":");
@@ -148,16 +175,53 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 						ListBranch listBranch = new ListBranch();
 						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
 						List<Branch> remoteBraches = branch.getRemoteBranchList();
-						for (Branch remoteBranch : remoteBraches) {
-							if (remoteRepos.equals(remoteBranch.getRemoteName())) {
-								String branchName = remoteBranch.getName();
-								if (branchName.equals("HEAD")) {
-									continue;
+
+						FetchRepository fetchRepos = new FetchRepository();
+						GeogigFetch geogigFetch = fetchRepos.executeCommand(baseURL, username, password, localRepos,
+								remoteRepos);
+						List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote> remoteFetches = geogigFetch
+								.getRemotes();
+						if (remoteFetches != null) {
+							for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote remoteFetch : remoteFetches) {
+								// String remoteURL = remoteFetch.getRemoteURL();
+								List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch> fetchBranches = remoteFetch
+										.getBranchs();
+								for (Branch remoteBranch : remoteBraches) {
+									if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+										String branchName = remoteBranch.getName();
+										String parent = local + ":" + node;
+										String branchId = parent + ":" + branchName;
+										boolean isEquals = false;
+										for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch fetchBranch : fetchBranches) {
+											String fetchBranchName = fetchBranch.getName();
+											if (fetchBranchName.equals(branchName)) {
+												DiffRepository diffRepos = new DiffRepository();
+												GeogigDiff geogigDiff = diffRepos.executeCommand(baseURL, username,
+														password, localRepos, fetchBranch.getOldValue(),
+														fetchBranch.getNewValue(), null, null);
+												int fetchSize = geogigDiff.getDiffs().size();
+												String nextPage = geogigDiff.getNextPage();
+												if (nextPage != null) {
+													Integer page = 1;
+													while (nextPage == null) {
+														geogigDiff = diffRepos.executeCommand(baseURL, username,
+																password, localRepos, fetchBranch.getOldValue(),
+																fetchBranch.getNewValue(), null, page);
+														fetchSize += geogigDiff.getDiffs().size();
+													}
+												}
+												this.addFeatchRemoteBranch(parent, branchId, branchName, fetchSize);
+												isEquals = true;
+											}
+										}
+										if (isEquals == false) {
+											this.addFeatchRemoteBranch(parent, branchId, branchName, 0);
+										}
+									}
 								}
-								String parent = local + ":" + node;
-								String branchId = parent + ":" + branchName;
-								this.addRemoteBranch(parent, branchId, branchName);
 							}
+						} else {
+
 						}
 					} else {
 						JSONObject errorJSON = new JSONObject();
@@ -225,7 +289,22 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 		remoteBranchJson.put("id", id);
 		remoteBranchJson.put("text", text);
 		remoteBranchJson.put("type", EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType());
-		remoteBranchJson.put("children", false);
+		super.add(remoteBranchJson);
+	}
+
+	/**
+	 * @param parent
+	 * @param id
+	 * @param text
+	 * @param fetchSize
+	 */
+	private void addFeatchRemoteBranch(String parent, String id, String text, int fetchSize) {
+		JSONObject remoteBranchJson = new JSONObject();
+		remoteBranchJson.put("parent", parent);
+		remoteBranchJson.put("id", id);
+		remoteBranchJson.put("text", text);
+		remoteBranchJson.put("type", EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH.getType());
+		remoteBranchJson.put("fetchSize", fetchSize);
 		super.add(remoteBranchJson);
 	}
 }

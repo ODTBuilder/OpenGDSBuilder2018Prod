@@ -2841,6 +2841,39 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 			console.log(data);
 			if (data.success === "true") {
 				modal.close();
+
+				var msg1 = $("<div>").text("Merge is complete.").css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var body = $("<div>").append(msg1).append(msg2);
+				var closeBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-default").text("Later");
+				var okBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+				var commitModal = new gb.modal.Base({
+					"title" : "Commit Changes",
+					"width" : 310,
+					"height" : 200,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : buttonArea
+				});
+				$(closeBtn).click(function() {
+					commitModal.close();
+				});
+				$(okBtn).click(function() {
+					mModal.close();
+					that.endTransaction(server, repo, tid, commitModal);
+				});
 			}
 		}
 	});

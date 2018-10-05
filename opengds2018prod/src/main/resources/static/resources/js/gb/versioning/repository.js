@@ -46,6 +46,8 @@
  * @param {String}
  *            obj.url.pushRepository - Local branch에서 원격 Repository로 Push 요청할
  *            컨트롤러 주소
+ * @param {String}
+ *            obj.url.featureBlame - 피처 비교를 요청할 컨트롤러 주소
  * @version 0.01
  * @author SOYIJUN
  * @date 2018. 07.13
@@ -74,6 +76,7 @@ gb.versioning.Repository = function(obj) {
 	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
 	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
 	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
+	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
 
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
@@ -779,10 +782,20 @@ gb.versioning.Repository.prototype.getResolveConflictURL = function() {
 };
 
 /**
+ * feature blame 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFeatureBlameURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getFeatureBlameURL = function() {
+	return this.featureBlameURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
- * @return {Object} 리모트 레파지토리 이름
+ * @return {Object} 리모트 레파지토리 노드
  */
 gb.versioning.Repository.prototype.getNowRemoteRepository = function() {
 	return this.nowRemoteRepo;
@@ -2676,11 +2689,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 			var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
 			var oval = features[i].ourvalue;
 			var tval = features[i].theirvalue;
-			var diffObj = {
-				"our" : oval,
-				"their" : tval
-			};
-			var item = [ "", i + 1, layer, fid, "", diffObj ];
+			var item = [ "", i + 1, layer, fid, "", features[i].id ];
 			data.push(item);
 		}
 	}
@@ -2756,7 +2765,8 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		console.log(tableObj.row($(this).parents(3)).index());
 		// data[idx][4] = $(this).val();
 		console.log(data[idx][5]);
-
+		var path = data[idx][5];
+		that.conflictDetailModal(server, repo, repo, cub, tab, data[idx][5], idx);
 	});
 
 	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
@@ -2925,28 +2935,60 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.conflictDetailModal = function(crepo, trepo, cub, tab, features) {
+gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, idx) {
 	var that = this;
 
-	var crepo = $("<div>").append(crepo);
+	var crepo = $("<div>").append(crepos);
 	var cbranch = $("<div>").append(cub);
-	var cfeature = $("<div>");
+	var cfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb"
+	});
+	var cattrtable = $("<table>");
+	var cattrthead = $("<thead>");
+	var cattrtbody = $("<tbody>");
 	var cattribute = $("<div>");
 	var carea = $("<div>").append(crepo).append(cbranch).append(cfeature).append(cattribute).css({
-		"float" : "left"
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	this.conflictView = new ol.View({
+		"center" : [ 0, 0 ],
+		"zoom" : 1
+	});
+	this.cmap = new ol.Map({
+		"target" : $(cfeature)[0],
+		"view" : this.conflictView,
+		"layers" : []
 	});
 
-	var trepo = $("<div>").append(trepo);
+	var trepo = $("<div>").append(trepos);
 	var tbranch = $("<div>").append(tab);
-	var tfeature = $("<div>");
+	var tfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb"
+	});
 	var tattribute = $("<div>");
 	var tarea = $("<div>").append(trepo).append(tbranch).append(tfeature).append(tattribute).css({
-		"float" : "left"
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	this.tmap = new ol.Map({
+		"target" : $(tfeature)[0],
+		"view" : this.conflictView,
+		"layers" : []
 	});
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var branchSelect = $("<select>");
+	var cubOpt = $("<option>").text(cub);
+	var tabOpt = $("<option>").text(tab);
+	var branchSelect = $("<select>").append(cubOpt).append(tabOpt);
+
 	var sarea = $("<div>").append(branchSelect);
 
 	var body = $("<div>").append(ctarea).append(sarea);
@@ -2973,5 +3015,49 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(crepo, trepo, 
 	});
 	$(okBtn).click(function() {
 
+	});
+
+	var cparams = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"branch" : cub
+	}
+	// + "&" + jQuery.param(params),
+	var cblameURL = this.getFeatureBlameURL();
+	if (cblameURL.indexOf("?") !== -1) {
+		cblameURL += "&";
+		cblameURL += jQuery.param(cparams);
+	} else {
+		cblameURL += "?";
+		cblameURL += jQuery.param(cparams);
+	}
+
+	$.ajax({
+		url : cblameURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		data : cparams,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+
+			} else {
+				var title = "Error";
+				var msg = "Create new branch failed."
+				that.messageModal(title, msg);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
 	});
 };

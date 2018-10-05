@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -36,7 +36,7 @@ public class GeogigFeatureController extends AbstractController {
 
 	@RequestMapping(value = "/featureBlame.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigBranch featureBlame(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigBlame featureBlame(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,

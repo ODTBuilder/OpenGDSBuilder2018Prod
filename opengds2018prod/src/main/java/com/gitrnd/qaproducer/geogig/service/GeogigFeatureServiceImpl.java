@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.FeatureDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
@@ -42,6 +43,12 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			geogigFeatureDiff = (GeogigFeatureDiff) unmarshaller.unmarshal(new StringReader(e.getMessage()));
 		}
 		return geogigFeatureDiff;
+	}
+
+	@Override
+	public GeogigBranch featureBlame(DTGeoserverManager geoserverManager, String repoName, String path, String branch) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

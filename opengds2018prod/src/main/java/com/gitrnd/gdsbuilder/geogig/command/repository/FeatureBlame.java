@@ -18,7 +18,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 
 public class FeatureBlame {
 
@@ -29,8 +29,8 @@ public class FeatureBlame {
 	private static final String param_path = "path=";
 	private static final String param_commit = "commit="; // optional
 
-	public GeogigFeatureDiff executeCommand(String baseURL, String username, String password, String repository,
-			String path, String commit) {
+	public GeogigBlame executeCommand(String baseURL, String username, String password, String repository, String path,
+			String commit) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -56,9 +56,9 @@ public class FeatureBlame {
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigFeatureDiff> responseEntity = null;
+		ResponseEntity<GeogigBlame> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigFeatureDiff.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigBlame.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {

@@ -100,7 +100,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		try {
 			geogigRepos = deleteReops.executeGetCommand(url, user, pw, repoName);
 			String token = geogigRepos.getToken();
-			deleteReops.executeDeleteCommand(url, user, pw, repoName, token);
+			deleteReops.executeDeleteCommand(url, user, pw, repoName, "111111");
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryDelete.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

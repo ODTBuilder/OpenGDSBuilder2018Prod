@@ -81,6 +81,7 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 					Attribute type = attrTypes.get(i);
 					type.setValue(attrValues.get(i).getValue());
 				}
+				featureAtt.setSuccess("true");
 			}
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);

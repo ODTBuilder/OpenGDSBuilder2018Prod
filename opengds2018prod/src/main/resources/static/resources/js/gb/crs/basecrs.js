@@ -31,7 +31,7 @@ gb.crs.BaseCRS = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.message = options.message ? options.message : undefined;
-	this.map = options.map ? options.map : undefined;
+	this.maps = options.maps ? options.maps : undefined;
 	this.epsg = options.epsg ? options.epsg : "3857";
 
 	this.searchEPSGCode(this.epsg);
@@ -64,7 +64,7 @@ gb.crs.BaseCRS = function(obj) {
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(this.searchBtn).append(closeBtn);
 
 	this.setModalFooter(buttonArea);
-	
+
 	$("body").append(this.modal);
 	$("body").append(this.background);
 };
@@ -74,22 +74,22 @@ gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
 /**
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 반환한다.
  * 
- * @method gb.crs.BaseCRS#getMap
+ * @method gb.crs.BaseCRS#getMaps
  * @return {ol.Map} 베이스 좌표계를 변경하고자 하는 ol.Map 객체
  */
-gb.crs.BaseCRS.prototype.getMap = function() {
-	return this.map;
+gb.crs.BaseCRS.prototype.getMaps = function() {
+	return this.maps;
 };
 
 /**
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 설정한다.
  * 
- * @method gb.crs.BaseCRS#setMap
+ * @method gb.crs.BaseCRS#setMaps
  * @param {ol.Map}
  *            map - 베이스 좌표계를 변경하고자 하는 ol.Map 객체
  */
-gb.crs.BaseCRS.prototype.setMap = function(map) {
-	this.map = map;
+gb.crs.BaseCRS.prototype.setMaps = function(maps) {
+	this.maps = maps;
 };
 
 /**
@@ -198,8 +198,8 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 	var that = this;
 	if (code === null || name === null || proj4def === null || bbox === null) {
-		if (Array.isArray(this.getMap())) {
-			var maps = this.getMap();
+		if (Array.isArray(this.getMaps())) {
+			var maps = this.getMaps();
 			for (var i = 0; i < maps.length; i++) {
 				if (maps[i] instanceof ol.Map) {
 					maps[i].setView(new ol.View({
@@ -210,8 +210,8 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 				}
 			}
 			return;
-		} else if (this.getMap() instanceof ol.Map) {
-			this.getMap().setView(new ol.View({
+		} else if (this.getMaps() instanceof ol.Map) {
+			this.getMaps().setView(new ol.View({
 				projection : 'EPSG:3857',
 				center : [ 0, 0 ],
 				zoom : 1
@@ -232,15 +232,15 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 	var newView = new ol.View({
 		projection : newProj
 	});
-	if (Array.isArray(this.getMap())) {
-		var maps = this.getMap();
+	if (Array.isArray(this.getMaps())) {
+		var maps = this.getMaps();
 		for (var i = 0; i < maps.length; i++) {
 			if (maps[i] instanceof ol.Map) {
 				maps[i].setView(newView);
 			}
 		}
-	} else if (this.getMap() instanceof ol.Map) {
-		this.getMap().setView(newView);
+	} else if (this.getMaps() instanceof ol.Map) {
+		this.getMaps().setView(newView);
 	}
 	newView.fit(extent);
 	console.log(this.getEPSGCode());

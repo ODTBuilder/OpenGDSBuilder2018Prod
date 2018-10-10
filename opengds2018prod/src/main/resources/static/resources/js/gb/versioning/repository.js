@@ -63,6 +63,7 @@ gb.versioning.Repository = function(obj) {
 	gb.modal.Base.call(this, obj);
 	var that = this;
 	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
 	var url = options.url ? options.url : {};
 	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
 	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
@@ -357,6 +358,54 @@ gb.versioning.Repository = function(obj) {
 	this.setModalFooter(buttonArea);
 	this.getCheckoutBranchURL("server");
 	this.transitPage("server");
+
+	this.conflictView1 = new ol.View({
+		"center" : [ 0, 0 ],
+		"zoom" : 1
+	});
+
+	this.conflictView2 = new ol.View({
+		"center" : [ 0, 0 ],
+		"zoom" : 1
+	});
+
+	this.cfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb"
+	});
+
+	this.tfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb"
+	});
+
+	this.cmap = new ol.Map({
+		"target" : $(this.cfeature)[0],
+		// "view" : this.conflictView1,
+		"layers" : [ new ol.layer.Tile({
+			"source" : new ol.source.OSM(),
+			"zIndex" : 1
+		}) ]
+	});
+
+	this.tmap = new ol.Map({
+		"target" : $(this.tfeature)[0],
+		// "view" : this.conflictView2,
+		"layers" : [ new ol.layer.Tile({
+			"source" : new ol.source.OSM(),
+			"zIndex" : 1
+		}) ]
+	});
+
+	this.crs = new gb.crs.BaseCRS({
+		"autoOpen" : false,
+		"title" : "Base CRS",
+		"message" : $(".epsg-now"),
+		"maps" : [ this.cmap, this.tmap ],
+		"epsg" : this.epsg
+	});
 };
 gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
@@ -2964,48 +3013,73 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	var crepo = $("<div>").append(crepos);
 	var cbranch = $("<div>").append(cub);
-	var cfeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb"
-	});
-	var cattrtable = $("<table>");
-	var cattrthead = $("<thead>");
+	// var cfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var cheadtd1 = $("<th>").text("Name");
+	var cheadtd2 = $("<th>").text("Value");
+	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
+	var cattrthead = $("<thead>").append(cheadth);
 	var cattrtbody = $("<tbody>");
-	var cattribute = $("<div>");
-	var carea = $("<div>").append(crepo).append(cbranch).append(cfeature).append(cattribute).css({
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody);
+	var cattribute = $("<div>").append(cattrtable).css({
+		"height" : "370px",
+		"overflow" : "auto"
+	});
+	var carea = $("<div>").append(crepo).append(cbranch).append(this.cfeature).append(cattribute).css({
 		"float" : "left",
 		"width" : "50%",
 		"padding" : "10px"
 	});
-	this.conflictView = new ol.View({
-		"center" : [ 0, 0 ],
-		"zoom" : 1
-	});
-	this.cmap = new ol.Map({
-		"target" : $(cfeature)[0],
-		"view" : this.conflictView,
-		"layers" : []
-	});
+	// this.conflictView = new ol.View({
+	// "center" : [ 0, 0 ],
+	// "zoom" : 1
+	// });
+	// this.cmap = new ol.Map({
+	// "target" : $(cfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
 
 	var trepo = $("<div>").append(trepos);
 	var tbranch = $("<div>").append(tab);
-	var tfeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb"
+	// var tfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var theadtd1 = $("<th>").text("Name");
+	var theadtd2 = $("<th>").text("Value");
+	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
+	var tattrthead = $("<thead>").append(theadth);
+	var tattrtbody = $("<tbody>");
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody);
+	var tattribute = $("<div>").append(tattrtable).css({
+		"height" : "370px",
+		"overflow" : "auto"
 	});
-	var tattribute = $("<div>");
-	var tarea = $("<div>").append(trepo).append(tbranch).append(tfeature).append(tattribute).css({
+
+	$(cattribute).on("scroll", function() {
+		$(tattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	});
+
+	// $(tattribute).on("scroll", function() {
+	// $(cattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft",
+	// this.scrollLeft);
+	// });
+
+	var tarea = $("<div>").append(trepo).append(tbranch).append(this.tfeature).append(tattribute).css({
 		"float" : "left",
 		"width" : "50%",
 		"padding" : "10px"
 	});
-	this.tmap = new ol.Map({
-		"target" : $(tfeature)[0],
-		"view" : this.conflictView,
-		"layers" : []
-	});
+	// this.tmap = new ol.Map({
+	// "target" : $(tfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
@@ -3057,20 +3131,20 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		"featureId" : fid2
 	}
 	// + "&" + jQuery.param(params),
-	var fobjectURL = this.getCatFeatureObjectURL();
-	if (fobjectURL.indexOf("?") !== -1) {
-		fobjectURL += "&";
-		fobjectURL += jQuery.param(cparams1);
+	var fobjectURL1 = this.getCatFeatureObjectURL();
+	if (fobjectURL1.indexOf("?") !== -1) {
+		fobjectURL1 += "&";
+		fobjectURL1 += jQuery.param(cparams1);
 	} else {
-		fobjectURL += "?";
-		fobjectURL += jQuery.param(cparams1);
+		fobjectURL1 += "?";
+		fobjectURL1 += jQuery.param(cparams1);
 	}
 
 	$.ajax({
-		url : fobjectURL,
+		url : fobjectURL1,
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
-		data : cparams1,
+		// data : cparams1,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
@@ -3082,10 +3156,103 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
+				var attrs = data.attributes;
+				for (var i = 0; i < attrs.length; i++) {
+					if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+							|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING" || attrs[i].type === "MULTIPOLYGON") {
+						var wkt = attrs[i].value;
+						console.log(wkt);
+						var format = new ol.format.WKT();
+						var feature = format.readFeature(wkt);
+						var vlayer = new ol.layer.Vector({
+							"source" : new ol.source.Vector({
+								"feature" : [ feature ]
+							}),
+							"zIndex" : 2
+						});
+						that.getCurrentMap().updateSize();
+						that.getCurrentMap().addLayer(vlayer);
+						var geom = feature.getGeometry();
 
+						that.getCurrentMap().getView().fit(geom);
+
+					}
+					var name = attrs[i].name;
+					var value = attrs[i].value;
+					var td1 = $("<td>").text(name);
+					var td2 = $("<td>").text(value);
+					var tr = $("<tr>").append(td1).append(td2);
+					$(cattrtbody).append(tr);
+
+				}
 			} else {
 				var title = "Error";
-				var msg = "Create new branch failed."
+				var msg = "Retrieve feature failed."
+				that.messageModal(title, msg);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
+
+	var fobjectURL2 = this.getCatFeatureObjectURL();
+	if (fobjectURL2.indexOf("?") !== -1) {
+		fobjectURL2 += "&";
+		fobjectURL2 += jQuery.param(cparams2);
+	} else {
+		fobjectURL2 += "?";
+		fobjectURL2 += jQuery.param(cparams2);
+	}
+
+	$.ajax({
+		url : fobjectURL2,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : cparams2,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var attrs = data.attributes;
+				for (var i = 0; i < attrs.length; i++) {
+					if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+							|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING" || attrs[i].type === "MULTIPOLYGON") {
+						var wkt = attrs[i].value;
+						console.log(wkt);
+						var format = new ol.format.WKT();
+						var feature = format.readFeature(wkt);
+						var vlayer = new ol.layer.Vector({
+							"source" : new ol.source.Vector({
+								"feature" : [ feature ]
+							}),
+							"zIndex" : 2
+						});
+						that.getTargetMap().updateSize();
+						that.getTargetMap().addLayer(vlayer);
+						var geom = feature.getGeometry();
+
+						that.getTargetMap().getView().fit(geom);
+
+					}
+					var name = attrs[i].name;
+					var value = attrs[i].value;
+					var td1 = $("<td>").text(name);
+					var td2 = $("<td>").text(value);
+					var tr = $("<tr>").append(td1).append(td2);
+					$(tattrtbody).append(tr);
+
+				}
+			} else {
+				var title = "Error";
+				var msg = "Retrieve feature failed."
 				that.messageModal(title, msg);
 			}
 		},
@@ -3120,4 +3287,26 @@ gb.versioning.Repository.prototype.setCommitId = function(ours, theirs) {
  */
 gb.versioning.Repository.prototype.getCommitId = function() {
 	return this.commitId;
+}
+
+/**
+ * 체크아웃 브랜치의 충돌피처를 보여줄 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCurrentMap
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getCurrentMap = function() {
+	return this.cmap;
+}
+
+/**
+ * 타겟 브랜치의 충돌피처를 보여줄 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getTargetMap
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getTargetMap = function() {
+	return this.tmap;
 }

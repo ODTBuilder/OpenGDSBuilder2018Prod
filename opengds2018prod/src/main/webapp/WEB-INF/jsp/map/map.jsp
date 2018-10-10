@@ -197,11 +197,38 @@ html {
 			gbBaseMap.open();
 		});
 
+		var vrepo = new gb.versioning.Repository({
+			"epsg" : "4326",
+			"url" : {
+				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
+				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
+				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}",
+				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
+			}
+		});
+
+		$("#vermodal").click(function() {
+			vrepo.open();
+		});
+
 		var crs = new gb.crs.BaseCRS({
 			"autoOpen" : false,
 			"title" : "Base CRS",
 			"message" : $(".epsg-now"),
-			"map" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
+			"maps" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
 			"epsg" : "4326"
 		});
 
@@ -409,32 +436,6 @@ html {
 
 		var mousePosition = new gb.map.MousePosition({
 			map : gbMap.getUpperMap()
-		});
-
-		var vrepo = new gb.versioning.Repository({
-			"url" : {
-				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
-				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
-				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
-				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}",
-				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
-			}
-		});
-
-		$("#vermodal").click(function() {
-			vrepo.open();
 		});
 
 		var gitrnd = {

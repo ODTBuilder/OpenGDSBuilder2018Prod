@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
@@ -75,17 +76,21 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			geogigReposInit = (GeogigRepositoryInit) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		} catch (ResourceAccessException e) {
+			geogigReposInit = new GeogigRepositoryInit();
+			geogigReposInit.setError(
+					"Exception during pool initialization: HikariPool-9 - Connection is not available, request timed out after 5000ms.");
+			geogigReposInit.setSuccess("false");
 		}
 		return geogigReposInit;
-
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#deleteRepository
-	 * (com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
+	 * @see com.gitrnd.qaproducer.geogig.service.9GeogigRepositoryService#
+	 * deleteRepository (com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String)
 	 */
 	@Override
 	public GeogigRepositoryDelete deleteRepository(DTGeoserverManager geoserverManager, String repoName)

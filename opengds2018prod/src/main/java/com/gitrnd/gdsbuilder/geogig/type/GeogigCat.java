@@ -521,6 +521,7 @@ public class GeogigCat {
 		private String minoccurs;
 		private String maxoccurs;
 		private String nillable;
+		private String crs;
 
 		/**
 		 * @return the type
@@ -565,6 +566,15 @@ public class GeogigCat {
 		@XmlElement(name = "name")
 		public String getName() {
 			return name;
+		}
+
+		@XmlElement(name = "crs")
+		public String getCrs() {
+			return crs;
+		}
+
+		public void setCrs(String crs) {
+			this.crs = crs;
 		}
 
 		public void setName(String name) {

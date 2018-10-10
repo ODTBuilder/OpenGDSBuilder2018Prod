@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -72,7 +73,7 @@ public class InitRepository {
 		} catch (HttpServerErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (ResourceAccessException e) {
-			throw new GeogigCommandException(e.getMessage());
+			throw e;
 		}
 		return responseEntity.getBody();
 	}

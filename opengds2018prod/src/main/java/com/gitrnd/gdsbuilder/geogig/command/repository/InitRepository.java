@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
@@ -70,6 +71,8 @@ public class InitRepository {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+		} catch (ResourceAccessException e) {
+			throw new GeogigCommandException(e.getMessage());
 		}
 		return responseEntity.getBody();
 	}

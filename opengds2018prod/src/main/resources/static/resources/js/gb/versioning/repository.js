@@ -384,19 +384,13 @@ gb.versioning.Repository = function(obj) {
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		// "view" : this.conflictView1,
-		"layers" : [ new ol.layer.Tile({
-			"source" : new ol.source.OSM(),
-			"zIndex" : 1
-		}) ]
+		"layers" : []
 	});
 
 	this.tmap = new ol.Map({
 		"target" : $(this.tfeature)[0],
 		// "view" : this.conflictView2,
-		"layers" : [ new ol.layer.Tile({
-			"source" : new ol.source.OSM(),
-			"zIndex" : 1
-		}) ]
+		"layers" : []
 	});
 
 	this.crs = new gb.crs.BaseCRS({
@@ -2706,6 +2700,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var row1 = $("<tr>").append(col1).append(col2).append(col3).append(col4).append(col5).append(col6);
 	var thead = $("<thead>").append(row1);
 	var tbody = $("<tbody>");
+	this.conflictFeatureTbody = tbody;
 	var table = $("<table>").append(thead).append(tbody);
 	var tableArea = $("<div>").append(table).css({
 		"width" : "100%",
@@ -2832,14 +2827,15 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	$(table).find("tbody").on("click", ".gb-repository-conflict-detail", function() {
 		console.log($(this).val());
 		// console.log($(this).parents(2)[0]);
-		var idx = tableObj.row($(this).parents(3)).index();
-		console.log(tableObj.row($(this).parents(3)).index());
+		var idx = tableObj.row($(this).parents().eq(1)).index();
+		console.log(tableObj.row($(this).parents().eq(1)).index());
 		// data[idx][4] = $(this).val();
 		console.log(data[idx][5]);
 		var path = data[idx][2] + "/" + data[idx][3];
 		var fid = data[idx][5];
-
-		that.conflictDetailModal(server, repo, repo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, idx);
+		console.log($(this).parents().eq(1)[0]);
+		var setVal = $(this).parents().eq(1).find(".gb-repository-instead-branch").val();
+		that.conflictDetailModal(server, repo, repo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
 	});
 
 	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
@@ -2847,10 +2843,11 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	$(table).find("tbody").on("change", ".gb-repository-instead-branch", function() {
 		console.log($(this).val());
 		// console.log($(this).parents(2)[0]);
-		var idx = tableObj.row($(this).parents(3)).index();
-		console.log(tableObj.row($(this).parents(3)).index());
+		var idx = tableObj.row($(this).parents().eq(1)).index();
+		console.log(tableObj.row($(this).parents().eq(1)).index());
 		data[idx][4] = $(this).val();
 		console.log(data[idx][4]);
+		console.log(data);
 	});
 
 	$(closeBtn).click(function() {
@@ -3008,7 +3005,7 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, idx) {
+gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
 	var that = this;
 
 	var crepo = $("<div>").append(crepos);
@@ -3083,10 +3080,14 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var cubOpt = $("<option>").text(cub);
-	var tabOpt = $("<option>").text(tab);
+	var cubOpt = $("<option>").text(cub).attr({
+		"value" : "ours"
+	});
+	var tabOpt = $("<option>").text(tab).attr({
+		"value" : "theirs"
+	});
 	var branchSelect = $("<select>").append(cubOpt).append(tabOpt);
-
+	$(branchSelect).val(val);
 	var sarea = $("<div>").append(branchSelect);
 
 	var body = $("<div>").append(ctarea).append(sarea);
@@ -3112,7 +3113,15 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		modal.close();
 	});
 	$(okBtn).click(function() {
-
+		console.log(idx);
+		$(branchSelect).val();
+		console.log($(branchSelect).val());
+		var select = $(that.conflictFeatureTbody).find("tr").eq(idx).find(".gb-repository-instead-branch");
+		$(select).filter("option:selected").text();
+		console.log($(select).find("option").filter(":selected").val());
+		$(select).val($(branchSelect).val());
+		$(select).trigger("change");
+		modal.close();
 	});
 
 	var cparams1 = {
@@ -3130,136 +3139,197 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		"commitId" : this.getCommitId().theirs,
 		"featureId" : fid2
 	}
-	// + "&" + jQuery.param(params),
-	var fobjectURL1 = this.getCatFeatureObjectURL();
-	if (fobjectURL1.indexOf("?") !== -1) {
-		fobjectURL1 += "&";
-		fobjectURL1 += jQuery.param(cparams1);
-	} else {
-		fobjectURL1 += "?";
-		fobjectURL1 += jQuery.param(cparams1);
-	}
 
-	$.ajax({
-		url : fobjectURL1,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		// data : cparams1,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				var attrs = data.attributes;
-				for (var i = 0; i < attrs.length; i++) {
-					if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-							|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING" || attrs[i].type === "MULTIPOLYGON") {
-						var wkt = attrs[i].value;
-						console.log(wkt);
-						var format = new ol.format.WKT();
-						var feature = format.readFeature(wkt);
-						var vlayer = new ol.layer.Vector({
-							"source" : new ol.source.Vector({
-								"feature" : [ feature ]
-							}),
-							"zIndex" : 2
-						});
-						that.getCurrentMap().updateSize();
-						that.getCurrentMap().addLayer(vlayer);
-						var geom = feature.getGeometry();
+	if (fid1 !== "0000000000000000000000000000000000000000") {
+		var fobjectURL1 = this.getCatFeatureObjectURL();
+		if (fobjectURL1.indexOf("?") !== -1) {
+			fobjectURL1 += "&";
+			fobjectURL1 += jQuery.param(cparams1);
+		} else {
+			fobjectURL1 += "?";
+			fobjectURL1 += jQuery.param(cparams1);
+		}
 
-						that.getCurrentMap().getView().fit(geom);
+		$.ajax({
+			url : fobjectURL1,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : cparams1,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					var attrs = data.attributes;
+					for (var i = 0; i < attrs.length; i++) {
+						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+								|| attrs[i].type === "MULTIPOLYGON") {
+							var wkt = attrs[i].value;
+							console.log(wkt);
+							var format = new ol.format.WKT();
+							var geom = format.readGeometry(wkt);
+							var feature = new ol.Feature({
+								"geometry" : geom
+							});
+							feature.setId(data.featureId);
+							console.log(feature);
+							console.log(feature.getId());
+							var style = new ol.style.Style({
+								image : new ol.style.Circle({
+									radius : 5,
+									fill : new ol.style.Fill({
+										color : 'orange'
+									})
+								})
+							});
+
+							var vlayer = new ol.layer.Vector({
+								"style" : style,
+								"source" : new ol.source.Vector({
+									"features" : [ feature ]
+								}),
+								"zIndex" : 2
+							});
+
+							var osm = new ol.layer.Tile({
+								"source" : new ol.source.OSM(),
+								"zIndex" : 1
+							});
+
+							that.getCurrentMap().updateSize();
+							that.getCurrentMap().getLayers().clear();
+							that.getCurrentMap().addLayer(osm);
+							that.getCurrentMap().addLayer(vlayer);
+							that.getCurrentMap().getView().fit(geom);
+
+						}
+						var name = attrs[i].name;
+						var value = attrs[i].value;
+						var td1 = $("<td>").text(name);
+						var td2 = $("<td>").text(value);
+						var tr = $("<tr>").append(td1).append(td2);
+						$(cattrtbody).append(tr);
 
 					}
-					var name = attrs[i].name;
-					var value = attrs[i].value;
-					var td1 = $("<td>").text(name);
-					var td2 = $("<td>").text(value);
-					var tr = $("<tr>").append(td1).append(td2);
-					$(cattrtbody).append(tr);
-
+				} else {
+					var title = "Error";
+					var msg = "Retrieve feature failed."
+					that.messageModal(title, msg);
 				}
-			} else {
-				var title = "Error";
-				var msg = "Retrieve feature failed."
-				that.messageModal(title, msg);
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
-		}
-	});
-
-	var fobjectURL2 = this.getCatFeatureObjectURL();
-	if (fobjectURL2.indexOf("?") !== -1) {
-		fobjectURL2 += "&";
-		fobjectURL2 += jQuery.param(cparams2);
+		});
 	} else {
-		fobjectURL2 += "?";
-		fobjectURL2 += jQuery.param(cparams2);
+
 	}
 
-	$.ajax({
-		url : fobjectURL2,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		// data : cparams2,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				var attrs = data.attributes;
-				for (var i = 0; i < attrs.length; i++) {
-					if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-							|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING" || attrs[i].type === "MULTIPOLYGON") {
-						var wkt = attrs[i].value;
-						console.log(wkt);
-						var format = new ol.format.WKT();
-						var feature = format.readFeature(wkt);
-						var vlayer = new ol.layer.Vector({
-							"source" : new ol.source.Vector({
-								"feature" : [ feature ]
-							}),
-							"zIndex" : 2
-						});
-						that.getTargetMap().updateSize();
-						that.getTargetMap().addLayer(vlayer);
-						var geom = feature.getGeometry();
+	if (fid2 !== "0000000000000000000000000000000000000000") {
+		var fobjectURL2 = this.getCatFeatureObjectURL();
+		if (fobjectURL2.indexOf("?") !== -1) {
+			fobjectURL2 += "&";
+			fobjectURL2 += jQuery.param(cparams2);
+		} else {
+			fobjectURL2 += "?";
+			fobjectURL2 += jQuery.param(cparams2);
+		}
 
-						that.getTargetMap().getView().fit(geom);
+		$.ajax({
+			url : fobjectURL2,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : cparams2,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					var attrs = data.attributes;
+					for (var i = 0; i < attrs.length; i++) {
+						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+								|| attrs[i].type === "MULTIPOLYGON") {
+							var wkt = attrs[i].value;
+							console.log(wkt);
+							var format = new ol.format.WKT();
+							var geom = format.readGeometry(wkt);
+							var feature = new ol.Feature({
+								"geometry" : geom
+							});
+							feature.setId(data.featureId);
+							console.log(feature);
+							console.log(feature.getId());
+							var style = new ol.style.Style({
+								image : new ol.style.Circle({
+									radius : 5,
+									fill : new ol.style.Fill({
+										color : 'orange'
+									})
+								})
+							});
+
+							var vlayer = new ol.layer.Vector({
+								"style" : style,
+								"source" : new ol.source.Vector({
+									"features" : [ feature ]
+								}),
+								"zIndex" : 2
+							});
+
+							var osm = new ol.layer.Tile({
+								"source" : new ol.source.OSM(),
+								"zIndex" : 1
+							});
+
+							that.getTargetMap().updateSize();
+							that.getTargetMap().getLayers().clear();
+							that.getTargetMap().addLayer(osm);
+							that.getTargetMap().addLayer(vlayer);
+							var geom = feature.getGeometry();
+
+							that.getTargetMap().getView().fit(geom);
+
+						}
+						var name = attrs[i].name;
+						var value = attrs[i].value;
+						var td1 = $("<td>").text(name);
+						var td2 = $("<td>").text(value);
+						var tr = $("<tr>").append(td1).append(td2);
+						$(tattrtbody).append(tr);
 
 					}
-					var name = attrs[i].name;
-					var value = attrs[i].value;
-					var td1 = $("<td>").text(name);
-					var td2 = $("<td>").text(value);
-					var tr = $("<tr>").append(td1).append(td2);
-					$(tattrtbody).append(tr);
-
+				} else {
+					var title = "Error";
+					var msg = "Retrieve feature failed."
+					that.messageModal(title, msg);
 				}
-			} else {
-				var title = "Error";
-				var msg = "Retrieve feature failed."
-				that.messageModal(title, msg);
-			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
 
-		}
-	});
+			}
+		});
+	} else {
+		that.getTargetMap().updateSize();
+		var td1 = $("<td>").text("Deleted");
+		var td2 = $("<td>").text("Deleted");
+		var tr = $("<tr>").append(td1).append(td2);
+		$(tattrtbody).append(tr);
+	}
+
 };
 
 /**

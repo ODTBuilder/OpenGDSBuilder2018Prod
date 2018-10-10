@@ -58,6 +58,7 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 
 		String[] ids = path.split("/");
 		String layerName = ids[0];
+		String featureName = ids[1];
 		GeogigFeatureAttribute featureAtt = null;
 		try {
 			CatObject catObj = new CatObject();
@@ -81,12 +82,17 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 					Attribute type = attrTypes.get(i);
 					type.setValue(attrValues.get(i).getValue());
 				}
+				featureAtt = new GeogigFeatureAttribute();
+				featureAtt.setLayerName(layerName);
+				featureAtt.setFeatureId(featureName);
+				featureAtt.setAttributes(attrTypes);
 				featureAtt.setSuccess("true");
 			}
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			featureAtt = (GeogigFeatureAttribute) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			featureAtt.setSuccess("false");
 		}
 		return featureAtt;
 	}

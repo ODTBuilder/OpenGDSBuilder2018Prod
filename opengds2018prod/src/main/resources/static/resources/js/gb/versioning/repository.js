@@ -48,6 +48,9 @@
  *            컨트롤러 주소
  * @param {String}
  *            obj.url.featureBlame - 피처 비교를 요청할 컨트롤러 주소
+ * @param {String}
+ *            obj.url.catFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할 컨트롤러 주소
+ * 
  * @version 0.01
  * @author SOYIJUN
  * @date 2018. 07.13
@@ -77,6 +80,7 @@ gb.versioning.Repository = function(obj) {
 	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
 	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
 	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
@@ -792,6 +796,16 @@ gb.versioning.Repository.prototype.getFeatureBlameURL = function() {
 };
 
 /**
+ * catFeatureObject 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCatFeatureObjectURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getCatFeatureObjectURL = function() {
+	return this.catFeatureObjectURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
@@ -1066,11 +1080,14 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					$(closeBtn).click(function() {
 						commitModal.close();
 					});
-					$(okBtn).click(function() {
-						mModal.close();
-						// that.endTransaction(server, repo, tid, commitModal);
-						that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.features, commitModal);
-					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								// that.endTransaction(server, repo, tid,
+								// commitModal);
+								that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+							});
 				}
 			} else {
 				var title = "Error";
@@ -2563,7 +2580,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, features, cmodal) {
+gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, ours, theirs, features, cmodal) {
 	var that = this;
 
 	var serverName = $("<span>").text("GeoServer: ").css({
@@ -2683,13 +2700,18 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		"footer" : buttonArea
 	});
 	var data = [];
+	this.setCommitId(ours, theirs);
 	for (var i = 0; i < features.length; i++) {
 		if (features[i].change === "CONFLICT") {
 			var layer = features[i].id.substring(0, features[i].id.indexOf("/"));
 			var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
 			var oval = features[i].ourvalue;
 			var tval = features[i].theirvalue;
-			var item = [ "", i + 1, layer, fid, "", features[i].id ];
+			var diffObj = {
+				"ourvalue" : oval,
+				"theirvalue" : tval
+			};
+			var item = [ "", i + 1, layer, fid, "", diffObj ];
 			data.push(item);
 		}
 	}
@@ -2765,8 +2787,10 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		console.log(tableObj.row($(this).parents(3)).index());
 		// data[idx][4] = $(this).val();
 		console.log(data[idx][5]);
-		var path = data[idx][5];
-		that.conflictDetailModal(server, repo, repo, cub, tab, data[idx][5], idx);
+		var path = data[idx][2] + "/" + data[idx][3];
+		var fid = data[idx][5];
+
+		that.conflictDetailModal(server, repo, repo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, idx);
 	});
 
 	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
@@ -2935,7 +2959,7 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, idx) {
+gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, idx) {
 	var that = this;
 
 	var crepo = $("<div>").append(crepos);
@@ -3017,27 +3041,36 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	});
 
-	var cparams = {
+	var cparams1 = {
 		"serverName" : server,
 		"repoName" : crepos,
 		"path" : path,
-		"branch" : cub
+		"commitId" : this.getCommitId().ours,
+		"featureId" : fid1
+	}
+
+	var cparams2 = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"commitId" : this.getCommitId().theirs,
+		"featureId" : fid2
 	}
 	// + "&" + jQuery.param(params),
-	var cblameURL = this.getFeatureBlameURL();
-	if (cblameURL.indexOf("?") !== -1) {
-		cblameURL += "&";
-		cblameURL += jQuery.param(cparams);
+	var fobjectURL = this.getCatFeatureObjectURL();
+	if (fobjectURL.indexOf("?") !== -1) {
+		fobjectURL += "&";
+		fobjectURL += jQuery.param(cparams1);
 	} else {
-		cblameURL += "?";
-		cblameURL += jQuery.param(cparams);
+		fobjectURL += "?";
+		fobjectURL += jQuery.param(cparams1);
 	}
 
 	$.ajax({
-		url : cblameURL,
+		url : fobjectURL,
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
-		data : cparams,
+		data : cparams1,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
@@ -3061,3 +3094,30 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		}
 	});
 };
+
+/**
+ * commit id 를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setCommitId
+ * @param {String}
+ *            ours - 현재 브랜치 커밋의 오브젝트 아이디
+ * @param {String}
+ *            theirs - 타겟 브랜치 커밋의 오브젝트 아이디
+ */
+gb.versioning.Repository.prototype.setCommitId = function(ours, theirs) {
+	this.commitId = {
+		"ours" : ours,
+		"theirs" : theirs
+	};
+}
+
+/**
+ * commit id 를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCommitId
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getCommitId = function() {
+	return this.commitId;
+}

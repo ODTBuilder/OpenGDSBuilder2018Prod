@@ -428,7 +428,8 @@ html {
 				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}"
+				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}",
+				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

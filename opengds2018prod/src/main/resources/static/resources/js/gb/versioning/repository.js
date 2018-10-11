@@ -87,7 +87,7 @@ gb.versioning.Repository = function(obj) {
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
-	this.reRepoSelect = $("<select>").css({
+	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	$(this.reRepoSelect).on("change", function() {
@@ -99,7 +99,7 @@ gb.versioning.Repository = function(obj) {
 			$(that.reBranchSelect).append(opt);
 		}
 	});
-	this.reBranchSelect = $("<select>").css({
+	this.reBranchSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
@@ -340,7 +340,7 @@ gb.versioning.Repository = function(obj) {
 	this.geoserverNameVal = $("<span>");
 	this.repoNameVal = $("<span>");
 	this.cubNameVal = $("<span>");
-	this.tabNameVal = $("<select>");
+	this.tabNameVal = $("<select>").addClass("gb-form");
 
 	this.failArea = $("<div>");
 	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.failArea);
@@ -1455,7 +1455,9 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1464,8 +1466,10 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").addClass("gb-form").append(this.getNowRepository().text);
+	var loBranch = $("<div>").addClass("gb-form").append(this.getNowBranch().text).css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1491,7 +1495,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	var commitModal = new gb.modal.Base({
 		"title" : "Pull",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1570,7 +1574,9 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1579,8 +1585,10 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").append(this.getNowRepository().text).addClass("gb-form");
+	var loBranch = $("<div>").append(this.getNowBranch().text).addClass("gb-form").css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1606,7 +1614,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	var commitModal = new gb.modal.Base({
 		"title" : "Push",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1679,11 +1687,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rNameInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Repository name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rNameInputDiv = $("<div>").append(rNameInput).css({
 		"display" : "table-cell",
@@ -1703,11 +1709,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Host addres EX) http://127.0.0.1"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rHostInputDiv = $("<div>").append(rHostInput).css({
 		"display" : "table-cell",
@@ -1727,11 +1731,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
 		"placeholder" : "Port number EX) 8080"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPortInputDiv = $("<div>").append(rPortInput).css({
 		"display" : "table-cell",
@@ -1751,11 +1753,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rDBInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rDBInputDiv = $("<div>").append(rDBInput).css({
 		"display" : "table-cell",
@@ -1775,11 +1775,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rSchemeInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Scheme name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rSchemeInputDiv = $("<div>").append(rSchemeInput).css({
 		"display" : "table-cell",
@@ -1799,11 +1797,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rIDInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database user name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rIDInputDiv = $("<div>").append(rIDInput).css({
 		"display" : "table-cell",
@@ -1823,11 +1819,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPassInput = $("<input>").attr({
 		"type" : "password",
 		"placeholder" : "Database password"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPassInputDiv = $("<div>").append(rPassInput).css({
 		"display" : "table-cell",
@@ -2239,7 +2233,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var that = this;
 
-	this.sourceSelect = $("<select>").css({
+	this.sourceSelect = $("<select>").addClass("gb-form").css({
 		"width" : "95%",
 		"height" : "90%"
 	});
@@ -2296,12 +2290,10 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
-	var nameInput = $("<input>").attr({
+	var nameInput = $("<input>").addClass("gb-form").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
+		"width" : "95%"
 	});
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
@@ -2475,10 +2467,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var nameInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
 		"width" : "65%",
@@ -2497,10 +2487,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var remoteURLInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 
 	var remoteURLInputArea = $("<div>").append(remoteURLInput).css({
 		"display" : "table-cell",
@@ -2688,9 +2676,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var tabNameArea = $("<span>").append(tabName).append(tabNameVal).css({
 	// "display" : "table-row"
 	});
-	var rowcheck = $("<input>").attr({
-		"type" : "checkbox"
-	});
+
 	var col1 = $("<th>").addClass("select-checkbox");
 	var col2 = $("<th>").text("No");
 	var col3 = $("<th>").text("Layer");
@@ -2785,7 +2771,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 			'searchable' : false,
 			"orderable" : false,
 			"render" : function(d, t, r, m) {
-				select = $("<select>").addClass("gb-repository-instead-branch");
+				select = $("<select>").addClass("gb-form").addClass("gb-repository-instead-branch");
 
 				var optcub = $("<option>").text("Use [" + cub + "]").attr({
 					"value" : "ours"
@@ -3163,7 +3149,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var tabOpt = $("<option>").text(tab).attr({
 		"value" : "theirs"
 	});
-	var branchSelect = $("<select>").append(cubOpt).append(tabOpt);
+	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
 	$(branchSelect).val(val);
 	var sarea = $("<div>").append(branchSelect);
 

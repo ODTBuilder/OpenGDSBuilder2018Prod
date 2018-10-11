@@ -2691,7 +2691,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var rowcheck = $("<input>").attr({
 		"type" : "checkbox"
 	});
-	var col1 = $("<th>").append(rowcheck);
+	var col1 = $("<th>").addClass("select-checkbox");
 	var col2 = $("<th>").text("No");
 	var col3 = $("<th>").text("Layer");
 	var col4 = $("<th>").text("Feature ID");
@@ -2701,22 +2701,26 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var thead = $("<thead>").append(row1);
 	var tbody = $("<tbody>");
 	this.conflictFeatureTbody = tbody;
-	var table = $("<table>").append(thead).append(tbody);
+	var table = $("<table>").addClass("display").append(thead).append(tbody);
 	var tableArea = $("<div>").append(table).css({
 		"width" : "100%",
 	});
 
 	var selectedLabel = $("<span>").text("Selected Items");
-	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + tab + "]").css({
-		"display" : "inline-block"
+	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + cub + "]").css({
+		"display" : "inline-block",
+		"width" : "49%"
 	});
-	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + cub + "]").css({
-		"display" : "inline-block"
+	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + tab + "]").css({
+		"display" : "inline-block",
+		"width" : "49%"
 	});
 	var selectedButtons = $("<span>").append(useCubBtn).append(useTabBtn);
-	var wholeSelectBody = $("<div>").append(selectedLabel).append(selectedButtons).css({
-		"float" : "right",
-		"margin" : "10px 0"
+	var wholeSelectBody = $("<div>").append(selectedButtons).css({
+		"float" : "left",
+		"margin" : "10px 0",
+		"display" : "none",
+		"width" : "100%"
 	});
 
 	var infoBody = $("<div>").append(geoserverArea).append(repoNameArea).append(cubNameArea).append(tabNameArea).css({
@@ -2768,9 +2772,8 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	$(table).DataTable({
 		"data" : data,
 		"columns" : [ {
-			"searchable" : false,
 			"orderable" : false,
-			"className" : "select-checkbox"
+			"className" : "select-checkbox gb-repository-select-checkbox"
 		}, {
 			"title" : "No"
 		}, {
@@ -2821,6 +2824,80 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	var tableObj = $(table).DataTable();
+
+	tableObj.on("click", "th.select-checkbox", function() {
+		if ($("th.select-checkbox").hasClass("selected")) {
+			tableObj.rows().deselect();
+			$("th.select-checkbox").removeClass("selected");
+		} else {
+			tableObj.rows().select();
+			$("th.select-checkbox").addClass("selected");
+		}
+	}).on("select deselect", function() {
+		if (tableObj.rows({
+			selected : true
+		}).count() !== tableObj.rows().count()) {
+			$("th.select-checkbox").removeClass("selected");
+		} else {
+			$("th.select-checkbox").addClass("selected");
+		}
+	});
+
+	tableObj.on("select", function() {
+		console.log("hi");
+		if (tableObj.rows({
+			selected : true
+		}).count() > 0) {
+			$(wholeSelectBody).show();
+		} else {
+			$(wholeSelectBody).hide();
+		}
+	});
+
+	tableObj.on("deselect", function() {
+		console.log("hi");
+		if (tableObj.rows({
+			selected : true
+		}).count() > 0) {
+			$(wholeSelectBody).show();
+		} else {
+			$(wholeSelectBody).hide();
+		}
+	});
+
+	$(useCubBtn).click(function() {
+		console.log(tableObj.rows({
+			selected : true
+		}).indexes());
+		var length = tableObj.rows({
+			selected : true
+		}).indexes().count();
+		var arr = tableObj.rows({
+			selected : true
+		}).indexes();
+		for (var i = 0; i < length; i++) {
+			var select = $(that.conflictFeatureTbody).find("tr").eq(arr[i]).find(".gb-repository-instead-branch");
+			$(select).val("ours");
+			$(select).trigger("change");
+		}
+	});
+
+	$(useTabBtn).click(function() {
+		console.log(tableObj.rows({
+			selected : true
+		}).indexes());
+		var length = tableObj.rows({
+			selected : true
+		}).indexes().count();
+		var arr = tableObj.rows({
+			selected : true
+		}).indexes();
+		for (var i = 0; i < length; i++) {
+			var select = $(that.conflictFeatureTbody).find("tr").eq(arr[i]).find(".gb-repository-instead-branch");
+			$(select).val("theirs");
+			$(select).trigger("change");
+		}
+	});
 
 	$(table).find("tbody").off("click", ".gb-repository-conflict-detail");
 

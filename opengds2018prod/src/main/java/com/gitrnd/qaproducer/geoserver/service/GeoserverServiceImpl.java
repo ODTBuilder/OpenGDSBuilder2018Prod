@@ -39,6 +39,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -196,7 +197,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}else{
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
 		
 		JSONObject object = new JSONObject();
 		for (String layerName : layerList) {
@@ -445,8 +445,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	};
 
 	@Override
-	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, String orginalName, String name, String title,
-			String abstractContent, String style, boolean attChangeFlag) {
+	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, String originalName, String name, String title,
+			String abstractContent, String srs, String style, boolean attChangeFlag) {
 		if(dtGeoManager!=null){
 			dtPublisher = dtGeoManager.getPublisher();
 		}else{
@@ -457,12 +457,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 		GSFeatureTypeEncoder fte = new GSFeatureTypeEncoder();
 		GSLayerEncoder layerEncoder = null;
 
-		if (orginalName == null) {
+		if (originalName == null) {
 			// throw new IllegalArgumentException("OriginalName may not be
 			// null!");
 			return false;
 		}
-		if (orginalName.isEmpty()) {
+		if (originalName.isEmpty()) {
 			// throw new IllegalArgumentException("OriginalName may not be
 			// empty!");
 			return false;
@@ -476,6 +476,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 		if (abstractContent != null && !abstractContent.isEmpty()) {
 			fte.setAbstract(abstractContent);
 		}
+		if (srs != null && !srs.isEmpty()) {
+			fte.setSRS(srs);
+			dtPublisher.recalculate(workspace, dsName, originalName, EnLayerBboxRecalculate.ALL);
+		}
 		if (style != null && !style.isEmpty()) {
 			layerEncoder = new GSLayerEncoder();
 			layerEncoder.setDefaultStyle(style);
@@ -483,7 +487,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 		// boolean flag = dtPublisher.recalculate(workspace, storename,
 		// layerFullName, testFte, testLayerEncoder);
-		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, orginalName, fte, layerEncoder,
+		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, originalName, fte, layerEncoder,
 				attChangeFlag);
 
 		return updateFlag;

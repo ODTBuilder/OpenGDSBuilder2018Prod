@@ -129,9 +129,6 @@ html {
 				<li><a href="#" title="Validation" id="validation"> <i class="fas fa-clipboard-check fa-lg"
 						style="color: #344762;"></i> Validation
 				</a></li>
-				<li><a href="#" title="Navigator" id="qaedit"> <i class="far fa-compass fa-lg" style="color: #15aabf;"></i>
-						Navigator
-				</a></li>
 				<!-- <li><a href="#" title="QA Status" id="qastat">
 					<i class="fas fa-th-list fa-lg" style="color: #7f7f7f;"></i>
 					QA Status</a></li> -->
@@ -237,8 +234,8 @@ html {
 		});
 
 		// 검수 수행 Modal 생성
-		var validation = new gb.modal.Validation({
-			"token" : urlList.token,
+		var validation = new gb.validation.Validation({
+			"token": urlList.token,
 			"autoOpen" : false,
 			"title" : "Validation"
 		});
@@ -271,10 +268,9 @@ html {
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
-			"properties" : new gb.edit.ModifyLayerProperties({
-				token : urlList.token,
-				featureRecord : frecord,
-				refer : gtree
+			"properties": new gb.edit.ModifyLayerProperties({
+				token: urlList.token,
+				featureRecord: frecord
 			}),
 			"uploadSHP" : uploadSHP,
 			"url" : {
@@ -370,6 +366,7 @@ html {
 			icon : "fab fa-bitbucket",
 			content : "Hole",
 			interaction : hole,
+			selectActive: true,
 			"float" : "right",
 			clickEvent : function() {
 				console.log("Hole draw");

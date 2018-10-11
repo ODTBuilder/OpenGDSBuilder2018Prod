@@ -1,19 +1,19 @@
 /**
- * 임베드 객체를 정의한다.
+ * 사용자 설정 레이어 검수 옵션 정의 객체
  * 
  * @author yijun.so
  * @date 2017. 07.26
  * @version 0.01
- * @class gb.embed.Base
+ * @class gb.validation.OptionDefinition
  * @constructor
  * 
  */
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.embed)
-	gb.embed = {};
-gb.embed.OptionDefinition = function(obj) {
+if (!gb.validation)
+	gb.validation = {};
+gb.validation.OptionDefinition = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -3048,14 +3048,14 @@ gb.embed.OptionDefinition = function(obj) {
 
 	this.init();
 };
-gb.embed.OptionDefinition.prototype = Object.create(gb.embed.OptionDefinition.prototype);
-gb.embed.OptionDefinition.prototype.constructor = gb.embed.OptionDefinition;
+gb.validation.OptionDefinition.prototype = Object.create(gb.validation.OptionDefinition.prototype);
+gb.validation.OptionDefinition.prototype.constructor = gb.validation.OptionDefinition;
 
-gb.embed.OptionDefinition.prototype.init = function() {
+gb.validation.OptionDefinition.prototype.init = function() {
 	this.printCategory();
 };
 
-gb.embed.OptionDefinition.prototype.setMessagePopup = function(type, message) {
+gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, message) {
 	var alert = "alert-";
 	switch (type) {
 	case "success":
@@ -3084,7 +3084,7 @@ gb.embed.OptionDefinition.prototype.setMessagePopup = function(type, message) {
 	$(jclass).append(div);
 };
 
-gb.embed.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn) {
+gb.validation.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 레이어 엘리먼트
@@ -3174,7 +3174,7 @@ gb.embed.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
+gb.validation.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 레이어 엘리먼트
@@ -3264,7 +3264,7 @@ gb.embed.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.deleteFigureRow = function(btn) {
+gb.validation.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 	// 필터 엘리먼트
 	var filterElem = $(btn).parents().eq(2);
 	// 필터 인덱스
@@ -3335,7 +3335,7 @@ gb.embed.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputToleranceInterval = function(inp) {
+gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -3623,7 +3623,7 @@ gb.embed.OptionDefinition.prototype.inputToleranceInterval = function(inp) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.selectToleranceCondition = function(sel) {
+gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -3911,7 +3911,7 @@ gb.embed.OptionDefinition.prototype.selectToleranceCondition = function(sel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputToleranceValue = function(inp) {
+gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -4196,7 +4196,7 @@ gb.embed.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.selectToleranceCode = function(sel) {
+gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 	var nowOption = this.optItem[this.nowOption.alias];
 	if (nowOption === undefined) {
 		return;
@@ -4418,7 +4418,7 @@ gb.embed.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.selectFigureCode = function(sel) {
+gb.validation.OptionDefinition.prototype.selectFigureCode = function(sel) {
 	var nowOption = this.optItem[this.nowOption.alias];
 	if (nowOption === undefined) {
 		return;
@@ -4504,7 +4504,7 @@ gb.embed.OptionDefinition.prototype.selectFigureCode = function(sel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputFigureInterval = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -4930,7 +4930,7 @@ gb.embed.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 	}
 }
 
-gb.embed.OptionDefinition.prototype.selectFigureCondition = function(sel) {
+gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -5356,7 +5356,7 @@ gb.embed.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputFigureNumber = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -5782,7 +5782,7 @@ gb.embed.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputFigureKey = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -6207,7 +6207,7 @@ gb.embed.OptionDefinition.prototype.inputFigureKey = function(inp) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.deleteFilterRow = function(btn) {
+gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 	// 필터 엘리먼트
 	var filterElem = $(btn).parents().eq(1);
 	// 필터 인덱스
@@ -6284,7 +6284,7 @@ gb.embed.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
+gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 레이어 엘리먼트
@@ -6374,7 +6374,7 @@ gb.embed.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.inputFigureValues = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -6798,7 +6798,7 @@ gb.embed.OptionDefinition.prototype.inputFigureValues = function(inp) {
 	}
 }
 
-gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -7152,7 +7152,7 @@ gb.embed.OptionDefinition.prototype.inputFilterValues = function(inp) {
 	}
 }
 
-gb.embed.OptionDefinition.prototype.inputFilterKey = function(inp) {
+gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
 	// 필터 인덱스
@@ -7502,7 +7502,7 @@ gb.embed.OptionDefinition.prototype.inputFilterKey = function(inp) {
 	}
 }
 
-gb.embed.OptionDefinition.prototype.setNoParamOption = function(check, all) {
+gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all) {
 	var strc = this.getStructure();
 	var def = strc["definition"];
 	var optItem = this.optItem[this.nowOption.alias];
@@ -8115,7 +8115,7 @@ gb.embed.OptionDefinition.prototype.setNoParamOption = function(check, all) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
+gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
 	var cat = this.getLayerDefinition().getStructure();
@@ -8166,7 +8166,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	$(".gb-optiondefinition-select-filtercode").trigger("change");
 };
 
-gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
+gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
 	var cat = this.getLayerDefinition().getStructure();
@@ -8216,7 +8216,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	$(".gb-optiondefinition-select-figurecode").trigger("change");
 };
 
-gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
+gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
 	var cat = this.getLayerDefinition().getStructure();
@@ -8357,7 +8357,7 @@ gb.embed.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	$(".gb-optiondefinition-select-tolerancecode").trigger("change");
 };
 
-gb.embed.OptionDefinition.prototype.selectFilterCode = function(sel) {
+gb.validation.OptionDefinition.prototype.selectFilterCode = function(sel) {
 
 	var nowOption = this.optItem[this.nowOption.alias];
 	if (nowOption === undefined) {
@@ -8454,25 +8454,25 @@ gb.embed.OptionDefinition.prototype.selectFilterCode = function(sel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.setQACategory = function(qa) {
+gb.validation.OptionDefinition.prototype.setQACategory = function(qa) {
 	this.qaCat = qa;
 	console.log(this.getQACategory());
 };
 
-gb.embed.OptionDefinition.prototype.getQACategory = function() {
+gb.validation.OptionDefinition.prototype.getQACategory = function() {
 	return this.qaCat;
 };
 
-gb.embed.OptionDefinition.prototype.setQAVersion = function(qa) {
+gb.validation.OptionDefinition.prototype.setQAVersion = function(qa) {
 	this.qaVer = qa;
 	console.log(this.getQAVersion());
 };
 
-gb.embed.OptionDefinition.prototype.getQAVersion = function() {
+gb.validation.OptionDefinition.prototype.getQAVersion = function() {
 	return this.qaVer;
 };
 
-gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
+gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
 	}
@@ -8506,7 +8506,7 @@ gb.embed.OptionDefinition.prototype.addFilterRow = function(btn) {
 
 };
 
-gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
+gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
 	}
@@ -8583,7 +8583,7 @@ gb.embed.OptionDefinition.prototype.addFigureRow = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-figurearea").append(outerRow);
 };
 
-gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
+gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
 	}
@@ -8634,7 +8634,7 @@ gb.embed.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-tolerancearea").append(row);
 };
 
-gb.embed.OptionDefinition.prototype.setBorderLayer = function(sel) {
+gb.validation.OptionDefinition.prototype.setBorderLayer = function(sel) {
 	var opt = $(sel).find("option:selected");
 	var strc = this.getStructure();
 	if ($(opt).attr("geom") !== "none") {
@@ -8648,7 +8648,7 @@ gb.embed.OptionDefinition.prototype.setBorderLayer = function(sel) {
 	console.log(this.getStructure());
 };
 
-gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
+gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	// 인덱스와 레이블을 받아서 해당 인덱스에 레이블 텍스트와 애트리뷰트에 밸류를 넣고 이후의 엘리먼트를 삭제한다.
 	// 제일 마지막 엘리먼트에 링크를 지운다
 	$(this.navi).empty();
@@ -8743,12 +8743,12 @@ gb.embed.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	console.log(this.nowRelationDetailCategory);
 };
 
-gb.embed.OptionDefinition.prototype.setMessage = function(msg) {
+gb.validation.OptionDefinition.prototype.setMessage = function(msg) {
 	$(this.message).empty();
 	$(this.message).text(msg);
 };
 
-gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
+gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 	var className = "gb-optiondefinition-btn-category";
 	var alias;
 	var optItem;
@@ -8838,7 +8838,7 @@ gb.embed.OptionDefinition.prototype.printCategory = function(rel) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.printOption = function(cat, navi) {
+gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 	if (!navi) {
 		this.nowCategory = $(cat).text();
 	}
@@ -8953,7 +8953,7 @@ gb.embed.OptionDefinition.prototype.printOption = function(cat, navi) {
 
 };
 
-gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, sec, all) {
+gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, navi, sec, all) {
 	if (!navi && !sec) {
 		this.nowOption = {
 			"title" : $(opt).text(),
@@ -9228,7 +9228,7 @@ gb.embed.OptionDefinition.prototype.printOptionCategory = function(opt, navi, se
 	}
 };
 
-gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec) {
+gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec) {
 	if (!sec) {
 		if (!navi) {
 			this.nowDetailCategory = {
@@ -9758,33 +9758,33 @@ gb.embed.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec
 	}
 };
 
-gb.embed.OptionDefinition.prototype.getInputFile = function() {
+gb.validation.OptionDefinition.prototype.getInputFile = function() {
 	return this.file;
 };
 
-gb.embed.OptionDefinition.prototype.updateStructure = function() {
+gb.validation.OptionDefinition.prototype.updateStructure = function() {
 	console.log(this.getStructure());
 	$(this.optionArea).empty();
 	var strc = this.getStructure();
 	this.init();
 };
 
-gb.embed.OptionDefinition.prototype.setLayerDefinition = function(strc) {
+gb.validation.OptionDefinition.prototype.setLayerDefinition = function(strc) {
 	this.layerDef = strc;
 };
 
-gb.embed.OptionDefinition.prototype.getLayerDefinition = function() {
+gb.validation.OptionDefinition.prototype.getLayerDefinition = function() {
 	return this.layerDef;
 };
 
-gb.embed.OptionDefinition.prototype.clearStructure = function() {
+gb.validation.OptionDefinition.prototype.clearStructure = function() {
 	this.structure = {
 		"border" : null,
 		"definition" : []
 	};
 };
 
-gb.embed.OptionDefinition.prototype.setStructure = function(strc) {
+gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 	var isOK = true;
 	var borderElem = [ "code", "geometry" ];
 	var defElem = [ "name", "options" ];
@@ -10496,15 +10496,15 @@ gb.embed.OptionDefinition.prototype.setStructure = function(strc) {
 	}
 };
 
-gb.embed.OptionDefinition.prototype.getStructure = function() {
+gb.validation.OptionDefinition.prototype.getStructure = function() {
 	return this.structure;
 };
 
-gb.embed.OptionDefinition.prototype.setJSONFile = function() {
+gb.validation.OptionDefinition.prototype.setJSONFile = function() {
 
 };
 
-gb.embed.OptionDefinition.prototype.getJSONFile = function() {
+gb.validation.OptionDefinition.prototype.getJSONFile = function() {
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 

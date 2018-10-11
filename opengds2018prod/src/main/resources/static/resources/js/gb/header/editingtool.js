@@ -299,8 +299,8 @@ gb.header.EditingTool = function(obj) {
 	var atb = $("<table>").addClass("gb-table").append(ahd).append(this.attrTB);
 	this.attrPop = new gb.panel.Base({
 		"width" : "300px",
-		"positionX" : 30,
-		"positionY" : 5,
+		"positionX" : 384,
+		"positionY" : 150,
 		"autoOpen" : false,
 		"body" : atb
 	});
@@ -341,6 +341,17 @@ gb.header.EditingTool = function(obj) {
 				}
 			}
 		}
+	});
+	
+	this.treeElement.on("delete_node.jstreeol3", function(e, data){
+		var id = data.node.id;
+		var source = that.getVectorSourceOfServer(id);
+		if(!!source){
+			source.get("git").tempLayer.setMap(null);
+			source.clear();
+			delete that.vectorSourcesOfServer_[id];
+		}
+		that.refreshTileLayer();
 	});
 };
 gb.header.EditingTool.prototype = Object.create(gb.header.Base.prototype);
@@ -530,6 +541,26 @@ gb.header.EditingTool.prototype.deactiveBtn_ = function(btn) {
 		this.btn[btn].removeClass("active");
 		this.btn[btn].css("border-bottom", "none");
 		this.btn[btn].css("color", "rgb(85, 85, 85)");
+	}
+};
+
+/**
+ * 버튼을 안 누른 상태로 만든다
+ * 
+ * @method deactiveBtn_
+ * @param {String}
+ *            button name
+ */
+gb.header.EditingTool.prototype.deactiveAllBtn_ = function() {
+	for(var btn in this.btn){
+		if(this.btn[btn] === undefined){
+			continue;
+		}
+		if (this.btn[btn].hasClass("active")) {
+			this.btn[btn].removeClass("active");
+			this.btn[btn].css("border-bottom", "none");
+			this.btn[btn].css("color", "rgb(85, 85, 85)");
+		}
 	}
 };
 /**
@@ -756,7 +787,8 @@ gb.header.EditingTool.prototype.select = function(source) {
 
 	});
 
-	this.deactiveIntrct_([ "draw", "move", "rotate", "modify", "snap" ]);
+	this.deactiveAnotherInteraction(this.interaction.select);
+	this.deactiveAllBtn_();
 
 	this.isOn.select = true;
 	this.activeBtn_("selectBtn");
@@ -1964,6 +1996,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	var clickEvent = options.clickEvent;
 	var className = options.className;
 	var color = options.color;
+	var selectActive = options.selectActive || false;
 	
 	
 	var iTag = $("<i>").addClass(icon).attr("aria-hidden", "true");
@@ -1988,7 +2021,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	
 	var that = this;
 	aTag.click(function(){
-		that.deactiveAnotherInteraction(interaction);
+		that.deactiveAnotherInteraction(interaction, selectActive);
 		if(typeof clickEvent === "function"){
 			clickEvent();
 		}
@@ -2040,9 +2073,17 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 }
 
 //hochul
-gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction){
+gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction, select){
+	var bool = select || false;
 	for(var i in this.interaction){
 		if(interaction !== this.interaction[i] && !!this.interaction[i]){
+			if(this.interaction[i] instanceof ol.interaction.Select && !bool){
+				this.interaction[i].getFeatures().clear();
+			}
+			
+			if(this.interaction[i] instanceof ol.interaction.Translate){
+				this.move();
+			}
 			this.interaction[i].setActive(false);
 		}
 	}
@@ -2178,7 +2219,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 					data : params,
 					dataType : "JSON",
 					success : function(data) {
-						var features = vectorSource.getFormat().readFeatures(data)
+						var features = vectorSource.getFormat().readFeatures(data);
 						vectorSource.addFeatures(features);
 					},
 					error: function(jqXHR, textStatus, errorThrown){
@@ -2228,6 +2269,8 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 		this.setActiveTool(false);
 		this.setVisibleWMS(true);
 		this.setVisibleWFS(false);
+		this.deactiveAnotherInteraction(this.interaction.select);
+		this.deactiveAllBtn_();
 	} else {
 		this.setActiveTool(true);
 		this.setVisibleWMS(false);
@@ -2260,11 +2303,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 				this.headerTag.append(editZoomHintTag);
 			}
 			
-			for(var i in this.customInteractions){
-				if(this.customInteractions[i].getActive()){
-					this.deactiveAnotherInteraction(this.customInteractions[i]);
-				}
-			}
+			this.deactiveAnotherInteraction();
 		} else {
 			this.headerTag.find(".edit-zoom-hint").remove();
 			this.ulTagLeft.css("display", "inline-block");

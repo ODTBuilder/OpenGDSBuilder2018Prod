@@ -1,19 +1,19 @@
 /**
- * 임베드 객체를 정의한다.
+ * 사용자 설정 레이어 정의 객체
  * 
  * @author yijun.so
  * @date 2017. 07.26
  * @version 0.01
- * @class gb.embed.Base
+ * @class gb.validation.LayerDefinition
  * @constructor
  * 
  */
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.embed)
-	gb.embed = {};
-gb.embed.LayerDefinition = function(obj) {
+if (!gb.validation)
+	gb.validation = {};
+gb.validation.LayerDefinition = function(obj) {
 	var that = this;
 	this.structure = [];
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
@@ -243,10 +243,10 @@ gb.embed.LayerDefinition = function(obj) {
 	});
 
 };
-gb.embed.LayerDefinition.prototype = Object.create(gb.embed.LayerDefinition.prototype);
-gb.embed.LayerDefinition.prototype.constructor = gb.embed.LayerDefinition;
+gb.validation.LayerDefinition.prototype = Object.create(gb.validation.LayerDefinition.prototype);
+gb.validation.LayerDefinition.prototype.constructor = gb.validation.LayerDefinition;
 
-gb.embed.LayerDefinition.prototype.setMessage = function(type, message) {
+gb.validation.LayerDefinition.prototype.setMessage = function(type, message) {
 	var alert = "alert-";
 	switch (type) {
 	case "success":
@@ -275,11 +275,11 @@ gb.embed.LayerDefinition.prototype.setMessage = function(type, message) {
 	$(jclass).append(div);
 };
 
-gb.embed.LayerDefinition.prototype.getInputFile = function() {
+gb.validation.LayerDefinition.prototype.getInputFile = function() {
 	return this.file;
 };
 
-gb.embed.LayerDefinition.prototype.updateStructure = function() {
+gb.validation.LayerDefinition.prototype.updateStructure = function() {
 	console.log(this.getStructure());
 	$(this.panelBody).empty();
 	var strc = this.getStructure();
@@ -439,11 +439,11 @@ gb.embed.LayerDefinition.prototype.updateStructure = function() {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.clearStructure = function() {
+gb.validation.LayerDefinition.prototype.clearStructure = function() {
 	this.structure = [];
 };
 
-gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
+gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 	var isOK = true;
 	var elemName = [ "name", "layers" ];
 	var elemLayers = [ "fix", "code", "geometry" ];
@@ -519,15 +519,15 @@ gb.embed.LayerDefinition.prototype.setStructure = function(strc) {
 	return isOK;
 };
 
-gb.embed.LayerDefinition.prototype.getStructure = function() {
+gb.validation.LayerDefinition.prototype.getStructure = function() {
 	return this.structure;
 };
 
-gb.embed.LayerDefinition.prototype.setJSONFile = function() {
+gb.validation.LayerDefinition.prototype.setJSONFile = function() {
 
 };
 
-gb.embed.LayerDefinition.prototype.getJSONFile = function() {
+gb.validation.LayerDefinition.prototype.getJSONFile = function() {
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 
@@ -563,7 +563,7 @@ gb.embed.LayerDefinition.prototype.getJSONFile = function() {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.inputAttributeValues = function(inp) {
+gb.validation.LayerDefinition.prototype.inputAttributeValues = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
 	var attrIdx = $(inp).parents().eq(3).index();
@@ -600,7 +600,7 @@ gb.embed.LayerDefinition.prototype.inputAttributeValues = function(inp) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.checkAttributeNull = function(chk) {
+gb.validation.LayerDefinition.prototype.checkAttributeNull = function(chk) {
 	var catIdx = $(chk).parents().eq(12).index();
 	var layerIdx = $(chk).parents().eq(6).index();
 	var attrIdx = $(chk).parents().eq(3).index();
@@ -626,7 +626,7 @@ gb.embed.LayerDefinition.prototype.checkAttributeNull = function(chk) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.inputAttributeLength = function(inp) {
+gb.validation.LayerDefinition.prototype.inputAttributeLength = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
 	var attrIdx = $(inp).parents().eq(3).index();
@@ -652,7 +652,7 @@ gb.embed.LayerDefinition.prototype.inputAttributeLength = function(inp) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.selectAttributeType = function(sel) {
+gb.validation.LayerDefinition.prototype.selectAttributeType = function(sel) {
 	var catIdx = $(sel).parents().eq(12).index();
 	var layerIdx = $(sel).parents().eq(6).index();
 	var attrIdx = $(sel).parents().eq(3).index();
@@ -678,7 +678,7 @@ gb.embed.LayerDefinition.prototype.selectAttributeType = function(sel) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.inputAttributeName = function(inp) {
+gb.validation.LayerDefinition.prototype.inputAttributeName = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
 	var attrIdx = $(inp).parents().eq(3).index();
@@ -704,7 +704,7 @@ gb.embed.LayerDefinition.prototype.inputAttributeName = function(inp) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.deleteAttribute = function(btn) {
+gb.validation.LayerDefinition.prototype.deleteAttribute = function(btn) {
 	var catIdx = $(btn).parents().eq(12).index();
 	var layerIdx = $(btn).parents().eq(6).index();
 	var attrIdx = $(btn).parents().eq(3).index();
@@ -724,7 +724,7 @@ gb.embed.LayerDefinition.prototype.deleteAttribute = function(btn) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.deleteLayer = function(btn) {
+gb.validation.LayerDefinition.prototype.deleteLayer = function(btn) {
 	var catIdx = $(btn).parents().eq(8).index();
 	console.log(catIdx);
 	var layerIdx = $(btn).parents().eq(2).index();
@@ -740,7 +740,7 @@ gb.embed.LayerDefinition.prototype.deleteLayer = function(btn) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.selectLayerGeometry = function(sel) {
+gb.validation.LayerDefinition.prototype.selectLayerGeometry = function(sel) {
 	var catIdx = $(sel).parents().eq(8).index();
 	console.log(catIdx);
 	var codeIdx = $(sel).parents().eq(2).index();
@@ -756,7 +756,7 @@ gb.embed.LayerDefinition.prototype.selectLayerGeometry = function(sel) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.inputLayerCode = function(inp) {
+gb.validation.LayerDefinition.prototype.inputLayerCode = function(inp) {
 	var catIdx = $(inp).parents().eq(8).index();
 	console.log(catIdx);
 	var codeIdx = $(inp).parents().eq(2).index();
@@ -772,7 +772,7 @@ gb.embed.LayerDefinition.prototype.inputLayerCode = function(inp) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.deleteCategory = function(btn) {
+gb.validation.LayerDefinition.prototype.deleteCategory = function(btn) {
 	var idx = $(btn).parents().eq(4).index();
 	var strc = this.getStructure();
 	var elem = strc[idx];
@@ -782,7 +782,7 @@ gb.embed.LayerDefinition.prototype.deleteCategory = function(btn) {
 	$(btn).parents().eq(4).remove();
 };
 
-gb.embed.LayerDefinition.prototype.inputCategoryName = function(inp) {
+gb.validation.LayerDefinition.prototype.inputCategoryName = function(inp) {
 	var idx = $(inp).parents().eq(3).index();
 	var strc = this.getStructure();
 	var elem = strc[idx];
@@ -795,7 +795,7 @@ gb.embed.LayerDefinition.prototype.inputCategoryName = function(inp) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.toggleLayerArea = function(btn) {
+gb.validation.LayerDefinition.prototype.toggleLayerArea = function(btn) {
 	var toggleArea = $(btn).parent().parent().next();
 	var icon = $(btn).find("i");
 	if ($(toggleArea).hasClass("gb-layerdefinition-togglearea")) {
@@ -815,7 +815,7 @@ gb.embed.LayerDefinition.prototype.toggleLayerArea = function(btn) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.addCategory = function() {
+gb.validation.LayerDefinition.prototype.addCategory = function() {
 	var toggleIcon = $("<i>").addClass("fas").addClass("fa-caret-up").addClass("fa-lg");
 	var toggleBtn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-layerdefinition-toggle-category").append(toggleIcon);
 	var categoryName = $("<input>").attr({
@@ -855,7 +855,7 @@ gb.embed.LayerDefinition.prototype.addCategory = function() {
 	strc.push(obj);
 };
 
-gb.embed.LayerDefinition.prototype.addLayer = function(btn) {
+gb.validation.LayerDefinition.prototype.addLayer = function(btn) {
 	var col1 = $("<div>").addClass("col-md-1").append(this.translation.layerCode[this.locale]);
 	var codeInput = $("<input>").attr({
 		"type" : "text",
@@ -915,7 +915,7 @@ gb.embed.LayerDefinition.prototype.addLayer = function(btn) {
 	}
 };
 
-gb.embed.LayerDefinition.prototype.addAttribute = function(btn) {
+gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 	var r1col1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale]);
 
 	var attrName = $("<input>").attr({

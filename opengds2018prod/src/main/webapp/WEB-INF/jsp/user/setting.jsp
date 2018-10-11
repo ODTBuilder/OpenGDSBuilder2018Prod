@@ -227,14 +227,14 @@ input.radio:checked+label::before {
 
 			var tempLayerDef = "";
 
-			var layerDef = new gb.embed.LayerDefinition({
+			var layerDef = new gb.validation.LayerDefinition({
 				"append" : ".LayerDefinitionArea",
 				"fileClass" : "layerSetting",
 				"msgClass" : "Message",
 				"locale" : locale
 			});
 
-			var optionDef = new gb.embed.OptionDefinition({
+			var optionDef = new gb.validation.OptionDefinition({
 				"layerDefinition" : layerDef,
 				"append" : ".OptionDefinitionArea",
 				"fileClass" : "optionSetting",

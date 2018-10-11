@@ -122,7 +122,6 @@ public class DTGeoLayer {
 		this.llbBox.put("miny", featureType.getLatLonBoundingBox().getMinY());
 		this.llbBox.put("maxx", featureType.getLatLonBoundingBox().getMaxX());
 		this.llbBox.put("maxy", featureType.getLatLonBoundingBox().getMaxY());
-		this.style = null;
 	}
 
 	

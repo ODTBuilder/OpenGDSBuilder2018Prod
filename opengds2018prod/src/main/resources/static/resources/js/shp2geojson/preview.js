@@ -78,6 +78,8 @@ function loadshp(config, returnData) {
 
             });
         }
+        // hochul: inputData 초기화. 다음 작업 수행시 두번 작업을 반복하는 오류를 해결하기 위함.
+        inputData = {};
     });
 }
 
@@ -91,7 +93,9 @@ function loadEPSG(url, callback) {
 
 function TransCoord(x, y) {
     if(proj4)
-        var p = proj4(EPSGUser, EPSG4326 , [parseFloat(x), parseFloat(y)]);
+    	// hochul: 좌표계 자동 전환 방지
+    	// 기존코드 : var p = proj4(EPSGUser, EPSG4326 , [parseFloat(x), parseFloat(y)]);
+        var p = proj4(EPSGUser, EPSGUser , [parseFloat(x), parseFloat(y)]);
     return {x: p[0], y: p[1]};
 }
 

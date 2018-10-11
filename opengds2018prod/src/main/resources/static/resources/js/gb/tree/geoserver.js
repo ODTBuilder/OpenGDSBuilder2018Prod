@@ -796,7 +796,9 @@ gb.tree.GeoServer = function(obj) {
 				"plugins" : [ "contextmenu", "search", "types", "geoserver" ]
 			});
 	this.jstree = $(this.panelBody).jstree(true);
-
+	if(!!this.properties){
+		this.properties.setRefer(this.jstree);
+	}
 };
 gb.tree.GeoServer.prototype = Object.create(gb.tree.GeoServer.prototype);
 gb.tree.GeoServer.prototype.constructor = gb.tree.GeoServer;
@@ -955,7 +957,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	});
 
 	gNameInput.val("geoserver32");
-	gURLInput.val("http://175.116.181.32:9999/geoserver");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
 	gIDInput.val("admin");
 	gPassInput.val("geoserver");
 };

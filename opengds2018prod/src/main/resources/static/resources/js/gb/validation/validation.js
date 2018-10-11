@@ -2,17 +2,18 @@
  * 검수 수행창 객체를 정의한다.
  * 
  * @author hochul.kim
+ * @class gb.validation.Validation
  * @date 2018. 09
  * @version 0.01
  */
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.modal)
-	gb.modal = {};
+if (!gb.validation)
+	gb.validation = {};
 
 (function($){
-	gb.modal.Validation = function(obj) {
+	gb.validation.Validation = function(obj) {
 		obj.keep = true;
 		gb.modal.Base.call(this, obj);
 		var that = this;
@@ -107,10 +108,10 @@ if (!gb.modal)
 	}
 	
 	// gb.footer.Base 상속
-	gb.modal.Validation.prototype = Object.create(gb.modal.Base.prototype);
-	gb.modal.Validation.prototype.constructor = gb.modal.Validation;
+	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
+	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 	
-	gb.modal.Validation.prototype.createContent = function(){
+	gb.validation.Validation.prototype.createContent = function(){
 		// ==================== Create Modal Body HTML Start >>>>>>>>>>>>>>>>>>>>>>
 		var treePanel = this.createJSTreePanel();
 		var optionPanel = this.createOptionPanel();
@@ -151,7 +152,7 @@ if (!gb.modal)
 		$("body").append(this.background);
 	}
 	
-	gb.modal.Validation.prototype.createJSTreePanel = function() {
+	gb.validation.Validation.prototype.createJSTreePanel = function() {
 		var that = this;
 		
 		var treeContent = 
@@ -259,7 +260,7 @@ if (!gb.modal)
 		}
 	}
 	
-	gb.modal.Validation.prototype.createWorkTreePanel = function() {
+	gb.validation.Validation.prototype.createWorkTreePanel = function() {
 		var that = this;
 		
 		var treeContent = 
@@ -372,7 +373,7 @@ if (!gb.modal)
 		return div;
 	}
 	
-	gb.modal.Validation.prototype.createOptionPanel = function() {
+	gb.validation.Validation.prototype.createOptionPanel = function() {
 		
 		// ==================== Create Panel body HTML Start >>>>>>>>>>>>>>>>>>>>
 		var presetDiv = $("<div>").addClass("validation-custom-select").append(this.presetSelectTag);
@@ -398,7 +399,7 @@ if (!gb.modal)
 		return div;
 	}
 	
-	gb.modal.Validation.prototype.createModalFooter = function() {
+	gb.validation.Validation.prototype.createModalFooter = function() {
 		var that = this;
 		
 		var closeBtn = 
@@ -422,7 +423,8 @@ if (!gb.modal)
 				.addClass("gb-button-primary")
 				.text("Start")
 				.click(function(e) {
-					console.log(e);
+					alert("검수 요청이 완료되었습니다./n검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");
+					that.close();
 				});
 	
 		var buttonArea = 

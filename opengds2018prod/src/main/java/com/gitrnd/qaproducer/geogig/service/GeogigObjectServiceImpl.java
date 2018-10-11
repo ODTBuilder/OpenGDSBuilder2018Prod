@@ -92,7 +92,6 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 			featureAtt = (GeogigFeatureAttribute) unmarshaller.unmarshal(new StringReader(e.getMessage()));
-			featureAtt.setSuccess("false");
 		}
 		return featureAtt;
 	}

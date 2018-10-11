@@ -1,11 +1,13 @@
 
 package com.gitrnd.gdsbuilder.geoserver;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geoserver.net.DTHTTPUtils;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 
@@ -201,8 +203,11 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher
   
   public String requestWFSTransaction(String workspace, String wfstXml){
 	  StringBuilder postUrl = new StringBuilder(restURL).append("/"+workspace).append("/ows");
-	  String configuredResult = HTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
-              this.gspass);
+	  
+	  Charset charset = Charset.forName("utf-8");
+	  
+	  String configuredResult = DTHTTPUtils.postXml(postUrl.toString(), wfstXml, this.gsuser,
+              this.gspass, charset.name());
 	  
       boolean requestFlag = configuredResult != null;
 

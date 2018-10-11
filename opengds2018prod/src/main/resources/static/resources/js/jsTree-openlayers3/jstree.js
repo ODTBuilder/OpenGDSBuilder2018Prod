@@ -10175,51 +10175,13 @@
 								var inst = $.jstreeol3
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
+								var map = inst._data.core.map;
 								if (inst.is_selected(obj)) {
 									var layers = inst.get_selected();
 									for (var i = 0; i < layers.length; i++) {
-										var layer = inst
-												.get_LayerById(layers[i]);
-										var git = layer.get("git");
-										var info;
-										if (git) {
-											if (git
-													.hasOwnProperty("information")) {
-												info = layer.get("git").information;
-											}
-										}
-										if (!!info) {
-											inst._data.layerproperties.layerRecord
-													.remove(
-															info.getFormat(),
-															info
-																	.getSheetNumber(),
-															layer);
-										}
-										var layer = inst
-												.get_LayerById(layers[i]);
-										inst._data.layerproperties.editingTool
-												.removeSnappingLayer(layer);
-										inst.delete_node_layer(layers[i]);
+										map.removeLayer(inst.get_LayerById(layers[i]));
 									}
-								} else {
-									var layer = inst.get_LayerById(obj.id);
-									var git = layer.get("git");
-									var info;
-									if (git) {
-										if (git.hasOwnProperty("information")) {
-											info = layer.get("git").information;
-										}
-									}
-									if (!!info) {
-										inst._data.layerproperties.layerRecord
-												.remove(info.getFormat(), info
-														.getSheetNumber(),
-														layer);
-									}
-									inst._data.layerproperties.editingTool
-											.removeSnappingLayer(layer);
-									inst.delete_node_layer(obj);
+									inst.delete_node(layers);
 								}
 							}
 						},

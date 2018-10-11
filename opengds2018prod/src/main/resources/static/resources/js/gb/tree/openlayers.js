@@ -351,7 +351,7 @@ gb.tree.OpenLayers.prototype.closeSearchBar = function() {
 };
 
 /**
- * Openlayers 등록창을 연다.
+ * Layer 생성창을 연다.
  * 
  * @method gb.tree.OpenLayers#openAddLayer
  */
@@ -415,26 +415,26 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(
-			function() {
-				var vectorLayer = new ol.layer.Vector({
-					source : new ol.source.Vector({})
-				});
-				var type = geomSelect.find("option:selected").val();
-				var gitLayer = {
-					"editable" : true,
-					"geometry" : type.charAt(0).toUpperCase()
-							+ type.slice(1).toLowerCase(),
-					"validation" : false
-				};
-				vectorLayer.set("git", gitLayer);
-				vectorLayer.set("name", codeInput.val());
-				that.map.addLayer(vectorLayer);
-				addGeoServerModal.close();
+		function() {
+			var vectorLayer = new ol.layer.Vector({
+				source : new ol.source.Vector({})
 			});
+			var type = geomSelect.find("option:selected").val();
+			var gitLayer = {
+				"editable" : true,
+				"geometry" : type.charAt(0).toUpperCase()
+						+ type.slice(1).toLowerCase(),
+				"validation" : false
+			};
+			vectorLayer.set("git", gitLayer);
+			vectorLayer.set("name", codeInput.val());
+			that.map.addLayer(vectorLayer);
+			addGeoServerModal.close();
+		});
 };
 
 /**
- * Shp file 업로드창을 연다.
+ * Shp file 업로드창을 생성한다.
  * 
  * @method gb.tree.OpenLayers#createUploadModal
  */
@@ -537,8 +537,7 @@ gb.tree.loadShpZip = function(epsg, encode, file, map) {
 
 		loadshp({
 			url : fileL,
-			encoding : encode,
-			EPSG : epsg
+			encoding : encode
 		}, function(geojson) {
 			var features = (new ol.format.GeoJSON()).readFeatures(geojson);
 

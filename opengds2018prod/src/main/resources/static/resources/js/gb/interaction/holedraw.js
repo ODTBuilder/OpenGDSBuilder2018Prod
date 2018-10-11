@@ -37,6 +37,7 @@ if (!gb.interaction)
 			var ringAdded = false;
 			
 			if(!that.checkSelected()){
+				that.setActive(false);
 				return;
 			}
 			feature.on("change", function(e){

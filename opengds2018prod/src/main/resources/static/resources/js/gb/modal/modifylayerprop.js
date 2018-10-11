@@ -373,7 +373,7 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var arr = {
 		"serverName": serverInfo.geoserver,
 		"workspace": serverInfo.workspace,
-		"datastore": serverInfo.workspace,
+		"datastore": serverInfo.datastore,
 		"originalName": serverInfo.layername,
 		"name": $("#layer-prop-name").val(),
 		"title": $("#layer-prop-name").val(),

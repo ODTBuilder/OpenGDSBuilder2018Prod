@@ -34,8 +34,8 @@ gb.layer.Navigator = function(obj) {
 	
 	this.naviWindow = $("<div>").css({
 		"max-width" : "500px",
-		"top" : "100px",
-		"right" : 0,
+		"top" : "150px",
+		"right" : "5px",
 		"position" : "absolute",
 		"z-Index" : "999",
 	});

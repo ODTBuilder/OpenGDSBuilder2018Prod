@@ -3071,8 +3071,14 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
 	var that = this;
 
-	var crepo = $("<div>").append(crepos);
-	var cbranch = $("<div>").append(cub);
+	var crepo = $("<div>").append(crepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var cbranch = $("<div>").append(cub).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
 	// var cfeature = $("<div>").css({
 	// "width" : "100%",
 	// "height" : "200px",
@@ -3082,11 +3088,20 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var cheadtd2 = $("<th>").text("Value");
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
-	var cattrtbody = $("<tbody>");
-	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody);
+	var cattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px",
+		"display" : "block"
+	});
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
 	var cattribute = $("<div>").append(cattrtable).css({
 		"height" : "370px",
-		"overflow" : "auto"
+		"width" : "100%",
+		"overflow" : "hidden"
 	});
 	var carea = $("<div>").append(crepo).append(cbranch).append(this.cfeature).append(cattribute).css({
 		"float" : "left",
@@ -3103,8 +3118,14 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "layers" : []
 	// });
 
-	var trepo = $("<div>").append(trepos);
-	var tbranch = $("<div>").append(tab);
+	var trepo = $("<div>").append(trepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var tbranch = $("<div>").append(tab).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
 	// var tfeature = $("<div>").css({
 	// "width" : "100%",
 	// "height" : "200px",
@@ -3114,15 +3135,24 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var theadtd2 = $("<th>").text("Value");
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
-	var tattrtbody = $("<tbody>");
-	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody);
+	var tattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px",
+		"display" : "block"
+	});
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
 	var tattribute = $("<div>").append(tattrtable).css({
 		"height" : "370px",
-		"overflow" : "auto"
+		"width" : "100%",
+		"overflow" : "hidden"
 	});
 
-	$(cattribute).on("scroll", function() {
-		$(tattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	$(cattrtbody).on("scroll", function() {
+		$(tattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
 	// $(tattribute).on("scroll", function() {
@@ -3151,7 +3181,9 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	});
 	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
 	$(branchSelect).val(val);
-	var sarea = $("<div>").append(branchSelect);
+	var sarea = $("<div>").append(branchSelect).css({
+		"padding" : "10px"
+	});
 
 	var body = $("<div>").append(ctarea).append(sarea);
 
@@ -3166,7 +3198,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var modal = new gb.modal.Base({
 		"title" : "Compare Conflicts",
 		"width" : 770,
-		"height" : 800,
+		"height" : 840,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -3276,104 +3308,135 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 						var name = attrs[i].name;
 						var value = attrs[i].value;
 						var td1 = $("<td>").text(name);
-						var td2 = $("<td>").text(value);
+						var td2 = $("<td>").text(value).css({
+							"word-break" : "break-word",
+							"overflow-wrap" : "break-word"
+						});
 						var tr = $("<tr>").append(td1).append(td2);
 						$(cattrtbody).append(tr);
 
 					}
-				} else {
-					var title = "Error";
-					var msg = "Retrieve feature failed."
-					that.messageModal(title, msg);
-				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
 
-			}
-		});
-	} else {
-
-	}
-
-	if (fid2 !== "0000000000000000000000000000000000000000") {
-		var fobjectURL2 = this.getCatFeatureObjectURL();
-		if (fobjectURL2.indexOf("?") !== -1) {
-			fobjectURL2 += "&";
-			fobjectURL2 += jQuery.param(cparams2);
-		} else {
-			fobjectURL2 += "?";
-			fobjectURL2 += jQuery.param(cparams2);
-		}
-
-		$.ajax({
-			url : fobjectURL2,
-			method : "POST",
-			contentType : "application/json; charset=UTF-8",
-			// data : cparams2,
-			// dataType : 'jsonp',
-			// jsonpCallback : 'getJson',
-			beforeSend : function() {
-				// $("body").css("cursor", "wait");
-			},
-			complete : function() {
-				// $("body").css("cursor", "default");
-			},
-			success : function(data) {
-				console.log(data);
-				if (data.success === "true") {
-					var attrs = data.attributes;
-					for (var i = 0; i < attrs.length; i++) {
-						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
-								|| attrs[i].type === "MULTIPOLYGON") {
-							var wkt = attrs[i].value;
-							console.log(wkt);
-							var format = new ol.format.WKT();
-							var geom = format.readGeometry(wkt);
-							var feature = new ol.Feature({
-								"geometry" : geom
-							});
-							feature.setId(data.featureId);
-							console.log(feature);
-							console.log(feature.getId());
-							var style = new ol.style.Style({
-								image : new ol.style.Circle({
-									radius : 5,
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								})
-							});
-
-							var vlayer = new ol.layer.Vector({
-								"style" : style,
-								"source" : new ol.source.Vector({
-									"features" : [ feature ]
-								}),
-								"zIndex" : 2
-							});
-
-							var osm = new ol.layer.Tile({
-								"source" : new ol.source.OSM(),
-								"zIndex" : 1
-							});
-
-							that.getTargetMap().updateSize();
-							that.getTargetMap().getLayers().clear();
-							that.getTargetMap().addLayer(osm);
-							that.getTargetMap().addLayer(vlayer);
-							var geom = feature.getGeometry();
-
-							that.getTargetMap().getView().fit(geom);
-
+					if (fid2 !== "0000000000000000000000000000000000000000") {
+						var fobjectURL2 = that.getCatFeatureObjectURL();
+						if (fobjectURL2.indexOf("?") !== -1) {
+							fobjectURL2 += "&";
+							fobjectURL2 += jQuery.param(cparams2);
+						} else {
+							fobjectURL2 += "?";
+							fobjectURL2 += jQuery.param(cparams2);
 						}
-						var name = attrs[i].name;
-						var value = attrs[i].value;
-						var td1 = $("<td>").text(name);
-						var td2 = $("<td>").text(value);
+
+						$.ajax({
+							url : fobjectURL2,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							// data : cparams2,
+							// dataType : 'jsonp',
+							// jsonpCallback : 'getJson',
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data) {
+								console.log(data);
+								if (data.success === "true") {
+									var attrs = data.attributes;
+									for (var i = 0; i < attrs.length; i++) {
+										if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+												|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+												|| attrs[i].type === "MULTIPOLYGON") {
+											var wkt = attrs[i].value;
+											console.log(wkt);
+											var format = new ol.format.WKT();
+											var geom = format.readGeometry(wkt);
+											var feature = new ol.Feature({
+												"geometry" : geom
+											});
+											feature.setId(data.featureId);
+											console.log(feature);
+											console.log(feature.getId());
+											var style = new ol.style.Style({
+												image : new ol.style.Circle({
+													radius : 5,
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												})
+											});
+
+											var vlayer = new ol.layer.Vector({
+												"style" : style,
+												"source" : new ol.source.Vector({
+													"features" : [ feature ]
+												}),
+												"zIndex" : 2
+											});
+
+											var osm = new ol.layer.Tile({
+												"source" : new ol.source.OSM(),
+												"zIndex" : 1
+											});
+
+											that.getTargetMap().updateSize();
+											that.getTargetMap().getLayers().clear();
+											that.getTargetMap().addLayer(osm);
+											that.getTargetMap().addLayer(vlayer);
+											var geom = feature.getGeometry();
+
+											that.getTargetMap().getView().fit(geom);
+
+										}
+										var name = attrs[i].name;
+										var value = attrs[i].value;
+										var td1 = $("<td>").text(name);
+										var td2 = $("<td>").text(value).css({
+											"word-break" : "break-word",
+											"overflow-wrap" : "break-word"
+										});
+										var tr = $("<tr>").append(td1).append(td2);
+										$(tattrtbody).append(tr);
+
+									}
+									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
+										console.log($(cattrtbody).find("tr").length);
+										console.log($(tattrtbody).find("tr").length);
+										var trs = $(cattrtbody).find("tr");
+										var ttrs = $(tattrtbody).find("tr");
+										for (var j = 0; j < trs.length; j++) {
+											console.log($(trs[j]).find("td").eq(0).text());
+											console.log($(ttrs[i]).find("td").eq(0).text());
+											if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0).text()) {
+
+												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {
+													$(trs[j]).css({
+														"background-color" : "#ffffd0"
+													});
+													$(ttrs[j]).css({
+														"background-color" : "#ffffd0"
+													});
+												}
+											}
+										}
+									}
+								} else {
+									var title = "Error";
+									var msg = "Retrieve feature failed."
+									that.messageModal(title, msg);
+								}
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+
+							}
+						});
+					} else {
+						that.getTargetMap().updateSize();
+						var td1 = $("<td>").text("Deleted");
+						var td2 = $("<td>").text("Deleted");
 						var tr = $("<tr>").append(td1).append(td2);
 						$(tattrtbody).append(tr);
-
 					}
 				} else {
 					var title = "Error";
@@ -3386,11 +3449,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 			}
 		});
 	} else {
-		that.getTargetMap().updateSize();
-		var td1 = $("<td>").text("Deleted");
-		var td2 = $("<td>").text("Deleted");
-		var tr = $("<tr>").append(td1).append(td2);
-		$(tattrtbody).append(tr);
+
 	}
 
 };

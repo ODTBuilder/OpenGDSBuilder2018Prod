@@ -1128,7 +1128,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 								mModal.close();
 								// that.endTransaction(server, repo, tid,
 								// commitModal);
-								that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.ours,
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
 										data.merge.theirs, data.merge.features, commitModal);
 							});
 				}
@@ -1286,37 +1286,78 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 			console.log(data);
 			if (data.success === "true") {
 				modal.close();
-				var msg1 = $("<div>").text('"Pull" is complete.').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var body = $("<div>").append(msg1).append(msg2);
-				var closeBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-default").text("Later");
-				var okBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
-				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+				if (data.pull === null && data.merge !== null) {
+					var confl = parseInt(data.merge.conflicts);
+					console.log(confl);
+					var msg1 = $("<div>").text("There are conflicting features.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-				var commitModal = new gb.modal.Base({
-					"title" : "Commit Changes",
-					"width" : 310,
-					"height" : 200,
-					"autoOpen" : true,
-					"body" : body,
-					"footer" : buttonArea
-				});
-				$(closeBtn).click(function() {
-					commitModal.close();
-				});
-				$(okBtn).click(function() {
-					that.endTransaction(server, repo, tid, commitModal);
-				});
+					var commitModal = new gb.modal.Base({
+						"title" : "Conflict",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								modal.close();
+								// that.endTransaction(server, repo, tid,
+								// commitModal);
+								that.resolveConflictModal(server, repo, remoteRepo, that.getNowBranch().text, remoteBranch,
+										data.merge.ours, data.merge.theirs, data.merge.features, commitModal);
+							});
+				} else {
+					var msg1 = $("<div>").text('"Pull" is complete.').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Commit Changes",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(function() {
+						that.endTransaction(server, repo, tid, commitModal);
+					});
+				}
 			} else {
 				var title = "Error";
 				var msg = "Pull failed."
@@ -2611,7 +2652,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, ours, theirs, features, cmodal) {
+gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, trepo, cub, tab, ours, theirs, features, cmodal) {
 	var that = this;
 
 	var serverName = $("<span>").text("GeoServer: ").css({
@@ -2898,7 +2939,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		var fid = data[idx][5];
 		console.log($(this).parents().eq(1)[0]);
 		var setVal = $(this).parents().eq(1).find(".gb-repository-instead-branch").val();
-		that.conflictDetailModal(server, repo, repo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
+		that.conflictDetailModal(server, repo, trepo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
 	});
 
 	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
@@ -3173,10 +3214,10 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var cubOpt = $("<option>").text(cub).attr({
+	var cubOpt = $("<option>").text(crepos + " - " + cub).attr({
 		"value" : "ours"
 	});
-	var tabOpt = $("<option>").text(tab).attr({
+	var tabOpt = $("<option>").text(trepos + " - " + tab).attr({
 		"value" : "theirs"
 	});
 	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
@@ -3401,8 +3442,6 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 									}
 									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
-										console.log($(cattrtbody).find("tr").length);
-										console.log($(tattrtbody).find("tr").length);
 										var trs = $(cattrtbody).find("tr");
 										var ttrs = $(tattrtbody).find("tr");
 										for (var j = 0; j < trs.length; j++) {

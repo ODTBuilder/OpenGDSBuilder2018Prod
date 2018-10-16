@@ -1226,7 +1226,9 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				}
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-
+				var title = "Error";
+				var msg = "Remove failed."
+				that.messageModal(title, msg);
 			}
 		});
 	});
@@ -2734,11 +2736,11 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	var selectedLabel = $("<span>").text("Selected Items");
-	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + cub + "]").css({
+	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + repo + " - " + cub + "]").css({
 		"display" : "inline-block",
 		"width" : "49%"
 	});
-	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + tab + "]").css({
+	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + trepo + " - " + tab + "]").css({
 		"display" : "inline-block",
 		"width" : "49%"
 	});
@@ -2814,10 +2816,10 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 			"render" : function(d, t, r, m) {
 				select = $("<select>").addClass("gb-form").addClass("gb-repository-instead-branch");
 
-				var optcub = $("<option>").text("Use [" + cub + "]").attr({
+				var optcub = $("<option>").text(repo + " - " + cub).attr({
 					"value" : "ours"
 				});
-				var opttab = $("<option>").text("Use [" + tab + "]").attr({
+				var opttab = $("<option>").text(trepo + " - " + tab).attr({
 					"value" : "theirs"
 				});
 
@@ -2871,7 +2873,6 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	tableObj.on("select", function() {
-		console.log("hi");
 		if (tableObj.rows({
 			selected : true
 		}).count() > 0) {
@@ -2882,7 +2883,6 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	tableObj.on("deselect", function() {
-		console.log("hi");
 		if (tableObj.rows({
 			selected : true
 		}).count() > 0) {
@@ -2971,7 +2971,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		console.log(features);
 		var tid = that.getJSTree().getTransactionId(that.getNowRepository().id);
 		console.log(tid);
-		// that.resolveConflict(server, repo, features, tid, modal);
+		that.resolveConflict(server, repo, features, tid, modal);
 		cmodal.close();
 		// var server = that.getNowServer();
 		// var repo = that.getNowRepository();
@@ -3323,6 +3323,13 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 									fill : new ol.style.Fill({
 										color : 'orange'
 									})
+								}),
+								stroke : new ol.style.Stroke({
+									width : 1,
+									color : 'orange'
+								}),
+								fill : new ol.style.Fill({
+									color : 'orange'
 								})
 							});
 
@@ -3337,6 +3344,21 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 							var osm = new ol.layer.Tile({
 								"source" : new ol.source.OSM(),
 								"zIndex" : 1
+							});
+
+							var epsg = attrs[i].crs.toLowerCase();
+							var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+							var intcode = parseInt(code);
+							console.log(code);
+
+							var ccrs = new gb.crs.BaseCRS({
+								"title" : "Base CRS",
+								"width" : 300,
+								"height" : 200,
+								"autoOpen" : false,
+								"message" : undefined,
+								"map" : that.getCurrentMap(),
+								"epsg" : Number.isInteger(intcode) ? code : "4326"
 							});
 
 							that.getCurrentMap().updateSize();
@@ -3405,6 +3427,13 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 													fill : new ol.style.Fill({
 														color : 'orange'
 													})
+												}),
+												stroke : new ol.style.Stroke({
+													width : 1,
+													color : 'orange'
+												}),
+												fill : new ol.style.Fill({
+													color : 'orange'
 												})
 											});
 
@@ -3419,6 +3448,21 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 											var osm = new ol.layer.Tile({
 												"source" : new ol.source.OSM(),
 												"zIndex" : 1
+											});
+
+											var epsg = attrs[i].crs.toLowerCase();
+											var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+											var intcode = parseInt(code);
+											console.log(code);
+
+											var ccrs = new gb.crs.BaseCRS({
+												"title" : "Base CRS",
+												"width" : 300,
+												"height" : 200,
+												"autoOpen" : false,
+												"message" : undefined,
+												"map" : that.getTargetMap(),
+												"epsg" : Number.isInteger(intcode) ? code : "4326"
 											});
 
 											that.getTargetMap().updateSize();
@@ -3445,8 +3489,6 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 										var trs = $(cattrtbody).find("tr");
 										var ttrs = $(tattrtbody).find("tr");
 										for (var j = 0; j < trs.length; j++) {
-											console.log($(trs[j]).find("td").eq(0).text());
-											console.log($(ttrs[i]).find("td").eq(0).text());
 											if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0).text()) {
 
 												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {

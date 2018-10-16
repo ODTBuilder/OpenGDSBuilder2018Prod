@@ -87,7 +87,7 @@ gb.versioning.Repository = function(obj) {
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
-	this.reRepoSelect = $("<select>").css({
+	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	$(this.reRepoSelect).on("change", function() {
@@ -99,7 +99,7 @@ gb.versioning.Repository = function(obj) {
 			$(that.reBranchSelect).append(opt);
 		}
 	});
-	this.reBranchSelect = $("<select>").css({
+	this.reBranchSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
@@ -340,7 +340,7 @@ gb.versioning.Repository = function(obj) {
 	this.geoserverNameVal = $("<span>");
 	this.repoNameVal = $("<span>");
 	this.cubNameVal = $("<span>");
-	this.tabNameVal = $("<select>");
+	this.tabNameVal = $("<select>").addClass("gb-form");
 
 	this.failArea = $("<div>");
 	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.failArea);
@@ -1128,7 +1128,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 								mModal.close();
 								// that.endTransaction(server, repo, tid,
 								// commitModal);
-								that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.ours,
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
 										data.merge.theirs, data.merge.features, commitModal);
 							});
 				}
@@ -1286,37 +1286,78 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 			console.log(data);
 			if (data.success === "true") {
 				modal.close();
-				var msg1 = $("<div>").text('"Pull" is complete.').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var body = $("<div>").append(msg1).append(msg2);
-				var closeBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-default").text("Later");
-				var okBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
-				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+				if (data.pull === null && data.merge !== null) {
+					var confl = parseInt(data.merge.conflicts);
+					console.log(confl);
+					var msg1 = $("<div>").text("There are conflicting features.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-				var commitModal = new gb.modal.Base({
-					"title" : "Commit Changes",
-					"width" : 310,
-					"height" : 200,
-					"autoOpen" : true,
-					"body" : body,
-					"footer" : buttonArea
-				});
-				$(closeBtn).click(function() {
-					commitModal.close();
-				});
-				$(okBtn).click(function() {
-					that.endTransaction(server, repo, tid, commitModal);
-				});
+					var commitModal = new gb.modal.Base({
+						"title" : "Conflict",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								modal.close();
+								// that.endTransaction(server, repo, tid,
+								// commitModal);
+								that.resolveConflictModal(server, repo, remoteRepo, that.getNowBranch().text, remoteBranch,
+										data.merge.ours, data.merge.theirs, data.merge.features, commitModal);
+							});
+				} else {
+					var msg1 = $("<div>").text('"Pull" is complete.').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Commit Changes",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(function() {
+						that.endTransaction(server, repo, tid, commitModal);
+					});
+				}
 			} else {
 				var title = "Error";
 				var msg = "Pull failed."
@@ -1455,7 +1496,9 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1464,8 +1507,10 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").addClass("gb-form").append(this.getNowRepository().text);
+	var loBranch = $("<div>").addClass("gb-form").append(this.getNowBranch().text).css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1491,7 +1536,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	var commitModal = new gb.modal.Base({
 		"title" : "Pull",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1570,7 +1615,9 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1579,8 +1626,10 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").append(this.getNowRepository().text).addClass("gb-form");
+	var loBranch = $("<div>").append(this.getNowBranch().text).addClass("gb-form").css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1606,7 +1655,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	var commitModal = new gb.modal.Base({
 		"title" : "Push",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1679,11 +1728,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rNameInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Repository name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rNameInputDiv = $("<div>").append(rNameInput).css({
 		"display" : "table-cell",
@@ -1703,11 +1750,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Host addres EX) http://127.0.0.1"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rHostInputDiv = $("<div>").append(rHostInput).css({
 		"display" : "table-cell",
@@ -1727,11 +1772,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
 		"placeholder" : "Port number EX) 8080"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPortInputDiv = $("<div>").append(rPortInput).css({
 		"display" : "table-cell",
@@ -1751,11 +1794,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rDBInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rDBInputDiv = $("<div>").append(rDBInput).css({
 		"display" : "table-cell",
@@ -1775,11 +1816,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rSchemeInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Scheme name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rSchemeInputDiv = $("<div>").append(rSchemeInput).css({
 		"display" : "table-cell",
@@ -1799,11 +1838,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rIDInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database user name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rIDInputDiv = $("<div>").append(rIDInput).css({
 		"display" : "table-cell",
@@ -1823,11 +1860,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPassInput = $("<input>").attr({
 		"type" : "password",
 		"placeholder" : "Database password"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPassInputDiv = $("<div>").append(rPassInput).css({
 		"display" : "table-cell",
@@ -2239,7 +2274,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var that = this;
 
-	this.sourceSelect = $("<select>").css({
+	this.sourceSelect = $("<select>").addClass("gb-form").css({
 		"width" : "95%",
 		"height" : "90%"
 	});
@@ -2296,12 +2331,10 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
-	var nameInput = $("<input>").attr({
+	var nameInput = $("<input>").addClass("gb-form").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
+		"width" : "95%"
 	});
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
@@ -2475,10 +2508,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var nameInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
 		"width" : "65%",
@@ -2497,10 +2528,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var remoteURLInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 
 	var remoteURLInputArea = $("<div>").append(remoteURLInput).css({
 		"display" : "table-cell",
@@ -2623,7 +2652,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
  * @param {gb.modal.Base}
  *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, ours, theirs, features, cmodal) {
+gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, trepo, cub, tab, ours, theirs, features, cmodal) {
 	var that = this;
 
 	var serverName = $("<span>").text("GeoServer: ").css({
@@ -2688,9 +2717,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var tabNameArea = $("<span>").append(tabName).append(tabNameVal).css({
 	// "display" : "table-row"
 	});
-	var rowcheck = $("<input>").attr({
-		"type" : "checkbox"
-	});
+
 	var col1 = $("<th>").addClass("select-checkbox");
 	var col2 = $("<th>").text("No");
 	var col3 = $("<th>").text("Layer");
@@ -2785,7 +2812,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 			'searchable' : false,
 			"orderable" : false,
 			"render" : function(d, t, r, m) {
-				select = $("<select>").addClass("gb-repository-instead-branch");
+				select = $("<select>").addClass("gb-form").addClass("gb-repository-instead-branch");
 
 				var optcub = $("<option>").text("Use [" + cub + "]").attr({
 					"value" : "ours"
@@ -2912,7 +2939,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		var fid = data[idx][5];
 		console.log($(this).parents().eq(1)[0]);
 		var setVal = $(this).parents().eq(1).find(".gb-repository-instead-branch").val();
-		that.conflictDetailModal(server, repo, repo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
+		that.conflictDetailModal(server, repo, trepo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
 	});
 
 	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
@@ -3085,8 +3112,14 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
 	var that = this;
 
-	var crepo = $("<div>").append(crepos);
-	var cbranch = $("<div>").append(cub);
+	var crepo = $("<div>").append(crepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var cbranch = $("<div>").append(cub).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
 	// var cfeature = $("<div>").css({
 	// "width" : "100%",
 	// "height" : "200px",
@@ -3096,11 +3129,20 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var cheadtd2 = $("<th>").text("Value");
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
-	var cattrtbody = $("<tbody>");
-	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody);
+	var cattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px",
+		"display" : "block"
+	});
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
 	var cattribute = $("<div>").append(cattrtable).css({
 		"height" : "370px",
-		"overflow" : "auto"
+		"width" : "100%",
+		"overflow" : "hidden"
 	});
 	var carea = $("<div>").append(crepo).append(cbranch).append(this.cfeature).append(cattribute).css({
 		"float" : "left",
@@ -3117,8 +3159,14 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "layers" : []
 	// });
 
-	var trepo = $("<div>").append(trepos);
-	var tbranch = $("<div>").append(tab);
+	var trepo = $("<div>").append(trepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var tbranch = $("<div>").append(tab).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
 	// var tfeature = $("<div>").css({
 	// "width" : "100%",
 	// "height" : "200px",
@@ -3128,15 +3176,24 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var theadtd2 = $("<th>").text("Value");
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
-	var tattrtbody = $("<tbody>");
-	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody);
+	var tattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px",
+		"display" : "block"
+	});
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
 	var tattribute = $("<div>").append(tattrtable).css({
 		"height" : "370px",
-		"overflow" : "auto"
+		"width" : "100%",
+		"overflow" : "hidden"
 	});
 
-	$(cattribute).on("scroll", function() {
-		$(tattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	$(cattrtbody).on("scroll", function() {
+		$(tattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
 	// $(tattribute).on("scroll", function() {
@@ -3157,15 +3214,17 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var cubOpt = $("<option>").text(cub).attr({
+	var cubOpt = $("<option>").text(crepos + " - " + cub).attr({
 		"value" : "ours"
 	});
-	var tabOpt = $("<option>").text(tab).attr({
+	var tabOpt = $("<option>").text(trepos + " - " + tab).attr({
 		"value" : "theirs"
 	});
-	var branchSelect = $("<select>").append(cubOpt).append(tabOpt);
+	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
 	$(branchSelect).val(val);
-	var sarea = $("<div>").append(branchSelect);
+	var sarea = $("<div>").append(branchSelect).css({
+		"padding" : "10px"
+	});
 
 	var body = $("<div>").append(ctarea).append(sarea);
 
@@ -3180,7 +3239,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var modal = new gb.modal.Base({
 		"title" : "Compare Conflicts",
 		"width" : 770,
-		"height" : 800,
+		"height" : 840,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -3290,104 +3349,133 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 						var name = attrs[i].name;
 						var value = attrs[i].value;
 						var td1 = $("<td>").text(name);
-						var td2 = $("<td>").text(value);
+						var td2 = $("<td>").text(value).css({
+							"word-break" : "break-word",
+							"overflow-wrap" : "break-word"
+						});
 						var tr = $("<tr>").append(td1).append(td2);
 						$(cattrtbody).append(tr);
 
 					}
-				} else {
-					var title = "Error";
-					var msg = "Retrieve feature failed."
-					that.messageModal(title, msg);
-				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
 
-			}
-		});
-	} else {
-
-	}
-
-	if (fid2 !== "0000000000000000000000000000000000000000") {
-		var fobjectURL2 = this.getCatFeatureObjectURL();
-		if (fobjectURL2.indexOf("?") !== -1) {
-			fobjectURL2 += "&";
-			fobjectURL2 += jQuery.param(cparams2);
-		} else {
-			fobjectURL2 += "?";
-			fobjectURL2 += jQuery.param(cparams2);
-		}
-
-		$.ajax({
-			url : fobjectURL2,
-			method : "POST",
-			contentType : "application/json; charset=UTF-8",
-			// data : cparams2,
-			// dataType : 'jsonp',
-			// jsonpCallback : 'getJson',
-			beforeSend : function() {
-				// $("body").css("cursor", "wait");
-			},
-			complete : function() {
-				// $("body").css("cursor", "default");
-			},
-			success : function(data) {
-				console.log(data);
-				if (data.success === "true") {
-					var attrs = data.attributes;
-					for (var i = 0; i < attrs.length; i++) {
-						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
-								|| attrs[i].type === "MULTIPOLYGON") {
-							var wkt = attrs[i].value;
-							console.log(wkt);
-							var format = new ol.format.WKT();
-							var geom = format.readGeometry(wkt);
-							var feature = new ol.Feature({
-								"geometry" : geom
-							});
-							feature.setId(data.featureId);
-							console.log(feature);
-							console.log(feature.getId());
-							var style = new ol.style.Style({
-								image : new ol.style.Circle({
-									radius : 5,
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								})
-							});
-
-							var vlayer = new ol.layer.Vector({
-								"style" : style,
-								"source" : new ol.source.Vector({
-									"features" : [ feature ]
-								}),
-								"zIndex" : 2
-							});
-
-							var osm = new ol.layer.Tile({
-								"source" : new ol.source.OSM(),
-								"zIndex" : 1
-							});
-
-							that.getTargetMap().updateSize();
-							that.getTargetMap().getLayers().clear();
-							that.getTargetMap().addLayer(osm);
-							that.getTargetMap().addLayer(vlayer);
-							var geom = feature.getGeometry();
-
-							that.getTargetMap().getView().fit(geom);
-
+					if (fid2 !== "0000000000000000000000000000000000000000") {
+						var fobjectURL2 = that.getCatFeatureObjectURL();
+						if (fobjectURL2.indexOf("?") !== -1) {
+							fobjectURL2 += "&";
+							fobjectURL2 += jQuery.param(cparams2);
+						} else {
+							fobjectURL2 += "?";
+							fobjectURL2 += jQuery.param(cparams2);
 						}
-						var name = attrs[i].name;
-						var value = attrs[i].value;
-						var td1 = $("<td>").text(name);
-						var td2 = $("<td>").text(value);
+
+						$.ajax({
+							url : fobjectURL2,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							// data : cparams2,
+							// dataType : 'jsonp',
+							// jsonpCallback : 'getJson',
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data) {
+								console.log(data);
+								if (data.success === "true") {
+									var attrs = data.attributes;
+									for (var i = 0; i < attrs.length; i++) {
+										if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+												|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+												|| attrs[i].type === "MULTIPOLYGON") {
+											var wkt = attrs[i].value;
+											console.log(wkt);
+											var format = new ol.format.WKT();
+											var geom = format.readGeometry(wkt);
+											var feature = new ol.Feature({
+												"geometry" : geom
+											});
+											feature.setId(data.featureId);
+											console.log(feature);
+											console.log(feature.getId());
+											var style = new ol.style.Style({
+												image : new ol.style.Circle({
+													radius : 5,
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												})
+											});
+
+											var vlayer = new ol.layer.Vector({
+												"style" : style,
+												"source" : new ol.source.Vector({
+													"features" : [ feature ]
+												}),
+												"zIndex" : 2
+											});
+
+											var osm = new ol.layer.Tile({
+												"source" : new ol.source.OSM(),
+												"zIndex" : 1
+											});
+
+											that.getTargetMap().updateSize();
+											that.getTargetMap().getLayers().clear();
+											that.getTargetMap().addLayer(osm);
+											that.getTargetMap().addLayer(vlayer);
+											var geom = feature.getGeometry();
+
+											that.getTargetMap().getView().fit(geom);
+
+										}
+										var name = attrs[i].name;
+										var value = attrs[i].value;
+										var td1 = $("<td>").text(name);
+										var td2 = $("<td>").text(value).css({
+											"word-break" : "break-word",
+											"overflow-wrap" : "break-word"
+										});
+										var tr = $("<tr>").append(td1).append(td2);
+										$(tattrtbody).append(tr);
+
+									}
+									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
+										var trs = $(cattrtbody).find("tr");
+										var ttrs = $(tattrtbody).find("tr");
+										for (var j = 0; j < trs.length; j++) {
+											console.log($(trs[j]).find("td").eq(0).text());
+											console.log($(ttrs[i]).find("td").eq(0).text());
+											if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0).text()) {
+
+												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {
+													$(trs[j]).css({
+														"background-color" : "#ffffd0"
+													});
+													$(ttrs[j]).css({
+														"background-color" : "#ffffd0"
+													});
+												}
+											}
+										}
+									}
+								} else {
+									var title = "Error";
+									var msg = "Retrieve feature failed."
+									that.messageModal(title, msg);
+								}
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+
+							}
+						});
+					} else {
+						that.getTargetMap().updateSize();
+						var td1 = $("<td>").text("Deleted");
+						var td2 = $("<td>").text("Deleted");
 						var tr = $("<tr>").append(td1).append(td2);
 						$(tattrtbody).append(tr);
-
 					}
 				} else {
 					var title = "Error";
@@ -3400,11 +3488,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 			}
 		});
 	} else {
-		that.getTargetMap().updateSize();
-		var td1 = $("<td>").text("Deleted");
-		var td2 = $("<td>").text("Deleted");
-		var tr = $("<tr>").append(td1).append(td2);
-		$(tattrtbody).append(tr);
+
 	}
 
 };

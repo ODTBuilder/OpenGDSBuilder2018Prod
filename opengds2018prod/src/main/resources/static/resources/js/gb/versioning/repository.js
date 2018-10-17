@@ -2840,7 +2840,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Merge");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({

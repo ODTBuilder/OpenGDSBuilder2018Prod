@@ -372,13 +372,17 @@ gb.versioning.Repository = function(obj) {
 	this.cfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
-		"background-color" : "#dbdbdb"
+		"background-color" : "#dbdbdb",
+		"border" : "1px solid #ccc",
+		"border-radius" : "4px"
 	});
 
 	this.tfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
-		"background-color" : "#dbdbdb"
+		"background-color" : "#dbdbdb",
+		"border" : "1px solid #ccc",
+		"border-radius" : "4px"
 	});
 
 	this.cmap = new ol.Map({
@@ -3207,13 +3211,9 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var cattrtbody = $("<tbody>").css({
 		"overflow-y" : "auto",
 		"height" : "340px",
-		"width" : "354px",
-		"display" : "block"
+		"width" : "354px"
 	});
-	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table").css({
-		"width" : "100%",
-		"table-layout" : "fixed"
-	});
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
 	var cattribute = $("<div>").append(cattrtable).css({
 		"height" : "370px",
 		"width" : "100%",
@@ -3254,8 +3254,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var tattrtbody = $("<tbody>").css({
 		"overflow-y" : "auto",
 		"height" : "340px",
-		"width" : "354px",
-		"display" : "block"
+		"width" : "354px"
 	});
 	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
 		"width" : "100%",
@@ -3351,6 +3350,8 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 		"featureId" : fid2
 	}
 
+	var wkt1;
+	var wkt2;
 	if (fid1 !== "0000000000000000000000000000000000000000") {
 		var fobjectURL1 = this.getCatFeatureObjectURL();
 		if (fobjectURL1.indexOf("?") !== -1) {
@@ -3383,7 +3384,8 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
 								|| attrs[i].type === "MULTIPOLYGON") {
 							var wkt = attrs[i].value;
-							console.log(wkt);
+							wkt1 = wkt;
+							console.log(wkt1);
 							var format = new ol.format.WKT();
 							var geom = format.readGeometry(wkt);
 							var feature = new ol.Feature({
@@ -3442,16 +3444,17 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 							that.getCurrentMap().addLayer(vlayer);
 							that.getCurrentMap().getView().fit(geom);
 
+						} else {
+							var name = attrs[i].name;
+							var value = attrs[i].value;
+							var td1 = $("<td>").text(name);
+							var td2 = $("<td>").text(value).css({
+								"word-break" : "break-word",
+								"overflow-wrap" : "break-word"
+							});
+							var tr = $("<tr>").append(td1).append(td2);
+							$(cattrtbody).append(tr);
 						}
-						var name = attrs[i].name;
-						var value = attrs[i].value;
-						var td1 = $("<td>").text(name);
-						var td2 = $("<td>").text(value).css({
-							"word-break" : "break-word",
-							"overflow-wrap" : "break-word"
-						});
-						var tr = $("<tr>").append(td1).append(td2);
-						$(cattrtbody).append(tr);
 
 					}
 
@@ -3487,7 +3490,23 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 												|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
 												|| attrs[i].type === "MULTIPOLYGON") {
 											var wkt = attrs[i].value;
-											console.log(wkt);
+											wkt2 = wkt;
+											if (wkt1 !== wkt2) {
+												$(that.cfeature).css({
+													"border" : "3px solid #ffc523"
+												});
+												$(that.tfeature).css({
+													"border" : "3px solid #ffc523"
+												});
+											} else {
+												$(that.cfeature).css({
+													"border" : "1px solid #ccc"
+												});
+												$(that.tfeature).css({
+													"border" : "1px solid #ccc"
+												});
+											}
+											console.log(wkt2);
 											var format = new ol.format.WKT();
 											var geom = format.readGeometry(wkt);
 											var feature = new ol.Feature({
@@ -3548,16 +3567,17 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 											that.getTargetMap().getView().fit(geom);
 
+										} else {
+											var name = attrs[i].name;
+											var value = attrs[i].value;
+											var td1 = $("<td>").text(name);
+											var td2 = $("<td>").text(value).css({
+												"word-break" : "break-word",
+												"overflow-wrap" : "break-word"
+											});
+											var tr = $("<tr>").append(td1).append(td2);
+											$(tattrtbody).append(tr);
 										}
-										var name = attrs[i].name;
-										var value = attrs[i].value;
-										var td1 = $("<td>").text(name);
-										var td2 = $("<td>").text(value).css({
-											"word-break" : "break-word",
-											"overflow-wrap" : "break-word"
-										});
-										var tr = $("<tr>").append(td1).append(td2);
-										$(tattrtbody).append(tr);
 
 									}
 									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
@@ -3568,10 +3588,10 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {
 													$(trs[j]).css({
-														"background-color" : "#ffffd0"
+														"background-color" : "#ffc523"
 													});
 													$(ttrs[j]).css({
-														"background-color" : "#ffffd0"
+														"background-color" : "#ffc523"
 													});
 												}
 											}

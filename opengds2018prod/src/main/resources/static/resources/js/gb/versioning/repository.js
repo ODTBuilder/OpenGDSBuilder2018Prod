@@ -1935,14 +1935,12 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 				$(this).find("i").addClass("fa-caret-down");
 			}
 			createRepoModal.setHeight(425);
-			createRepoModal.refreshPosition();
 		} else if ($(remoteInputArea).css("display") === "block") {
 			if ($(this).find("i").hasClass("fa-caret-down")) {
 				$(this).find("i").removeClass("fa-caret-down");
 				$(this).find("i").addClass("fa-caret-up");
 			}
 			createRepoModal.setHeight(514);
-			createRepoModal.refreshPosition();
 		}
 	});
 	var pullBtnRow = $("<div>").append(pullBtn).css({

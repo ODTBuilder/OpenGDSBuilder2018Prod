@@ -1875,6 +1875,81 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
+	var rrName = $("<div>").text("Repository Name: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rrNameInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Remote Repository Name"
+	}).addClass("gb-form").css({
+		"width" : "83%",
+		"margin-left" : "6px"
+	});
+	var rrNameInputDiv = $("<div>").append(rrNameInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rrNameArea = $("<div>").append(rrName).append(rrNameInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rrURL = $("<div>").text("Repository URL: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rrURLInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Remote Repository URL"
+	}).addClass("gb-form").css({
+		"width" : "83%",
+		"margin-left" : "6px"
+	});
+	var rrURLInputDiv = $("<div>").append(rrURLInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rrURLArea = $("<div>").append(rrURL).append(rrURLInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var remoteInputArea = $("<div>").css({
+		"display" : "none",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "109px"
+	}).append(rrNameArea).append(rrURLArea);
+
+	var icon = $("<i>").addClass("fas").addClass("fa-caret-down");
+	var pullBtn = $("<button>").append(icon).append(" Pull from Remote Repository").addClass("gb-button-clear").click(function() {
+		$(remoteInputArea).toggle();
+		if ($(remoteInputArea).css("display") === "none") {
+			if ($(this).find("i").hasClass("fa-caret-up")) {
+				$(this).find("i").removeClass("fa-caret-up");
+				$(this).find("i").addClass("fa-caret-down");
+			}
+			createRepoModal.setHeight(425);
+			createRepoModal.refreshPosition();
+		} else if ($(remoteInputArea).css("display") === "block") {
+			if ($(this).find("i").hasClass("fa-caret-down")) {
+				$(this).find("i").removeClass("fa-caret-down");
+				$(this).find("i").addClass("fa-caret-up");
+			}
+			createRepoModal.setHeight(514);
+			createRepoModal.refreshPosition();
+		}
+	});
+	var pullBtnRow = $("<div>").append(pullBtn).css({
+		"display" : "block",
+		"text-align" : "center"
+	});
+
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Close");
@@ -1892,12 +1967,14 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 				"width" : "100%",
 				"height" : "270px"
 			});
+
+	var repoBody = $("<div>").append(rBody).append(pullBtnRow).append(remoteInputArea);
 	var createRepoModal = new gb.modal.Base({
 		"title" : "Create Repository",
 		"width" : 540,
-		"height" : 400,
+		"height" : 425,
 		"autoOpen" : true,
-		"body" : rBody,
+		"body" : repoBody,
 		"footer" : modalFooter
 	});
 	$(closeBtn).click(function() {

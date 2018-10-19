@@ -48,14 +48,9 @@ public class GeogigRepositoryController extends AbstractController {
 			@RequestParam(value = "dbName", required = false) String dbName,
 			@RequestParam(value = "dbSchema", required = false) String dbSchema,
 			@RequestParam(value = "dbUser", required = false) String dbUser,
-			@RequestParam(value = "dbPassword", required = false) String dbPassword) throws JAXBException {
-
-		// ,@RequestParam(value = "remoteName", required = false) String
-		// remoteName,@RequestParam(value = "remoteURL", required = false) String
-		// remoteURL
-
-		String remoteName = "test";
-		String remoteURL = "test";
+			@RequestParam(value = "dbPassword", required = false) String dbPassword,
+			@RequestParam(value = "remoteName", required = false) String remoteName,
+			@RequestParam(value = "remoteURL", required = false) String remoteURL) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.initRepository(geoserverManager, loginUser, repoName, dbHost, dbPort, dbName, dbSchema,

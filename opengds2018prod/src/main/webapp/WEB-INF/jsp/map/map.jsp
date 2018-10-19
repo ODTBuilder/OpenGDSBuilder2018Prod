@@ -95,7 +95,9 @@ html {
 }
 
 .gb-footer-span {
-	margin-right: 15px;
+	margin-right: 8px;
+	margin-left: 8px;
+	vertical-align: -webkit-baseline-middle;
 }
 
 .gb-footer-span:hover {
@@ -157,13 +159,12 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="gb-footer-span"><i class="fas fa-ruler-horizontal"></i>&nbsp;<span>Scale:&nbsp;</span><span
-			class="gb-scale-line-area" style="width: 130px;"></span></span> <span class="gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a
-			href="#" class="epsg-now"></a></span> <span class="gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span
-			class="mouse-position" style="display: inline-block;"></span></span> <span class="text-muted" style="float: right;">OpenGDS
-			Builder/Validator</span> <span id="cmd-toggle-btn" class="gb-footer-span" style="float: right;"><i
-			class="fas fa-terminal"></i>Command</span> <span id="feature-toggle-btn" class="gb-footer-span" style="float: right;"><i
-			class="fas fa-th"></i>List</span>
+		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 120px;"></span></span>
+		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
+			class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span
+			class="mouse-position" style="display: inline-block;"></span></span> <span class="text-muted navbar-right gb-footer-span">OpenGDS
+			Builder/Validator</span> <span id="cmd-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;Command</span>
+		<span id="feature-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-th"></i>&nbsp;List</span>
 	</nav>
 	<script type="text/javascript">
 		var urlList = {

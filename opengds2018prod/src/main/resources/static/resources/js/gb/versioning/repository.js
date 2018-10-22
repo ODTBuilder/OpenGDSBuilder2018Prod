@@ -1755,7 +1755,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Host addres EX) http://127.0.0.1"
+		"placeholder" : "Host addres EX) 127.0.0.1"
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -1992,7 +1992,13 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		var scheme = $(rSchemeInput).val();
 		var user = $(rIDInput).val();
 		var pass = $(rPassInput).val();
-		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, createRepoModal);
+		var rname = $(rrNameInput).val() === "" ? null : $(rrNameInput).val();
+		var rurl = $(rrURLInput).val() === "" ? null : $(rrURLInput).val();
+		if (rname === null || rurl === null) {
+			rname = null;
+			rurl = null;
+		}
+		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
 	});
 };
 
@@ -2007,7 +2013,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, modal) {
+gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -2017,7 +2023,9 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		"dbName" : dbname,
 		"dbSchema" : scheme,
 		"dbUser" : user,
-		"dbPassword" : pass
+		"dbPassword" : pass,
+		"remoteName" : rname,
+		"remoteURL" : rurl
 	}
 	// + "&" + jQuery.param(params),
 	var checkURL = this.getInitRepositoryURL();

@@ -63,7 +63,7 @@
 								<div class="col-md-4 col-md-offset-2">
 									<spring:message code="lang.name" />
 								</div>
-								<div class="col-md-6">${lname}&nbsp;${fname}</div>
+								<div class="col-md-6">${fname}&nbsp;${lname}</div>
 							</div>
 							<div class="row">
 								<div class="col-md-4 col-md-offset-2">

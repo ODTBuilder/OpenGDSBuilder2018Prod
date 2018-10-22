@@ -163,12 +163,14 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 118px;"></span></span>
-		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
-			class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span
-			class="mouse-position" style="display: inline-block;"></span></span> <span class="text-muted navbar-right gb-footer-span">OpenGDS
-			Builder/Validator</span> <span id="cmd-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;Command</span>
-		<span id="feature-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-th"></i>&nbsp;List</span>
+		<!-- 		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 118px;"></span></span> -->
+		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#"
+			class="epsg-now btn-link"></a></span> <span id="feature-toggle-btn" class="navbar-left gb-footer-span"><i
+			class="fas fa-th"></i>&nbsp;<span class="btn-link">List</span></span> <span id="cmd-toggle-btn"
+			class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span class="btn-link">Command</span></span>
+		<span class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>&nbsp;</span><span
+			class="mouse-position btn-link" style="display: inline-block;"></span></span> <span
+			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
 		var urlList = {
@@ -441,8 +443,8 @@ html {
 		});
 
 		var scaleLine = new ol.control.ScaleLine({
-			"target" : $(".gb-scale-line-area")[0],
-			"className" : "gb-scale-line"
+		// 			"target" : $(".gb-scale-line-area")[0],
+		// 			"className" : "gb-scale-line"
 		});
 		gbMap.getUpperMap().addControl(scaleLine);
 

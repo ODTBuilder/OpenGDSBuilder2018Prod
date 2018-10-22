@@ -713,10 +713,14 @@ gb.tree.GeoServer = function(obj) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 									if (obj.type === "geoserver") {
 										that.openDeleteGeoServer(obj.id);
+									} else if (obj.type === "geoserver" || obj.type === "point" || obj.type === "multipoint"
+											|| obj.type === "linestring" || obj.type === "multilinestring" || obj.type === "polygon"
+											|| obj.type === "multipolygon") {
+										alert("레이어 지워짐");
 									}
 								}
 							},
-							"properties": {
+							"properties" : {
 								"separator_before" : false,
 								"icon" : "fa fa-info-circle",
 								"separator_after" : false,
@@ -733,15 +737,16 @@ gb.tree.GeoServer = function(obj) {
 								"label" : "Properties",
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									/*if (obj.type === "geoserver") {
-										that.openDeleteGeoServer(obj.id);
-									}*/
+									/*
+									 * if (obj.type === "geoserver") {
+									 * that.openDeleteGeoServer(obj.id); }
+									 */
 									if (inst.is_selected(obj)) {
 										that.properties.setForm({
-											geoserver: obj.id.split(":")[0],
-											workspace: obj.id.split(":")[1],
-											datastore: obj.id.split(":")[2],
-											layername: obj.id.split(":")[3]
+											geoserver : obj.id.split(":")[0],
+											workspace : obj.id.split(":")[1],
+											datastore : obj.id.split(":")[2],
+											layername : obj.id.split(":")[3]
 										});
 										that.properties.open();
 									} else {
@@ -796,7 +801,7 @@ gb.tree.GeoServer = function(obj) {
 				"plugins" : [ "contextmenu", "search", "types", "geoserver" ]
 			});
 	this.jstree = $(this.panelBody).jstree(true);
-	if(!!this.properties){
+	if (!!this.properties) {
 		this.properties.setRefer(this.jstree);
 	}
 };

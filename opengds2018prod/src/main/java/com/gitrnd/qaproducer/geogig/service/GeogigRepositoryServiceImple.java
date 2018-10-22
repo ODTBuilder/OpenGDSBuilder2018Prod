@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 
@@ -72,10 +73,14 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName, dbSchema,
 					dbUser, dbPassword, authorName, authorEmail);
 			if (remoteName != null && remoteURL != null) {
-				String initReposName = geogigReposInit.getRepo().getName();
-				BeginTransaction beginTransaction = new BeginTransaction();
-				GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, initReposName);
 				try {
+					String initReposName = geogigReposInit.getRepo().getName();
+					// add remote
+					AddRemoteRepository addRemote = new AddRemoteRepository();
+					addRemote.executeCommand(url, user, pw, repoName, remoteName, remoteURL);
+					// pull remote
+					BeginTransaction beginTransaction = new BeginTransaction();
+					GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, initReposName);
 					PullRepository pull = new PullRepository();
 					pull.executeCommand(url, user, pw, repoName, transaction.getTransaction().getId(), initReposName,
 							"master", remoteName, authorName, authorEmail);

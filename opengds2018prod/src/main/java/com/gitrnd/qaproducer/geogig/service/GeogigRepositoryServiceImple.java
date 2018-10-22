@@ -57,7 +57,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	@Override
 	public GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser,
 			String repoName, String dbHost, String dbPort, String dbName, String dbSchema, String dbUser,
-			String dbPassword) throws JAXBException {
+			String dbPassword, String remoteName, String remoteURL) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -68,10 +68,27 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 
 		InitRepository initRepos = new InitRepository();
 		GeogigRepositoryInit geogigReposInit = null;
-
 		try {
 			geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName, dbSchema,
 					dbUser, dbPassword, authorName, authorEmail);
+			if (remoteName != null && remoteURL != null) {
+				String initReposName = geogigReposInit.getRepo().getName();
+				BeginTransaction beginTransaction = new BeginTransaction();
+				GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, initReposName);
+				try {
+					PullRepository pull = new PullRepository();
+					pull.executeCommand(url, user, pw, repoName, transaction.getTransaction().getId(), initReposName,
+							"master", remoteName, authorName, authorEmail);
+				} catch (GeogigCommandException e) {
+					JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+					geogigReposInit = (GeogigRepositoryInit) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+
+					DeleteRepository delete = new DeleteRepository();
+					GeogigRepositoryDelete reposDelete = delete.executeGetCommand(url, user, pw, repoName);
+					delete.executeDeleteCommand(url, user, pw, repoName, reposDelete.getToken());
+				}
+			}
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

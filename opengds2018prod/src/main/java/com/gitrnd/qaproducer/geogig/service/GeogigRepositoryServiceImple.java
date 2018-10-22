@@ -81,9 +81,12 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 					// pull remote
 					BeginTransaction beginTransaction = new BeginTransaction();
 					GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, initReposName);
+					String transactionId = transaction.getTransaction().getId();
 					PullRepository pull = new PullRepository();
-					pull.executeCommand(url, user, pw, repoName, transaction.getTransaction().getId(), initReposName,
-							"master", remoteName, authorName, authorEmail);
+					pull.executeCommand(url, user, pw, initReposName, transactionId, remoteName, "master", "master",
+							authorName, authorEmail);
+					EndTransaction endTransaction = new EndTransaction();
+					endTransaction.executeCommand(url, user, pw, initReposName, transactionId);
 				} catch (GeogigCommandException e) {
 					JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
 					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

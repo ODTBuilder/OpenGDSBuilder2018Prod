@@ -18,8 +18,8 @@
 				title : "<spring:message code="lang.deactusermsg" />",
 				type : "warning",
 				showCancelButton : true,
-				confirmButtonText : "확인",
-				cancelButtonText : "취소",
+				confirmButtonText : "<spring:message code="lang.confirm" />",
+				cancelButtonText : "<spring:message code="lang.cancel" />",
 				reverseButtons : true
 			}).then(function(isConfirm) {
 				if (isConfirm.value) {

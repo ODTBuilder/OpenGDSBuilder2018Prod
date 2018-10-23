@@ -285,7 +285,8 @@ html {
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : urlList.getLayerInfo + urlList.token
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
+				"deleteGeoServerLayer" : "geoserver/geoserverRemoveLayers.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

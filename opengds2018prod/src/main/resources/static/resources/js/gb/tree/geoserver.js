@@ -43,6 +43,7 @@ gb.tree.GeoServer = function(obj) {
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
+	this.deleteGeoServerLayerURL = url.deleteGeoServerLayer ? url.deleteGeoServerLayer : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
 	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
@@ -716,7 +717,10 @@ gb.tree.GeoServer = function(obj) {
 									} else if (obj.type === "geoserver" || obj.type === "point" || obj.type === "multipoint"
 											|| obj.type === "linestring" || obj.type === "multilinestring" || obj.type === "polygon"
 											|| obj.type === "multipolygon") {
-										alert("레이어 지워짐");
+										var server = inst.get_node(obj.parents[2]);
+										var work = inst.get_node(obj.parents[1]);
+										var layer = obj;
+										that.openDeleteGeoServerLayer(server.text, work.text, layer.text);
 									}
 								}
 							},
@@ -1028,7 +1032,8 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	});
 	var msg2 = $("<div>").text('"' + geoserver + '"').css({
 		"text-align" : "center",
-		"font-size" : "24px"
+		"font-size" : "24px",
+		"word-break" : "break-word"
 	});
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
@@ -1076,6 +1081,87 @@ gb.tree.GeoServer.prototype.deleteGeoServer = function(geoserver, callback) {
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		// data : params,
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			callback.close();
+			that.refreshList();
+		}
+	});
+};
+
+/**
+ * GeoServer 레이어 삭제 확인창을 연다.
+ * 
+ * @method gb.tree.GeoServer#openDeleteGeoServerLayer
+ */
+gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, layer) {
+	var that = this;
+	console.log("open delete geoserver layer");
+	console.log(layer);
+	var msg1 = $("<div>").text("Are you sure to delete this layer?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + layer + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
+	var deleteModal = new gb.modal.Base({
+		"title" : "Delete Layer",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : false,
+		"body" : body
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		that.deleteGeoServerLayer(server, work, layer, deleteModal);
+	});
+	$(deleteModal.getModal()).append(modalFooter);
+	deleteModal.open();
+};
+
+/**
+ * GeoServer Layer 를 삭제한다.
+ * 
+ * @method gb.tree.GeoServer#deleteGeoServerLayer
+ * @param {String}
+ *            geoserver - 삭제할 지오서버 레이어의 이름
+ * @param {gb.modal.Base}
+ *            callback - 완료후 창을 닫을 모달 객체
+ */
+gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, layer, callback) {
+	var that = this;
+	console.log("delete geoserver layer");
+	var params = {
+		"serverName" : geoserver,
+		"workspace" : work,
+		"layerList" : [ layer ]
+	};
+
+	$.ajax({
+		url : this.getDeleteGeoServerLayerURL(),
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		data : JSON.stringify(params),
 		beforeSend : function() {
 			$("body").css("cursor", "wait");
 		},
@@ -1151,13 +1237,22 @@ gb.tree.GeoServer.prototype.setAddGeoServerURL = function(url) {
 gb.tree.GeoServer.prototype.getDeleteGeoServerURL = function() {
 	return this.deleteGeoServerURL;
 };
+
 /**
  * 지오서버 삭제를 위한 URL을 설정한다.
  * 
- * @method gb.tree.GeoServer#setdeleteGeoServerURL
+ * @method gb.tree.GeoServer#setDeleteGeoServerURL
  */
-gb.tree.GeoServer.prototype.setdeleteGeoServerURL = function(url) {
+gb.tree.GeoServer.prototype.setDeleteGeoServerURL = function(url) {
 	this.deleteGeoServerURL = url;
+};
+/**
+ * 지오서버 레이어 삭제를 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getDeleteGeoServerLayerURL
+ */
+gb.tree.GeoServer.prototype.getDeleteGeoServerLayerURL = function() {
+	return this.deleteGeoServerLayerURL;
 };
 /**
  * 지오서버 트리구조 요청을 위한 URL을 반환한다.

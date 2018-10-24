@@ -27,7 +27,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		this._data.geogigfunction = {
 			"repository" : options.geogigfunction.repository,
 			"status" : options.geogigfunction.status,
-			"transactionId" : {}
+			"transactionId" : {},
+			"fetchRemote" : {}
 		};
 		// var optKeys = Object.keys(options.geogigfunction.status);
 		// for (var i = 0; i < optKeys.length; i++) {
@@ -96,6 +97,14 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 									m[dpc[i]].state["disconnected"] = true;
 								}
 							}
+						}
+					} else if (m[dpc[i]].original.type === "remoteBranch") {
+						if (m[dpc[i]].original.hasOwnProperty("fetchSize")) {
+							var fcount = m[dpc[i]].original["fetchSize"];
+							if (fcount > 0) {
+								this._data.geogigfunction.fetchRemote[m[dpc[i]].id] = fcount;
+							}
+							console.log(this._data.geogigfunction.fetchRemote);
 						}
 					}
 
@@ -190,8 +199,6 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(remote);
 							that._data.geogigfunction.repository.setFetchRepository(remote.text);
 							that.refresh();
-							// that._data.geogigfunction.repository.fetchRemoteRepository(server.text,
-							// repo.text, remote.text);
 						});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Delete").css({
 							"display" : "inline-block"
@@ -316,9 +323,31 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 		obj = parent.redraw_node.apply(this, arguments);
 		console.log(this.get_node(obj.id));
 		if (obj) {
+			var nobj = this.get_node(obj.id);
+			if (nobj.type === "remoteBranch") {
+				if (this._data.geogigfunction.fetchRemote.hasOwnProperty(nobj.id)) {
+					var num = this._data.geogigfunction.fetchRemote[nobj.id];
+					var fetchNum = $("<div>").text(num).css({
+						"text-align" : "center",
+						"margin-top" : "-3px",
+						"vertical-align" : "middle"
+					});
+					var fetchCircle = $("<div>").css({
+						"color" : "#fff",
+						"background-color" : "#515151",
+						"display" : "inline-block",
+						"min-width" : "18px",
+						"margin" : "0 5px",
+						"text-align" : "center",
+						"border-radius" : "9px",
+						"height" : "18px",
+						"vertical-align" : "middle"
+					}).append(fetchNum);
+					$(obj.childNodes[1]).append(fetchCircle);
+				}
+			}
 			var fnmks = Object.keys(this._data.geogigfunction.status);
 			for (var i = 0; i < fnmks.length; i++) {
-				var nobj = this.get_node(obj.id);
 				if (nobj.state[fnmks[i]]) {
 					if (fnmks[i] === "checkout") {
 						var ic = $("<i>").attr({
@@ -434,6 +463,20 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 	 */
 	this.removeTransactionId = function(nid) {
 		var list = this._data.geogigfunction.transactionId;
+		return delete list[nid];
+	};
+
+	/**
+	 * 노드에 맞는 fetch 숫자를 삭제한다.
+	 * 
+	 * @method removeFetchCount
+	 * @plugin geogigfunction
+	 * @param {String}
+	 *            nid - 노드 아이디
+	 * @return {Boolean}
+	 */
+	this.removeFetchCount = function(nid) {
+		var list = this._data.geogigfunction.fetchRemote;
 		return delete list[nid];
 	};
 	/**

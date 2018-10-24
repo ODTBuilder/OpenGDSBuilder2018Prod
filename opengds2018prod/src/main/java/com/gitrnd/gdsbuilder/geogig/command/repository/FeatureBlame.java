@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.object;
+package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 
@@ -21,27 +18,21 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 
-/**
- * Geogig Cat Command Execution Class
- * 
- * @author GIT
- *
- */
-public class CatObject {
+public class FeatureBlame {
 
-	private static final Log logger = LogFactory.getLog(CatObject.class);
+	private static final Log logger = LogFactory.getLog(FeatureBlame.class);
 
 	private static final String geogig = "geogig";
-	private static final String command = "cat";
-	private static final String param_objectid = "objectid=";
+	private static final String command = "blame";
+	private static final String param_path = "path=";
+	private static final String param_commit = "commit="; // optional
 
-	public GeogigCat executeCommand(String baseURL, String username, String password, String repository,
-			String objectid) {
+	public GeogigBlame executeCommand(String baseURL, String username, String password, String repository, String path,
+			String commit) {
 
 		// restTemplate
-
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
@@ -57,13 +48,17 @@ public class CatObject {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_objectid + objectid;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_path + path;
+
+		if (commit != null) {
+			url += "&" + param_commit + commit;
+		}
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigCat> responseEntity = null;
+		ResponseEntity<GeogigBlame> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigCat.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigBlame.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {

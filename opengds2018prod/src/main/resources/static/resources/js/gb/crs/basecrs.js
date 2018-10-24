@@ -31,20 +31,35 @@ gb.crs.BaseCRS = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.message = options.message ? options.message : undefined;
-	this.map = options.map ? options.map : undefined;
+	this.maps = options.maps ? options.maps : undefined;
 	this.epsg = options.epsg ? options.epsg : "3857";
-
-	this.searchEPSGCode(this.epsg);
 
 	var label = $("<span>").text("EPSG: ");
 	this.searchBar = $("<input>").attr({
-		"type" : "number"
+		"type" : "number",
+		"placeholder" : "EX) 3857"
 	}).addClass("gb-form").css({
-		"width" : "346px",
+		"width" : "312px",
 		"display" : "inline-block"
 	});
 
-	var area = $("<div>").append(label).append(this.searchBar).css({
+	this.tout = false;
+	$(this.searchBar).keyup(function() {
+		if (that.tout) {
+			clearTimeout(that.tout);
+		}
+		that.tout = setTimeout(function() {
+			var v = $(that.searchBar).val();
+			console.log(v);
+			that.searchEPSGCode(v);
+		}, 250);
+	});
+
+	this.validIconSpan = $("<span>").css({
+		"margin-left" : "15px",
+		"margin-right" : "0"
+	});
+	var area = $("<div>").append(label).append(this.searchBar).append(this.validIconSpan).css({
 		"margin" : "10px 10px"
 	});
 	this.setModalBody(area);
@@ -56,17 +71,25 @@ gb.crs.BaseCRS = function(obj) {
 	});
 	this.searchBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Search").click(function() {
-		var val = $(that.searchBar).val().replace(/(\s*)/g, '');
-		that.searchEPSGCode(val);
-	});
+	}).addClass("gb-button").addClass("gb-button-primary").text("OK").click(
+			function() {
+				var val = $(that.searchBar).val().replace(/(\s*)/g, '');
+				// that.searchEPSGCode(val);
+				if (that.getValidEPSG()) {
+					that.applyProjection(that.getProjection().code, that.getProjection().name, that.getProjection().proj4, that
+							.getProjection().bbox);
+					that.close();
+				}
+			});
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(this.searchBtn).append(closeBtn);
 
 	this.setModalFooter(buttonArea);
-	
+
 	$("body").append(this.modal);
 	$("body").append(this.background);
+
+	this.searchEPSGCode(this.epsg, true);
 };
 gb.crs.BaseCRS.prototype = Object.create(gb.modal.Base.prototype);
 gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
@@ -74,22 +97,22 @@ gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
 /**
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 반환한다.
  * 
- * @method gb.crs.BaseCRS#getMap
+ * @method gb.crs.BaseCRS#getMaps
  * @return {ol.Map} 베이스 좌표계를 변경하고자 하는 ol.Map 객체
  */
-gb.crs.BaseCRS.prototype.getMap = function() {
-	return this.map;
+gb.crs.BaseCRS.prototype.getMaps = function() {
+	return this.maps;
 };
 
 /**
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 설정한다.
  * 
- * @method gb.crs.BaseCRS#setMap
+ * @method gb.crs.BaseCRS#setMaps
  * @param {ol.Map}
  *            map - 베이스 좌표계를 변경하고자 하는 ol.Map 객체
  */
-gb.crs.BaseCRS.prototype.setMap = function(map) {
-	this.map = map;
+gb.crs.BaseCRS.prototype.setMaps = function(maps) {
+	this.maps = maps;
 };
 
 /**
@@ -141,21 +164,29 @@ gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
  * @param {String}
  *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
  */
-gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
+gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply) {
 	console.log(code);
 	var that = this;
 	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
 		return response.json();
 	}).then(function(json) {
 		if (json.number_result !== 1) {
-			$(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:" + that.getEPSGCode());
+			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
+			// +
+			// that.getEPSGCode());
+			that.setValidEPSG(false);
+			that.setProjection(undefined, undefined, undefined, undefined);
 			console.error("no crs");
-			that.close();
+			// that.close();
 			return;
 		} else if (json.number_result < 1) {
-			$(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:" + that.getEPSGCode());
+			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
+			// +
+			// that.getEPSGCode());
+			that.setValidEPSG(false);
+			that.setProjection(undefined, undefined, undefined, undefined);
 			console.error("no crs");
-			that.close();
+			// that.close();
 			return;
 		}
 		var results = json['results'];
@@ -163,21 +194,31 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 			for (var i = 0, ii = results.length; i < ii; i++) {
 				var result = results[i];
 				if (result) {
-					var code = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
-					if (code && code.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
-						that.setProjection(code, name, proj4def, bbox);
-						that.close();
+					var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
+					if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
+
+						if (code === codes) {
+							that.setEPSGCode(code);
+							that.setValidEPSG(true);
+							that.setProjection(code, name, proj4def, bbox);
+							if (apply) {
+								that.applyProjection(code, name, proj4def, bbox);
+							}
+						}
+
 						return;
 					} else {
 						$(that.getMessage()).text("Error: Not support EPSG Code. EPSG:" + that.getEPSGCode());
 						console.error("no crs");
-						that.close();
+						// that.close();
+						that.setValidEPSG(false);
+						that.setProjection(undefined, undefined, undefined, undefined);
 						return;
 					}
 				}
 			}
 		}
-		that.close();
+		// that.close();
 		return;
 	});
 };
@@ -185,7 +226,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
 /**
  * 베이스 좌표계를 적용한다.
  * 
- * @method gb.crs.BaseCRS#setProjection
+ * @method gb.crs.BaseCRS#applyProjection
  * @param {String}
  *            code - EPSG 코드
  * @param {String}
@@ -195,11 +236,11 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code) {
  * @param {Number[]}
  *            bbox - 좌표계 영역
  */
-gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
+gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox) {
 	var that = this;
 	if (code === null || name === null || proj4def === null || bbox === null) {
-		if (Array.isArray(this.getMap())) {
-			var maps = this.getMap();
+		if (Array.isArray(this.getMaps())) {
+			var maps = this.getMaps();
 			for (var i = 0; i < maps.length; i++) {
 				if (maps[i] instanceof ol.Map) {
 					maps[i].setView(new ol.View({
@@ -210,8 +251,8 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 				}
 			}
 			return;
-		} else if (this.getMap() instanceof ol.Map) {
-			this.getMap().setView(new ol.View({
+		} else if (this.getMaps() instanceof ol.Map) {
+			this.getMaps().setView(new ol.View({
 				projection : 'EPSG:3857',
 				center : [ 0, 0 ],
 				zoom : 1
@@ -232,18 +273,102 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 	var newView = new ol.View({
 		projection : newProj
 	});
-	if (Array.isArray(this.getMap())) {
-		var maps = this.getMap();
+	if (Array.isArray(this.getMaps())) {
+		var maps = this.getMaps();
 		for (var i = 0; i < maps.length; i++) {
 			if (maps[i] instanceof ol.Map) {
 				maps[i].setView(newView);
 			}
 		}
-	} else if (this.getMap() instanceof ol.Map) {
-		this.getMap().setView(newView);
+	} else if (this.getMaps() instanceof ol.Map) {
+		this.getMaps().setView(newView);
 	}
 	newView.fit(extent);
 	console.log(this.getEPSGCode());
+};
+
+/**
+ * 베이스 좌표계를 설정한다.
+ * 
+ * @method gb.crs.BaseCRS#setProjection
+ * @param {String}
+ *            code - EPSG 코드
+ * @param {String}
+ *            name - 좌표계 이름
+ * @param {String}
+ *            proj4def - proj4 좌표계
+ * @param {Number[]}
+ *            bbox - 좌표계 영역
+ */
+gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
+	var that = this;
+	this.projObj = {
+		"code" : code,
+		"name" : name,
+		"proj4" : proj4def,
+		"bbox" : bbox
+	};
+};
+
+/**
+ * 베이스 좌표계를 반환한다.
+ * 
+ * @method gb.crs.BaseCRS#getProjection
+ * @return {Object} 좌표계 정보
+ */
+gb.crs.BaseCRS.prototype.getProjection = function() {
+	return this.projObj;
+};
+
+/**
+ * epsg 코드의 유효성을 설정한다.
+ * 
+ * @method gb.crs.BaseCRS#setValidEPSG
+ * @param {Boolean}
+ *            flag - EPSG 코드 유효성
+ */
+gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
+	this.validEPSG = flag;
+
+	$(this.validIconSpan).empty();
+
+	if (flag) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-valid-icon");
+		}
+		$(this.searchBtn).prop("disabled", false);
+	} else {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		}
+		$(this.searchBtn).prop("disabled", true);
+	}
+};
+
+/**
+ * epsg 코드의 유효성을 반환한다.
+ * 
+ * @method gb.crs.BaseCRS#getValidEPSG
+ * @return {Boolean} EPSG 코드 유효성
+ */
+gb.crs.BaseCRS.prototype.getValidEPSG = function() {
+	return this.validEPSG;
 };
 
 /**
@@ -255,4 +380,9 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 gb.crs.BaseCRS.prototype.open = function() {
 	gb.modal.Base.prototype.open.call(this);
 	$(this.searchBar).val(this.getEPSGCode());
+	if (this.getValidEPSG()) {
+		$(this.searchBtn).prop("disabled", false);
+	} else {
+		$(this.searchBtn).prop("disabled", true);
+	}
 };

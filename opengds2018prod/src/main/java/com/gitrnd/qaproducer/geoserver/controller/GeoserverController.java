@@ -488,7 +488,7 @@ public class GeoserverController extends AbstractController {
 		if(dtGeoserverManager==null){
 			resultFlag = 603;
 		}else{
-			String workspace = request.getParameter("workspace");
+			String workspace = (String) jsonObject.get("workspace");
 			resultFlag =  geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, layerList);
 		}
 		return resultFlag;

@@ -130,12 +130,14 @@ public interface GeogigRepositoryService {
 	 * @param dbSchema
 	 * @param dbUser
 	 * @param dbPassword
+	 * @param remoteURL
+	 * @param remoteName
 	 * @return
 	 * @throws JAXBException
 	 */
 	GeogigRepositoryInit initRepository(DTGeoserverManager geoserverManager, LoginUser loginUser, String repoName,
-			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword)
-			throws JAXBException;
+			String dbHost, String dbPort, String dbName, String dbSchema, String dbUser, String dbPassword,
+			String remoteName, String remoteURL) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

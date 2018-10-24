@@ -12,6 +12,9 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.remote.AddRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
@@ -71,6 +74,10 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		GeogigTransaction transaction = null;
 
 		try {
+			AddRepository add = new AddRepository();
+			add.executeCommand(url, user, pw, repoName, transactionId);
+			CommitRepository commit = new CommitRepository();
+			commit.executeCommand(url, user, pw, repoName, transactionId, "test", "test", "test");
 			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);

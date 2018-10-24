@@ -26,9 +26,11 @@ public class FetchRepository {
 
 	private static final String geogig = "geogig";
 	private static final String command = "fetch";
+	private static final String param_remote = "remote=";
 	private static final String param_all = "all=";
 
-	public GeogigFetch executeCommand(String baseURL, String username, String password, String repository) {
+	public GeogigFetch executeCommand(String baseURL, String username, String password, String repository,
+			String remote) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -46,7 +48,13 @@ public class FetchRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_all + "true";
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?";
+
+		if (remote == null) {
+			url += param_all + "true";
+		} else {
+			url += param_remote + remote;
+		}
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

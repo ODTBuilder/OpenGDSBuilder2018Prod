@@ -14,6 +14,8 @@ public class GeogigDiff {
 
 	private List<Diff> diffs;
 
+	private String nextPage;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -39,6 +41,15 @@ public class GeogigDiff {
 
 	public void setError(String error) {
 		this.error = error;
+	}
+
+	@XmlElement(name = "nextPage")
+	public String getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(String nextPage) {
+		this.nextPage = nextPage;
 	}
 
 	@XmlRootElement(name = "diff")

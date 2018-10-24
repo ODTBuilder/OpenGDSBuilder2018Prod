@@ -263,7 +263,7 @@ public class GeogigCat {
 		/**
 		 * @return the name
 		 */
-		@XmlElement(name = "subtree")
+		@XmlElement(name = "name")
 		public String getName() {
 			return name;
 		}
@@ -271,7 +271,7 @@ public class GeogigCat {
 		/**
 		 * @return the type
 		 */
-		@XmlElement(name = "subtree")
+		@XmlElement(name = "type")
 		public String getType() {
 			return type;
 		}
@@ -279,7 +279,7 @@ public class GeogigCat {
 		/**
 		 * @return the objectid
 		 */
-		@XmlElement(name = "subtree")
+		@XmlElement(name = "objectid")
 		public String getObjectid() {
 			return objectid;
 		}
@@ -287,7 +287,7 @@ public class GeogigCat {
 		/**
 		 * @return the metadataid
 		 */
-		@XmlElement(name = "subtree")
+		@XmlElement(name = "metadataid")
 		public String getMetadataid() {
 			return metadataid;
 		}
@@ -328,7 +328,7 @@ public class GeogigCat {
 		private String id;
 		private String tree;
 		private List<String> parentsIds;
-		private GeogigCommit commiter;
+		private GeogigCommitter commiter;
 		private GeogigAuthor author;
 
 		/**
@@ -360,7 +360,7 @@ public class GeogigCat {
 		 * @return the commiter
 		 */
 		@XmlElement(name = "committer")
-		public GeogigCommit getCommiter() {
+		public GeogigCommitter getCommiter() {
 			return commiter;
 		}
 
@@ -396,7 +396,7 @@ public class GeogigCat {
 		/**
 		 * @param commiter the commiter to set
 		 */
-		public void setCommiter(GeogigCommit commiter) {
+		public void setCommiter(GeogigCommitter commiter) {
 			this.commiter = commiter;
 		}
 
@@ -516,10 +516,12 @@ public class GeogigCat {
 	public static class Attribute {
 
 		private String type;
+		private String name;
 		private String value;
 		private String minoccurs;
 		private String maxoccurs;
 		private String nillable;
+		private String crs;
 
 		/**
 		 * @return the type
@@ -559,6 +561,24 @@ public class GeogigCat {
 		@XmlElement(name = "nillable")
 		public String getNillable() {
 			return nillable;
+		}
+
+		@XmlElement(name = "name")
+		public String getName() {
+			return name;
+		}
+
+		@XmlElement(name = "crs")
+		public String getCrs() {
+			return crs;
+		}
+
+		public void setCrs(String crs) {
+			this.crs = crs;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 
 		public void setType(String type) {

@@ -106,13 +106,13 @@ public class CheckoutBranch {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/repos/" + repository + "/" + command + "?" + param_transactionId + transactionId + "&"
-				+ param_path + path;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_transactionId
+				+ transactionId + "&" + param_path + path;
 
 		if (version.equalsIgnoreCase(CHEKCOUT_OURS)) {
-			url += "&" + param_ours + version;
+			url += "&" + param_ours + true;
 		} else if (version.equalsIgnoreCase(CHEKCOUT_THEIRS)) {
-			url += "&" + param_theirs + version;
+			url += "&" + param_theirs + true;
 		}
 
 		// request

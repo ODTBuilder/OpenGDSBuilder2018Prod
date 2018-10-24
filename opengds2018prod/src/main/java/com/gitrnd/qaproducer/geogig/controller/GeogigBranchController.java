@@ -3,10 +3,15 @@
  */
 package com.gitrnd.qaproducer.geogig.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -108,15 +113,18 @@ public class GeogigBranchController extends AbstractController {
 
 	@RequestMapping(value = "/resolveConflict.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigCheckout resolveConflict(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public List<GeogigCheckout> resolveConflict(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "path", required = false) String path,
-			@RequestParam(value = "version", required = false) String version,
-			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
+			@RequestParam(value = "features", required = false) String features,
+			@RequestParam(value = "transactionId", required = false) String transactionId)
+			throws JAXBException, ParseException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return branchService.resolveConflict(geoserverManager, repoName, transactionId, path, version);
-	}
 
+		JSONParser parser = new JSONParser();
+		JSONArray featuresArr = (JSONArray) parser.parse(features);
+		return branchService.resolveConflict(geoserverManager, repoName, transactionId, featuresArr);
+	}
 }

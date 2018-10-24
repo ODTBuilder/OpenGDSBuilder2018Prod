@@ -1239,6 +1239,67 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 };
 
 /**
+ * 리모트 레파지토리를 fetch한다.
+ * 
+ * @method gb.versioning.Repository#fetchRemoteRepository
+ * @param {String}
+ *            server - 작업 중인 서버 이름
+ * @param {String}
+ *            repo - 작업 중인 리포지토리 이름
+ * @param {String}
+ *            remote - 작업 중인 리모트 레파지토리 이름
+ */
+gb.versioning.Repository.prototype.fetchRemoteRepository = function(server, repo, remote) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"remoteName" : remote
+	}
+	// + "&" + jQuery.param(params),
+	var checkURL = this.getRemoveRemoteRepositoryURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				that.refreshRemoteList();
+				deleteModal.close();
+			} else {
+				var title = "Error";
+				var msg = "Remove failed."
+				that.messageModal(title, msg);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var title = "Error";
+			var msg = "Remove failed."
+			that.messageModal(title, msg);
+		}
+	});
+
+};
+
+/**
  * pull 요청한다.
  * 
  * @method gb.versioning.Repository#pullRepository

@@ -1144,7 +1144,11 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, la
  * 
  * @method gb.tree.GeoServer#deleteGeoServerLayer
  * @param {String}
- *            geoserver - 삭제할 지오서버 레이어의 이름
+ *            geoserver - 삭제할 레이어의 지오서버 이름
+ * @param {String}
+ *            work - 삭제할 레이어의 지오서버 워크스페이스 이름
+ * @param {String}
+ *            layer - 삭제할 레이어의 이름
  * @param {gb.modal.Base}
  *            callback - 완료후 창을 닫을 모달 객체
  */

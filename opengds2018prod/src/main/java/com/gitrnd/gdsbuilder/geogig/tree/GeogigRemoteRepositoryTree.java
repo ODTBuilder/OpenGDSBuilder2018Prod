@@ -228,7 +228,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 									}
 									String parent = local + ":" + node;
 									String branchId = parent + ":" + branchName;
-									this.addRemoteBranch(parent, branchId, branchName);
+									this.addFeatchRemoteBranch(parent, branchId, branchName, 0);
 								}
 							}
 						}

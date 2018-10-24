@@ -144,7 +144,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								}
 							}
 						}
-					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
+					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch == false) {
 						String remoteRepos = param[0];
 						String[] localParams = local.split(":");
 						String localRepos = localParams[1];
@@ -163,67 +163,65 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 								this.addRemoteBranch(parent, branchId, branchName);
 							}
 						}
-					} 
-					
-//					else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH) {
-//						String remoteRepos = param[0];
-//						String[] localParams = local.split(":");
-//						String localRepos = localParams[1];
-//
-//						ListBranch listBranch = new ListBranch();
-//						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
-//						List<Branch> remoteBraches = branch.getRemoteBranchList();
-//
-//						FetchRepository fetchRepos = new FetchRepository();
-//						GeogigFetch geogigFetch = fetchRepos.executeCommand(baseURL, username, password, localRepos,
-//								remoteRepos);
-//						List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote> remoteFetches = geogigFetch
-//								.getRemotes();
-//						if (remoteFetches != null && remoteFetches.size() > 0) {
-//							for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote remoteFetch : remoteFetches) {
-//								// String remoteURL = remoteFetch.getRemoteURL();
-//								List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch> fetchBranches = remoteFetch
-//										.getBranchs();
-//								for (Branch remoteBranch : remoteBraches) {
-//									if (remoteRepos.equals(remoteBranch.getRemoteName())) {
-//										String branchName = remoteBranch.getName();
-//										String parent = local + ":" + node;
-//										String branchId = parent + ":" + branchName;
-//										boolean isEquals = false;
-//										for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch fetchBranch : fetchBranches) {
-//											String fetchBranchName = fetchBranch.getName();
-//											if (fetchBranchName.equals(branchName)) {
-//												DiffRepository diffRepos = new DiffRepository();
-//												GeogigDiff geogigDiff = diffRepos.executeCommand(baseURL, username,
-//														password, localRepos, fetchBranch.getOldValue(),
-//														fetchBranch.getNewValue(), null, null);
-//												int fetchSize = geogigDiff.getDiffs().size();
-//												String nextPage = geogigDiff.getNextPage();
-//												if (nextPage != null) {
-//													Integer page = 1;
-//													while (nextPage != null) {
-//														GeogigDiff nextDiff = diffRepos.executeCommand(baseURL,
-//																username, password, localRepos,
-//																fetchBranch.getOldValue(), fetchBranch.getNewValue(),
-//																null, page);
-//														fetchSize += nextDiff.getDiffs().size();
-//														nextPage = nextDiff.getNextPage();
-//														page++;
-//													}
-//												}
-//												this.addFeatchRemoteBranch(parent, branchId, branchName, fetchSize);
-//												isEquals = true;
-//											}
-//										}
-//										if (isEquals == false) {
-//											this.addFeatchRemoteBranch(parent, branchId, branchName, 0);
-//										}
-//									}
-//								}
-//							}
-//						}
-//					}
-					
+					} else if (type == EnGeogigRemoteRepositoryTreeType.REMOTEBRANCH && fetch == true) {
+						String remoteRepos = param[0];
+						String[] localParams = local.split(":");
+						String localRepos = localParams[1];
+
+						ListBranch listBranch = new ListBranch();
+						GeogigBranch branch = listBranch.executeCommand(baseURL, username, password, localRepos, true);
+						List<Branch> remoteBraches = branch.getRemoteBranchList();
+
+						FetchRepository fetchRepos = new FetchRepository();
+						GeogigFetch geogigFetch = fetchRepos.executeCommand(baseURL, username, password, localRepos,
+								remoteRepos);
+						List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote> remoteFetches = geogigFetch
+								.getRemotes();
+						if (remoteFetches != null && remoteFetches.size() > 0) {
+							for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote remoteFetch : remoteFetches) {
+								// String remoteURL = remoteFetch.getRemoteURL();
+								List<com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch> fetchBranches = remoteFetch
+										.getBranchs();
+								for (Branch remoteBranch : remoteBraches) {
+									if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+										String branchName = remoteBranch.getName();
+										String parent = local + ":" + node;
+										String branchId = parent + ":" + branchName;
+										boolean isEquals = false;
+										for (com.gitrnd.gdsbuilder.geogig.type.GeogigFetch.Remote.Branch fetchBranch : fetchBranches) {
+											String fetchBranchName = fetchBranch.getName();
+											if (fetchBranchName.equals(branchName)) {
+												DiffRepository diffRepos = new DiffRepository();
+												GeogigDiff geogigDiff = diffRepos.executeCommand(baseURL, username,
+														password, localRepos, fetchBranch.getOldValue(),
+														fetchBranch.getNewValue(), null, null);
+												int fetchSize = geogigDiff.getDiffs().size();
+												String nextPage = geogigDiff.getNextPage();
+												if (nextPage != null) {
+													Integer page = 1;
+													while (nextPage != null) {
+														GeogigDiff nextDiff = diffRepos.executeCommand(baseURL,
+																username, password, localRepos,
+																fetchBranch.getOldValue(), fetchBranch.getNewValue(),
+																null, page);
+														fetchSize += nextDiff.getDiffs().size();
+														nextPage = nextDiff.getNextPage();
+														page++;
+													}
+												}
+												this.addFeatchRemoteBranch(parent, branchId, branchName, fetchSize);
+												isEquals = true;
+											}
+										}
+										if (isEquals == false) {
+											this.addFeatchRemoteBranch(parent, branchId, branchName, 0);
+										}
+									}
+								}
+							}
+						}
+					}
+
 					else {
 						JSONObject errorJSON = new JSONObject();
 						errorJSON.put("id", 500);

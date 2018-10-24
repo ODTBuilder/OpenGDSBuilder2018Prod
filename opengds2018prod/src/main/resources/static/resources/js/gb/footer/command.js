@@ -35,6 +35,13 @@ if (!gb.footer)
 		this.serverURL = options.serverURL;
 		
 		/**
+		 * JSTree Instance
+		 * @type {Object}
+		 * @private
+		 */
+		this.jstree = options.jstree || undefined;
+		
+		/**
 		 * 언어 코드.
 		 * ko: 한글, en: 영어
 		 * @type {string}
@@ -186,7 +193,7 @@ if (!gb.footer)
 				tip: "Enter Coodinates (ex.point: [x,y] / lineString & polygon: [[x,y], ...])",
 				paramKey: "coordinates",
 				before: function(value){
-					var layers = $('#builderClientLayer').jstreeol3("get_selected_layer");
+					var layers = that.jstree.getJSTree().get_selected_layer();
 					if(layers.length === 1){
 						return true;
 					} else {
@@ -195,7 +202,7 @@ if (!gb.footer)
 				},
 				beforeFailLog: "You must select only one layer",
 				end: function(params){
-					var layers = $('#builderClientLayer').jstreeol3("get_selected_layer");
+					var layers = that.jstree.getJSTree().get_selected_layer();
 					var insertCoords = params.coordinates;
 					var coords = insertCoords.replace(/[[\]]/g, '').split(",");
 					var layer, type, geometry, feature;
@@ -254,7 +261,7 @@ if (!gb.footer)
 					tip: "Enter Layer ID",
 					paramKey: "layerId",
 					before: function(value){
-						var layer = $('#builderClientLayer').jstreeol3(true).get_LayerByOLId(value);
+						var layer = that.jstree.getJSTree().get_selected_layer();
 						if(!layer){
 							return false;
 						} else {
@@ -269,7 +276,7 @@ if (!gb.footer)
 							tip: "Enter coordinate (ex.[x,y])",
 							paramKey: "coordinates",
 							end: function(params){
-								var layer = $('#builderClientLayer').jstreeol3(true).get_LayerByOLId(params.layerId);
+								var layer = that.jstree.getJSTree().get_selected_layer();
 								var insertCoords = params.coordinates;
 								var coords = insertCoords.replace(/[[\]]/g, '').split(",");
 								

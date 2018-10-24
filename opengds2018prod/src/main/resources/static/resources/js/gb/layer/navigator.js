@@ -22,6 +22,8 @@ gb.layer.Navigator = function(obj) {
 	
 	this.token = options.token || "";
 	
+	this.getWFSFeature = options.getWFSFeature || "geoserver/geoserverWFSGetFeature.ajax";
+	
 	this.featureList = undefined;
 	
 	this.count = 0;
@@ -33,7 +35,7 @@ gb.layer.Navigator = function(obj) {
 	this.tbody = $("<tbody>");
 	
 	this.naviWindow = $("<div>").css({
-		"max-width" : "500px",
+		"max-width" : "400px",
 		"top" : "150px",
 		"right" : "5px",
 		"position" : "absolute",
@@ -65,11 +67,13 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		workspace: workspace,
 		typeName: layer,
 		version: "1.0.0",
-		outputformat: "JSON"
+		outputformat: "application/json"
 	};
 	
 	$.ajax({
-		url: "geoserver/geoserverWFSGetFeature.ajax" + this.token,
+		url: this.getWFSFeature + this.token,
+		type : "GET",
+		contentType : "application/json; charset=UTF-8",
 		data: a,
 		dataType: "JSON",
 		success: function(data, textStatus, jqXHR) {
@@ -147,7 +151,10 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 
 	var title = $("<span>").text("Feature Navigator");
 	var tb = $("<table>").addClass("table").append(this.tbody);
-	var pbd = $("<div>").addClass("panel-body").append(thead).append(tb);
+	var pbd = $("<div>").addClass("panel-body").css({
+		"max-height" : "500px",
+		"overflow" : "auto"
+	}).append(thead).append(tb);
 	var phd = $("<div>").addClass("panel-heading").append(title).append(xBtn);
 	var pdf = $("<div>").addClass("panel").addClass("panel-default").append(phd).append(pbd);
 	this.naviWindow.append(pdf);

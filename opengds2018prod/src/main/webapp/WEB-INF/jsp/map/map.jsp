@@ -170,6 +170,7 @@ html {
 			token : "?${_csrf.parameterName}=${_csrf.token}",
 			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
 			getLayerInfo : "geoserver/getGeoLayerInfoList.ajax",
+			getMapWMS : "geoserver/geoserverWMSGetMap.ajax",
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLayerTile : "geoserver/geoserverWMSLayerLoad.do"
@@ -250,8 +251,9 @@ html {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : urlList.getLayerInfo + urlList.token
+				"getMapWMS" : urlList.getMapWMS + urlList.token,
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
+				"getWFSFeature": urlList.getWFSFeature + urlList.token
 			}
 		});
 		
@@ -260,7 +262,7 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
-			treeElement : otree.getJSTreeElement(),
+			otree : otree,
 			wfsURL : urlList.getWFSFeature + urlList.token,
 			getFeatureInfo : urlList.getFeatureInfo + urlList.token,
 			layerInfo : urlList.getLayerInfo + urlList.token,
@@ -281,7 +283,8 @@ html {
 		// 거리, 면적 측정 기능 추가
 		var measureArea = new gb.interaction.MeasureTip({
 			type : "Polygon",
-			map : gbMap.getUpperMap()
+			map : gbMap.getUpperMap(),
+			snapSource : epan.snapSource
 		});
 
 		measureArea.on("change:active", function(evt) {
@@ -294,7 +297,8 @@ html {
 
 		var measureLength = new gb.interaction.MeasureTip({
 			type : "LineString",
-			map : gbMap.getUpperMap()
+			map : gbMap.getUpperMap(),
+			snapSource : epan.snapSource
 		});
 
 		measureLength.on("change:active", function(evt) {
@@ -384,6 +388,7 @@ html {
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
+			jstree: otree,
 			title : "Command Line",
 			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",

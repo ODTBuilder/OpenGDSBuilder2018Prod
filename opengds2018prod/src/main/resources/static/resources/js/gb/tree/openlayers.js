@@ -28,6 +28,7 @@ gb.tree.OpenLayers = function(obj) {
 	var options = obj ? obj : {};
 	this.append = options.append ? options.append : undefined;
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
+	this.editingTool = options.editingTool || undefined;
 	this.token = options.token || "";
 	this.locale = options.locale || "en";
 	this.createdLayer = {};
@@ -178,8 +179,8 @@ gb.tree.OpenLayers = function(obj) {
 					}),
 					"layerRecord" : undefined,
 					"featureRecord" : options.frecord,
-					"style" : undefined,
-					"editingTool" : undefined
+					"style" : new gb.style.LayerStyle({}),
+					"editingTool" : this.editingTool
 				},
 				"search" : {
 					show_only_matches : true
@@ -188,17 +189,17 @@ gb.tree.OpenLayers = function(obj) {
 					"types" : {
 						"#" : {
 							"valid_children" : [ "default", "Group", "Raster",
-									"ImageTile", "Polygon", "Multipolygon",
-									"Linestring", "Multilinestring", "Point",
-									"Multipoint" ]
+									"ImageTile", "Polygon", "MultiPolygon",
+									"LineString", "MultiLineString", "Point",
+									"MultiPoint" ]
 						},
 						// 편집도구에서 지원할 타입
 						"Group" : {
 							"icon" : "far fa-folder",
 							"valid_children" : [ "default", "Group", "Raster",
-									"ImageTile", "Polygon", "Multipolygon",
-									"Linestring", "Multilinestring", "Point",
-									"Multipoint" ]
+									"ImageTile", "Polygon", "MultiPolygon",
+									"LineString", "MultiLineString", "Point",
+									"MultiPoint" ]
 						},
 						// 이외의 기본형
 						"default" : {
@@ -216,19 +217,19 @@ gb.tree.OpenLayers = function(obj) {
 						"Polygon" : {
 							"icon" : "gb-icon"
 						},
-						"Multipolygon" : {
+						"MultiPolygon" : {
 							"icon" : "gb-icon"
 						},
-						"Linestring" : {
+						"LineString" : {
 							"icon" : "gb-icon"
 						},
-						"Multilinestring" : {
+						"MultiLineString" : {
 							"icon" : "gb-icon"
 						},
 						"Point" : {
 							"icon" : "gb-icon"
 						},
-						"Multipoint" : {
+						"MultiPoint" : {
 							"icon" : "gb-icon"
 						}
 					},
@@ -276,6 +277,15 @@ gb.tree.OpenLayers.prototype.getJSTree = function() {
  */
 gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
 	this.jstree = jstree;
+};
+
+/**
+ * EditingTool 객체를 설정한다.
+ * 
+ * @method gb.tree.OpenLayers#setEditingTool
+ */
+gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
+	this.jstree._data.layerproperties.editingTool = param;
 };
 
 /**
@@ -416,14 +426,21 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	});
 	$(okBtn).click(
 		function() {
+			var geoType = { 
+				"point": "Point", 
+				"linestring": "LineString", 
+				"polygon": "Polygon", 
+				"multipoint": "MultiPoint",
+				"multilinestring": "MultiLineString", 
+				"multipolygon": "MultiPolygon"
+			};
 			var vectorLayer = new ol.layer.Vector({
 				source : new ol.source.Vector({})
 			});
 			var type = geomSelect.find("option:selected").val();
 			var gitLayer = {
 				"editable" : true,
-				"geometry" : type.charAt(0).toUpperCase()
-						+ type.slice(1).toLowerCase(),
+				"geometry" : geoType[type],
 				"validation" : false
 			};
 			vectorLayer.set("git", gitLayer);

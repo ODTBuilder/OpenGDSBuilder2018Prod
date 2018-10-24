@@ -2314,19 +2314,19 @@
 								case "Point":
 									obj.type = git.geometry;
 									break;
-								case "Multipoint":
+								case "MultiPoint":
 									obj.type = git.geometry;
 									break;
-								case "Linestring":
+								case "LineString":
 									obj.type = git.geometry;
 									break;
-								case "Multilinestring":
+								case "MultiLineString":
 									obj.type = git.geometry;
 									break;
 								case "Polygon":
 									obj.type = git.geometry;
 									break;
-								case "Multipolygon":
+								case "MultiPolygon":
 									obj.type = git.geometry;
 									break;
 								default:
@@ -10151,15 +10151,18 @@
 													false);
 										}
 									}
-									var ext = inst._data.layerproperties.editingTool
-											.getMap()
-											.getView()
-											.calculateExtent(
-													inst._data.layerproperties.editingTool
-															.getMap().getSize());
-									inst._data.layerproperties.editingTool
-											.loadSnappingLayer(ext);
 								}
+								
+								var ext = 
+									inst._data.layerproperties.editingTool
+										.getMap()
+										.getView()
+										.calculateExtent(
+												inst._data.layerproperties.editingTool
+														.getMap().getSize());
+								
+								inst._data.layerproperties.editingTool
+										.loadSnappingLayer(ext);
 							}
 						},
 						"remove" : {
@@ -10261,11 +10264,14 @@
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
 								if (inst.is_selected(obj)) {
-									// inst.delete_node_layer(inst.get_selected());
+									var layers = inst.get_selected();
+									for (var i = 0; i < layers.length; i++) {
+										inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
+										inst._data.layerproperties.style.open();
+									}
 								} else {
 									// inst.delete_node_layer(obj);
 								}
-								console.log("Not yet");
 							}
 						},
 						"navigator" : {

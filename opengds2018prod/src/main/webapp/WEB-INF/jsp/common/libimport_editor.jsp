@@ -120,6 +120,14 @@
 <!-- gb basemap -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
+<!-- gb layerstyle -->
+<script
+	src="${pageContext.request.contextPath}/resources/js/gb/style/layerstyle.js"></script>
+<!-- gb layerstyle -->
+<script
+	src="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.css" />
 <!-- gb.crs.BaseCRS -->
 <script
 	src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>

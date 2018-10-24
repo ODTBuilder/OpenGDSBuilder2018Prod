@@ -188,7 +188,10 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(repo);
 							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
 							console.log(remote);
-							that._data.geogigfunction.repository.fetchRemoteRepository(server.text, repo.text, remote.text);
+							that._data.geogigfunction.repository.setFetchRepository(remote.text);
+							that.refresh();
+							// that._data.geogigfunction.repository.fetchRemoteRepository(server.text,
+							// repo.text, remote.text);
 						});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Delete").css({
 							"display" : "inline-block"

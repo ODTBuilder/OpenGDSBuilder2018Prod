@@ -281,6 +281,7 @@ gb.versioning.Repository = function(obj) {
 						obj["serverName"] = that.getNowServer() !== undefined ? that.getNowServer().id : undefined;
 						obj["node"] = node.text;
 						obj["local"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
+						obj["fetch"] = that.getFetchRepository() === node.text ? true : false;
 					}
 					console.log(obj);
 					return obj;
@@ -1236,67 +1237,6 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 			}
 		});
 	});
-};
-
-/**
- * 리모트 레파지토리를 fetch한다.
- * 
- * @method gb.versioning.Repository#fetchRemoteRepository
- * @param {String}
- *            server - 작업 중인 서버 이름
- * @param {String}
- *            repo - 작업 중인 리포지토리 이름
- * @param {String}
- *            remote - 작업 중인 리모트 레파지토리 이름
- */
-gb.versioning.Repository.prototype.fetchRemoteRepository = function(server, repo, remote) {
-	var that = this;
-	var params = {
-		"serverName" : server,
-		"repoName" : repo,
-		"remoteName" : remote
-	}
-	// + "&" + jQuery.param(params),
-	var checkURL = this.getRemoveRemoteRepositoryURL();
-	if (checkURL.indexOf("?") !== -1) {
-		checkURL += "&";
-		checkURL += jQuery.param(params);
-	} else {
-		checkURL += "?";
-		checkURL += jQuery.param(params);
-	}
-
-	$.ajax({
-		url : checkURL,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		// data : params,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				that.refreshRemoteList();
-				deleteModal.close();
-			} else {
-				var title = "Error";
-				var msg = "Remove failed."
-				that.messageModal(title, msg);
-			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			var title = "Error";
-			var msg = "Remove failed."
-			that.messageModal(title, msg);
-		}
-	});
-
 };
 
 /**
@@ -3738,12 +3678,24 @@ gb.versioning.Repository.prototype.getCurrentMap = function() {
 }
 
 /**
- * 타겟 브랜치의 충돌피처를 보여줄 ol.Map을 반환한다.
+ * fetch 요청을 할 레파지토리의 이름을 저장한다.
  * 
- * @method gb.versioning.Repository#getTargetMap
- * @return {Object}
+ * @method gb.versioning.Repository#setFetchRepository
+ * @param {String}
+ *            remote - fetch할 리모트 레파지토리 이름
  * 
  */
-gb.versioning.Repository.prototype.getTargetMap = function() {
-	return this.tmap;
+gb.versioning.Repository.prototype.setFetchRepository = function(remote) {
+	this.fetchRemote = remote;
+}
+
+/**
+ * fetch 요청을 할 레파지토리의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFetchRepository
+ * @return {String} - fetch할 리모트 레파지토리 이름
+ * 
+ */
+gb.versioning.Repository.prototype.getFetchRepository = function() {
+	return this.fetchRemote;
 }

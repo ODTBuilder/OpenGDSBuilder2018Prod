@@ -27,7 +27,7 @@
 		});
 
 		$(document).on("click", "#serverDataTable tbody tr", function() {
-			if ( $(this).hasClass('selected') ) {
+			if ($(this).hasClass('selected')) {
 				$(this).removeClass('selected');
 			} else {
 				$(this).addClass('selected');
@@ -36,17 +36,17 @@
 
 		$(document).on("click", "#select-delete", function() {
 			swal({
-				title : "선택한 작업내용을 삭제하시겠습니까?",
+				title : "<spring:message code="lang.delitem" />",
 				type : "info",
 				showCancelButton : true,
 				confirmButtonColor : "#3085d6",
-				confirmButtonText : "확인",
+				confirmButtonText : "<spring:message code="lang.confirm" />",
 				cancelButtonColor : "#d33",
-				cancelButtonText : "취소"
+				cancelButtonText : "<spring:message code="lang.cancel" />"
 			}).then(function(result) {
-				
+
 				// 확인버튼 클릭시 아래의 구문 실행
-				if(result.value){
+				if (result.value) {
 					var selectList = "";
 					var fileNameList = "";
 
@@ -55,7 +55,7 @@
 
 						if ($(this).data("state") === 1 || $(this).data("state") === 2) {
 
-							alert("작업 중이거나 대기 중인 내용은 삭제할 수 없습니다.");
+							alert("<spring:message code="lang.delfail" />");
 
 							// 삭제 항목 초기화
 							selectList = "";
@@ -101,7 +101,7 @@
 		$(document).on("click", "#all-deselect", function() {
 			$("#serverDataTable tbody tr").removeClass("selected");
 		});
-		
+
 		$(document).ready(function() {
 			$("#serverDataTable").DataTable({
 				"serverSide" : true,
@@ -109,29 +109,46 @@
 				"processing" : true,
 				"ajax" : {
 					"url" : "${pageContext.request.contextPath}/result/getValidationResult.ajax?${_csrf.parameterName}=${_csrf.token}",
-					"data" : function(d){
+					"data" : function(d) {
 						console.log(d);
 					},
-					"error": function(e){
+					"error" : function(e) {
 						console.log(e);
 					}
 				},
-				"order" : [0, "asc"],
+				"order" : [ 0, "asc" ],
 				"select" : true,
 				"displayStart" : 0,
 				"pageLength" : 10,
 				"lengthMenu" : [ [ 5, 10, 25, 50 ], [ 5, 10, 25, 50 ] ],
-				"columns" : [
-					{"data" : "no", "title" : "No."},
-					{"data" : "zipName", "title" : "Original file"},
-					{"data" : "createTime", "title" : "Create time"},
-					{"data" : "endTime", "title" : "End time"},
-					{"data" : "qaType", "title" : "Validation type"},
-					{"data" : "format", "title" : "File format"},
-					{"data" : "state", "title" : "Status"},
-					{"data" : "download", "title" : "Download"},
-					{"data" : "comment", "title" : "Notes"}
-				]
+				"columns" : [ {
+					"data" : "no",
+					"title" : "No."
+				}, {
+					"data" : "zipName",
+					"title" : "Original file"
+				}, {
+					"data" : "createTime",
+					"title" : "Create time"
+				}, {
+					"data" : "endTime",
+					"title" : "End time"
+				}, {
+					"data" : "qaType",
+					"title" : "Validation type"
+				}, {
+					"data" : "format",
+					"title" : "File format"
+				}, {
+					"data" : "state",
+					"title" : "Status"
+				}, {
+					"data" : "download",
+					"title" : "Download"
+				}, {
+					"data" : "comment",
+					"title" : "Notes"
+				} ]
 			});
 		});
 	</script>
@@ -146,19 +163,22 @@
 								style="margin-top: 15px; margin-bottom: 10px;">
 								<div class="btn-group" role="group">
 									<button id="all-deselect" class="btn btn-default">
-										<i class="far fa-square"></i><spring:message code="lang.deselall" />
+										<i class="far fa-square"></i>&nbsp;
+										<spring:message code="lang.deselall" />
 									</button>
 								</div>
 								<div class="btn-group" role="group">
 									<button id="all-select" class="btn btn-info">
-										<i class="far fa-check-square"></i><spring:message code="lang.selall" />
+										<i class="far fa-check-square"></i>&nbsp;
+										<spring:message code="lang.selall" />
 									</button>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-2 col-md-offset-7">
 							<button id="select-delete" class="btn btn-danger" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<i class="far fa-trash-alt"></i><spring:message code="lang.delsel" />
+								<i class="far fa-trash-alt"></i>&nbsp;
+								<spring:message code="lang.delsel" />
 							</button>
 						</div>
 					</div>

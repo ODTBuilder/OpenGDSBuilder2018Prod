@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -14,11 +15,11 @@
 	<script>
 		$(document).on("click", "#deactivateUser", function() {
 			swal({
-				title : "계정을 비활성화 하시겠습니까?",
+				title : "<spring:message code="lang.deactusermsg" />",
 				type : "warning",
 				showCancelButton : true,
-				confirmButtonText : "확인",
-				cancelButtonText : "취소",
+				confirmButtonText : "<spring:message code="lang.confirm" />",
+				cancelButtonText : "<spring:message code="lang.cancel" />",
 				reverseButtons : true
 			}).then(function(isConfirm) {
 				if (isConfirm.value) {
@@ -28,16 +29,16 @@
 							console.log(data);
 							if (data) {
 								swal({
-									title : "계정이 비활성화 되었습니다.",
+									title : "<spring:message code="lang.deactusersuccmsg" />",
 									type : "success",
-									confirmButtonText : "확인",
+									confirmButtonText : "<spring:message code="lang.confirm" />",
 								}).then(function(confirm) {
 									if (confirm.value) {
 										location.href = "${pageContext.request.contextPath}/user/signout.do";
 									}
 								});
 							} else {
-								swal('실패', '계정이 비활성화 요청을 실패하였습니다.', 'error');
+								swal('<spring:message code="lang.fail" />', '<spring:message code="lang.deactuserfailmsg" />', 'error');
 							}
 						}
 					});
@@ -53,26 +54,36 @@
 					<div class="row">
 						<div class="col-md-4 col-md-offset-4">
 							<div class="row">
-								<div class="col-md-4 col-md-offset-2">아이디</div>
+								<div class="col-md-4 col-md-offset-2">
+									<spring:message code="lang.userId" />
+								</div>
 								<div class="col-md-6">${username}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-4 col-md-offset-2">이름</div>
-								<div class="col-md-6">${lname}&nbsp;${fname}</div>
+								<div class="col-md-4 col-md-offset-2">
+									<spring:message code="lang.name" />
+								</div>
+								<div class="col-md-6">${fname}&nbsp;${lname}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-4 col-md-offset-2">이메일</div>
+								<div class="col-md-4 col-md-offset-2">
+									<spring:message code="lang.email" />
+								</div>
 								<div class="col-md-6">${email}</div>
 							</div>
 							<div class="row">
-								<div class="col-md-4 col-md-offset-2">검수 권한</div>
+								<div class="col-md-4 col-md-offset-2">
+									<spring:message code="lang.valauth" />
+								</div>
 								<div class="col-md-6">${auth}</div>
 							</div>
 							<div class="col-md-4"></div>
 						</div>
 					</div>
 					<div class="text-right" style="margin-top: 15px;">
-						<button id="deactivateUser" class="btn btn-link">계정 비활성화</button>
+						<button id="deactivateUser" class="btn btn-link">
+							<spring:message code="lang.deactuser" />
+						</button>
 					</div>
 				</section>
 			</div>

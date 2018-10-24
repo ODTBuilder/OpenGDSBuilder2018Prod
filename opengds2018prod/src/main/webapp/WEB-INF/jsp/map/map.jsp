@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -117,36 +118,39 @@ html {
 		<div class="collapse navbar-collapse" id="navbar-collapse-2">
 			<ul class="nav navbar-nav">
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> Save
+					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> <spring:message
+							code="lang.save" />
 				</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges">Save</a></li>
+						<li><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges"><spring:message
+									code="lang.save" /></a></li>
 						<li><a href="#" id="saveAll">Save All</a></li>
 					</ul></li>
-				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> Edit
+				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> <spring:message
+							code="lang.edit" />
 				</a></li>
 				<li><a href="#" title="Base map" id="changeBase"> <i class="fas fa-map fa-lg" style="color: #91d050;"></i>
-						Base Map
+						<spring:message code="lang.baseMap" />
 				</a></li>
 				<li><a href="#" title="Validation" id="validation"> <i class="fas fa-clipboard-check fa-lg"
-						style="color: #344762;"></i> Validation
+						style="color: #344762;"></i> <spring:message code="lang.validation" />
 				</a></li>
 				<!-- <li><a href="#" title="QA Status" id="qastat">
 					<i class="fas fa-th-list fa-lg" style="color: #7f7f7f;"></i>
 					QA Status</a></li> -->
 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
 					aria-expanded="false" title="Generalization"> <i class="fas fa-object-group fa-lg" style="color: #00b0f0;"></i>
-						Generalization
+						<spring:message code="lang.generalization" />
 				</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="#" title="Generalization Process" id="gen">Generalization</a></li>
 						<li><a href="#" title="Generalization Result" id="genstat">Result</a></li>
 					</ul></li>
 				<li><a href="#" title="Version Control" id="vermodal"> <i class="fas fa-code-branch fa-lg"
-						style="color: #344762;"></i> Versioning
+						style="color: #344762;"></i> <spring:message code="lang.versioning" />
 				</a></li>
 				<li><a href="#" title="Information" id="binfo"> <i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
-						Information
+						<spring:message code="lang.info" />
 				</a></li>
 			</ul>
 		</div>
@@ -159,12 +163,14 @@ html {
 		<div class="bind"></div>
 	</div>
 	<nav class="navbar navbar-default builderFooter">
-		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 120px;"></span></span>
-		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#" class="epsg-now"></a></span> <span
-			class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>Coordinate:&nbsp;</span><span
-			class="mouse-position" style="display: inline-block;"></span></span> <span class="text-muted navbar-right gb-footer-span">OpenGDS
-			Builder/Validator</span> <span id="cmd-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;Command</span>
-		<span id="feature-toggle-btn" class="navbar-right gb-footer-span"><i class="fas fa-th"></i>&nbsp;List</span>
+		<!-- 		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 118px;"></span></span> -->
+		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#"
+			class="epsg-now btn-link"></a></span> <span id="feature-toggle-btn" class="navbar-left gb-footer-span"><i
+			class="fas fa-th"></i>&nbsp;<span class="btn-link">List</span></span> <span id="cmd-toggle-btn"
+			class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span class="btn-link">Command</span></span>
+		<span class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>&nbsp;</span><span
+			class="mouse-position btn-link" style="display: inline-block;"></span></span> <span
+			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
 		var urlList = {
@@ -279,7 +285,8 @@ html {
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : urlList.getLayerInfo + urlList.token
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
+				"deleteGeoServerLayer" : "geoserver/geoserverRemoveLayers.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 
@@ -437,8 +444,8 @@ html {
 		});
 
 		var scaleLine = new ol.control.ScaleLine({
-			"target" : $(".gb-scale-line-area")[0],
-			"className" : "gb-scale-line"
+		// 			"target" : $(".gb-scale-line-area")[0],
+		// 			"className" : "gb-scale-line"
 		});
 		gbMap.getUpperMap().addControl(scaleLine);
 

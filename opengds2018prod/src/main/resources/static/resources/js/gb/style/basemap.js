@@ -107,7 +107,11 @@ gb.style.BaseMap = function(obj) {
 			"name" : "basemap",
 			"value" : keys[i]
 		});
-		var label = $("<label>").append(radio);
+		var label = $("<label>").append(radio).hover(function() {
+			$(this).css({
+				"cursor" : "pointer"
+			});
+		});
 		var span = $("<span>").text(this.bases[keys[i]].name).css({
 			"vertical-align" : "text-bottom",
 			"margin" : "5px",
@@ -163,8 +167,8 @@ gb.style.BaseMap = function(obj) {
 	var modalFooter = $("<div>").append(buttonArea);
 	$(this.modalFooter).append(modalFooter);
 
-//	$("body").append(this.modal);
-//	$("body").append(this.background);
+	// $("body").append(this.modal);
+	// $("body").append(this.background);
 };
 gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;
@@ -188,7 +192,7 @@ gb.style.BaseMap.prototype.open = function() {
 			}
 		}
 	}
-	
+
 	this.modal.css("display", "block");
 	this.background.css("display", "block");
 	this.refreshPosition();
@@ -230,6 +234,16 @@ gb.style.BaseMap.prototype.changeLayer = function(value) {
 				}
 				this.now = value;
 			} else {
+				var div = this.map.getTarget();
+				if (typeof div === "string") {
+					$("#" + div).css({
+						"background-color" : "#000"
+					});
+				} else if ($(div).is("div")) {
+					$(div).css({
+						"background-color" : "#000"
+					});
+				}
 				this.bases[keys[i]].layer.setVisible(true);
 				this.now = value;
 			}

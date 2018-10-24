@@ -4,7 +4,7 @@ import javax.xml.bind.JAXBException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 public interface GeogigFeatureService {

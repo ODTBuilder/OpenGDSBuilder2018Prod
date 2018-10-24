@@ -8,6 +8,8 @@ public class GeogigRepositorySimpleLog {
 
 	private String error;
 
+	private List<SimpleCommit> simpleCommits;
+
 	public String getError() {
 		return error;
 	}
@@ -15,8 +17,6 @@ public class GeogigRepositorySimpleLog {
 	public void setError(String error) {
 		this.error = error;
 	}
-
-	private List<SimpleCommit> simpleCommits;
 
 	public String getSuccess() {
 		return success;
@@ -42,7 +42,7 @@ public class GeogigRepositorySimpleLog {
 
 		private String authorName;
 
-		private String timestamp;
+		private String date;
 
 		private String changeType;
 
@@ -70,12 +70,12 @@ public class GeogigRepositorySimpleLog {
 			this.authorName = authorName;
 		}
 
-		public String getTimestamp() {
-			return timestamp;
+		public String getDate() {
+			return date;
 		}
 
-		public void setTimestamp(String timestamp) {
-			this.timestamp = timestamp;
+		public void setDate(String date) {
+			this.date = date;
 		}
 
 		public String getChangeType() {

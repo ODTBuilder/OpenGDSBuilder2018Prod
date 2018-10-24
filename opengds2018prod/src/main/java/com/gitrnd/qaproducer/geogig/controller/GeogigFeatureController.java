@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;

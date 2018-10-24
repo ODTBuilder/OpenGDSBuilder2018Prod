@@ -219,10 +219,20 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 									}
 								}
 							}
+						} else {
+							for (Branch remoteBranch : remoteBraches) {
+								if (remoteRepos.equals(remoteBranch.getRemoteName())) {
+									String branchName = remoteBranch.getName();
+									if (branchName.equals("HEAD")) {
+										continue;
+									}
+									String parent = local + ":" + node;
+									String branchId = parent + ":" + branchName;
+									this.addRemoteBranch(parent, branchId, branchName);
+								}
+							}
 						}
-					}
-
-					else {
+					} else {
 						JSONObject errorJSON = new JSONObject();
 						errorJSON.put("id", 500);
 						errorJSON.put("parent", "#");

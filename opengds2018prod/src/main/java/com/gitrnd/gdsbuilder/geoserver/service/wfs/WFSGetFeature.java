@@ -17,11 +17,12 @@ public class WFSGetFeature {
 	private String featureID = "";
 	private String sortBy = "";
 	private String propertyName = "";
-
+	private String srsName;
+	
 	public WFSGetFeature(){};
 	
 	public WFSGetFeature(String serverURL, String version, String typeName, EnWFSOutputFormat outputformat, int maxFeatures, String bbox,
-			String format_options, String featureID, String sortBy, String propertyName) {
+			String format_options, String featureID, String sortBy, String propertyName, String srsName) {
 		super();
 		if(!serverURL.trim().equals("")){
 			this.serverURL = serverURL;
@@ -53,8 +54,19 @@ public class WFSGetFeature {
 		if (!propertyName.trim().equals("")) {
 			this.propertyName = propertyName;
 		}
+		if (!srsName.trim().equals("")) {
+			this.srsName = srsName;
+		}
 	}
 	
+	public String getSrsName() {
+		return srsName;
+	}
+
+	public void setSrsName(String srsName) {
+		this.srsName = srsName;
+	}
+
 	public WFSGetFeature(String serverURL, String version, String typeName) {
 		super();
 		if(!serverURL.trim().equals("")){
@@ -187,6 +199,9 @@ public class WFSGetFeature {
 			if(!this.propertyName.trim().equals("")){
 				urlBuffer.append("&");
 				urlBuffer.append("propertyName="+propertyName);
+			}if(!this.srsName.trim().equals("")){
+				urlBuffer.append("&");
+				urlBuffer.append("srsName="+srsName);
 			}
 		}
 		else

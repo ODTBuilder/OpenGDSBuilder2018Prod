@@ -19,12 +19,16 @@ package com.gitrnd.qaproducer.geoserver.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,7 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
+import com.gitrnd.gdsbuilder.geoserver.converter.impl.GeoserverDataConverterImpl;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
@@ -529,6 +534,38 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return sld;
 	}
+	
+	@Override
+	public void test(DTGeoserverManager dtGeoManager, String workspace, String wfstXml){
+		JSONObject json = new JSONObject();
+		JSONParser jsonParser = new JSONParser();
+		try {
+			json= (JSONObject) jsonParser.parse("{\"servername\":\"geoserver30\",\"layers\":{\"admin\":[\"geo_shp_37712012_A0010000_MULTIPOLYGON\",\"geo_shp_37712012_A0020000_MULTILINESTRING\",\"geo_shp_37712012_A0070000_MULTIPOLYGON\",\"geo_shp_37712012_B0010000_MULTIPOLYGON\",\"geo_shp_37712012_B0020000_MULTILINESTRING\",\"geo_shp_37712012_F0010000_MULTILINESTRING\",\"geo_shp_37712012_H0010000_MULTILINESTRING\"],\"shp\":[\"a0010000\",\"a0020000\",\"a0070000\",\"b0010000\",\"b0020000\",\"f0010000\",\"h0010000\"]},\"cidx\" : \"2\"}");
+			
+			
+			JSONObject layerJson = (JSONObject) json.get("layers");
+			Map<String,List<String>> layerMaps = (Map<String, List<String>>) jsonParser.parse(layerJson.toJSONString());
+			
+			
+			String serverURL = dtGeoManager.getRestURL();
+			int categoryIdx = (int) Integer.parseInt(json.get("cidx").toString());
+			
+			
+			//파일경로 
+			String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT";
+			long time = System.currentTimeMillis(); 
+			SimpleDateFormat dayTime = new SimpleDateFormat("yyyymmddhhmmss");
+			String outputFolderPath = defaultTempPath;
+//			String outputFolderPath = defaultTempPath + File.separator + dayTime.format(new Date(time)) + new Random().nextInt(10000);
+			String srs = "EPSG:5186";
+			
+			new GeoserverDataConverterImpl(serverURL, layerMaps, categoryIdx, outputFolderPath, srs).undergroundExport();;
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	};
 }
 
 /**

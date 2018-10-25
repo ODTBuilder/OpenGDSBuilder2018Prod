@@ -69,17 +69,18 @@ public class DTGeoLayer {
 	 * type; } return UNKNOWN; } };
 	 */
 
-	private String nativeName; // 원본이름
-	private String lName; // 레이어이름
-	private String title; // 간략한 레이어 설명
-	private String abstractContent;
-	private String srs; // 좌표체계
+	private String nativeName=""; // 원본이름
+	private String lName=""; // 레이어이름
+	private String title=""; // 간략한 레이어 설명
+	private String abstractContent="";
+	private String srs=""; // 좌표체계
 	private JSONObject llbBox = new JSONObject(); // LatLonBoundingBox
 	private JSONObject nbBox = new JSONObject(); // NativeBoundingBox
-	private String dsType; // 저장소타입
-	private String geomType; // 공간정보타입
+	private String dsType=""; // 저장소타입
+	private String geomType=""; // 공간정보타입
 	private JSONObject attInfo = new JSONObject(); // 속성정보
-	private String style;
+	private String style="";
+	private String sld="";
 	
 
 	/**
@@ -310,6 +311,14 @@ public class DTGeoLayer {
 
 	public void setStyle(String style) {
 		this.style = style;
+	}
+
+	public String getSld() {
+		return sld;
+	}
+
+	public void setSld(String sld) {
+		this.sld = sld;
 	}
 
 }

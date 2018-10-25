@@ -29,9 +29,9 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog.SimpleCommit;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -87,7 +87,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 	}
 
 	@Override
-	public GeogigRepositorySimpleLog featureSimpleLog(DTGeoserverManager geoserverManager, String repoName, String path)
+	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path)
 			throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
@@ -95,7 +95,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		String pw = geoserverManager.getPassword();
 
 		LogRepository logRepos = new LogRepository();
-		GeogigRepositorySimpleLog simpleLog = new GeogigRepositorySimpleLog();
+		GeogigFeatureSimpleLog simpleLog = new GeogigFeatureSimpleLog();
 		try {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
@@ -120,6 +120,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				String commitId = commit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(commit.getAuthor().getName()); // author
+				simpleCommit.setMessage(commit.getMessage()); // message
 				Timestamp timestamp = new Timestamp(Long.parseLong(commit.getAuthor().getTimestamp())); // time stamp
 				Date date = new Date(timestamp.getTime());
 				DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

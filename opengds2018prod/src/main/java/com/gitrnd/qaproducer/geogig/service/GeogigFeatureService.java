@@ -5,7 +5,7 @@ import javax.xml.bind.JAXBException;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -40,7 +40,7 @@ public interface GeogigFeatureService {
 	 * @param path
 	 * @return
 	 */
-	GeogigRepositorySimpleLog featureSimpleLog(DTGeoserverManager geoserverManager, String repoName, String path)
+	GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path)
 			throws JAXBException;
 
 	/**

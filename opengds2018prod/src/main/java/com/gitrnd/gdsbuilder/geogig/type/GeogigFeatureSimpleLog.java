@@ -2,7 +2,7 @@ package com.gitrnd.gdsbuilder.geogig.type;
 
 import java.util.List;
 
-public class GeogigRepositorySimpleLog {
+public class GeogigFeatureSimpleLog {
 
 	private String success;
 
@@ -46,6 +46,8 @@ public class GeogigRepositorySimpleLog {
 
 		private String changeType;
 
+		private String message;
+
 		public int getcIdx() {
 			return cIdx;
 		}
@@ -86,5 +88,12 @@ public class GeogigRepositorySimpleLog {
 			this.changeType = changeType;
 		}
 
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
 	}
 }

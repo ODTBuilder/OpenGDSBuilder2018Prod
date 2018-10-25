@@ -137,6 +137,9 @@ public class GeogigRepositoryLog {
 		 * GeogigAuthor
 		 */
 		private GeogigAuthor author;
+
+		private String message;
+
 		/**
 		 * 생성된 feature 개수
 		 */
@@ -188,6 +191,15 @@ public class GeogigRepositoryLog {
 		@XmlElement(name = "removes")
 		public String getRemoves() {
 			return removes;
+		}
+
+		@XmlElement(name = "message")
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
 		}
 
 		public void setCommitId(String commitId) {

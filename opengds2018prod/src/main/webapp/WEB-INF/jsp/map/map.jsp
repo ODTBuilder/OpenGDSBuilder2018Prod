@@ -453,6 +453,9 @@ html {
 		});
 		gbMap.getUpperMap().addControl(scaleLine);
 
+		var fhist = new gb.versioning.Feature({
+		
+		}); 
 		var gitrnd = {
 			resize : function() {
 				//현재 보이는 브라우저 내부 영역의 높이

@@ -1,5 +1,14 @@
 @CHARSET "UTF-8";
 
+.gb-versioning-feature-td {
+	display: table-cell;
+	margin: 5px;
+}
+
+.gb-versioning-feature-tr {
+	display: table-row;
+}
+
 .ol-geocoder.gcd-gl-container {
 	top: 10px !important;
 	left: 10px !important;

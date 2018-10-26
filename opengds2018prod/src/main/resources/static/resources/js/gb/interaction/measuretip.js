@@ -32,6 +32,20 @@ gb.interaction.MeasureTip = function(opt_options) {
 	this.source_ = new ol.source.Vector();
 	
 	/**
+	 * Snap Interaction
+	 * @type {ol.interaction.Snap}
+	 * @private
+	 */
+	this.snapSource =  options.snapSource || undefined;
+	
+	/**
+	 * Snap Interaction
+	 * @type {ol.interaction.Snap}
+	 * @private
+	 */
+	this.snapInteraction = undefined;
+	
+	/**
 	 * 길이, 면적 측정 피쳐 생성을 위한 임시 vector layer
 	 * @type {ol.layer.Vector}
 	 * @private
@@ -274,6 +288,15 @@ gb.interaction.MeasureTip = function(opt_options) {
 		if(evt.oldValue){
 			evt.target.removeMeasureTip_();
 			that.source_.clear();
+			if(!!that.snapInteraction){
+				that.map.removeInteraction(that.snapInteraction)
+			}
+		} else {
+			if(!!that.snapSource){
+				that.map.addInteraction(new ol.interaction.Snap({
+					source : that.snapSource
+				}));
+			}
 		}
 	});
 };

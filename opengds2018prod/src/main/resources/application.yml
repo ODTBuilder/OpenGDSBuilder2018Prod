@@ -34,11 +34,14 @@ server:
   servlet:
     session:
       timeout: 3600
+  jsp-servlet:
+    init-parameters:
+      development: true
   error:
     whitelabel:
       enabled: false
 gitrnd:
-  serverhost: 175.116.181.34
+  serverhost: 175.116.181.42
   apache:
     host: 127.0.0.1
     port: 8888

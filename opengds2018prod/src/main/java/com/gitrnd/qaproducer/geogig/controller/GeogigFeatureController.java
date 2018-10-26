@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositorySimpleLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -47,16 +48,16 @@ public class GeogigFeatureController extends AbstractController {
 		return featureService.featureBlame(geoserverManager, repoName, path, branch);
 	}
 
-	@RequestMapping(value = "/featureSimpleLog.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/featureLog.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigRepositorySimpleLog featureSimpleLog(HttpServletRequest request,
+	public GeogigFeatureSimpleLog featureLog(HttpServletRequest request,
 			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureSimpleLog(geoserverManager, repoName, path);
+		return featureService.featureLog(geoserverManager, repoName, path);
 	}
 
 	@RequestMapping(value = "/featureDiff.do", method = RequestMethod.POST)
@@ -72,4 +73,19 @@ public class GeogigFeatureController extends AbstractController {
 		return featureService.featureDiff(geoserverManager, repoName, path, newIndex, oldIndex);
 	}
 
+	@RequestMapping(value = "/featureRevert.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigFeatureRevert featureRevert(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "oldCommitId", required = false) String oldCommitId,
+			@RequestParam(value = "newCommitId", required = false) String newCommitId,
+			@RequestParam(value = "commitMessage", required = false) String commitMessage,
+			@RequestParam(value = "mergeMessage", required = false) String mergeMessage) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return featureService.featureRevert(geoserverManager, repoName, path, oldCommitId, newCommitId, commitMessage,
+				mergeMessage, loginUser);
+	}
 }

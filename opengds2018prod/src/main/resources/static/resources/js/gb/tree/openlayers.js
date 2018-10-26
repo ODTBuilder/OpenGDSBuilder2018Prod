@@ -28,6 +28,7 @@ gb.tree.OpenLayers = function(obj) {
 	var options = obj ? obj : {};
 	this.append = options.append ? options.append : undefined;
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
+	this.editingTool = options.editingTool || undefined;
 	this.token = options.token || "";
 	this.locale = options.locale || "en";
 	this.createdLayer = {};
@@ -77,7 +78,7 @@ gb.tree.OpenLayers = function(obj) {
 			addImgIcon).css({
 		"float" : "right"
 	}).click(function() {
-		that.openAddLayer();
+		that.createImageModal();
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon)
@@ -178,8 +179,8 @@ gb.tree.OpenLayers = function(obj) {
 					}),
 					"layerRecord" : undefined,
 					"featureRecord" : options.frecord,
-					"style" : undefined,
-					"editingTool" : undefined
+					"style" : new gb.style.LayerStyle({}),
+					"editingTool" : this.editingTool
 				},
 				"search" : {
 					show_only_matches : true
@@ -188,17 +189,17 @@ gb.tree.OpenLayers = function(obj) {
 					"types" : {
 						"#" : {
 							"valid_children" : [ "default", "Group", "Raster",
-									"ImageTile", "Polygon", "Multipolygon",
-									"Linestring", "Multilinestring", "Point",
-									"Multipoint" ]
+									"ImageTile", "Polygon", "MultiPolygon",
+									"LineString", "MultiLineString", "Point",
+									"MultiPoint" ]
 						},
 						// 편집도구에서 지원할 타입
 						"Group" : {
 							"icon" : "far fa-folder",
 							"valid_children" : [ "default", "Group", "Raster",
-									"ImageTile", "Polygon", "Multipolygon",
-									"Linestring", "Multilinestring", "Point",
-									"Multipoint" ]
+									"ImageTile", "Polygon", "MultiPolygon",
+									"LineString", "MultiLineString", "Point",
+									"MultiPoint" ]
 						},
 						// 이외의 기본형
 						"default" : {
@@ -216,19 +217,19 @@ gb.tree.OpenLayers = function(obj) {
 						"Polygon" : {
 							"icon" : "gb-icon"
 						},
-						"Multipolygon" : {
+						"MultiPolygon" : {
 							"icon" : "gb-icon"
 						},
-						"Linestring" : {
+						"LineString" : {
 							"icon" : "gb-icon"
 						},
-						"Multilinestring" : {
+						"MultiLineString" : {
 							"icon" : "gb-icon"
 						},
 						"Point" : {
 							"icon" : "gb-icon"
 						},
-						"Multipoint" : {
+						"MultiPoint" : {
 							"icon" : "gb-icon"
 						}
 					},
@@ -276,6 +277,15 @@ gb.tree.OpenLayers.prototype.getJSTree = function() {
  */
 gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
 	this.jstree = jstree;
+};
+
+/**
+ * EditingTool 객체를 설정한다.
+ * 
+ * @method gb.tree.OpenLayers#setEditingTool
+ */
+gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
+	this.jstree._data.layerproperties.editingTool = param;
 };
 
 /**
@@ -416,14 +426,21 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	});
 	$(okBtn).click(
 		function() {
+			var geoType = { 
+				"point": "Point", 
+				"linestring": "LineString", 
+				"polygon": "Polygon", 
+				"multipoint": "MultiPoint",
+				"multilinestring": "MultiLineString", 
+				"multipolygon": "MultiPolygon"
+			};
 			var vectorLayer = new ol.layer.Vector({
 				source : new ol.source.Vector({})
 			});
 			var type = geomSelect.find("option:selected").val();
 			var gitLayer = {
 				"editable" : true,
-				"geometry" : type.charAt(0).toUpperCase()
-						+ type.slice(1).toLowerCase(),
+				"geometry" : geoType[type],
 				"validation" : false
 			};
 			vectorLayer.set("git", gitLayer);
@@ -561,3 +578,113 @@ gb.tree.loadShpZip = function(epsg, encode, file, map) {
 		});
 	}
 }
+
+/**
+ * Image file 업로드창을 생성한다.
+ * 
+ * @method gb.tree.OpenLayers#createImageModal
+ */
+gb.tree.OpenLayers.prototype.createImageModal = function() {
+	var that = this;
+
+	var file;
+
+	// 파일 선택 input
+	var fileSelect = 
+		$("<input type='file' accept='image/*'>")
+			.change(function() {
+				if (!!this.files) {
+					file = this.files[0];
+					if (file.size > 0) {
+						fileInfo.text(file.name + ' , ' + file.size + ' kb');
+						var reader = new FileReader();
+						reader.onload = function(){
+							var output = document.getElementById('imagePreview');
+							var image = new Image();
+							
+							output.src = reader.result;
+							
+							image.src = reader.result;
+							image.onload = function(){
+								var extent = [0, 0, 1, 1];
+								var projection = new ol.proj.Projection({
+									code: 'xkcd-image',
+									units: 'pixels',
+									extent: extent
+								});
+								
+								var imageLayer = new ol.layer.Image({
+									source: new ol.source.ImageStatic({
+										url: reader.result,
+										imageSize: [image.width, image.height],
+										projection: projection,
+										imageExtent: extent
+									})
+								});
+								
+								that.map.addLayer(imageLayer);
+							}
+						}
+						reader.readAsDataURL(file);
+					}
+				}
+			});
+	
+	// Iamge preview
+	var preview = $("<img id='imagePreview' height='218' width='518'>");
+
+	var uploadBtn = $("<button type='button'>").addClass(
+			"btn btn-primary btn-lg btn-block").text("Upload Image")
+			.mouseenter(function() {
+				$(this).css({
+					"background-color" : "#00c4bc"
+				});
+			}).mouseleave(function() {
+				$(this).css({
+					"background-color" : "#00b5ad"
+				});
+			}).click(function() {
+				fileSelect.click();
+			}).css({
+				"background-color" : "#00b5ad",
+				"border-color" : "transparent"
+			});
+
+	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
+		"text-align" : "center"
+	});
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+			.append(closeBtn);
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(preview)
+			.css({
+				"display" : "table",
+				"width" : "100%"
+			});
+
+	var addGeoServerModal = new gb.modal.Base({
+		"title" : this.translation.addLayer[this.locale],
+		"width" : 540,
+		"height" : 460,
+		"autoOpen" : true,
+		"body" : gBody,
+		"footer" : modalFooter
+	});
+	
+	$(closeBtn).click(function() {
+		addGeoServerModal.close();
+	});
+	
+	$(okBtn).click(function() {
+		addGeoServerModal.close();
+	});
+};

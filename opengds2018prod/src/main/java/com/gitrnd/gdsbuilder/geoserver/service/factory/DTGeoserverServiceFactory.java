@@ -25,7 +25,7 @@ public interface DTGeoserverServiceFactory {
 	 * @return WFSGetFeature
 	 * */
 	public WFSGetFeature createWFSGetFeature(String serverURL, String version, String typeName, EnWFSOutputFormat outputformat, int maxFeatures, String bbox,
-			String format_options, String featureID, String sortBy, String propertyName);
+			String format_options, String featureID, String sortBy, String propertyName, String srsName);
 	
 	/**
 	 * @Description Geoserver WFS GetFeature 서비스(필수 파라미터)

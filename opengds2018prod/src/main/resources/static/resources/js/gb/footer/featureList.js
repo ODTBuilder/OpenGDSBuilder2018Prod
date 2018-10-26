@@ -424,14 +424,16 @@ if (!gb.footer)
 			"workspace": workspace,
 			"version" : "1.0.0",
 			"typeName" : layerName,
-			"outputformat" : "JSON",
+			"outputformat" : "application/json",
 		};
 
 		var that = this;
 		$.ajax({
 			url : url,
+			type : "GET",
+			contentType : "application/json; charset=UTF-8",
 			data : defaultParameters,
-			dataType : 'JSON',
+			dataType : "JSON",
 			success : function(errorData, textStatus, jqXHR) {
 				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
 				var th = [],

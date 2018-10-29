@@ -20,6 +20,8 @@ public class GeogigFeatureRevert {
 
 	private String error;
 
+	private String transactionId;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -45,6 +47,14 @@ public class GeogigFeatureRevert {
 
 	public void setError(String error) {
 		this.error = error;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 }

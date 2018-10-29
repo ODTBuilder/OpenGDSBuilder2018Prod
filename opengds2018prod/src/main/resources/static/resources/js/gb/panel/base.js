@@ -10,7 +10,9 @@
  * @param {Number}
  *            obj.height - 패널의 높이 (픽셀)
  * @param {Number}
- *            obj.positionX - 패널의 페이지 왼편으로 부터의 거리 (픽셀)
+ *            obj.positionX - 패널의 페이지 왼편 또는 오른편으로 부터의 거리 (픽셀)
+ * @param {Boolean}
+ *            obj.right - positionX를 오른쪽 기준으로 적용할것인지 (false일땐 왼쪽)
  * @param {Number}
  *            obj.positionY - 패널의 페이지 상단으로 부터의 거리 (픽셀)
  * @param {Boolean}
@@ -26,6 +28,7 @@ gb.panel.Base = function(obj) {
 	this.width = options.width ? options.width : "auto";
 	this.height = options.height ? options.height : "auto";
 	this.x = options.positionX ? options.positionX : 0;
+	this.right = options.right ? true : false;
 	this.y = options.positionY ? options.positionY : 0;
 	this.autoOpen = options.autoOpen ? true : false;
 	var span = $("<span>").html("&times;");
@@ -43,9 +46,18 @@ gb.panel.Base = function(obj) {
 		"height" : !isNaN(parseInt(this.height)) ? this.height + "px" : "auto",
 		"position" : "absolute",
 		"z-Index" : "999",
-		"top" : !isNaN(parseInt(this.y)) ? this.y + "px" : 0,
-		"left" : !isNaN(parseInt(this.x)) ? this.x + "px" : 0
+		"top" : !isNaN(parseInt(this.y)) ? this.y + "px" : 0
 	}).append(this.panelHead).append(this.panelBody);
+
+	if (this.right) {
+		$(this.panel).css({
+			"right" : !isNaN(parseInt(this.x)) ? this.x + "px" : 0
+		});
+	} else {
+		$(this.panel).css({
+			"left" : !isNaN(parseInt(this.x)) ? this.x + "px" : 0
+		});
+	}
 
 	// $(this.panel).draggable({
 	// appendTo : "body",

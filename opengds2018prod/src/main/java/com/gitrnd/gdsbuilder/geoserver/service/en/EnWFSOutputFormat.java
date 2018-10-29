@@ -37,7 +37,7 @@ public enum EnWFSOutputFormat {
 		for (EnWFSOutputFormat format : values()) {
 			if(format == UNKNOWN)
 				continue;
-			if(format.typeName.equals(typeName.toUpperCase()))
+			if(format.typeName.equals(typeName.toLowerCase()))
 				return format;
 		}
 		return UNKNOWN;

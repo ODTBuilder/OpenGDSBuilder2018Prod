@@ -423,7 +423,7 @@ if (!gb.validation)
 				.addClass("gb-button-primary")
 				.text("Start")
 				.click(function(e) {
-					alert("검수 요청이 완료되었습니다./n검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");
+					alert("검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");
 					that.close();
 				});
 	

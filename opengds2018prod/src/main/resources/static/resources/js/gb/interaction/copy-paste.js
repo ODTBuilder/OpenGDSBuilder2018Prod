@@ -55,7 +55,7 @@ gb.interaction.Copypaste = function(obj) {
 	
 	this.setActive(true);
 	
-	// Shift+C, Shift+Y Key Event 생성
+	// Shift+C, Shift+V Key Event 생성
 	$(window).keypress(function(e){
 		if(!that.getActive()){
 			return;
@@ -66,7 +66,7 @@ gb.interaction.Copypaste = function(obj) {
 			that.clip();
 			console.log("clip");
 		} else if((e.keyCode === 86 || e.which === 86) && e.shiftKey){
-			// Shift+Y
+			// Shift+V
 			that.paste();
 			console.log("paste");
 		}

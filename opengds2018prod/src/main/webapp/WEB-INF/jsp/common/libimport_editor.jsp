@@ -84,24 +84,28 @@
 <!-- gb map -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
 <!-- gb.modal -->
-<script
-	src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>
-<script
-	src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
 <!-- gb panel  base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
 <!-- gb basemap -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
+<!-- gb layerstyle -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/style/layerstyle.js"></script>
+<!-- gb layerstyle -->
+<script src="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.js"></script>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.css" />
 <!-- gb.crs.BaseCRS -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/crs/basecrs.js"></script>
 <!-- gb.tree.geoserver -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/geoserver.js"></script>
 <!-- gb.tree.openlayers -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/tree/openlayers.js"></script>
-<!-- gb.versioning.repository  -->
+<!-- gb.versioning.Repository  -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/versioning/repository.js"></script>
+<!-- gb.versioning.Feature -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/versioning/feature.js"></script>
 <!-- gb.edit -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/edithistory.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/undo.js"></script>
@@ -128,3 +132,4 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
 <!-- gb.layer-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/imageLayer.js"></script>

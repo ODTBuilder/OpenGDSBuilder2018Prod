@@ -34,6 +34,9 @@ server:
   servlet:
     session:
       timeout: 3600
+  jsp-servlet:
+    init-parameters:
+      development: true
   error:
     whitelabel:
       enabled: false

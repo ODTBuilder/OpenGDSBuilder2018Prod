@@ -24,7 +24,7 @@ ol.interaction.Draw.prototype.switchType_ = function() {
 		this.minPoints_ = 2;
 	}
 
-	var geometryFunction;
+	var geometryFunction = this.geometryFunction_ || undefined;
 	if (!geometryFunction) {
 		if (this.type_ === ol.geom.GeometryType.CIRCLE) {
 			/**

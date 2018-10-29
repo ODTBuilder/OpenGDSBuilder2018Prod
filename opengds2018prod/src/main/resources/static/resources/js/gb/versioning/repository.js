@@ -2029,9 +2029,11 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		"dbName" : dbname,
 		"dbSchema" : scheme,
 		"dbUser" : user,
-		"dbPassword" : pass,
-		"remoteName" : rname,
-		"remoteURL" : rurl
+		"dbPassword" : pass
+	}
+	if (rname && rurl) {
+		params["remoteName"] = rname;
+		params["remoteURL"] = rurl;
 	}
 	// + "&" + jQuery.param(params),
 	var checkURL = this.getInitRepositoryURL();

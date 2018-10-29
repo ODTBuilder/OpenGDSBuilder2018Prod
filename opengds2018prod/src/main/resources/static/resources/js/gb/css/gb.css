@@ -9,6 +9,10 @@
 	display: table-row;
 }
 
+.gb-versioning-feature-trg {
+	display: table-row-group;
+}
+
 .ol-geocoder.gcd-gl-container {
 	top: 10px !important;
 	left: 10px !important;
@@ -502,7 +506,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 .gb-table>tbody>tr>th, .gb-table>.tbody>.tr>.th, .gb-table>tbody>tr>td, .gb-table>.tbody>.tr>.td, .gb-table>tr>th,
 	.gb-table>.tr>.th {
 	padding: 8px;
-/* 	line-height: 1.42857143; */
+	/* 	line-height: 1.42857143; */
 	vertical-align: top;
 	border-top: 1px solid #ddd;
 }

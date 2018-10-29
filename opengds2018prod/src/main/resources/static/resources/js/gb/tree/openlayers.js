@@ -587,7 +587,7 @@ gb.tree.loadShpZip = function(epsg, encode, file, map) {
 gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var that = this;
 
-	var file;
+	var file, result;
 
 	// 파일 선택 input
 	var fileSelect = 
@@ -606,23 +606,13 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 							
 							image.src = reader.result;
 							image.onload = function(){
-								var extent = [0, 0, 1, 1];
-								var projection = new ol.proj.Projection({
-									code: 'xkcd-image',
-									units: 'pixels',
-									extent: extent
+								new gb.layer.ImageLayer({
+									map: that.map,
+									url: reader.result,
+									width: image.width,
+									height: image.height,
+									title: file.name
 								});
-								
-								var imageLayer = new ol.layer.Image({
-									source: new ol.source.ImageStatic({
-										url: reader.result,
-										imageSize: [image.width, image.height],
-										projection: projection,
-										imageExtent: extent
-									})
-								});
-								
-								that.map.addLayer(imageLayer);
 							}
 						}
 						reader.readAsDataURL(file);

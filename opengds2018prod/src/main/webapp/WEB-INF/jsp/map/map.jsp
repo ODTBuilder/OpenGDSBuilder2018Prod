@@ -409,6 +409,10 @@ html {
 			if (featureList.footerTag.css("display") === "none") {
 				return;
 			}
+			
+			if (layer instanceof ol.layer.Image) {
+				return;
+			}
 
 			featureList.updateFeatureList({
 				url : urlList.getWFSFeature + urlList.token,

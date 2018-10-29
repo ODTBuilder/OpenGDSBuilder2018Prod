@@ -28,26 +28,40 @@ gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
 gb.versioning.Feature.prototype.open = function() {
 	var panel = new gb.panel.Base({
 		"width" : 400,
-		"height" : 500,
+		"height" : 550,
 		"positionX" : 4,
 		"right" : true,
-		"positionY" : 444,
+		"positionY" : 395,
 		"autoOpen" : false
 	});
-	var table = $("<div>").css({
-		"display" : "table"
-	});
+	var tbody = $("<div>").addClass("tbody");
+	var table = $("<div>").addClass("gb-table").css({
+		"display" : "table",
+		"width" : "100%",
+		"padding-left" : "6px"
+	}).append(tbody);
 	for (var i = 0; i < 11; i++) {
-		var td1 = $("<div>").addClass("gb-versioning-feature-td").append("admin");
-		var td2 = $("<div>").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");
-		var td3 = $("<div>").addClass("gb-versioning-feature-td").append("modified");
+		var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin");
+		var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");
+		var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
 		var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail");
-		var td4 = $("<div>").addClass("gb-versioning-feature-td").append(button);
+		var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+			"text-align" : "center"
+		}).append(button);
 
-		var tr = $("<div>").addClass("gb-versioning-feature-tr").append(td1).append(td2).append(td3).append(td4);
-		$(table).append(tr);
+		var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(td1).append(td2).append(td3).append(td4);
+		$(tbody).append(tr);
 	}
-	var body = $("<div>").append(table);
+	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
+	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more");
+	var btnarea = $("<div>").css({
+		"text-align" : "center"
+	}).append(btn);
+	var body = $("<div>").css({
+		"overflow-y" : "auto",
+		"height" : "510px",
+		"margin" : "4px 0"
+	}).append(table).append(btnarea);
 	panel.setPanelBody(body);
 	panel.open();
 };

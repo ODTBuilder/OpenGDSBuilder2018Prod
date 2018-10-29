@@ -1363,6 +1363,11 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 					});
 					$(okBtn).click(function() {
 						that.endTransaction(server, repo, tid, commitModal);
+						var nid = server + ":" + repo + ":" + remoteRepo + ":" + remoteBranch;
+						console.log(nid);
+						console.log(that.getRemoteJSTree()._data.geogigfunction.fetchRemote);
+						that.getRemoteJSTree().removeFetchCount(nid);
+						console.log(that.getRemoteJSTree()._data.geogigfunction.fetchRemote);
 					});
 				}
 			} else {

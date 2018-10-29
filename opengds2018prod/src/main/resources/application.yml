@@ -2,12 +2,12 @@ spring:
   rabbitmq:
     host: 175.116.181.42
     port: 5672
-    virtual-host: only_gdo
-    username: gdoonly
-    password: gdoonly
+    virtual-host: only_opengds
+    username: qaproducer
+    password: qaproducer
     template:
-      exchange: gdo_qa_exchange
-      routing-key: gdo_qa_key
+      exchange: opengds_qa_exchange
+      routing-key: opengds_qa_key
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://175.116.181.42:5432/opengds_2018?charSet=UTF-8&prepareThreshold=1
@@ -29,7 +29,7 @@ spring:
       max-file-size: 10485760KB
       max-request-size: 10485760KB
 server:
-  port: 8089
+  port: 8080
   context-path: /geodt
   servlet:
     session:
@@ -41,7 +41,7 @@ server:
     whitelabel:
       enabled: false
 gitrnd:
-  serverhost: 175.116.181.32
+  serverhost: 175.116.181.34
   apache:
     host: 127.0.0.1
     port: 8888

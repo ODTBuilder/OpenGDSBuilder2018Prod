@@ -34,12 +34,20 @@ gb.versioning.Feature.prototype.open = function() {
 		"positionY" : 395,
 		"autoOpen" : false
 	});
-	var tbody = $("<div>").addClass("tbody");
+	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Commiter");
+	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
+	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
+	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Changes");
+	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
+	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
+		"text-align" : "center"
+	});
+	var tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
 	var table = $("<div>").addClass("gb-table").css({
 		"display" : "table",
 		"width" : "100%",
 		"padding-left" : "6px"
-	}).append(tbody);
+	}).append(thead).append(tbody);
 	for (var i = 0; i < 11; i++) {
 		var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin");
 		var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");

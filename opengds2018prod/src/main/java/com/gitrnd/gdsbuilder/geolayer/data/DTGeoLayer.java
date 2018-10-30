@@ -42,20 +42,24 @@
 
 package com.gitrnd.gdsbuilder.geolayer.data;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
+import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.json.simple.JSONObject;
 
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
-import it.geosolutions.geoserver.rest.decoder.utils.JDOMBuilder;
-
 
 /**
  * DTGroupLayer에 대한 정보를 담고있는 클래스
+ * 
  * @author SG.Lee
  * @Date 2017. 2
- * */
+ */
 public class DTGeoLayer {
 	/*
 	 * public enum Type { SHP("SHP"), DB("DB"), UNKNOWN(null);
@@ -69,43 +73,61 @@ public class DTGeoLayer {
 	 * type; } return UNKNOWN; } };
 	 */
 
-	private String nativeName=""; // 원본이름
-	private String lName=""; // 레이어이름
-	private String title=""; // 간략한 레이어 설명
-	private String abstractContent="";
-	private String srs=""; // 좌표체계
+	private String nativeName = ""; // 원본이름
+	private String lName = ""; // 레이어이름
+	private String title = ""; // 간략한 레이어 설명
+	private String abstractContent = "";
+	private String srs = ""; // 좌표체계
 	private JSONObject llbBox = new JSONObject(); // LatLonBoundingBox
 	private JSONObject nbBox = new JSONObject(); // NativeBoundingBox
-	private String dsType=""; // 저장소타입
-	private String geomkey="";
-	private String geomType=""; // 공간정보타입
+	private String dsType = ""; // 저장소타입
+	private String geomkey = "";
+	private String geomType = ""; // 공간정보타입
 	private JSONObject attInfo = new JSONObject(); // 속성정보
-	private String style="";
-	private String sld="";
-	
+	private String style = "";
+	private String sld = "";
 
 	/**
-	 * DTGeoLayer Build
-	 * @author SG.Lee
-	 * @Date 2017. 2
-	 * @param response - 요청 URL
-	 * @return DTGeoLayer
-	 * @throws
-	 * */
+	 * DTGeoLayer Build @author SG.Lee @Date 2017. 2 @param response - 요청
+	 * URL @return DTGeoLayer @throws
+	 * 
+	 * @throws IOException
+	 * @throws JDOMException
+	 */
 	public static DTGeoLayer build(String response) {
-		Element elem = JDOMBuilder.buildElement(response);
+		Element elem = null;
+		try {
+			elem = buildElement(response);
+		} catch (JDOMException | IOException e) {
+			elem = null;
+		}
 		return elem == null ? null : new DTGeoLayer(elem);
+	}
+
+	public static Element buildElement(String response) throws JDOMException, IOException {
+		if (response == null)
+			return null;
+		try {
+			SAXBuilder builder = new SAXBuilder();
+			Document doc = builder.build(new StringReader(response));
+			return doc.getRootElement();
+		} catch (JDOMException ex) {
+			throw new JDOMException();
+		} catch (IOException ex) {
+			throw new IOException();
+		}
 	}
 
 	/**
 	 * DTGeoLayer 생성자
+	 * 
 	 * @param layerElem
 	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoLayer(Element layerElem) {
 		RESTFeatureType featureType = new RESTFeatureType(layerElem);
 		this.nativeName = featureType.getNativeName();
-		if(nativeName.endsWith("geo_shp_37712013_A0070000_POINT")){
+		if (nativeName.endsWith("geo_shp_37712013_A0070000_POINT")) {
 			System.out.println("test");
 		}
 		this.lName = featureType.getName();
@@ -125,15 +147,10 @@ public class DTGeoLayer {
 		this.llbBox.put("maxy", featureType.getLatLonBoundingBox().getMaxY());
 	}
 
-	
 	/**
-	 * DTGeoLayer의 Geom 파라미터 값 부여
-	 * @author SG.Lee
-	 * @Date 2017. 2
-	 * @param layerElem
-	 * @return String
-	 * @throws
-	 * */
+	 * DTGeoLayer의 Geom 파라미터 값 부여 @author SG.Lee @Date 2017. 2 @param
+	 * layerElem @return String @throws
+	 */
 	private String buildGeomType(Element layerElem) {
 		String geomType = "";
 		Element attsElement = layerElem.getChild("attributes");
@@ -160,13 +177,9 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 attInfo 파라미터 값 리턴
-	 * @author SG.Lee
-	 * @Date 2017. 5. 10. 오후 9:40:23
-	 * @param layerElem
-	 * @return JSONObject
-	 * @throws
-	 * */
+	 * DTGeoLayer의 attInfo 파라미터 값 리턴 @author SG.Lee @Date 2017. 5. 10. 오후
+	 * 9:40:23 @param layerElem @return JSONObject @throws
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject buildAttType(Element layerElem) {
 		JSONObject object = new JSONObject();
@@ -186,10 +199,10 @@ public class DTGeoLayer {
 					if (type.equals("BigDecimal")) {
 						type = "Double";
 					}
-					attContent.put("type",type);
+					attContent.put("type", type);
 					attContent.put("nillable", nillable);
 					object.put(nameAtt, attContent);
-				}else{
+				} else {
 					this.geomkey = nameAtt;
 				}
 			}
@@ -198,31 +211,23 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 srs파라미터 값 리턴
-	 * @author SG.Lee
-	 * @Date 2017. 2
-	 * @param layerElem
-	 * @return String
-	 * @throws
-	 * */
+	 * DTGeoLayer의 srs파라미터 값 리턴 @author SG.Lee @Date 2017. 2 @param
+	 * layerElem @return String @throws
+	 */
 	@SuppressWarnings("unused")
 	private String buildSRS(Element layerElem) {
 		return layerElem.getChildText("srs");
 	}
 
 	/**
-	 * DTGeoLayer의 attInfo 파라미터 값 리턴
-	 * @author SG.Lee
-	 * @Date 2017. 2
-	 * @param layerElem
-	 * @return String
-	 * @throws
-	 * */
+	 * DTGeoLayer의 attInfo 파라미터 값 리턴 @author SG.Lee @Date 2017. 2 @param
+	 * layerElem @return String @throws
+	 */
 	@SuppressWarnings("unused")
 	private String buildStoreType(Element layerElem) {
 		return layerElem.getChild("store").getAttributeValue("class");
 	}
-	
+
 	/**
 	 * DTGeolayer GET, SET
 	 * 
@@ -316,6 +321,7 @@ public class DTGeoLayer {
 	public void setStyle(String style) {
 		this.style = style;
 	}
+
 	public String getGeomkey() {
 		return geomkey;
 	}
@@ -327,6 +333,7 @@ public class DTGeoLayer {
 	public void setSld(String sld) {
 		this.sld = sld;
 	}
+
 	public void setGeomkey(String geomkey) {
 		this.geomkey = geomkey;
 	}

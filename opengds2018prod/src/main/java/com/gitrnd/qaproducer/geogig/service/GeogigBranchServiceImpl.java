@@ -21,8 +21,6 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.MergeBranch;
-import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;

@@ -173,8 +173,12 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			String transactionId = transaction.getTransaction().getId();
 			geogigFeatureRevert = revertFeature.executeCommand(url, user, pw, repoName, transactionId, oldCommitId,
 					newCommitId, path, commitMessage, mergeMessage, authorName, authorEmail);
-			EndTransaction endTransaction = new EndTransaction();
-			endTransaction.executeCommand(url, user, pw, repoName, transactionId);
+			if (geogigFeatureRevert.getMerge().getConflicts() != null) {
+				geogigFeatureRevert.setTransactionId(transactionId);
+			} else {
+				EndTransaction endTransaction = new EndTransaction();
+				endTransaction.executeCommand(url, user, pw, repoName, transactionId);
+			}
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureRevert.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

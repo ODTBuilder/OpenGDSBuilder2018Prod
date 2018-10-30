@@ -261,9 +261,6 @@ public interface GeoserverService {
 	 * @return String
 	 * */
 	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName);
-	
-	
-	
 }
 
 

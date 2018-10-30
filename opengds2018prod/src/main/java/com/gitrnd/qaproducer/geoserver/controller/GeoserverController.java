@@ -146,10 +146,7 @@ public class GeoserverController extends AbstractController {
 		String workspace = (String) jsonObject.get("workspace");
 		String wfstXml = (String) jsonObject.get("wfstXml");
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-//		return geoserverService.requestWFSTransaction(dtGeoserverManager,workspace, wfstXml);
-		geoserverService.test(dtGeoserverManager, workspace, wfstXml);
-		
-		return "";
+		return geoserverService.requestWFSTransaction(dtGeoserverManager,workspace, wfstXml);
 	}
 	
 	/**

@@ -242,7 +242,6 @@ gb.modal.Base.prototype.getHeight = function() {
 gb.modal.Base.prototype.getMaxZIndex = function() {
 	var maxZ = Math.max.apply(null,$.map($('body > div.gb-modal'), function(e,n){
 		if($(e).css('position')=='absolute'){
-			console.log($(e)[0]);
 			return parseInt($(e).css('z-index'))||1 ;
 		}
 	}));

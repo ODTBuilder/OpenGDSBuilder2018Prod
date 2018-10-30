@@ -26,6 +26,7 @@ public class GeogigCat {
 	private Tree tree;
 	private Feature feature;
 	private FeatureType featuretype;
+	private String error;
 
 	/**
 	 * @return the success
@@ -67,44 +68,48 @@ public class GeogigCat {
 		return featuretype;
 	}
 
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
 	/**
-	 * @param success
-	 *            the success to set
+	 * @param success the success to set
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
 	}
 
 	/**
-	 * @param feature
-	 *            the feature to set
+	 * @param feature the feature to set
 	 */
 	public void setFeature(Feature feature) {
 		this.feature = feature;
 	}
 
 	/**
-	 * @param commit
-	 *            the commit to set
+	 * @param commit the commit to set
 	 */
 	public void setCommit(Commit commit) {
 		this.commit = commit;
 	}
 
 	/**
-	 * @param tree
-	 *            the tree to set
+	 * @param tree the tree to set
 	 */
 	public void setTree(Tree tree) {
 		this.tree = tree;
 	}
 
 	/**
-	 * @param featuretype
-	 *            the featuretype to set
+	 * @param featuretype the featuretype to set
 	 */
 	public void setFeaturetype(FeatureType featuretype) {
 		this.featuretype = featuretype;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "featuretype")
@@ -139,24 +144,21 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param id
-		 *            the id to set
+		 * @param id the id to set
 		 */
 		public void setId(String id) {
 			this.id = id;
 		}
 
 		/**
-		 * @param name
-		 *            the name to set
+		 * @param name the name to set
 		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 
 		/**
-		 * @param attribute
-		 *            the attribute to set
+		 * @param attribute the attribute to set
 		 */
 		public void setAttribute(List<Attribute> attribute) {
 			this.attribute = attribute;
@@ -214,40 +216,35 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param id
-		 *            the id to set
+		 * @param id the id to set
 		 */
 		public void setId(String id) {
 			this.id = id;
 		}
 
 		/**
-		 * @param size
-		 *            the size to set
+		 * @param size the size to set
 		 */
 		public void setSize(String size) {
 			this.size = size;
 		}
 
 		/**
-		 * @param numtrees
-		 *            the numtrees to set
+		 * @param numtrees the numtrees to set
 		 */
 		public void setNumtrees(String numtrees) {
 			this.numtrees = numtrees;
 		}
 
 		/**
-		 * @param subtree
-		 *            the subtree to set
+		 * @param subtree the subtree to set
 		 */
 		public void setSubtree(List<Subtree> subtree) {
 			this.subtree = subtree;
 		}
 
 		/**
-		 * @param feature
-		 *            the feature to set
+		 * @param feature the feature to set
 		 */
 		public void setFeature(List<Feature> feature) {
 			this.feature = feature;
@@ -296,32 +293,28 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param name
-		 *            the name to set
+		 * @param name the name to set
 		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 
 		/**
-		 * @param type
-		 *            the type to set
+		 * @param type the type to set
 		 */
 		public void setType(String type) {
 			this.type = type;
 		}
 
 		/**
-		 * @param objectid
-		 *            the objectid to set
+		 * @param objectid the objectid to set
 		 */
 		public void setObjectid(String objectid) {
 			this.objectid = objectid;
 		}
 
 		/**
-		 * @param metadataid
-		 *            the metadataid to set
+		 * @param metadataid the metadataid to set
 		 */
 		public void setMetadataid(String metadataid) {
 			this.metadataid = metadataid;
@@ -380,40 +373,35 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param id
-		 *            the id to set
+		 * @param id the id to set
 		 */
 		public void setId(String id) {
 			this.id = id;
 		}
 
 		/**
-		 * @param tree
-		 *            the tree to set
+		 * @param tree the tree to set
 		 */
 		public void setTree(String tree) {
 			this.tree = tree;
 		}
 
 		/**
-		 * @param parentsIds
-		 *            the parentsIds to set
+		 * @param parentsIds the parentsIds to set
 		 */
 		public void setParentsIds(List<String> parentsIds) {
 			this.parentsIds = parentsIds;
 		}
 
 		/**
-		 * @param commiter
-		 *            the commiter to set
+		 * @param commiter the commiter to set
 		 */
 		public void setCommiter(GeogigCommit commiter) {
 			this.commiter = commiter;
 		}
 
 		/**
-		 * @param author
-		 *            the author to set
+		 * @param author the author to set
 		 */
 		public void setAuthor(GeogigAuthor author) {
 			this.author = author;
@@ -481,48 +469,42 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param id
-		 *            the id to set
+		 * @param id the id to set
 		 */
 		public void setId(String id) {
 			this.id = id;
 		}
 
 		/**
-		 * @param attribute
-		 *            the attribute to set
+		 * @param attribute the attribute to set
 		 */
 		public void setAttribute(List<Attribute> attribute) {
 			this.attribute = attribute;
 		}
 
 		/**
-		 * @param name
-		 *            the name to set
+		 * @param name the name to set
 		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 
 		/**
-		 * @param type
-		 *            the type to set
+		 * @param type the type to set
 		 */
 		public void setType(String type) {
 			this.type = type;
 		}
 
 		/**
-		 * @param objectid
-		 *            the objectid to set
+		 * @param objectid the objectid to set
 		 */
 		public void setObjectid(String objectid) {
 			this.objectid = objectid;
 		}
 
 		/**
-		 * @param metadataid
-		 *            the metadataid to set
+		 * @param metadataid the metadataid to set
 		 */
 		public void setMetadataid(String metadataid) {
 			this.metadataid = metadataid;
@@ -588,24 +570,21 @@ public class GeogigCat {
 		}
 
 		/**
-		 * @param minoccurs
-		 *            the minoccurs to set
+		 * @param minoccurs the minoccurs to set
 		 */
 		public void setMinoccurs(String minoccurs) {
 			this.minoccurs = minoccurs;
 		}
 
 		/**
-		 * @param maxoccurs
-		 *            the maxoccurs to set
+		 * @param maxoccurs the maxoccurs to set
 		 */
 		public void setMaxoccurs(String maxoccurs) {
 			this.maxoccurs = maxoccurs;
 		}
 
 		/**
-		 * @param nillable
-		 *            the nillable to set
+		 * @param nillable the nillable to set
 		 */
 		public void setNillable(String nillable) {
 			this.nillable = nillable;

@@ -30,6 +30,8 @@ public class GeogigStatus {
 
 	private List<Unmerged> unmerged;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -53,6 +55,15 @@ public class GeogigStatus {
 	@XmlElement(name = "unmerged")
 	public List<Unmerged> getUnmerged() {
 		return unmerged;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	public void setSuccess(String success) {

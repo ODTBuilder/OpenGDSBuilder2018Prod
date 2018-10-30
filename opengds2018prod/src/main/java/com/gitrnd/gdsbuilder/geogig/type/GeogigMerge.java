@@ -24,6 +24,8 @@ public class GeogigMerge {
 	 */
 	private Merge merge;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -40,6 +42,15 @@ public class GeogigMerge {
 
 	public void setMerge(Merge merge) {
 		this.merge = merge;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	/**

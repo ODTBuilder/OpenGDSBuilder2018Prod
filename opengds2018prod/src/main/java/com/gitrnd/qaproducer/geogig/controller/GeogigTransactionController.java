@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +37,7 @@ public class GeogigTransactionController extends AbstractController {
 	@ResponseBody
 	public GeogigTransaction beginTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName) {
+			@RequestParam(value = "repoName", required = false) String repoName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.beginTransaction(geoserverManager, repoName);
@@ -47,7 +48,7 @@ public class GeogigTransactionController extends AbstractController {
 	public GeogigTransaction endTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "transactionId", required = false) String transactionId) {
+			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.endTransaction(geoserverManager, repoName, transactionId);
@@ -58,7 +59,7 @@ public class GeogigTransactionController extends AbstractController {
 	public GeogigTransaction cancelTransaction(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "transactionId", required = false) String transactionId) {
+			@RequestParam(value = "transactionId", required = false) String transactionId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return transactionService.cancelTransaction(geoserverManager, repoName, transactionId);

@@ -3,6 +3,8 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import javax.xml.bind.JAXBException;
+
 import org.json.simple.JSONObject;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
@@ -22,9 +24,10 @@ public interface GeogigBranchService {
 	 * @param transactionId
 	 * @param reference
 	 * @return GeogigCheckout
+	 * @throws JAXBException
 	 */
 	public GeogigCheckout checkoutBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String reference);
+			String reference) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -42,16 +45,18 @@ public interface GeogigBranchService {
 	 * @param branchName
 	 * @param source
 	 * @return GeogigBranch
+	 * @throws JAXBException
 	 */
 	public GeogigBranch createBranch(DTGeoserverManager geoserverManager, String repoName, String branchName,
-			String source);
+			String source) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
 	 * @param repoName
 	 * @return GeogigBranch
+	 * @throws JAXBException
 	 */
-	public GeogigBranch listBranch(DTGeoserverManager geoserverManager, String repoName);
+	public GeogigBranch listBranch(DTGeoserverManager geoserverManager, String repoName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -59,9 +64,10 @@ public interface GeogigBranchService {
 	 * @param transactionId
 	 * @param branchName
 	 * @return GeogigMerge
+	 * @throws JAXBException
 	 */
 	public GeogigMerge mergeBranch(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String branchName);
+			String branchName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager
@@ -70,8 +76,9 @@ public interface GeogigBranchService {
 	 * @param path
 	 * @param version
 	 * @return GeogigCheckout
+	 * @throws JAXBException
 	 */
 	public GeogigCheckout resolveConflict(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String path, String version);
+			String path, String version) throws JAXBException;
 
 }

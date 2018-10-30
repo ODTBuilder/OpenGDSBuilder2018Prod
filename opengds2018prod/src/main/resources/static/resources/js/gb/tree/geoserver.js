@@ -39,12 +39,15 @@ gb.tree.GeoServer = function(obj) {
 	this.map = options.map instanceof ol.Map ? options.map : undefined;
 	var url = options.url ? options.url : undefined;
 	this.clientTree = options.clientTree ? options.clientTree : undefined;
+	this.properties = options.properties || undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
+	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
 	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
+	this.downloadGeoserver = url.downloadGeoserver || undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -210,7 +213,8 @@ gb.tree.GeoServer = function(obj) {
 					"map" : this.map instanceof ol.Map ? this.map : undefined,
 					"getMapWMS" : this.getMapWMS,
 					"getLayerInfo" : this.getLayerInfo,
-					"clientTree" : this.clientTree
+					"clientTree" : this.clientTree,
+					"getWFSFeature" : this.getWFSFeature
 				// "user" : "admin",
 				// "layerInfo" : undefined,
 				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
@@ -221,7 +225,6 @@ gb.tree.GeoServer = function(obj) {
 				// "deleteGroupLayer" : undefined,
 				// "deleteLayer" : undefined,
 				// "downloadNGIDXF" : "fileExport/fileExport.ajax",
-				// "downloadGeoserver" : "geoserver/downloadRequest.do",
 				// "clientRefer" : undefined
 				},
 				"search" : {
@@ -315,60 +318,16 @@ gb.tree.GeoServer = function(obj) {
 											var selected = inst.get_selected();
 											var selectedObj = inst.get_selected(true);
 											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "n_ngi_group" || selectedObj[i].type === "n_dxf_group"
-														|| selectedObj[i].type === "n_shp_group") {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
 													console.error("not support");
 													return;
 												}
 											}
-											var arr = {
-												"geoLayerList" : selected
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												inst.download_wfs_layer(selectedObj[i], "shape-zip");
 											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													var path = inst._data.geoserver.downloadGeoserver;
-
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wfs",
-															"version" : "1.0.0",
-															"outputformat" : "SHAPE-ZIP",
-															"typeName" : data[i].lName
-														}
-														// var qstr =
-														// $.param(params);
-														// var url =
-														// path+"?"+qstr;
-														// console.log(url);
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														$(form).submit();
-													}
-												}
-											});
-
 										}
 									},
 									"gml2" : {
@@ -378,51 +337,19 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "GML2",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											if (obj.type === "n_ngi_group" || obj.type === "n_dxf_group") {
-												console.error("not support");
-												return;
-											}
-											var arr = {
-												"geoLayerList" : [ obj.id ]
-											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													var path = inst._data.geoserver.downloadGeoserver;
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wfs",
-															"version" : "1.0.0",
-															"outputformat" : "gml2",
-															"typeName" : data[i].lName
-														}
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														form.submit();
-													}
+											var selected = inst.get_selected();
+											var selectedObj = inst.get_selected(true);
+											for (var i = 0; i < selectedObj.length; i++) {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+													console.error("not support");
+													return;
 												}
-											});
+											}
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												inst.download_wfs_layer(selectedObj[i], "gml2");
+											}
 										}
 									},
 									"gml3" : {
@@ -432,51 +359,19 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "GML3",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											if (obj.type === "n_ngi_group" || obj.type === "n_dxf_group") {
-												console.error("not support");
-												return;
-											}
-											var arr = {
-												"geoLayerList" : [ obj.id ]
-											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													var path = inst._data.geoserver.downloadGeoserver;
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wfs",
-															"version" : "1.0.0",
-															"outputformat" : "gml3",
-															"typeName" : data[i].lName
-														}
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														form.submit();
-													}
+											var selected = inst.get_selected();
+											var selectedObj = inst.get_selected(true);
+											for (var i = 0; i < selectedObj.length; i++) {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+													console.error("not support");
+													return;
 												}
-											});
+											}
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												inst.download_wfs_layer(selectedObj[i], "gml3");
+											}
 										}
 									},
 									"json" : {
@@ -486,51 +381,19 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "JSON",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											if (obj.type === "n_ngi_group" || obj.type === "n_dxf_group") {
-												console.error("not support");
-												return;
-											}
-											var arr = {
-												"geoLayerList" : [ obj.id ]
-											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													var path = inst._data.geoserver.downloadGeoserver;
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wfs",
-															"version" : "1.0.0",
-															"outputformat" : "json",
-															"typeName" : data[i].lName
-														}
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														form.submit();
-													}
+											var selected = inst.get_selected();
+											var selectedObj = inst.get_selected(true);
+											for (var i = 0; i < selectedObj.length; i++) {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+													console.error("not support");
+													return;
 												}
-											});
+											}
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												inst.download_wfs_layer(selectedObj[i], "application/json");
+											}
 										}
 									},
 									"csv" : {
@@ -540,52 +403,19 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "CSV",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											if (obj.type === "n_ngi_group" || obj.type === "n_dxf_group") {
-												console.error("not support");
-												return;
-											}
-											var arr = {
-												"geoLayerList" : [ obj.id ]
-											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													var path = inst._data.geoserver.downloadGeoserver;
-													console.log(path);
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wfs",
-															"version" : "1.0.0",
-															"outputformat" : "csv",
-															"typeName" : data[i].lName
-														}
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														form.submit();
-													}
+											var selected = inst.get_selected();
+											var selectedObj = inst.get_selected(true);
+											for (var i = 0; i < selectedObj.length; i++) {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+													console.error("not support");
+													return;
 												}
-											});
+											}
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												inst.download_wfs_layer(selectedObj[i], "csv");
+											}
 										}
 									},
 									"png" : {
@@ -595,58 +425,48 @@ gb.tree.GeoServer = function(obj) {
 										"label" : "PNG",
 										"action" : function(data) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											if (obj.type === "n_ngi_group" || obj.type === "n_dxf_group") {
-												console.error("not support");
-												return;
-											}
-											var arr = {
-												"geoLayerList" : [ obj.id ]
-											}
-											var names = [];
-											$.ajax({
-												url : inst._data.geoserver.layerInfoURL,
-												method : "POST",
-												contentType : "application/json; charset=UTF-8",
-												cache : false,
-												data : JSON.stringify(arr),
-												beforeSend : function() { // 호출전실행
-													// loadImageShow();
-												},
-												traditional : true,
-												success : function(data, textStatus, jqXHR) {
-													console.log(data);
-													var path = inst._data.geoserver.downloadGeoserver;
-													console.log(path);
-													var target = "_blank";
-													for (var i = 0; i < data.length; i++) {
-														var params = {
-															"serviceType" : "wms",
-															"version" : "1.1.0",
-															"format" : "image/png",
-															"crs" : data[i].srs,
-															"bbox" : [ data[i].nbBox.minx, data[i].nbBox.miny, data[i].nbBox.maxx,
-																	data[i].nbBox.maxy ],
-															"layers" : data[i].lName,
-															"width" : 1024,
-															"height" : 768
-														}
-														var form = document.createElement("form");
-														form.setAttribute("method", "post");
-														form.setAttribute("action", path);
-														var keys = Object.keys(params);
-														for (var j = 0; j < keys.length; j++) {
-															var hiddenField = document.createElement("input");
-															hiddenField.setAttribute("type", "hidden");
-															hiddenField.setAttribute("name", keys[j]);
-															hiddenField.setAttribute("value", params[keys[j]]);
-															form.appendChild(hiddenField);
-														}
-														form.target = target;
-														document.body.appendChild(form);
-														form.submit();
-													}
+											var selected = inst.get_selected();
+											var selectedObj = inst.get_selected(true);
+											for (var i = 0; i < selectedObj.length; i++) {
+												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+													console.error("not support");
+													return;
 												}
-											});
+											}
+											
+											var a = {
+												serverName: undefined,
+												workspace: undefined,
+												geoLayerList: undefined
+											};
+											
+											for (var i = 0; i < selectedObj.length; i++) {
+												a.serverName = selectedObj[i].id.split(":")[0];
+												a.workspace = selectedObj[i].id.split(":")[1];
+												a.geoLayerList = [selectedObj[i].id.split(":")[3]];
+												
+												$.ajax({
+													url : inst._data.geoserver.getLayerInfo,
+													method : "POST",
+													contentType : "application/json; charset=UTF-8",
+													cache : false,
+													data : JSON.stringify(a),
+													beforeSend : function() { // 호출전실행
+														// loadImageShow();
+													},
+													traditional : true,
+													success : function(data, textStatus, jqXHR) {
+														var path = inst._data.geoserver.getMapWMS;
+														
+														for (var i = 0; i < data.length; i++) {
+															data[i].serverName = a.serverName;
+															data[i].workspace = a.workspace;
+															inst.download_wms_layer(data[i], "image/png");
+														}
+													}
+												});
+											}
 										}
 									}
 								}
@@ -714,6 +534,39 @@ gb.tree.GeoServer = function(obj) {
 										that.openDeleteGeoServer(obj.id);
 									}
 								}
+							},
+							"properties": {
+								"separator_before" : false,
+								"icon" : "fa fa-info-circle",
+								"separator_after" : false,
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "point" || o.type === "multipoint" || o.type === "linestring"
+											|| o.type === "multilinestring" || o.type === "polygon" || o.type === "multipolygon") {
+										result = false;
+									}
+									return result;
+								},
+								"label" : "Properties",
+								"action" : function(data) {
+									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									/*if (obj.type === "geoserver") {
+										that.openDeleteGeoServer(obj.id);
+									}*/
+									if (inst.is_selected(obj)) {
+										that.properties.setForm({
+											geoserver: obj.id.split(":")[0],
+											workspace: obj.id.split(":")[1],
+											datastore: obj.id.split(":")[2],
+											layername: obj.id.split(":")[3]
+										});
+										that.properties.open();
+									} else {
+										// inst.delete_node_layer(obj);
+									}
+								}
 							}
 						};
 					}
@@ -762,7 +615,9 @@ gb.tree.GeoServer = function(obj) {
 				"plugins" : [ "contextmenu", "search", "types", "geoserver" ]
 			});
 	this.jstree = $(this.panelBody).jstree(true);
-
+	if(!!this.properties){
+		this.properties.setRefer(this.jstree);
+	}
 };
 gb.tree.GeoServer.prototype = Object.create(gb.tree.GeoServer.prototype);
 gb.tree.GeoServer.prototype.constructor = gb.tree.GeoServer;
@@ -920,8 +775,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 
-	gNameInput.val("geoserver32");
-	gURLInput.val("http://175.116.181.32:9999/geoserver");
+	gNameInput.val("geoserver42");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
 	gIDInput.val("admin");
 	gPassInput.val("geoserver");
 };

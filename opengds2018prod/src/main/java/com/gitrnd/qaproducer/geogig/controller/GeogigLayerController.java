@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,7 +39,7 @@ public class GeogigLayerController extends AbstractController {
 	public GeogigRepositoryLog logLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "layerName", required = false) String layerName) {
+			@RequestParam(value = "layerName", required = false) String layerName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return layerService.logLayer(geoserverManager, repoName, layerName);
@@ -51,7 +52,7 @@ public class GeogigLayerController extends AbstractController {
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "newIndex", required = false) int newIndex,
 			@RequestParam(value = "oldIndex", required = false) int oldIndex,
-			@RequestParam(value = "layerName", required = false) String layerName) {
+			@RequestParam(value = "layerName", required = false) String layerName) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return layerService.diffLayer(geoserverManager, repoName, newIndex, oldIndex, layerName);

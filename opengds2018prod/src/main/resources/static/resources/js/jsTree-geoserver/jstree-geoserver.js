@@ -41,7 +41,112 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
 		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
 		this._data.geoserver.clientTree = this.settings.geoserver.clientTree;
+		this._data.geoserver.getWFSFeature = this.settings.geoserver.getWFSFeature;
 	};
+	
+	/**
+	 * Geoserver WFS Layer 파일 다운로드를 요청한다
+	 * 
+	 * @method download_wfs_layer
+	 * @param {Object}
+	 *            layer - 트리에서 선택한 레이어 노드 객체
+	 * @param {String}
+	 *            outputformat - output 포맷 형식
+	 */
+	this.download_wfs_layer = function(layer, outputformat){
+		var out = outputformat;
+		var params = {
+			"serverName": layer.id.split(":")[0],
+			"workspace": layer.id.split(":")[1],
+			"version" : "1.0.0",
+			"outputformat" : out,
+			"typeName" : layer.id.split(":")[3]
+		}
+		
+		downloadWithCRS(this._data.geoserver.getWFSFeature, params);
+	}
+	
+	var downloadWithCRS = function(url, params){
+		var a = url,
+			b = params;
+		
+		var modal = new gb.modal.Base({
+			width: 435,
+			height: 180
+		});
+		
+		var label = $("<span>").text("EPSG: ");
+		var searchBar = $("<input>").attr({
+			"type" : "number"
+		}).addClass("gb-form").css({
+			"width" : "346px",
+			"display" : "inline-block"
+		});
+
+		var area = $("<div>").append(label).append(searchBar).css({
+			"margin" : "10px 10px"
+		});
+		modal.setModalBody(area);
+
+		var closeBtn = $("<button>").css({
+			"float" : "right"
+		}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
+			modal.close();
+		});
+		var downBtn = $("<button>").css({
+			"float" : "right"
+		}).addClass("gb-button").addClass("gb-button-primary").text("Download").click(function() {
+			var val = $(searchBar).val().replace(/(\s*)/g, '') || "4326";
+			b.srsname = "EPSG:" + val;
+			var form = document.createElement("form");
+			form.setAttribute("method", "post");
+			form.setAttribute("action", a);
+			var keys = Object.keys(b);
+			for (var j = 0; j < keys.length; j++) {
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", keys[j]);
+				hiddenField.setAttribute("value", params[keys[j]]);
+				form.appendChild(hiddenField);
+			}
+			form.target = "_blank";
+			document.body.appendChild(form);
+			form.submit();
+			modal.close();
+		});
+
+		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(downBtn).append(closeBtn);
+
+		modal.setModalFooter(buttonArea);
+		
+		modal.open();
+	}
+	
+	/**
+	 * Geoserver WMS Layer 파일 다운로드를 요청한다
+	 * 
+	 * @method download_wms_layer
+	 * @param {Object}
+	 *            layer - 트리에서 선택한 레이어 노드 객체
+	 * @param {String}
+	 *            outputformat - output 포맷 형식
+	 */
+	this.download_wms_layer = function(layer, outputformat){
+		var data = layer;
+		var params = {
+			"serverName": data.serverName,
+			"workspace": data.workspace,
+			"version" : "1.1.0",
+			"format" : outputformat,
+			"srs" : data.srs,
+			"bbox" : [ data.nbBox.minx, data.nbBox.miny, data.nbBox.maxx, data.nbBox.maxy ],
+			"layers" : data.lName,
+			"width" : 1024,
+			"height" : 768
+		}
+		
+		downloadWithCRS(this._data.geoserver.getMapWMS, params);
+	}
 
 	/**
 	 * 레이어 정보를 조회 및 입력한다.

@@ -19,7 +19,8 @@ gb.header.EditingTool = function(obj) {
 	this.map = options.map ? options.map : undefined;
 	console.log(this.map.getView().getProjection());
 	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
-	this.treeElement = options.treeElement ? options.treeElement : undefined;
+	this.otree = options.otree ? options.otree : undefined;
+	this.treeElement = this.otree ? this.otree.getJSTreeElement() : undefined;
 	this.selected = options.selected ? options.selected : undefined;
 	this.layerInfo = options.layerInfo ? options.layerInfo : undefined;
 	this.imageTile = options.imageTile ? options.imageTile : undefined;
@@ -34,6 +35,8 @@ gb.header.EditingTool = function(obj) {
 	this.customVector_ = {};
 	this.copyPaste_ = undefined;
 	this.wfsURL = options.wfsURL;
+	this.otree.setEditingTool(this);
+	
 	
 	this.snapWMS = [];
 	this.snapSource = new ol.source.Vector();
@@ -299,8 +302,8 @@ gb.header.EditingTool = function(obj) {
 	var atb = $("<table>").addClass("gb-table").append(ahd).append(this.attrTB);
 	this.attrPop = new gb.panel.Base({
 		"width" : "300px",
-		"positionX" : 30,
-		"positionY" : 5,
+		"positionX" : 384,
+		"positionY" : 150,
 		"autoOpen" : false,
 		"body" : atb
 	});
@@ -314,6 +317,8 @@ gb.header.EditingTool = function(obj) {
 			}
 		});
 	});
+	
+	var preventReload = false;
 	this.map.on('moveend', function(evt){
 		that.loadSnappingLayer(this.getView().calculateExtent(this.getSize()));
 		
@@ -323,20 +328,37 @@ gb.header.EditingTool = function(obj) {
 		var zoom = view.getZoom();
 		
 		if(that.getActiveTool()){
-			if(zoom > 11){
+			if(zoom > 11 && !preventReload){
 				that.loadWFS_();
 				that.displayEditZoomHint(false);
-			} else {
+				preventReload = true;
+			} else if(zoom <= 11 && preventReload) {
 				that.setVisibleWFS(false);
 				that.displayEditZoomHint(true);
+				preventReload = false;
 			}
 		}
 	});
 	
 	this.treeElement.on("changed.jstreeol3", function(e, data){
-		if(data.selected.length === 1){
-			that.select(that.updateSelected(data.selected[0]));
+		if(that.getActiveTool()){
+			if(that.map.getView().getZoom() > 11){
+				if(data.selected.length === 1){
+					that.select(that.updateSelected(data.selected[0]));
+				}
+			}
 		}
+	});
+	
+	this.treeElement.on("delete_node.jstreeol3", function(e, data){
+		var id = data.node.id;
+		var source = that.getVectorSourceOfServer(id);
+		if(!!source){
+			source.get("git").tempLayer.setMap(null);
+			source.clear();
+			delete that.vectorSourcesOfServer_[id];
+		}
+		that.refreshTileLayer();
 	});
 };
 gb.header.EditingTool.prototype = Object.create(gb.header.Base.prototype);
@@ -526,6 +548,26 @@ gb.header.EditingTool.prototype.deactiveBtn_ = function(btn) {
 		this.btn[btn].removeClass("active");
 		this.btn[btn].css("border-bottom", "none");
 		this.btn[btn].css("color", "rgb(85, 85, 85)");
+	}
+};
+
+/**
+ * 버튼을 안 누른 상태로 만든다
+ * 
+ * @method deactiveBtn_
+ * @param {String}
+ *            button name
+ */
+gb.header.EditingTool.prototype.deactiveAllBtn_ = function() {
+	for(var btn in this.btn){
+		if(this.btn[btn] === undefined){
+			continue;
+		}
+		if (this.btn[btn].hasClass("active")) {
+			this.btn[btn].removeClass("active");
+			this.btn[btn].css("border-bottom", "none");
+			this.btn[btn].css("color", "rgb(85, 85, 85)");
+		}
 	}
 };
 /**
@@ -752,7 +794,8 @@ gb.header.EditingTool.prototype.select = function(source) {
 
 	});
 
-	this.deactiveIntrct_([ "draw", "move", "rotate", "modify", "snap" ]);
+	this.deactiveAnotherInteraction(this.interaction.select);
+	this.deactiveAllBtn_();
 
 	this.isOn.select = true;
 	this.activeBtn_("selectBtn");
@@ -844,14 +887,9 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 					feature.setId(fid);
 					that.featureRecord.create(layer, feature);
 				} else {
-					var keys = Object.keys(l);
-					var count;
-					if (keys.length === 0) {
-						count = 0;
-					} else {
-						var id = keys[keys.length - 1];
-						var nposit = (id.search(".new")) + 4;
-						count = (parseInt(id.substr(nposit, id.length)) + 1);
+					var count = 0;
+					while(!!l[source.get("git").layerID + ".new" + count]){
+						count++;
 					}
 					var fid = source.get("git").layerID + ".new" + count;
 					feature.setId(fid);
@@ -1741,10 +1779,13 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 			success = true;
 		}
 	} else if (layer instanceof ol.layer.Tile) {
-		if (this.snapWMS.indexOf(layer.get("id")) === -1) {
-			this.snapWMS.push(layer.get("id"));
+		
+		var treeid = layer.get("treeid");
+		if(!!this.vectorSourcesOfServer_[treeid]){
+			this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
 		}
+		
 	} else if (layer instanceof ol.layer.Layer) {
 		var git = layer.get("git");
 		if (git) {
@@ -1784,10 +1825,13 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 			}
 		}
 	} else if (layer instanceof ol.layer.Tile) {
-		if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-			this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+		
+		var treeid = layer.get("treeid");
+		if(!!this.vectorSourcesOfServer_[treeid]){
+			this.snapVector.pop(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
 		}
+		
 	} else if (layer instanceof ol.layer.Layer) {
 		var git;
 		if (layer) {
@@ -1824,52 +1868,12 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
  */
 gb.header.EditingTool.prototype.loadSnappingLayer = function(extent) {
 	var that = this;
-	if (this.getMap().getView().getZoom() >= 14) {
-		that.snapSource.clear();
-		if (that.snapWMS.length > 0) {
-			var params = {
-				"service" : "WFS",
-				"version" : "1.0.0",
-				"request" : "GetFeature",
-				"typeName" : this.snapWMS.toString(),
-				"outputformat" : "text/javascript",
-				"bbox" : extent.toString(),
-				"format_options" : "callback:getJson"
-			};
-
-			$.ajax({
-				url : this.getFeature,
-				data : params,
-				dataType : 'jsonp',
-				jsonpCallback : 'getJson',
-				beforeSend : function() {
-					$("body").css("cursor", "wait");
-				},
-				complete : function() {
-					$("body").css("cursor", "default");
-				},
-				success : function(data) {
-					var features = new ol.format.GeoJSON().readFeatures(JSON.stringify(data));
-					if (that.interaction.snap instanceof ol.interaction.Snap) {
-						that.snapSource.addFeatures(features);
-					}
-					console.log("snap feature injected");
-				}
-			});
-		}
-		if (this.snapVector.getLength() > 0) {
-			for (var i = 0; i < this.snapVector.getLength(); i++) {
-				this.snapVector.item(i).getSource().forEachFeatureIntersectingExtent(extent, function(feature) {
-					that.snapSource.addFeature(feature);
-				});
-			}
-		}
-		if (this.tempSource.getFeatures().length > 0) {
-			this.tempSource.forEachFeatureIntersectingExtent(extent, function(feature) {
-				var lid = feature.getId().substring(0, feature.getId().indexOf("."));
-				if (that.snapWMS.indexOf(lid) !== -1) {
-					that.snapSource.addFeature(feature);
-				}
+	that.snapSource.clear();
+	
+	if (this.snapVector.getLength() > 0) {
+		for (var i = 0; i < this.snapVector.getLength(); i++) {
+			this.snapVector.item(i).getSource().forEachFeatureIntersectingExtent(extent, function(feature) {
+				that.snapSource.addFeature(feature);
 			});
 		}
 	}
@@ -1960,6 +1964,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	var clickEvent = options.clickEvent;
 	var className = options.className;
 	var color = options.color;
+	var selectActive = options.selectActive || false;
 	
 	
 	var iTag = $("<i>").addClass(icon).attr("aria-hidden", "true");
@@ -1984,7 +1989,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	
 	var that = this;
 	aTag.click(function(){
-		that.deactiveAnotherInteraction(interaction);
+		that.deactiveAnotherInteraction(interaction, selectActive);
 		if(typeof clickEvent === "function"){
 			clickEvent();
 		}
@@ -2036,9 +2041,17 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 }
 
 //hochul
-gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction){
+gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction, select){
+	var bool = select || false;
 	for(var i in this.interaction){
 		if(interaction !== this.interaction[i] && !!this.interaction[i]){
+			if(this.interaction[i] instanceof ol.interaction.Select && !bool){
+				this.interaction[i].getFeatures().clear();
+			}
+			
+			if(this.interaction[i] instanceof ol.interaction.Translate){
+				this.move();
+			}
 			this.interaction[i].setActive(false);
 		}
 	}
@@ -2051,7 +2064,9 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 	
 	if(interaction instanceof ol.interaction.Select || interaction instanceof ol.interaction.DragBox){
 		this.getInteraction_("select").setActive(true);
+		this.getInteraction_("dragbox").setActive(true);
 		this.isOn["select"] = true;
+		this.isOn["dragbox"] = true;
 	}
 }
 
@@ -2134,8 +2149,17 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	var tileLayers = this.getTileLayersInMap(this.map);
 	
-	for(var i in tileLayers){
+	for(var i = 0; i < tileLayers.length; i++){
 		tileLayers[i].setVisible(bool);
+	}
+}
+
+//hochul
+gb.header.EditingTool.prototype.refreshTileLayer = function(){
+	var tileLayers = this.getTileLayersInMap(this.map);
+	
+	for(var i = 0; i < tileLayers.length; i++){
+		tileLayers[i].getSource().refresh();
 	}
 }
 
@@ -2157,17 +2181,17 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 					"version" : "1.0.0",
 					"typeName" : layername,
 					"bbox" : extent.join(","),
-					"outputformat" : "JSONP",
-					"format_options" : "callback:" + layername
+					"outputformat" : "application/json"
 				};
 				
 				$.ajax({
 					url : url,
+					type : "GET",
+					contentType : "application/json; charset=UTF-8",
 					data : params,
-					dataType : "JSONP",
-					jsonpCallback : layername,
+					dataType : "JSON",
 					success : function(data) {
-						var features = vectorSource.getFormat().readFeatures(data)
+						var features = vectorSource.getFormat().readFeatures(data);
 						vectorSource.addFeatures(features);
 					},
 					error: function(jqXHR, textStatus, errorThrown){
@@ -2217,6 +2241,8 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 		this.setActiveTool(false);
 		this.setVisibleWMS(true);
 		this.setVisibleWFS(false);
+		this.deactiveAnotherInteraction(this.interaction.select);
+		this.deactiveAllBtn_();
 	} else {
 		this.setActiveTool(true);
 		this.setVisibleWMS(false);
@@ -2249,11 +2275,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 				this.headerTag.append(editZoomHintTag);
 			}
 			
-			for(var i in this.customInteractions){
-				if(this.customInteractions[i].getActive()){
-					this.deactiveAnotherInteraction(this.customInteractions[i]);
-				}
-			}
+			this.deactiveAnotherInteraction();
 		} else {
 			this.headerTag.find(".edit-zoom-hint").remove();
 			this.ulTagLeft.css("display", "inline-block");

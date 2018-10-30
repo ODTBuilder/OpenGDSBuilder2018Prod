@@ -10,6 +10,8 @@ public class GeogigRepositoryInit {
 
 	private Repo repo;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -26,6 +28,15 @@ public class GeogigRepositoryInit {
 
 	public void setRepo(Repo repo) {
 		this.repo = repo;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "repo")

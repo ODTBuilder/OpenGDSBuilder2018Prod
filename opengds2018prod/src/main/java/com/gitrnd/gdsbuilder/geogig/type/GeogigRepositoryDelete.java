@@ -10,6 +10,8 @@ public class GeogigRepositoryDelete {
 
 	private String token;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -26,6 +28,15 @@ public class GeogigRepositoryDelete {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 }

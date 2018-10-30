@@ -30,6 +30,8 @@ public class GeogigCheckout {
 
 	private String strategy;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -83,4 +85,12 @@ public class GeogigCheckout {
 		this.transactionId = transactionId;
 	}
 
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
 }

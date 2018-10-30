@@ -13,6 +13,8 @@ public class GeogigFetch {
 
 	private List<Remote> remotes;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -30,6 +32,15 @@ public class GeogigFetch {
 
 	public void setRemotes(List<Remote> remotes) {
 		this.remotes = remotes;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "Remote")

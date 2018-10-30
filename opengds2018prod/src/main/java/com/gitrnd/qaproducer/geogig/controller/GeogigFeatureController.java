@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +40,7 @@ public class GeogigFeatureController extends AbstractController {
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,
 			@RequestParam(value = "newIndex", required = false) int newIndex,
-			@RequestParam(value = "oldIndex", required = false) int oldIndex) {
+			@RequestParam(value = "oldIndex", required = false) int oldIndex) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return featureService.featureDiff(geoserverManager, repoName, path, newIndex, oldIndex);

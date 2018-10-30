@@ -24,6 +24,8 @@ public class GeogigRevisionTree {
 
 	private List<Node> nodes;
 
+	private String error;
+
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
@@ -40,6 +42,15 @@ public class GeogigRevisionTree {
 
 	public void setNodes(List<Node> nodes) {
 		this.nodes = nodes;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	@XmlRootElement(name = "node")

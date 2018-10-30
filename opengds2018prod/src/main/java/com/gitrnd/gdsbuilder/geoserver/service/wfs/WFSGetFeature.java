@@ -17,7 +17,7 @@ public class WFSGetFeature {
 	private String featureID = "";
 	private String sortBy = "";
 	private String propertyName = "";
-	private String srsName;
+	private String srsName="";
 	
 	public WFSGetFeature(){};
 	

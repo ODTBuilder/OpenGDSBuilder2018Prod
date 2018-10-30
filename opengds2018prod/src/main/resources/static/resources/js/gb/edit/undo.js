@@ -40,17 +40,17 @@ gb.edit.Undo = function(obj) {
 	 */
 	this.active_ = true;
 	
-	// Ctrl+Z, Ctrl+Y Key Event 생성
+	// Shift+Z, Shift+Y Key Event 생성
 	$(window).keypress(function(e){
 		
 		if(!that.active_){
 			return;
 		}
 		
-		if((e.keyCode === 26 || e.which === 26) && e.ctrlKey && e.shiftKey){
+		if((e.keyCode === 26 || e.which === 26) && e.shiftKey){
 			that.undo();
 			console.log("execute undo");
-		} else if((e.keyCode === 25 || e.which === 25) && e.ctrlKey && e.shiftKey){
+		} else if((e.keyCode === 25 || e.which === 25) && e.shiftKey){
 			that.redo();
 			console.log("execute redo");
 		}

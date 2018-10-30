@@ -115,7 +115,8 @@
 		cat,
 		name,
 		tb_qa_category.title as
-		"title"
+		"title",
+		tb_qa_category.support
 		FROM
 		tb_preset,
 		tb_qa_category

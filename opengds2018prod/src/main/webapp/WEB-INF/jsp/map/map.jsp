@@ -126,11 +126,8 @@ html {
 				<li><a href="#" title="Base map" id="changeBase"> <i class="fas fa-map fa-lg" style="color: #91d050;"></i>
 						Base Map
 				</a></li>
-				<li><a href="#" title="Validation"> <i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
+				<li><a href="#" title="Validation" id="validation"> <i class="fas fa-clipboard-check fa-lg" style="color: #344762;"></i>
 						Validation
-				</a></li>
-				<li><a href="#" title="Navigator" id="qaedit"> <i class="far fa-compass fa-lg" style="color: #15aabf;"></i>
-						Navigator
 				</a></li>
 				<!-- <li><a href="#" title="QA Status" id="qastat">
 					<i class="fas fa-th-list fa-lg" style="color: #7f7f7f;"></i>
@@ -169,6 +166,15 @@ html {
 			class="fas fa-th"></i>List</span>
 	</nav>
 	<script type="text/javascript">
+		var urlList = {
+			token : "?${_csrf.parameterName}=${_csrf.token}",
+			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
+			getLayerInfo : "geoserver/getGeoLayerInfoList.ajax",
+			getMapWMS : "geoserver/geoserverWMSGetMap.ajax",
+			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
+			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
+			getLayerTile : "geoserver/geoserverWMSLayerLoad.do"
+		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
 			"upperMap" : {
@@ -200,10 +206,29 @@ html {
 		$(".epsg-now").click(function() {
 			crs.open();
 		});
+		
+		// 검수 수행 Modal 생성
+		var validation = new gb.validation.Validation({
+			"token": urlList.token,
+			"autoOpen" : false,
+			"title" : "Validation"
+		});
+
+		$("#validation").click(function() {
+			validation.open();
+		});
+		
+		var frecord = new gb.edit.FeatureRecord({
+			id : "feature_id",
+			wfstURL : urlList.wfst + urlList.token,
+			layerInfoURL: urlList.getLayerInfo + urlList.token
+		});
 
 		var otree = new gb.tree.OpenLayers({
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
+			"frecord" : frecord,
+			"token" : urlList.token,
 			"url" : {
 				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
@@ -217,38 +242,32 @@ html {
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
+			"properties": new gb.edit.ModifyLayerProperties({
+				token: urlList.token,
+				featureRecord: frecord
+			}),
 			"uploadSHP" : uploadSHP,
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getMapWMS" : "geoserver/geoserverWMSGetMap.ajax?${_csrf.parameterName}=${_csrf.token}",
-				"getLayerInfo" : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getMapWMS" : urlList.getMapWMS + urlList.token,
+				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
+				"getWFSFeature": urlList.getWFSFeature + urlList.token
 			}
 		});
-
-		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id",
-			wfstURL : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax?${_csrf.parameterName}=${_csrf.token}"
-		});
-
-		$("#savePart").click(function() {
-			frecord.sendWFSTTransaction();
-		});
-
-		var wfsURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
-		var infoURL = "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}";
+		
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
-			treeElement : otree.getJSTreeElement(),
-			wfsURL : wfsURL,
-			getFeatureInfo : infoURL,
-			layerInfo : "geoserver/getGeoLayerInfoList.ajax?${_csrf.parameterName}=${_csrf.token}",
-			imageTile : "geoserver/geoserverWMSLayerLoad.do",
-			getFeature : "geoserver/geoserverWFSGetFeature.ajax?${_csrf.parameterName}=${_csrf.token}",
+			otree : otree,
+			wfsURL : urlList.getWFSFeature + urlList.token,
+			getFeatureInfo : urlList.getFeatureInfo + urlList.token,
+			layerInfo : urlList.getLayerInfo + urlList.token,
+			imageTile : urlList.getLayerTile,
+			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en"
 		});
 
@@ -257,10 +276,15 @@ html {
 			epan.editToolToggle();
 		});
 
+		$("#savePart").click(function(){
+			frecord.sendWFSTTransaction(epan);
+		});
+		
 		// 거리, 면적 측정 기능 추가
 		var measureArea = new gb.interaction.MeasureTip({
 			type : "Polygon",
-			map : gbMap.getUpperMap()
+			map : gbMap.getUpperMap(),
+			snapSource : epan.snapSource
 		});
 
 		measureArea.on("change:active", function(evt) {
@@ -273,7 +297,8 @@ html {
 
 		var measureLength = new gb.interaction.MeasureTip({
 			type : "LineString",
-			map : gbMap.getUpperMap()
+			map : gbMap.getUpperMap(),
+			snapSource : epan.snapSource
 		});
 
 		measureLength.on("change:active", function(evt) {
@@ -318,6 +343,7 @@ html {
 			icon : "fab fa-bitbucket",
 			content : "Hole",
 			interaction : hole,
+			selectActive: true,
 			"float" : "right",
 			clickEvent : function() {
 				console.log("Hole draw");
@@ -329,37 +355,42 @@ html {
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
+			wfstURL : urlList.wfst + urlList.token,
+			layerInfoURL : urlList.getLayerInfo + urlList.token,
 			isDisplay : false
 		});
 
 		otree.getJSTreeElement().on('changed.jstreeol3', function(e, data) {
-			featureList.updateTable(data.selected[0]);
-		});
+			var treeid = data.selected[0];
+			var layer = data.instance.get_LayerById(treeid);
 
-		otree.getJSTreeElement().on('load_node.jstreeol3', function(e, data) {
-			var layer;
-			var arr = data.node.children_d;
-
-			for (let i = 0; i < arr.length; i++) {
-				layer = data.instance.get_LayerById(arr[i]);
-				if (layer instanceof ol.layer.Group) {
-					continue;
-				}
-				featureList.updateFeatureList({
-					url : wfsURL,
-					treeid : arr[i],
-					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
-					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
-					layerName : layer.get('name'),
-					exceptKeys : [ 'geometry' ]
-				});
+			if (!layer) {
+				return;
 			}
+
+			if (layer instanceof ol.layer.Group) {
+				return;
+			}
+			
+			if(featureList.footerTag.css("display") === "none"){
+				return;
+			}
+			
+			featureList.updateFeatureList({
+				url : urlList.getWFSFeature + urlList.token,
+				treeid : treeid,
+				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
+				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
+				layerName : layer.get('name')
+			});
 		});
+
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
+			jstree: otree,
 			title : "Command Line",
-			serverURL : wfsURL,
+			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,
 			map : gbMap.getUpperMap()
@@ -390,10 +421,14 @@ html {
 				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"branchList" : "geogig/branchList.do?${_csrf.parameterName}=${_csrf.token}",
 				"mergeBranch" : "geogig/mergeBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"initRepository" : "geogig/initRepository.do?${_csrf.parameterName}=${_csrf.token}",
-				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"addRemoteRepository" : "geogig/addRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pullRepository" : "geogig/pullRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"pushRepository" : "geogig/pushRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

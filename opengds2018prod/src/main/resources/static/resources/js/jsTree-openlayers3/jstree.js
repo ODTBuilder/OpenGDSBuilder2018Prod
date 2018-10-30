@@ -2314,19 +2314,19 @@
 								case "Point":
 									obj.type = git.geometry;
 									break;
-								case "Multipoint":
+								case "MultiPoint":
 									obj.type = git.geometry;
 									break;
-								case "Linestring":
+								case "LineString":
 									obj.type = git.geometry;
 									break;
-								case "Multilinestring":
+								case "MultiLineString":
 									obj.type = git.geometry;
 									break;
 								case "Polygon":
 									obj.type = git.geometry;
 									break;
-								case "Multipolygon":
+								case "MultiPolygon":
 									obj.type = git.geometry;
 									break;
 								default:
@@ -10151,15 +10151,18 @@
 													false);
 										}
 									}
-									var ext = inst._data.layerproperties.editingTool
-											.getMap()
-											.getView()
-											.calculateExtent(
-													inst._data.layerproperties.editingTool
-															.getMap().getSize());
-									inst._data.layerproperties.editingTool
-											.loadSnappingLayer(ext);
 								}
+								
+								var ext = 
+									inst._data.layerproperties.editingTool
+										.getMap()
+										.getView()
+										.calculateExtent(
+												inst._data.layerproperties.editingTool
+														.getMap().getSize());
+								
+								inst._data.layerproperties.editingTool
+										.loadSnappingLayer(ext);
 							}
 						},
 						"remove" : {
@@ -10175,51 +10178,13 @@
 								var inst = $.jstreeol3
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
+								var map = inst._data.core.map;
 								if (inst.is_selected(obj)) {
 									var layers = inst.get_selected();
 									for (var i = 0; i < layers.length; i++) {
-										var layer = inst
-												.get_LayerById(layers[i]);
-										var git = layer.get("git");
-										var info;
-										if (git) {
-											if (git
-													.hasOwnProperty("information")) {
-												info = layer.get("git").information;
-											}
-										}
-										if (!!info) {
-											inst._data.layerproperties.layerRecord
-													.remove(
-															info.getFormat(),
-															info
-																	.getSheetNumber(),
-															layer);
-										}
-										var layer = inst
-												.get_LayerById(layers[i]);
-										inst._data.layerproperties.editingTool
-												.removeSnappingLayer(layer);
-										inst.delete_node_layer(layers[i]);
+										map.removeLayer(inst.get_LayerById(layers[i]));
 									}
-								} else {
-									var layer = inst.get_LayerById(obj.id);
-									var git = layer.get("git");
-									var info;
-									if (git) {
-										if (git.hasOwnProperty("information")) {
-											info = layer.get("git").information;
-										}
-									}
-									if (!!info) {
-										inst._data.layerproperties.layerRecord
-												.remove(info.getFormat(), info
-														.getSheetNumber(),
-														layer);
-									}
-									inst._data.layerproperties.editingTool
-											.removeSnappingLayer(layer);
-									inst.delete_node_layer(obj);
+									inst.delete_node(layers);
 								}
 							}
 						},
@@ -10280,30 +10245,6 @@
 									// inst.delete_node_layer(inst.get_selected());
 									var layer = inst.get_LayerById(obj.id);
 									console.log(layer);
-									var git = layer.get("git");
-									if (git) {
-										if (inst._data.layerproperties.properties
-												.getFeatureRecord().isEditing(
-														layer)) {
-											console
-													.error("Please save before set properties.");
-										} else {
-											inst._data.layerproperties.properties
-													.setRefer(inst);
-											if (obj.type === "ImageTile") {
-												console.log("image tile");
-												inst._data.layerproperties.properties
-														.getImageTileInfo(
-																"geoserver/getGeoLayerInfoList.ajax",
-																layer);
-											}
-											inst._data.layerproperties.properties
-													.setLayer(layer);
-
-											inst._data.layerproperties.properties
-													.open();
-										}
-									}
 								} else {
 									// inst.delete_node_layer(obj);
 								}
@@ -10323,11 +10264,33 @@
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
 								if (inst.is_selected(obj)) {
-									// inst.delete_node_layer(inst.get_selected());
+									var layers = inst.get_selected();
+									for (var i = 0; i < layers.length; i++) {
+										inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
+										inst._data.layerproperties.style.open();
+									}
 								} else {
 									// inst.delete_node_layer(obj);
 								}
-								console.log("Not yet");
+							}
+						},
+						"navigator" : {
+							"separator_before" : false,
+							"icon" : "fa fa-compass",
+							"separator_after" : false,
+							"_disabled" : false,
+							"label" : "Navigator",
+							"action" : function(data) {
+								var inst = $.jstreeol3.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								if (inst.is_selected(obj)) {
+									var layer = inst.get_LayerById(obj.id);
+									
+									inst._data.layerproperties.navigator
+											.setFeatures(layer);
+								} else {
+									// inst.delete_node_layer(obj);
+								}
 							}
 						}
 					};

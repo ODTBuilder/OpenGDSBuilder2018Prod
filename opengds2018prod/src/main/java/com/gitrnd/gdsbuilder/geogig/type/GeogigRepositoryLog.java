@@ -30,6 +30,8 @@ public class GeogigRepositoryLog {
 	 */
 	private String message;
 
+	private String error;
+
 	/**
 	 * Geogig Command 응답 성공 여부 반환
 	 * 
@@ -62,8 +64,7 @@ public class GeogigRepositoryLog {
 	/**
 	 * Geogig Command 응답 성공 여부 설정
 	 * 
-	 * @param success
-	 *            Geogig Command 응답 성공 여부
+	 * @param success Geogig Command 응답 성공 여부
 	 */
 	public void setSuccess(String success) {
 		this.success = success;
@@ -72,8 +73,7 @@ public class GeogigRepositoryLog {
 	/**
 	 * commit 이력 설정
 	 * 
-	 * @param commits
-	 *            commit 이력
+	 * @param commits commit 이력
 	 */
 	public void setCommits(List<Commit> commits) {
 		this.commits = commits;
@@ -82,11 +82,19 @@ public class GeogigRepositoryLog {
 	/**
 	 * commit message 설정
 	 * 
-	 * @param message
-	 *            commit message
+	 * @param message commit message
 	 */
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	@XmlElement(name = "error")
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 
 	/**
@@ -232,8 +240,7 @@ public class GeogigRepositoryLog {
 		/**
 		 * parent commit id 설정
 		 * 
-		 * @param id
-		 *            parent commit id
+		 * @param id parent commit id
 		 */
 		public void setId(String id) {
 			this.id = id;

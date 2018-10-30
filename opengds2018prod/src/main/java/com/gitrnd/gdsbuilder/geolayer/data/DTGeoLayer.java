@@ -77,6 +77,7 @@ public class DTGeoLayer {
 	private JSONObject llbBox = new JSONObject(); // LatLonBoundingBox
 	private JSONObject nbBox = new JSONObject(); // NativeBoundingBox
 	private String dsType=""; // 저장소타입
+	private String geomkey="";
 	private String geomType=""; // 공간정보타입
 	private JSONObject attInfo = new JSONObject(); // 속성정보
 	private String style="";
@@ -170,6 +171,7 @@ public class DTGeoLayer {
 	private JSONObject buildAttType(Element layerElem) {
 		JSONObject object = new JSONObject();
 		Element attsElement = layerElem.getChild("attributes");
+		System.out.println(attsElement.toString());
 		if (attsElement != null) {
 			List<Element> list = attsElement.getChildren();
 			for (int i = 0; i < list.size(); i++) {
@@ -187,6 +189,8 @@ public class DTGeoLayer {
 					attContent.put("type",type);
 					attContent.put("nillable", nillable);
 					object.put(nameAtt, attContent);
+				}else{
+					this.geomkey = nameAtt;
 				}
 			}
 		}
@@ -312,6 +316,9 @@ public class DTGeoLayer {
 	public void setStyle(String style) {
 		this.style = style;
 	}
+	public String getGeomkey() {
+		return geomkey;
+	}
 
 	public String getSld() {
 		return sld;
@@ -320,5 +327,7 @@ public class DTGeoLayer {
 	public void setSld(String sld) {
 		this.sld = sld;
 	}
-
+	public void setGeomkey(String geomkey) {
+		this.geomkey = geomkey;
+	}
 }

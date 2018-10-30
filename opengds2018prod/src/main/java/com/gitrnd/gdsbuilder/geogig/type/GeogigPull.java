@@ -80,9 +80,9 @@ public class GeogigPull {
 	 * @param pull
 	 *            the pull to set
 	 */
-	// public void setPull(Pull pull) {
-	// this.pull = pull;
-	// }
+	public void setPull(Pull pull) {
+		this.pull = pull;
+	}
 
 	/**
 	 * @param error

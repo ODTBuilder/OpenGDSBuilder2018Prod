@@ -29,9 +29,10 @@ public class DiffRepository {
 	private static final String param_oldRef = "oldRefSpec=";
 	private static final String param_newRef = "newRefSpec=";
 	private static final String param_pathFilter = "pathFilter="; // optional
+	private static final String param_page = "page="; // optional
 
 	public GeogigDiff executeCommand(String baseURL, String username, String password, String repository,
-			String oldObjectId, String newObjectId, String path) {
+			String oldObjectId, String newObjectId, String path, Integer page) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -55,6 +56,11 @@ public class DiffRepository {
 		// path
 		if (path != null) {
 			url += "&" + param_pathFilter + path;
+		}
+
+		// page
+		if (page != null) {
+			url += "&" + param_page + page;
 		}
 
 		// request

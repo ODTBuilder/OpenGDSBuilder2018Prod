@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.service;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -20,6 +21,8 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.MergeBranch;
+import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
@@ -224,23 +227,32 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public GeogigCheckout resolveConflict(DTGeoserverManager geoserverManager, String repoName, String transactionId,
-			String path, String version) throws JAXBException {
+	public List<GeogigCheckout> resolveConflict(DTGeoserverManager geoserverManager, String repoName,
+			String transactionId, JSONArray featureArr) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
 		CheckoutBranch checkout = new CheckoutBranch();
-		GeogigCheckout branch = null;
-		try {
-			branch = checkout.executeCommand(url, user, pw, repoName, transactionId, path, version);
-		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCheckout.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			branch = (GeogigCheckout) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		List<GeogigCheckout> checkoutList = new ArrayList<>();
+
+		int arrySize = featureArr.size();
+		for (int i = 0; i < arrySize; i++) {
+			JSONObject resolvePath = (JSONObject) featureArr.get(i);
+			String path = (String) resolvePath.get("path");
+			String version = (String) resolvePath.get("version");
+			GeogigCheckout branch = null;
+			try {
+				branch = checkout.executeCommand(url, user, pw, repoName, transactionId, path, version);
+			} catch (GeogigCommandException e) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCheckout.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				branch = (GeogigCheckout) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			}
+			checkoutList.add(branch);
 		}
-		return branch;
+		return checkoutList;
 	}
 
 }

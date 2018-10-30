@@ -46,6 +46,11 @@
  * @param {String}
  *            obj.url.pushRepository - Local branch에서 원격 Repository로 Push 요청할
  *            컨트롤러 주소
+ * @param {String}
+ *            obj.url.featureBlame - 피처 비교를 요청할 컨트롤러 주소
+ * @param {String}
+ *            obj.url.catFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할 컨트롤러 주소
+ * 
  * @version 0.01
  * @author SOYIJUN
  * @date 2018. 07.13
@@ -58,6 +63,7 @@ gb.versioning.Repository = function(obj) {
 	gb.modal.Base.call(this, obj);
 	var that = this;
 	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
 	var url = options.url ? options.url : {};
 	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
 	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
@@ -73,12 +79,15 @@ gb.versioning.Repository = function(obj) {
 	this.pushRepositoryURL = url.pushRepository ? url.pushRepository : undefined;
 	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
 	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
+	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
+	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
-	this.reRepoSelect = $("<select>").css({
+	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	$(this.reRepoSelect).on("change", function() {
@@ -90,7 +99,7 @@ gb.versioning.Repository = function(obj) {
 			$(that.reBranchSelect).append(opt);
 		}
 	});
-	this.reBranchSelect = $("<select>").css({
+	this.reBranchSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
@@ -272,6 +281,7 @@ gb.versioning.Repository = function(obj) {
 						obj["serverName"] = that.getNowServer() !== undefined ? that.getNowServer().id : undefined;
 						obj["node"] = node.text;
 						obj["local"] = that.getNowRepository() !== undefined ? that.getNowRepository().id : undefined;
+						obj["fetch"] = that.getFetchRepository() === node.text ? true : false;
 					}
 					console.log(obj);
 					return obj;
@@ -331,7 +341,7 @@ gb.versioning.Repository = function(obj) {
 	this.geoserverNameVal = $("<span>");
 	this.repoNameVal = $("<span>");
 	this.cubNameVal = $("<span>");
-	this.tabNameVal = $("<select>");
+	this.tabNameVal = $("<select>").addClass("gb-form");
 
 	this.failArea = $("<div>");
 	this.mbody = $("<div>").append(this.serverArea).append(this.remoteArea).append(this.historyArea).append(this.failArea);
@@ -349,6 +359,52 @@ gb.versioning.Repository = function(obj) {
 	this.setModalFooter(buttonArea);
 	this.getCheckoutBranchURL("server");
 	this.transitPage("server");
+
+	this.conflictView1 = new ol.View({
+		"center" : [ 0, 0 ],
+		"zoom" : 1
+	});
+
+	this.conflictView2 = new ol.View({
+		"center" : [ 0, 0 ],
+		"zoom" : 1
+	});
+
+	this.cfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb",
+		"border" : "1px solid #ccc",
+		"border-radius" : "4px"
+	});
+
+	this.tfeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb",
+		"border" : "1px solid #ccc",
+		"border-radius" : "4px"
+	});
+
+	this.cmap = new ol.Map({
+		"target" : $(this.cfeature)[0],
+		// "view" : this.conflictView1,
+		"layers" : []
+	});
+
+	this.tmap = new ol.Map({
+		"target" : $(this.tfeature)[0],
+		// "view" : this.conflictView2,
+		"layers" : []
+	});
+
+	this.crs = new gb.crs.BaseCRS({
+		"autoOpen" : false,
+		"title" : "Base CRS",
+		"message" : $(".epsg-now"),
+		"maps" : [ this.cmap, this.tmap ],
+		"epsg" : this.epsg
+	});
 };
 gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
@@ -768,10 +824,40 @@ gb.versioning.Repository.prototype.getAddRemoteRepositoryURL = function() {
 };
 
 /**
+ * resolve conflict 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getAddRemoteRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getResolveConflictURL = function() {
+	return this.resolveConflictURL;
+};
+
+/**
+ * feature blame 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFeatureBlameURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getFeatureBlameURL = function() {
+	return this.featureBlameURL;
+};
+
+/**
+ * catFeatureObject 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCatFeatureObjectURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getCatFeatureObjectURL = function() {
+	return this.catFeatureObjectURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
- * @return {Object} 리모트 레파지토리 이름
+ * @return {Object} 리모트 레파지토리 노드
  */
 gb.versioning.Repository.prototype.getNowRemoteRepository = function() {
 	return this.nowRemoteRepo;
@@ -1042,11 +1128,14 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					$(closeBtn).click(function() {
 						commitModal.close();
 					});
-					$(okBtn).click(function() {
-						mModal.close();
-						// that.endTransaction(server, repo, tid, commitModal);
-						that.resolveConflictModal(server, repo, that.getNowBranch().text, branch, data.merge.features, commitModal);
-					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								// that.endTransaction(server, repo, tid,
+								// commitModal);
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+							});
 				}
 			} else {
 				var title = "Error";
@@ -1142,7 +1231,9 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				}
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-
+				var title = "Error";
+				var msg = "Remove failed."
+				that.messageModal(title, msg);
 			}
 		});
 	});
@@ -1202,37 +1293,83 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 			console.log(data);
 			if (data.success === "true") {
 				modal.close();
-				var msg1 = $("<div>").text('"Pull" is complete.').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
-					"text-align" : "center",
-					"font-size" : "16px"
-				});
-				var body = $("<div>").append(msg1).append(msg2);
-				var closeBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-default").text("Later");
-				var okBtn = $("<button>").css({
-					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
-				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+				if (data.pull === null && data.merge !== null) {
+					var confl = parseInt(data.merge.conflicts);
+					console.log(confl);
+					var msg1 = $("<div>").text("There are conflicting features.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-				var commitModal = new gb.modal.Base({
-					"title" : "Commit Changes",
-					"width" : 310,
-					"height" : 200,
-					"autoOpen" : true,
-					"body" : body,
-					"footer" : buttonArea
-				});
-				$(closeBtn).click(function() {
-					commitModal.close();
-				});
-				$(okBtn).click(function() {
-					that.endTransaction(server, repo, tid, commitModal);
-				});
+					var commitModal = new gb.modal.Base({
+						"title" : "Conflict",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								modal.close();
+								// that.endTransaction(server, repo, tid,
+								// commitModal);
+								that.resolveConflictModal(server, repo, remoteRepo, that.getNowBranch().text, remoteBranch,
+										data.merge.ours, data.merge.theirs, data.merge.features, commitModal);
+							});
+				} else {
+					var msg1 = $("<div>").text('"Pull" is complete.').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Commit Changes",
+						"width" : 310,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(function() {
+						that.endTransaction(server, repo, tid, commitModal);
+						var nid = server + ":" + repo + ":" + remoteRepo + ":" + remoteBranch;
+						console.log(nid);
+						console.log(that.getRemoteJSTree()._data.geogigfunction.fetchRemote);
+						that.getRemoteJSTree().removeFetchCount(nid);
+						console.log(that.getRemoteJSTree()._data.geogigfunction.fetchRemote);
+					});
+				}
 			} else {
 				var title = "Error";
 				var msg = "Pull failed."
@@ -1371,7 +1508,9 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1380,8 +1519,10 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").addClass("gb-form").append(this.getNowRepository().text);
+	var loBranch = $("<div>").addClass("gb-form").append(this.getNowBranch().text).css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1407,7 +1548,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	var commitModal = new gb.modal.Base({
 		"title" : "Pull",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1486,7 +1627,9 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	$(this.reRepoSelect).empty();
 	var reRepo = $("<div>").append(this.reRepoSelect);
 	$(this.reBranchSelect).empty();
-	var reBranch = $("<div>").append(this.reBranchSelect);
+	var reBranch = $("<div>").append(this.reBranchSelect).css({
+		"margin-top" : "10px"
+	});
 	var remote = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1495,8 +1638,10 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
-	var loRepo = $("<div>").append(this.getNowRepository().text);
-	var loBranch = $("<div>").append(this.getNowBranch().text);
+	var loRepo = $("<div>").append(this.getNowRepository().text).addClass("gb-form");
+	var loBranch = $("<div>").append(this.getNowBranch().text).addClass("gb-form").css({
+		"margin-top" : "10px"
+	});
 	var local = $("<div>").css({
 		"float" : "left",
 		"width" : "45%"
@@ -1522,7 +1667,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	var commitModal = new gb.modal.Base({
 		"title" : "Push",
 		"width" : 410,
-		"height" : 210,
+		"height" : 234,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1595,11 +1740,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rNameInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Repository name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rNameInputDiv = $("<div>").append(rNameInput).css({
 		"display" : "table-cell",
@@ -1618,12 +1761,10 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Host addres EX) http://127.0.0.1"
-	}).css({
+		"placeholder" : "Host addres EX) 127.0.0.1"
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rHostInputDiv = $("<div>").append(rHostInput).css({
 		"display" : "table-cell",
@@ -1643,11 +1784,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
 		"placeholder" : "Port number EX) 8080"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPortInputDiv = $("<div>").append(rPortInput).css({
 		"display" : "table-cell",
@@ -1667,11 +1806,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rDBInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rDBInputDiv = $("<div>").append(rDBInput).css({
 		"display" : "table-cell",
@@ -1691,11 +1828,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rSchemeInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Scheme name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rSchemeInputDiv = $("<div>").append(rSchemeInput).css({
 		"display" : "table-cell",
@@ -1715,11 +1850,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rIDInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Database user name"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rIDInputDiv = $("<div>").append(rIDInput).css({
 		"display" : "table-cell",
@@ -1739,11 +1872,9 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rPassInput = $("<input>").attr({
 		"type" : "password",
 		"placeholder" : "Database password"
-	}).css({
+	}).addClass("gb-form").css({
 		"width" : "83%",
-		"border" : "none",
-		"border-bottom" : "solid 1px #a9a9a9",
-		"margin-left" : "8px"
+		"margin-left" : "6px"
 	});
 	var rPassInputDiv = $("<div>").append(rPassInput).css({
 		"display" : "table-cell",
@@ -1752,6 +1883,79 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rPassArea = $("<div>").append(rPass).append(rPassInputDiv).css({
 		"display" : "table-row"
+	});
+
+	var rrName = $("<div>").text("Repository Name: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rrNameInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Remote Repository Name"
+	}).addClass("gb-form").css({
+		"width" : "83%",
+		"margin-left" : "6px"
+	});
+	var rrNameInputDiv = $("<div>").append(rrNameInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rrNameArea = $("<div>").append(rrName).append(rrNameInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var rrURL = $("<div>").text("Repository URL: ").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var rrURLInput = $("<input>").attr({
+		"type" : "text",
+		"placeholder" : "Remote Repository URL"
+	}).addClass("gb-form").css({
+		"width" : "83%",
+		"margin-left" : "6px"
+	});
+	var rrURLInputDiv = $("<div>").append(rrURLInput).css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"vertical-align" : "middle"
+	});
+	var rrURLArea = $("<div>").append(rrURL).append(rrURLInputDiv).css({
+		"display" : "table-row"
+	});
+
+	var remoteInputArea = $("<div>").css({
+		"display" : "none",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "109px"
+	}).append(rrNameArea).append(rrURLArea);
+
+	var icon = $("<i>").addClass("fas").addClass("fa-caret-down");
+	var pullBtn = $("<button>").append(icon).append(" Pull from Remote Repository").addClass("gb-button-clear").click(function() {
+		$(remoteInputArea).toggle();
+		if ($(remoteInputArea).css("display") === "none") {
+			if ($(this).find("i").hasClass("fa-caret-up")) {
+				$(this).find("i").removeClass("fa-caret-up");
+				$(this).find("i").addClass("fa-caret-down");
+			}
+			createRepoModal.setHeight(425);
+		} else if ($(remoteInputArea).css("display") === "block") {
+			if ($(this).find("i").hasClass("fa-caret-down")) {
+				$(this).find("i").removeClass("fa-caret-down");
+				$(this).find("i").addClass("fa-caret-up");
+			}
+			createRepoModal.setHeight(514);
+		}
+	});
+	var pullBtnRow = $("<div>").append(pullBtn).css({
+		"display" : "block",
+		"text-align" : "center"
 	});
 
 	var closeBtn = $("<button>").css({
@@ -1771,12 +1975,14 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 				"width" : "100%",
 				"height" : "270px"
 			});
+
+	var repoBody = $("<div>").append(rBody).append(pullBtnRow).append(remoteInputArea);
 	var createRepoModal = new gb.modal.Base({
 		"title" : "Create Repository",
 		"width" : 540,
-		"height" : 400,
+		"height" : 425,
 		"autoOpen" : true,
-		"body" : rBody,
+		"body" : repoBody,
 		"footer" : modalFooter
 	});
 	$(closeBtn).click(function() {
@@ -1792,7 +1998,13 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		var scheme = $(rSchemeInput).val();
 		var user = $(rIDInput).val();
 		var pass = $(rPassInput).val();
-		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, createRepoModal);
+		var rname = $(rrNameInput).val() === "" ? null : $(rrNameInput).val();
+		var rurl = $(rrURLInput).val() === "" ? null : $(rrURLInput).val();
+		if (rname === null || rurl === null) {
+			rname = null;
+			rurl = null;
+		}
+		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
 	});
 };
 
@@ -1807,7 +2019,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, modal) {
+gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -1818,6 +2030,10 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		"dbSchema" : scheme,
 		"dbUser" : user,
 		"dbPassword" : pass
+	}
+	if (rname && rurl) {
+		params["remoteName"] = rname;
+		params["remoteURL"] = rurl;
 	}
 	// + "&" + jQuery.param(params),
 	var checkURL = this.getInitRepositoryURL();
@@ -2155,7 +2371,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var that = this;
 
-	this.sourceSelect = $("<select>").css({
+	this.sourceSelect = $("<select>").addClass("gb-form").css({
 		"width" : "95%",
 		"height" : "90%"
 	});
@@ -2212,12 +2428,10 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 		"text-align" : "right",
 		"vertical-align" : "middle"
 	});
-	var nameInput = $("<input>").attr({
+	var nameInput = $("<input>").addClass("gb-form").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
+		"width" : "95%"
 	});
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
@@ -2391,10 +2605,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var nameInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 	var nameArea = $("<div>").append(nameInput).css({
 		"display" : "table-cell",
 		"width" : "65%",
@@ -2413,10 +2625,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var remoteURLInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
-		"width" : "95%",
-		"border" : "0",
-		"border-bottom" : "1px solid #898989"
-	});
+		"width" : "95%"
+	}).addClass("gb-form");
 
 	var remoteURLInputArea = $("<div>").append(remoteURLInput).css({
 		"display" : "table-cell",
@@ -2526,14 +2736,20 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
  * resolve conflict 창을 생성한다.
  * 
  * @method gb.versioning.Repository#resolveConflictModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            cub - 체크아웃 중인 브랜치
+ * @param {String}
+ *            tab - 대상 브랜치
+ * @param {Object[]}
+ *            features - 오버라이드할 객체 정보
+ * @param {gb.modal.Base}
+ *            cmodal - 완료후 닫을 모달 객체
  */
-gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, cub, tab, features, cmodal) {
+gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, trepo, cub, tab, ours, theirs, features, cmodal) {
 	var that = this;
 
 	var serverName = $("<span>").text("GeoServer: ").css({
@@ -2599,7 +2815,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	// "display" : "table-row"
 	});
 
-	var col1 = $("<th>");
+	var col1 = $("<th>").addClass("select-checkbox");
 	var col2 = $("<th>").text("No");
 	var col3 = $("<th>").text("Layer");
 	var col4 = $("<th>").text("Feature ID");
@@ -2608,9 +2824,27 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var row1 = $("<tr>").append(col1).append(col2).append(col3).append(col4).append(col5).append(col6);
 	var thead = $("<thead>").append(row1);
 	var tbody = $("<tbody>");
-	var table = $("<table>").append(thead).append(tbody);
+	this.conflictFeatureTbody = tbody;
+	var table = $("<table>").addClass("display").append(thead).append(tbody);
 	var tableArea = $("<div>").append(table).css({
 		"width" : "100%",
+	});
+
+	var selectedLabel = $("<span>").text("Selected Items");
+	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + repo + " - " + cub + "]").css({
+		"display" : "inline-block",
+		"width" : "49%"
+	});
+	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + trepo + " - " + tab + "]").css({
+		"display" : "inline-block",
+		"width" : "49%"
+	});
+	var selectedButtons = $("<span>").append(useCubBtn).append(useTabBtn);
+	var wholeSelectBody = $("<div>").append(selectedButtons).css({
+		"float" : "left",
+		"margin" : "10px 0",
+		"display" : "none",
+		"width" : "100%"
 	});
 
 	var infoBody = $("<div>").append(geoserverArea).append(repoNameArea).append(cubNameArea).append(tabNameArea).css({
@@ -2620,70 +2854,219 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		"height" : "138px"
 	});
 
-	var body = $("<div>").append(tableArea);
+	var body = $("<div>").append(tableArea).append(wholeSelectBody);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Merge");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
 		"title" : "Resolve Conflicts",
 		"width" : 770,
-		"height" : 580,
+		"height" : 800,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
 	});
 	var data = [];
+	this.setCommitId(ours, theirs);
 	for (var i = 0; i < features.length; i++) {
-		var layer = features[i].id.substring(0, features[i].id.indexOf("/"));
-		var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
-		var item = [ "", i + 1, layer, fid, "", "" ];
-		data.push(item);
+		if (features[i].change === "CONFLICT") {
+			var layer = features[i].id.substring(0, features[i].id.indexOf("/"));
+			var fid = features[i].id.substring(features[i].id.indexOf("/") + 1);
+			var oval = features[i].ourvalue;
+			var tval = features[i].theirvalue;
+			var diffObj = {
+				"ourvalue" : oval,
+				"theirvalue" : tval
+			};
+			var item = [ "", i + 1, layer, fid, "", diffObj ];
+			data.push(item);
+		}
 	}
+
+	var select;
+	var optcub;
+	var opttab;
+
 	console.log(data);
 	$(table).DataTable({
 		"data" : data,
-		"columnDefs" : [ {
-			"targets" : 0,
+		"columns" : [ {
 			"orderable" : false,
-			"className" : 'select-checkbox'
-		},
-		// {
-		// "targets" : 4,
-		// "orderable" : false,
-		// "data" : null,
-		// "defaultContent" : "<button class='btn btn-default'>Click</button>"
-		// },
-		{
-			"targets" : 5,
+			"className" : "select-checkbox gb-repository-select-checkbox"
+		}, {
+			"title" : "No"
+		}, {
+			"title" : "Layer"
+		}, {
+			"title" : "Feature ID"
+		}, {
+			"title" : "Resolution",
+			'searchable' : false,
+			"orderable" : false,
+			"render" : function(d, t, r, m) {
+				select = $("<select>").addClass("gb-form").addClass("gb-repository-instead-branch");
+
+				var optcub = $("<option>").text(repo + " - " + cub).attr({
+					"value" : "ours"
+				});
+				var opttab = $("<option>").text(trepo + " - " + tab).attr({
+					"value" : "theirs"
+				});
+
+				$(select).append(optcub);
+				$(select).append(opttab);
+
+				if (d === $(optcub).val() || d === "") {
+					$(select).val(cub);
+				} else if (d === $(opttab).val()) {
+					$(select).val(tab);
+				}
+
+				console.log(d);
+				console.log(t);
+				console.log(r);
+				console.log(m);
+				return $(select).prop("outerHTML");
+			}
+		}, {
+			"title" : "Detail",
+			'searchable' : false,
 			"orderable" : false,
 			"data" : null,
-			"defaultContent" : "<button class='btn btn-default'>Click</button>"
+			"defaultContent" : "<button class='gb-button gb-button-default gb-repository-conflict-detail'>Click</button>"
 		} ],
-		"colums" : [ null, null, null, null, {
-			"render" : function(d, t, r) {
-				var $select = $("<select></select>", {
-					"id" : r[0] + "start",
-					"value" : d
-				});
-				return $select.prop("outerHTML");
-			}
-		}, null ],
 		"select" : {
-			"style" : 'os',
+			"style" : 'multi',
 			"selector" : 'td:first-child'
 		},
 		"order" : [ [ 1, 'asc' ] ]
+	});
+
+	var tableObj = $(table).DataTable();
+
+	tableObj.on("click", "th.select-checkbox", function() {
+		if ($("th.select-checkbox").hasClass("selected")) {
+			tableObj.rows().deselect();
+			$("th.select-checkbox").removeClass("selected");
+		} else {
+			tableObj.rows().select();
+			$("th.select-checkbox").addClass("selected");
+		}
+	}).on("select deselect", function() {
+		if (tableObj.rows({
+			selected : true
+		}).count() !== tableObj.rows().count()) {
+			$("th.select-checkbox").removeClass("selected");
+		} else {
+			$("th.select-checkbox").addClass("selected");
+		}
+	});
+
+	tableObj.on("select", function() {
+		if (tableObj.rows({
+			selected : true
+		}).count() > 0) {
+			$(wholeSelectBody).show();
+		} else {
+			$(wholeSelectBody).hide();
+		}
+	});
+
+	tableObj.on("deselect", function() {
+		if (tableObj.rows({
+			selected : true
+		}).count() > 0) {
+			$(wholeSelectBody).show();
+		} else {
+			$(wholeSelectBody).hide();
+		}
+	});
+
+	$(useCubBtn).click(function() {
+		console.log(tableObj.rows({
+			selected : true
+		}).indexes());
+		var length = tableObj.rows({
+			selected : true
+		}).indexes().count();
+		var arr = tableObj.rows({
+			selected : true
+		}).indexes();
+		for (var i = 0; i < length; i++) {
+			var select = $(that.conflictFeatureTbody).find("tr").eq(arr[i]).find(".gb-repository-instead-branch");
+			$(select).val("ours");
+			$(select).trigger("change");
+		}
+	});
+
+	$(useTabBtn).click(function() {
+		console.log(tableObj.rows({
+			selected : true
+		}).indexes());
+		var length = tableObj.rows({
+			selected : true
+		}).indexes().count();
+		var arr = tableObj.rows({
+			selected : true
+		}).indexes();
+		for (var i = 0; i < length; i++) {
+			var select = $(that.conflictFeatureTbody).find("tr").eq(arr[i]).find(".gb-repository-instead-branch");
+			$(select).val("theirs");
+			$(select).trigger("change");
+		}
+	});
+
+	$(table).find("tbody").off("click", ".gb-repository-conflict-detail");
+
+	$(table).find("tbody").on("click", ".gb-repository-conflict-detail", function() {
+		console.log($(this).val());
+		// console.log($(this).parents(2)[0]);
+		var idx = tableObj.row($(this).parents().eq(1)).index();
+		console.log(tableObj.row($(this).parents().eq(1)).index());
+		// data[idx][4] = $(this).val();
+		console.log(data[idx][5]);
+		var path = data[idx][2] + "/" + data[idx][3];
+		var fid = data[idx][5];
+		console.log($(this).parents().eq(1)[0]);
+		var setVal = $(this).parents().eq(1).find(".gb-repository-instead-branch").val();
+		that.conflictDetailModal(server, repo, trepo, cub, tab, path, data[idx][5].ourvalue, data[idx][5].theirvalue, setVal, idx);
+	});
+
+	$(table).find("tbody").off("change", ".gb-repository-instead-branch");
+
+	$(table).find("tbody").on("change", ".gb-repository-instead-branch", function() {
+		console.log($(this).val());
+		// console.log($(this).parents(2)[0]);
+		var idx = tableObj.row($(this).parents().eq(1)).index();
+		console.log(tableObj.row($(this).parents().eq(1)).index());
+		data[idx][4] = $(this).val();
+		console.log(data[idx][4]);
+		console.log(data);
 	});
 
 	$(closeBtn).click(function() {
 		modal.close();
 	});
 	$(okBtn).click(function() {
+		console.log($(table).DataTable().data());
+		var data = $(table).DataTable().data();
+		var features = [];
+		for (var i = 0; i < data.length; i++) {
+			var obj = {
+				"path" : data[i][2] + "/" + data[i][3],
+				"version" : data[i][4] === "" || data[i][4] === "ours" ? "ours" : "theirs"
+			};
+			features.push(obj);
+		}
+		console.log(features);
+		var tid = that.getJSTree().getTransactionId(that.getNowRepository().id);
+		console.log(tid);
+		that.resolveConflict(server, repo, features, tid, modal);
 		cmodal.close();
 		// var server = that.getNowServer();
 		// var repo = that.getNowRepository();
@@ -2692,3 +3075,634 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 		// that.addRemoteRepository(server.text, repo.text, name, url, modal);
 	});
 };
+
+/**
+ * resolve conflict 요청한다.
+ * 
+ * @method gb.versioning.Repository#resolveConflict
+ * @param {Object[]}
+ *            path - 적용할 피처 아이디와 버전
+ * @param {Object}
+ *            modal - 요청 완료후 닫을 모달 객체
+ */
+gb.versioning.Repository.prototype.resolveConflict = function(server, repo, features, tid, modal) {
+	console.log(this.getResolveConflictURL());
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"features" : features,
+		"transactionId" : tid
+	};
+	console.log(params);
+	var url = this.getResolveConflictURL();
+	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
+	console.log(withoutParamURL);
+	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
+	console.log(queryString);
+	var queryParams = {};
+	if (queryString) {
+		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
+			return key === "" ? value : decodeURIComponent(value);
+		});
+	}
+	console.log(queryParams);
+	var finalParams = {};
+	$.extend(finalParams, params, queryParams);
+	console.log(finalParams);
+
+	var form = $("<form>");
+	var formData = new FormData(form[0]);
+	var keys = Object.keys(finalParams);
+	for (var i = 0; i < keys.length; i++) {
+		if (Array.isArray(finalParams[keys[i]])) {
+			formData.append(keys[i], JSON.stringify(finalParams[keys[i]]));
+		} else {
+			formData.append(keys[i], finalParams[keys[i]]);
+		}
+	}
+
+	$.ajax({
+		url : withoutParamURL,
+		method : "POST",
+		enctype : 'multipart/form-data',
+		contentType : false,
+		data : formData,
+		processData : false,
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			var success = true;
+			if (Array.isArray(data)) {
+				for (var i = 0; i < data.length; i++) {
+					if (data[i].success !== "true") {
+						success = false;
+					}
+				}
+			}
+			if (success === true) {
+				var msg1 = $("<div>").text("Merge is complete.").css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					"text-align" : "center",
+					"font-size" : "16px"
+				});
+				var body = $("<div>").append(msg1).append(msg2);
+				var closeBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-default").text("Later");
+				var okBtn = $("<button>").css({
+					"float" : "right"
+				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+				var commitModal = new gb.modal.Base({
+					"title" : "Commit Changes",
+					"width" : 310,
+					"height" : 200,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : buttonArea
+				});
+				$(closeBtn).click(function() {
+					commitModal.close();
+				});
+				$(okBtn).click(function() {
+					modal.close();
+					that.endTransaction(server, repo, tid, commitModal);
+				});
+			} else {
+				var title = "Error";
+				var msg = "Override failed. Please try again."
+				that.messageModal(title, msg);
+			}
+		}
+	});
+}
+
+/**
+ * conflict detail 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#conflictDetailModal
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            cub - 체크아웃 중인 브랜치
+ * @param {String}
+ *            tab - 대상 브랜치
+ * @param {Object[]}
+ *            features - 오버라이드할 객체 정보
+ * @param {gb.modal.Base}
+ *            cmodal - 완료후 닫을 모달 객체
+ */
+gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
+	var that = this;
+
+	var crepo = $("<div>").append(crepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var cbranch = $("<div>").append(cub).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
+	// var cfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var cheadtd1 = $("<th>").text("Name");
+	var cheadtd2 = $("<th>").text("Value");
+	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
+	var cattrthead = $("<thead>").append(cheadth);
+	var cattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
+	var cattribute = $("<div>").append(cattrtable).css({
+		"height" : "370px",
+		"width" : "100%",
+		"overflow" : "hidden"
+	});
+	var carea = $("<div>").append(crepo).append(cbranch).append(this.cfeature).append(cattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	// this.conflictView = new ol.View({
+	// "center" : [ 0, 0 ],
+	// "zoom" : 1
+	// });
+	// this.cmap = new ol.Map({
+	// "target" : $(cfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
+
+	var trepo = $("<div>").append(trepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var tbranch = $("<div>").append(tab).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
+	// var tfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var theadtd1 = $("<th>").text("Name");
+	var theadtd2 = $("<th>").text("Value");
+	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
+	var tattrthead = $("<thead>").append(theadth);
+	var tattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
+	var tattribute = $("<div>").append(tattrtable).css({
+		"height" : "370px",
+		"width" : "100%",
+		"overflow" : "hidden"
+	});
+
+	$(cattrtbody).on("scroll", function() {
+		$(tattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	});
+
+	// $(tattribute).on("scroll", function() {
+	// $(cattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft",
+	// this.scrollLeft);
+	// });
+
+	var tarea = $("<div>").append(trepo).append(tbranch).append(this.tfeature).append(tattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	// this.tmap = new ol.Map({
+	// "target" : $(tfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
+
+	var ctarea = $("<div>").append(carea).append(tarea);
+
+	var cubOpt = $("<option>").text(crepos + " - " + cub).attr({
+		"value" : "ours"
+	});
+	var tabOpt = $("<option>").text(trepos + " - " + tab).attr({
+		"value" : "theirs"
+	});
+	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
+	$(branchSelect).val(val);
+	var sarea = $("<div>").append(branchSelect).css({
+		"padding" : "10px"
+	});
+
+	var body = $("<div>").append(ctarea).append(sarea);
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Use");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : "Compare Conflicts",
+		"width" : 770,
+		"height" : 840,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	$(okBtn).click(function() {
+		console.log(idx);
+		$(branchSelect).val();
+		console.log($(branchSelect).val());
+		var select = $(that.conflictFeatureTbody).find("tr").eq(idx).find(".gb-repository-instead-branch");
+		$(select).filter("option:selected").text();
+		console.log($(select).find("option").filter(":selected").val());
+		$(select).val($(branchSelect).val());
+		$(select).trigger("change");
+		modal.close();
+	});
+
+	var cparams1 = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"commitId" : this.getCommitId().ours,
+		"featureId" : fid1
+	}
+
+	var cparams2 = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"commitId" : this.getCommitId().theirs,
+		"featureId" : fid2
+	}
+
+	var wkt1;
+	var wkt2;
+	if (fid1 !== "0000000000000000000000000000000000000000") {
+		var fobjectURL1 = this.getCatFeatureObjectURL();
+		if (fobjectURL1.indexOf("?") !== -1) {
+			fobjectURL1 += "&";
+			fobjectURL1 += jQuery.param(cparams1);
+		} else {
+			fobjectURL1 += "?";
+			fobjectURL1 += jQuery.param(cparams1);
+		}
+
+		$.ajax({
+			url : fobjectURL1,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : cparams1,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					var attrs = data.attributes;
+					for (var i = 0; i < attrs.length; i++) {
+						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+								|| attrs[i].type === "MULTIPOLYGON") {
+							var wkt = attrs[i].value;
+							wkt1 = wkt;
+							console.log(wkt1);
+							var format = new ol.format.WKT();
+							var geom = format.readGeometry(wkt);
+							var feature = new ol.Feature({
+								"geometry" : geom
+							});
+							feature.setId(data.featureId);
+							console.log(feature);
+							console.log(feature.getId());
+							var style = new ol.style.Style({
+								image : new ol.style.Circle({
+									radius : 5,
+									fill : new ol.style.Fill({
+										color : 'orange'
+									})
+								}),
+								stroke : new ol.style.Stroke({
+									width : 1,
+									color : 'orange'
+								}),
+								fill : new ol.style.Fill({
+									color : 'orange'
+								})
+							});
+
+							var vlayer = new ol.layer.Vector({
+								"style" : style,
+								"source" : new ol.source.Vector({
+									"features" : [ feature ]
+								}),
+								"zIndex" : 2
+							});
+
+							var osm = new ol.layer.Tile({
+								"source" : new ol.source.OSM(),
+								"zIndex" : 1
+							});
+
+							var epsg = attrs[i].crs.toLowerCase();
+							var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+							var intcode = parseInt(code);
+							console.log(code);
+
+							var ccrs = new gb.crs.BaseCRS({
+								"title" : "Base CRS",
+								"width" : 300,
+								"height" : 200,
+								"autoOpen" : false,
+								"message" : undefined,
+								"map" : that.getCurrentMap(),
+								"epsg" : Number.isInteger(intcode) ? code : "4326"
+							});
+
+							that.getCurrentMap().updateSize();
+							that.getCurrentMap().getLayers().clear();
+							that.getCurrentMap().addLayer(osm);
+							that.getCurrentMap().addLayer(vlayer);
+							that.getCurrentMap().getView().fit(geom);
+
+						} else {
+							var name = attrs[i].name;
+							var value = attrs[i].value;
+							var td1 = $("<td>").text(name);
+							var td2 = $("<td>").text(value).css({
+								"word-break" : "break-word",
+								"overflow-wrap" : "break-word"
+							});
+							var tr = $("<tr>").append(td1).append(td2);
+							$(cattrtbody).append(tr);
+						}
+
+					}
+
+					if (fid2 !== "0000000000000000000000000000000000000000") {
+						var fobjectURL2 = that.getCatFeatureObjectURL();
+						if (fobjectURL2.indexOf("?") !== -1) {
+							fobjectURL2 += "&";
+							fobjectURL2 += jQuery.param(cparams2);
+						} else {
+							fobjectURL2 += "?";
+							fobjectURL2 += jQuery.param(cparams2);
+						}
+
+						$.ajax({
+							url : fobjectURL2,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							// data : cparams2,
+							// dataType : 'jsonp',
+							// jsonpCallback : 'getJson',
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data) {
+								console.log(data);
+								if (data.success === "true") {
+									var attrs = data.attributes;
+									for (var i = 0; i < attrs.length; i++) {
+										if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+												|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+												|| attrs[i].type === "MULTIPOLYGON") {
+											var wkt = attrs[i].value;
+											wkt2 = wkt;
+											if (wkt1 !== wkt2) {
+												$(that.cfeature).css({
+													"border" : "3px solid #ffc523"
+												});
+												$(that.tfeature).css({
+													"border" : "3px solid #ffc523"
+												});
+											} else {
+												$(that.cfeature).css({
+													"border" : "1px solid #ccc"
+												});
+												$(that.tfeature).css({
+													"border" : "1px solid #ccc"
+												});
+											}
+											console.log(wkt2);
+											var format = new ol.format.WKT();
+											var geom = format.readGeometry(wkt);
+											var feature = new ol.Feature({
+												"geometry" : geom
+											});
+											feature.setId(data.featureId);
+											console.log(feature);
+											console.log(feature.getId());
+											var style = new ol.style.Style({
+												image : new ol.style.Circle({
+													radius : 5,
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												}),
+												stroke : new ol.style.Stroke({
+													width : 1,
+													color : 'orange'
+												}),
+												fill : new ol.style.Fill({
+													color : 'orange'
+												})
+											});
+
+											var vlayer = new ol.layer.Vector({
+												"style" : style,
+												"source" : new ol.source.Vector({
+													"features" : [ feature ]
+												}),
+												"zIndex" : 2
+											});
+
+											var osm = new ol.layer.Tile({
+												"source" : new ol.source.OSM(),
+												"zIndex" : 1
+											});
+
+											var epsg = attrs[i].crs.toLowerCase();
+											var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+											var intcode = parseInt(code);
+											console.log(code);
+
+											var ccrs = new gb.crs.BaseCRS({
+												"title" : "Base CRS",
+												"width" : 300,
+												"height" : 200,
+												"autoOpen" : false,
+												"message" : undefined,
+												"map" : that.getTargetMap(),
+												"epsg" : Number.isInteger(intcode) ? code : "4326"
+											});
+
+											that.getTargetMap().updateSize();
+											that.getTargetMap().getLayers().clear();
+											that.getTargetMap().addLayer(osm);
+											that.getTargetMap().addLayer(vlayer);
+											var geom = feature.getGeometry();
+
+											that.getTargetMap().getView().fit(geom);
+
+										} else {
+											var name = attrs[i].name;
+											var value = attrs[i].value;
+											var td1 = $("<td>").text(name);
+											var td2 = $("<td>").text(value).css({
+												"word-break" : "break-word",
+												"overflow-wrap" : "break-word"
+											});
+											var tr = $("<tr>").append(td1).append(td2);
+											$(tattrtbody).append(tr);
+										}
+
+									}
+									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
+										var trs = $(cattrtbody).find("tr");
+										var ttrs = $(tattrtbody).find("tr");
+										for (var j = 0; j < trs.length; j++) {
+											if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0).text()) {
+
+												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {
+													$(trs[j]).css({
+														"background-color" : "#ffc523"
+													});
+													$(ttrs[j]).css({
+														"background-color" : "#ffc523"
+													});
+												}
+											}
+										}
+									}
+								} else {
+									var title = "Error";
+									var msg = "Retrieve feature failed."
+									that.messageModal(title, msg);
+								}
+							},
+							error : function(jqXHR, textStatus, errorThrown) {
+
+							}
+						});
+					} else {
+						that.getTargetMap().updateSize();
+						var td1 = $("<td>").text("Deleted");
+						var td2 = $("<td>").text("Deleted");
+						var tr = $("<tr>").append(td1).append(td2);
+						$(tattrtbody).append(tr);
+					}
+				} else {
+					var title = "Error";
+					var msg = "Retrieve feature failed."
+					that.messageModal(title, msg);
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+
+			}
+		});
+	} else {
+
+	}
+
+};
+
+/**
+ * commit id 를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setCommitId
+ * @param {String}
+ *            ours - 현재 브랜치 커밋의 오브젝트 아이디
+ * @param {String}
+ *            theirs - 타겟 브랜치 커밋의 오브젝트 아이디
+ */
+gb.versioning.Repository.prototype.setCommitId = function(ours, theirs) {
+	this.commitId = {
+		"ours" : ours,
+		"theirs" : theirs
+	};
+}
+
+/**
+ * commit id 를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCommitId
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getCommitId = function() {
+	return this.commitId;
+}
+
+/**
+ * 체크아웃 브랜치의 충돌피처를 보여줄 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCurrentMap
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getCurrentMap = function() {
+	return this.cmap;
+}
+
+/**
+ * fetch 요청을 할 레파지토리의 이름을 저장한다.
+ * 
+ * @method gb.versioning.Repository#setFetchRepository
+ * @param {String}
+ *            remote - fetch할 리모트 레파지토리 이름
+ * 
+ */
+gb.versioning.Repository.prototype.setFetchRepository = function(remote) {
+	this.fetchRemote = remote;
+}
+
+/**
+ * fetch 요청을 할 레파지토리의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFetchRepository
+ * @return {String} - fetch할 리모트 레파지토리 이름
+ * 
+ */
+gb.versioning.Repository.prototype.getFetchRepository = function() {
+	return this.fetchRemote;
+}

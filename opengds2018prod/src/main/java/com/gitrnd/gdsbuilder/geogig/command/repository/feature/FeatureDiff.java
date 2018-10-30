@@ -1,7 +1,4 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.object;
+package com.gitrnd.gdsbuilder.geogig.command.repository.feature;
 
 import java.util.Base64;
 
@@ -21,27 +18,23 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 
-/**
- * Geogig Cat Command Execution Class
- * 
- * @author GIT
- *
- */
-public class CatObject {
+public class FeatureDiff {
 
-	private static final Log logger = LogFactory.getLog(CatObject.class);
+	private static final Log logger = LogFactory.getLog(FeatureDiff.class);
 
 	private static final String geogig = "geogig";
-	private static final String command = "cat";
-	private static final String param_objectid = "objectid=";
+	private static final String command = "featurediff";
+	private static final String param_path = "path=";
+	private static final String param_oldTreeish = "oldTreeish=";
+	private static final String param_newTreeish = "newTreeish=";
+	private static final String param_all = "all="; // optional
 
-	public GeogigCat executeCommand(String baseURL, String username, String password, String repository,
-			String objectid) {
+	public GeogigFeatureDiff executeCommand(String baseURL, String username, String password, String repository,
+			String path, String oldTreeish, String newTreeish) {
 
 		// restTemplate
-
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
 		factory.setReadTimeout(5000);
 		factory.setConnectTimeout(3000);
@@ -57,13 +50,14 @@ public class CatObject {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_objectid + objectid;
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command + "?" + param_path + path + "&"
+				+ param_oldTreeish + oldTreeish + "&" + param_newTreeish + newTreeish + "&" + param_all + "true";
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigCat> responseEntity = null;
+		ResponseEntity<GeogigFeatureDiff> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigCat.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigFeatureDiff.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {

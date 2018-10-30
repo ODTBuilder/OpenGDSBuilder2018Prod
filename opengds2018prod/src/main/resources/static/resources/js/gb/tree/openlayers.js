@@ -78,7 +78,7 @@ gb.tree.OpenLayers = function(obj) {
 			addImgIcon).css({
 		"float" : "right"
 	}).click(function() {
-		that.openAddLayer();
+		that.createImageModal();
 	});
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon)
@@ -578,3 +578,103 @@ gb.tree.loadShpZip = function(epsg, encode, file, map) {
 		});
 	}
 }
+
+/**
+ * Image file 업로드창을 생성한다.
+ * 
+ * @method gb.tree.OpenLayers#createImageModal
+ */
+gb.tree.OpenLayers.prototype.createImageModal = function() {
+	var that = this;
+
+	var file, result;
+
+	// 파일 선택 input
+	var fileSelect = 
+		$("<input type='file' accept='image/*'>")
+			.change(function() {
+				if (!!this.files) {
+					file = this.files[0];
+					if (file.size > 0) {
+						fileInfo.text(file.name + ' , ' + file.size + ' kb');
+						var reader = new FileReader();
+						reader.onload = function(){
+							var output = document.getElementById('imagePreview');
+							var image = new Image();
+							
+							output.src = reader.result;
+							
+							image.src = reader.result;
+							image.onload = function(){
+								new gb.layer.ImageLayer({
+									map: that.map,
+									url: reader.result,
+									width: image.width,
+									height: image.height,
+									title: file.name
+								});
+							}
+						}
+						reader.readAsDataURL(file);
+					}
+				}
+			});
+	
+	// Iamge preview
+	var preview = $("<img id='imagePreview' height='218' width='518'>");
+
+	var uploadBtn = $("<button type='button'>").addClass(
+			"btn btn-primary btn-lg btn-block").text("Upload Image")
+			.mouseenter(function() {
+				$(this).css({
+					"background-color" : "#00c4bc"
+				});
+			}).mouseleave(function() {
+				$(this).css({
+					"background-color" : "#00b5ad"
+				});
+			}).click(function() {
+				fileSelect.click();
+			}).css({
+				"background-color" : "#00b5ad",
+				"border-color" : "transparent"
+			});
+
+	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
+		"text-align" : "center"
+	});
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+			.append(closeBtn);
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(preview)
+			.css({
+				"display" : "table",
+				"width" : "100%"
+			});
+
+	var addGeoServerModal = new gb.modal.Base({
+		"title" : this.translation.addLayer[this.locale],
+		"width" : 540,
+		"height" : 460,
+		"autoOpen" : true,
+		"body" : gBody,
+		"footer" : modalFooter
+	});
+	
+	$(closeBtn).click(function() {
+		addGeoServerModal.close();
+	});
+	
+	$(okBtn).click(function() {
+		addGeoServerModal.close();
+	});
+};

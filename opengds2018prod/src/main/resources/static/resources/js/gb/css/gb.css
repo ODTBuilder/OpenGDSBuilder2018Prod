@@ -1,5 +1,77 @@
 @CHARSET "UTF-8";
 
+.gb-versioning-feature-td {
+	display: table-cell;
+	padding: 5px;
+}
+
+.gb-versioning-feature-tr {
+	display: table-row;
+}
+
+.gb-versioning-feature-trg {
+	display: table-row-group;
+}
+
+.ol-geocoder.gcd-gl-container {
+	top: 10px !important;
+	left: 10px !important;
+}
+
+.gb-scale-line {
+	background: rgb(159, 159, 159);
+	border-radius: 2px;
+	bottom: 3px;
+	left: 8px;
+	padding: 2px;
+	position: absolute;
+	height: 20px;
+}
+
+.gb-scale-line-inner {
+	border: 1px solid #eee;
+	border-top: none;
+	color: #eee;
+	font-size: 10px;
+	text-align: center;
+	margin: 1px;
+	will-change: contents, width;
+	height: 15px;
+	line-height: 13px;
+}
+
+table.dataTable tr th.select-checkbox.selected::after {
+	content: "✔";
+	margin-top: -11px;
+	margin-left: -4px;
+	text-align: center;
+	text-shadow: rgb(176, 190, 217) 1px 1px, rgb(176, 190, 217) -1px -1px, rgb(176, 190, 217) 1px -1px, rgb(176, 190, 217)
+		-1px 1px;
+}
+
+table.dataTable thead td.select-checkbox, table.dataTable thead th.select-checkbox {
+	position: relative;
+}
+
+table.dataTable thead td.select-checkbox:before, table.dataTable thead td.select-checkbox:after, table.dataTable thead th.select-checkbox:before,
+	table.dataTable thead th.select-checkbox:after {
+	display: block;
+	position: absolute;
+	top: 1.2em;
+	left: 50%;
+	width: 12px;
+	height: 12px;
+	box-sizing: border-box;
+}
+
+table.dataTable thead td.select-checkbox:before, table.dataTable thead th.select-checkbox:before {
+	content: ' ';
+	margin-top: -6px;
+	margin-left: -6px;
+	border: 1px solid black;
+	border-radius: 3px;
+}
+
 .gb-geoserver-uploadshp-epsg-label {
 	margin: 5px 0;
 	padding: 5px;
@@ -256,6 +328,10 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	background-image: none;
 }
 
+.gb-repository-select-checkbox:before, .gb-repository-select-checkbox:after {
+	top: 50% !important;
+}
+
 .gb-button-clear {
 	border: 0;
 	background-color: transparent;
@@ -276,6 +352,29 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	color: #fff;
 	background-color: #337ab7;
 	border-color: #2e6da4;
+}
+
+.gb-button-link, .gb-button-link:active, .gb-button-link.active, .gb-button-link[disabled], fieldset[disabled] .gb-button-link
+	{
+	background-color: transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.gb-button-link, .gb-button-link:hover, .gb-button-link:focus, .gb-button-link:active {
+	border-color: transparent;
+}
+
+.gb-button-link:hover, .gb-button-link:focus {
+	color: #23527c;
+	text-decoration: underline;
+	background-color: transparent;
+}
+
+.gb-button-link[disabled]:hover, fieldset[disabled] .gb-button-link:hover, .gb-button-link[disabled]:focus, fieldset[disabled] .gb-button-link:focus
+	{
+	color: #777;
+	text-decoration: none;
 }
 
 .gb-modal-head>button {
@@ -394,7 +493,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	margin-bottom: 10px;
 }
 
-.gb-table>thead>tr>th, .gb-table>thead>tr>td {
+.gb-table>thead>tr>th, .gb-table>thead>tr>td, .gb-table>.thead>.tr>.th, .gb-table>.thead>.tr>.td {
 	vertical-align: bottom;
 	border-bottom: 2px solid #ddd;
 	padding: 4px 8px;
@@ -404,9 +503,10 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	text-align: center;
 }
 
-.gb-table>tbody>tr>th, .gb-table>tbody>tr>td, .gb-table>tr>th {
+.gb-table>tbody>tr>th, .gb-table>.tbody>.tr>.th, .gb-table>tbody>tr>td, .gb-table>.tbody>.tr>.td, .gb-table>tr>th,
+	.gb-table>.tr>.th {
 	padding: 8px;
-	line-height: 1.42857143;
+	/* 	line-height: 1.42857143; */
 	vertical-align: top;
 	border-top: 1px solid #ddd;
 }

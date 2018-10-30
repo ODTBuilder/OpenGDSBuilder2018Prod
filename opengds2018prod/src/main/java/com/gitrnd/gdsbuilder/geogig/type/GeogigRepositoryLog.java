@@ -32,6 +32,8 @@ public class GeogigRepositoryLog {
 
 	private String error;
 
+	private String nextPage;
+
 	/**
 	 * Geogig Command 응답 성공 여부 반환
 	 * 
@@ -97,6 +99,15 @@ public class GeogigRepositoryLog {
 		this.error = error;
 	}
 
+	@XmlElement(name = "nextPage")
+	public String getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(String nextPage) {
+		this.nextPage = nextPage;
+	}
+
 	/**
 	 * Commit 객체
 	 * 
@@ -126,6 +137,9 @@ public class GeogigRepositoryLog {
 		 * GeogigAuthor
 		 */
 		private GeogigAuthor author;
+
+		private String message;
+
 		/**
 		 * 생성된 feature 개수
 		 */
@@ -177,6 +191,15 @@ public class GeogigRepositoryLog {
 		@XmlElement(name = "removes")
 		public String getRemoves() {
 			return removes;
+		}
+
+		@XmlElement(name = "message")
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
 		}
 
 		public void setCommitId(String commitId) {

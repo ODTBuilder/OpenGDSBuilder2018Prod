@@ -129,8 +129,8 @@ gb.modal.Base.prototype.getModal = function() {
  */
 gb.modal.Base.prototype.open = function() {
 	if(!this.keep){
-		$("body").append(this.modal);
 		$("body").append(this.background);
+		$("body").append(this.modal);
 	}
 	var highz = this.getMaxZIndex();
 	this.background.css({
@@ -240,14 +240,11 @@ gb.modal.Base.prototype.getHeight = function() {
  * @return {Number} 모달의 높이(픽셀)
  */
 gb.modal.Base.prototype.getMaxZIndex = function() {
-	var elems = document.getElementsByTagName("div");
-	var highest = 0;
-	for (var i = 0; i < elems.length; i++) {
-		var zindex=document.defaultView.getComputedStyle(elems[i],null).getPropertyValue("z-index");
-		if ((zindex > highest) && (zindex != 'auto'))
-		{
-			highest = zindex;
+	var maxZ = Math.max.apply(null,$.map($('body > div.gb-modal'), function(e,n){
+		if($(e).css('position')=='absolute'){
+			console.log($(e)[0]);
+			return parseInt($(e).css('z-index'))||1 ;
 		}
-	}
-	return highest;
+	}));
+	return maxZ;
 };

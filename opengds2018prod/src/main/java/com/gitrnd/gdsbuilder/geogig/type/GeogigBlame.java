@@ -23,8 +23,6 @@ public class GeogigBlame {
 
 	private String error;
 
-	@XmlElementWrapper(name = "Blame")
-	@XmlElement(name = "Attribute")
 	private List<Attribute> attributes;
 
 	@XmlElement(name = "success")
@@ -36,6 +34,8 @@ public class GeogigBlame {
 		this.success = success;
 	}
 
+	@XmlElementWrapper(name = "Blame")
+	@XmlElement(name = "Attribute")
 	public List<Attribute> getAttributes() {
 		return attributes;
 	}

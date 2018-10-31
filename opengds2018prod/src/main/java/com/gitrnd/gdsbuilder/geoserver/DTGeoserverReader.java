@@ -48,6 +48,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXParseException;
 
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
@@ -64,151 +65,154 @@ import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
-
-/** 
-* @ClassName: DTGeoserverReader 
-* @Description: GeoSolution과 관련 있는 data read 기능
-* @author JY.Kim 
-* @date 2017. 5. 2. 오후 2:38:58 
-*/
+/**
+ * @ClassName: DTGeoserverReader
+ * @Description: GeoSolution과 관련 있는 data read 기능
+ * @author JY.Kim
+ * @date 2017. 5. 2. 오후 2:38:58
+ */
 public class DTGeoserverReader extends GeoServerRESTReader {
-	
+
 	private final static Logger LOGGER = LoggerFactory.getLogger(DTGeoserverReader.class);
 
-    private final String baseurl;
-    private String username;
-    private String password;
-	
+	private final String baseurl;
+	private String username;
+	private String password;
+
 	public DTGeoserverReader(String gsUrl, String username, String password) throws MalformedURLException {
 		super(gsUrl, username, password);
 		this.baseurl = gsUrl;
 		this.username = username;
 		this.password = password;
-    }
-	
-	public DTGeoLayer getDTGeoLayer(String workspace, String name){
+	}
+
+	public DTGeoLayer getDTGeoLayer(String workspace, String name) {
 		DTGeoLayer dtGeolayer = null;
-		
+
 		if (workspace == null || workspace.isEmpty())
-            throw new IllegalArgumentException("Workspace may not be null");
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("Layername may not be null");
-        
-        RESTLayer layer = getLayer(workspace, name);
-        
-        if(layer!=null){
-        	if(layer.getType() != RESTLayer.Type.VECTOR)
-                throw new RuntimeException("Bad layer type for layer " + layer.getName());
-            
-            String response = loadFullURL(layer.getResourceUrl());
-            dtGeolayer = DTGeoLayer.build(response);
-            dtGeolayer.setStyle(layer.getDefaultStyle());
-        }
-        return dtGeolayer;
-	}
-	
-	@SuppressWarnings("unused")
-	public DTGeoGroupLayer getDTGeoGroupLayer(String workspace, String name){
-		if (workspace == null || workspace.isEmpty())
-            throw new IllegalArgumentException("Workspace may not be null");
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("Layername may not be null");
-        
-        String url;
-        if (workspace == null) {
-            url = "/rest/layergroups/" + name + ".xml";
-        } else {
-            url = "/rest/workspaces/" + workspace + "/layergroups/" + name + ".xml";
-        }        
-        
-        return DTGeoGroupLayer.build(load(url));
-	}
-	
-	public DTGeoLayerList getDTGeoLayerList(String workspace, ArrayList<String> layerNames){
-		if(workspace ==null || workspace.isEmpty())
 			throw new IllegalArgumentException("Workspace may not be null");
-		if(layerNames==null)
+		if (name == null || name.isEmpty())
+			throw new IllegalArgumentException("Layername may not be null");
+
+		RESTLayer layer = getLayer(workspace, name);
+
+		if (layer != null) {
+			if (layer.getType() != RESTLayer.Type.VECTOR)
+				throw new RuntimeException("Bad layer type for layer " + layer.getName());
+			String response = loadFullURL(layer.getResourceUrl());
+			dtGeolayer = DTGeoLayer.build(response);
+			if (dtGeolayer == null) {
+				return null;
+			}
+			dtGeolayer.setStyle(layer.getDefaultStyle());
+		}
+		return dtGeolayer;
+	}
+
+	@SuppressWarnings("unused")
+	public DTGeoGroupLayer getDTGeoGroupLayer(String workspace, String name) {
+		if (workspace == null || workspace.isEmpty())
+			throw new IllegalArgumentException("Workspace may not be null");
+		if (name == null || name.isEmpty())
+			throw new IllegalArgumentException("Layername may not be null");
+
+		String url;
+		if (workspace == null) {
+			url = "/rest/layergroups/" + name + ".xml";
+		} else {
+			url = "/rest/workspaces/" + workspace + "/layergroups/" + name + ".xml";
+		}
+
+		return DTGeoGroupLayer.build(load(url));
+	}
+
+	public DTGeoLayerList getDTGeoLayerList(String workspace, ArrayList<String> layerNames) {
+		if (workspace == null || workspace.isEmpty())
+			throw new IllegalArgumentException("Workspace may not be null");
+		if (layerNames == null)
 			throw new IllegalArgumentException("LayerNames may not be null");
 
 		DTGeoLayerList geoLayerList = new DTGeoLayerList();
-		if(layerNames!=null){
-			for(String layerName:layerNames){
+		if (layerNames != null) {
+			for (String layerName : layerNames) {
 				DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
-				RESTLayer layer = getLayer(workspace, layerName);
-//				dtGeoLayer.setStyle(layer.getDefaultStyle());
-				geoLayerList.add(dtGeoLayer);
+				if (dtGeoLayer != null) {
+					RESTLayer layer = getLayer(workspace, layerName);
+//					dtGeoLayer.setStyle(layer.getDefaultStyle());
+					geoLayerList.add(dtGeoLayer);
+				}
 			}
 		}
 		return geoLayerList;
 	}
-	
-	public DTGeoGroupLayerList getDTGeoGroupLayerList(String workspace, ArrayList<String> groupNames){
-		if(workspace ==null || workspace.isEmpty())
+
+	public DTGeoGroupLayerList getDTGeoGroupLayerList(String workspace, ArrayList<String> groupNames) {
+		if (workspace == null || workspace.isEmpty())
 			throw new IllegalArgumentException("Workspace may not be null");
-		if(groupNames==null)
+		if (groupNames == null)
 			throw new IllegalArgumentException("GroupNames may not be null");
-	/*	if(groupNames.size()==0)
-			throw new IllegalArgumentException("GroupNames may not be null");*/
-		
+		/*
+		 * if(groupNames.size()==0) throw new
+		 * IllegalArgumentException("GroupNames may not be null");
+		 */
+
 		DTGeoGroupLayerList groupLayerList = new DTGeoGroupLayerList();
-		
-		for(String groupName : groupNames){
+
+		for (String groupName : groupNames) {
 			DTGeoGroupLayer geoGroupLayer = getDTGeoGroupLayer(workspace, groupName);
 			groupLayerList.add(geoGroupLayer);
 		}
 		return groupLayerList;
 	};
-	
-	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverList, String parent, String serverName, EnTreeType type){
-		if(dtGeoserverList ==null){
+
+	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverList, String parent,
+			String serverName, EnTreeType type) {
+		if (dtGeoserverList == null) {
 			throw new IllegalArgumentException("DTGeoserverList may not be null");
 		}
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverList, parent, serverName, type);
 	}
-	
-	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList){
-		if(dtGeoserverList ==null){
+
+	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList) {
+		if (dtGeoserverList == null) {
 			throw new IllegalArgumentException("DTGeoserverList may not be null");
 		}
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverList);
 	}
-	
-	public List<String> getGeoserverContainNames(String workspace,String name){
+
+	public List<String> getGeoserverContainNames(String workspace, String name) {
 		List<String> containNames = new ArrayList<String>();
 		RESTFeatureTypeList featureTypeList = getFeatureTypes(workspace);
-		List<String> layerNames =new ArrayList<String>();
-		
+		List<String> layerNames = new ArrayList<String>();
+
 		layerNames = featureTypeList.getNames();
-		
-		
-		for(String layerName : layerNames){
-			if(layerName.contains(name)){
+
+		for (String layerName : layerNames) {
+			if (layerName.contains(name)) {
 				containNames.add(layerName);
 			}
 		}
 		return containNames;
 	}
-	
-	
-    public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
-        String url = "/rest/workspaces/" + workspace + "/datastores/"+datastores+"/featuretypes.xml";
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("### Retrieving featuretypes from " + url);
-        }
-        return RESTFeatureTypeList.build(load(url));
-    }
-	
-    private String load(String url) {
-        LOGGER.info("Loading from REST path " + url);
-        String response = HTTPUtils.get(baseurl + url, username, password);
-        return response;
-    }
 
-    private String loadFullURL(String url) {
-        LOGGER.info("Loading from REST path " + url);
-        String response = HTTPUtils.get(url, username, password);
-        return response;
-    }
-    
-    
+	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
+		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml";
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("### Retrieving featuretypes from " + url);
+		}
+		return RESTFeatureTypeList.build(load(url));
+	}
+
+	private String load(String url) {
+		LOGGER.info("Loading from REST path " + url);
+		String response = HTTPUtils.get(baseurl + url, username, password);
+		return response;
+	}
+
+	private String loadFullURL(String url) {
+		LOGGER.info("Loading from REST path " + url);
+		String response = HTTPUtils.get(url, username, password);
+		return response;
+	}
+
 }

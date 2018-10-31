@@ -46,6 +46,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSLayerGroupEncoder;
 import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 
 /**
  * Geoserver와 관련된 요청을 처리하는 클래스
@@ -61,6 +62,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	
 	private DTGeoserverReader dtReader;
 	private DTGeoserverPublisher dtPublisher;
+	private GeoServerRESTStyleManager restStyleManager;
 
 	
 	/*public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
@@ -219,6 +221,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList) {
 		if(dtGeoManager!=null){
 			dtReader = dtGeoManager.getReader();
+			restStyleManager = dtGeoManager.getStyleManager();
 		}else{
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
@@ -227,7 +230,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 			throw new IllegalArgumentException("LayerNames may not be null");
 		if (layerList.size() == 0)
 			throw new IllegalArgumentException("LayerNames may not be null");
-		return dtReader.getDTGeoLayerList(workspace, layerList);
+		
+		
+		DTGeoLayerList dtGeoLayerList = dtReader.getDTGeoLayerList(workspace, layerList);
+		if(dtGeoLayerList!=null){
+			String sld = "";
+			for(DTGeoLayer geoLayer : dtGeoLayerList){
+				if(!geoLayer.getStyle().isEmpty()){
+					sld = restStyleManager.getSLD(geoLayer.getStyle());
+					geoLayer.setSld(sld);
+				}
+			}
+		}
+		return dtGeoLayerList;
 	}
 
 	/**

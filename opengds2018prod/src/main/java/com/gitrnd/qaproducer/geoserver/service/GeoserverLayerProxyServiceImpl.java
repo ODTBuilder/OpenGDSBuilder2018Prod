@@ -27,12 +27,10 @@ package com.gitrnd.qaproducer.geoserver.service;
 
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -96,54 +94,6 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		String sld = "";
 		String sld_body = "";
 
-	/*	if(jsonObject!=null){
-			Iterator iterator = jsonObject.entrySet().iterator(); 
-			while(iterator.hasNext()){
-				String key = (String) iterator.next();
-				String value = (String) jsonObject.get(key);
-				
-				if (key.toLowerCase().equals("layers")) {
-					layers = value;
-				} else if (key.toLowerCase().equals("version")) {
-					version = value;
-				} else if (key.toLowerCase().equals("bbox")) {
-					bbox = value;
-				} else if (key.toLowerCase().equals("crs")) {
-					crs = value;
-				} else if (key.toLowerCase().equals("format")) {
-					format = EnWMSOutputFormat.getFromTypeName(value);
-				} else if (key.toLowerCase().equals("layers")) {
-					layers = value;
-				} else if (key.toLowerCase().equals("tiled")) {
-					tiled = value;
-				} else if (key.toLowerCase().equals("transparent")) {
-					transparent = value;
-				} else if (key.toLowerCase().equals("bgcolor")) {
-					bgcolor = value;
-				} else if (key.toLowerCase().equals("crs")) {
-					crs = value;
-				} else if (key.toLowerCase().equals("srs")) {
-					srs = value;
-				}  else if (key.toLowerCase().equals("bbox")) {
-					bbox = value;
-				} else if (key.toLowerCase().equals("width")) {
-					width = Integer.parseInt(value);
-				} else if (key.toLowerCase().equals("height")) {
-					height = Integer.parseInt(value);
-				} else if (key.toLowerCase().equals("styles")) {
-					styles = value;
-				} else if (key.toLowerCase().equals("exceptions")) {
-					exceptions = value;
-				} else if (key.toLowerCase().equals("time")) {
-					time = value;
-				} else if (key.toLowerCase().equals("sld")) {
-					sld = value;
-				} else if (key.toLowerCase().equals("sld_body")) {
-					sld_body = value;
-				}
-			}
-		}*/
-		
 		
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
@@ -225,6 +175,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		String srsName = "";
 
 		
+		
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();
@@ -291,7 +242,6 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		Integer j = null; //1.3.0 버전일경우 y->j
 		String exceptions = "application/vnd.ogc.se_xml";
 
-		
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {
 			String key = paramNames.nextElement().toString();

@@ -238,7 +238,7 @@ public class WMSGetMap {
 	public String getWMSGetMapURL(){
 		StringBuffer urlBuffer = new StringBuffer();
 		if(!this.serverURL.trim().equals("")){
-			if(serverURL.equals("")||version.equals("")||bbox.equals("")||width==0||height==0||format.equals("")){
+			if(serverURL.equals("")||version.equals("")||crs.equals("")||bbox.equals("")||width==0||height==0||format.equals("")){
 				throw new NullPointerException("필수값을 입력하지 않았습니다.");
 			}
 			urlBuffer.append(serverURL);

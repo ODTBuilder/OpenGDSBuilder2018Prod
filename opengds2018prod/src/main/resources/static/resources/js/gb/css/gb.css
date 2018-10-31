@@ -1,12 +1,40 @@
 @CHARSET "UTF-8";
 
+.gb-tooltip {
+	position: relative;
+	display: inline-block;
+}
+
+.gb-tooltip-text {
+	visibility: hidden;
+	width: 120px;
+	background-color: #ddd;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	/* Position the tooltip text - see examples below! */
+	position: absolute;
+	z-index: 1;
+	top: -5px;
+	right: 105%;
+}
+
+.gb-tooltip:hover .gb-tooltip-text {
+	visibility: visible;
+}
+
 .gb-versioning-feature-td {
 	display: table-cell;
-	margin: 5px;
+	padding: 5px;
 }
 
 .gb-versioning-feature-tr {
 	display: table-row;
+}
+
+.gb-versioning-feature-trg {
+	display: table-row-group;
 }
 
 .ol-geocoder.gcd-gl-container {
@@ -489,7 +517,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	margin-bottom: 10px;
 }
 
-.gb-table>thead>tr>th, .gb-table>thead>tr>td {
+.gb-table>thead>tr>th, .gb-table>thead>tr>td, .gb-table>.thead>.tr>.th, .gb-table>.thead>.tr>.td {
 	vertical-align: bottom;
 	border-bottom: 2px solid #ddd;
 	padding: 4px 8px;
@@ -499,9 +527,10 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	text-align: center;
 }
 
-.gb-table>tbody>tr>th, .gb-table>tbody>tr>td, .gb-table>tr>th {
+.gb-table>tbody>tr>th, .gb-table>.tbody>.tr>.th, .gb-table>tbody>tr>td, .gb-table>.tbody>.tr>.td, .gb-table>tr>th,
+	.gb-table>.tr>.th {
 	padding: 8px;
-	line-height: 1.42857143;
+	/* 	line-height: 1.42857143; */
 	vertical-align: top;
 	border-top: 1px solid #ddd;
 }

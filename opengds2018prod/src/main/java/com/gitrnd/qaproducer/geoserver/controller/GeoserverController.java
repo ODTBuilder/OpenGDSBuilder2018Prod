@@ -209,7 +209,6 @@ public class GeoserverController extends AbstractController {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
-		
 		String serverName = (String) request.getParameter("serverName");
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		String workspace = (String) request.getParameter("workspace");
@@ -263,7 +262,7 @@ public class GeoserverController extends AbstractController {
 	 * */
 	@RequestMapping(value = "geoserverWMSGetFeatureInfo.ajax", method = RequestMethod.GET)
 	@ResponseBody
-	public void geoserverWMSGetFeatureInfo(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
+	public void geoserverWMSGetFeatureInfo(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser)
 			throws ServletException, IOException{
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");

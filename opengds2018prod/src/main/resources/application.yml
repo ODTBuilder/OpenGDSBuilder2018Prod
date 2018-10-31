@@ -41,7 +41,7 @@ server:
     whitelabel:
       enabled: false
 gitrnd:
-  serverhost: 175.116.181.42
+  serverhost: 175.116.181.34
   apache:
     host: 127.0.0.1
     port: 8888

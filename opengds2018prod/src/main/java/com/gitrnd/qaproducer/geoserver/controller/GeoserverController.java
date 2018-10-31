@@ -222,35 +222,6 @@ public class GeoserverController extends AbstractController {
 			proService.requestGetMap(dtGeoserverManager, workspace, request, response);
 		}
 	}
-	
-	/**
-	 * WMS레이어 요청 
-	 * @author SG.Lee 
-	 * @Date 2017. 4 
-	 * @param request
-	 * @param response 
-	 * @throws Exception 
-	 */
-	@RequestMapping(value = "geoserverWMSGetMap.ajax", method = RequestMethod.POST)
-	@ResponseBody
-	public void geoserverPostWMSGetMap(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
-			throws Exception {
-		if(loginUser==null){
-			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
-		}
-		
-		String serverName = (String) request.getParameter("serverName");
-		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		String workspace = (String) request.getParameter("workspace");
-		if(dtGeoserverManager==null){
-			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
-		}else if(workspace.equals("")||workspace==null){
-			response.sendError(500, "workspace를 입력하지 않았습니다.");
-		}
-		else{
-			proService.requestGetMap(dtGeoserverManager, workspace, request, response);
-		}
-	}
 
 	/**
 	 * WFSGetFeature GET
@@ -264,35 +235,6 @@ public class GeoserverController extends AbstractController {
 	@RequestMapping(value = "geoserverWFSGetFeature.ajax", method = RequestMethod.GET)
 	@ResponseBody
 	public void geoserverGetWFSGetFeature(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
-			throws ServletException, IOException, Exception{
-		if(loginUser==null){
-			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
-		}
-		String serverName = (String) request.getParameter("serverName");
-		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		String workspace = (String) request.getParameter("workspace");
-		if(dtGeoserverManager==null){
-			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
-		}else if(workspace.equals("")||workspace==null){
-			response.sendError(500, "workspace를 입력하지 않았습니다.");
-		}
-		else{
-			proService.requestGetFeature(dtGeoserverManager, workspace, request, response);
-		}
-	}
-	
-	/**
-	 * WFSGetFeature POST
-	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:30:17
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException void
-	 * */
-	@RequestMapping(value = "geoserverWFSGetFeature.ajax", method = RequestMethod.POST)
-	@ResponseBody
-	public void geoserverPostWFSGetFeature(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser)
 			throws ServletException, IOException, Exception{
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");

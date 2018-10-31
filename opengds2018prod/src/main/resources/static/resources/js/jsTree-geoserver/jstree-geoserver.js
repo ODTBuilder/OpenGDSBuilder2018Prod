@@ -99,7 +99,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			var val = $(searchBar).val().replace(/(\s*)/g, '') || "4326";
 			b.srsname = "EPSG:" + val;
 			var form = document.createElement("form");
-			form.setAttribute("method", "post");
+			form.setAttribute("method", "get");
 			form.setAttribute("action", a);
 			var keys = Object.keys(b);
 			for (var j = 0; j < keys.length; j++) {

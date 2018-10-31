@@ -52,6 +52,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -255,10 +258,20 @@ public class DTGeoserverTree extends JSONArray {
 													Map<String, String> connetParams = dStore.getConnectionParameters();
 													String geogigRepos = connetParams.get("geogig_repository");
 													String reposName = geogigRepos.replace("geoserver://", "");
-													String branchName = connetParams.get("branch");
-
 													dsTree.put("geogigRepos", reposName);
+													String branchName = connetParams.get("branch");
 													dsTree.put("geogigBranch", branchName);
+													ListBranch listBranch = new ListBranch();
+													GeogigBranch geogigBranch = listBranch.executeCommand(
+															dtGeoManager.getRestURL(), dtGeoManager.getUsername(),
+															dtGeoManager.getPassword(), reposName, false);
+													List<Branch> branchList = geogigBranch.getLocalBranchList();
+													JSONArray branchArr = new JSONArray();
+													for (Branch branch : branchList) {
+														branchArr.add(branch.getName());
+													}
+													dsTree.put("geogigBranches", branchArr);
+													System.out.println("");
 												}
 												RESTFeatureTypeList ftList = dtGeoserverReader
 														.getFeatureTypes(workspace, dsName);

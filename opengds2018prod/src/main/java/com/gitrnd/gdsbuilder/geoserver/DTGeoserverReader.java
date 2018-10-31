@@ -197,6 +197,27 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return containNames;
 	}
 
+	// 발행되어있는 레이어 목록
+	public String getConfiguredFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "featuretypes" + "." + type
+				+ "?list=configured";
+		return load(url);
+	}
+
+	// 발행되어있지 않은 레이어 목록
+	public String getAvailableFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+				+ "?list=available";
+		return load(url);
+	}
+
+	// 모든 레이어 목록
+	public String getAllFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+				+ "?list=all";
+		return load(url);
+	}
+
 	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
 		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml";
 		if (LOGGER.isDebugEnabled()) {

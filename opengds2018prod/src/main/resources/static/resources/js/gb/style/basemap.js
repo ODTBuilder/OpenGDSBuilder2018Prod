@@ -8,7 +8,7 @@
  * @param {ol.Map}
  *            obj.map - 베이스 맵을 표시할 ol.Map 객체
  * @param {String}
- *            obj.defaultMap - 기본값으로 설정할 베이스맵 이름
+ *            obj.defaultBaseMap - 기본값으로 설정할 베이스맵 이름
  * @param {Object[]}
  *            obj.layers - 추가로 사용할 베이스 맵
  * @param {String}
@@ -39,7 +39,7 @@ gb.style.BaseMap = function(obj) {
 	gb.modal.Base.call(this, obj);
 	var options = obj ? obj : {};
 	this.map = options.map ? options.map : undefined;
-	this.defaultMap = options.defaultMap ? options.defaultMap : "black";
+	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
 	this.layers = options.layers ? options.layers : undefined;
 	this.now = undefined;
 	this.bases = {

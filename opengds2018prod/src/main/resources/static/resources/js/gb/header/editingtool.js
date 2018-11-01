@@ -419,7 +419,7 @@ gb.header.EditingTool.prototype.openFeatureHistoryModal = function() {
 		var vfeature = this.getVersioningFeature();
 		if (vfeature !== undefined && branch === "master") {
 			vfeature.open();
-			vfeature.loadFeatureHistory(geoserver, repo, path);
+			vfeature.loadFeatureHistory(geoserver, repo, path, 10);
 		}
 	}
 	

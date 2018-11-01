@@ -113,13 +113,22 @@ gb.versioning.Feature.prototype.open = function() {
  * 
  * @method gb.versioning.Feature#loadFeatureHistory
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, branch) {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, until, head) {
 	var params = {
 		"serverName" : server,
 		"repoName" : repo,
-		"path" : path
+		"path" : path,
+		"limit" : limit
 	}
-	// + "&" + jQuery.param(params),
+	if (until !== undefined) {
+		params["until"] = until;
+	}
+	if (head !== undefined) {
+		params["head"] = head;
+	}
+	if (until === undefined || head === undefined) {
+		this.clearChangesTbody();
+	}
 	var tranURL = this.getFeatureLogURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
@@ -142,28 +151,36 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 		success : function(data) {
 			console.log(data);
 
-//			if (data.success === "true") {
-//				for (var i = 0; i < 11; i++) {
-//					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
-//						"text-align" : "center"
-//					});
-//					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");
-//					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
-//					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
-//						"title" : "modified 1 feature via geodt online"
-//					}).click(function() {
-//						that.openDetailChanges();
-//					});
-//					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-//						"text-align" : "center"
-//					}).append(button);
-//
-//					var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1 feature");
-//					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
-//							.append(td3).append(td4);
-//					$(tbody).append(tr);
-//				}
-//			}
+			// if (data.success === "true") {
+			// for (var i = 0; i < 11; i++) {
+			// var td1 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
+			// "text-align" : "center"
+			// });
+			// var td2 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26
+			// 13:45");
+			// var td3 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
+			// var button =
+			// $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+			// "title" : "modified 1 feature via geodt online"
+			// }).click(function() {
+			// that.openDetailChanges();
+			// });
+			// var td4 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+			// "text-align" : "center"
+			// }).append(button);
+			//
+			// var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1
+			// feature");
+			// var tr =
+			// $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
+			// .append(td3).append(td4);
+			// $(tbody).append(tr);
+			// }
+			// }
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 
@@ -1144,4 +1161,13 @@ gb.versioning.Feature.prototype.mergeConflictFeature = function() {
  */
 gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 	return this.featureLogURL;
+};
+
+/**
+ * 피처이력 목록을 비운다.
+ * 
+ * @method gb.versioning.Feature#clearChangesTbody
+ */
+gb.versioning.Feature.prototype.clearChangesTbody = function() {
+	$(this.tbody).empty();
 };

@@ -196,7 +196,7 @@ html {
 
 		var gbBaseMap = new gb.style.BaseMap({
 			"map" : gbMap.getLowerMap(),
-			"defaultMap" : "osm"
+			"defaultBaseMap" : "osm"
 		});
 
 		$("#changeBase").click(function() {

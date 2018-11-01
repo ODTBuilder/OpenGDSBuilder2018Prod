@@ -15,6 +15,9 @@
  * @date 2018. 10.26
  */
 gb.versioning.Feature = function(obj) {
+	var options = obj ? obj : {};
+	var url = options.url ? options.url : {};
+	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 
 	this.conflictView1 = new ol.View({
 		"center" : [ 0, 0 ],
@@ -54,6 +57,8 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+
+	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
 };
 gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
 gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
@@ -81,32 +86,13 @@ gb.versioning.Feature.prototype.open = function() {
 	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
 		"text-align" : "center"
 	});
-	var tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
+
 	var table = $("<div>").addClass("gb-table").css({
 		"display" : "table",
 		"width" : "100%",
 		"padding-left" : "6px"
-	}).append(thead).append(tbody);
-	for (var i = 0; i < 11; i++) {
-		var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
-			"text-align" : "center"
-		});
-		var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");
-		var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
-		var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
-			"title" : "modified 1 feature via geodt online"
-		}).click(function() {
-			that.openDetailChanges();
-		});
-		var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-			"text-align" : "center"
-		}).append(button);
+	}).append(thead).append(this.tbody);
 
-		var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1 feature");
-		var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2).append(td3)
-				.append(td4);
-		$(tbody).append(tr);
-	}
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
 	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more");
 	var btnarea = $("<div>").css({
@@ -119,6 +105,7 @@ gb.versioning.Feature.prototype.open = function() {
 	}).append(table).append(btnarea);
 	panel.setPanelBody(body);
 	panel.open();
+
 };
 
 /**
@@ -126,8 +113,79 @@ gb.versioning.Feature.prototype.open = function() {
  * 
  * @method gb.versioning.Feature#loadFeatureHistory
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function() {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, until, head) {
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"limit" : limit
+	}
+	if (until !== undefined) {
+		params["until"] = until;
+	}
+	if (head !== undefined) {
+		params["head"] = head;
+	}
+	if (until === undefined || head === undefined) {
+		this.clearChangesTbody();
+	}
+	var tranURL = this.getFeatureLogURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
 
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+
+			// if (data.success === "true") {
+			// for (var i = 0; i < 11; i++) {
+			// var td1 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
+			// "text-align" : "center"
+			// });
+			// var td2 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26
+			// 13:45");
+			// var td3 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
+			// var button =
+			// $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+			// "title" : "modified 1 feature via geodt online"
+			// }).click(function() {
+			// that.openDetailChanges();
+			// });
+			// var td4 =
+			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+			// "text-align" : "center"
+			// }).append(button);
+			//
+			// var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1
+			// feature");
+			// var tr =
+			// $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
+			// .append(td3).append(td4);
+			// $(tbody).append(tr);
+			// }
+			// }
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
 };
 
 /**
@@ -1094,4 +1152,22 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
  */
 gb.versioning.Feature.prototype.mergeConflictFeature = function() {
 
+};
+
+/**
+ * 피처 로그 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureLogURL
+ */
+gb.versioning.Feature.prototype.getFeatureLogURL = function() {
+	return this.featureLogURL;
+};
+
+/**
+ * 피처이력 목록을 비운다.
+ * 
+ * @method gb.versioning.Feature#clearChangesTbody
+ */
+gb.versioning.Feature.prototype.clearChangesTbody = function() {
+	$(this.tbody).empty();
 };

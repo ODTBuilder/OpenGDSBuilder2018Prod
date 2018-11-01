@@ -5,12 +5,15 @@ if (!gb.header)
 	gb.header = {};
 
 /**
- * 레이어 편집 기능을 정의한다.
- * 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
+ * 레이어 편집 기능을 정의한다. 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
+ * 
+ * @class gb.edit.EditingTool
+ * @memberof gb.edit
+ * @param {gb.versioning.Feature}
+ *            obj.versioning - 피처별 버전 관리 객체
  * @author hochul.kim
  * @date 2018. 06.04
  * @version 0.01
- * @class
  * @constructor
  */
 gb.header.EditingTool = function(obj) {
@@ -26,6 +29,7 @@ gb.header.EditingTool = function(obj) {
 	this.imageTile = options.imageTile ? options.imageTile : undefined;
 	this.getFeature = options.getFeature ? options.getFeature : undefined;
 	this.getFeatureInfo = options.getFeatureInfo ? options.getFeatureInfo : undefined;
+	this.versioningFeature = options.versioning instanceof gb.versioning.Feature ? options.versioning : undefined; 
 	this.selectedSource = undefined;
 	this.selectSources = new ol.Collection();
 	this.layer = undefined;
@@ -256,7 +260,8 @@ gb.header.EditingTool = function(obj) {
 		this.closeTool();
 	}
 	
-	// this.createContent() 함수 실행 이후 this.contentList 배열안에 content list들의 <a> tag element가 저장됨
+	// this.createContent() 함수 실행 이후 this.contentList 배열안에 content list들의 <a>
+	// tag element가 저장됨
 	// gb.header.Base 함수 참조
 	var eventList = this.contentList;
 	var match = {
@@ -360,9 +365,75 @@ gb.header.EditingTool = function(obj) {
 		}
 		that.refreshTileLayer();
 	});
+	
+	// SOYIJUN
+	if (this.versioningFeature !== undefined) {
+		console.log(this.ulTagRight);
+		var iTag = $("<i>").addClass("fas").addClass("fa-history").attr("aria-hidden", "true").css(this.iStyle);
+		var aTag = $("<a>").attr("href", "#").append(iTag).append("Changes").css(this.aStyle).click(function(){
+			that.openFeatureHistoryModal();
+		});
+		aTag.hover(function(){
+			if(!$(this).hasClass("active")){
+				$(this).css("color", "#23527c");
+				$(this).css("text-decoration", "none");
+			}
+		},function(){
+			if(!$(this).hasClass("active")){
+				$(this).css("color", "rgb(85, 85, 85)");
+			}
+		});
+		var liTag = $("<li>").append(aTag).css(this.liStyle);
+		liTag.css("padding-left", "0").css("padding-right", "20px");
+		$(this.ulTagRight).append(liTag);
+	}
 };
 gb.header.EditingTool.prototype = Object.create(gb.header.Base.prototype);
 gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
+
+/**
+ * 피처 변경 이력창을 연다
+ * 
+ * @method openFeatureHistoryModal
+ */
+gb.header.EditingTool.prototype.openFeatureHistoryModal = function() {
+	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
+	var features = this.interaction.select.getFeatures();
+	if (layers.length === 1 && features.getLength() === 1) {
+		var layer = layers[0];
+		console.log(layer);
+		var git = layer.get("git");
+		console.log(git);
+		var geoserver = git.geoserver;
+		console.log(geoserver);
+		var repo = git.geogigRepo;
+		console.log(repo);
+		var branch = git.geogigBranch;
+		console.log(branch);	
+		var layerName = layer.get("name");
+		console.log(layerName);
+		var feature = features.item(0);
+		console.log(feature);
+		var path = layerName+"/"+feature.getId();
+		console.log(path);
+		var vfeature = this.getVersioningFeature();
+		if (vfeature !== undefined && branch === "master") {
+			vfeature.open();
+			vfeature.loadFeatureHistory(geoserver, repo, path, 10);
+		}
+	}
+	
+};
+
+/**
+ * gb.versioning.Feature 객체를 반환한다.
+ * 
+ * @method getVersioningFeature
+ * @return {gb.versioning.Feature} 피처 변경 이력 객체
+ */
+gb.header.EditingTool.prototype.getVersioningFeature = function() {
+	return this.versioningFeature;
+};
 
 /**
  * 피처목록을 생성한다.
@@ -990,11 +1061,11 @@ gb.header.EditingTool.prototype.move = function(layer) {
 			this.interaction.select.getFeatures().clear();
 			this.deactiveIntrct_("move");
 			this.deactiveBtn_("moveBtn");
-			//this.map.removeLayer(this.managed);
+			// this.map.removeLayer(this.managed);
 		}
 		return;
 	}
-	//this.map.removeLayer(this.managed);
+	// this.map.removeLayer(this.managed);
 	var that = this;
 	
 	var selectSource = this.selectedSource;
@@ -1004,7 +1075,7 @@ gb.header.EditingTool.prototype.move = function(layer) {
 	
 	if (this.interaction.select.getFeatures().getLength() > 0) {
 		
-		//this.map.addLayer(this.managed);
+		// this.map.addLayer(this.managed);
 		this.interaction.move = new ol.interaction.Translate({
 			features : this.interaction.select.getFeatures()
 		});
@@ -1412,15 +1483,12 @@ gb.header.EditingTool.prototype.updateSelected = function(treeId) {
  */
 gb.header.EditingTool.prototype.setFeatures = function(newFeature) {
 	var that = this;
-	/*if (this.isOn.select) {
-		if (!!this.interaction.select) {
-			this.interaction.select.getFeatures().clear();
-			this.deactiveIntrct_([ "dragbox", "select"]);
-		}
-		this.deactiveBtn_("selectBtn");
-		this.isOn.select = false;
-	}
-	this.select(this.layer);*/
+	/*
+	 * if (this.isOn.select) { if (!!this.interaction.select) {
+	 * this.interaction.select.getFeatures().clear(); this.deactiveIntrct_([
+	 * "dragbox", "select"]); } this.deactiveBtn_("selectBtn"); this.isOn.select =
+	 * false; } this.select(this.layer);
+	 */
 	if (newFeature.length === 1) {
 		// this.interaction.select.getFeatures().extend(newFeature);
 		this.open();
@@ -1504,7 +1572,7 @@ gb.header.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
 			});
 		}
 	}
-	//that.tempVector.setMap(this.map);
+	// that.tempVector.setMap(this.map);
 	return;
 };
 
@@ -1517,7 +1585,7 @@ gb.header.EditingTool.prototype.clearUnmanaged = function() {
 	if (this.tempVector instanceof ol.layer.Vector) {
 		this.tempVector.clear();
 	}
-	//this.tempVector.setMap(this.map);
+	// this.tempVector.setMap(this.map);
 	return;
 };
 
@@ -1536,13 +1604,13 @@ gb.header.EditingTool.prototype.open = function() {
 			if (git.fake === "parent") {
 				console.error("fake parent layer can not edit");
 			} else {
-				//this.headerTag.css("display", "block");
+				// this.headerTag.css("display", "block");
 			}
 		} else {
-			//this.headerTag.css("display", "block");
+			// this.headerTag.css("display", "block");
 		}
 	} else if (layer instanceof ol.layer.Base) {
-		//this.headerTag.css("display", "block");
+		// this.headerTag.css("display", "block");
 	}
 
 };
@@ -1947,7 +2015,7 @@ gb.header.EditingTool.prototype.zoomToFit = function(layer) {
 	return;
 };
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.addInteraction = function(options){
 	function adjustStyle(element, style){
 		for(var content in style){
@@ -2040,7 +2108,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction, select){
 	var bool = select || false;
 	for(var i in this.interaction){
@@ -2070,7 +2138,7 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 	var tileLayers = [];
 	var wmsLayers;
@@ -2127,7 +2195,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 	var set;
 	if(bool){
@@ -2145,7 +2213,7 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	var tileLayers = this.getTileLayersInMap(this.map);
 	
@@ -2154,7 +2222,7 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	var tileLayers = this.getTileLayersInMap(this.map);
 	
@@ -2163,7 +2231,7 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId){
 	var git = obj || {};
 	var layerid = layerId;
@@ -2221,12 +2289,12 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 	return null;
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.getVectorSourceOfServer = function(treeId){
 	return this.vectorSourcesOfServer_[treeId];
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	var a = [];
 	for(var i in this.vectorSourcesOfServer_){
@@ -2235,7 +2303,7 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	return a;
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.editToolToggle = function(){
 	if(this.getActiveTool()){
 		this.setActiveTool(false);
@@ -2255,7 +2323,7 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 	if(this.getActiveTool()){
 		if(bool){
@@ -2283,7 +2351,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.getSelectSources = function(){
 	return this.selectSources;
 }

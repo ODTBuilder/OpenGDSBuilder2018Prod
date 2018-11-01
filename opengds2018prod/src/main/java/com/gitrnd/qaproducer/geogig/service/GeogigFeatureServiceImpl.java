@@ -27,11 +27,11 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -87,8 +87,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 	}
 
 	@Override
-	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path)
-			throws JAXBException {
+	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
+			String limit, String until, String head) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -99,19 +99,24 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		try {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
-
-			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path);
-			simpleLog.setSuccess(geogigLog.getSuccess());
-			commits.addAll(geogigLog.getCommits());
-			String nextPage = geogigLog.getNextPage();
-			if (nextPage != null) {
-				while (nextPage != null) {
-					GeogigRepositoryLog nextLog = logRepos.executeCommand(url, user, pw, repoName, path);
-					simpleLog.setSuccess(nextLog.getSuccess());
-					commits.addAll(nextLog.getCommits());
-					nextPage = nextLog.getNextPage();
+			if (head != null) {
+				GeogigRepositoryLog headGeogiLog = logRepos.executeCommand(url, user, pw, repoName, path, "1", null);
+				if (!head.equalsIgnoreCase(headGeogiLog.getCommits().get(0).getCommitId())) {
+					throw new GeogigCommandException("HEAD 불일치", false);
 				}
 			}
+			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit, until);
+			simpleLog.setSuccess(geogigLog.getSuccess());
+			commits.addAll(geogigLog.getCommits());
+//			String nextPage = geogigLog.getNextPage();
+//			if (nextPage != null) {
+//				while (nextPage != null) {
+//					GeogigRepositoryLog nextLog = logRepos.executeCommand(url, user, pw, repoName, path, limit, until);
+//					simpleLog.setSuccess(nextLog.getSuccess());
+//					commits.addAll(nextLog.getCommits());
+//					nextPage = nextLog.getNextPage();
+//				}
+//			}
 			String tmpCommitId = "";
 			for (int i = 0; i < commits.size(); i++) {
 				Commit commit = commits.get(i);
@@ -143,12 +148,17 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			}
 			simpleLog.setSimpleCommits(simpleCommits);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			GeogigRepositoryLog geogigLog = (GeogigRepositoryLog) unmarshaller
-					.unmarshal(new StringReader(e.getMessage()));
-			simpleLog.setSuccess(geogigLog.getSuccess());
-			simpleLog.setError(geogigLog.getError());
+			GeogigRepositoryLog geogigLog = null;
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigLog = (GeogigRepositoryLog) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+				simpleLog.setSuccess(geogigLog.getSuccess());
+				simpleLog.setError(geogigLog.getError());
+			} else {
+				simpleLog.setError(e.getMessage());
+				simpleLog.setSuccess("false");
+			}
 		}
 		return simpleLog;
 	}

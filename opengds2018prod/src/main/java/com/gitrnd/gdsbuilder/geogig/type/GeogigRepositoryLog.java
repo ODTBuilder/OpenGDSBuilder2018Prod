@@ -107,7 +107,7 @@ public class GeogigRepositoryLog {
 	public void setNextPage(String nextPage) {
 		this.nextPage = nextPage;
 	}
-
+	
 	/**
 	 * Commit 객체
 	 * 

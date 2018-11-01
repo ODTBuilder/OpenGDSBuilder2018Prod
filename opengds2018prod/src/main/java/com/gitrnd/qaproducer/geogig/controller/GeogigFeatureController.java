@@ -50,14 +50,16 @@ public class GeogigFeatureController extends AbstractController {
 
 	@RequestMapping(value = "/featureLog.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigFeatureSimpleLog featureLog(HttpServletRequest request,
-			@AuthenticationPrincipal LoginUser loginUser,
+	public GeogigFeatureSimpleLog featureLog(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "path", required = false) String path) throws JAXBException {
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "until", required = false) String limit,
+			@RequestParam(value = "limit", required = false) String until,
+			@RequestParam(value = "head", required = false) String head) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureLog(geoserverManager, repoName, path);
+		return featureService.featureLog(geoserverManager, repoName, path, limit, until, head);
 	}
 
 	@RequestMapping(value = "/featureDiff.do", method = RequestMethod.POST)

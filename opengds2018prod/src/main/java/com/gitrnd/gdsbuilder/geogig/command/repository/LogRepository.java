@@ -35,10 +35,12 @@ public class LogRepository {
 
 	private static final String geogig = "geogig";
 	private static final String command = "log";
-	private static final String param_path = "path="; // optional (layer or feature)
+	private static final String param_path = "path="; // optional
+	private static final String param_limit = "limit="; // optional
+	private static final String param_until = "until="; // optional
 
 	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository,
-			String path) {
+			String path, String limit, String until) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -59,7 +61,25 @@ public class LogRepository {
 		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
 
 		if (path != null) {
-			url += "?" + param_path + path;
+			if (url.contains("?")) {
+				url += "&" + param_path + path;
+			} else {
+				url += "?" + param_path + path;
+			}
+		}
+		if (limit != null) {
+			if (url.contains("?")) {
+				url += "&" + param_limit + limit;
+			} else {
+				url += "?" + param_limit + limit;
+			}
+		}
+		if (until != null) {
+			if (url.contains("?")) {
+				url += "&" + param_until + until;
+			} else {
+				url += "?" + param_until + until;
+			}
 		}
 
 		// request

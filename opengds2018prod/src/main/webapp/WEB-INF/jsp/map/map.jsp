@@ -195,7 +195,8 @@ html {
 		});
 
 		var gbBaseMap = new gb.style.BaseMap({
-			"map" : gbMap.getLowerMap()
+			"map" : gbMap.getLowerMap(),
+			"defaultMap" : "osm"
 		});
 
 		$("#changeBase").click(function() {

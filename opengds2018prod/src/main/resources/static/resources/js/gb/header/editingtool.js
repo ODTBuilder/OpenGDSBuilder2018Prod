@@ -417,7 +417,7 @@ gb.header.EditingTool.prototype.openFeatureHistoryModal = function() {
 		var path = layerName+"/"+feature.getId();
 		console.log(path);
 		var vfeature = this.getVersioningFeature();
-		if (vfeature !== undefined) {
+		if (vfeature !== undefined && branch === "master") {
 			vfeature.open();
 			vfeature.loadFeatureHistory(geoserver, repo, path);
 		}

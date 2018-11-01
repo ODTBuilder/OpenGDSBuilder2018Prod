@@ -59,6 +59,11 @@ gb.versioning.Feature = function(obj) {
 	});
 
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
+	this.commits = {};
+	this.curServer;
+	this.curRepo;
+	this.curPath;
+	this.idstring;
 };
 gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
 gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
@@ -70,15 +75,15 @@ gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
  */
 gb.versioning.Feature.prototype.open = function() {
 	var that = this;
-	var panel = new gb.panel.Base({
-		"width" : 400,
+	this.panel = new gb.panel.Base({
+		"width" : 412,
 		"height" : 550,
 		"positionX" : 4,
 		"right" : true,
 		"positionY" : 395,
 		"autoOpen" : false
 	});
-	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Commiter");
+	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Author");
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
 	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Changes");
@@ -103,8 +108,8 @@ gb.versioning.Feature.prototype.open = function() {
 		"height" : "510px",
 		"margin" : "4px 0"
 	}).append(table).append(btnarea);
-	panel.setPanelBody(body);
-	panel.open();
+	this.panel.setPanelBody(body);
+	this.panel.open();
 
 };
 
@@ -114,6 +119,7 @@ gb.versioning.Feature.prototype.open = function() {
  * @method gb.versioning.Feature#loadFeatureHistory
  */
 gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, until, head) {
+	var that = this;
 	var params = {
 		"serverName" : server,
 		"repoName" : repo,
@@ -127,7 +133,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 		params["head"] = head;
 	}
 	if (until === undefined || head === undefined) {
-		this.clearChangesTbody();
+		if (this.getIDString() !== server + "/" + repo + "/" + path) {
+			this.clearChangesTbody();
+		}
 	}
 	var tranURL = this.getFeatureLogURL();
 	if (tranURL.indexOf("?") !== -1) {
@@ -151,36 +159,34 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 		success : function(data) {
 			console.log(data);
 
-			// if (data.success === "true") {
-			// for (var i = 0; i < 11; i++) {
-			// var td1 =
-			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
-			// "text-align" : "center"
-			// });
-			// var td2 =
-			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26
-			// 13:45");
-			// var td3 =
-			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
-			// var button =
-			// $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
-			// "title" : "modified 1 feature via geodt online"
-			// }).click(function() {
-			// that.openDetailChanges();
-			// });
-			// var td4 =
-			// $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-			// "text-align" : "center"
-			// }).append(button);
-			//
-			// var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1
-			// feature");
-			// var tr =
-			// $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
-			// .append(td3).append(td4);
-			// $(tbody).append(tr);
-			// }
-			// }
+			if (data.success === "true") {
+				that.setIDString(server + "/" + repo + "/" + path);
+				if (Array.isArray(data.simpleCommits)) {
+					that.setCommitsByInfo(server, repo, path);
+				}
+
+				for (var i = 0; i < data.simpleCommits.length; i++) {
+					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
+						"text-align" : "center"
+					});
+					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
+					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
+					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+						"title" : data.simpleCommits[i].message,
+						"value" : data.simpleCommits[i].commitId
+					}).click(function() {
+						that.openDetailChanges();
+					});
+					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+						"text-align" : "center"
+					}).append(button);
+
+					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);
+					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
+							.append(td3).append(td4);
+					$(that.tbody).append(tr);
+				}
+			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 
@@ -1170,4 +1176,87 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
  */
 gb.versioning.Feature.prototype.clearChangesTbody = function() {
 	$(this.tbody).empty();
+};
+
+/**
+ * 피처이력 객체를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setCommits
+ */
+gb.versioning.Feature.prototype.setCommits = function(obj) {
+	this.commits = obj;
+};
+
+/**
+ * 피처이력 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getCommits
+ */
+gb.versioning.Feature.prototype.getCommits = function() {
+	return this.commits;
+};
+
+/**
+ * 조회한 피처이력을 분류 보관한다.
+ * 
+ * @method gb.versioning.Feature#setCommitsByInfo
+ */
+gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, arr) {
+	if (server || repo || path || arr) {
+		return;
+	}
+	if (!this.commits.hasOwnProperty(server)) {
+		this.commits[server] = {};
+	}
+	if (!this.commits[server].hasOwnProperty(repo)) {
+		this.commits[server][repo] = {};
+	}
+	if (!this.commits[server][repo].hasOwnProperty(path)) {
+		this.commits[server][repo][path] = [];
+	}
+	this.commits[server][repo][path] = this.commits[server][repo][path].concat(arr);
+};
+
+/**
+ * 현재 편집중인 객체 path를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setPath
+ */
+gb.versioning.Feature.prototype.setPath = function(path) {
+	this.curPath = path;
+};
+
+/**
+ * 현재 편집중인 객체 path를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getPath
+ */
+gb.versioning.Feature.prototype.getPath = function() {
+	return this.curPath;
+};
+
+/**
+ * 현재 편집중인 객체 idstring을 설정한다.
+ * 
+ * @method gb.versioning.Feature#setIDString
+ */
+gb.versioning.Feature.prototype.setIDString = function(id) {
+	this.idstring = id;
+};
+
+/**
+ * 현재 편집중인 객체 idstring을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getIDString
+ */
+gb.versioning.Feature.prototype.getIDString = function() {
+	return this.idstring;
+};
+/**
+ * 현재 편집중인 객체 이력을 새로고침한다.
+ * 
+ * @method gb.versioning.Feature#refresh
+ */
+gb.versioning.Feature.prototype.refresh = function() {
+	return this.curPath;
 };

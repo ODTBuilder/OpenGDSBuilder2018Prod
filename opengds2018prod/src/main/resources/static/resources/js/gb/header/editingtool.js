@@ -398,9 +398,9 @@ gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
  */
 gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
-// if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
-// vfeature.close();
-// } else {
+ if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
+ vfeature.close();
+ } else {
 		var layers = $(this.treeElement).jstreeol3("get_selected_layer");
 		var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
 		if (layers.length === 1 && feature) {
@@ -436,7 +436,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 				vfeature.open();
 			}
 		}
-// }
+ }
 };
 
 /**

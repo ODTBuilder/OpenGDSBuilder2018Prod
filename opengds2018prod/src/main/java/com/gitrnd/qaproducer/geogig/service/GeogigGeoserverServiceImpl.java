@@ -24,7 +24,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
  * @author GIT
  *
  */
-@Service("geogigGeoserverService")
+@Service("test")
 public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 
 	@Override

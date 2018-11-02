@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -108,6 +109,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit, until);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
+			Collections.reverse(commits);
 //			String nextPage = geogigLog.getNextPage();
 //			if (nextPage != null) {
 //				while (nextPage != null) {
@@ -146,6 +148,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				simpleCommits.add(simpleCommit);
 				tmpCommitId = commitId;
 			}
+			Collections.reverse(simpleCommits);
 			simpleLog.setSimpleCommits(simpleCommits);
 		} catch (GeogigCommandException e) {
 			GeogigRepositoryLog geogigLog = null;

@@ -43,7 +43,7 @@ public interface GeogigFeatureService {
 	 * @param limit
 	 * @return
 	 */
-	GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path, String limit,
+	GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path, Long limit,
 			String until, String head) throws JAXBException;
 
 	/**

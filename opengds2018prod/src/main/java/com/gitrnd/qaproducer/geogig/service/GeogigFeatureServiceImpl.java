@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -89,7 +88,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
-			String limit, String until, String head) throws JAXBException {
+			Long limit, String until, String head) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -100,55 +99,37 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		try {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
-			if (head != null) {
-				GeogigRepositoryLog headGeogiLog = logRepos.executeCommand(url, user, pw, repoName, path, "1", null);
-				if (!head.equalsIgnoreCase(headGeogiLog.getCommits().get(0).getCommitId())) {
-					throw new GeogigCommandException("HEAD 불일치", false);
-				}
-			}
-			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit, until);
+			String limitStr = String.valueOf(limit + 1);
+			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limitStr, null);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
-			Collections.reverse(commits);
-//			String nextPage = geogigLog.getNextPage();
-//			if (nextPage != null) {
-//				while (nextPage != null) {
-//					GeogigRepositoryLog nextLog = logRepos.executeCommand(url, user, pw, repoName, path, limit, until);
-//					simpleLog.setSuccess(nextLog.getSuccess());
-//					commits.addAll(nextLog.getCommits());
-//					nextPage = nextLog.getNextPage();
-//				}
-//			}
-			String tmpCommitId = "";
-			for (int i = 0; i < commits.size(); i++) {
-				Commit commit = commits.get(i);
+			for (int i = 0; i < commits.size() - 1; i++) {
+				Commit newCommit = commits.get(i); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
 				simpleCommit.setcIdx(i); // idx
-				String commitId = commit.getCommitId(); // commit id
+				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
-				simpleCommit.setAuthorName(commit.getAuthor().getName()); // author
-				simpleCommit.setMessage(commit.getMessage()); // message
-				Timestamp timestamp = new Timestamp(Long.parseLong(commit.getAuthor().getTimestamp())); // time stamp
+				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author
+				simpleCommit.setMessage(newCommit.getMessage()); // message
+				Timestamp timestamp = new Timestamp(Long.parseLong(newCommit.getAuthor().getTimestamp())); // time stamp
 				Date date = new Date(timestamp.getTime());
 				DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String dateStr = dateformat.format(date);
 				simpleCommit.setDate(dateStr);
-				if (i == 0) { // change type
-					simpleCommit.setChangeType("ADDED");
-				} else {
-					DiffRepository diffRepos = new DiffRepository();
-					GeogigDiff geogigdiff = diffRepos.executeCommand(url, user, pw, repoName, tmpCommitId, commitId,
-							path, null);
-					List<Diff> diffs = geogigdiff.getDiffs();
-					if (diffs != null) {
-						String changeType = diffs.get(0).getChangeType();
-						simpleCommit.setChangeType(changeType);
-					}
+
+				Commit oldCommit = commits.get(i + 1); // parent
+				String oldCommitId = oldCommit.getCommitId();
+
+				DiffRepository diffRepos = new DiffRepository();
+				GeogigDiff geogigdiff = diffRepos.executeCommand(url, user, pw, repoName, oldCommitId, commitId, path,
+						null);
+				List<Diff> diffs = geogigdiff.getDiffs();
+				if (diffs != null) {
+					String changeType = diffs.get(0).getChangeType();
+					simpleCommit.setChangeType(changeType);
 				}
 				simpleCommits.add(simpleCommit);
-				tmpCommitId = commitId;
 			}
-			Collections.reverse(simpleCommits);
 			simpleLog.setSimpleCommits(simpleCommits);
 		} catch (GeogigCommandException e) {
 			GeogigRepositoryLog geogigLog = null;
@@ -163,6 +144,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				simpleLog.setSuccess("false");
 			}
 		}
+
 		return simpleLog;
 	}
 

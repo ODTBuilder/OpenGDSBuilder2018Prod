@@ -123,7 +123,7 @@ gb.style.LayerStyle = function(obj) {
 	});
 
 	this.saveBtn = $("<button>").text("OK").addClass("gb-button").addClass("gb-button-primary").click(function() {
-		that.applyStyle();
+		that.updateStyle();
 	});
 	this.btnArea = $("<div>").append(this.saveBtn).css({
 		"float" : "right",
@@ -172,6 +172,137 @@ gb.style.LayerStyle = function(obj) {
 gb.style.LayerStyle.prototype = Object.create(gb.panel.Base.prototype);
 gb.style.LayerStyle.prototype.constructor = gb.style.LayerStyle;
 
+/**
+ * 선택한 스타일을 레이어에 적용 시킨다.
+ * 
+ * @method gb.style.LayerStyle#updateStyle
+ */
+gb.style.LayerStyle.prototype.updateStyle = function() {
+	var layer = this.getLayer();
+	if (layer instanceof ol.layer.Vector) {
+		var style = new ol.style.Style({
+			"fill" : this.geom === "Polygon" || this.geom === "MultiPolygon" ? new ol.style.Fill({
+				"color" : [ $(this.fillPicker).spectrum("get").toRgb().r, $(this.fillPicker).spectrum("get").toRgb().g,
+						$(this.fillPicker).spectrum("get").toRgb().b, $(this.fillPicker).spectrum("get").toRgb().a ]
+			}) : undefined,
+			"stroke" : this.geom === "Polygon" || this.geom === "MultiPolygon" || this.geom === "LineString"
+					|| this.geom === "MultiLineString" ? new ol.style.Stroke({
+				"color" : [ $(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g,
+						$(this.linePicker).spectrum("get").toRgb().b, $(this.linePicker).spectrum("get").toRgb().a ],
+				"width" : parseFloat($(this.widthInput).val()),
+				"lineDash" : $(this.outlineInput).find(":selected").attr("dash") !== undefined ? $(this.outlineInput).find(":selected")
+						.attr("dash").split(",") : undefined,
+				"lineCap" : "butt"
+			}) : undefined,
+			"image" : this.geom === "Point" || this.geom === "MultiPoint" ? new ol.style.Circle({
+				"radius" : parseFloat($(this.radInput).val()),
+				"fill" : new ol.style.Fill({
+					"color" : [ $(this.fillPicker).spectrum("get").toRgb().r, $(this.fillPicker).spectrum("get").toRgb().g,
+							$(this.fillPicker).spectrum("get").toRgb().b, $(this.fillPicker).spectrum("get").toRgb().a ]
+				}),
+				"stroke" : new ol.style.Stroke({
+					"color" : [ $(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g,
+							$(this.linePicker).spectrum("get").toRgb().b, $(this.linePicker).spectrum("get").toRgb().a ],
+					"width" : parseFloat($(this.widthInput).val()),
+					"lineDash" : $(this.outlineInput).find(":selected").attr("dash") !== undefined ? $(this.outlineInput).find(":selected")
+							.attr("dash").split(",") : undefined,
+					"lineCap" : "butt"
+				})
+			}) : undefined
+		});
+
+		layer.setStyle(style);
+	} else if (layer instanceof ol.layer.Tile) {
+		var git = layer.get("git");
+		var source = layer.getSource();
+		var sld = git.sld;
+		var sldBody = "";
+		
+		if(sld !== undefined){
+			sldBody += '<?xml version="1.0" encoding="ISO-8859-1"?>';
+			sldBody += '<StyledLayerDescriptor version="1.0.0" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"><NamedLayer>';
+			sldBody += '<Name>';
+			sldBody += git.workspace + ":" + git.layers;
+			sldBody += '</Name>';
+			sldBody += '<UserStyle><FeatureTypeStyle><Rule>';
+			
+			if(sld.indexOf("<PolygonSymbolizer>") !== -1){
+				sldBody += '<PolygonSymbolizer><Fill>';
+				sldBody += '<CssParameter name="fill">#'
+				sldBody += this.hexFromRGB($(this.fillPicker).spectrum("get").toRgb().r, $(this.fillPicker).spectrum("get").toRgb().g, $(
+						this.fillPicker).spectrum("get").toRgb().b)
+				sldBody += '</CssParameter>' + '<CssParameter name="fill-opacity">'
+				sldBody += typeof $(this.fillPicker).spectrum("get").toRgb().a === "number" ? $(this.fillPicker).spectrum("get").toRgb().a : 1
+				sldBody += '</CssParameter></Fill>'
+				sldBody += '<Stroke><CssParameter name="stroke">#'
+				sldBody += this.hexFromRGB($(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g, $(
+						this.linePicker).spectrum("get").toRgb().b)
+						+ '</CssParameter>' + '<CssParameter name="stroke-opacity">'
+				sldBody += typeof $(this.linePicker).spectrum("get").toRgb().a === "number" ? $(this.linePicker).spectrum("get").toRgb().a : 1
+				sldBody += '</CssParameter>' + '<CssParameter name="stroke-width">' + parseFloat($(this.widthInput).val()) + '</CssParameter>'
+				if ($(this.outlineInput).find(":selected").attr("dash") !== undefined) {
+					sldBody += '<CssParameter name="stroke-dasharray">'
+							+ $(this.outlineInput).find(":selected").attr("dash").replace(/,/gi, " ") + '</CssParameter>';
+				}
+				sldBody += '</Stroke>' + '</PolygonSymbolizer>'
+			} else if(sld.indexOf("<LineSymbolizer>") !== -1){
+				sldBody += '<LineSymbolizer><Stroke>'
+				sldBody += '<CssParameter name="stroke">#'
+				sldBody += this.hexFromRGB($(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g, $(
+						this.linePicker).spectrum("get").toRgb().b)
+						+ '</CssParameter>' + '<CssParameter name="stroke-opacity">'
+				sldBody += typeof $(this.linePicker).spectrum("get").toRgb().a === "number" ? $(this.linePicker).spectrum("get").toRgb().a : 1
+				sldBody += '</CssParameter>';
+				sldBody += '<CssParameter name="stroke-width">' + parseFloat($(this.widthInput).val()) + '</CssParameter>'
+				if ($(this.outlineInput).find(":selected").attr("dash") !== undefined) {
+					sldBody += '<CssParameter name="stroke-dasharray">'
+							+ $(this.outlineInput).find(":selected").attr("dash").replace(/,/gi, " ") + '</CssParameter>';
+				}
+				sldBody += '</Stroke>' + '</LineSymbolizer>';
+				
+			} else if(sld.indexOf("<PointSymbolizer>") !== -1){
+				
+				sldBody += '<PointSymbolizer><Graphic>';
+				sldBody += '<Mark>';
+				sldBody += '<WellKnownName>circle</WellKnownName>';
+				sldBody += '<Fill>';
+				sldBody += '<CssParameter name="fill">#';
+				sldBody += this.hexFromRGB($(this.fillPicker).spectrum("get").toRgb().r, $(this.fillPicker).spectrum("get").toRgb().g, $(
+						this.fillPicker).spectrum("get").toRgb().b);
+				sldBody += '</CssParameter>' + '<CssParameter name="fill-opacity">';
+				sldBody += typeof $(this.fillPicker).spectrum("get").toRgb().a === "number" ? $(this.fillPicker).spectrum("get").toRgb().a : 1;
+				sldBody += '</CssParameter>';
+				sldBody += '</Fill>'
+				sldBody += '<Stroke>';
+				sldBody += '<CssParameter name="stroke">#';
+				sldBody += this.hexFromRGB($(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g, $(
+						this.linePicker).spectrum("get").toRgb().b);
+				sldBody += '</CssParameter>' + '<CssParameter name="stroke-opacity">';
+				sldBody += typeof $(this.linePicker).spectrum("get").toRgb().a === "number" ? $(this.linePicker).spectrum("get").toRgb().a : 1
+				sldBody += '</CssParameter>';
+				sldBody += '<CssParameter name="stroke-width">' + parseFloat($(this.widthInput).val()) + '</CssParameter>'
+				if ($(this.outlineInput).find(":selected").attr("dash") !== undefined) {
+					sldBody += '<CssParameter name="stroke-dasharray">'
+							+ $(this.outlineInput).find(":selected").attr("dash").replace(/,/gi, " ") + '</CssParameter>';
+				}
+				sldBody += '</Stroke>';
+				sldBody += '</Mark>'
+				sldBody += '<Size>' + parseFloat($(this.radInput).val()) * 2 + '</Size>'
+				sldBody += '</Graphic>' + '</PointSymbolizer>'
+			}
+			
+			sldBody += '</Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
+			
+			source.updateParams({
+				'SLD_BODY' : sldBody
+			});
+			
+			var opacity = parseFloat($(this.opaPicker).val());
+			layer.setOpacity(opacity);
+			this.close();
+		}
+	}
+}
 /**
  * 선택한 스타일을 레이어에 적용 시킨다.
  * 
@@ -252,7 +383,7 @@ gb.style.LayerStyle.prototype.applyStyle = function() {
 			sldBody += '</FeatureTypeStyle></UserStyle></UserLayer></StyledLayerDescriptor>';
 			console.log(sldBody);
 			source.updateParams({
-				'SLD_Body' : sldBody
+				'SLD_BODY' : sldBody
 			});
 		} else if (this.geom === "LineString" || this.geom === "MultiLineString") {
 			var source = layer.getSource();
@@ -279,7 +410,7 @@ gb.style.LayerStyle.prototype.applyStyle = function() {
 			sldBody += '</FeatureTypeStyle></UserStyle></UserLayer></StyledLayerDescriptor>';
 			console.log(sldBody);
 			source.updateParams({
-				'SLD_Body' : sldBody
+				'SLD_BODY' : sldBody
 			});
 		} else if (this.geom === "Polygon" || this.geom === "MultiPolygon") {
 			var source = layer.getSource();
@@ -311,7 +442,7 @@ gb.style.LayerStyle.prototype.applyStyle = function() {
 			sldBody += '</FeatureTypeStyle></UserStyle></UserLayer></StyledLayerDescriptor>';
 			console.log(sldBody);
 			source.updateParams({
-				'SLD_Body' : sldBody
+				'SLD_BODY' : sldBody
 			});
 		}
 	}
@@ -368,6 +499,128 @@ gb.style.LayerStyle.prototype.decimalFromHex = function(hex) {
 	var deciArr = [ firstDeci, secondDeci, thirdDeci ];
 	return deciArr.join();
 }
+/**
+ * SLD의 스타일 설정값을 추출한다.
+ * 
+ * @method gb.style.LayerStyle#parseSymbolizer
+ * 
+ * @param {String}
+ *            sld - 레이어의 SLD
+ * @return {Object} 스타일 정보를 가진 객체
+ */
+gb.style.LayerStyle.prototype.parseSymbolizer = function(sld) {
+	var obj = {};
+	var symbol = undefined;
+	if(sld.indexOf("<PolygonSymbolizer>") !== -1){
+		symbol = sld.substring(sld.indexOf("<PolygonSymbolizer>") + 19, sld.indexOf("</PolygonSymbolizer>"));
+		var fill = symbol.substring(symbol.indexOf('<Fill>') + 6, symbol.indexOf("</Fill>"));
+		var fillColor;
+		if (fill.indexOf('<CssParameter name="fill">') !== -1) {
+			fillColor = fill.substring(fill.indexOf('<CssParameter name="fill">') + 26, fill.indexOf("</CssParameter>"));
+		}
+		var fillColorCode;
+		var fillRGBColorCode;
+		if (fillColor.indexOf("#") !== -1) {
+			fillColorCode = fillColor.substring(fillColor.indexOf("#") + 1);
+			fillRGBColorCode = this.decimalFromHex(fillColorCode);
+		}
+		fill = fill.substring(fill.indexOf("</CssParameter>") + 15);
+		var fillOpacity;
+		if (fill.indexOf('<CssParameter name="fill-opacity">') !== -1) {
+			fillOpacity = fill.substring(fill.indexOf('<CssParameter name="fill-opacity">') + 34, fill.indexOf("</CssParameter>"));
+		}
+		console.log(fillOpacity);
+		if (fillRGBColorCode !== undefined && fillOpacity !== undefined) {
+			obj["fillRGBA"] = "rgba(" + fillRGBColorCode + "," + fillOpacity + ")";
+		}
+		symbol = symbol.substring(symbol.indexOf("</Fill>") + 7);
+	} else if(sld.indexOf("<LineSymbolizer>") !== -1){
+		symbol = sld.substring(sld.indexOf("<LineSymbolizer>") + 16, sld.indexOf("</LineSymbolizer>"));
+	} else if(sld.indexOf("<PointSymbolizer>") !== -1){
+		symbol = sld.substring(sld.indexOf("<PointSymbolizer>") + 17, sld.indexOf("</PointSymbolizer>"));
+		var graphic = symbol.substring(symbol.indexOf('<Graphic>') + 9, symbol.indexOf("</Graphic>"));
+		var size;
+		if (graphic.indexOf('<Size>') !== -1) {
+			size = graphic.substring(graphic.indexOf('<Size>') + 6, graphic.indexOf("</Size>"));
+			if (size !== undefined) {
+				obj["pointSize"] = size;
+			}
+		}
+		var mark;
+		if (graphic.indexOf('<Mark>') !== -1) {
+			mark = graphic.substring(graphic.indexOf('<Mark>') + 6, graphic.indexOf("</Mark>"));
+		}
+		var fill;
+		if (mark.indexOf('<Fill>') !== -1) {
+			fill = mark.substring(mark.indexOf('<Fill>') + 6, mark.indexOf("</Fill>"));
+		}
+		var fillColor;
+		if (fill.indexOf('<CssParameter name="fill">') !== -1) {
+			fillColor = fill.substring(fill.indexOf('<CssParameter name="fill">') + 26, fill.indexOf("</CssParameter>"));
+		}
+		var fillColorCode;
+		var fillRGBColorCode;
+		if (fillColor.indexOf("#") !== -1) {
+			fillColorCode = fillColor.substring(fillColor.indexOf("#") + 1);
+			fillRGBColorCode = this.decimalFromHex(fillColorCode);
+		}
+		fill = fill.substring(fill.indexOf("</CssParameter>") + 15);
+		var fillOpacity;
+		if (fill.indexOf('<CssParameter name="fill-opacity">') !== -1) {
+			fillOpacity = fill.substring(fill.indexOf('<CssParameter name="fill-opacity">') + 34, fill.indexOf("</CssParameter>"));
+		}
+		if (fillRGBColorCode !== undefined && fillOpacity !== undefined) {
+			obj["fillRGBA"] = "rgba(" + fillRGBColorCode + "," + fillOpacity + ")";
+		}
+		mark = mark.substring(mark.indexOf("</Fill>") + 7);
+	}
+	
+	var stroke = symbol.substring(symbol.indexOf('<Stroke>') + 8, symbol.indexOf("</Stroke>"));
+	var strokeColor;
+	if (stroke.indexOf('<CssParameter name="stroke">') !== -1) {
+		strokeColor = stroke.substring(stroke.indexOf('<CssParameter name="stroke">') + 28, stroke.indexOf("</CssParameter>"));
+	}
+	var strokeColorCode;
+	var strokeRGBColorCode;
+	if (strokeColor.indexOf("#") !== -1) {
+		strokeColorCode = strokeColor.substring(strokeColor.indexOf("#") + 1);
+		strokeRGBColorCode = this.decimalFromHex(strokeColorCode);
+	}
+	stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
+	var strokeOpacity;
+	if (stroke.indexOf('<CssParameter name="stroke-opacity">') !== -1) {
+		strokeOpacity = stroke.substring(stroke.indexOf('<CssParameter name="stroke-opacity">') + 36, stroke.indexOf("</CssParameter>"));
+	}
+	if(!!strokeOpacity){
+		stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
+	}
+	if (strokeRGBColorCode !== undefined) {
+		obj["strokeRGBA"] = "rgba(" + strokeRGBColorCode + "," + (!strokeOpacity ?  "1" : strokeOpacity) + ")";
+	}
+	var strokeWidth;
+	if (stroke.indexOf('<CssParameter name="stroke-width">') !== -1) {
+		strokeWidth = stroke.substring(stroke.indexOf('<CssParameter name="stroke-width">') + 34, stroke.indexOf("</CssParameter>"));
+	}
+	if (strokeWidth !== undefined) {
+		obj["strokeWidth"] = strokeWidth;
+	}
+
+	stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
+	var strokeDashArray;
+	if (stroke.indexOf('<CssParameter name="stroke-dasharray">') !== -1) {
+		strokeDashArray = stroke
+				.substring(stroke.indexOf('<CssParameter name="stroke-dasharray">') + 38, stroke.indexOf("</CssParameter>"));
+	}
+	if (strokeDashArray !== undefined) {
+		strokeDashArray = strokeDashArray.replace(/ /gi, ",");
+		obj["strokeDashArray"] = strokeDashArray;
+	}
+
+	symbol = symbol.substring(symbol.indexOf("</Stroke>") + 9);
+	console.log(obj);
+	return obj;
+};
+
 /**
  * SLD의 폴리곤 스타일 설정값을 추출한다.
  * 
@@ -429,11 +682,15 @@ gb.style.LayerStyle.prototype.parsePolygonSymbolizer = function(sld) {
 		strokeOpacity = stroke.substring(stroke.indexOf('<CssParameter name="stroke-opacity">') + 36, stroke.indexOf("</CssParameter>"));
 	}
 	console.log(strokeOpacity);
-	if (strokeRGBColorCode !== undefined && strokeOpacity !== undefined) {
-		obj["strokeRGBA"] = "rgba(" + strokeRGBColorCode + "," + strokeOpacity + ")";
+	
+	if(!!strokeOpacity){
+		stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
+		console.log(stroke);
 	}
-	stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
-	console.log(stroke);
+	
+	if (strokeRGBColorCode !== undefined) {
+		obj["strokeRGBA"] = "rgba(" + strokeRGBColorCode + "," + (!strokeOpacity ?  "1" : strokeOpacity) + ")";
+	}
 	var strokeWidth;
 	if (stroke.indexOf('<CssParameter name="stroke-width">') !== -1) {
 		strokeWidth = stroke.substring(stroke.indexOf('<CssParameter name="stroke-width">') + 34, stroke.indexOf("</CssParameter>"));
@@ -806,11 +1063,11 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 		}
 	} else if (layer instanceof ol.layer.Tile) {
 		var source = layer.getSource();
-		var params = source.getParams();
-		if (params.hasOwnProperty("SLD_Body")) {
-			var sld = params["SLD_Body"];
+		var params = layer.get("git");
+		if (params.hasOwnProperty("sld")) {
+			var sld = params["sld"];
 			if (this.geom === "Point" || this.geom === "MultiPoint") {
-				var pointStyle = this.parsePointSymbolizer(sld);
+				var pointStyle = this.parseSymbolizer(sld);
 				if (pointStyle.hasOwnProperty("fillRGBA")) {
 					$(this.fillPicker).spectrum("set", pointStyle["fillRGBA"]);
 				}
@@ -835,7 +1092,7 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 					$(this.outlineInput).val("outline1");
 				}
 			} else if (this.geom === "LineString" || this.geom === "MultiLineString") {
-				var lineStyle = this.parseLineSymbolizer(sld);
+				var lineStyle = this.parseSymbolizer(sld);
 				if (lineStyle.hasOwnProperty("strokeRGBA")) {
 					$(this.linePicker).spectrum("set", lineStyle["strokeRGBA"]);
 				}
@@ -854,7 +1111,7 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 					$(this.outlineInput).val("outline1");
 				}
 			} else if (this.geom === "Polygon" || this.geom === "MultiPolygon") {
-				var polyStyle = this.parsePolygonSymbolizer(sld);
+				var polyStyle = this.parseSymbolizer(sld);
 				if (polyStyle.hasOwnProperty("fillRGBA")) {
 					$(this.fillPicker).spectrum("set", polyStyle["fillRGBA"]);
 				}

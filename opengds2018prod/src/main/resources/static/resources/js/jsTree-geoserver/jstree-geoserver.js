@@ -211,14 +211,15 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										params : {
 											"serverName" : params["serverName"],
 											"workspace" : params["workspace"],
-											"LAYERS" : data[i].lName,
-											"STYLES" : "",
+											"LAYERS" : params["workspace"] + ":" + data[i].lName,
+//											"STYLES" : undefined,
 											"VERSION" : "1.1.0",
 											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 											"TILED" : true,
 											"FORMAT" : 'image/png8',
 											"CRS" : data[i].srs
+//											"SLD_BODY": data[i].sld
 										},
 										serverType : "geoserver"
 									})
@@ -230,6 +231,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									'layers' : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
+									"sld": data[i].sld
 								};
 								wms.set("git", git);
 								wms.set("id", layerArr[i].id);
@@ -317,14 +319,15 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									params : {
 										"serverName" : server.text,
 										"workspace" : workspace.text,
-										"LAYERS" : node.text,
-										"STYLES" : "",
+										"LAYERS" : params["workspace"] + ":" + node.text,
+										//"STYLES" : data[i].style,
 										"VERSION" : "1.1.0",
 										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 										"TILED" : true,
 										"FORMAT" : 'image/png8',
 										"CRS" : data[i].srs
+//										"SLD_BODY": data[i].sld
 									},
 									serverType : "geoserver"
 								})
@@ -333,9 +336,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							var git = {
 								"geoserver" : server.text,
 								"workspace" : workspace.text,
-								'layers' : data[i].lName,
+								"layers" : data[i].lName,
 								"geometry" : data[i].geomType,
 								"editable" : true,
+								"sld": data[i].sld
 							};
 							wms.set("git", git);
 							wms.set("id", node.id);

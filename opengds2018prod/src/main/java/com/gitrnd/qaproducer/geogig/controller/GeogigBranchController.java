@@ -128,26 +128,4 @@ public class GeogigBranchController extends AbstractController {
 		return branchService.resolveConflict(geoserverManager, repoName, transactionId, featuresArr);
 	}
 
-	@RequestMapping(value = "/getWorkSpaceList.do", method = RequestMethod.POST)
-	@ResponseBody
-	public void getWorkSpaceList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "features", required = false) String features,
-			@RequestParam(value = "transactionId", required = false) String transactionId)
-			throws JAXBException, ParseException {
-
-	}
-
-	@RequestMapping(value = "/getDataStoreList.do", method = RequestMethod.POST)
-	@ResponseBody
-	public void getDataStoreList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "features", required = false) String features,
-			@RequestParam(value = "transactionId", required = false) String transactionId)
-			throws JAXBException, ParseException {
-
-	}
-
 }

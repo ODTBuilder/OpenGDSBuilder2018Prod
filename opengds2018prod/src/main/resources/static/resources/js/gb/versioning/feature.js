@@ -15,6 +15,7 @@
  * @date 2018. 10.26
  */
 gb.versioning.Feature = function(obj) {
+	var that = this;
 	var options = obj ? obj : {};
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
@@ -59,22 +60,6 @@ gb.versioning.Feature = function(obj) {
 	});
 
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
-	this.commits = {};
-	this.curServer;
-	this.curRepo;
-	this.curPath;
-	this.idstring;
-};
-gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
-gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
-
-/**
- * 피처 이력창을 연다.
- * 
- * @method gb.versioning.Feature#open
- */
-gb.versioning.Feature.prototype.open = function() {
-	var that = this;
 	this.panel = new gb.panel.Base({
 		"width" : 412,
 		"height" : 550,
@@ -83,6 +68,15 @@ gb.versioning.Feature.prototype.open = function() {
 		"positionY" : 395,
 		"autoOpen" : false
 	});
+
+	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" Refresh").click(function() {
+		that.refresh();
+	});
+	var refBtnarea = $("<div>").css({
+		"text-align" : "center"
+	}).append(refBtn);
+
 	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Author");
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
@@ -107,10 +101,34 @@ gb.versioning.Feature.prototype.open = function() {
 		"overflow-y" : "auto",
 		"height" : "510px",
 		"margin" : "4px 0"
-	}).append(table).append(btnarea);
+	}).append(refBtnarea).append(table).append(btnarea);
 	this.panel.setPanelBody(body);
-	this.panel.open();
 
+	this.commits = {};
+	this.curServer;
+	this.curRepo;
+	this.curPath;
+	this.idstring;
+	this.feature;
+};
+gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
+gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
+
+/**
+ * 피처 이력창을 닫는다.
+ * 
+ * @method gb.versioning.Feature#close
+ */
+gb.versioning.Feature.prototype.close = function() {
+	this.getPanel().close();
+}
+/**
+ * 피처 이력창을 연다.
+ * 
+ * @method gb.versioning.Feature#open
+ */
+gb.versioning.Feature.prototype.open = function() {
+	this.panel.open();
 };
 
 /**
@@ -1236,6 +1254,42 @@ gb.versioning.Feature.prototype.getPath = function() {
 };
 
 /**
+ * 현재 편집중인 객체 repo 를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setRepo
+ */
+gb.versioning.Feature.prototype.setRepo = function(repo) {
+	this.curRepo = repo;
+};
+
+/**
+ * 현재 편집중인 객체 repo 를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getRepo
+ */
+gb.versioning.Feature.prototype.getRepo = function() {
+	return this.curRepo;
+};
+
+/**
+ * 현재 편집중인 객체 server 를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setServer
+ */
+gb.versioning.Feature.prototype.setServer = function(server) {
+	this.curServer = server;
+};
+
+/**
+ * 현재 편집중인 객체 server 를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getServer
+ */
+gb.versioning.Feature.prototype.getServer = function() {
+	return this.curServer;
+};
+
+/**
  * 현재 편집중인 객체 idstring을 설정한다.
  * 
  * @method gb.versioning.Feature#setIDString
@@ -1252,11 +1306,45 @@ gb.versioning.Feature.prototype.setIDString = function(id) {
 gb.versioning.Feature.prototype.getIDString = function() {
 	return this.idstring;
 };
+
+/**
+ * panel 을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getPanel
+ */
+gb.versioning.Feature.prototype.getPanel = function() {
+	return this.panel;
+};
+
 /**
  * 현재 편집중인 객체 이력을 새로고침한다.
  * 
  * @method gb.versioning.Feature#refresh
  */
 gb.versioning.Feature.prototype.refresh = function() {
-	return this.curPath;
+	if ($(this.getPanel().getPanel()).css("display") !== "none") {
+		this.clearChangesTbody();
+		var geoserver = this.getServer();
+		var repo = this.getRepo();
+		var path = this.getPath();
+		this.loadFeatureHistory(geoserver, repo, path, 10);
+	}
+};
+
+/**
+ * 현재 편집중인 객체를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setFeature
+ */
+gb.versioning.Feature.prototype.setFeature = function(feature) {
+	this.feature = feature;
+};
+
+/**
+ * 현재 편집중인 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getIDString
+ */
+gb.versioning.Feature.prototype.getFeature = function() {
+	return this.feature;
 };

@@ -39,10 +39,13 @@ public class GeogigLayerController extends AbstractController {
 	public GeogigRepositoryLog logLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "layerName", required = false) String layerName) throws JAXBException {
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "until", required = false) String limit,
+			@RequestParam(value = "limit", required = false) String until,
+			@RequestParam(value = "head", required = false) String head) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return layerService.logLayer(geoserverManager, repoName, layerName);
+		return layerService.logLayer(geoserverManager, repoName, path, until, limit, head);
 	}
 
 	@RequestMapping(value = "/diffLayer.do", method = RequestMethod.POST)

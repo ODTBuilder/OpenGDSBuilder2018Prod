@@ -42,13 +42,14 @@
 
 package com.gitrnd.gdsbuilder.geoserver;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXParseException;
 
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
@@ -101,10 +102,9 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 				throw new RuntimeException("Bad layer type for layer " + layer.getName());
 			String response = loadFullURL(layer.getResourceUrl());
 			dtGeolayer = DTGeoLayer.build(response);
-			if (dtGeolayer == null) {
-				return null;
+			if (dtGeolayer != null) {
+				dtGeolayer.setStyle(layer.getDefaultStyle());
 			}
-			dtGeolayer.setStyle(layer.getDefaultStyle());
 		}
 		return dtGeolayer;
 	}
@@ -135,7 +135,8 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		DTGeoLayerList geoLayerList = new DTGeoLayerList();
 		if (layerNames != null) {
 			for (String layerName : layerNames) {
-				DTGeoLayer dtGeoLayer = getDTGeoLayer(workspace, layerName);
+				DTGeoLayer dtGeoLayer = null;
+				dtGeoLayer = getDTGeoLayer(workspace, layerName);
 				if (dtGeoLayer != null) {
 					RESTLayer layer = getLayer(workspace, layerName);
 //					dtGeoLayer.setStyle(layer.getDefaultStyle());
@@ -166,14 +167,15 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	};
 
 	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverList, String parent,
-			String serverName, EnTreeType type) {
+			String serverName, EnTreeType type) throws JDOMException, IOException {
 		if (dtGeoserverList == null) {
 			throw new IllegalArgumentException("DTGeoserverList may not be null");
 		}
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverList, parent, serverName, type);
 	}
 
-	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList) {
+	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList)
+			throws JDOMException, IOException {
 		if (dtGeoserverList == null) {
 			throw new IllegalArgumentException("DTGeoserverList may not be null");
 		}
@@ -193,6 +195,27 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			}
 		}
 		return containNames;
+	}
+
+	// 발행되어있는 레이어 목록
+	public String getConfiguredFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "featuretypes" + "." + type
+				+ "?list=configured";
+		return load(url);
+	}
+
+	// 발행되어있지 않은 레이어 목록
+	public String getAvailableFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+				+ "?list=available";
+		return load(url);
+	}
+
+	// 모든 레이어 목록
+	public String getAllFeatureTypes(String wsName, String dsName, String type) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+				+ "?list=all";
+		return load(url);
 	}
 
 	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {

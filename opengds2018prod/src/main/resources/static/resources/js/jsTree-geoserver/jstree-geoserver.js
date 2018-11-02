@@ -43,7 +43,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		this._data.geoserver.clientTree = this.settings.geoserver.clientTree;
 		this._data.geoserver.getWFSFeature = this.settings.geoserver.getWFSFeature;
 	};
-	
+
 	/**
 	 * Geoserver WFS Layer 파일 다운로드를 요청한다
 	 * 
@@ -53,28 +53,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @param {String}
 	 *            outputformat - output 포맷 형식
 	 */
-	this.download_wfs_layer = function(layer, outputformat){
+	this.download_wfs_layer = function(layer, outputformat) {
 		var out = outputformat;
 		var params = {
-			"serverName": layer.id.split(":")[0],
-			"workspace": layer.id.split(":")[1],
+			"serverName" : layer.id.split(":")[0],
+			"workspace" : layer.id.split(":")[1],
 			"version" : "1.0.0",
 			"outputformat" : out,
 			"typeName" : layer.id.split(":")[3]
 		}
-		
+
 		downloadWithCRS(this._data.geoserver.getWFSFeature, params);
 	}
-	
-	var downloadWithCRS = function(url, params){
-		var a = url,
-			b = params;
-		
+
+	var downloadWithCRS = function(url, params) {
+		var a = url, b = params;
+
 		var modal = new gb.modal.Base({
-			width: 435,
-			height: 180
+			width : 435,
+			height : 180
 		});
-		
+
 		var label = $("<span>").text("EPSG: ");
 		var searchBar = $("<input>").attr({
 			"type" : "number"
@@ -118,10 +117,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(downBtn).append(closeBtn);
 
 		modal.setModalFooter(buttonArea);
-		
+
 		modal.open();
 	}
-	
+
 	/**
 	 * Geoserver WMS Layer 파일 다운로드를 요청한다
 	 * 
@@ -131,11 +130,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @param {String}
 	 *            outputformat - output 포맷 형식
 	 */
-	this.download_wms_layer = function(layer, outputformat){
+	this.download_wms_layer = function(layer, outputformat) {
 		var data = layer;
 		var params = {
-			"serverName": data.serverName,
-			"workspace": data.workspace,
+			"serverName" : data.serverName,
+			"workspace" : data.workspace,
 			"version" : "1.1.0",
 			"format" : outputformat,
 			"srs" : data.srs,
@@ -144,7 +143,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			"width" : 1024,
 			"height" : 768
 		}
-		
+
 		downloadWithCRS(this._data.geoserver.getMapWMS, params);
 	}
 
@@ -168,16 +167,24 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				"workspace" : undefined,
 				"geoLayerList" : []
 			};
+			var geogig = {};
 			for (var a = 0; a < node.length; a++) {
 				if (node[a].type === "workspace") {
 					console.log("workspace array");
 				} else if (node[a].type === "datastore") {
 					console.log("datastore array");
+
 				} else if (node[a].type === "point" || node[a].type === "multipoint" || node[a].type === "linestring"
 						|| node[a].type === "multilinestring" || node[a].type === "polygon" || node[a].type === "multipolygon") {
 					var server = this.get_node(node[a].parents[2]);
 					var workspace = this.get_node(node[a].parents[1]);
 					var datastore = this.get_node(node[a].parents[0]);
+					if (datastore.original.hasOwnProperty("storeType")) {
+						if (datastore.original.storeType === "GeoGIG") {
+							geogig["repo"] = datastore.original.geogigRepos;
+							geogig["branch"] = datastore.original.geogigBranch;
+						}
+					}
 					layerArr.push(node[a]);
 					params["serverName"] = server.text;
 					params["workspace"] = workspace.text;
@@ -233,6 +240,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									"editable" : true,
 									"sld": data[i].sld
 								};
+								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
+									git["geogigRepo"] = geogig["repo"];
+									git["geogigBranch"] = geogig["branch"];
+								}
 								wms.set("git", git);
 								wms.set("id", layerArr[i].id);
 								wms.set("name", layerArr[i].text);
@@ -289,6 +300,13 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			var server = this.get_node(node.parents[2]);
 			var workspace = this.get_node(node.parents[1]);
 			var datastore = this.get_node(node.parents[0]);
+			var geogig = {};
+			if (datastore.original.hasOwnProperty("storeType")) {
+				if (datastore.original.storeType === "GeoGIG") {
+					geogig["repo"] = datastore.original.geogigRepos;
+					geogig["branch"] = datastore.original.geogigBranch;
+				}
+			}
 			var params = {
 				"serverName" : server.text,
 				"workspace" : workspace.text,
@@ -341,6 +359,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								"editable" : true,
 								"sld": data[i].sld
 							};
+							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
+								git["geogigRepo"] = geogig["repo"];
+								git["geogigBranch"] = geogig["branch"];
+							}
 							wms.set("git", git);
 							wms.set("id", node.id);
 							wms.set("name", node.text);

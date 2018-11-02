@@ -195,7 +195,8 @@ html {
 		});
 
 		var gbBaseMap = new gb.style.BaseMap({
-			"map" : gbMap.getLowerMap()
+			"map" : gbMap.getLowerMap(),
+			"defaultBaseMap" : "osm"
 		});
 
 		$("#changeBase").click(function() {
@@ -287,7 +288,13 @@ html {
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : urlList.getMapWMS + urlList.token,
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
-				"getWFSFeature": urlList.getWFSFeature + urlList.token
+				"getWFSFeature" : urlList.getWFSFeature + urlList.token
+			}
+		});
+
+		var fhist = new gb.versioning.Feature({
+			"url" : {
+				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 
@@ -302,7 +309,8 @@ html {
 			layerInfo : urlList.getLayerInfo + urlList.token,
 			imageTile : urlList.getLayerTile,
 			getFeature : urlList.getWFSFeature + urlList.token,
-			locale : "en"
+			locale : "en",
+			versioning : fhist
 		});
 
 		$("#editTool").click(function(e) {
@@ -433,7 +441,7 @@ html {
 		// command line
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
-			jstree: otree,
+			jstree : otree,
 			title : "Command Line",
 			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
@@ -464,9 +472,6 @@ html {
 		});
 		gbMap.getUpperMap().addControl(scaleLine);
 
-		var fhist = new gb.versioning.Feature({
-		
-		}); 
 		var gitrnd = {
 			resize : function() {
 				//현재 보이는 브라우저 내부 영역의 높이

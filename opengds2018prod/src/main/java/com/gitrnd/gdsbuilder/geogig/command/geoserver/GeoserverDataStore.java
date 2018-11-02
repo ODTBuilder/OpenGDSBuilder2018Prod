@@ -1,12 +1,7 @@
-/**
- * 
- */
-package com.gitrnd.gdsbuilder.geogig.command.repository;
+package com.gitrnd.gdsbuilder.geogig.command.geoserver;
 
 import java.util.Base64;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
@@ -21,26 +16,17 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStores;
 
-/**
- * Geogig Log Command Execution Class
- * 
- * @author GIT
- *
- */
-public class LogRepository {
+public class GeoserverDataStore {
 
-	private static final Log logger = LogFactory.getLog(LogRepository.class);
+	private static final String rest = "rest";
+	private static final String command_workspaces = "workspaces";
+	private static final String command_datastores = "datastores";
 
-	private static final String geogig = "geogig";
-	private static final String command = "log";
-	private static final String param_path = "path="; // optional
-	private static final String param_limit = "limit="; // optional
-	private static final String param_until = "until="; // optional
-
-	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository,
-			String path, String limit, String until) {
+	public GeogigGeoserverDataStore executeCommand(String baseURL, String username, String password, String workspace,
+			String datastore, String type) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -58,35 +44,14 @@ public class LogRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
-
-		if (path != null) {
-			if (url.contains("?")) {
-				url += "&" + param_path + path;
-			} else {
-				url += "?" + param_path + path;
-			}
-		}
-		if (limit != null) {
-			if (url.contains("?")) {
-				url += "&" + param_limit + limit;
-			} else {
-				url += "?" + param_limit + limit;
-			}
-		}
-		if (until != null) {
-			if (url.contains("?")) {
-				url += "&" + param_until + until;
-			} else {
-				url += "?" + param_until + until;
-			}
-		}
+		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "/"
+				+ datastore + type;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigRepositoryLog> responseEntity = null;
+		ResponseEntity<GeogigGeoserverDataStore> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigRepositoryLog.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigGeoserverDataStore.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {

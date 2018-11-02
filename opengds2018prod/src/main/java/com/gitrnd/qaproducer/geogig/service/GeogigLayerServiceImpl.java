@@ -29,8 +29,8 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 public class GeogigLayerServiceImpl implements GeogigLayerService {
 
 	@Override
-	public GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName)
-			throws JAXBException {
+	public GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName,
+			String limit, String until, String head) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -39,7 +39,7 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 		LogRepository logRepos = new LogRepository();
 		GeogigRepositoryLog log = null;
 		try {
-			log = logRepos.executeCommand(url, user, pw, repoName, layerName);
+			log = logRepos.executeCommand(url, user, pw, repoName, layerName, limit, until);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

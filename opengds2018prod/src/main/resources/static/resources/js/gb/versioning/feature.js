@@ -15,6 +15,10 @@
  * @date 2018. 10.26
  */
 gb.versioning.Feature = function(obj) {
+	var that = this;
+	var options = obj ? obj : {};
+	var url = options.url ? options.url : {};
+	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 
 	this.conflictView1 = new ol.View({
 		"center" : [ 0, 0 ],
@@ -54,26 +58,26 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
-};
-gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
-gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
 
-/**
- * 피처 이력창을 연다.
- * 
- * @method gb.versioning.Feature#open
- */
-gb.versioning.Feature.prototype.open = function() {
-	var that = this;
-	var panel = new gb.panel.Base({
-		"width" : 400,
+	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
+	this.panel = new gb.panel.Base({
+		"width" : 412,
 		"height" : 550,
 		"positionX" : 4,
 		"right" : true,
 		"positionY" : 395,
 		"autoOpen" : false
 	});
-	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Commiter");
+
+	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" Refresh").click(function() {
+		that.refresh();
+	});
+	var refBtnarea = $("<div>").css({
+		"text-align" : "center"
+	}).append(refBtn);
+
+	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Author");
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
 	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Changes");
@@ -81,34 +85,17 @@ gb.versioning.Feature.prototype.open = function() {
 	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
 		"text-align" : "center"
 	});
-	var tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
+
 	var table = $("<div>").addClass("gb-table").css({
 		"display" : "table",
 		"width" : "100%",
 		"padding-left" : "6px"
-	}).append(thead).append(tbody);
-	for (var i = 0; i < 11; i++) {
-		var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("admin").css({
-			"text-align" : "center"
-		});
-		var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("2018-10-26 13:45");
-		var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append("modified");
-		var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
-			"title" : "modified 1 feature via geodt online"
-		}).click(function() {
-			that.openDetailChanges();
-		});
-		var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-			"text-align" : "center"
-		}).append(button);
+	}).append(thead).append(this.tbody);
 
-		var msg = $("<div>").addClass("gb-tooltip-text").text("modified 1 feature");
-		var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2).append(td3)
-				.append(td4);
-		$(tbody).append(tr);
-	}
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
-	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more");
+	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more").click(function() {
+
+	});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
 	}).append(btn);
@@ -116,9 +103,34 @@ gb.versioning.Feature.prototype.open = function() {
 		"overflow-y" : "auto",
 		"height" : "510px",
 		"margin" : "4px 0"
-	}).append(table).append(btnarea);
-	panel.setPanelBody(body);
-	panel.open();
+	}).append(refBtnarea).append(table).append(btnarea);
+	this.panel.setPanelBody(body);
+
+	this.commits = {};
+	this.curServer;
+	this.curRepo;
+	this.curPath;
+	this.idstring;
+	this.feature;
+};
+gb.versioning.Feature.prototype = Object.create(gb.versioning.Feature.prototype);
+gb.versioning.Feature.prototype.constructor = gb.versioning.Feature;
+
+/**
+ * 피처 이력창을 닫는다.
+ * 
+ * @method gb.versioning.Feature#close
+ */
+gb.versioning.Feature.prototype.close = function() {
+	this.getPanel().close();
+}
+/**
+ * 피처 이력창을 연다.
+ * 
+ * @method gb.versioning.Feature#open
+ */
+gb.versioning.Feature.prototype.open = function() {
+	this.panel.open();
 };
 
 /**
@@ -126,8 +138,81 @@ gb.versioning.Feature.prototype.open = function() {
  * 
  * @method gb.versioning.Feature#loadFeatureHistory
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function() {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, until, head) {
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"limit" : limit
+	}
+	if (until !== undefined) {
+		params["until"] = until;
+	}
+	if (head !== undefined) {
+		params["head"] = head;
+	}
+	if (until === undefined || head === undefined) {
+		if (this.getIDString() !== server + "/" + repo + "/" + path) {
+			this.clearChangesTbody();
+		}
+	}
+	var tranURL = this.getFeatureLogURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
 
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+
+			if (data.success === "true") {
+				that.setIDString(server + "/" + repo + "/" + path);
+				if (Array.isArray(data.simpleCommits)) {
+					that.setCommitsByInfo(server, repo, path);
+				}
+
+				for (var i = 0; i < data.simpleCommits.length; i++) {
+					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
+						"text-align" : "center"
+					});
+					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
+					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
+					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+						"title" : data.simpleCommits[i].message,
+						"value" : data.simpleCommits[i].commitId,
+						"idx" : data.simpleCommits[i].cIdx
+					}).click(function() {
+						that.openDetailChanges();
+					});
+					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+						"text-align" : "center"
+					}).append(button);
+
+					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);
+					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
+							.append(td3).append(td4);
+					$(that.tbody).append(tr);
+				}
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
 };
 
 /**
@@ -1094,4 +1179,183 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
  */
 gb.versioning.Feature.prototype.mergeConflictFeature = function() {
 
+};
+
+/**
+ * 피처 로그 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureLogURL
+ */
+gb.versioning.Feature.prototype.getFeatureLogURL = function() {
+	return this.featureLogURL;
+};
+
+/**
+ * 피처이력 목록을 비운다.
+ * 
+ * @method gb.versioning.Feature#clearChangesTbody
+ */
+gb.versioning.Feature.prototype.clearChangesTbody = function() {
+	$(this.tbody).empty();
+};
+
+/**
+ * 피처이력 객체를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setCommits
+ */
+gb.versioning.Feature.prototype.setCommits = function(obj) {
+	this.commits = obj;
+};
+
+/**
+ * 피처이력 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getCommits
+ */
+gb.versioning.Feature.prototype.getCommits = function() {
+	return this.commits;
+};
+
+/**
+ * 조회한 피처이력을 분류 보관한다.
+ * 
+ * @method gb.versioning.Feature#setCommitsByInfo
+ */
+gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, arr) {
+	if (server || repo || path || arr) {
+		return;
+	}
+	if (!this.commits.hasOwnProperty(server)) {
+		this.commits[server] = {};
+	}
+	if (!this.commits[server].hasOwnProperty(repo)) {
+		this.commits[server][repo] = {};
+	}
+	if (!this.commits[server][repo].hasOwnProperty(path)) {
+		this.commits[server][repo][path] = [];
+	}
+	this.commits[server][repo][path] = this.commits[server][repo][path].concat(arr);
+};
+
+/**
+ * 현재 편집중인 객체 path를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setPath
+ */
+gb.versioning.Feature.prototype.setPath = function(path) {
+	this.curPath = path;
+};
+
+/**
+ * 현재 편집중인 객체 path를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getPath
+ */
+gb.versioning.Feature.prototype.getPath = function() {
+	return this.curPath;
+};
+
+/**
+ * 현재 편집중인 객체 repo 를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setRepo
+ */
+gb.versioning.Feature.prototype.setRepo = function(repo) {
+	this.curRepo = repo;
+};
+
+/**
+ * 현재 편집중인 객체 repo 를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getRepo
+ */
+gb.versioning.Feature.prototype.getRepo = function() {
+	return this.curRepo;
+};
+
+/**
+ * 현재 편집중인 객체 server 를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setServer
+ */
+gb.versioning.Feature.prototype.setServer = function(server) {
+	this.curServer = server;
+};
+
+/**
+ * 현재 편집중인 객체 server 를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getServer
+ */
+gb.versioning.Feature.prototype.getServer = function() {
+	return this.curServer;
+};
+
+/**
+ * 현재 편집중인 객체 idstring을 설정한다.
+ * 
+ * @method gb.versioning.Feature#setIDString
+ */
+gb.versioning.Feature.prototype.setIDString = function(id) {
+	this.idstring = id;
+};
+
+/**
+ * 현재 편집중인 객체 idstring을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getIDString
+ */
+gb.versioning.Feature.prototype.getIDString = function() {
+	return this.idstring;
+};
+
+/**
+ * panel 을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getPanel
+ */
+gb.versioning.Feature.prototype.getPanel = function() {
+	return this.panel;
+};
+
+/**
+ * 현재 편집중인 객체 이력을 새로고침한다.
+ * 
+ * @method gb.versioning.Feature#refresh
+ */
+gb.versioning.Feature.prototype.refresh = function() {
+	if ($(this.getPanel().getPanel()).css("display") !== "none") {
+		this.clearChangesTbody();
+		var geoserver = this.getServer();
+		var repo = this.getRepo();
+		var path = this.getPath();
+		this.loadFeatureHistory(geoserver, repo, path, 1);
+	}
+};
+
+/**
+ * 현재 편집중인 객체를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setFeature
+ */
+gb.versioning.Feature.prototype.setFeature = function(feature) {
+	this.feature = feature;
+};
+
+/**
+ * 현재 편집중인 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getIDString
+ */
+gb.versioning.Feature.prototype.getFeature = function() {
+	return this.feature;
+};
+
+/**
+ * 다음 편집이력을 로드한다.
+ * 
+ * @method gb.versioning.Feature#loadMoreHistory
+ */
+gb.versioning.Feature.prototype.loadMoreHistory = function() {
 };

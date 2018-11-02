@@ -127,4 +127,5 @@ public class GeogigBranchController extends AbstractController {
 		JSONArray featuresArr = (JSONArray) parser.parse(features);
 		return branchService.resolveConflict(geoserverManager, repoName, transactionId, featuresArr);
 	}
+
 }

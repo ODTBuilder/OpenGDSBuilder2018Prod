@@ -93,7 +93,9 @@ gb.versioning.Feature = function(obj) {
 	}).append(thead).append(this.tbody);
 
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
-	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more");
+	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more").click(function() {
+
+	});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
 	}).append(btn);
@@ -191,7 +193,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
 					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
 						"title" : data.simpleCommits[i].message,
-						"value" : data.simpleCommits[i].commitId
+						"value" : data.simpleCommits[i].commitId,
+						"idx" : data.simpleCommits[i].cIdx
 					}).click(function() {
 						that.openDetailChanges();
 					});
@@ -1327,7 +1330,7 @@ gb.versioning.Feature.prototype.refresh = function() {
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 10);
+		this.loadFeatureHistory(geoserver, repo, path, 1);
 	}
 };
 
@@ -1347,4 +1350,12 @@ gb.versioning.Feature.prototype.setFeature = function(feature) {
  */
 gb.versioning.Feature.prototype.getFeature = function() {
 	return this.feature;
+};
+
+/**
+ * 다음 편집이력을 로드한다.
+ * 
+ * @method gb.versioning.Feature#loadMoreHistory
+ */
+gb.versioning.Feature.prototype.loadMoreHistory = function() {
 };

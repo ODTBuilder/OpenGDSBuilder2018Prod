@@ -56,10 +56,11 @@ public class GeogigFeatureController extends AbstractController {
 			@RequestParam(value = "path", required = false) String path,
 			@RequestParam(value = "until", required = false) String until,
 			@RequestParam(value = "limit", required = false) Long limit,
-			@RequestParam(value = "head", required = false) String head) throws JAXBException {
+			@RequestParam(value = "head", required = false) String head,
+			@RequestParam(value = "index", required = false) Long index) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureLog(geoserverManager, repoName, path, limit, until, head);
+		return featureService.featureLog(geoserverManager, repoName, path, limit, until, head, index);
 	}
 
 	@RequestMapping(value = "/featureDiff.do", method = RequestMethod.POST)

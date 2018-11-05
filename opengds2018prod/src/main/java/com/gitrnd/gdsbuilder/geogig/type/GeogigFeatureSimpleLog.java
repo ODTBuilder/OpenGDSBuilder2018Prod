@@ -38,7 +38,7 @@ public class GeogigFeatureSimpleLog {
 
 	public static class SimpleCommit {
 
-		private int cIdx;
+		private Long cIdx;
 
 		private String commitId;
 
@@ -50,11 +50,11 @@ public class GeogigFeatureSimpleLog {
 
 		private String message;
 
-		public int getcIdx() {
+		public Long getcIdx() {
 			return cIdx;
 		}
 
-		public void setcIdx(int cIdx) {
+		public void setcIdx(Long cIdx) {
 			this.cIdx = cIdx;
 		}
 

@@ -86,7 +86,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
-			Long limit, String until, String head) throws JAXBException {
+			Long limit, String until, String head, Long index) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -106,7 +106,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			for (int i = 0; i < commitSize; i++) {
 				Commit newCommit = commits.get(i); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
-				simpleCommit.setcIdx(i); // idx
+				simpleCommit.setcIdx(index + i); // idx
 				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author

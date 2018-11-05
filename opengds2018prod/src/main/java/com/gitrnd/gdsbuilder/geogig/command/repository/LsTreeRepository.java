@@ -36,9 +36,10 @@ public class LsTreeRepository {
 	private static final String geogig = "geogig";
 	private static final String command = "ls-tree";
 	private static final String param_path = "path="; // optional
+	private static final String param_verbose = "verbose="; // optional
 
 	public GeogigRevisionTree executeCommand(String baseURL, String username, String password, String repository,
-			String path) {
+			String path, boolean verbose) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -59,7 +60,19 @@ public class LsTreeRepository {
 		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
 
 		if (path != null) {
-			url += "?" + param_path + path;
+			if (url.contains("?")) {
+				url += "&" + param_path + path;
+			} else {
+				url += "?" + param_path + path;
+			}
+
+		}
+		if (verbose == true) {
+			if (url.contains("?")) {
+				url += "&" + param_verbose + verbose;
+			} else {
+				url += "?" + param_verbose + verbose;
+			}
 		}
 
 		// request

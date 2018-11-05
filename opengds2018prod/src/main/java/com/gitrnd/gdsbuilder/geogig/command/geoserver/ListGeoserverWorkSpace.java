@@ -43,7 +43,7 @@ public class ListGeoserverWorkSpace {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + rest + "/" + command_workspaces + type;
+		String url = baseURL + "/" + rest + "/" + command_workspaces + "." + type;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

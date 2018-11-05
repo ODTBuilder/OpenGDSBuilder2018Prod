@@ -44,7 +44,7 @@ public class ListGeoserverDataStore {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores
+		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "."
 				+ type;
 
 		// request

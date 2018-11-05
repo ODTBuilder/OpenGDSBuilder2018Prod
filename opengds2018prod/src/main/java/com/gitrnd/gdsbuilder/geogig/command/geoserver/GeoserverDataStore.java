@@ -45,7 +45,7 @@ public class GeoserverDataStore {
 
 		// url
 		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "/"
-				+ datastore + type;
+				+ datastore + "." + type;
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);

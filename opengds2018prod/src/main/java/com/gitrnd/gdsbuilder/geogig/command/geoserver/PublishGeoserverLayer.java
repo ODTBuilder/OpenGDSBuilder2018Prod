@@ -8,33 +8,24 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayerList;
 
-public class ListGeoserverLayer {
+public class PublishGeoserverLayer {
 
 	private static final String rest = "rest";
 	private static final String command_workspaces = "workspaces";
 	private static final String command_datastores = "datastores";
 	private static final String command_featuretypes = "featuretypes";
-	private static final String command_list = "list=";
 
-	public enum ListParam {
+	private boolean isSuccess = false;
 
-		CONFIGURED, AVAILABLE, ALL;
-
-	}
-
-	public GeogigGeoserverLayerList executeCommand(String baseURL, String username, String password, String workspace,
-			String datasotre, ResponseType type, ListParam listParam) {
+	public boolean executeCommand(String baseURL, String username, String password, String workspace, String datastore,
+			String layerName, String src, boolean enabled) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -53,23 +44,21 @@ public class ListGeoserverLayer {
 
 		// url
 		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "/"
-				+ datasotre + "/" + command_featuretypes + "." + type;
+				+ datastore + "/" + command_featuretypes;
 
-		if (listParam != null) {
-			url += "?" + command_list + listParam;
-		}
+		String featureTypeStr = "<featureType><name>" + layerName + "</name><nativeCRS>" + src + "</nativeCRS><enabled>"
+				+ enabled + "</enabled></featureType>";
 
 		// request
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigGeoserverLayerList> responseEntity = null;
+		HttpEntity<String> requestEntity = new HttpEntity<>(featureTypeStr, headers);
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigGeoserverLayerList.class);
+			restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+			isSuccess = true;
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-		return responseEntity.getBody();
+		return isSuccess;
 	}
-
 }

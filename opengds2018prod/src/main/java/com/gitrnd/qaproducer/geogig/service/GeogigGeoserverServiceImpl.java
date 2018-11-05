@@ -9,18 +9,29 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.GeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer.ListParam;
+import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
+import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverWorkSpace;
+import com.gitrnd.gdsbuilder.geogig.command.geoserver.PublishGeoserverLayer;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommandResponse;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore.ConnectionParameters;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore.Entry;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList.DataStore;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayerList;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Attribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList.Workspace;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
@@ -97,21 +108,77 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 	}
 
 	@Override
-	public void publishGeogigLayer(DTGeoserverManager geoserverManager, String workspace, String datastore,
-			String layer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void listGeoserverLayer(DTGeoserverManager geoserverManager, String workspace, String datastore) {
+	public GeogigCommandResponse publishGeogigLayer(DTGeoserverManager geoserverManager, String workspace,
+			String datastore, String layer, String repoName, String branchName) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		ListGeoserverLayer list = new ListGeoserverLayer();
-		list.executeCommand(url, user, pw, workspace, datastore, ResponseType.XML, ListParam.ALL);
+		// get crs
+		String crs = "";
+		LsTreeRepository lsTreeRepos = new LsTreeRepository();
+		GeogigRevisionTree geogigLsTree = lsTreeRepos.executeCommand(url, user, pw, repoName, branchName, true);
+		List<Node> nodeList = geogigLsTree.getNodes();
+		for (Node node : nodeList) {
+			if (layer.equalsIgnoreCase(node.getPath())) {
+				String metadataId = node.getMetadataId();
+				CatObject catObj = new CatObject();
+				GeogigCat geogigCat = catObj.executeCommand(url, user, pw, repoName, metadataId);
+				FeatureType featureType = geogigCat.getFeaturetype();
+				List<Attribute> attrList = featureType.getAttribute();
+				for (Attribute attr : attrList) {
+					String geogigCrs = attr.getCrs();
+					if (geogigCrs != null) {
+						crs = geogigCrs;
+						break;
+					}
+				}
+			}
+		}
+		PublishGeoserverLayer publish = new PublishGeoserverLayer();
+		GeogigCommandResponse response = new GeogigCommandResponse();
+		try {
+			boolean isSuccess = publish.executeCommand(url, user, pw, workspace, datastore, layer, crs, true);
+			if (isSuccess) {
+				response.setSuccess("true");
+			}
+		} catch (GeogigCommandException e) {
+			response.setSuccess("false");
+			response.setError(e.getMessage());
+		}
+		return response;
+	}
 
+	@Override
+	public JSONArray listGeoserverLayer(DTGeoserverManager geoserverManager, String workspace, String datastore) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		JSONArray layerArr = new JSONArray();
+		// all layer
+		ListGeoserverLayer listAllLayer = new ListGeoserverLayer();
+		GeogigGeoserverLayerList allGsLayerList = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
+				ResponseType.XML, ListParam.ALL);
+		List<String> featureTypeList = allGsLayerList.getFeatureTypeNames();
+		// unpublished layer
+		GeogigGeoserverLayerList listPulishedLayer = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
+				ResponseType.XML, ListParam.AVAILABLE);
+		List<String> publishedGsLayerList = listPulishedLayer.getFeatureTypeNames();
+		for (String featureType : featureTypeList) {
+			JSONObject layerObj = new JSONObject();
+			layerObj.put("layerName", featureType);
+			boolean isPublished = true;
+			for (String unPublishedFeatureType : publishedGsLayerList) {
+				if (featureType.equals(unPublishedFeatureType)) {
+					isPublished = false;
+				}
+			}
+			layerObj.put("published", isPublished);
+			layerArr.add(layerObj);
+		}
+		return layerArr;
 	}
 }

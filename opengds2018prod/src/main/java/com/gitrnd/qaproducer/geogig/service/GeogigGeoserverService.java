@@ -3,8 +3,10 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommandResponse;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -15,8 +17,9 @@ public interface GeogigGeoserverService {
 
 	JSONObject getDataStoreList(DTGeoserverManager geoserverManager, String repoName, String branchName);
 
-	void publishGeogigLayer(DTGeoserverManager geoserverManager, String workspace, String datastore, String layer);
+	GeogigCommandResponse publishGeogigLayer(DTGeoserverManager geoserverManager, String workspace, String datastore,
+			String layer, String reposName, String branchName);
 
-	void listGeoserverLayer(DTGeoserverManager geoserverManager, String workspace, String datastore);
+	JSONArray listGeoserverLayer(DTGeoserverManager geoserverManager, String workspace, String datastore);
 
 }

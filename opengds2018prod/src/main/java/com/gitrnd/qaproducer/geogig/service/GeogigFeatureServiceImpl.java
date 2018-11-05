@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository.CountChange;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.RevertFeature;
@@ -100,9 +101,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		try {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
-			String limitStr = String.valueOf(limit + 1);
-			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limitStr, null,
-					"true");
+			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit.toString(),
+					null, CountChange.TRUE);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
 

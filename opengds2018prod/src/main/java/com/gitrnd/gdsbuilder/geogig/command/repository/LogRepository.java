@@ -40,14 +40,8 @@ public class LogRepository {
 	private static final String param_until = "until="; // optional
 	private static final String param_countChanges = "countChanges="; // optional
 
-	public enum CountChange {
-
-		TRUE, FALSE
-
-	}
-
 	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository,
-			String path, String limit, String until, CountChange countChanges) {
+			String path, String limit, String until, boolean countChanges) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -88,7 +82,7 @@ public class LogRepository {
 				url += "?" + param_until + until;
 			}
 		}
-		if (countChanges != null) {
+		if (countChanges == true) {
 			if (url.contains("?")) {
 				url += "&" + param_countChanges + countChanges;
 			} else {

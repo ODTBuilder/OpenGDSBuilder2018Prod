@@ -15,17 +15,13 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
-import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository.CountChange;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.RevertFeature;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
@@ -102,7 +98,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
 			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit.toString(),
-					null, CountChange.TRUE);
+					until, true);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
 

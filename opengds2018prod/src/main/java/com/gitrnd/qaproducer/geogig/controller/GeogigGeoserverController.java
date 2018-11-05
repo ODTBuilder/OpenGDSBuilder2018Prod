@@ -6,6 +6,7 @@ package com.gitrnd.qaproducer.geogig.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBException;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,14 +36,38 @@ public class GeogigGeoserverController extends AbstractController {
 
 	@RequestMapping(value = "/getDataStoreList.do", method = RequestMethod.POST)
 	@ResponseBody
-	public void getDataStoreList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public JSONObject getDataStoreList(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "branchName", required = false) String branchName)
 			throws JAXBException, ParseException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		geoserverService.getDataStoreList(geoserverManager, repoName, branchName);
+		return geoserverService.getDataStoreList(geoserverManager, repoName, branchName);
+		// {"ws1":["ds1"],"ws2":["ds1","ds2","ds3"]}
+	}
 
+	@RequestMapping(value = "/listGeoserverLayer.do", method = RequestMethod.POST)
+	@ResponseBody
+	public void publishGeogigLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "workspace", required = false) String workspace,
+			@RequestParam(value = "datastore", required = false) String datastore)
+			throws JAXBException, ParseException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		geoserverService.listGeoserverLayer(geoserverManager, workspace, datastore);
+	}
+
+	@RequestMapping(value = "/publishGeogigLayer.do", method = RequestMethod.POST)
+	@ResponseBody
+	public void publishGeogigLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "workspace", required = false) String workspace,
+			@RequestParam(value = "datastore", required = false) String datastore,
+			@RequestParam(value = "layer", required = false) String layer) throws JAXBException, ParseException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		geoserverService.publishGeogigLayer(geoserverManager, workspace, datastore, layer);
 	}
 }

@@ -103,10 +103,12 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limitStr, null);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
-			for (int i = 0; i < commits.size() - 1; i++) {
-				Commit newCommit = commits.get(i); // current
+
+			int commitSize = commits.size();
+			if (commitSize == 1) {
+				Commit newCommit = commits.get(0); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
-				simpleCommit.setcIdx(i); // idx
+				simpleCommit.setcIdx(0); // idx
 				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author
@@ -116,19 +118,37 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 				String dateStr = dateformat.format(date);
 				simpleCommit.setDate(dateStr);
-
-				Commit oldCommit = commits.get(i + 1); // parent
-				String oldCommitId = oldCommit.getCommitId();
-
-				DiffRepository diffRepos = new DiffRepository();
-				GeogigDiff geogigdiff = diffRepos.executeCommand(url, user, pw, repoName, oldCommitId, commitId, path,
-						null);
-				List<Diff> diffs = geogigdiff.getDiffs();
-				if (diffs != null) {
-					String changeType = diffs.get(0).getChangeType();
-					simpleCommit.setChangeType(changeType);
-				}
+				simpleCommit.setChangeType("ADDED");
 				simpleCommits.add(simpleCommit);
+			} else {
+				for (int i = 1; i < commitSize - 1; i++) {
+					Commit newCommit = commits.get(i); // current
+					SimpleCommit simpleCommit = new SimpleCommit();
+					simpleCommit.setcIdx(i); // idx
+					String commitId = newCommit.getCommitId(); // commit id
+					simpleCommit.setCommitId(commitId);
+					simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author
+					simpleCommit.setMessage(newCommit.getMessage()); // message
+					Timestamp timestamp = new Timestamp(Long.parseLong(newCommit.getAuthor().getTimestamp())); // time
+																												// stamp
+					Date date = new Date(timestamp.getTime());
+					DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+					String dateStr = dateformat.format(date);
+					simpleCommit.setDate(dateStr);
+
+					Commit oldCommit = commits.get(i + 1); // parent
+					String oldCommitId = oldCommit.getCommitId();
+
+					DiffRepository diffRepos = new DiffRepository();
+					GeogigDiff geogigdiff = diffRepos.executeCommand(url, user, pw, repoName, oldCommitId, commitId,
+							path, null);
+					List<Diff> diffs = geogigdiff.getDiffs();
+					if (diffs != null) {
+						String changeType = diffs.get(0).getChangeType();
+						simpleCommit.setChangeType(changeType);
+					}
+					simpleCommits.add(simpleCommit);
+				}
 			}
 			simpleLog.setSimpleCommits(simpleCommits);
 		} catch (GeogigCommandException e) {

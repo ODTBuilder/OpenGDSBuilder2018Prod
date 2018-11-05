@@ -3,21 +3,25 @@
  */
 package com.gitrnd.qaproducer.geogig.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
+import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.GeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverDataStore;
+import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer;
+import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer.ListParam;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverWorkSpace;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore.ConnectionParameters;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore.Entry;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStores;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStores.DataStore;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaces;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaces.Workspace;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList.DataStore;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList.Workspace;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -28,34 +32,35 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 
 	@Override
-	public void getDataStoreList(DTGeoserverManager geoserverManager, String repoName, String branchName) {
+	public JSONObject getDataStoreList(DTGeoserverManager geoserverManager, String repoName, String branchName) {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		List<String> wsList = new ArrayList<>();
-		List<String> dsList = new ArrayList<>();
+		JSONObject dsListObj = new JSONObject();
 
 		// get workspaces
 		ListGeoserverWorkSpace listGws = new ListGeoserverWorkSpace();
-		GeogigGeoserverWorkSpaces geogigGws = listGws.executeCommand(url, user, pw, ".xml");
+		GeogigGeoserverWorkSpaceList geogigGws = listGws.executeCommand(url, user, pw, ResponseType.XML.getType());
 		List<Workspace> workspaces = geogigGws.getWorkspaces();
 		for (Workspace workspace : workspaces) {
 			String wrName = workspace.getName();
 			// get datastores
 			ListGeoserverDataStore listGds = new ListGeoserverDataStore();
-			GeogigGeoserverDataStores geogigGdsList = listGds.executeCommand(url, user, pw, wrName, ".xml");
+			GeogigGeoserverDataStoreList geogigGdsList = listGds.executeCommand(url, user, pw, wrName,
+					ResponseType.XML.getType());
 			List<DataStore> dataStores = geogigGdsList.getDataStores();
+			JSONArray dsArr = new JSONArray();
+			String ws = null;
 			for (DataStore dataStore : dataStores) {
 				String dsName = dataStore.getName();
 				GeoserverDataStore gds = new GeoserverDataStore();
-				GeogigGeoserverDataStore geogigGds = gds.executeCommand(url, user, pw, wrName, dsName, ".xml");
+				GeogigGeoserverDataStore geogigGds = gds.executeCommand(url, user, pw, wrName, dsName,
+						ResponseType.XML.getType());
 				String type = geogigGds.getType();
 
 				// check geogig type
-				String ws = null;
-				String ds = null;
 				if (type.equalsIgnoreCase("GeoGIG")) {
 					ConnectionParameters connParam = geogigGds.getConnetParams();
 					List<Entry> entryList = connParam.getEntryList();
@@ -67,7 +72,7 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 						if (key.equalsIgnoreCase("geogig_repository")) {
 							String repoValue = value.replace("geoserver://", "");
 							if (repoValue.equalsIgnoreCase(repoName)) {
-								ws = repoValue;
+								ws = wrName;
 								isWs = true;
 							}
 						}
@@ -79,18 +84,34 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 							String value = entry.getXmlValue();
 							if (key.equalsIgnoreCase("branch")) {
 								if (value.equalsIgnoreCase(branchName)) {
-									ds = value;
+									dsArr.add(dsName);
 								}
 							}
 						}
 					}
 				}
-				if (ws != null && ds != null) {
-					wsList.add(ws);
-					dsList.add(ds);
-				}
 			}
+			dsListObj.put(ws, dsArr);
 		}
-		System.out.println("");
+		return dsListObj;
+	}
+
+	@Override
+	public void publishGeogigLayer(DTGeoserverManager geoserverManager, String workspace, String datastore,
+			String layer) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void listGeoserverLayer(DTGeoserverManager geoserverManager, String workspace, String datastore) {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		ListGeoserverLayer list = new ListGeoserverLayer();
+		list.executeCommand(url, user, pw, workspace, datastore, ResponseType.XML.getType(), ListParam.ALL.getType());
+
 	}
 }

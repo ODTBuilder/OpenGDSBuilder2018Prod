@@ -16,14 +16,14 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaces;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList;
 
 public class ListGeoserverWorkSpace {
 
 	private static final String rest = "rest";
 	private static final String command_workspaces = "workspaces";
 
-	public GeogigGeoserverWorkSpaces executeCommand(String baseURL, String username, String password, String type) {
+	public GeogigGeoserverWorkSpaceList executeCommand(String baseURL, String username, String password, String type) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -45,9 +45,10 @@ public class ListGeoserverWorkSpace {
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigGeoserverWorkSpaces> responseEntity = null;
+		ResponseEntity<GeogigGeoserverWorkSpaceList> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigGeoserverWorkSpaces.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity,
+					GeogigGeoserverWorkSpaceList.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {

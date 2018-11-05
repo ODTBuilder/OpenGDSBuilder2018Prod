@@ -5,14 +5,14 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "workspaces")
-public class GeogigGeoserverWorkSpaces {
+@XmlRootElement(name = "dataStores")
+public class GeogigGeoserverDataStoreList {
 
 	private String success;
 
 	private String error;
 
-	private List<Workspace> workspaces;
+	private List<DataStore> dataStores;
 
 	public String getSuccess() {
 		return success;
@@ -30,17 +30,17 @@ public class GeogigGeoserverWorkSpaces {
 		this.error = error;
 	}
 
-	@XmlElement(name = "workspace")
-	public List<Workspace> getWorkspaces() {
-		return workspaces;
+	@XmlElement(name = "dataStore")
+	public List<DataStore> getDataStores() {
+		return dataStores;
 	}
 
-	public void setWorkspaces(List<Workspace> workspaces) {
-		this.workspaces = workspaces;
+	public void setDataStores(List<DataStore> dataStores) {
+		this.dataStores = dataStores;
 	}
 
-	@XmlRootElement(name = "workspace")
-	public static class Workspace {
+	@XmlRootElement(name = "dataStore")
+	public static class DataStore {
 
 		private String name;
 

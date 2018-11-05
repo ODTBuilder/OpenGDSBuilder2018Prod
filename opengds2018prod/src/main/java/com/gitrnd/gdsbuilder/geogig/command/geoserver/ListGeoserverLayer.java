@@ -16,16 +16,37 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayerList;
 
-public class GeoserverDataStore {
+public class ListGeoserverLayer {
 
 	private static final String rest = "rest";
 	private static final String command_workspaces = "workspaces";
 	private static final String command_datastores = "datastores";
+	private static final String command_featuretypes = "featuretypes";
+	private static final String command_list = "list=";
 
-	public GeogigGeoserverDataStore executeCommand(String baseURL, String username, String password, String workspace,
-			String datastore, String type) {
+	public enum ListParam {
+
+		CONFIGURED("continue"), AVAILABLE("available"), ALL("all");
+
+		String type;
+
+		private ListParam(String type) {
+			this.type = type;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+	}
+
+	public GeogigGeoserverLayerList executeCommand(String baseURL, String username, String password, String workspace,
+			String datasotre, String type, String listParam) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -44,13 +65,17 @@ public class GeoserverDataStore {
 
 		// url
 		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "/"
-				+ datastore + type;
+				+ command_featuretypes + type;
+
+		if (listParam != null) {
+			url += command_list + listParam;
+		}
 
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigGeoserverDataStore> responseEntity = null;
+		ResponseEntity<GeogigGeoserverLayerList> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigGeoserverDataStore.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigGeoserverLayerList.class);
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
@@ -58,4 +83,5 @@ public class GeoserverDataStore {
 		}
 		return responseEntity.getBody();
 	}
+
 }

@@ -42,14 +42,14 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 
 		// get workspaces
 		ListGeoserverWorkSpace listGws = new ListGeoserverWorkSpace();
-		GeogigGeoserverWorkSpaceList geogigGws = listGws.executeCommand(url, user, pw, ResponseType.XML.getType());
+		GeogigGeoserverWorkSpaceList geogigGws = listGws.executeCommand(url, user, pw, ResponseType.XML);
 		List<Workspace> workspaces = geogigGws.getWorkspaces();
 		for (Workspace workspace : workspaces) {
 			String wrName = workspace.getName();
 			// get datastores
 			ListGeoserverDataStore listGds = new ListGeoserverDataStore();
 			GeogigGeoserverDataStoreList geogigGdsList = listGds.executeCommand(url, user, pw, wrName,
-					ResponseType.XML.getType());
+					ResponseType.XML);
 			List<DataStore> dataStores = geogigGdsList.getDataStores();
 			JSONArray dsArr = new JSONArray();
 			String ws = null;
@@ -57,7 +57,7 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 				String dsName = dataStore.getName();
 				GeoserverDataStore gds = new GeoserverDataStore();
 				GeogigGeoserverDataStore geogigGds = gds.executeCommand(url, user, pw, wrName, dsName,
-						ResponseType.XML.getType());
+						ResponseType.XML);
 				String type = geogigGds.getType();
 
 				// check geogig type
@@ -111,7 +111,7 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 		String pw = geoserverManager.getPassword();
 
 		ListGeoserverLayer list = new ListGeoserverLayer();
-		list.executeCommand(url, user, pw, workspace, datastore, ResponseType.XML.getType(), ListParam.ALL.getType());
+		list.executeCommand(url, user, pw, workspace, datastore, ResponseType.XML, ListParam.ALL);
 
 	}
 }

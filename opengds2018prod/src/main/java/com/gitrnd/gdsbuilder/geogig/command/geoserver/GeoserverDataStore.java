@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
 
 public class GeoserverDataStore {
@@ -25,7 +26,7 @@ public class GeoserverDataStore {
 	private static final String command_datastores = "datastores";
 
 	public GeogigGeoserverDataStore executeCommand(String baseURL, String username, String password, String workspace,
-			String datastore, String type) {
+			String datastore, ResponseType type) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();

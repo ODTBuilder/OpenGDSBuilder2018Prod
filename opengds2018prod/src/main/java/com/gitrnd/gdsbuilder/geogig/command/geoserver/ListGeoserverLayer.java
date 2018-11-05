@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayerList;
 
 public class ListGeoserverLayer {
@@ -28,25 +29,12 @@ public class ListGeoserverLayer {
 
 	public enum ListParam {
 
-		CONFIGURED("continue"), AVAILABLE("available"), ALL("all");
+		CONFIGURED, AVAILABLE, ALL;
 
-		String type;
-
-		private ListParam(String type) {
-			this.type = type;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
 	}
 
 	public GeogigGeoserverLayerList executeCommand(String baseURL, String username, String password, String workspace,
-			String datasotre, String type, String listParam) {
+			String datasotre, ResponseType type, ListParam listParam) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();

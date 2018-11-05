@@ -31,6 +31,7 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit.ChangeType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -100,55 +101,41 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
 			String limitStr = String.valueOf(limit + 1);
-			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limitStr, null);
+			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limitStr, null,
+					"true");
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
 
 			int commitSize = commits.size();
-			if (commitSize == 1) {
-				Commit newCommit = commits.get(0); // current
+			for (int i = 0; i < commitSize; i++) {
+				Commit newCommit = commits.get(i); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
-				simpleCommit.setcIdx(0); // idx
+				simpleCommit.setcIdx(i); // idx
 				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author
 				simpleCommit.setMessage(newCommit.getMessage()); // message
-				Timestamp timestamp = new Timestamp(Long.parseLong(newCommit.getAuthor().getTimestamp())); // time stamp
+				Timestamp timestamp = new Timestamp(Long.parseLong(newCommit.getAuthor().getTimestamp())); // time
 				Date date = new Date(timestamp.getTime());
-				DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+				DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String dateStr = dateformat.format(date);
-				simpleCommit.setDate(dateStr);
-				simpleCommit.setChangeType("ADDED");
-				simpleCommits.add(simpleCommit);
-			} else {
-				for (int i = 1; i < commitSize - 1; i++) {
-					Commit newCommit = commits.get(i); // current
-					SimpleCommit simpleCommit = new SimpleCommit();
-					simpleCommit.setcIdx(i); // idx
-					String commitId = newCommit.getCommitId(); // commit id
-					simpleCommit.setCommitId(commitId);
-					simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author
-					simpleCommit.setMessage(newCommit.getMessage()); // message
-					Timestamp timestamp = new Timestamp(Long.parseLong(newCommit.getAuthor().getTimestamp())); // time
-																												// stamp
-					Date date = new Date(timestamp.getTime());
-					DateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-					String dateStr = dateformat.format(date);
-					simpleCommit.setDate(dateStr);
 
-					Commit oldCommit = commits.get(i + 1); // parent
-					String oldCommitId = oldCommit.getCommitId();
-
-					DiffRepository diffRepos = new DiffRepository();
-					GeogigDiff geogigdiff = diffRepos.executeCommand(url, user, pw, repoName, oldCommitId, commitId,
-							path, null);
-					List<Diff> diffs = geogigdiff.getDiffs();
-					if (diffs != null) {
-						String changeType = diffs.get(0).getChangeType();
-						simpleCommit.setChangeType(changeType);
-					}
-					simpleCommits.add(simpleCommit);
+				ChangeType changeType = ChangeType.ADDS;
+				int addedCount = Integer.parseInt(newCommit.getAdds());
+				if (addedCount > 0) {
+					changeType = ChangeType.ADDS;
 				}
+				int removedCount = Integer.parseInt(newCommit.getRemoves());
+				if (removedCount > 0) {
+					changeType = ChangeType.REMOVES;
+				}
+				int modifiedCount = Integer.parseInt(newCommit.getModifies());
+				if (modifiedCount > 0) {
+					changeType = ChangeType.MODIFIES;
+				}
+				simpleCommit.setChangeType(changeType);
+				simpleCommit.setDate(dateStr);
+				simpleCommits.add(simpleCommit);
 			}
 			simpleLog.setSimpleCommits(simpleCommits);
 		} catch (GeogigCommandException e) {

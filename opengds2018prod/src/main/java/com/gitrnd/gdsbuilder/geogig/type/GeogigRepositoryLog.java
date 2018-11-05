@@ -107,7 +107,7 @@ public class GeogigRepositoryLog {
 	public void setNextPage(String nextPage) {
 		this.nextPage = nextPage;
 	}
-	
+
 	/**
 	 * Commit 객체
 	 * 
@@ -116,6 +116,12 @@ public class GeogigRepositoryLog {
 	 */
 	@XmlRootElement(name = "commit")
 	public static class Commit {
+
+		public enum ChangeType {
+
+			ADDS, MODIFIES, REMOVES;
+
+		}
 
 		/**
 		 * commitId

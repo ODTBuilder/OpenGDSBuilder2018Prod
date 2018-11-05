@@ -25,8 +25,8 @@ public interface GeogigLayerService {
 	 * @return
 	 * @throws JAXBException
 	 */
-	GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName, String limit,
-			String until, String head) throws JAXBException;
+//	GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName, String limit,
+//			String until, String head) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

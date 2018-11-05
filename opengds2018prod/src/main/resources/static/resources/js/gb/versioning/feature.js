@@ -191,6 +191,12 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 				}
 
 				for (var i = 0; i < data.simpleCommits.length; i++) {
+					if ((until !== undefined || head !== undefined) && (i === 0)) {
+						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+						if (data.simpleCommits[i].commitId === early) {
+							continue;
+						}
+					}
 					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
 						"text-align" : "center"
 					});

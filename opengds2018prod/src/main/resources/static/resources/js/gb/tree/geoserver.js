@@ -325,7 +325,7 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												inst.download_wfs_layer(selectedObj[i], "shape-zip");
 											}
@@ -347,7 +347,7 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												inst.download_wfs_layer(selectedObj[i], "gml2");
 											}
@@ -369,7 +369,7 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												inst.download_wfs_layer(selectedObj[i], "gml3");
 											}
@@ -391,7 +391,7 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												inst.download_wfs_layer(selectedObj[i], "application/json");
 											}
@@ -413,7 +413,7 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												inst.download_wfs_layer(selectedObj[i], "csv");
 											}
@@ -435,18 +435,18 @@ gb.tree.GeoServer = function(obj) {
 													return;
 												}
 											}
-											
+
 											var a = {
-												serverName: undefined,
-												workspace: undefined,
-												geoLayerList: undefined
+												serverName : undefined,
+												workspace : undefined,
+												geoLayerList : undefined
 											};
-											
+
 											for (var i = 0; i < selectedObj.length; i++) {
 												a.serverName = selectedObj[i].id.split(":")[0];
 												a.workspace = selectedObj[i].id.split(":")[1];
-												a.geoLayerList = [selectedObj[i].id.split(":")[3]];
-												
+												a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
+
 												$.ajax({
 													url : inst._data.geoserver.getLayerInfo,
 													method : "POST",
@@ -459,7 +459,7 @@ gb.tree.GeoServer = function(obj) {
 													traditional : true,
 													success : function(data, textStatus, jqXHR) {
 														var path = inst._data.geoserver.getMapWMS;
-														
+
 														for (var i = 0; i < data.length; i++) {
 															data[i].serverName = a.serverName;
 															data[i].workspace = a.workspace;
@@ -832,7 +832,18 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 		success : function(data) {
 			console.log(data);
 			callback.close();
-			that.refreshList();
+			if (data === 200) {
+				that.refreshList();
+			} else if (data === 600) {
+				that.messageModal("Error", "Session expired.");
+			} else if (data === 601) {
+				that.messageModal("Error", "Missing parameter.");
+			} else if (data === 602) {
+				that.messageModal("Error", "Server name or URL duplicated.");
+			} else if (data === 603) {
+				that.messageModal("Error", "Geoserver not found.");
+			}
+
 		}
 	});
 };
@@ -909,7 +920,15 @@ gb.tree.GeoServer.prototype.deleteGeoServer = function(geoserver, callback) {
 		success : function(data) {
 			console.log(data);
 			callback.close();
-			that.refreshList();
+			if (data === 200) {
+				that.refreshList();
+			} else if (data === 600) {
+				that.messageModal("Error", "Session expired.");
+			} else if (data === 603) {
+				that.messageModal("Error", "Geoserver not found.");
+			} else if (data === 605) {
+				that.messageModal("Error", "Nothing to delete.");
+			}
 		}
 	});
 };
@@ -994,7 +1013,19 @@ gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, lay
 		success : function(data) {
 			console.log(data);
 			callback.close();
-			that.refreshList();
+			if (data === 200) {
+				that.refreshList();
+			} else if (data === 500) {
+				that.messageModal("Error", "Request failed.");
+			} else if (data === 600) {
+				that.messageModal("Error", "Session expired.");
+			} else if (data === 603) {
+				that.messageModal("Error", "Geoserver not found.");
+			} else if (data === 605) {
+				that.messageModal("Error", "Geoserver info not found.");
+			} else if (data === 606) {
+				that.messageModal("Error", "Some layers have not been deleted.");
+			}
 		}
 	});
 };
@@ -1108,4 +1139,41 @@ gb.tree.GeoServer.prototype.setUploadSHP = function(upload) {
  */
 gb.tree.GeoServer.prototype.getUploadSHP = function() {
 	return this.uploadSHP;
+};
+
+/**
+ * 오류 메시지 창을 생성한다.
+ * 
+ * @method gb.tree.GeoServer#messageModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
+	var that = this;
+	var msg1 = $("<div>").text(msg).css({
+		"text-align" : "center",
+		"font-size" : "16px",
+		"padding-top" : "26px"
+	});
+	var body = $("<div>").append(msg1);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : title,
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(okBtn).click(function() {
+		modal.close();
+	});
 };

@@ -103,10 +103,10 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			commits.addAll(geogigLog.getCommits());
 
 			int commitSize = commits.size();
-			for (int i = 0; i < commitSize; i++) {
+			for (int i = index; i < commitSize; i++) {
 				Commit newCommit = commits.get(i); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
-				simpleCommit.setcIdx(index); // idx
+				simpleCommit.setcIdx(i); // idx
 				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author

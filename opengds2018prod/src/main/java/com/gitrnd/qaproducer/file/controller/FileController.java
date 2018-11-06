@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gitrnd.qaproducer.common.exception.ValidationAuthException;
 import com.gitrnd.qaproducer.common.security.LoginUser;
+import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.file.service.DeleteFileService;
 import com.gitrnd.qaproducer.file.service.DownloadService;
 import com.gitrnd.qaproducer.file.service.RequestService;
@@ -33,7 +34,7 @@ import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
 
 @Controller
-public class FileController {
+public class FileController extends AbstractController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileController.class);
 
@@ -54,7 +55,7 @@ public class FileController {
 
 	@Autowired
 	ValidationResultService validationResultService;
-
+	
 	@RequestMapping(value = "/deleteList.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteList(HttpServletRequest request, @RequestParam(value = "list", required = true) int[] list,
@@ -220,7 +221,5 @@ public class FileController {
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");
 		}
-
 	}
-
 }

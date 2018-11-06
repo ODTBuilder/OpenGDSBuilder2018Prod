@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
@@ -67,7 +68,7 @@ public class GeoserverController extends AbstractController {
 
 	@RequestMapping(value = "/addGeoserver.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public long addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
+	public int addGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
@@ -76,7 +77,7 @@ public class GeoserverController extends AbstractController {
 	
 	@RequestMapping(value = "/removeGeoserver.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public long removeGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
+	public int removeGeoserver(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) {
 		if(loginUser==null){
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
@@ -150,7 +151,7 @@ public class GeoserverController extends AbstractController {
 	}
 	
 	/**
-	 * @Description WFST
+	 * @Description
 	 * @author SG.Lee
 	 * @Date 2018. 7. 20. 오후 2:59:37
 	 * @param request
@@ -416,8 +417,8 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "geoserverRemoveLayers.ajax")
 	@ResponseBody
-	public long geoserverRemoveLayers(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser){
-		long resultFlag = 500;
+	public int geoserverRemoveLayers(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser){
+		int resultFlag = 500;
 		if(loginUser==null){
 			resultFlag = 600; 
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -468,8 +469,7 @@ public class GeoserverController extends AbstractController {
 			}
 		}
 	}
-
-
+	
 	@RequestMapping(value = "publishGeoserverStyle.ajax")
 	@ResponseBody
 	public void publishGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) {
@@ -517,5 +517,27 @@ public class GeoserverController extends AbstractController {
 		}
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return geoserverService.getLayerStyleSld(dtGeoserverManager, workspace, layerName);
+	}
+	
+	
+	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
+	public void uploadProcess(MultipartHttpServletRequest request, HttpServletResponse response,
+			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+		if(loginUser==null){
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = (String) request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		String workspace = (String) request.getParameter("workspace");
+		String datastore = (String) request.getParameter("datastore");
+		if(dtGeoserverManager==null){
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		}else if(workspace.equals("")||workspace==null){
+			response.sendError(500, "workspace를 입력하지 않았습니다.");
+		}
+		else{
+			geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager,workspace,datastore,request);
+		}
+		geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager,workspace,datastore,request);
 	}
 }

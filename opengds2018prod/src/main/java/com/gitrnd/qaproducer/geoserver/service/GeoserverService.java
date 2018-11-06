@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
@@ -42,11 +43,8 @@ public interface GeoserverService {
 	
 	
 	
-//	public boolean existGeoserver(String url, String id, String pw);
-	
-	
 	/**
-	 * @Description 
+	 * @Description SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
 	 * @Date 2018. 7. 31. 오전 9:44:27
 	 * @param dtGeoManager 
@@ -60,7 +58,7 @@ public interface GeoserverService {
 	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs);
 	
 	/**
-	 * @Description 
+	 * @Description SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
 	 * @Date 2018. 7. 31. 오전 9:44:29
 	 * @param dtGeoManager 
@@ -75,8 +73,30 @@ public interface GeoserverService {
 	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs, String defaultStyle);
 	
 	
+	
+	
 	/**
-	 *
+	 * @Description SHP파일 업로드
+	 * @author SG.Lee
+	 * @Date 2018. 11. 5. 오후 5:35:37
+	 * @param dtGeoManager
+	 * @param workspace 작업공간
+	 * @param datastore 저장소
+	 * @param request MultipartHttpServletRequest(
+	 * @return int 
+	 *         200 : 성공
+	 *         500 : 발행실패
+	 *         600 : 로그인세션 없음
+	 *         604 : Geoserver 정보오류
+	 *         607 :  workspace 또는 datastore 존재 X
+	 *         608 : 파일이 2개이상
+	 *         609 : 레이어 중복
+	 * */
+	public int shpCollectionPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, MultipartHttpServletRequest request);
+	
+	
+	/**
+	 * @Description 에러 레이어 발행 
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오전 10:26:25
 	 * @param dtGeoManager - DTGeoserverManager Object
@@ -160,12 +180,12 @@ public interface GeoserverService {
 	 * @param dtGeoManager - DTGeoserverManager Object
 	 * @param workspace - Geoserver Workspace명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
-	 * @return long - 200 성공
+	 * @return int - 200 성공
 	 *              - 500 요청실패
 	 *              - 605 해당 조건에 맞는 서버존재X
 	 *              - 606 일부성공 또는 실패
 	 * */
-	public long removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
+	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
 	
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제
@@ -261,6 +281,18 @@ public interface GeoserverService {
 	 * @return String
 	 * */
 	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName);
+	
+	
+	/**
+	 * @Description 레이어 유효성체크
+	 * @author SG.Lee
+	 * @Date 2018. 11. 5. 오후 3:22:37
+	 * @param dtGeoManager
+	 * @param workspace 작업공간
+	 * @param layerName 레이어명
+	 * @return boolean
+	 * */
+	public boolean exsistLayer(DTGeoserverManager dtGeoManager, String workspace, String layerName);
 }
 
 

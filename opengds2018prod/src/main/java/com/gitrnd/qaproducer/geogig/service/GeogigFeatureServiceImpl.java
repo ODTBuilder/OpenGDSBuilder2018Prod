@@ -106,11 +106,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			for (int i = 0; i < commitSize; i++) {
 				Commit newCommit = commits.get(i); // current
 				SimpleCommit simpleCommit = new SimpleCommit();
-				if (index == null) {
-					simpleCommit.setcIdx(0L);
-				} else {
-					simpleCommit.setcIdx(index + i); // idx
-				}
+				simpleCommit.setcIdx(index); // idx
 				String commitId = newCommit.getCommitId(); // commit id
 				simpleCommit.setCommitId(commitId);
 				simpleCommit.setAuthorName(newCommit.getAuthor().getName()); // author

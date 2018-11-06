@@ -19,7 +19,7 @@ gb.versioning.Feature = function(obj) {
 	var options = obj ? obj : {};
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-
+	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
 	this.conflictView1 = new ol.View({
 		"center" : [ 0, 0 ],
 		"zoom" : 1
@@ -100,7 +100,7 @@ gb.versioning.Feature = function(obj) {
 		var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
 		var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 		var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-		that.loadFeatureHistory(geoserver, repo, path, 3, idx, until, head);
+		that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
 	});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
@@ -198,6 +198,11 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					if ((until !== undefined || head !== undefined) && (i === 0)) {
 						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
 						if (data.simpleCommits[i].commitId === early) {
+							if (data.simpleCommits.length === 1) {
+								var title = "Message";
+								var msg = "No commits to load";
+								that.messageModal(title, msg);
+							}
 							continue;
 						}
 					}
@@ -211,7 +216,12 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"value" : data.simpleCommits[i].commitId,
 						"idx" : data.simpleCommits[i].cIdx
 					}).click(function() {
-						that.openDetailChanges();
+						var geoserver = that.getServer();
+						var repo = that.getRepo();
+						var path = that.getPath();
+						var nidx = 0;
+						var oidx = parseInt($(this).attr("idx"));
+						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
 					});
 					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
@@ -234,8 +244,18 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
  * 피처 디테일 창을 연다.
  * 
  * @method gb.versioning.Feature#openDetailChanges
+ * @param {String}
+ *            server - 서버 이름
+ * @param {String}
+ *            repo - 레파지토리 이름
+ * @param {String}
+ *            path - 피처 패스
+ * @param {Number}
+ *            nidx - 최신 커밋 인덱스
+ * @param {Number}
+ *            oidx - 타겟 커밋 인덱스
  */
-gb.versioning.Feature.prototype.openDetailChanges = function() {
+gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
 	var that = this;
 
 	var olabel = $("<div>").append("Committed Feature").addClass("gb-form").css({
@@ -338,6 +358,44 @@ gb.versioning.Feature.prototype.openDetailChanges = function() {
 		modal.close();
 	});
 
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"newIndex" : nidx,
+		"oldIndex" : oidx
+	}
+
+	var tranURL = this.getFeatureDiffURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				console.log(data);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
 	// var cparams1 = {
 	// "serverName" : server,
 	// "repoName" : crepos,
@@ -1206,6 +1264,15 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 };
 
 /**
+ * 피처 비교 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureDiffURL
+ */
+gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
+	return this.featureDiffURL;
+};
+
+/**
  * 피처이력 목록을 비운다.
  * 
  * @method gb.versioning.Feature#clearChangesTbody
@@ -1354,7 +1421,7 @@ gb.versioning.Feature.prototype.refresh = function() {
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 3, 0);
+		this.loadFeatureHistory(geoserver, repo, path, 10, 0);
 	}
 };
 
@@ -1383,4 +1450,40 @@ gb.versioning.Feature.prototype.getFeature = function() {
  */
 gb.versioning.Feature.prototype.loadMoreHistory = function() {
 
+};
+/**
+ * 오류 메시지 창을 생성한다.
+ * 
+ * @method gb.versioning.Feature#messageModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Feature.prototype.messageModal = function(title, msg) {
+	var that = this;
+	var msg1 = $("<div>").text(msg).css({
+		"text-align" : "center",
+		"font-size" : "16px",
+		"padding-top" : "26px"
+	});
+	var body = $("<div>").append(msg1);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : title,
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(okBtn).click(function() {
+		modal.close();
+	});
 };

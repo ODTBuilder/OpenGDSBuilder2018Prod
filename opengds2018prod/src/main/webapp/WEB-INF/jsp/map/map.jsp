@@ -294,7 +294,8 @@ html {
 
 		var fhist = new gb.versioning.Feature({
 			"url" : {
-				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}"
+				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 
@@ -409,13 +410,13 @@ html {
 			if (!layer) {
 				return;
 			}
-			
+
 			if (layer instanceof ol.layer.Image) {
 				layer.get("select").createMenuBar(gbMap.getLowerDiv());
 			} else {
 				var layers = gbMap.getUpperMap().getLayers();
 				for (var i = 0; i < layers.getLength(); i++) {
-					if(layers.item(i) instanceof ol.layer.Image){
+					if (layers.item(i) instanceof ol.layer.Image) {
 						layers.item(i).get("select").removeMenuBar();
 					}
 				}

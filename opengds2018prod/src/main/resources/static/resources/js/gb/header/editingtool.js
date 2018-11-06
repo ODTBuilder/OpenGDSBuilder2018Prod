@@ -398,9 +398,9 @@ gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
  */
 gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
- if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
- vfeature.close();
- } else {
+	if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
+		vfeature.close();
+	} else {
 		var layers = $(this.treeElement).jstreeol3("get_selected_layer");
 		var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
 		if (layers.length === 1 && feature) {
@@ -436,7 +436,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 				vfeature.open();
 			}
 		}
- }
+	}
 };
 
 /**
@@ -446,40 +446,42 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
  */
 gb.header.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
-// if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
-		var layers = $(this.treeElement).jstreeol3("get_selected_layer");
-		var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
-		if (layers.length === 1 && feature) {
-			var layer = layers[0];
-			console.log(layer);
-			var git = layer.get("git");
-			console.log(git);
-			var geoserver = git.geoserver;
-			console.log(geoserver);
-			var repo = git.geogigRepo;
-			console.log(repo);
-			var branch = git.geogigBranch;
-			console.log(branch);	
-			var layerName = layer.get("name");
-			console.log(layerName);
-			console.log(feature);
-			var path = layerName+"/"+feature.getId();
-			console.log(path);
-			vfeature.open();
+	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
+	var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
+	if (layers.length === 1 && feature) {
+		var layer = layers[0];
+		console.log(layer);
+		var git = layer.get("git");
+		console.log(git);
+		var geoserver = git.geoserver;
+		console.log(geoserver);
+		var repo = git.geogigRepo;
+		console.log(repo);
+		var branch = git.geogigBranch;
+		console.log(branch);	
+		var layerName = layer.get("name");
+		console.log(layerName);
+		console.log(feature);
+		var path = layerName+"/"+feature.getId();
+		console.log(path);
 
-			if (vfeature !== undefined && branch === "master") {
-				if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
-					vfeature.setServer(geoserver);
-					vfeature.setRepo(repo);
-					vfeature.setPath(path);
-					vfeature.setFeature(feature);
-					vfeature.refresh();
-				} else {
-					vfeature.refresh();
-				}
+		if (vfeature !== undefined && branch === "master") {
+			vfeature.open();
+			if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
+				vfeature.setServer(geoserver);
+				vfeature.setRepo(repo);
+				vfeature.setPath(path);
+				vfeature.setFeature(feature);
+				vfeature.refresh();
+			} else {
+				vfeature.refresh();
+			}
+		} else {
+			if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
+				vfeature.close();	
 			}
 		}
-// }
+	}
 };
 
 /**
@@ -2360,20 +2362,20 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 				}),
 				"image": new ol.style.Circle({
 					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize) : undefined,
-					"fill": new ol.style.Fill({
-						"color": ol.color.asArray(symbol.fillRGBA)
-					}),
-					"stroke": new ol.style.Stroke({
-						"color": ol.color.asArray(symbol.strokeRGBA),
-						"width": symbol.strokeWidth,
-						"lineDash": symbol.strokeDashArray,
-						"lineCap": "butt"
-					})
+							"fill": new ol.style.Fill({
+								"color": ol.color.asArray(symbol.fillRGBA)
+							}),
+							"stroke": new ol.style.Stroke({
+								"color": ol.color.asArray(symbol.strokeRGBA),
+								"width": symbol.strokeWidth,
+								"lineDash": symbol.strokeDashArray,
+								"lineCap": "butt"
+							})
 				})
 			});
 			layer.setStyle(style);
 		}
-		
+
 		git.layerID = layerid;
 		git.tempLayer = layer;
 		git.treeID = treeid;

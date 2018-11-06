@@ -3685,6 +3685,17 @@ gb.versioning.Repository.prototype.getCurrentMap = function() {
 }
 
 /**
+ * 타겟 브랜치의 충돌피처를 보여줄 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getTargetMap
+ * @return {Object}
+ * 
+ */
+gb.versioning.Repository.prototype.getTargetMap = function() {
+	return this.tmap;
+}
+
+/**
  * fetch 요청을 할 레파지토리의 이름을 저장한다.
  * 
  * @method gb.versioning.Repository#setFetchRepository

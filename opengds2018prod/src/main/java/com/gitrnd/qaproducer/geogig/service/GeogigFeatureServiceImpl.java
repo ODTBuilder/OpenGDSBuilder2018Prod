@@ -86,7 +86,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
-			Long limit, String until, String head, Long index) throws JAXBException {
+			int limit, String until, String head, int index) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -97,8 +97,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		try {
 			List<SimpleCommit> simpleCommits = new ArrayList<>();
 			List<Commit> commits = new ArrayList<>();
-			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path, limit.toString(),
-					until, true);
+			GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, repoName, path,
+					String.valueOf(limit), until, true);
 			simpleLog.setSuccess(geogigLog.getSuccess());
 			commits.addAll(geogigLog.getCommits());
 

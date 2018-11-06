@@ -98,8 +98,9 @@ gb.versioning.Feature = function(obj) {
 		var repo = that.getRepo();
 		var path = that.getPath();
 		var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+		var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 		var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-		that.loadFeatureHistory(geoserver, repo, path, 3, until, head);
+		that.loadFeatureHistory(geoserver, repo, path, 3, idx, until, head);
 	});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
@@ -143,7 +144,7 @@ gb.versioning.Feature.prototype.open = function() {
  * 
  * @method gb.versioning.Feature#loadFeatureHistory
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, until, head) {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -156,6 +157,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 	}
 	if (head !== undefined) {
 		params["head"] = head;
+	}
+	if (idx !== undefined) {
+		params["index"] = idx;
 	}
 	if (until === undefined || head === undefined) {
 		if (this.getIDString() !== server + "/" + repo + "/" + path) {
@@ -1350,7 +1354,7 @@ gb.versioning.Feature.prototype.refresh = function() {
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 3);
+		this.loadFeatureHistory(geoserver, repo, path, 3, 0);
 	}
 };
 

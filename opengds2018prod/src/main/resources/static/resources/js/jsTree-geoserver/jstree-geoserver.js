@@ -98,7 +98,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			var val = $(searchBar).val().replace(/(\s*)/g, '') || "4326";
 			b.srsname = "EPSG:" + val;
 			var form = document.createElement("form");
-			form.setAttribute("method", "post");
+			form.setAttribute("method", "get");
 			form.setAttribute("action", a);
 			var keys = Object.keys(b);
 			for (var j = 0; j < keys.length; j++) {
@@ -215,17 +215,19 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											data[i].nbBox.maxy.toString() ],
 									source : new ol.source.TileWMS({
 										url : that._data.geoserver.getMapWMS,
+										//url : "http://175.116.181.42:9990/geoserver/wms",
 										params : {
 											"serverName" : params["serverName"],
 											"workspace" : params["workspace"],
-											"LAYERS" : data[i].lName,
-											"STYLES" : "",
+											"LAYERS" : params["workspace"] + ":" + data[i].lName,
+//											"STYLES" : undefined,
 											"VERSION" : "1.1.0",
 											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 											"TILED" : true,
 											"FORMAT" : 'image/png8',
-											"CRS" : data[i].srs
+											"CRS" : data[i].srs,
+											"SLD_BODY": data[i].sld
 										},
 										serverType : "geoserver"
 									})
@@ -236,7 +238,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									"workspace" : params["workspace"],
 									'layers' : data[i].lName,
 									"geometry" : data[i].geomType,
-									"editable" : true
+									"editable" : true,
+									"sld": data[i].sld
 								};
 								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 									git["geogigRepo"] = geogig["repo"];
@@ -332,17 +335,19 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
+									//url : "http://175.116.181.42:9990/geoserver/wms",
 									params : {
 										"serverName" : server.text,
 										"workspace" : workspace.text,
-										"LAYERS" : node.text,
-										"STYLES" : "",
+										"LAYERS" : params["workspace"] + ":" + node.text,
+										//"STYLES" : data[i].style,
 										"VERSION" : "1.1.0",
 										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 										"TILED" : true,
 										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs
+										"CRS" : data[i].srs,
+										"SLD_BODY": data[i].sld
 									},
 									serverType : "geoserver"
 								})
@@ -351,9 +356,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							var git = {
 								"geoserver" : server.text,
 								"workspace" : workspace.text,
-								'layers' : data[i].lName,
+								"layers" : data[i].lName,
 								"geometry" : data[i].geomType,
 								"editable" : true,
+								"sld": data[i].sld
 							};
 							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 								git["geogigRepo"] = geogig["repo"];

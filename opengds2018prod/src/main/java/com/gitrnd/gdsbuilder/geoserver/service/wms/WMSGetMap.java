@@ -1,5 +1,8 @@
 package com.gitrnd.gdsbuilder.geoserver.service.wms;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnWMSOutputFormat;
 
 public class WMSGetMap {
@@ -292,7 +295,12 @@ public class WMSGetMap {
 			}
 			if(!this.sld_body.trim().equals("")){
 				urlBuffer.append("&");
-				urlBuffer.append("sld_body="+sld_body);
+				try {
+					urlBuffer.append("sld_body="+URLEncoder.encode(sld_body,"utf-8"));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					System.err.println("sld_body 파싱에러");
+				}
 			}
 			if(!this.tiled.trim().equals("")){
 				urlBuffer.append("&");

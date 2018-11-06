@@ -107,7 +107,7 @@ public class AbstractController {
 	 * @author SG.Lee
 	 * @Date 2018. 7. 5. 오후 4:25:03
 	 * @param request
-	 * @return long
+	 * @return int
 	 *         200 : 성공
 	 *         600 : 로그인세션 없음
 	 *         601 : 미입력 텍스트 존재
@@ -115,7 +115,7 @@ public class AbstractController {
 	 *         603 : Geoserver 세션없음
 	 *         604 : Geoserver 정보오류 
 	 * */
-	public long addGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
+	public int addGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
 		String serverName = "";
 		String serverURL = "";
 		String id="";
@@ -184,13 +184,13 @@ public class AbstractController {
 	 * @author SG.Lee
 	 * @Date 2018. 7. 6. 오후 4:41:04
 	 * @param request
-	 * @return long
+	 * @return int
 	 *         200 : 성공
 	 *         600 : 로그인세션 없음
 	 *         603 : Geoserver 세션없음
 	 *         605 : 서버이름존재 X 
 	 * */
-	public long removeGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
+	public int removeGeoserverToSession(HttpServletRequest request, LoginUser loginUser){
 		String serverName = "";
 		
 		
@@ -312,7 +312,7 @@ public class AbstractController {
 	 * @Date 2018. 7. 16. 오전 10:03:14
 	 * @param request
 	 * @param loginUser
-	 * @return long
+	 * @return boolean
 	 * */
 	public boolean checkUserGeoserver(HttpServletRequest request, LoginUser loginUser){
 		boolean flag = false;

@@ -111,6 +111,41 @@ if (!gb.validation)
 	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 	
+	gb.validation.Validation.prototype.createStepDiv = function(){
+		var icon1 = $("<i>");
+		var title1 = $("<h2 class='step-title'>");
+		var desc1 = $("<h4 class='step-desc'>");
+		var content1 = 
+			$("<div class='step-content'>")
+				.append;
+		
+		var step1 = 
+			$("<div class='step'>")
+				.css({
+					"position": "relative",
+					"display": "flex",
+					"padding-left": "2em",
+					"width": "33.333%",
+					"justify-content": "center"
+				})
+				.append(icon1)
+				.append(content1);
+		
+		var steps = 
+			$("<div class='steps'>")
+				.css({
+					"display": "inline-flex",
+					"-webkit-box-orient": "horizontal",
+					"-webkit-box-direction": "normal",
+					"-ms-flex-direction": "row",
+					"flex-direction": "row",
+					"-webkit-box-align": "stretch"
+				})
+				.append(step1)
+				.append(step2);
+		var wrapper = $("<div class='step-wrapper'>").css({});
+	}
+	
 	gb.validation.Validation.prototype.createContent = function(){
 		// ==================== Create Modal Body HTML Start >>>>>>>>>>>>>>>>>>>>>>
 		var treePanel = this.createJSTreePanel();

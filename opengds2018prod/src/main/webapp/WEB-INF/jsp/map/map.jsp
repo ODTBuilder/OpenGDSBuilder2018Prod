@@ -409,6 +409,17 @@ html {
 			if (!layer) {
 				return;
 			}
+			
+			if (layer instanceof ol.layer.Image) {
+				layer.get("select").createMenuBar(gbMap.getLowerDiv());
+			} else {
+				var layers = gbMap.getUpperMap().getLayers();
+				for (var i = 0; i < layers.getLength(); i++) {
+					if(layers.item(i) instanceof ol.layer.Image){
+						layers.item(i).get("select").removeMenuBar();
+					}
+				}
+			}
 
 			if (layer instanceof ol.layer.Group) {
 				return;
@@ -416,19 +427,15 @@ html {
 
 			if (featureList.footerTag.css("display") === "none") {
 				return;
+			} else {
+				featureList.updateFeatureList({
+					url : urlList.getWFSFeature + urlList.token,
+					treeid : treeid,
+					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
+					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
+					layerName : layer.get('name')
+				});
 			}
-
-			if (layer instanceof ol.layer.Image) {
-				return;
-			}
-
-			featureList.updateFeatureList({
-				url : urlList.getWFSFeature + urlList.token,
-				treeid : treeid,
-				geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
-				workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
-				layerName : layer.get('name')
-			});
 		});
 
 		// command line

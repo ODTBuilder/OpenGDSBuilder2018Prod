@@ -58,6 +58,12 @@ public class GeogigRevisionTree {
 
 		private String path;
 
+		private String metadataId;
+
+		private String type;
+
+		private String objectId;
+
 		@XmlElement(name = "path")
 		public String getPath() {
 			return path;
@@ -65,6 +71,33 @@ public class GeogigRevisionTree {
 
 		public void setPath(String path) {
 			this.path = path;
+		}
+
+		@XmlElement(name = "metadataId")
+		public String getMetadataId() {
+			return metadataId;
+		}
+
+		public void setMetadataId(String metadataId) {
+			this.metadataId = metadataId;
+		}
+
+		@XmlElement(name = "type")
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		@XmlElement(name = "objectId")
+		public String getObjectId() {
+			return objectId;
+		}
+
+		public void setObjectId(String objectId) {
+			this.objectId = objectId;
 		}
 
 	}

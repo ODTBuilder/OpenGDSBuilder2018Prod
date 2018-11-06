@@ -8,24 +8,24 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList;
 
-public class ListGeoserverWorkSpace {
+public class PublishGeoserverLayer {
 
 	private static final String rest = "rest";
 	private static final String command_workspaces = "workspaces";
+	private static final String command_datastores = "datastores";
+	private static final String command_featuretypes = "featuretypes";
 
-	public GeogigGeoserverWorkSpaceList executeCommand(String baseURL, String username, String password,
-			ResponseType type) {
+	private boolean isSuccess = false;
+
+	public boolean executeCommand(String baseURL, String username, String password, String workspace, String datastore,
+			String layerName, String src, boolean enabled) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -43,20 +43,22 @@ public class ListGeoserverWorkSpace {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + rest + "/" + command_workspaces + "." + type;
+		String url = baseURL + "/" + rest + "/" + command_workspaces + "/" + workspace + "/" + command_datastores + "/"
+				+ datastore + "/" + command_featuretypes;
+
+		String featureTypeStr = "<featureType><name>" + layerName + "</name><nativeCRS>" + src + "</nativeCRS><enabled>"
+				+ enabled + "</enabled></featureType>";
 
 		// request
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigGeoserverWorkSpaceList> responseEntity = null;
+		HttpEntity<String> requestEntity = new HttpEntity<>(featureTypeStr, headers);
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity,
-					GeogigGeoserverWorkSpaceList.class);
+			restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+			isSuccess = true;
 		} catch (HttpClientErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		} catch (HttpServerErrorException e) {
 			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-		return responseEntity.getBody();
+		return isSuccess;
 	}
-
 }

@@ -28,25 +28,25 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 @Service("layerService")
 public class GeogigLayerServiceImpl implements GeogigLayerService {
 
-	@Override
-	public GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName,
-			String limit, String until, String head) throws JAXBException {
-
-		String url = geoserverManager.getRestURL();
-		String user = geoserverManager.getUsername();
-		String pw = geoserverManager.getPassword();
-
-		LogRepository logRepos = new LogRepository();
-		GeogigRepositoryLog log = null;
-		try {
-			log = logRepos.executeCommand(url, user, pw, repoName, layerName, limit, until);
-		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			log = (GeogigRepositoryLog) unmarshaller.unmarshal(new StringReader(e.getMessage()));
-		}
-		return log;
-	}
+//	@Override
+//	public GeogigRepositoryLog logLayer(DTGeoserverManager geoserverManager, String repoName, String layerName,
+//			String limit, String until, String head) throws JAXBException {
+//
+//		String url = geoserverManager.getRestURL();
+//		String user = geoserverManager.getUsername();
+//		String pw = geoserverManager.getPassword();
+//
+//		LogRepository logRepos = new LogRepository();
+//		GeogigRepositoryLog log = null;
+//		try {
+//			log = logRepos.executeCommand(url, user, pw, repoName, layerName, limit, until);
+//		} catch (GeogigCommandException e) {
+//			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
+//			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+//			log = (GeogigRepositoryLog) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+//		}
+//		return log;
+//	}
 
 	@Override
 	public GeogigDiff diffLayer(DTGeoserverManager geoserverManager, String repoName, int oldIndex, int newIndex,

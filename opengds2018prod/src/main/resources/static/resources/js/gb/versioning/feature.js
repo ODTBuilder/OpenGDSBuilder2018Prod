@@ -94,7 +94,12 @@ gb.versioning.Feature = function(obj) {
 
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
 	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more").click(function() {
-
+		var geoserver = that.getServer();
+		var repo = that.getRepo();
+		var path = that.getPath();
+		var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+		var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
+		that.loadFeatureHistory(geoserver, repo, path, 3, until, head);
 	});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
@@ -186,6 +191,12 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 				}
 
 				for (var i = 0; i < data.simpleCommits.length; i++) {
+					if ((until !== undefined || head !== undefined) && (i === 0)) {
+						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+						if (data.simpleCommits[i].commitId === early) {
+							continue;
+						}
+					}
 					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
 						"text-align" : "center"
 					});
@@ -1200,6 +1211,15 @@ gb.versioning.Feature.prototype.clearChangesTbody = function() {
 };
 
 /**
+ * 피처이력 목록 테이블 바디를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getTBody
+ */
+gb.versioning.Feature.prototype.getTBody = function() {
+	return this.tbody;
+};
+
+/**
  * 피처이력 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setCommits
@@ -1330,7 +1350,7 @@ gb.versioning.Feature.prototype.refresh = function() {
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 1);
+		this.loadFeatureHistory(geoserver, repo, path, 3);
 	}
 };
 
@@ -1358,4 +1378,5 @@ gb.versioning.Feature.prototype.getFeature = function() {
  * @method gb.versioning.Feature#loadMoreHistory
  */
 gb.versioning.Feature.prototype.loadMoreHistory = function() {
+
 };

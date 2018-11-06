@@ -234,7 +234,7 @@ public class GeogigRepositoryTree extends JSONArray {
 						boolean children = false;
 						LsTreeRepository lsTree = new LsTreeRepository();
 						GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repository,
-								branchName);
+								branchName, false);
 						List<Node> nodes = revisionTree.getNodes();
 						if (nodes != null) {
 							if (nodes.size() > 0) {
@@ -273,7 +273,7 @@ public class GeogigRepositoryTree extends JSONArray {
 					// branch ls-tree : default master
 					LsTreeRepository lsTree = new LsTreeRepository();
 					GeogigRevisionTree revisionTree = lsTree.executeCommand(baseURL, username, password, repository,
-							branch);
+							branch, false);
 					List<Node> nodes = revisionTree.getNodes();
 					for (Node node : nodes) {
 						String path = node.getPath();

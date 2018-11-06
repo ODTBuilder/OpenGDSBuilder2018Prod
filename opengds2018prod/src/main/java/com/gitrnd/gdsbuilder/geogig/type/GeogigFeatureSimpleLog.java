@@ -2,6 +2,8 @@ package com.gitrnd.gdsbuilder.geogig.type;
 
 import java.util.List;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit.ChangeType;
+
 public class GeogigFeatureSimpleLog {
 
 	private String success;
@@ -36,7 +38,7 @@ public class GeogigFeatureSimpleLog {
 
 	public static class SimpleCommit {
 
-		private int cIdx;
+		private Long cIdx;
 
 		private String commitId;
 
@@ -44,15 +46,15 @@ public class GeogigFeatureSimpleLog {
 
 		private String date;
 
-		private String changeType;
+		private ChangeType changeType;
 
 		private String message;
 
-		public int getcIdx() {
+		public Long getcIdx() {
 			return cIdx;
 		}
 
-		public void setcIdx(int cIdx) {
+		public void setcIdx(Long cIdx) {
 			this.cIdx = cIdx;
 		}
 
@@ -80,11 +82,11 @@ public class GeogigFeatureSimpleLog {
 			this.date = date;
 		}
 
-		public String getChangeType() {
+		public ChangeType getChangeType() {
 			return changeType;
 		}
 
-		public void setChangeType(String changeType) {
+		public void setChangeType(ChangeType changeType) {
 			this.changeType = changeType;
 		}
 

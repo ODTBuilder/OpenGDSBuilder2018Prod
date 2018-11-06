@@ -219,8 +219,10 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var geoserver = that.getServer();
 						var repo = that.getRepo();
 						var path = that.getPath();
-						var nidx = 0;
-						var oidx = parseInt($(this).attr("idx"));
+						var nidx = parseInt($(this).attr("idx"));
+						var oidx = parseInt($(this).parents().eq(1).next().find(".gb-button").attr("idx"));
+						// var oidx =
+						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
 					});
 					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
@@ -258,7 +260,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
 	var that = this;
 
-	var olabel = $("<div>").append("Committed Feature").addClass("gb-form").css({
+	var olabel = $("<div>").append("Previous Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -283,7 +285,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"padding" : "10px"
 	});
 
-	var clabel = $("<div>").append("Current Feature").addClass("gb-form").css({
+	var clabel = $("<div>").append("Changed Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 

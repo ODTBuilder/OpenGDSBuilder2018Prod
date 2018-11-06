@@ -38,7 +38,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path,
-			int oldIndex, int newIndex) throws JAXBException {
+			int newIndex, int oldIndex) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();

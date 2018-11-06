@@ -215,6 +215,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											data[i].nbBox.maxy.toString() ],
 									source : new ol.source.TileWMS({
 										url : that._data.geoserver.getMapWMS,
+										//url : "http://175.116.181.42:9990/geoserver/wms",
 										params : {
 											"serverName" : params["serverName"],
 											"workspace" : params["workspace"],
@@ -225,8 +226,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 											"TILED" : true,
 											"FORMAT" : 'image/png8',
-											"CRS" : data[i].srs
-//											"SLD_BODY": data[i].sld
+											"CRS" : data[i].srs,
+											"SLD_BODY": data[i].sld
 										},
 										serverType : "geoserver"
 									})
@@ -334,6 +335,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
+									//url : "http://175.116.181.42:9990/geoserver/wms",
 									params : {
 										"serverName" : server.text,
 										"workspace" : workspace.text,
@@ -344,8 +346,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 										"TILED" : true,
 										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs
-//										"SLD_BODY": data[i].sld
+										"CRS" : data[i].srs,
+										"SLD_BODY": data[i].sld
 									},
 									serverType : "geoserver"
 								})

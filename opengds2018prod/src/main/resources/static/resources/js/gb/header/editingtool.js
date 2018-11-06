@@ -2243,7 +2243,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 		if(typeof tileLayers[i].get("git") === "object"){
 			if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid"))){
 				vectorSource = this.setVectorSourceOfServer(tileLayers[i].get("git"), tileLayers[i].get("id"), 
-						tileLayers[i].get("name"), tileLayers[i].get("treeid"));
+						tileLayers[i].get("name"), tileLayers[i].get("treeid"), tileLayers[i].getSource().getParams()["SLD_BODY"]);
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
 				if(selectedLayer.length === 1){
 					if(tileLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
@@ -2299,7 +2299,7 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 }
 
 // hochul
-gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId){
+gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId, sld){
 	var git = obj || {};
 	var layerid = layerId;
 	var layername = layerName;
@@ -2346,6 +2346,34 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 		layer.set("name", layername);
 		layer.setMap(this.map);
 
+		if(sld !== undefined){
+			var symbol = gb.style.LayerStyle.prototype.parseSymbolizer.call(this, sld);
+			var style = new ol.style.Style({
+				"fill": new ol.style.Fill({
+					"color": ol.color.asArray(symbol.fillRGBA)
+				}),
+				"stroke": new ol.style.Stroke({
+					"color": ol.color.asArray(symbol.strokeRGBA),
+					"width": symbol.strokeWidth,
+					"lineDash": symbol.strokeDashArray,
+					"lineCap": "butt"
+				}),
+				"image": new ol.style.Circle({
+					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize) : undefined,
+					"fill": new ol.style.Fill({
+						"color": ol.color.asArray(symbol.fillRGBA)
+					}),
+					"stroke": new ol.style.Stroke({
+						"color": ol.color.asArray(symbol.strokeRGBA),
+						"width": symbol.strokeWidth,
+						"lineDash": symbol.strokeDashArray,
+						"lineCap": "butt"
+					})
+				})
+			});
+			layer.setStyle(style);
+		}
+		
 		git.layerID = layerid;
 		git.tempLayer = layer;
 		git.treeID = treeid;

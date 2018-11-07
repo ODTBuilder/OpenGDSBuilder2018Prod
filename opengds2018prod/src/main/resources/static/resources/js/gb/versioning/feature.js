@@ -64,7 +64,7 @@ gb.versioning.Feature = function(obj) {
 
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
 	this.panel = new gb.panel.Base({
-		"width" : 412,
+		"width" : 458,
 		"height" : 550,
 		"positionX" : 4,
 		"right" : true,
@@ -84,7 +84,8 @@ gb.versioning.Feature = function(obj) {
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
 	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Changes");
-	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
+	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Revert");
+	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4).append(th5);
 	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
 		"text-align" : "center"
 	});
@@ -232,9 +233,14 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"text-align" : "center"
 					}).append(button);
 
+					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run");
+					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+						"text-align" : "center"
+					}).append(rvButton);
+
 					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);
 					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
-							.append(td3).append(td4);
+							.append(td3).append(td4).append(td5);
 					$(that.tbody).append(tr);
 				}
 			}

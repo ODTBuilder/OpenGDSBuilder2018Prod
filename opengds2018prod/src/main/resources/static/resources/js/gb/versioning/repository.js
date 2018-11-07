@@ -403,7 +403,7 @@ gb.versioning.Repository = function(obj) {
 		"title" : "Base CRS",
 		"message" : $(".epsg-now"),
 		"maps" : [ this.cmap, this.tmap ],
-		"epsg" : this.epsg
+		"epsg" : typeof this.epsg === "function" ? this.epsg() : this.epsg
 	});
 };
 gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);

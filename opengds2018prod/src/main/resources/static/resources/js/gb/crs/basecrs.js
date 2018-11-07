@@ -33,7 +33,7 @@ gb.crs.BaseCRS = function(obj) {
 	this.message = options.message ? options.message : undefined;
 	this.maps = options.maps ? options.maps : undefined;
 	this.epsg = options.epsg ? options.epsg : "3857";
-
+	this.callback = options.callback ? options.callback : undefined;
 	var label = $("<span>").text("EPSG: ");
 	this.searchBar = $("<input>").attr({
 		"type" : "number",
@@ -89,7 +89,7 @@ gb.crs.BaseCRS = function(obj) {
 	$("body").append(this.modal);
 	$("body").append(this.background);
 
-	this.searchEPSGCode(this.epsg, true);
+	this.searchEPSGCode(this.epsg, true, this.callback);
 };
 gb.crs.BaseCRS.prototype = Object.create(gb.modal.Base.prototype);
 gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
@@ -164,7 +164,7 @@ gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
  * @param {String}
  *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
  */
-gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply) {
+gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 	console.log(code);
 	var that = this;
 	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
@@ -202,7 +202,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply) {
 							that.setValidEPSG(true);
 							that.setProjection(code, name, proj4def, bbox);
 							if (apply) {
-								that.applyProjection(code, name, proj4def, bbox);
+								that.applyProjection(code, name, proj4def, bbox, callback);
 							}
 						}
 
@@ -236,7 +236,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply) {
  * @param {Number[]}
  *            bbox - 좌표계 영역
  */
-gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox) {
+gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, callback) {
 	var that = this;
 	if (code === null || name === null || proj4def === null || bbox === null) {
 		if (Array.isArray(this.getMaps())) {
@@ -285,6 +285,9 @@ gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox) 
 	}
 	newView.fit(extent);
 	console.log(this.getEPSGCode());
+	if (typeof callback === "function") {
+		callback();
+	}
 };
 
 /**

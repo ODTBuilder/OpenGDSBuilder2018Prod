@@ -17,18 +17,10 @@
 gb.versioning.Feature = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
-	this.conflictView1 = new ol.View({
-		"center" : [ 0, 0 ],
-		"zoom" : 1
-	});
-
-	this.conflictView2 = new ol.View({
-		"center" : [ 0, 0 ],
-		"zoom" : 1
-	});
 
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
@@ -44,6 +36,17 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+
+	this.omap = new ol.Map({
+		"target" : $(this.ofeature)[0],
+		"layers" : []
+	});
+
+	this.cmap = new ol.Map({
+		"target" : $(this.cfeature)[0],
+		"layers" : []
+	});
+
 	this.comfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -268,12 +271,12 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	var oheadtd2 = $("<th>").text("Value");
 	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
 	var oattrthead = $("<thead>").append(oheadth);
-	var oattrtbody = $("<tbody>").css({
+	this.oattrtbody = $("<tbody>").css({
 		"overflow-y" : "auto",
 		"height" : "340px",
 		"width" : "354px"
 	});
-	var oattrtable = $("<table>").append(oattrthead).append(oattrtbody).addClass("gb-table");
+	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
 	var oattribute = $("<div>").append(oattrtable).css({
 		"height" : "370px",
 		"width" : "100%",
@@ -293,12 +296,12 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	var cheadtd2 = $("<th>").text("Value");
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
-	var cattrtbody = $("<tbody>").css({
+	this.cattrtbody = $("<tbody>").css({
 		"overflow-y" : "auto",
 		"height" : "340px",
 		"width" : "354px"
 	});
-	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table").css({
+	var cattrtable = $("<table>").append(cattrthead).append(this.cattrtbody).addClass("gb-table").css({
 		"width" : "100%",
 		"table-layout" : "fixed"
 	});
@@ -308,8 +311,8 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"overflow" : "hidden"
 	});
 
-	$(oattrtbody).on("scroll", function() {
-		$(cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	$(this.oattrtbody).on("scroll", function() {
+		$(that.cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
 	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).css({
@@ -322,16 +325,13 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 
 	var body = $("<div>").append(ocarea);
 
-	var revertBtn = $("<button>").css({
-		"float" : "left"
-	}).addClass("gb-button").addClass("gb-button-default").text("Revert");
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Close");
 	var okBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text("Use");
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(revertBtn).append(closeBtn);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
 	var modal = new gb.modal.Base({
 		"title" : "Contrast The Changes",
@@ -340,9 +340,6 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
-	});
-	$(revertBtn).click(function() {
-		that.openRevertModal();
 	});
 
 	$(closeBtn).click(function() {
@@ -391,306 +388,147 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				console.log(data);
+				if (data.hasOwnProperty("diffs")) {
+					var diffs = data.diffs
+					for (var i = 0; i < diffs.length; i++) {
+						if (diffs[i]["geometry"] === "true") {
+							var crs = diffs[i]["crs"].substring(diffs[i]["crs"].indexOf(":") + 1);
+
+							var oldwkt = diffs[i]["oldvalue"];
+							var newwkt = diffs[i]["newvalue"];
+							if (oldwkt !== undefined && oldwkt !== null) {
+								var format = new ol.format.WKT();
+								var geom = format.readGeometry(oldwkt);
+								var feature = new ol.Feature({
+									"geometry" : geom
+								});
+
+								var style = new ol.style.Style({
+									image : new ol.style.Circle({
+										radius : 5,
+										fill : new ol.style.Fill({
+											color : 'orange'
+										})
+									}),
+									stroke : new ol.style.Stroke({
+										width : 1,
+										color : 'orange'
+									}),
+									fill : new ol.style.Fill({
+										color : 'orange'
+									})
+								});
+
+								var vlayer = new ol.layer.Vector({
+									"style" : style,
+									"source" : new ol.source.Vector({
+										"features" : [ feature ]
+									}),
+									"zIndex" : 2
+								});
+
+								var osm = new ol.layer.Tile({
+									"source" : new ol.source.OSM(),
+									"zIndex" : 1
+								});
+
+								that.getLeftMap().updateSize();
+								that.getLeftMap().getLayers().clear();
+								that.getLeftMap().addLayer(osm);
+								that.getLeftMap().addLayer(vlayer);
+								// that.getLeftMap().getView().fit(geom);
+
+								if (newwkt === undefined || newwkt === null) {
+									that.getRightMap().updateSize();
+									that.getRightMap().getLayers().clear();
+									that.getRightMap().addLayer(osm);
+									that.getRightMap().addLayer(vlayer);
+								}
+
+								this.crs = new gb.crs.BaseCRS({
+									"autoOpen" : false,
+									"title" : "Base CRS",
+									"message" : $(".epsg-now"),
+									"maps" : [ that.getLeftMap(), that.getRightMap() ],
+									"epsg" : crs,
+									"callback" : function() {
+										that.getLeftMap().getView().fit(geom);
+									}
+								});
+							}
+
+							if (newwkt !== undefined && newwkt !== null) {
+								var format = new ol.format.WKT();
+								var geom = format.readGeometry(newwkt);
+								var feature = new ol.Feature({
+									"geometry" : geom
+								});
+
+								var style = new ol.style.Style({
+									image : new ol.style.Circle({
+										radius : 5,
+										fill : new ol.style.Fill({
+											color : 'orange'
+										})
+									}),
+									stroke : new ol.style.Stroke({
+										width : 1,
+										color : 'orange'
+									}),
+									fill : new ol.style.Fill({
+										color : 'orange'
+									})
+								});
+
+								var vlayer = new ol.layer.Vector({
+									"style" : style,
+									"source" : new ol.source.Vector({
+										"features" : [ feature ]
+									}),
+									"zIndex" : 2
+								});
+
+								var osm = new ol.layer.Tile({
+									"source" : new ol.source.OSM(),
+									"zIndex" : 1
+								});
+
+								that.getRightMap().updateSize();
+								that.getRightMap().getLayers().clear();
+								that.getRightMap().addLayer(osm);
+								that.getRightMap().addLayer(vlayer);
+								// that.getRightMap().getView().fit(geom);
+							}
+
+						} else {
+
+							var otd1 = $("<td>").text(diffs[i]["attributename"]);
+							var otd2 = $("<td>").text(diffs[i]["oldvalue"]);
+							var otr1 = $("<tr>").append(otd1).append(otd2);
+							$(that.getLeftTBody()).append(otr1);
+							var ctd1 = $("<td>").text(diffs[i]["attributename"]);
+							var ctd2 = $("<td>").text(diffs[i]["newvalue"] ? diffs[i]["newvalue"] : diffs[i]["oldvalue"]);
+							var ctr1 = $("<tr>").append(ctd1).append(ctd2);
+							$(that.getRightTBody()).append(ctr1);
+
+							if (diffs[i]["changetype"] !== "NO_CHANGE") {
+								$(otr1).css({
+									"background-color" : "#ffc523"
+								});
+								$(ctr1).css({
+									"background-color" : "#ffc523"
+								});
+							}
+						}
+					}
+				}
 			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 
 		}
 	});
-	// var cparams1 = {
-	// "serverName" : server,
-	// "repoName" : crepos,
-	// "path" : path,
-	// "commitId" : this.getCommitId().ours,
-	// "featureId" : fid1
-	// }
-	//
-	// var cparams2 = {
-	// "serverName" : server,
-	// "repoName" : crepos,
-	// "path" : path,
-	// "commitId" : this.getCommitId().theirs,
-	// "featureId" : fid2
-	// }
 
-	var wkt1;
-	var wkt2;
-	if (fid1 !== "0000000000000000000000000000000000000000") {
-		var fobjectURL1 = this.getCatFeatureObjectURL();
-		if (fobjectURL1.indexOf("?") !== -1) {
-			fobjectURL1 += "&";
-			fobjectURL1 += jQuery.param(cparams1);
-		} else {
-			fobjectURL1 += "?";
-			fobjectURL1 += jQuery.param(cparams1);
-		}
-
-		$.ajax({
-			url : fobjectURL1,
-			method : "POST",
-			contentType : "application/json; charset=UTF-8",
-			// data : cparams1,
-			// dataType : 'jsonp',
-			// jsonpCallback : 'getJson',
-			beforeSend : function() {
-				// $("body").css("cursor", "wait");
-			},
-			complete : function() {
-				// $("body").css("cursor", "default");
-			},
-			success : function(data) {
-				console.log(data);
-				if (data.success === "true") {
-					var attrs = data.attributes;
-					for (var i = 0; i < attrs.length; i++) {
-						if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-								|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
-								|| attrs[i].type === "MULTIPOLYGON") {
-							var wkt = attrs[i].value;
-							wkt1 = wkt;
-							console.log(wkt1);
-							var format = new ol.format.WKT();
-							var geom = format.readGeometry(wkt);
-							var feature = new ol.Feature({
-								"geometry" : geom
-							});
-							feature.setId(data.featureId);
-							console.log(feature);
-							console.log(feature.getId());
-							var style = new ol.style.Style({
-								image : new ol.style.Circle({
-									radius : 5,
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								}),
-								stroke : new ol.style.Stroke({
-									width : 1,
-									color : 'orange'
-								}),
-								fill : new ol.style.Fill({
-									color : 'orange'
-								})
-							});
-
-							var vlayer = new ol.layer.Vector({
-								"style" : style,
-								"source" : new ol.source.Vector({
-									"features" : [ feature ]
-								}),
-								"zIndex" : 2
-							});
-
-							var osm = new ol.layer.Tile({
-								"source" : new ol.source.OSM(),
-								"zIndex" : 1
-							});
-
-							var epsg = attrs[i].crs.toLowerCase();
-							var code = epsg.substring(epsg.indexOf("epsg:") + 5);
-							var intcode = parseInt(code);
-							console.log(code);
-
-							var ccrs = new gb.crs.BaseCRS({
-								"title" : "Base CRS",
-								"width" : 300,
-								"height" : 200,
-								"autoOpen" : false,
-								"message" : undefined,
-								"map" : that.getCurrentMap(),
-								"epsg" : Number.isInteger(intcode) ? code : "4326"
-							});
-
-							that.getCurrentMap().updateSize();
-							that.getCurrentMap().getLayers().clear();
-							that.getCurrentMap().addLayer(osm);
-							that.getCurrentMap().addLayer(vlayer);
-							that.getCurrentMap().getView().fit(geom);
-
-						} else {
-							var name = attrs[i].name;
-							var value = attrs[i].value;
-							var td1 = $("<td>").text(name);
-							var td2 = $("<td>").text(value).css({
-								"word-break" : "break-word",
-								"overflow-wrap" : "break-word"
-							});
-							var tr = $("<tr>").append(td1).append(td2);
-							$(cattrtbody).append(tr);
-						}
-
-					}
-
-					if (fid2 !== "0000000000000000000000000000000000000000") {
-						var fobjectURL2 = that.getCatFeatureObjectURL();
-						if (fobjectURL2.indexOf("?") !== -1) {
-							fobjectURL2 += "&";
-							fobjectURL2 += jQuery.param(cparams2);
-						} else {
-							fobjectURL2 += "?";
-							fobjectURL2 += jQuery.param(cparams2);
-						}
-
-						$.ajax({
-							url : fobjectURL2,
-							method : "POST",
-							contentType : "application/json; charset=UTF-8",
-							// data : cparams2,
-							// dataType : 'jsonp',
-							// jsonpCallback : 'getJson',
-							beforeSend : function() {
-								// $("body").css("cursor", "wait");
-							},
-							complete : function() {
-								// $("body").css("cursor", "default");
-							},
-							success : function(data) {
-								console.log(data);
-								if (data.success === "true") {
-									var attrs = data.attributes;
-									for (var i = 0; i < attrs.length; i++) {
-										if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
-												|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
-												|| attrs[i].type === "MULTIPOLYGON") {
-											var wkt = attrs[i].value;
-											wkt2 = wkt;
-											if (wkt1 !== wkt2) {
-												$(that.cfeature).css({
-													"border" : "3px solid #ffc523"
-												});
-												$(that.tfeature).css({
-													"border" : "3px solid #ffc523"
-												});
-											} else {
-												$(that.cfeature).css({
-													"border" : "1px solid #ccc"
-												});
-												$(that.tfeature).css({
-													"border" : "1px solid #ccc"
-												});
-											}
-											console.log(wkt2);
-											var format = new ol.format.WKT();
-											var geom = format.readGeometry(wkt);
-											var feature = new ol.Feature({
-												"geometry" : geom
-											});
-											feature.setId(data.featureId);
-											console.log(feature);
-											console.log(feature.getId());
-											var style = new ol.style.Style({
-												image : new ol.style.Circle({
-													radius : 5,
-													fill : new ol.style.Fill({
-														color : 'orange'
-													})
-												}),
-												stroke : new ol.style.Stroke({
-													width : 1,
-													color : 'orange'
-												}),
-												fill : new ol.style.Fill({
-													color : 'orange'
-												})
-											});
-
-											var vlayer = new ol.layer.Vector({
-												"style" : style,
-												"source" : new ol.source.Vector({
-													"features" : [ feature ]
-												}),
-												"zIndex" : 2
-											});
-
-											var osm = new ol.layer.Tile({
-												"source" : new ol.source.OSM(),
-												"zIndex" : 1
-											});
-
-											var epsg = attrs[i].crs.toLowerCase();
-											var code = epsg.substring(epsg.indexOf("epsg:") + 5);
-											var intcode = parseInt(code);
-											console.log(code);
-
-											var ccrs = new gb.crs.BaseCRS({
-												"title" : "Base CRS",
-												"width" : 300,
-												"height" : 200,
-												"autoOpen" : false,
-												"message" : undefined,
-												"map" : that.getTargetMap(),
-												"epsg" : Number.isInteger(intcode) ? code : "4326"
-											});
-
-											that.getTargetMap().updateSize();
-											that.getTargetMap().getLayers().clear();
-											that.getTargetMap().addLayer(osm);
-											that.getTargetMap().addLayer(vlayer);
-											var geom = feature.getGeometry();
-
-											that.getTargetMap().getView().fit(geom);
-
-										} else {
-											var name = attrs[i].name;
-											var value = attrs[i].value;
-											var td1 = $("<td>").text(name);
-											var td2 = $("<td>").text(value).css({
-												"word-break" : "break-word",
-												"overflow-wrap" : "break-word"
-											});
-											var tr = $("<tr>").append(td1).append(td2);
-											$(tattrtbody).append(tr);
-										}
-
-									}
-									if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
-										var trs = $(cattrtbody).find("tr");
-										var ttrs = $(tattrtbody).find("tr");
-										for (var j = 0; j < trs.length; j++) {
-											if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0).text()) {
-
-												if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(1).text()) {
-													$(trs[j]).css({
-														"background-color" : "#ffc523"
-													});
-													$(ttrs[j]).css({
-														"background-color" : "#ffc523"
-													});
-												}
-											}
-										}
-									}
-								} else {
-									var title = "Error";
-									var msg = "Retrieve feature failed."
-									that.messageModal(title, msg);
-								}
-							},
-							error : function(jqXHR, textStatus, errorThrown) {
-
-							}
-						});
-					} else {
-						that.getTargetMap().updateSize();
-						var td1 = $("<td>").text("Deleted");
-						var td2 = $("<td>").text("Deleted");
-						var tr = $("<tr>").append(td1).append(td2);
-						$(tattrtbody).append(tr);
-					}
-				} else {
-					var title = "Error";
-					var msg = "Retrieve feature failed."
-					that.messageModal(title, msg);
-				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
-			}
-		});
-	} else {
-
-	}
 };
 
 /**
@@ -1489,3 +1327,47 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 		modal.close();
 	});
 };
+
+/**
+ * 왼쪽 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getLeftMap
+ * @return {ol.Map}
+ * 
+ */
+gb.versioning.Feature.prototype.getLeftMap = function() {
+	return this.omap;
+}
+
+/**
+ * 오른쪽 ol.Map을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getRightMap
+ * @return {ol.Map}
+ * 
+ */
+gb.versioning.Feature.prototype.getRightMap = function() {
+	return this.cmap;
+}
+
+/**
+ * 왼쪽 피처 tbody를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getLeftTBody
+ * @return {element}
+ * 
+ */
+gb.versioning.Feature.prototype.getLeftTBody = function() {
+	return this.oattrtbody;
+}
+
+/**
+ * 오른쪽 피처 tbody를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getRightTBody
+ * @return {element}
+ * 
+ */
+gb.versioning.Feature.prototype.getRightTBody = function() {
+	return this.cattrtbody;
+}

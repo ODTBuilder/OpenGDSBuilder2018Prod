@@ -2300,6 +2300,15 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	}
 }
 
+//hochul
+gb.header.EditingTool.prototype.refreshSources = function(){
+	var source = this.getVectorSourcesOfServer();
+
+	for(var i = 0; i < source.length; i++){
+		source[i].clear(true);
+	}
+}
+
 // hochul
 gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId, sld){
 	var git = obj || {};

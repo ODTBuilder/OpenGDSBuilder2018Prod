@@ -21,6 +21,7 @@ gb.versioning.Feature = function(obj) {
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
@@ -233,8 +234,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"text-align" : "center"
 					}).append(button);
 
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run").click(function(){
-						
+					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run").click(function() {
+
 					});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
@@ -353,17 +354,6 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	$(closeBtn).click(function() {
 		modal.close();
 	});
-	$(okBtn).click(function() {
-		console.log(idx);
-		$(branchSelect).val();
-		console.log($(branchSelect).val());
-		var select = $(that.conflictFeatureTbody).find("tr").eq(idx).find(".gb-repository-instead-branch");
-		$(select).filter("option:selected").text();
-		console.log($(select).find("option").filter(":selected").val());
-		$(select).val($(branchSelect).val());
-		$(select).trigger("change");
-		modal.close();
-	});
 
 	var that = this;
 	var params = {
@@ -398,135 +388,54 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 			if (data.success === "true") {
 				if (data.hasOwnProperty("diffs")) {
 					var diffs = data.diffs
-					for (var i = 0; i < diffs.length; i++) {
-						if (diffs[i]["geometry"] === "true") {
-							var crs = diffs[i]["crs"].substring(diffs[i]["crs"].indexOf(":") + 1);
+					if (Array.isArray(diffs)) {
+						if (diffs.length === 1) {
+							var elem = diffs[0];
 
-							var oldwkt = diffs[i]["oldvalue"];
-							var newwkt = diffs[i]["newvalue"];
-							if (oldwkt !== undefined && oldwkt !== null) {
-								var format = new ol.format.WKT();
-								var geom = format.readGeometry(oldwkt);
-								var feature = new ol.Feature({
-									"geometry" : geom
-								});
+							var oldParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.path,
+								"commitId" : elem.oldObjectId,
+								"featureId" : elem.path.substring(elem.path.indexOf("/") + 1)
+							}
+							console.log(oldParams);
 
-								var style = new ol.style.Style({
-									image : new ol.style.Circle({
-										radius : 5,
-										fill : new ol.style.Fill({
-											color : 'orange'
-										})
-									}),
-									stroke : new ol.style.Stroke({
-										width : 1,
-										color : 'orange'
-									}),
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								});
+							var tranURL = that.getCatFeatureObjectURL();
+							if (tranURL.indexOf("?") !== -1) {
+								tranURL += "&";
+								tranURL += jQuery.param(oldParams);
+							} else {
+								tranURL += "?";
+								tranURL += jQuery.param(oldParams);
+							}
 
-								var vlayer = new ol.layer.Vector({
-									"style" : style,
-									"source" : new ol.source.Vector({
-										"features" : [ feature ]
-									}),
-									"zIndex" : 2
-								});
+							$.ajax({
+								url : tranURL,
+								method : "POST",
+								contentType : "application/json; charset=UTF-8",
+								beforeSend : function() {
+									// $("body").css("cursor", "wait");
+								},
+								complete : function() {
+									// $("body").css("cursor", "default");
+								},
+								success : function(data) {
+									console.log(data);
+									if (data.success === "true") {
 
-								var osm = new ol.layer.Tile({
-									"source" : new ol.source.OSM(),
-									"zIndex" : 1
-								});
-
-								that.getLeftMap().updateSize();
-								that.getLeftMap().getLayers().clear();
-								that.getLeftMap().addLayer(osm);
-								that.getLeftMap().addLayer(vlayer);
-								// that.getLeftMap().getView().fit(geom);
-
-								if (newwkt === undefined || newwkt === null) {
-									that.getRightMap().updateSize();
-									that.getRightMap().getLayers().clear();
-									that.getRightMap().addLayer(osm);
-									that.getRightMap().addLayer(vlayer);
-								}
-
-								this.crs = new gb.crs.BaseCRS({
-									"autoOpen" : false,
-									"title" : "Base CRS",
-									"message" : $(".epsg-now"),
-									"maps" : [ that.getLeftMap(), that.getRightMap() ],
-									"epsg" : crs,
-									"callback" : function() {
-										that.getLeftMap().getView().fit(geom);
 									}
-								});
+								}
+							});
+							
+							var newParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.newPath,
+								"commitId" : elem.newObjectId,
+								"featureId" : elem.newPath.substring(elem.newPath.indexOf("/") + 1)
 							}
-
-							if (newwkt !== undefined && newwkt !== null) {
-								var format = new ol.format.WKT();
-								var geom = format.readGeometry(newwkt);
-								var feature = new ol.Feature({
-									"geometry" : geom
-								});
-
-								var style = new ol.style.Style({
-									image : new ol.style.Circle({
-										radius : 5,
-										fill : new ol.style.Fill({
-											color : 'orange'
-										})
-									}),
-									stroke : new ol.style.Stroke({
-										width : 1,
-										color : 'orange'
-									}),
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								});
-
-								var vlayer = new ol.layer.Vector({
-									"style" : style,
-									"source" : new ol.source.Vector({
-										"features" : [ feature ]
-									}),
-									"zIndex" : 2
-								});
-
-								var osm = new ol.layer.Tile({
-									"source" : new ol.source.OSM(),
-									"zIndex" : 1
-								});
-
-								that.getRightMap().updateSize();
-								that.getRightMap().getLayers().clear();
-								that.getRightMap().addLayer(osm);
-								that.getRightMap().addLayer(vlayer);
-								// that.getRightMap().getView().fit(geom);
-							}
-
-						} else {
-
-							var otd1 = $("<td>").text(diffs[i]["attributename"]);
-							var otd2 = $("<td>").text(diffs[i]["oldvalue"]);
-							var otr1 = $("<tr>").append(otd1).append(otd2);
-							$(that.getLeftTBody()).append(otr1);
-							var ctd1 = $("<td>").text(diffs[i]["attributename"]);
-							var ctd2 = $("<td>").text(diffs[i]["newvalue"] ? diffs[i]["newvalue"] : diffs[i]["oldvalue"]);
-							var ctr1 = $("<tr>").append(ctd1).append(ctd2);
-							$(that.getRightTBody()).append(ctr1);
-
-							if (diffs[i]["changetype"] !== "NO_CHANGE") {
-								$(otr1).css({
-									"background-color" : "#ffc523"
-								});
-								$(ctr1).css({
-									"background-color" : "#ffc523"
-								});
-							}
+							console.log(newParams);
 						}
 					}
 				}
@@ -1112,12 +1021,21 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 };
 
 /**
- * 피처 비교 요청 URL을 반환한다.
+ * 피처 비교 객체 요청 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureDiffURL
  */
 gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
 	return this.featureDiffURL;
+};
+
+/**
+ * 피처 정보 반환 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getCatFeatureObjectURL
+ */
+gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
+	return this.catFeatureObjectURL;
 };
 
 /**

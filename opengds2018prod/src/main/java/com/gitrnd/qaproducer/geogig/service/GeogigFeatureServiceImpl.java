@@ -15,13 +15,14 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
-import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.RevertFeature;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
@@ -37,8 +38,8 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
 public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
-	public GeogigFeatureDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path,
-			int newIndex, int oldIndex) throws JAXBException {
+	public GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, int newIndex,
+			int oldIndex) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -52,16 +53,16 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		}
 		oldTreeish += "~" + oldIndex;
 
-		FeatureDiff featureDiff = new FeatureDiff();
-		GeogigFeatureDiff geogigFeatureDiff = null;
+		DiffRepository diffRepos = new DiffRepository();
+		GeogigDiff geogigDiff = null;
 		try {
-			geogigFeatureDiff = featureDiff.executeCommand(url, user, pw, repoName, path, oldTreeish, newTreeish);
+			geogigDiff = diffRepos.executeCommand(url, user, pw, repoName, oldTreeish, newTreeish, path, null);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureDiff.class);
+			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			geogigFeatureDiff = (GeogigFeatureDiff) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			geogigDiff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getMessage()));
 		}
-		return geogigFeatureDiff;
+		return geogigDiff;
 	}
 
 	@Override

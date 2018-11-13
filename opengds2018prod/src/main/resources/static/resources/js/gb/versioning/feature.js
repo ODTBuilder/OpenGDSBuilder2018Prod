@@ -216,7 +216,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					});
 					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
 					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
-					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
+							"gb-versioning-feature-detail-btn").text("Detail").attr({
 						"title" : data.simpleCommits[i].message,
 						"value" : data.simpleCommits[i].commitId,
 						"idx" : data.simpleCommits[i].cIdx
@@ -225,7 +226,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var repo = that.getRepo();
 						var path = that.getPath();
 						var nidx = parseInt($(this).attr("idx"));
-						var oidx = parseInt($(this).parents().eq(1).next().find(".gb-button").attr("idx"));
+						var oidx = parseInt($(this).parents().eq(1).next().find(".gb-versioning-feature-detail-btn").attr("idx"));
 						// var oidx =
 						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
@@ -234,8 +235,14 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"text-align" : "center"
 					}).append(button);
 
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run").click(function() {
-
+					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
+							"gb-versioning-feature-revert-btn").text("Run").click(function() {
+						var geoserver = that.getServer();
+						var repo = that.getRepo();
+						var path = that.getPath();
+						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+						var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
+						that.openRevertModal();
 					});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
@@ -427,7 +434,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 									}
 								}
 							});
-							
+
 							var newParams = {
 								"serverName" : server,
 								"repoName" : repo,

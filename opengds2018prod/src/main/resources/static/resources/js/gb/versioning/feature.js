@@ -233,7 +233,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"text-align" : "center"
 					}).append(button);
 
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run");
+					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run").click(function(){
+						
+					});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
 					}).append(rvButton);

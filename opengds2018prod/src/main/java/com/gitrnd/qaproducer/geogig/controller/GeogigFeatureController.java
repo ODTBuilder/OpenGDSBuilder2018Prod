@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -65,7 +65,7 @@ public class GeogigFeatureController extends AbstractController {
 
 	@RequestMapping(value = "/featureDiff.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigFeatureDiff featureDiff(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigDiff featureDiff(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,

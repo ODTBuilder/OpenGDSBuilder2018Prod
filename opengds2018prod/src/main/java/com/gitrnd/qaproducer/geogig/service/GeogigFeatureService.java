@@ -3,7 +3,7 @@ package com.gitrnd.qaproducer.geogig.service;
 import javax.xml.bind.JAXBException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -20,7 +20,7 @@ public interface GeogigFeatureService {
 	 * @return
 	 * @throws JAXBException
 	 */
-	GeogigFeatureDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, int oldIndex,
+	GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, int oldIndex,
 			int newIndex) throws JAXBException;
 
 	/**

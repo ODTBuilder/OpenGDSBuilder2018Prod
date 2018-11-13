@@ -784,8 +784,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 
-	gNameInput.val("geoserver42");
-	gURLInput.val("http://175.116.181.42:9990/geoserver");
+	gNameInput.val("geoserver32");
+	gURLInput.val("http://175.116.181.32:9999/geoserver");
 	gIDInput.val("admin");
 	gPassInput.val("geoserver");
 };

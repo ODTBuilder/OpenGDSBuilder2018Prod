@@ -604,6 +604,8 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			"workspace": workspace,
 			"wfstXml": '<?xml version="1.0" encoding="utf-8"?>'+new XMLSerializer().serializeToString(node)
 		};
+		
+		var that = this;
 		$.ajax({
 			type: "POST",
 			url: this.wfstURL,
@@ -612,6 +614,11 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
 				edit.refreshTileLayer();
+				edit.refreshSources();
+				edit.deactiveAnotherInteraction();
+				that.created = {};
+				that.modified = {};
+				that.removed = {};
 			},
 			error: function(e) {
 				var errorMsg = e? (e.status + ' ' + e.statusText) : "";

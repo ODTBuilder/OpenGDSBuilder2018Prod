@@ -117,15 +117,9 @@ html {
 		</div>
 		<div class="collapse navbar-collapse" id="navbar-collapse-2">
 			<ul class="nav navbar-nav">
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-					aria-expanded="false" title="Save"> <i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> <spring:message
-							code="lang.save" />
-				</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges"><spring:message
-									code="lang.save" /></a></li>
-						<li><a href="#" id="saveAll">Save All</a></li>
-					</ul></li>
+				<li class="dropdown"><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges">
+					<i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> <spring:message code="lang.save" />
+				</a></li>
 				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> <spring:message
 							code="lang.edit" />
 				</a></li>
@@ -432,8 +426,8 @@ html {
 				featureList.updateFeatureList({
 					url : urlList.getWFSFeature + urlList.token,
 					treeid : treeid,
-					geoserver : layer.get('git') ? layer.get('git').geoserver : "undefined",
-					workspace : layer.get('git') ? layer.get('git').workspace : "undefined",
+					geoserver : layer.get('git') ? layer.get('git').geoserver : undefined,
+					workspace : layer.get('git') ? layer.get('git').workspace : undefined,
 					layerName : layer.get('name')
 				});
 			}

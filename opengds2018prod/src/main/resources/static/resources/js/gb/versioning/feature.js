@@ -369,7 +369,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"repoName" : repo,
 		"path" : path,
 		"newIndex" : nidx,
-		"oldIndex" : oidx
+		"oldIndex" : isNaN(oidx) ? 0 : oidx
 	}
 
 	var tranURL = this.getFeatureDiffURL();

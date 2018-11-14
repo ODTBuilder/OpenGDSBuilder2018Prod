@@ -368,6 +368,7 @@ gb.header.EditingTool = function(obj) {
 
 	// SOYIJUN
 	if (this.getVersioningFeature() !== undefined) {
+		this.getVersioningFeature().setAfterSaveCallback(this);
 		console.log(this.ulTagRight);
 		var iTag = $("<i>").addClass("fas").addClass("fa-history").attr("aria-hidden", "true").css(this.iStyle);
 		var aTag = $("<a>").attr("href", "#").append(iTag).append("Changes").css(this.aStyle).click(function(){
@@ -2300,7 +2301,7 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.refreshSources = function(){
 	var source = this.getVectorSourcesOfServer();
 

@@ -18,10 +18,12 @@ gb.versioning.Feature = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.epsg = options.epsg ? options.epsg : undefined;
+	this.afterSaveCallback = options.callback ? options.callback : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
 	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
 
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
@@ -240,9 +242,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var geoserver = that.getServer();
 						var repo = that.getRepo();
 						var path = that.getPath();
-						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
 						var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
-						that.openRevertModal();
+						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+						that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
 					});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
@@ -460,7 +462,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
  * 
  * @method gb.versioning.Feature#openRevertModal
  */
-gb.versioning.Feature.prototype.openRevertModal = function() {
+gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc) {
 	var that = this;
 	var msg1 = $("<div>").text("Revert the feature to the point in time when it was committed.").css({
 		"text-align" : "center",
@@ -470,7 +472,12 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
-	var body = $("<div>").append(msg1).append(msg2);
+	var inputMsg = $("<input>").attr({
+		"type" : "text"
+	}).addClass("gb-form");
+	var msg3 = $("<div>").append(inputMsg);
+
+	var body = $("<div>").append(msg1).append(msg2).append(msg3);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
@@ -481,7 +488,7 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 
 	var commitModal = new gb.modal.Base({
 		"title" : "Revert",
-		"width" : 350,
+		"width" : 494,
 		"height" : 200,
 		"autoOpen" : true,
 		"body" : body,
@@ -491,14 +498,8 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 		commitModal.close();
 	});
 	$(okBtn).click(function() {
-		// mModal.close();
-		// that.endTransaction(server, repo, tid,
-		// commitModal);
-		// that.resolveConflictModal(server, repo, repo,
-		// that.getNowBranch().text,
-		// branch, data.merge.ours, data.merge.theirs,
-		// data.merge.features, commitModal);
-		that.revert();
+		var message = inputMsg.val();
+		that.revert(server, repo, path, oc, nc, message, message, commitModal);
 	});
 };
 
@@ -507,73 +508,107 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
  * 
  * @method gb.versioning.Feature#revert
  */
-gb.versioning.Feature.prototype.revert = function() {
+gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
 	var that = this;
-	var data = {
-		"success" : "false"
-	};
-	if (data.success === "true") {
-		var msg1 = $("<div>").text("Feature reverted successfully.").css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var body = $("<div>").append(msg1);
-		var closeBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("OK");
-		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-		var commitModal = new gb.modal.Base({
-			"title" : "Revert",
-			"width" : 350,
-			"height" : 200,
-			"autoOpen" : true,
-			"body" : body,
-			"footer" : buttonArea
-		});
-		$(closeBtn).click(function() {
-			commitModal.close();
-		});
-	} else {
-		var msg1 = $("<div>").text("Revert failed.").css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var msg2 = $("<div>").text('There are conflicting features. Do you want to resolve?').css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var body = $("<div>").append(msg1).append(msg2);
-		var closeBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-		var okBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
-		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-
-		var commitModal = new gb.modal.Base({
-			"title" : "Revert",
-			"width" : 350,
-			"height" : 200,
-			"autoOpen" : true,
-			"body" : body,
-			"footer" : buttonArea
-		});
-		$(closeBtn).click(function() {
-			commitModal.close();
-		});
-		$(okBtn).click(function() {
-			// mModal.close();
-			// that.endTransaction(server, repo, tid,
-			// commitModal);
-			// that.resolveConflictModal(server, repo, repo,
-			// that.getNowBranch().text,
-			// branch, data.merge.ours, data.merge.theirs,
-			// data.merge.features, commitModal);
-			that.openConflictDetailModal();
-		});
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"oldCommitId" : oc,
+		"newCommitId" : nc,
+		"commitMessage" : cm,
+		"mergeMessage" : mm
 	}
+	console.log(params);
+
+	var tranURL = that.getFeatureRevertURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.merge.conflicts === null) {
+					var msg1 = $("<div>").text("Feature reverted successfully.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("OK");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Revert",
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+						that.runAfterSaveCallback();
+					});
+					rmodal.close();
+				} else if (Array.isArray(data.merge.conflicts)) {
+					var msg1 = $("<div>").text("Revert failed.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('There are conflicting features. Do you want to resolve?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Revert",
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								that.endTransaction(server, repo, tid, commitModal);
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+								that.openConflictDetailModal();
+							});
+				}
+			}
+		}
+	});
 };
 
 /**
@@ -1046,6 +1081,15 @@ gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
 };
 
 /**
+ * 피처 되돌리기 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureRevertURL
+ */
+gb.versioning.Feature.prototype.getFeatureRevertURL = function() {
+	return this.featureRevertURL;
+};
+
+/**
  * 피처이력 목록을 비운다.
  * 
  * @method gb.versioning.Feature#clearChangesTbody
@@ -1303,4 +1347,28 @@ gb.versioning.Feature.prototype.getLeftTBody = function() {
  */
 gb.versioning.Feature.prototype.getRightTBody = function() {
 	return this.cattrtbody;
+}
+
+/**
+ * 레이어 저장후 함수를 실행한다.
+ * 
+ * @method gb.versioning.Feature#afterSaveCallback
+ * @return {element}
+ * 
+ */
+gb.versioning.Feature.prototype.runAfterSaveCallback = function() {
+	// typeof this.afterSaveCallback === "function" ? this.afterSaveCallback() :
+	// undefined;
+	this.afterSaveCallback.refreshTileLayer();
+}
+
+/**
+ * 레이어 저장후 함수를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setAfterSaveCallback
+ * @param {Function}
+ *            fnc - 리버트 또는 충돌관리 후 변경된 레이어로 업데이트할 함수 설정
+ */
+gb.versioning.Feature.prototype.setAfterSaveCallback = function(fnc) {
+	this.afterSaveCallback = fnc;
 }

@@ -2212,7 +2212,7 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 };
 
 /**
- * 머지 창을 생성한다.
+ * merge 창을 생성한다.
  * 
  * @method gb.versioning.Repository#mergeModal
  * @param {Object}

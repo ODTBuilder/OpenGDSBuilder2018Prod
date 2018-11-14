@@ -18,7 +18,7 @@ gb.versioning.Feature = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.epsg = options.epsg ? options.epsg : undefined;
-	this.afterSaveCallback = options.callback ? options.callback : undefined;
+	this.editingTool = options.editingTool ? options.editingTool : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
@@ -406,7 +406,6 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 								"repoName" : repo,
 								"path" : elem.path,
 								"commitId" : elem.oldObjectId,
-								"featureId" : elem.path.substring(elem.path.indexOf("/") + 1)
 							}
 							console.log(oldParams);
 
@@ -442,7 +441,6 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 								"repoName" : repo,
 								"path" : elem.newPath,
 								"commitId" : elem.newObjectId,
-								"featureId" : elem.newPath.substring(elem.newPath.indexOf("/") + 1)
 							}
 							console.log(newParams);
 						}
@@ -1357,18 +1355,16 @@ gb.versioning.Feature.prototype.getRightTBody = function() {
  * 
  */
 gb.versioning.Feature.prototype.runAfterSaveCallback = function() {
-	// typeof this.afterSaveCallback === "function" ? this.afterSaveCallback() :
-	// undefined;
-	this.afterSaveCallback.refreshTileLayer();
+	this.editingTool.refreshTileLayer();
 }
 
 /**
  * 레이어 저장후 함수를 설정한다.
  * 
- * @method gb.versioning.Feature#setAfterSaveCallback
+ * @method gb.versioning.Feature#setEditingTool
  * @param {Function}
  *            fnc - 리버트 또는 충돌관리 후 변경된 레이어로 업데이트할 함수 설정
  */
-gb.versioning.Feature.prototype.setAfterSaveCallback = function(fnc) {
-	this.afterSaveCallback = fnc;
+gb.versioning.Feature.prototype.setEditingTool = function(tool) {
+	this.editingTool = tool;
 }

@@ -49,7 +49,7 @@
  * @param {String}
  *            obj.url.featureBlame - 피처 비교를 요청할 컨트롤러 주소
  * @param {String}
- *            obj.url.catFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할 컨트롤러 주소
+ *            obj.url.catConflictFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할 컨트롤러 주소
  * 
  * @version 0.01
  * @author SOYIJUN
@@ -81,7 +81,7 @@ gb.versioning.Repository = function(obj) {
 	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
 	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
 	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
-	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.catConflictFeatureObjectURL = url.catConflictFeatureObject ? url.catConflictFeatureObject : undefined;
 
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
@@ -844,13 +844,13 @@ gb.versioning.Repository.prototype.getFeatureBlameURL = function() {
 };
 
 /**
- * catFeatureObject 요청 컨트롤러 주소를 반환한다.
+ * catConflictFeatureObject 요청 컨트롤러 주소를 반환한다.
  * 
- * @method gb.versioning.Repository#getCatFeatureObjectURL
+ * @method gb.versioning.Repository#getCatConflictFeatureObjectURL
  * @return {String} 컨트롤러 주소 URL
  */
-gb.versioning.Repository.prototype.getCatFeatureObjectURL = function() {
-	return this.catFeatureObjectURL;
+gb.versioning.Repository.prototype.getCatConflictFeatureObjectURL = function() {
+	return this.catConflictFeatureObjectURL;
 };
 
 /**
@@ -3369,7 +3369,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	var wkt1;
 	var wkt2;
 	if (fid1 !== "0000000000000000000000000000000000000000") {
-		var fobjectURL1 = this.getCatFeatureObjectURL();
+		var fobjectURL1 = this.getCatConflictFeatureObjectURL();
 		if (fobjectURL1.indexOf("?") !== -1) {
 			fobjectURL1 += "&";
 			fobjectURL1 += jQuery.param(cparams1);
@@ -3475,7 +3475,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 					}
 
 					if (fid2 !== "0000000000000000000000000000000000000000") {
-						var fobjectURL2 = that.getCatFeatureObjectURL();
+						var fobjectURL2 = that.getCatConflictFeatureObjectURL();
 						if (fobjectURL2.indexOf("?") !== -1) {
 							fobjectURL2 += "&";
 							fobjectURL2 += jQuery.param(cparams2);

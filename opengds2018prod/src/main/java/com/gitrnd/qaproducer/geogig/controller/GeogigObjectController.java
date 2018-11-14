@@ -66,10 +66,10 @@ public class GeogigObjectController extends AbstractController {
 			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
-			@RequestParam(value = "objectid", required = false) String objectid,
+			@RequestParam(value = "commitId", required = false) String commitId,
 			@RequestParam(value = "path", required = false) String path) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return objectService.catFeatureObject(geoserverManager, repoName, path, objectid);
+		return objectService.catFeatureObject(geoserverManager, repoName, path, commitId);
 	}
 }

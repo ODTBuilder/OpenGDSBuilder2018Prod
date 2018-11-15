@@ -126,7 +126,7 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				GeogigRevisionTree geogigLsTree = lsTreeRepos.executeCommand(url, user, pw, repoName, path, true);
 				List<Node> nodes = geogigLsTree.getNodes();
 				for (Node node : nodes) {
-					if (path.equalsIgnoreCase(node.getPath()) && objectid.equalsIgnoreCase(node.getObjectId())) {
+					if (path.equalsIgnoreCase(node.getPath())) {
 						String metaId = node.getMetadataId();
 						GeogigCat geogigCatMeta = catObj.executeCommand(url, user, pw, repoName, metaId);
 						FeatureType featureType = geogigCatMeta.getFeaturetype();

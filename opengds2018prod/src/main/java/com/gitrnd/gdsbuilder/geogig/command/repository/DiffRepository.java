@@ -28,7 +28,7 @@ public class DiffRepository {
 	private static final String command = "diff";
 	private static final String param_oldRef = "oldRefSpec=";
 	private static final String param_newRef = "newRefSpec=";
-	private static final String param_pathFilter = "path="; // optional
+	private static final String param_pathFilter = "pathFilter="; // optional
 	private static final String param_page = "page="; // optional
 
 	public GeogigDiff executeCommand(String baseURL, String username, String password, String repository,

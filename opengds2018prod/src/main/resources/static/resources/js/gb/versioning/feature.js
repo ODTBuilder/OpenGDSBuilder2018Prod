@@ -428,8 +428,8 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 								complete : function() {
 									// $("body").css("cursor", "default");
 								},
-								success : function(data) {
-									console.log(data);
+								success : function(data_old) {
+									console.log(data_old);
 									if (data.success === "true") {
 
 									}

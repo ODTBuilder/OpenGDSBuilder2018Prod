@@ -47,6 +47,7 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGSGeogigDatastoreEncoder;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
@@ -54,6 +55,7 @@ import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
+import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
@@ -733,10 +735,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 	}
 
 	@Override
-	public void updateGeoserverDataStore(DTGeoserverManager geoserverManager, String workspace, String datastore) {
+	public boolean updateGeogigGsStore(DTGeoserverManager geoserverManager, String workspace, String datastore,
+			String branch) {
 
 		DTGeoserverReader dtGeoserverReader = geoserverManager.getReader();
 		RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
+
+		boolean updated = false;
 		if (restWorkspaceList != null) {
 			for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
 				String wsName = item.getName();
@@ -746,16 +751,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 						List<String> dsNames = dataStoreList.getNames();
 						for (String dsName : dsNames) {
 							if (dsName.equalsIgnoreCase(datastore)) {
-								RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, dsName);
-								
-								
-								
+								if (dsName.equalsIgnoreCase(datastore)) {
+									RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, datastore);
+									DTGSGeogigDatastoreEncoder dsEncoder = new DTGSGeogigDatastoreEncoder(dStore);
+									dsEncoder.setBranch(branch);
+									updated = dtPublisher.updateDatasotre(workspace, datastore, dsEncoder);
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+		return updated;
 	}
 }
 

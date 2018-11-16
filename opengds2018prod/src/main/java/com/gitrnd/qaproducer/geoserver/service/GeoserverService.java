@@ -297,6 +297,8 @@ public interface GeoserverService {
 	 * @param geoserverManager
 	 * @param workspace
 	 * @param datastore
+	 * @param branch
 	 */
-	public void updateGeoserverDataStore(DTGeoserverManager geoserverManager, String workspace, String datastore);
+	public boolean updateGeogigGsStore(DTGeoserverManager geoserverManager, String workspace, String datastore,
+			String branch);
 }

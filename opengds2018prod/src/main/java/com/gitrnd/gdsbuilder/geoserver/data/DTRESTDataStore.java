@@ -1,5 +1,9 @@
 package com.gitrnd.gdsbuilder.geoserver.data;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.jdom.Element;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
@@ -33,8 +37,20 @@ public class DTRESTDataStore extends RESTDataStore {
 		// TODO Auto-generated constructor stub
 	}
 
-	protected String setConnectionParameter(String paramName) {
+	protected String setConnectionParameter(String paramName, Object value) {
 
+		Map<String, String> oldParams = super.getConnectionParameters();
+		Map<String, String> newParams = new HashMap<>();
+
+		Iterator iter = oldParams.keySet().iterator();
+		while (iter.hasNext()) {
+			String key = (String) iter.next();
+			if (key.equalsIgnoreCase(paramName)) {
+				newParams.put(paramName, value.toString());
+			} else {
+				newParams.put(key, oldParams.get(key));
+			}
+		}
 		return null;
 	}
 }

@@ -170,6 +170,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 
 	$.ajax({
 		url : 'https://epsg.io/?format=json&q=' + code,
+		dataType : "jsonp",
 		contentType : "application/json; charset=UTF-8",
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");

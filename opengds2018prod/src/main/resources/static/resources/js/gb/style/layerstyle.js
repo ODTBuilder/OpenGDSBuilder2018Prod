@@ -28,6 +28,10 @@ gb.style.LayerStyle = function(obj) {
 	var options = obj ? obj : {};
 	this.layer = options.layer instanceof ol.layer.Base ? options.layer : undefined;
 	this.geom = undefined;
+	
+	this.jstreeNode = undefined;
+	this.legendInfo = undefined;
+	
 	this.layerName = $("<div>").text("Choose a layer").css({
 		"margin-bottom" : "8px",
 		"overflow-x" : "hidden",
@@ -212,6 +216,7 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 
 	if (layer instanceof ol.layer.Vector) {
 		layer.setStyle(style);
+		this.close();
 	} else if (layer instanceof ol.layer.Tile) {
 		var source = layer.getSource();
 		var sld = source.getParams()["SLD_BODY"];
@@ -231,7 +236,8 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 			sldBody += '</Name>';
 			sldBody += '<UserStyle><FeatureTypeStyle><Rule>';
 			
-			if(sld.indexOf("<PolygonSymbolizer>") !== -1){
+			//if(sld.indexOf("<PolygonSymbolizer>") !== -1){
+			if(this.geom === "Polygon" || this.geom === "MultiPolygon"){
 				sldBody += '<PolygonSymbolizer><Fill>';
 				sldBody += '<CssParameter name="fill">#'
 				sldBody += this.hexFromRGB($(this.fillPicker).spectrum("get").toRgb().r, $(this.fillPicker).spectrum("get").toRgb().g, $(
@@ -250,7 +256,8 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 							+ $(this.outlineInput).find(":selected").attr("dash").replace(/,/gi, " ") + '</CssParameter>';
 				}
 				sldBody += '</Stroke>' + '</PolygonSymbolizer>'
-			} else if(sld.indexOf("<LineSymbolizer>") !== -1){
+			//} else if(sld.indexOf("<LineSymbolizer>") !== -1){
+			} else if(this.geom === "LineString" || this.geom === "MultiLineString"){
 				sldBody += '<LineSymbolizer><Stroke>'
 				sldBody += '<CssParameter name="stroke">#'
 				sldBody += this.hexFromRGB($(this.linePicker).spectrum("get").toRgb().r, $(this.linePicker).spectrum("get").toRgb().g, $(
@@ -265,8 +272,8 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 				}
 				sldBody += '</Stroke>' + '</LineSymbolizer>';
 				
-			} else if(sld.indexOf("<PointSymbolizer>") !== -1){
-				
+			//} else if(sld.indexOf("<PointSymbolizer>") !== -1){
+			} else if(this.geom === "Point" || this.geom === "MultiPoint"){
 				sldBody += '<PointSymbolizer><Graphic>';
 				sldBody += '<Mark>';
 				sldBody += '<WellKnownName>circle</WellKnownName>';
@@ -307,6 +314,7 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 			this.close();
 		}
 	}
+	this.updateLegend();
 }
 /**
  * 선택한 스타일을 레이어에 적용 시킨다.
@@ -892,6 +900,62 @@ gb.style.LayerStyle.prototype.parsePointSymbolizer = function(sld) {
 	console.log(obj);
 	return obj;
 };
+
+/**
+ * 변경할 범례 icon을 설정한다.
+ * 
+ * @method gb.style.LayerStyle#setLegend
+ * @param {Object}
+ *            obj - JSTree node 객체
+ * @param {Object}
+ *            settings - 범례 icon 정보
+ */
+gb.style.LayerStyle.prototype.setLegend = function(obj, settings) {
+	this.jstreeNode = obj;
+	this.legendInfo = settings;
+}
+
+/**
+ * 범례 icon을 변경.
+ * 
+ * @method gb.style.LayerStyle#updateLegend
+ * @param {Object}
+ *            obj - JSTree node 객체
+ * @param {Object}
+ *            settings - 범례 icon 정보
+ */
+gb.style.LayerStyle.prototype.updateLegend = function(sld) {
+	if(!this.jstreeNode){
+		return;
+	}
+	
+	var g = this.legendInfo;
+	var layer = this.layer;
+	var git = layer.get("git");
+	
+	var fill = 
+		'rgba(' + 
+		$(this.fillPicker).spectrum("get").toRgb().r + ', ' +
+		$(this.fillPicker).spectrum("get").toRgb().g + ', ' +
+		$(this.fillPicker).spectrum("get").toRgb().b + ', ' +
+		(typeof $(this.fillPicker).spectrum("get").toRgb().a === "number" ? $(this.fillPicker).spectrum("get").toRgb().a : 1) +
+		')';
+	var line = 
+		'rgba(' + 
+		$(this.linePicker).spectrum("get").toRgb().r + ', ' +
+		$(this.linePicker).spectrum("get").toRgb().g + ', ' +
+		$(this.linePicker).spectrum("get").toRgb().b + ', ' +
+		(typeof $(this.linePicker).spectrum("get").toRgb().a === "number" ? $(this.linePicker).spectrum("get").toRgb().a : 1) +
+		')';
+	
+	this.jstreeNode.icon = "gb-icon";
+	this.jstreeNode.li_attr.fillColor = fill;
+	this.jstreeNode.li_attr.lineColor = line;
+	
+	otree.getJSTree().redraw_node(this.jstreeNode);
+	this.setLegend(undefined, undefined);
+}
+
 /**
  * 스타일을 변경할 레이어를 설정한다.
  * 
@@ -911,31 +975,6 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 	var git = layer.get("git");
 	if (git !== undefined && git !== null) {
 		this.geom = git.geometry;
-		/*if (this.geom === "Point") {
-			$(this.lineArea).show();
-			$(this.fillArea).show();
-			$(this.radArea).show();
-		} else if (this.geom === "MultiPoint") {
-			$(this.lineArea).show();
-			$(this.fillArea).show();
-			$(this.radArea).show();
-		} else if (this.geom === "LineString") {
-			$(this.lineArea).show();
-			$(this.fillArea).hide();
-			$(this.radArea).hide();
-		} else if (this.geom === "MultiLineString") {
-			$(this.lineArea).show();
-			$(this.fillArea).hide();
-			$(this.radArea).hide();
-		} else if (this.geom === "Polygon") {
-			$(this.lineArea).show();
-			$(this.fillArea).show();
-			$(this.radArea).hide();
-		} else if (this.geom === "MultiPolygon") {
-			$(this.lineArea).show();
-			$(this.fillArea).show();
-			$(this.radArea).hide();
-		}*/
 	}
 	if (layer instanceof ol.layer.Vector) {
 		var style = layer.getStyle();
@@ -1076,10 +1115,16 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			
 			if (parseSld.hasOwnProperty("fillRGBA")) {
 				$(this.fillPicker).spectrum("set", parseSld["fillRGBA"]);
-				$(this.fillArea).show();
 			} else {
-				$(this.fillArea).hide();
+				$(this.fillPicker).spectrum("set", "rgba(0, 0, 0, 0)");
 			}
+			
+			if (this.geom === "LineString" || this.geom === "MultiLineString") {
+				$(this.fillArea).hide();
+			} else {
+				$(this.fillArea).show();
+			}
+			
 			if (parseSld.hasOwnProperty("strokeRGBA")) {
 				$(this.linePicker).spectrum("set", parseSld["strokeRGBA"]);
 			}
@@ -1087,12 +1132,19 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			if (parseSld.hasOwnProperty("strokeWidth")) {
 				$(this.widthInput).val(parseSld["strokeWidth"]);
 			}
+			
 			if (parseSld.hasOwnProperty("pointSize")) {
 				$(this.radInput).val(parseFloat(parseSld["pointSize"] / 2));
+			} else {
+				$(this.radInput).val(parseFloat(1));
+			}
+			
+			if (this.geom === "Polygon" || this.geom === "MultiPolygon") {
 				$(this.radArea).show();
 			} else {
 				$(this.radArea).hide();
 			}
+			
 			if (parseSld.hasOwnProperty("strokeDashArray")) {
 				$(this.outlineInput)
 				var children = $(this.outlineInput).children();
@@ -1104,74 +1156,6 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			} else {
 				$(this.outlineInput).val("outline1");
 			}
-			/*
-			if (this.geom === "Point" || this.geom === "MultiPoint") {
-				var pointStyle = this.parseSymbolizer(sld);
-				if (pointStyle.hasOwnProperty("fillRGBA")) {
-					$(this.fillPicker).spectrum("set", pointStyle["fillRGBA"]);
-				}
-				if (pointStyle.hasOwnProperty("strokeRGBA")) {
-					$(this.linePicker).spectrum("set", pointStyle["strokeRGBA"]);
-				}
-				if (pointStyle.hasOwnProperty("strokeWidth")) {
-					$(this.widthInput).val(pointStyle["strokeWidth"]);
-				}
-				if (pointStyle.hasOwnProperty("pointSize")) {
-					$(this.radInput).val(parseFloat(pointStyle["pointSize"] / 2));
-				}
-				if (pointStyle.hasOwnProperty("strokeDashArray")) {
-					$(this.outlineInput)
-					var children = $(this.outlineInput).children();
-					for (var i = 0; i < children.length; i++) {
-						if ($(children[i]).attr("dash") === pointStyle["strokeDashArray"]) {
-							$(this.outlineInput).val($(children[i]).val());
-						}
-					}
-				} else {
-					$(this.outlineInput).val("outline1");
-				}
-			} else if (this.geom === "LineString" || this.geom === "MultiLineString") {
-				var lineStyle = this.parseSymbolizer(sld);
-				if (lineStyle.hasOwnProperty("strokeRGBA")) {
-					$(this.linePicker).spectrum("set", lineStyle["strokeRGBA"]);
-				}
-				if (lineStyle.hasOwnProperty("strokeWidth")) {
-					$(this.widthInput).val(lineStyle["strokeWidth"]);
-				}
-				if (lineStyle.hasOwnProperty("strokeDashArray")) {
-					$(this.outlineInput)
-					var children = $(this.outlineInput).children();
-					for (var i = 0; i < children.length; i++) {
-						if ($(children[i]).attr("dash") === lineStyle["strokeDashArray"]) {
-							$(this.outlineInput).val($(children[i]).val());
-						}
-					}
-				} else {
-					$(this.outlineInput).val("outline1");
-				}
-			} else if (this.geom === "Polygon" || this.geom === "MultiPolygon") {
-				var polyStyle = this.parseSymbolizer(sld);
-				if (polyStyle.hasOwnProperty("fillRGBA")) {
-					$(this.fillPicker).spectrum("set", polyStyle["fillRGBA"]);
-				}
-				if (polyStyle.hasOwnProperty("strokeRGBA")) {
-					$(this.linePicker).spectrum("set", polyStyle["strokeRGBA"]);
-				}
-				if (polyStyle.hasOwnProperty("strokeWidth")) {
-					$(this.widthInput).val(polyStyle["strokeWidth"]);
-				}
-				if (polyStyle.hasOwnProperty("strokeDashArray")) {
-					$(this.outlineInput)
-					var children = $(this.outlineInput).children();
-					for (var i = 0; i < children.length; i++) {
-						if ($(children[i]).attr("dash") === polyStyle["strokeDashArray"]) {
-							$(this.outlineInput).val($(children[i]).val());
-						}
-					}
-				} else {
-					$(this.outlineInput).val("outline1");
-				}
-			}*/
 		}
 
 	}

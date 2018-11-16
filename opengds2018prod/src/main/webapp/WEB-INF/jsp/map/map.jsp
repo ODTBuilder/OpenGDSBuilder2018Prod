@@ -314,7 +314,42 @@ html {
 		});
 
 		$("#savePart").click(function() {
-			frecord.sendWFSTTransaction(epan);
+			var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
+
+			var well = $("<div>").addClass("well").append(row2);
+
+			var closeBtn = $("<button>").css({
+				"float" : "right"
+			}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+			var okBtn = $("<button>").css({
+				"float" : "right"
+			}).addClass("gb-button").addClass("gb-button-primary").text("Save");
+
+			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
+					.append(closeBtn);
+			var modalFooter = $("<div>").append(buttonArea);
+
+			var gBody = $("<div>").append(well).css({
+				"display" : "table",
+				"width" : "100%"
+			});
+			var openSaveModal = new gb.modal.Base({
+				"title" : "저장",
+				"width" : 540,
+				"height" : 250,
+				"autoOpen" : true,
+				"body" : gBody,
+				"footer" : modalFooter
+			});
+			
+			$(closeBtn).click(function() {
+				openSaveModal.close();
+			});
+			
+			$(okBtn).click(function() {
+				frecord.sendWFSTTransaction(epan);
+				openSaveModal.close();
+			});
 		});
 
 		// 거리, 면적 측정 기능 추가

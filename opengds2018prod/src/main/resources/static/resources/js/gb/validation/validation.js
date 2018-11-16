@@ -24,6 +24,7 @@ if (!gb.validation)
 		
 		this.geoserverTree = undefined;
 		this.workingTree = undefined;
+		this.messageContent = undefined;
 		
 		this.presetSelectTag = $("<select class='form-control'>");
 		
@@ -75,6 +76,22 @@ if (!gb.validation)
 				'border-color: transparent transparent #fff transparent;' +
 				'top: 7px;' +
 		'}</style>').appendTo('head');
+		$('<style>.validation-message{' +
+			'position: relative;' +
+			'min-height: 1em;' +
+			'background: #fffaf3;' +
+			'line-height: 1.4285em;' +
+			'padding: 4px 4px;' +
+			'margin-bottom: 10px;' +
+			'color: #573a08;' +
+			'display: flex;' +
+			'width: 100%;' +
+			'-webkit-box-align: center;' +
+			'align-items: center;' +
+			'border-radius: .28571429rem;' +
+			'box-shadow: 0 0 0 1px #c9ba9b inset, 0 0 0 0 transparent;' +
+		'}</style>').appendTo('head');
+		
 		$('<style>.select-items div{' +
 				'color: rgba(0,0,0,.87);' +
 				'padding: 8px 16px;' +
@@ -199,6 +216,7 @@ if (!gb.validation)
 		
 		var gtree = new gb.tree.GeoServer({
 			"append" : treeContent[0],
+			"height" : "502px",
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax"
 						+ this.token,
@@ -412,14 +430,20 @@ if (!gb.validation)
 		
 		// ==================== Create Panel body HTML Start >>>>>>>>>>>>>>>>>>>>
 		var presetDiv = $("<div>").addClass("validation-custom-select").append(this.presetSelectTag);
-		var formatDiv = $("<div>").addClass("validation-custom-select").append(this.formatSelectTag);
+		//var formatDiv = $("<div>").addClass("validation-custom-select").append(this.formatSelectTag);
 		var srsDiv = $("<div>").addClass("validation-custom-select").append(this.srsSelectTag);
+		
+		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
+		this.messageContent = $("<p>").css({
+			"margin": "0 3px"
+		}).html("User Setting을 먼저 선택해주세요.");
+		var message = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
 		var body = 
 			$("<div>")
-				.append(presetDiv).append(formatDiv).append(srsDiv);
+				.append(presetDiv).append(srsDiv).append(message);
 		
 		requestPreset(this.presetSelectTag, presetDiv);
-		customSelect(formatDiv);
+		//customSelect(formatDiv);
 		customSelect(srsDiv);
 		
 		// <<<<<<<<<<<<<<<<<<<< Create Panel body HTML End ======================
@@ -481,7 +505,7 @@ if (!gb.validation)
 				var option = $("<option>").val("false").text("Select User Setting:");
 				select.append(option);
 				for (var i = 0; i < data.length; i++) {
-					option = $("<option>").val(data[i].pid).attr("data-support", data[i].support).text(data[i].name);
+					option = $("<option>").val(data[i].pid).attr("data-title", data[i].title).text(data[i].name);
 					select.append(option);
 				}
 				customSelect(div);

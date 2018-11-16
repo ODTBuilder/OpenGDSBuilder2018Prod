@@ -48,6 +48,7 @@ gb.tree.GeoServer = function(obj) {
 	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
 	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
+	this.height = options.height || undefined;
 	this.downloadGeoserver = url.downloadGeoserver || undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
@@ -113,25 +114,29 @@ gb.tree.GeoServer = function(obj) {
 	} else if ($(options.append).is("div")) {
 		$(options.append).append(this.panel);
 	}
-
-	$(document).ready(function() {
-		var parentHeight = $(that.panel).parent().innerHeight();
-		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
-		var bodyHeight = parentHeight - headHeight;
-		$(that.panelBody).outerHeight(bodyHeight);
-	});
-	$(window).resize(function() {
-		var parentHeight = $(that.panel).parent().innerHeight();
-		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
-		var bodyHeight = parentHeight - headHeight;
-		$(that.panelBody).outerHeight(bodyHeight);
-	});
-	setTimeout(function() {
-		var parentHeight = $(that.panel).parent().innerHeight();
-		var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
-		var bodyHeight = parentHeight - headHeight;
-		$(that.panelBody).outerHeight(bodyHeight);
-	}, 1000);
+	
+	if(!this.height){
+		$(document).ready(function() {
+			var parentHeight = $(that.panel).parent().innerHeight();
+			var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+			var bodyHeight = parentHeight - headHeight;
+			$(that.panelBody).outerHeight(bodyHeight);
+		});
+		$(window).resize(function() {
+			var parentHeight = $(that.panel).parent().innerHeight();
+			var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+			var bodyHeight = parentHeight - headHeight;
+			$(that.panelBody).outerHeight(bodyHeight);
+		});
+		setTimeout(function() {
+			var parentHeight = $(that.panel).parent().innerHeight();
+			var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
+			var bodyHeight = parentHeight - headHeight;
+			$(that.panelBody).outerHeight(bodyHeight);
+		}, 1000);
+	} else {
+		$(this.panelBody).outerHeight(this.height);
+	}
 
 	$(this.panelBody).jstree(
 			{

@@ -2339,31 +2339,7 @@
 					} else if (layer instanceof ol.layer.Image) {
 						if (layer.get("git")) {
 							var git = layer.get("git");
-							if (git.hasOwnProperty("validation")) {
-								switch (git.validation) {
-								case "Up":
-									obj.type = git.validation;
-									break;
-								case "Down":
-									obj.type = git.validation;
-									break;
-								case "Left":
-									obj.type = git.validation;
-									break;
-								case "Right":
-									obj.type = git.validation;
-									break;
-								case "CenterChild":
-									obj.type = git.validation;
-									break;
-								case "ErrorChild":
-									obj.type = git.validation;
-									break;
-								default:
-									obj.type = "Raster";
-									break;
-								}
-							} else if (git.hasOwnProperty("editable")) {
+							if (git.hasOwnProperty("editable")) {
 								if (git.editable
 										&& git.hasOwnProperty("geometry")) {
 									switch (git.geometry) {
@@ -2433,19 +2409,19 @@
 									case "Point":
 										obj.type = git.geometry;
 										break;
-									case "Multipoint":
+									case "MultiPoint":
 										obj.type = git.geometry;
 										break;
-									case "Linestring":
+									case "LineString":
 										obj.type = git.geometry;
 										break;
-									case "Multilinestring":
+									case "MultiLineString":
 										obj.type = git.geometry;
 										break;
 									case "Polygon":
 										obj.type = git.geometry;
 										break;
-									case "Multipolygon":
+									case "MultiPolygon":
 										obj.type = git.geometry;
 										break;
 									default:
@@ -2569,19 +2545,19 @@
 									case "Point":
 										obj.type = git.geometry;
 										break;
-									case "Multipoint":
+									case "MultiPoint":
 										obj.type = git.geometry;
 										break;
-									case "Linestring":
+									case "LineString":
 										obj.type = git.geometry;
 										break;
-									case "Multilinestring":
+									case "MultiLineString":
 										obj.type = git.geometry;
 										break;
 									case "Polygon":
 										obj.type = git.geometry;
 										break;
-									case "Multipolygon":
+									case "MultiPolygon":
 										obj.type = git.geometry;
 										break;
 									default:
@@ -4124,10 +4100,16 @@
 							node.childNodes[1].childNodes[0].className += ' '
 									+ obj.icon + ' jstreeol3-themeicon-custom';
 							if(obj.icon === "gb-icon"){
+								var customIcon = document.createElement('div');
+								customIcon.className = obj.icon + '-' + obj.type.toLowerCase();
+								customIcon.style.background = obj.li_attr.fillColor || '#666';
+								customIcon.style.border = '2px solid ' + obj.li_attr.lineColor || '#666';
 								node.childNodes[1].childNodes[0].style.position = 'relative';
-								node.childNodes[1].childNodes[0].appendChild(
-									$("<div>").addClass(obj.icon + "-" + obj.type.toLowerCase())[0]
-								);
+								node.childNodes[1].childNodes[0].appendChild(customIcon);
+								if(obj.type.toLowerCase() === "linestring" || obj.type.toLowerCase() === "multilinestring"){
+									node.childNodes[1].childNodes[0].className += ' gb-fa-rotate-135';
+									customIcon.style.background = obj.li_attr.lineColor || '#666';
+								}
 							}
 						} else {
 							node.childNodes[1].childNodes[0].style.backgroundImage = 'url("'
@@ -10267,6 +10249,7 @@
 									var layers = inst.get_selected();
 									for (var i = 0; i < layers.length; i++) {
 										inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
+										inst._data.layerproperties.style.setLegend(obj, inst.settings.legends.geoserver);
 										inst._data.layerproperties.style.open();
 									}
 								} else {

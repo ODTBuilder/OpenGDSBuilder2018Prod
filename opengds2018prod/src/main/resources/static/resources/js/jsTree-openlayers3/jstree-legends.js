@@ -93,6 +93,7 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 						$
 								.proxy(
 										function(e, data) {
+											var layerStyle = data.instance.settings.layerproperties.style;
 											var m = this._model.data, dpc = data.nodes, g = this.settings.legends.geoserver, t = this.settings.legends.types, i, j, c = 'default', k;
 											for (i = 0, j = dpc.length; i < j; i++) {
 												c = 'default';
@@ -114,12 +115,17 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 													if (layer instanceof ol.layer.Tile) {
 														var source = layer.getSource();
 														if (source instanceof ol.source.TileWMS) {
-															m[dpc[i]].icon = g.url + "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="
+															/*m[dpc[i]].icon = g.url + "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="
 																	+ g.format + "&WIDTH=" + g.width + "&HEIGHT=" + g.height + "&LAYER="
 																	+ git.workspace + ":" + layer.get("name")
 																	+ "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" + "&serverName="
-																	+ git.geoserver + "&workspace=" + git.workspace;
+																	+ git.geoserver + "&workspace=" + git.workspace;*/
+															m[dpc[i]].icon = "gb-icon";
 														}
+														// hochul
+														layerStyle.setLayer(layer);
+														layerStyle.setLegend(m[dpc[i]], g);
+														layerStyle.updateStyle();
 													}
 													if (git && git.hasOwnProperty("fake")) {
 														if (git.fake === "child") {

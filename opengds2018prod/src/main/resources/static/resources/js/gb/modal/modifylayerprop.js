@@ -10,6 +10,41 @@ if (!gb)
 	gb = {};
 if (!gb.edit)
 	gb.edit = {};
+
+gb.edit.TDSTYLE = {
+	"padding": ".78571429em .78571429em"
+}
+
+gb.edit.TDKEYSTYLE = {
+	"padding": ".78571429em .78571429em",
+	"background": "rgba(0,0,0,.03)",
+	"font-weight": "700"
+}
+
+gb.edit.TRSTYLE = {
+	"border-bottom": "1px solid rgba(0,0,0,.1)"
+}
+
+gb.edit.INPUTSTYLE = {
+	"width": "100%",
+	"border": "1px solid rgba(34,36,38,.15)",
+	"border-radius": ".28571429rem",
+	"line-height": "1.21428571em",
+	"padding": ".67857143em 1em"
+
+}
+
+gb.edit.LABELSTYLE = {
+	"display": "inline-block",
+	"background": "#e0e1e2 none",
+	"color": "rgba(0,0,0,.6)",
+	"margin": "0 .25em .25em 0",
+	"padding": ".78571429em 1.5em .78571429em",
+	"font-weight": "700",
+	"line-height": "1em",
+	"border-radius": ".28571429rem"
+}
+
 gb.edit.ModifyLayerProperties = function(obj) {
 	var that = this;
 	var options = obj;
@@ -46,39 +81,16 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	 * 
 	 */
 
-	var formTag = $("<form>");
+	this.tbody = $("<tbody>");
+	var tableTag = $("<table>").append(this.tbody);
 	
-	var group1 = this.createFormGroup({
+	/*var group1 = this.createFormGroup({
 		label: {
 			"text": "Layer Name"
 		},
 		input: {
 			"class": "form-control",
 			"id": "layer-prop-name",
-			"type": "text"
-		}
-	});
-	
-	var group2 = this.createFormGroup({
-		label: {
-			"text": "Geometry Type"
-		},
-		input: {
-			"class": "form-control-plaintext",
-			"id": "layer-prop-geom",
-			"readonly": true,
-			"type": "text"
-		}
-	});
-	
-	var group3 = this.createFormGroup({
-		label: {
-			"text": "Geometry Key"
-		},
-		input: {
-			"class": "form-control-plaintext",
-			"id": "layer-prop-geomkey",
-			"readonly": true,
 			"type": "text"
 		}
 	});
@@ -93,50 +105,12 @@ gb.edit.ModifyLayerProperties = function(obj) {
 			"readonly": false,
 			"type": "text"
 		}
-	});
+	});*/
 	
-	var group5 = this.createFormGroup({
-		label: {
-			"text": "Geoserver"
-		},
-		input: {
-			"class": "form-control-plaintext",
-			"id": "layer-prop-geoserver",
-			"readonly": true,
-			"type": "text"
-		}
-	});
-	
-	var group6 = this.createFormGroup({
-		label: {
-			"text": "Workspace"
-		},
-		input: {
-			"class": "form-control-plaintext",
-			"id": "layer-prop-workspace",
-			"readonly": true,
-			"type": "text"
-		}
-	});
-	
-	var group7 = this.createFormGroup({
-		label: {
-			"text": "Datastore"
-		},
-		input: {
-			"class": "form-control-plaintext",
-			"id": "layer-prop-datastore",
-			"readonly": true,
-			"type": "text"
-		}
-	});
-	
-	formTag.append(group1).append(group2).append(group3).append(group4).append(group5).append(group6).append(group7);
-
-	this.body = $("<div>").append(formTag);
+	this.body = $("<div>").append(tableTag);
 	
 	// that.setForm("ngi", "layer");
-	$(this.body).addClass("modal-body");
+	$(this.body).addClass("modal-body").css({"height": "550px", "overflow-y": "auto"});
 	/*
 	 * 
 	 * 
@@ -155,7 +129,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 
 	var okBtn = this.okBtn = $("<button>").attr({
 		"type" : "button",
-		"disabled": true
+		"disabled": false
 	}).on("click", function() {
 		//var opt = that.getDefinitionForm();
 		that.saveLayerProperties();
@@ -204,13 +178,13 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		var id = e.target.id;
 		var value = e.target.value;
 		
-		if(id === "layer-prop-srs"){
+		if(id === "propsrs"){
 			if(value !== that.srs){
 				bool = false;
 			}
 		}
 		
-		if(id === "layer-prop-name"){
+		if(id === "proplName"){
 			if(value !== that.layerName){
 				bool = false;
 			}
@@ -221,13 +195,56 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		});
 	});
 }
-gb.edit.ModifyLayerProperties.prototype.createFormGroup = function(obj){
-	var options = obj || false;
-	if(!options){
+gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
+	var list = obj || false;
+	if(!list){
 		return;
 	}
 	
-	var label = options.label;
+	this.tbody.empty();
+	
+	var tr, key, value, label, labelKey, labelValue;
+	for(var i in list){
+		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
+		if(list[i] instanceof Object){
+			value = $("<td>").css(gb.edit.TDSTYLE);
+			for(var j in list[i]){
+				labelKey = $("<span>").text(j);
+				if(list[i][j] instanceof Object){
+					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
+				} else {
+					labelValue = $("<span>").text(list[i][j]);
+				}
+				label = $("<div>").css(gb.edit.LABELSTYLE).append(labelKey).append(labelValue);
+				value.append(label);
+			}
+		} else {
+			if(i === "lName" || i === "srs" || i === "title"){
+				value = 
+					$("<td>")
+						.css(gb.edit.TDSTYLE)
+						.append(
+							$("<input>")
+								.addClass("layer-prop-input")
+								.attr({
+									"id": "prop" + i,
+									"value": list[i],
+									"type": "text",
+									"readonly": false
+								})
+								.css(gb.edit.INPUTSTYLE)
+						);
+			} else {
+				value = $("<td>").css(gb.edit.TDSTYLE).text(list[i]);
+			}
+			
+		}
+		
+		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
+		this.tbody.append(tr);
+	}
+	
+	/*var label = options.label;
 	
 	var input = options.input;
 	
@@ -250,9 +267,7 @@ gb.edit.ModifyLayerProperties.prototype.createFormGroup = function(obj){
 			});
 	
 	var inputDiv = $("<div>").addClass("col-sm-10").append(inputTag);
-	var div = $("<div>").addClass("form-group row").append(labelTag).append(inputDiv);
-	
-	return div;
+	var div = $("<div>").addClass("form-group row").append(labelTag).append(inputDiv);*/
 }
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function(){
@@ -352,13 +367,15 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 					that.layerName = data[0].lName;
 					that.srs = data[0].srs;
 					
-					$("#layer-prop-name").val(data[0].lName);
+					that.createTableContent(data[0]);
+					
+					/*$("#layer-prop-name").val(data[0].lName);
 					$("#layer-prop-geom").val(data[0].geomType);
 					$("#layer-prop-geomkey").val(data[0].geomkey);
 					$("#layer-prop-srs").val(data[0].srs);
 					$("#layer-prop-geoserver").val(geoserver);
 					$("#layer-prop-workspace").val(workspace);
-					$("#layer-prop-datastore").val(datastore);
+					$("#layer-prop-datastore").val(datastore);*/
 				}
 
 				$("body").css("cursor", "default");
@@ -375,9 +392,9 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 		"workspace": serverInfo.workspace,
 		"datastore": serverInfo.datastore,
 		"originalName": serverInfo.layername,
-		"name": $("#layer-prop-name").val(),
-		"title": $("#layer-prop-name").val(),
-		"srs": $("#layer-prop-srs").val()
+		"name": $("#proplName").val(),
+		"title": $("#proptitle").val(),
+		"srs": $("#propsrs").val()
 	}
 	
 	$.ajax({

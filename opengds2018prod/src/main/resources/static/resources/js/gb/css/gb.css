@@ -610,7 +610,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	transform: translate(-50%, -50%);
 	width: 12px;
 	height: 12px;
-	background: #666 !important;
+	background: #666;
 }
 
 .gb-icon-linestring, .gb-icon-multilinestring {
@@ -619,8 +619,8 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	left: 50%;
 	transform: translate(-50%, -50%);
 	width: 12px;
-	height: 2.4px;
-	background: #666 !important;
+	height: 4px;
+	background: #666;
 }
 
 .gb-icon-point, .gb-icon-multipoint {
@@ -630,7 +630,7 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	transform: translate(-50%, -50%);
 	width: 12px;
 	height: 12px;
-	background: #666 !important;
+	background: #666;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
 	border-radius: 50px;

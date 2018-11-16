@@ -117,8 +117,8 @@ html {
 		</div>
 		<div class="collapse navbar-collapse" id="navbar-collapse-2">
 			<ul class="nav navbar-nav">
-				<li class="dropdown"><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges">
-					<i class="fas fa-save fa-lg" style="color: #4dadf7;"></i> <spring:message code="lang.save" />
+				<li class="dropdown"><a href="#" id="savePart" data-toggle="modal" data-target="#saveChanges"> <i
+						class="fas fa-save fa-lg" style="color: #4dadf7;"></i> <spring:message code="lang.save" />
 				</a></li>
 				<li><a href="#" title="Edit" id="editTool"> <i class="fas fa-edit fa-lg" style="color: #bfbfbf;"></i> <spring:message
 							code="lang.edit" />
@@ -216,7 +216,7 @@ html {
 				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}",
-				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
+				"catConflictFeatureObject" : "geogig/catConflictFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 
@@ -289,7 +289,9 @@ html {
 		var fhist = new gb.versioning.Feature({
 			"url" : {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}"
+				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
+				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

@@ -15,11 +15,13 @@ import com.gitrnd.gdsbuilder.geogig.command.geoserver.GeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverLayer.ListParam;
-import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
-import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.ListGeoserverWorkSpace;
 import com.gitrnd.gdsbuilder.geogig.command.geoserver.PublishGeoserverLayer;
+import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
+import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Attribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommandResponse;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore.ConnectionParameters;
@@ -28,11 +30,9 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStoreList.DataStore;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayerList;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Attribute;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpaceList.Workspace;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -116,7 +116,7 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 		String pw = geoserverManager.getPassword();
 
 		// get crs
-		String crs = "";
+		String crs = null;
 		LsTreeRepository lsTreeRepos = new LsTreeRepository();
 		GeogigRevisionTree geogigLsTree = lsTreeRepos.executeCommand(url, user, pw, repoName, branchName, true);
 		List<Node> nodeList = geogigLsTree.getNodes();

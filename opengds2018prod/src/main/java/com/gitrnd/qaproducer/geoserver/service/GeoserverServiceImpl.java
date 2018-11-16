@@ -47,6 +47,7 @@ import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
+import com.gitrnd.gdsbuilder.geoserver.data.DTGSGeogigDatastoreEncoder;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
@@ -54,6 +55,10 @@ import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
+import it.geosolutions.geoserver.rest.HTTPUtils;
+import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
+import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
+import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
 import it.geosolutions.geoserver.rest.encoder.GSLayerGroupEncoder;
 import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
@@ -68,26 +73,23 @@ import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 @Service("geoService")
 public class GeoserverServiceImpl implements GeoserverService {
 
-	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	private DTGeoserverReader dtReader;
 	private DTGeoserverPublisher dtPublisher;
 	private GeoServerRESTStyleManager restStyleManager;
 
-	
-	/*public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
-		if(dtGeoManager!=null){
-			dtReader = dtGeoManager.getReader();
-			dtPublisher = dtGeoManager.getPublisher();
-		}else{
-			throw new IllegalArgumentException("Geoserver 정보 없음");
-		}
-	}*/
+	/*
+	 * public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
+	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher =
+	 * dtGeoManager.getPublisher(); }else{ throw new
+	 * IllegalArgumentException("Geoserver 정보 없음"); } }
+	 */
 	@Override
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs){
+	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			String layerName, File zipFile, String srs) {
 		boolean puFlag = false;
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
 			try {
 				puFlag = dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs);
@@ -95,17 +97,18 @@ public class GeoserverServiceImpl implements GeoserverService {
 				// TODO Auto-generated catch block
 				logger.warn("발행실패");
 			}
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
+
 		return puFlag;
 	}
-	
+
 	@Override
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, String layerName, File zipFile, String srs, String defaultStyle){
+	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			String layerName, File zipFile, String srs, String defaultStyle) {
 		boolean puFlag = false;
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
 			try {
@@ -114,12 +117,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 				// TODO Auto-generated catch block
 				logger.warn("발행실패");
 			}
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return puFlag;
 	}
-	
+
 	/**
 	 * 
 	 * @since 2018. 11. 5.
@@ -129,36 +132,37 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @param datastore
 	 * @param request
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#shpCollectionPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, org.springframework.web.multipart.MultipartHttpServletRequest)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#shpCollectionPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 *      java.lang.String, java.lang.String,
+	 *      org.springframework.web.multipart.MultipartHttpServletRequest)
 	 */
 	@Override
 	public int shpCollectionPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore,
 			MultipartHttpServletRequest request) {
 		int puFlag = 500;
 
-		if (dtGeoManager != null && workspace!=null && datastore!=null) {
+		if (dtGeoManager != null && workspace != null && datastore != null) {
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
 
-			
 			boolean wsFlag = false;
 			boolean dsFlag = false;
-			
+
 			wsFlag = dtReader.existsWorkspace(workspace);
 			dsFlag = dtReader.existsDatastore(workspace, datastore);
-			
-			if(wsFlag&&dsFlag){
+
+			if (wsFlag && dsFlag) {
 				String originalName = "";
 				String srs = "";
 				String title = "";
 				String style = "";
 				String abstractContent = "";
-				
+
 				Enumeration paramNames = request.getParameterNames();
 				while (paramNames.hasMoreElements()) {
 					String key = paramNames.nextElement().toString();
 					String value = request.getParameter(key);
-					
+
 					if (key.toLowerCase().equals("srs")) {
 						srs = value;
 					} else if (key.toLowerCase().equals("title")) {
@@ -169,7 +173,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 						abstractContent = value;
 					}
 				}
-				
+
 				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT";
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
@@ -188,10 +192,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 				MultipartFile mpf = null;
 
 				int index = 0;
-				
+
 				// 2. get each file
 				while (itr.hasNext()) {
-					if(index<1){
+					if (index < 1) {
 						// 2.1 get next MultipartFile
 						mpf = request.getFile(itr.next());
 
@@ -202,18 +206,16 @@ public class GeoserverServiceImpl implements GeoserverService {
 							// String encodeFileName = URLEncoder.encode(trimFileName,
 							// "UTF-8");
 
-							
-							//레이어 중복체크
-							int Idx = trimFileName .lastIndexOf(".");
+							// 레이어 중복체크
+							int Idx = trimFileName.lastIndexOf(".");
 
-							String _fileName = trimFileName.substring(0, Idx );
-							
-							
-							if(dtReader.existsLayer(workspace, _fileName)){
-								//레이어 중복
+							String _fileName = trimFileName.substring(0, Idx);
+
+							if (dtReader.existsLayer(workspace, _fileName)) {
+								// 레이어 중복
 								return 609;
 							}
-							
+
 							saveFilePath = tmp.toString() + File.separator + trimFileName;
 							BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(saveFilePath));
 
@@ -225,28 +227,29 @@ public class GeoserverServiceImpl implements GeoserverService {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}else{
+					} else {
 						deleteDirectory(tmp.toFile());
 						logger.warn("파일이 2개이상");
 						puFlag = 608;
 						return puFlag;
 					}
 				}
-				
 
 				try {
 					// Geoserver에 레이어 발행
-					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore, new File(saveFilePath).toURI());
-					if(serverPFlag){
+					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
+							new File(saveFilePath).toURI());
+					if (serverPFlag) {
 						puFlag = 200;
-						boolean upFlag = this.updateFeatureType(dtGeoManager, workspace, datastore, originalName, originalName, title, abstractContent, srs, style, false);
-						if(!upFlag){
-							//실패시 발행 레이어 삭제
+						boolean upFlag = this.updateFeatureType(dtGeoManager, workspace, datastore, originalName,
+								originalName, title, abstractContent, srs, style, false);
+						if (!upFlag) {
+							// 실패시 발행 레이어 삭제
 							logger.warn("레이어 업데이트 실패");
 							dtPublisher.removeLayer(workspace, originalName);
 							puFlag = 500;
 						}
-					}else{
+					} else {
 						puFlag = 500;
 						logger.warn("발행실패");
 					}
@@ -255,9 +258,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 					puFlag = 500;
 					logger.warn("발행실패");
 				}
-				//성공 or 실패시 파일삭제
+				// 성공 or 실패시 파일삭제
 				deleteDirectory(tmp.toFile());
-			}else{
+			} else {
 				logger.warn("workspace 또는 datastore 존재 X");
 				puFlag = 607;
 			}
@@ -267,7 +270,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return puFlag;
 	}
-	
+
 	private void deleteDirectory(File dir) {
 
 		if (dir.exists()) {
@@ -289,30 +292,33 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @param dtGeoManagers
 	 * @param serverName
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList, java.lang.String)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList,
+	 *      java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverMList, String parent, String serverName, String type) {
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverMList, String parent,
+			String serverName, String type) {
 		JSONArray jsonArray = new JSONArray();
 		EnTreeType enType = null;
-		if(dtGeoserverMList!=null){
-			if(type.toLowerCase().equals("server")){
+		if (dtGeoserverMList != null) {
+			if (type.toLowerCase().equals("server")) {
 				enType = EnTreeType.SERVER;
-			}else if(type.toLowerCase().equals("workspace")){
+			} else if (type.toLowerCase().equals("workspace")) {
 				enType = EnTreeType.WORKSPACE;
-			}else if(type.toLowerCase().equals("datastore")){
+			} else if (type.toLowerCase().equals("datastore")) {
 				enType = EnTreeType.DATASTORE;
-			}else if(type.toLowerCase().equals("layer")){
+			} else if (type.toLowerCase().equals("layer")) {
 				enType = EnTreeType.LAYER;
-			}else{
+			} else {
 				logger.warn("DTGeoserverManagerList Null");
 			}
-			if(enType!=null){
-				if(enType==EnTreeType.SERVER){
+			if (enType != null) {
+				if (enType == EnTreeType.SERVER) {
 					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList, enType);
-				}else{
-					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList,parent,serverName,enType);
+				} else {
+					jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverMList, parent,
+							serverName, enType);
 				}
 			}
 		} else {
@@ -321,7 +327,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return jsonArray;
 	}
-	
+
 	/**
 	 * @since 2018. 7. 13.
 	 * @author SG.Lee
@@ -330,12 +336,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoserverLayerCollectionTree(com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList)
 	 */
 	@SuppressWarnings("unchecked")
-	public JSONArray getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverMList){
+	public JSONArray getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverMList) {
 		JSONArray jsonArray = new JSONArray();
-		
-		if(dtGeoserverMList!=null){
+
+		if (dtGeoserverMList != null) {
 			jsonArray = new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverMList);
-			if(jsonArray.size()==0){
+			if (jsonArray.size() == 0) {
 				JSONObject errorJSON = new JSONObject();
 				errorJSON.put("id", 200);
 				errorJSON.put("parent", "#");
@@ -343,7 +349,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 				errorJSON.put("type", "info");
 				jsonArray.add(errorJSON);
 			}
-		}else{
+		} else {
 			JSONObject errorJSON = new JSONObject();
 			errorJSON.put("id", 200);
 			errorJSON.put("parent", "#");
@@ -361,22 +367,23 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @param workspace
 	 * @param layerList
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#duplicateCheck(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.util.ArrayList)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#duplicateCheck(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 *      java.lang.String, java.util.ArrayList)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList) {
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
+
 		JSONObject object = new JSONObject();
 		for (String layerName : layerList) {
 			object.put(layerName, dtReader.existsLayer(workspace, layerName));
 		}
-		
+
 		return object;
 	}
 
@@ -387,28 +394,29 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @param workspace
 	 * @param layerList
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoLayerList(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.util.ArrayList)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoLayerList(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 *      java.lang.String, java.util.ArrayList)
 	 */
 	@Override
-	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList) {
-		if(dtGeoManager!=null){
+	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace,
+			ArrayList<String> layerList) {
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			restStyleManager = dtGeoManager.getStyleManager();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
+
 		if (layerList == null)
 			throw new IllegalArgumentException("LayerNames may not be null");
 		if (layerList.size() == 0)
 			throw new IllegalArgumentException("LayerNames may not be null");
-		
-		
+
 		DTGeoLayerList dtGeoLayerList = dtReader.getDTGeoLayerList(workspace, layerList);
-		if(dtGeoLayerList!=null){
+		if (dtGeoLayerList != null) {
 			String sld = "";
-			for(DTGeoLayer geoLayer : dtGeoLayerList){
-				if(!geoLayer.getStyle().isEmpty()){
+			for (DTGeoLayer geoLayer : dtGeoLayerList) {
+				if (!geoLayer.getStyle().isEmpty()) {
 					sld = restStyleManager.getSLD(geoLayer.getStyle());
 					geoLayer.setSld(sld);
 				}
@@ -425,14 +433,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#getGeoGroupLayerList(java.util.ArrayList)
 	 */
 	@Override
-	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> groupList) {
-		if(dtGeoManager!=null){
+	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace,
+			ArrayList<String> groupList) {
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
-		
+
 		if (groupList == null)
 			throw new IllegalArgumentException("GroupNames may not be null");
 		if (groupList.size() == 0)
@@ -448,14 +456,15 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeGeoserverLayer(java.lang.String)
 	 */
 	@Override
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, String groupLayerName, String layerName) {
-		if(dtGeoManager!=null){
+	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			String groupLayerName, String layerName) {
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
+
 		boolean isConfigureGroup = false;
 		boolean isRemoveFeatureType = false;
 		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(workspace, groupLayerName);
@@ -495,20 +504,21 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @param workspace
 	 * @param layerNameList
 	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeDTGeoserverLayers(java.lang.String, java.util.List)
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeDTGeoserverLayers(java.lang.String,
+	 *      java.util.List)
 	 */
 	@Override
 	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList) {
 		int resultFlag = 500;
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
 			boolean removeFlag = dtPublisher.removeLayers(workspace, layerNameList);
-			if(removeFlag){
+			if (removeFlag) {
 				resultFlag = 200; // 성공
-			}else{
-				resultFlag = 606; //일부성공 또는 실패
+			} else {
+				resultFlag = 606; // 일부성공 또는 실패
 			}
-		}else{
+		} else {
 			resultFlag = 605; // Geoserver 정보없음
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
@@ -523,11 +533,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeGeoserverGroupLayer(java.lang.String)
 	 */
 	@Override
-	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName, String groupLayerName) {
-		if(dtGeoManager!=null){
+	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			String groupLayerName) {
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 
@@ -541,8 +552,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 			dtPublisher.removeLayerGroup(workspace, groupLayerName);
 
 			for (String layerName : layerList) {
-				boolean isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName,
-						layerName);
+				boolean isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName, layerName);
 				if (isRemoveFeatureType) {
 					flagVal++;
 				}
@@ -565,9 +575,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public List<String> getGeoserverStyleList(DTGeoserverManager dtGeoManager) {
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return dtReader.getStyles().getNames();
@@ -585,9 +595,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean publishStyle(DTGeoserverManager dtGeoManager, final String sldBody, final String name) {
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return dtPublisher.publishStyle(sldBody, name);
@@ -605,9 +615,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean updateStyle(DTGeoserverManager dtGeoManager, final String sldBody, final String name) {
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return dtPublisher.updateStyle(sldBody, name);
@@ -623,23 +633,24 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 */
 	@Override
 	public boolean removeStyle(DTGeoserverManager dtGeoManager, String styleName) {
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return dtPublisher.removeStyle(styleName);
 	};
 
 	@Override
-	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName, String originalName, String name, String title,
-			String abstractContent, String srs, String style, boolean attChangeFlag) {
-		if(dtGeoManager!=null){
+	public boolean updateFeatureType(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			String originalName, String name, String title, String abstractContent, String srs, String style,
+			boolean attChangeFlag) {
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		
+
 		boolean updateFlag = false;
 		GSFeatureTypeEncoder fte = new GSFeatureTypeEncoder();
 		GSLayerEncoder layerEncoder = null;
@@ -670,59 +681,89 @@ public class GeoserverServiceImpl implements GeoserverService {
 			layerEncoder.setDefaultStyle(style);
 		}
 
-		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, originalName, fte, layerEncoder,
-				attChangeFlag);
+		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, originalName, fte, layerEncoder, attChangeFlag);
 
 		return updateFlag;
 	}
 
-
 	@Override
-	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo geoLayerInfo) {
-		if(dtGeoManager!=null){
+	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			GeoLayerInfo geoLayerInfo) {
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		// TODO Auto-generated method stub
 		return dtPublisher.publishErrLayer(workspace, dsName, geoLayerInfo);
 	}
-	
+
 	@Override
-	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String workspace, String wfstXml){
-		if(dtGeoManager!=null){
+	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String workspace, String wfstXml) {
+		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
-		return dtPublisher.requestWFSTransaction(workspace,wfstXml);
+		return dtPublisher.requestWFSTransaction(workspace, wfstXml);
 	}
-	
-	
+
 	@Override
-	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName){
+	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName) {
 		String sld = "";
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			DTGeoLayer dtLayer = dtReader.getDTGeoLayer(workspace, layerName);
 			String style = dtLayer.getStyle();
 			sld = dtReader.getSLD(workspace, style);
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return sld;
 	}
-	
+
 	@Override
-	public boolean exsistLayer(DTGeoserverManager dtGeoManager, String workspace, String layerName){
+	public boolean exsistLayer(DTGeoserverManager dtGeoManager, String workspace, String layerName) {
 		boolean flag = false;
-		if(dtGeoManager!=null){
+		if (dtGeoManager != null) {
 			dtReader = dtGeoManager.getReader();
 			flag = dtReader.existsLayer(workspace, layerName);
-		}else{
+		} else {
 			throw new IllegalArgumentException("Geoserver 정보 없음");
 		}
 		return flag;
+	}
+
+	@Override
+	public boolean updateGeogigGsStore(DTGeoserverManager geoserverManager, String workspace, String datastore,
+			String branch) {
+
+		DTGeoserverReader dtGeoserverReader = geoserverManager.getReader();
+		RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
+
+		boolean updated = false;
+		if (restWorkspaceList != null) {
+			for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
+				String wsName = item.getName();
+				if (wsName.equalsIgnoreCase(workspace)) {
+					RESTDataStoreList dataStoreList = dtGeoserverReader.getDatastores(wsName);
+					if (dataStoreList != null) {
+						List<String> dsNames = dataStoreList.getNames();
+						for (String dsName : dsNames) {
+							if (dsName.equalsIgnoreCase(datastore)) {
+								if (dsName.equalsIgnoreCase(datastore)) {
+									RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, datastore);
+									DTGSGeogigDatastoreEncoder dsEncoder = new DTGSGeogigDatastoreEncoder(dStore);
+									dsEncoder.setBranch(branch);
+									updated = dtPublisher.updateDatasotre(workspace, datastore, dsEncoder);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return updated;
 	}
 }
 

@@ -15,10 +15,8 @@ import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
-import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**

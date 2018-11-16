@@ -368,6 +368,7 @@ gb.header.EditingTool = function(obj) {
 
 	// SOYIJUN
 	if (this.getVersioningFeature() !== undefined) {
+		this.getVersioningFeature().setEditingTool(this);
 		console.log(this.ulTagRight);
 		var iTag = $("<i>").addClass("fas").addClass("fa-history").attr("aria-hidden", "true").css(this.iStyle);
 		var aTag = $("<a>").attr("href", "#").append(iTag).append("Changes").css(this.aStyle).click(function(){
@@ -420,8 +421,8 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 			var path = layerName+"/"+feature.getId();
 			console.log(path);
 // vfeature.open();
-
-			if (vfeature !== undefined && branch === "master") {
+			if (vfeature !== undefined) {
+// if (vfeature !== undefined && branch === "master") {
 				if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
 
 					vfeature.setServer(geoserver);
@@ -465,7 +466,8 @@ gb.header.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
 		var path = layerName+"/"+feature.getId();
 		console.log(path);
 
-		if (vfeature !== undefined && branch === "master") {
+		if (vfeature !== undefined) {
+// if (vfeature !== undefined && branch === "master") {
 			vfeature.open();
 			if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
 				vfeature.setServer(geoserver);
@@ -2300,7 +2302,7 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.refreshSources = function(){
 	var source = this.getVectorSourcesOfServer();
 

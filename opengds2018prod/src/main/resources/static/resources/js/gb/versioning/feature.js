@@ -18,9 +18,12 @@ gb.versioning.Feature = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.epsg = options.epsg ? options.epsg : undefined;
+	this.editingTool = options.editingTool ? options.editingTool : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
 
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
@@ -215,7 +218,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					});
 					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
 					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
-					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Detail").attr({
+					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
+							"gb-versioning-feature-detail-btn").text("Detail").attr({
 						"title" : data.simpleCommits[i].message,
 						"value" : data.simpleCommits[i].commitId,
 						"idx" : data.simpleCommits[i].cIdx
@@ -223,8 +227,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var geoserver = that.getServer();
 						var repo = that.getRepo();
 						var path = that.getPath();
-						var nidx = parseInt($(this).attr("idx"));
-						var oidx = parseInt($(this).parents().eq(1).next().find(".gb-button").attr("idx"));
+						// var nidx = parseInt($(this).attr("idx"));
+						var nidx = 0;
+						var oidx = parseInt($(this).attr("idx"));
 						// var oidx =
 						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
@@ -233,7 +238,15 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						"text-align" : "center"
 					}).append(button);
 
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Run");
+					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
+							"gb-versioning-feature-revert-btn").text("Run").click(function() {
+						var geoserver = that.getServer();
+						var repo = that.getRepo();
+						var path = that.getPath();
+						var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
+						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+						that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
+					});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
 					}).append(rvButton);
@@ -269,7 +282,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
 	var that = this;
 
-	var olabel = $("<div>").append("Previous Feature").addClass("gb-form").css({
+	var olabel = $("<div>").append("Commited Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -294,7 +307,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"padding" : "10px"
 	});
 
-	var clabel = $("<div>").append("Changed Feature").addClass("gb-form").css({
+	var clabel = $("<div>").append("Latest Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -351,17 +364,6 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	$(closeBtn).click(function() {
 		modal.close();
 	});
-	$(okBtn).click(function() {
-		console.log(idx);
-		$(branchSelect).val();
-		console.log($(branchSelect).val());
-		var select = $(that.conflictFeatureTbody).find("tr").eq(idx).find(".gb-repository-instead-branch");
-		$(select).filter("option:selected").text();
-		console.log($(select).find("option").filter(":selected").val());
-		$(select).val($(branchSelect).val());
-		$(select).trigger("change");
-		modal.close();
-	});
 
 	var that = this;
 	var params = {
@@ -396,135 +398,218 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 			if (data.success === "true") {
 				if (data.hasOwnProperty("diffs")) {
 					var diffs = data.diffs
-					for (var i = 0; i < diffs.length; i++) {
-						if (diffs[i]["geometry"] === "true") {
-							var crs = diffs[i]["crs"].substring(diffs[i]["crs"].indexOf(":") + 1);
+					if (Array.isArray(diffs)) {
+						if (diffs.length === 1) {
+							var elem = diffs[0];
 
-							var oldwkt = diffs[i]["oldvalue"];
-							var newwkt = diffs[i]["newvalue"];
-							if (oldwkt !== undefined && oldwkt !== null) {
-								var format = new ol.format.WKT();
-								var geom = format.readGeometry(oldwkt);
-								var feature = new ol.Feature({
-									"geometry" : geom
-								});
+							var oldParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.path,
+								"commitId" : elem.oldObjectId,
+							}
+							console.log(oldParams);
 
-								var style = new ol.style.Style({
-									image : new ol.style.Circle({
-										radius : 5,
-										fill : new ol.style.Fill({
-											color : 'orange'
-										})
-									}),
-									stroke : new ol.style.Stroke({
-										width : 1,
-										color : 'orange'
-									}),
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								});
+							var tranURL = that.getCatFeatureObjectURL();
+							if (tranURL.indexOf("?") !== -1) {
+								tranURL += "&";
+								tranURL += jQuery.param(oldParams);
+							} else {
+								tranURL += "?";
+								tranURL += jQuery.param(oldParams);
+							}
 
-								var vlayer = new ol.layer.Vector({
-									"style" : style,
-									"source" : new ol.source.Vector({
-										"features" : [ feature ]
-									}),
-									"zIndex" : 2
-								});
+							$.ajax({
+								url : tranURL,
+								method : "POST",
+								contentType : "application/json; charset=UTF-8",
+								beforeSend : function() {
+									// $("body").css("cursor", "wait");
+								},
+								complete : function() {
+									// $("body").css("cursor", "default");
+								},
+								success : function(data_old) {
+									console.log(data_old);
+									if (data_old.success === "true" && data_old.error === null) {
+										var attr = data_old.attributes;
+										for (var i = 0; i < attr.length; i++) {
+											if (attr[i].crs !== null
+													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
 
-								var osm = new ol.layer.Tile({
-									"source" : new ol.source.OSM(),
-									"zIndex" : 1
-								});
+												var oldwkt = attr[i].value;
+												if (oldwkt !== undefined && oldwkt !== null) {
+													var format = new ol.format.WKT();
+													var geom = format.readGeometry(oldwkt);
+													var feature = new ol.Feature({
+														"geometry" : geom
+													});
 
-								that.getLeftMap().updateSize();
-								that.getLeftMap().getLayers().clear();
-								that.getLeftMap().addLayer(osm);
-								that.getLeftMap().addLayer(vlayer);
-								// that.getLeftMap().getView().fit(geom);
+													var style = new ol.style.Style({
+														image : new ol.style.Circle({
+															radius : 5,
+															fill : new ol.style.Fill({
+																color : 'orange'
+															})
+														}),
+														stroke : new ol.style.Stroke({
+															width : 1,
+															color : 'orange'
+														}),
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													});
 
-								if (newwkt === undefined || newwkt === null) {
-									that.getRightMap().updateSize();
-									that.getRightMap().getLayers().clear();
-									that.getRightMap().addLayer(osm);
-									that.getRightMap().addLayer(vlayer);
-								}
+													var vlayer = new ol.layer.Vector({
+														"style" : style,
+														"source" : new ol.source.Vector({
+															"features" : [ feature ]
+														}),
+														"zIndex" : 2
+													});
 
-								this.crs = new gb.crs.BaseCRS({
-									"autoOpen" : false,
-									"title" : "Base CRS",
-									"message" : $(".epsg-now"),
-									"maps" : [ that.getLeftMap(), that.getRightMap() ],
-									"epsg" : crs,
-									"callback" : function() {
-										that.getLeftMap().getView().fit(geom);
+													var osm = new ol.layer.Tile({
+														"source" : new ol.source.OSM(),
+														"zIndex" : 1
+													});
+
+													that.getLeftMap().updateSize();
+													that.getLeftMap().getLayers().clear();
+													that.getLeftMap().addLayer(osm);
+													that.getLeftMap().addLayer(vlayer);
+													// that.getLeftMap().getView().fit(geom);
+
+													// this.leftcrs = new
+													// gb.crs.BaseCRS({
+													// "autoOpen" : false,
+													// "title" : "Base CRS",
+													// "message" :
+													// $(".epsg-now"),
+													// "maps" : [
+													// that.getLeftMap() ],
+													// "epsg" : crs,
+													// "callback" : function() {
+													// that.getLeftMap().getView().fit(geom);
+													// }
+													// });
+												}
+											} else {
+												var otd1 = $("<td>").text(attr[i].name);
+												var otd2 = $("<td>").text(attr[i].value);
+												var otr1 = $("<tr>").append(otd1).append(otd2);
+												$(that.getLeftTBody()).append(otr1);
+											}
+										}
 									}
-								});
+								}
+							});
+
+							var newParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.newPath,
+								"commitId" : elem.newObjectId,
+							}
+							console.log(newParams);
+
+							var tranURL2 = that.getCatFeatureObjectURL();
+							if (tranURL2.indexOf("?") !== -1) {
+								tranURL2 += "&";
+								tranURL2 += jQuery.param(newParams);
+							} else {
+								tranURL2 += "?";
+								tranURL2 += jQuery.param(newParams);
 							}
 
-							if (newwkt !== undefined && newwkt !== null) {
-								var format = new ol.format.WKT();
-								var geom = format.readGeometry(newwkt);
-								var feature = new ol.Feature({
-									"geometry" : geom
-								});
+							$.ajax({
+								url : tranURL2,
+								method : "POST",
+								contentType : "application/json; charset=UTF-8",
+								beforeSend : function() {
+									// $("body").css("cursor", "wait");
+								},
+								complete : function() {
+									// $("body").css("cursor", "default");
+								},
+								success : function(data_new) {
+									console.log(data_new);
+									if (data_new.success === "true" && data_new.error === null) {
+										var attr = data_new.attributes;
+										for (var i = 0; i < attr.length; i++) {
+											if (attr[i].crs !== null
+													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
 
-								var style = new ol.style.Style({
-									image : new ol.style.Circle({
-										radius : 5,
-										fill : new ol.style.Fill({
-											color : 'orange'
-										})
-									}),
-									stroke : new ol.style.Stroke({
-										width : 1,
-										color : 'orange'
-									}),
-									fill : new ol.style.Fill({
-										color : 'orange'
-									})
-								});
+												var newwkt = attr[i].value;
+												if (newwkt !== undefined && newwkt !== null) {
+													var format = new ol.format.WKT();
+													var geom = format.readGeometry(newwkt);
+													var feature = new ol.Feature({
+														"geometry" : geom
+													});
 
-								var vlayer = new ol.layer.Vector({
-									"style" : style,
-									"source" : new ol.source.Vector({
-										"features" : [ feature ]
-									}),
-									"zIndex" : 2
-								});
+													var style = new ol.style.Style({
+														image : new ol.style.Circle({
+															radius : 5,
+															fill : new ol.style.Fill({
+																color : 'orange'
+															})
+														}),
+														stroke : new ol.style.Stroke({
+															width : 1,
+															color : 'orange'
+														}),
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													});
 
-								var osm = new ol.layer.Tile({
-									"source" : new ol.source.OSM(),
-									"zIndex" : 1
-								});
+													var vlayer = new ol.layer.Vector({
+														"style" : style,
+														"source" : new ol.source.Vector({
+															"features" : [ feature ]
+														}),
+														"zIndex" : 2
+													});
 
-								that.getRightMap().updateSize();
-								that.getRightMap().getLayers().clear();
-								that.getRightMap().addLayer(osm);
-								that.getRightMap().addLayer(vlayer);
-								// that.getRightMap().getView().fit(geom);
-							}
+													var osm = new ol.layer.Tile({
+														"source" : new ol.source.OSM(),
+														"zIndex" : 1
+													});
 
-						} else {
+													that.getRightMap().updateSize();
+													that.getRightMap().getLayers().clear();
+													that.getRightMap().addLayer(osm);
+													that.getRightMap().addLayer(vlayer);
+													// that.getLeftMap().getView().fit(geom);
 
-							var otd1 = $("<td>").text(diffs[i]["attributename"]);
-							var otd2 = $("<td>").text(diffs[i]["oldvalue"]);
-							var otr1 = $("<tr>").append(otd1).append(otd2);
-							$(that.getLeftTBody()).append(otr1);
-							var ctd1 = $("<td>").text(diffs[i]["attributename"]);
-							var ctd2 = $("<td>").text(diffs[i]["newvalue"] ? diffs[i]["newvalue"] : diffs[i]["oldvalue"]);
-							var ctr1 = $("<tr>").append(ctd1).append(ctd2);
-							$(that.getRightTBody()).append(ctr1);
-
-							if (diffs[i]["changetype"] !== "NO_CHANGE") {
-								$(otr1).css({
-									"background-color" : "#ffc523"
-								});
-								$(ctr1).css({
-									"background-color" : "#ffc523"
-								});
-							}
+													this.crs = new gb.crs.BaseCRS({
+														"autoOpen" : false,
+														"title" : "Base CRS",
+														"message" : $(".epsg-now"),
+														"maps" : [ that.getLeftMap(), that.getRightMap() ],
+														"epsg" : crs,
+														"callback" : function() {
+															that.getRightMap().getView().fit(geom);
+														}
+													});
+												}
+											} else {
+												var ctd1 = $("<td>").text(attr[i].name);
+												var ctd2 = $("<td>").text(attr[i].value);
+												var ctr1 = $("<tr>").append(ctd1).append(ctd2);
+												$(that.getRightTBody()).append(ctr1);
+											}
+										}
+									}
+								}
+							});
 						}
 					}
 				}
@@ -542,7 +627,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
  * 
  * @method gb.versioning.Feature#openRevertModal
  */
-gb.versioning.Feature.prototype.openRevertModal = function() {
+gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc) {
 	var that = this;
 	var msg1 = $("<div>").text("Revert the feature to the point in time when it was committed.").css({
 		"text-align" : "center",
@@ -552,7 +637,12 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
-	var body = $("<div>").append(msg1).append(msg2);
+	var inputMsg = $("<input>").attr({
+		"type" : "text"
+	}).addClass("gb-form");
+	var msg3 = $("<div>").append(inputMsg);
+
+	var body = $("<div>").append(msg1).append(msg2).append(msg3);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
@@ -563,7 +653,7 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 
 	var commitModal = new gb.modal.Base({
 		"title" : "Revert",
-		"width" : 350,
+		"width" : 494,
 		"height" : 200,
 		"autoOpen" : true,
 		"body" : body,
@@ -573,14 +663,8 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
 		commitModal.close();
 	});
 	$(okBtn).click(function() {
-		// mModal.close();
-		// that.endTransaction(server, repo, tid,
-		// commitModal);
-		// that.resolveConflictModal(server, repo, repo,
-		// that.getNowBranch().text,
-		// branch, data.merge.ours, data.merge.theirs,
-		// data.merge.features, commitModal);
-		that.revert();
+		var message = inputMsg.val();
+		that.revert(server, repo, path, oc, nc, message, message, commitModal);
 	});
 };
 
@@ -589,73 +673,107 @@ gb.versioning.Feature.prototype.openRevertModal = function() {
  * 
  * @method gb.versioning.Feature#revert
  */
-gb.versioning.Feature.prototype.revert = function() {
+gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
 	var that = this;
-	var data = {
-		"success" : "false"
-	};
-	if (data.success === "true") {
-		var msg1 = $("<div>").text("Feature reverted successfully.").css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var body = $("<div>").append(msg1);
-		var closeBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("OK");
-		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-		var commitModal = new gb.modal.Base({
-			"title" : "Revert",
-			"width" : 350,
-			"height" : 200,
-			"autoOpen" : true,
-			"body" : body,
-			"footer" : buttonArea
-		});
-		$(closeBtn).click(function() {
-			commitModal.close();
-		});
-	} else {
-		var msg1 = $("<div>").text("Revert failed.").css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var msg2 = $("<div>").text('There are conflicting features. Do you want to resolve?').css({
-			"text-align" : "center",
-			"font-size" : "16px"
-		});
-		var body = $("<div>").append(msg1).append(msg2);
-		var closeBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-		var okBtn = $("<button>").css({
-			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
-		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-
-		var commitModal = new gb.modal.Base({
-			"title" : "Revert",
-			"width" : 350,
-			"height" : 200,
-			"autoOpen" : true,
-			"body" : body,
-			"footer" : buttonArea
-		});
-		$(closeBtn).click(function() {
-			commitModal.close();
-		});
-		$(okBtn).click(function() {
-			// mModal.close();
-			// that.endTransaction(server, repo, tid,
-			// commitModal);
-			// that.resolveConflictModal(server, repo, repo,
-			// that.getNowBranch().text,
-			// branch, data.merge.ours, data.merge.theirs,
-			// data.merge.features, commitModal);
-			that.openConflictDetailModal();
-		});
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"oldCommitId" : oc,
+		"newCommitId" : nc,
+		"commitMessage" : cm,
+		"mergeMessage" : mm
 	}
+	console.log(params);
+
+	var tranURL = that.getFeatureRevertURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.merge.conflicts === null) {
+					var msg1 = $("<div>").text("Feature reverted successfully.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("OK");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Revert",
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+						that.runAfterSaveCallback();
+					});
+					rmodal.close();
+				} else if (Array.isArray(data.merge.conflicts)) {
+					var msg1 = $("<div>").text("Revert failed.").css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text('There are conflicting features. Do you want to resolve?').css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : "Revert",
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								that.endTransaction(server, repo, tid, commitModal);
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+								that.openConflictDetailModal();
+							});
+				}
+			}
+		}
+	});
 };
 
 /**
@@ -1110,12 +1228,30 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 };
 
 /**
- * 피처 비교 요청 URL을 반환한다.
+ * 피처 비교 객체 요청 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureDiffURL
  */
 gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
 	return this.featureDiffURL;
+};
+
+/**
+ * 피처 정보 반환 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getCatFeatureObjectURL
+ */
+gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
+	return this.catFeatureObjectURL;
+};
+
+/**
+ * 피처 되돌리기 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureRevertURL
+ */
+gb.versioning.Feature.prototype.getFeatureRevertURL = function() {
+	return this.featureRevertURL;
 };
 
 /**
@@ -1376,4 +1512,26 @@ gb.versioning.Feature.prototype.getLeftTBody = function() {
  */
 gb.versioning.Feature.prototype.getRightTBody = function() {
 	return this.cattrtbody;
+}
+
+/**
+ * 레이어 저장후 함수를 실행한다.
+ * 
+ * @method gb.versioning.Feature#afterSaveCallback
+ * @return {element}
+ * 
+ */
+gb.versioning.Feature.prototype.runAfterSaveCallback = function() {
+	this.editingTool.refreshTileLayer();
+}
+
+/**
+ * 레이어 저장후 함수를 설정한다.
+ * 
+ * @method gb.versioning.Feature#setEditingTool
+ * @param {Function}
+ *            fnc - 리버트 또는 충돌관리 후 변경된 레이어로 업데이트할 함수 설정
+ */
+gb.versioning.Feature.prototype.setEditingTool = function(tool) {
+	this.editingTool = tool;
 }

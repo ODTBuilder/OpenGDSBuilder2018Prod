@@ -45,9 +45,10 @@ public class GeogigObjectController extends AbstractController {
 		return objectService.catObject(geoserverManager, repoName, objectid);
 	}
 
-	@RequestMapping(value = "/catFeatureObject.do", method = RequestMethod.POST)
+//	@RequestMapping(value = "/catFeatureObject.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/catConflictFeatureObject.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigFeatureAttribute catFeatureObject(HttpServletRequest request,
+	public GeogigFeatureAttribute catConflictFeatureObject(HttpServletRequest request,
 			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
@@ -56,6 +57,19 @@ public class GeogigObjectController extends AbstractController {
 			@RequestParam(value = "featureId", required = false) String featureId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return objectService.catFeatureObject(geoserverManager, repoName, path, commitId, featureId);
+		return objectService.catConflictFeatureObject(geoserverManager, repoName, path, commitId, featureId);
+	}
+
+	@RequestMapping(value = "/catFeatureObject.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigFeatureAttribute catFeatureObject(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "commitId", required = false) String commitId,
+			@RequestParam(value = "path", required = false) String path) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return objectService.catFeatureObject(geoserverManager, repoName, path, commitId);
 	}
 }

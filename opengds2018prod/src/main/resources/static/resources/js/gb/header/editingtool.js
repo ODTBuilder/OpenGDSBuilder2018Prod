@@ -421,8 +421,8 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 			var path = layerName+"/"+feature.getId();
 			console.log(path);
 // vfeature.open();
-
-			if (vfeature !== undefined && branch === "master") {
+			if (vfeature !== undefined) {
+// if (vfeature !== undefined && branch === "master") {
 				if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
 
 					vfeature.setServer(geoserver);
@@ -466,7 +466,8 @@ gb.header.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
 		var path = layerName+"/"+feature.getId();
 		console.log(path);
 
-		if (vfeature !== undefined && branch === "master") {
+		if (vfeature !== undefined) {
+// if (vfeature !== undefined && branch === "master") {
 			vfeature.open();
 			if (geoserver+"/"+repo+"/"+path !== vfeature.getIDString()) {
 				vfeature.setServer(geoserver);

@@ -227,8 +227,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var geoserver = that.getServer();
 						var repo = that.getRepo();
 						var path = that.getPath();
-						var nidx = parseInt($(this).attr("idx"));
-						var oidx = parseInt($(this).parents().eq(1).next().find(".gb-versioning-feature-detail-btn").attr("idx"));
+						// var nidx = parseInt($(this).attr("idx"));
+						var nidx = 0;
+						var oidx = parseInt($(this).attr("idx"));
 						// var oidx =
 						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
@@ -370,7 +371,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"repoName" : repo,
 		"path" : path,
 		"newIndex" : nidx,
-		"oldIndex" : isNaN(oidx) ? 0 : oidx
+		"oldIndex" : oidx
 	}
 
 	var tranURL = this.getFeatureDiffURL();

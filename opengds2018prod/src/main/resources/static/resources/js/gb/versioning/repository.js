@@ -2235,6 +2235,152 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 };
 
 /**
+ * quit 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#quitModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.quitModal = function(server, repo, branch) {
+	var that = this;
+
+	$(this.geoserverNameVal).empty();
+	$(this.geoserverNameVal).text(server);
+
+	$(this.repoNameVal).empty();
+	$(this.repoNameVal).text(repo);
+
+	$(this.cubNameVal).empty();
+	$(this.cubNameVal).text(branch);
+
+	$(this.tabNameVal).empty();
+	var callback = function(data) {
+		if (data.success === "true") {
+			var branches = data.localBranchList;
+			if (Array.isArray(branches)) {
+				for (var i = 0; i < branches.length; i++) {
+					var opt = $("<option>").text(branches[i].name);
+					if (branches[i].name === branch) {
+						$(opt).prop({
+							"disabled" : true
+						});
+					}
+					$(that.tabNameVal).append(opt);
+				}
+			}
+		} else {
+			var title = "Error";
+			var msg = "Couldn't get branch list."
+			that.messageModal(title, msg);
+		}
+	};
+	this.getBranchList(server, repo, callback);
+
+	var serverName = $("<span>").text("GeoServer: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var serverNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.geoserverNameVal);
+	var geoserverArea = $("<div>").append(serverName).append(serverNameValArea).css({
+		"display" : "table-row"
+	});
+	var repoName = $("<span>").text("Repository: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var repoNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.repoNameVal);
+	var repoNameArea = $("<div>").append(repoName).append(repoNameValArea).css({
+		"display" : "table-row"
+	});
+	var cubName = $("<span>").text("Current Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var cubNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.cubNameVal);
+	var cubArea = $("<div>").append(cubName).append(cubNameValArea).css({
+		"display" : "table-row"
+	});
+	var tabName = $("<span>").text("Target Branch: ").css({
+		"display" : "table-cell",
+		"width" : "35%",
+		"text-align" : "right",
+		"vertical-align" : "middle"
+	});
+	var tabNameValArea = $("<span>").css({
+		"display" : "table-cell",
+		"width" : "65%",
+		"vertical-align" : "middle",
+		"padding-left" : "5px"
+	}).append(this.tabNameVal);
+	var tabArea = $("<div>").append(tabName).append(tabNameValArea).css({
+		"display" : "table-row"
+	});
+
+	var body = $("<div>").append(geoserverArea).append(repoNameArea).append(cubArea).append(tabArea).css({
+		"display" : "table",
+		"padding" : "10px",
+		"width" : "100%",
+		"height" : "138px"
+	});
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var mergeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Merge");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(mergeBtn).append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : "Merge",
+		"width" : 370,
+		"height" : 268,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	$(mergeBtn).click(function() {
+		var server = that.getNowServer();
+		var repo = that.getNowRepository();
+		var tab = $(that.tabNameVal).val();
+		var tid = that.getJSTree().getTransactionId(repo.id);
+		if (!tid) {
+			console.log("you want to check out this branch?");
+		} else if (server.text && repo.text && tab && tid) {
+			console.log("its working");
+			that.mergeBranch(server.text, repo.text, tab, tid, modal);
+		}
+	});
+};
+
+/**
  * merge 창을 생성한다.
  * 
  * @method gb.versioning.Repository#mergeModal

@@ -217,6 +217,29 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					} else if (type === "branch") {
 						var states = Object.keys(node.state);
 
+						var quitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Quit").css({
+							"display" : "inline-block"
+						}).click(function() {
+							console.log("quit");
+							console.log(node);
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							// that._data.geogigfunction.repository.checkoutBranch(server,
+							// repo, branch);
+						});
+
+						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
+							"display" : "inline-block"
+						}).click(function() {
+							console.log("checkout");
+							console.log(node);
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
+						});
+
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
 							"display" : "inline-block"
 						}).click(function() {
@@ -276,11 +299,17 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 
 						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
 								|| states.indexOf("unstaged") !== -1) {
+							$(quitBtn).css("display", "inline-block");
+							$(quitBtn).prop("disabled", false);
+							$(checkoutBtn).css("display", "none");
 							$(checkoutBtn).prop("disabled", true);
 							$(pullBtn).prop("disabled", false);
 							$(pushBtn).prop("disabled", false);
 							$(mergeBtn).prop("disabled", false);
 						} else {
+							$(quitBtn).css("display", "none");
+							$(quitBtn).prop("disabled", true);
+							$(checkoutBtn).css("display", "inline-block");
 							$(checkoutBtn).prop("disabled", false);
 							$(pullBtn).prop("disabled", true);
 							$(pushBtn).prop("disabled", true);
@@ -298,8 +327,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							}
 						}
 
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(checkoutBtn).append(pullBtn).append(
-								pushBtn).append(mergeBtn);
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(quitBtn).append(checkoutBtn).append(
+								pullBtn).append(pushBtn).append(mergeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "layer") {
@@ -319,7 +348,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var publishBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Publish").css({
 							"display" : "inline-block"
 						});
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(historyBtn).append(publishBtn);
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(publishBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					}

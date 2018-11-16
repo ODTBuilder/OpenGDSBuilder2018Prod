@@ -47,9 +47,9 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		String oldTreeish = "HEAD";
 		String newTreeish = "HEAD";
 
-		if (newIndex > 0) {
-			newTreeish += "~" + newIndex;
-		}
+//		if (newIndex > 0) {
+//			newTreeish += "~" + newIndex;
+//		}
 		oldTreeish += "~" + oldIndex;
 
 		DiffRepository diffRepos = new DiffRepository();
@@ -116,18 +116,18 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String dateStr = dateformat.format(date);
 
-				ChangeType changeType = ChangeType.ADDS;
+				ChangeType changeType = ChangeType.ADDED;
 				int addedCount = Integer.parseInt(newCommit.getAdds());
 				if (addedCount > 0) {
-					changeType = ChangeType.ADDS;
+					changeType = ChangeType.ADDED;
 				}
 				int removedCount = Integer.parseInt(newCommit.getRemoves());
 				if (removedCount > 0) {
-					changeType = ChangeType.REMOVES;
+					changeType = ChangeType.REMOVED;
 				}
 				int modifiedCount = Integer.parseInt(newCommit.getModifies());
 				if (modifiedCount > 0) {
-					changeType = ChangeType.MODIFIES;
+					changeType = ChangeType.MODIFIED;
 				}
 				simpleCommit.setChangeType(changeType);
 				simpleCommit.setDate(dateStr);

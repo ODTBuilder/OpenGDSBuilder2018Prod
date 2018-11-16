@@ -49,7 +49,8 @@
  * @param {String}
  *            obj.url.featureBlame - 피처 비교를 요청할 컨트롤러 주소
  * @param {String}
- *            obj.url.catConflictFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할 컨트롤러 주소
+ *            obj.url.catConflictFeatureObject - 레파지토리별 오브젝트 아이디를 통한 피처 비교를 요청할
+ *            컨트롤러 주소
  * 
  * @version 0.01
  * @author SOYIJUN
@@ -87,6 +88,7 @@ gb.versioning.Repository = function(obj) {
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
+	this.nowLayer = undefined;
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
@@ -878,7 +880,7 @@ gb.versioning.Repository.prototype.setNowRemoteRepository = function(repo) {
  * 현재 보고있는 브랜치의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowBranch
- * @return {String} 레파지토리 이름
+ * @return {Object} 레파지토리 이름
  */
 gb.versioning.Repository.prototype.getNowBranch = function() {
 	return this.nowBranch;
@@ -893,6 +895,27 @@ gb.versioning.Repository.prototype.getNowBranch = function() {
  */
 gb.versioning.Repository.prototype.setNowBranch = function(branch) {
 	this.nowBranch = branch;
+};
+
+/**
+ * 현재 보고있는 레이어의 이름을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getNowLayer
+ * @return {Object} 레이어 노드
+ */
+gb.versioning.Repository.prototype.getNowLayer = function() {
+	return this.nowLayer;
+};
+
+/**
+ * 현재 보고있는 레이어의 이름을 설정한다.
+ * 
+ * @method gb.versioning.Repository#setNowLayer
+ * @param {Object}
+ *            레이어 노드
+ */
+gb.versioning.Repository.prototype.setNowLayer = function(layer) {
+	this.nowLayer = layer;
 };
 
 /**

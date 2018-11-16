@@ -7,6 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.gitrnd.gdsbuilder.geoserver.data.DTGSGeogigDatastoreEncoder;
 import com.gitrnd.gdsbuilder.geoserver.net.DTHTTPUtils;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
@@ -211,8 +212,18 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		return configuredResult;
 	}
 
-	public void updateDatasotre(String workspace, String dsName) {
-		 String url = "/rest/workspaces/" + workspace + "/datastores/" + dsName + ".xml";
-	}
+	public boolean updateDatasotre(String workspace, String dsName, DTGSGeogigDatastoreEncoder dsEncoder) {
 
+		String url = "/rest/workspaces/" + workspace + "/datastores/" + dsName + ".xml";
+		String dsXml = dsEncoder.toString();
+
+		String updateResult = HTTPUtils.putXml(url, dsXml, "admin", "geoserver");
+		boolean updated = updateResult != null;
+		if (!updated) {
+			LOGGER.warn("Update 요청 실패");
+		} else {
+			LOGGER.warn("Update 요청 실패");
+		}
+		return updated;
+	}
 }

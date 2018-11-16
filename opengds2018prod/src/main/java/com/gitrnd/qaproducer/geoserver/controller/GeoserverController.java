@@ -532,15 +532,15 @@ public class GeoserverController extends AbstractController {
 		geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager, workspace, datastore, request);
 	}
 
-	@RequestMapping(value = "/updateGsDataStore.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateGeogigGsStore.do", method = RequestMethod.POST)
 	@ResponseBody
-	public void updateGeoserverDataStore(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public boolean updateGeogigGsStore(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "workspace", required = false) String workspace,
-			@RequestParam(value = "datastore", required = false) String datastore) throws JAXBException {
+			@RequestParam(value = "datastore", required = false) String datastore,
+			@RequestParam(value = "branch", required = false) String branch) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		geoserverService.updateGeoserverDataStore(geoserverManager, workspace, datastore);
-
+		return geoserverService.updateGeogigGsStore(geoserverManager, workspace, datastore, branch);
 	}
 }

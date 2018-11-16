@@ -281,7 +281,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
 	var that = this;
 
-	var olabel = $("<div>").append("Previous Feature").addClass("gb-form").css({
+	var olabel = $("<div>").append("Commited Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -306,7 +306,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"padding" : "10px"
 	});
 
-	var clabel = $("<div>").append("Changed Feature").addClass("gb-form").css({
+	var clabel = $("<div>").append("Latest Feature").addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -482,16 +482,19 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 													that.getLeftMap().addLayer(vlayer);
 													// that.getLeftMap().getView().fit(geom);
 
-//													this.leftcrs = new gb.crs.BaseCRS({
-//														"autoOpen" : false,
-//														"title" : "Base CRS",
-//														"message" : $(".epsg-now"),
-//														"maps" : [ that.getLeftMap() ],
-//														"epsg" : crs,
-//														"callback" : function() {
-//															that.getLeftMap().getView().fit(geom);
-//														}
-//													});
+													// this.leftcrs = new
+													// gb.crs.BaseCRS({
+													// "autoOpen" : false,
+													// "title" : "Base CRS",
+													// "message" :
+													// $(".epsg-now"),
+													// "maps" : [
+													// that.getLeftMap() ],
+													// "epsg" : crs,
+													// "callback" : function() {
+													// that.getLeftMap().getView().fit(geom);
+													// }
+													// });
 												}
 											} else {
 												var otd1 = $("<td>").text(attr[i].name);

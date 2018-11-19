@@ -25,6 +25,7 @@ public class QAMobileService {
 	 */
 	public JSONObject validate(JSONObject param) {
 
+		param.put("type", "mobile");
 		return (JSONObject) producer.produceMobileMsg(param.toString());
 	}
 }

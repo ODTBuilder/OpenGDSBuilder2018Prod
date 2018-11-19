@@ -12,7 +12,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -72,16 +71,12 @@ public class CheckoutBranch {
 		ResponseEntity<GeogigCheckout> responseEntity = null;
 		try {
 			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigCheckout.class);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
+		} catch (HttpClientErrorException e) {
+			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+		} catch (HttpServerErrorException e) {
+			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
 		}
-		if (responseEntity != null) {
-			HttpStatus statusCode = responseEntity.getStatusCode();
-			logger.info(responseEntity.getStatusCodeValue() + ":" + statusCode.getReasonPhrase());
-			return responseEntity.getBody();
-		} else {
-			return null;
-		}
+		return responseEntity.getBody();
 	}
 
 	public GeogigCheckout executeCommand(String baseURL, String username, String password, String repository,

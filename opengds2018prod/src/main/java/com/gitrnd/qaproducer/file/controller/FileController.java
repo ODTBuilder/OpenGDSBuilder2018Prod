@@ -216,7 +216,7 @@ public class FileController extends AbstractController {
 				throw new Exception("파일포맷을 설정해주세요.");
 			} else {
 				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
-				requestService.requestQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid, prst.getPid());
+				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid, prst.getPid());
 			}
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");

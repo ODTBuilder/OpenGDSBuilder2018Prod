@@ -217,7 +217,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					} else if (type === "branch") {
 						var states = Object.keys(node.state);
 
-						var quitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Quit").css({
+						var quitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("End").css({
 							"display" : "inline-block"
 						}).click(function() {
 							console.log("quit");
@@ -225,8 +225,10 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
 							var branch = node;
-							// that._data.geogigfunction.repository.checkoutBranch(server,
-							// repo, branch);
+							that._data.geogigfunction.repository.setNowServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							var tid = that.getTransactionId(repo.id);
+							that._data.geogigfunction.repository.quitModal(server, repo, branch, tid);
 						});
 
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
@@ -236,20 +238,12 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							console.log(node);
 							var server = that.get_node(node.parents[1]);
 							var repo = that.get_node(node.parents[0]);
+							that._data.geogigfunction.repository.setNowServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
 							var branch = node;
 							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
 						});
 
-						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Checkout").css({
-							"display" : "inline-block"
-						}).click(function() {
-							console.log("checkout");
-							console.log(node);
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							that._data.geogigfunction.repository.checkoutBranch(server, repo, branch);
-						});
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Add").css({
 							"display" : "inline-block"
 						});

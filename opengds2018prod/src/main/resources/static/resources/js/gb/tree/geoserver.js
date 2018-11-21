@@ -1381,6 +1381,7 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
 		success : function(data) {
 			console.log(data);
 			modal.close();
+			that.refreshList();
 			if (data === 200) {
 				that.refreshList();
 			} else if (data === 500) {

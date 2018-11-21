@@ -212,17 +212,18 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		return configuredResult;
 	}
 
-	public boolean updateDatasotre(String workspace, String dsName, DTGSGeogigDatastoreEncoder dsEncoder) {
+	public boolean updateDatastore(String workspace, String datastore, DTGSGeogigDatastoreEncoder dsEncoder) {
 
-		String url = "/rest/workspaces/" + workspace + "/datastores/" + dsName + ".xml";
 		String dsXml = dsEncoder.toString();
+		StringBuilder putUrl = new StringBuilder(this.restURL).append("/rest/workspaces/").append(workspace)
+				.append("/datastores/").append(datastore).append(".xml");
 
-		String updateResult = HTTPUtils.putXml(url, dsXml, "admin", "geoserver");
+		String updateResult = HTTPUtils.putXml(putUrl.toString(), dsXml, "admin", "geoserver");
 		boolean updated = updateResult != null;
 		if (!updated) {
 			LOGGER.warn("Update 요청 실패");
 		} else {
-			LOGGER.warn("Update 요청 실패");
+			LOGGER.warn("Update 요청 성공");
 		}
 		return updated;
 	}

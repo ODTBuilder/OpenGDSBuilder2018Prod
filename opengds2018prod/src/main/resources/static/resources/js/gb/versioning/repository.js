@@ -84,6 +84,9 @@ gb.versioning.Repository = function(obj) {
 	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
 	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
 	this.catConflictFeatureObjectURL = url.catConflictFeatureObject ? url.catConflictFeatureObject : undefined;
+	this.dataStoreListURL = url.dataStoreList ? url.dataStoreList : undefined;
+	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
+	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
 
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
@@ -931,6 +934,36 @@ gb.versioning.Repository.prototype.getFeatureBlameURL = function() {
  */
 gb.versioning.Repository.prototype.getCatConflictFeatureObjectURL = function() {
 	return this.catConflictFeatureObjectURL;
+};
+
+/**
+ * dataStoreList 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getDataStoreListURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getDataStoreListURL = function() {
+	return this.dataStoreListURL;
+};
+
+/**
+ * listGeoserverLayer 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getListGeoserverLayerURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getListGeoserverLayerURL = function() {
+	return this.listGeoserverLayerURL;
+};
+
+/**
+ * publishGeogigLayer 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getPublishGeogigLayerURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getPublishGeogigLayerURL = function() {
+	return this.publishGeogigLayerURL;
 };
 
 /**
@@ -3928,3 +3961,87 @@ gb.versioning.Repository.prototype.setFetchRepository = function(remote) {
 gb.versioning.Repository.prototype.getFetchRepository = function() {
 	return this.fetchRemote;
 }
+
+/**
+ * 레이어 발행 창을 연다.
+ * 
+ * @method gb.versioning.Repository#publishModal
+ */
+gb.versioning.Repository.prototype.publishModal = function(server, repo, branch) {
+	var that = this;
+
+	var wsList;
+
+	var wsLabel = $("<div>").text("Workspace");
+	var wsSelect = $("<select>").addClass("gb-form");
+	var dsLabel = $("<div>").text("Datastore");
+	var dsSelect = $("<select>").addClass("gb-form");
+	var left = $("<div>").css({
+		"width" : "50%"
+	}).append(wsLabel).append(wsSelect).append(dsLabel).append(dsSelect);
+	var right = $("<div>").css({
+		"width" : "50%"
+	});
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Publish");
+
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var body = $("<div>").append(left).append(right);
+
+	$(closeBtn).click(function() {
+		publishModal.close();
+	});
+	$(okBtn).click(function() {
+		console.log("create repo");
+	});
+
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"branchName" : branch
+	};
+
+	var checkURL = this.getDataStoreListURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			wsList = data;
+			var publishModal = new gb.modal.Base({
+				"title" : "Publish",
+				"width" : 540,
+				"height" : 425,
+				"autoOpen" : true,
+				"body" : body,
+				"footer" : modalFooter
+			});
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
+		}
+	});
+};

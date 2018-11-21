@@ -637,7 +637,7 @@ if (!gb.validation)
 						contentType : "application/json; charset=UTF-8",
 						dataType : "json",
 						cache : false,
-						data : params,
+						data : JSON.stringify(params),
 						traditional: true
 					});
 					

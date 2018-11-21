@@ -47,7 +47,9 @@ gb.tree.GeoServer = function(obj) {
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
+	this.switchGeoGigBranchURL = url.switchGeoGigBranch ? url.switchGeoGigBranch : undefined;
 	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
+
 	this.height = options.height || undefined;
 	this.downloadGeoserver = url.downloadGeoserver || undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
@@ -114,8 +116,8 @@ gb.tree.GeoServer = function(obj) {
 	} else if ($(options.append).is("div")) {
 		$(options.append).append(this.panel);
 	}
-	
-	if(!this.height){
+
+	if (!this.height) {
 		$(document).ready(function() {
 			var parentHeight = $(that.panel).parent().innerHeight();
 			var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
@@ -272,6 +274,11 @@ gb.tree.GeoServer = function(obj) {
 											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 											console.log(data);
 											console.log(nowBranch);
+											var ds = obj;
+											var ws = inst.get_node(ds.parents[0]);
+											var server = inst.get_node(ds.parents[1]);
+											var targetBranch = data.item.label;
+											console.log(ds);
 											if (nowBranch === data.item.label) {
 
 											} else {
@@ -293,7 +300,7 @@ gb.tree.GeoServer = function(obj) {
 												});
 												var closeBtn = $("<button>").css({
 													"float" : "right"
-												}).addClass("gb-button").addClass("gb-button-default").text("Close");
+												}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 												var okBtn = $("<button>").css({
 													"float" : "right"
 												}).addClass("gb-button").addClass("gb-button-primary").text("Switch");
@@ -315,6 +322,7 @@ gb.tree.GeoServer = function(obj) {
 												});
 												$(okBtn).click(function() {
 													console.log("switch");
+													that.switchBranch(server.text, ws.text, ds.text, targetBranch, switchModal);
 												});
 											}
 										}
@@ -1262,6 +1270,22 @@ gb.tree.GeoServer.prototype.setGetTreeURL = function(url) {
 	this.getTreeURL = url;
 };
 /**
+ * 데이터스토어 타겟 브랜치 전환 요청을 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getSwitchGeoGigBranchURL
+ */
+gb.tree.GeoServer.prototype.getSwitchGeoGigBranchURL = function() {
+	return this.switchGeoGigBranchURL;
+};
+/**
+ * 데이터스토어 타겟 브랜치 전환 요청을 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setSwitchGeoGigBranchURL
+ */
+gb.tree.GeoServer.prototype.setSwitchGeoGigBranchURL = function(url) {
+	this.switchGeoGigBranchURL = url;
+};
+/**
  * SHP 파일 업로드 객체를 설정한다.
  * 
  * @method gb.tree.GeoServer#setUploadSHP
@@ -1326,28 +1350,50 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.tree.GeoServer.prototype.switchBranch = function(title, msg) {
+gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch, modal) {
 	var that = this;
-	var msg1 = $("<div>").text(msg).css({
-		"text-align" : "center",
-		"font-size" : "16px",
-		"padding-top" : "26px"
-	});
-	var body = $("<div>").append(msg1);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+	console.log("switch branch");
+	var params = {
+		"serverName" : server,
+		"workspace" : work,
+		"datastore" : store,
+		"branch" : branch
+	};
 
-	var modal = new gb.modal.Base({
-		"title" : title,
-		"width" : 310,
-		"height" : 200,
-		"autoOpen" : true,
-		"body" : body,
-		"footer" : buttonArea
-	});
-	$(okBtn).click(function() {
-		modal.close();
+	var checkURL = this.getSwitchGeoGigBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			modal.close();
+			if (data === 200) {
+				that.refreshList();
+			} else if (data === 500) {
+				that.messageModal("Error", "Request failed.");
+			} else if (data === 600) {
+				that.messageModal("Error", "Session expired.");
+			} else if (data === 603) {
+				that.messageModal("Error", "Geoserver not found.");
+			} else if (data === 605) {
+				that.messageModal("Error", "Geoserver info not found.");
+			} else if (data === 606) {
+				that.messageModal("Error", "Some layers have not been deleted.");
+			}
+		}
 	});
 };

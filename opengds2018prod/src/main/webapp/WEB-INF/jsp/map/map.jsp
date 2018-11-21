@@ -283,7 +283,8 @@ html {
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : urlList.getMapWMS + urlList.token,
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
-				"getWFSFeature" : urlList.getWFSFeature + urlList.token
+				"getWFSFeature" : urlList.getWFSFeature + urlList.token,
+				"switchGeoGigBranch" : "geoserver/updateGeogigGsStore.do?${_csrf.parameterName}=${_csrf.token}",
 			}
 		});
 
@@ -328,8 +329,7 @@ html {
 				"float" : "right"
 			}).addClass("gb-button").addClass("gb-button-primary").text("Save");
 
-			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
-					.append(closeBtn);
+			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 			var modalFooter = $("<div>").append(buttonArea);
 
 			var gBody = $("<div>").append(well).css({
@@ -344,11 +344,11 @@ html {
 				"body" : gBody,
 				"footer" : modalFooter
 			});
-			
+
 			$(closeBtn).click(function() {
 				openSaveModal.close();
 			});
-			
+
 			$(okBtn).click(function() {
 				frecord.sendWFSTTransaction(epan);
 				openSaveModal.close();

@@ -1381,19 +1381,17 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
 		success : function(data) {
 			console.log(data);
 			modal.close();
-			if (data === 200) {
+			if (data === true) {
 				that.refreshList();
-			} else if (data === 500) {
+			} else if (data === false) {
 				that.messageModal("Error", "Request failed.");
-			} else if (data === 600) {
-				that.messageModal("Error", "Session expired.");
-			} else if (data === 603) {
-				that.messageModal("Error", "Geoserver not found.");
-			} else if (data === 605) {
-				that.messageModal("Error", "Geoserver info not found.");
-			} else if (data === 606) {
-				that.messageModal("Error", "Some layers have not been deleted.");
 			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
 		}
 	});
 };

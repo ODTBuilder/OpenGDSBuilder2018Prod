@@ -289,7 +289,18 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowBranch(branch);
 							that._data.geogigfunction.repository.mergeModal(server.text, repo.text, branch.text);
 						});
-						var parent = that.get_node(node.parent);
+
+						var publishBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Publish").css({
+							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[1]);
+							var repo = that.get_node(node.parents[0]);
+							var branch = node;
+							that._data.geogigfunction.repository.setNowServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.setNowBranch(branch);
+							that._data.geogigfunction.repository.publishModal(server.text, repo.text, branch.text);
+						});
 
 						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
 								|| states.indexOf("unstaged") !== -1) {
@@ -310,6 +321,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							$(mergeBtn).prop("disabled", true);
 						}
 
+						var parent = that.get_node(node.parent);
 						if (parent.children.length === 1 && parent.children[0] === node.id) {
 							$(mergeBtn).prop("disabled", true);
 						} else if (parent.children.length > 1) {
@@ -322,7 +334,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						}
 
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(quitBtn).append(checkoutBtn).append(
-								pullBtn).append(pushBtn).append(mergeBtn);
+								pullBtn).append(pushBtn).append(mergeBtn).append(publishBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "layer") {
@@ -344,7 +356,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(publishBtn);
 						var obj = this.get_node(node, true);
-						$(obj[0].childNodes[1]).after(btnArea);
+						// $(obj[0].childNodes[1]).after(btnArea);
 					}
 				}, this)).on('load_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");

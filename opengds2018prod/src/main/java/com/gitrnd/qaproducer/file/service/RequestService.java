@@ -38,7 +38,7 @@ public class RequestService {
 	@Autowired
 	private QACategoryService qaCatService;
 
-	public void requestQAList(List<FileStatus> files, int pidx) {
+	public void requestFileQAList(List<FileStatus> files, int pidx) {
 		for (int k = 0; k < files.size(); k++) {
 			JSONObject json = new JSONObject();
 			json.put("file", files.get(k).getFid());
@@ -47,7 +47,7 @@ public class RequestService {
 		}
 	}
 
-	public void requestQAList(List<FileStatus> files, int cid, String fileformat, String crs, String qaVer,
+	public void requestFileQAList(List<FileStatus> files, int cid, String fileformat, String crs, String qaVer,
 			String qaType, String bPrid, int prid) {
 		for (int k = 0; k < files.size(); k++) {
 			// file parsing
@@ -90,11 +90,13 @@ public class RequestService {
 			json.put("fileformat", fileformat);
 			json.put("crs", "EPSG:" + crs);
 
+			json.put("type", "file");
+
 			producer.produceMsg(json.toString());
 		}
 	}
 
-	public void requestQA(String uid, String file, Preset preset) {
+	public void requestFileQA(String uid, String file, Preset preset) {
 		JSONObject json = new JSONObject();
 		// JSONObject layerDef = new JSONObject(preset.getLayerDef());
 		JSONObject optionDef = new JSONObject(preset.getOptionDef());

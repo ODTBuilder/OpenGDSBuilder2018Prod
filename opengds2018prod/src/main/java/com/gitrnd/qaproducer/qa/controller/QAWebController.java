@@ -3,9 +3,11 @@
  */
 package com.gitrnd.qaproducer.qa.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.exception.ValidationAuthException;
 import com.gitrnd.qaproducer.common.security.LoginUser;
+import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.service.QAWebService;
@@ -30,7 +33,7 @@ import com.gitrnd.qaproducer.qa.service.QAWebService;
  */
 @Controller
 @RequestMapping("/web")
-public class QAWebController {
+public class QAWebController extends AbstractController {
 
 	@Autowired
 	@Qualifier("webService")
@@ -41,11 +44,13 @@ public class QAWebController {
 
 	@RequestMapping(value = "/validate.do", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean validate(MultipartHttpServletRequest request, HttpServletResponse response,
-			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("cidx") String cidx,
-			@RequestParam("crs") String crs, @RequestParam("qaver") String qaVer, @RequestParam("qatype") String qaType,
-			@RequestParam("category") String category, @RequestParam("prid") String prid,
+	public boolean validate(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("crs") String crs,
+			@RequestParam("qaVer") String qaVer, @RequestParam("qaType") String qaType,
+			@RequestParam("category") String cat, @RequestParam("prid") String prid,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+
+		boolean success;
 
 		Preset prst = null;
 		if (prid.equals("nonset")) {
@@ -137,9 +142,30 @@ public class QAWebController {
 		if (isAuthorized) {
 			// 옵션또는 파일이 제대로 넘어오지 않았을때 강제로 예외발생
 			if (qaVer == null || qaType == null || prid == null || prst == null) {
+				success = false;
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
 			} else {
-				webService.validate(prst.getCat(), crs, qaVer, qaType, prst.getPid(), loginUser.getIdx());
+
+//				if (qaVer == null || qaType == null || prid == null || prst == null) {
+//					throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
+//				} else {
+//					JSONParser jsonP = new JSONParser();
+//					JSONObject param = (JSONObject) jsonP.parse(
+//							"{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}");
+//					JSONObject layers = (JSONObject) param.get("layers");
+//
+//					webService.validate("http://175.116.181.32:9999/geoserver", layers, prst.getCat(), crs, qaVer, qaType,
+//							prid, prst.getPid(), loginUser.getIdx());
+//				}
+
+				JSONObject serverObj = (JSONObject) geoserver.get("geoserver");
+				String serverName = (String) serverObj.get("servername");
+				JSONObject layers = (JSONObject) serverObj.get("layers");
+				DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser,
+						serverName);
+				String serverURL = geoserverManager.getRestURL();
+				success = webService.validate(serverURL, layers, prst.getCat(), crs, qaVer, qaType, prid, prst.getPid(),
+						loginUser.getIdx());
 			}
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");

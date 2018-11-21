@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
+import com.gitrnd.qaproducer.qa.service.QAWebService;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
 
 @Controller
@@ -55,7 +58,10 @@ public class FileController extends AbstractController {
 
 	@Autowired
 	ValidationResultService validationResultService;
-	
+
+	@Autowired
+	QAWebService webService;
+
 	@RequestMapping(value = "/deleteList.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteList(HttpServletRequest request, @RequestParam(value = "list", required = true) int[] list,
@@ -108,6 +114,11 @@ public class FileController extends AbstractController {
 		} else {
 			LOGGER.info("ERROR!: fid: {} file delete fail!", request.getParameter("fid"));
 		}
+	}
+
+	@RequestMapping(value = "/uploadGsError.do", method = RequestMethod.POST)
+	public void uploadGsError(MultipartHttpServletRequest request, HttpServletResponse response) throws Exception {
+		uploadService.SaveErrorFile(request);
 	}
 
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
@@ -216,7 +227,8 @@ public class FileController extends AbstractController {
 				throw new Exception("파일포맷을 설정해주세요.");
 			} else {
 				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
-				requestService.requestQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid, prst.getPid());
+				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid,
+						prst.getPid());
 			}
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");

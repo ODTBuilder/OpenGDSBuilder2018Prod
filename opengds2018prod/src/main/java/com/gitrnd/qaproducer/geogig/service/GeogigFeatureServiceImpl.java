@@ -47,10 +47,9 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		String oldTreeish = "HEAD";
 		String newTreeish = "HEAD";
 
-//		if (newIndex > 0) {
-//			newTreeish += "~" + newIndex;
-//		}
-		oldTreeish += "~" + oldIndex;
+		if (oldIndex != 0) {
+			oldTreeish += "~" + oldIndex;
+		}
 
 		DiffRepository diffRepos = new DiffRepository();
 		GeogigDiff geogigDiff = null;

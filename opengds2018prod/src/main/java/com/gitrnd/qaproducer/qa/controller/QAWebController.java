@@ -45,9 +45,9 @@ public class QAWebController extends AbstractController {
 	@RequestMapping(value = "/validate.do", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean validate(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("cidx") String cidx,
-			@RequestParam("crs") String crs, @RequestParam("qaver") String qaVer, @RequestParam("qatype") String qaType,
-			@RequestParam("category") String category, @RequestParam("prid") String prid,
+			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("crs") String crs,
+			@RequestParam("qaVer") String qaVer, @RequestParam("qaType") String qaType,
+			@RequestParam("category") String cat, @RequestParam("prid") String prid,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
 
 		boolean success;

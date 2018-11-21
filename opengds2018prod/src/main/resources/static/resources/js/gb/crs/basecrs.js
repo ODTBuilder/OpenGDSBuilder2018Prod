@@ -167,59 +167,73 @@ gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
 gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 	console.log(code);
 	var that = this;
-	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
-		return response.json();
-	}).then(function(json) {
-		if (json.number_result !== 1) {
-			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
-			// +
-			// that.getEPSGCode());
-			that.setValidEPSG(false);
-			that.setProjection(undefined, undefined, undefined, undefined);
-			console.error("no crs");
-			// that.close();
-			return;
-		} else if (json.number_result < 1) {
-			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
-			// +
-			// that.getEPSGCode());
-			that.setValidEPSG(false);
-			that.setProjection(undefined, undefined, undefined, undefined);
-			console.error("no crs");
-			// that.close();
-			return;
-		}
-		var results = json['results'];
-		if (results && results.length > 0) {
-			for (var i = 0, ii = results.length; i < ii; i++) {
-				var result = results[i];
-				if (result) {
-					var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
-					if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
 
-						if (code === codes) {
-							that.setEPSGCode(code);
-							that.setValidEPSG(true);
-							that.setProjection(code, name, proj4def, bbox);
-							if (apply) {
-								that.applyProjection(code, name, proj4def, bbox, callback);
+	$.ajax({
+		url : 'https://epsg.io/?format=json&q=' + code,
+		dataType : "jsonp",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			var json = data;
+			if (json.number_result !== 1) {
+				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
+				// EPSG:"
+				// +
+				// that.getEPSGCode());
+				that.setValidEPSG(false);
+				that.setProjection(undefined, undefined, undefined, undefined);
+				console.error("no crs");
+				// that.close();
+				return;
+			} else if (json.number_result < 1) {
+				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
+				// EPSG:"
+				// +
+				// that.getEPSGCode());
+				that.setValidEPSG(false);
+				that.setProjection(undefined, undefined, undefined, undefined);
+				console.error("no crs");
+				// that.close();
+				return;
+			}
+			var results = json['results'];
+			if (results && results.length > 0) {
+				for (var i = 0, ii = results.length; i < ii; i++) {
+					var result = results[i];
+					if (result) {
+						var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
+						if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
+
+							if (code === codes) {
+								that.setEPSGCode(code);
+								that.setValidEPSG(true);
+								that.setProjection(code, name, proj4def, bbox);
+								if (apply) {
+									that.applyProjection(code, name, proj4def, bbox, callback);
+								}
 							}
-						}
 
-						return;
-					} else {
-						$(that.getMessage()).text("Error: Not support EPSG Code. EPSG:" + that.getEPSGCode());
-						console.error("no crs");
-						// that.close();
-						that.setValidEPSG(false);
-						that.setProjection(undefined, undefined, undefined, undefined);
-						return;
+							return;
+						} else {
+							console.error("no crs");
+							that.setValidEPSG(false);
+							that.setProjection(undefined, undefined, undefined, undefined);
+							return;
+						}
 					}
 				}
 			}
+			return;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			that.applyProjection(null, null, null, null, callback);
 		}
-		// that.close();
-		return;
 	});
 };
 
@@ -238,52 +252,40 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
  */
 gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, callback) {
 	var that = this;
+	var view;
 	if (code === null || name === null || proj4def === null || bbox === null) {
-		if (Array.isArray(this.getMaps())) {
-			var maps = this.getMaps();
-			for (var i = 0; i < maps.length; i++) {
-				if (maps[i] instanceof ol.Map) {
-					maps[i].setView(new ol.View({
-						projection : 'EPSG:3857',
-						center : [ 0, 0 ],
-						zoom : 1
-					}));
-				}
-			}
-			return;
-		} else if (this.getMaps() instanceof ol.Map) {
-			this.getMaps().setView(new ol.View({
-				projection : 'EPSG:3857',
-				center : [ 0, 0 ],
-				zoom : 1
-			}));
-			return;
-		}
-	}
-	this.setEPSGCode(code);
-	var newProjCode = 'EPSG:' + code;
-	$(this.getMessage()).text(newProjCode);
-	proj4.defs(newProjCode, proj4def);
-	var newProj = ol.proj.get(newProjCode);
-	var fromLonLat = ol.proj.getTransform('EPSG:4326', newProj);
+		$(that.getMessage()).text("EPSG:3857 [Error: Applying CRS Failed.]");
+		view = new ol.View({
+			projection : 'EPSG:3857',
+			center : [ 0, 0 ],
+			zoom : 1
+		});
+	} else {
+		this.setEPSGCode(code);
+		var newProjCode = 'EPSG:' + code;
+		$(this.getMessage()).text(newProjCode);
+		proj4.defs(newProjCode, proj4def);
+		var newProj = ol.proj.get(newProjCode);
+		var fromLonLat = ol.proj.getTransform('EPSG:4326', newProj);
 
-	// very approximate calculation of projection extent
-	var extent = ol.extent.applyTransform([ bbox[1], bbox[2], bbox[3], bbox[0] ], fromLonLat);
-	newProj.setExtent(extent);
-	var newView = new ol.View({
-		projection : newProj
-	});
-	if (Array.isArray(this.getMaps())) {
-		var maps = this.getMaps();
+		// very approximate calculation of projection extent
+		var extent = ol.extent.applyTransform([ bbox[1], bbox[2], bbox[3], bbox[0] ], fromLonLat);
+		newProj.setExtent(extent);
+		view = new ol.View({
+			projection : newProj
+		});
+	}
+	var maps = this.getMaps();
+	if (Array.isArray(maps)) {
 		for (var i = 0; i < maps.length; i++) {
 			if (maps[i] instanceof ol.Map) {
-				maps[i].setView(newView);
+				maps[i].setView(view);
 			}
 		}
-	} else if (this.getMaps() instanceof ol.Map) {
-		this.getMaps().setView(newView);
+	} else if (maps instanceof ol.Map) {
+		this.getMaps().setView(view);
 	}
-	newView.fit(extent);
+	view.fit(extent);
 	console.log(this.getEPSGCode());
 	if (typeof callback === "function") {
 		callback();

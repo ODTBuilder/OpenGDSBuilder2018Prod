@@ -1139,7 +1139,7 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 				$(this.radInput).val(parseFloat(1));
 			}
 			
-			if (this.geom === "Polygon" || this.geom === "MultiPolygon") {
+			if (this.geom === "Point" || this.geom === "MultiPoint") {
 				$(this.radArea).show();
 			} else {
 				$(this.radArea).hide();

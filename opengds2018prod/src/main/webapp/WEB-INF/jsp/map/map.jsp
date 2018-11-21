@@ -174,7 +174,8 @@ html {
 			getMapWMS : "geoserver/geoserverWMSGetMap.ajax",
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
-			getLayerTile : "geoserver/geoserverWMSLayerLoad.do"
+			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
+			requestValidate : "web/validate.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
@@ -204,6 +205,7 @@ html {
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"cancelTransaction" : "geogig/cancelTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",
@@ -216,7 +218,10 @@ html {
 				"createBranch" : "geogig/createBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"resolveConflict" : "geogig/resolveConflict.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureBlame" : "geogig/featureBlame.do?${_csrf.parameterName}=${_csrf.token}",
-				"catConflictFeatureObject" : "geogig/catConflictFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
+				"catConflictFeatureObject" : "geogig/catConflictFeatureObject.do?${_csrf.parameterName}=${_csrf.token}",
+				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
+				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 
@@ -240,7 +245,11 @@ html {
 		var validation = new gb.validation.Validation({
 			"token" : urlList.token,
 			"autoOpen" : false,
-			"title" : "Validation"
+			"title" : "Validation",
+			"url": {
+				"token": urlList.token,
+				"requestValidate": urlList.requestValidate
+			}
 		});
 
 		$("#validation").click(function() {
@@ -282,7 +291,8 @@ html {
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : urlList.getMapWMS + urlList.token,
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
-				"getWFSFeature" : urlList.getWFSFeature + urlList.token
+				"getWFSFeature" : urlList.getWFSFeature + urlList.token,
+				"switchGeoGigBranch" : "geoserver/updateGeogigGsStore.do?${_csrf.parameterName}=${_csrf.token}",
 			}
 		});
 
@@ -327,8 +337,7 @@ html {
 				"float" : "right"
 			}).addClass("gb-button").addClass("gb-button-primary").text("Save");
 
-			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
-					.append(closeBtn);
+			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 			var modalFooter = $("<div>").append(buttonArea);
 
 			var gBody = $("<div>").append(well).css({
@@ -343,11 +352,11 @@ html {
 				"body" : gBody,
 				"footer" : modalFooter
 			});
-			
+
 			$(closeBtn).click(function() {
 				openSaveModal.close();
 			});
-			
+
 			$(okBtn).click(function() {
 				frecord.sendWFSTTransaction(epan);
 				openSaveModal.close();

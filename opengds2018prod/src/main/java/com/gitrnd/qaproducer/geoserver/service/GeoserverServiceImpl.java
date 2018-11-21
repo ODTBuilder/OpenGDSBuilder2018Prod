@@ -739,7 +739,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 		DTGeoserverReader dtGeoserverReader = geoserverManager.getReader();
 		RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
-
+		dtPublisher = geoserverManager.getPublisher();
+		
 		boolean updated = false;
 		if (restWorkspaceList != null) {
 			for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {
@@ -754,7 +755,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 									RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, datastore);
 									DTGSGeogigDatastoreEncoder dsEncoder = new DTGSGeogigDatastoreEncoder(dStore);
 									dsEncoder.setBranch(branch);
-									updated = dtPublisher.updateDatasotre(workspace, datastore, dsEncoder);
+									updated = dtPublisher.updateDatastore(workspace, datastore, dsEncoder);
 								}
 							}
 						}

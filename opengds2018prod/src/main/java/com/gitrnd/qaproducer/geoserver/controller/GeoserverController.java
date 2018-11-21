@@ -362,12 +362,21 @@ public class GeoserverController extends AbstractController {
 		if (loginUser == null) {
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
+		List<String> styles = null;
 		String serverName = request.getParameter("serverName");
+		String workspace = request.getParameter("workspace");
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		if (dtGeoserverManager == null) {
 			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
 		} 
-		return geoserverService.getStyleList(dtGeoserverManager);
+		
+		if(workspace==null){
+			styles = geoserverService.getStyleList(dtGeoserverManager);
+		}else{
+			
+		}
+		
+		return styles;
 	}
 	
 

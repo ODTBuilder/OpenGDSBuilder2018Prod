@@ -2375,7 +2375,7 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
  */
 gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 	var that = this;
-	var msg1 = $("<div>").text(msg).css({
+	var msg1 = $("<div>").append(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
 		"padding-top" : "26px"

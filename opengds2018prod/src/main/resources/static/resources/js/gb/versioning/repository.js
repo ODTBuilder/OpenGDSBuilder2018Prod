@@ -2388,8 +2388,8 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 
 	var modal = new gb.modal.Base({
 		"title" : title,
-		"width" : 310,
-		"height" : 200,
+		"width" : 432,
+		"height" : 218,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -3971,16 +3971,50 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var that = this;
 
 	var wsList;
+	var workspace;
+	var datastore;
 
 	var wsLabel = $("<div>").text("Workspace");
 	var wsSelect = $("<select>").addClass("gb-form");
+	var wsSelectDiv = $("<div>").append(wsSelect).css({
+		"padding" : "10px"
+	});
 	var dsLabel = $("<div>").text("Datastore");
 	var dsSelect = $("<select>").addClass("gb-form");
+	$(dsSelect).change(function() {
+		datastore = $(this).val();
+		console.log(workspace);
+		console.log(datastore);
+		that.getListGeoserverLayer(server, workspace, datastore);
+	});
+	var dsSelectDiv = $("<div>").append(dsSelect).css({
+		"padding" : "10px"
+	});
 	var left = $("<div>").css({
-		"width" : "50%"
-	}).append(wsLabel).append(wsSelect).append(dsLabel).append(dsSelect);
+		"width" : "50%",
+		"float" : "left"
+	}).append(wsLabel).append(wsSelectDiv).append(dsLabel).append(dsSelectDiv);
+	var layerLabel = $("<div>").text("Layers");
+	var layerList = $("<div>");
+	var layerPanel = $("<div>").addClass("gb-article").append(layerList);
 	var right = $("<div>").css({
-		"width" : "50%"
+		"width" : "50%",
+		"float" : "left"
+	}).append(layerLabel).append(layerPanel);
+	$(wsSelect).change(function() {
+		console.log("change");
+		workspace = $(this).val();
+		$(dsSelect).empty();
+		var elems = wsList[$(wsSelect).val()];
+		if (elems !== undefined && elems !== null) {
+			if (Array.isArray(elems)) {
+				for (var i = 0; i < elems.length; i++) {
+					var opt = $("<option>").text(elems[i]);
+					$(dsSelect).append(opt);
+				}
+				$(dsSelect).trigger("change");
+			}
+		}
 	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -3993,13 +4027,6 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var modalFooter = $("<div>").append(buttonArea);
 
 	var body = $("<div>").append(left).append(right);
-
-	$(closeBtn).click(function() {
-		publishModal.close();
-	});
-	$(okBtn).click(function() {
-		console.log("create repo");
-	});
 
 	var params = {
 		"serverName" : server,
@@ -4028,14 +4055,81 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 		success : function(data) {
 			console.log(data);
 			wsList = data;
-			var publishModal = new gb.modal.Base({
-				"title" : "Publish",
-				"width" : 540,
-				"height" : 425,
-				"autoOpen" : true,
-				"body" : body,
-				"footer" : modalFooter
-			});
+			if (Object.keys(data).length === 0) {
+				console.error("No result");
+				var msg1 = $("<div>").append("There is no datastore connected with this branch.");
+				var msg2 = $("<div>").append("Please make a datastore connected with the branch.");
+				var group = $("<div>").append(msg1).append(msg2);
+				that.messageModal("Error", group);
+			} else {
+				$(wsSelect).empty();
+				var wsKeys = Object.keys(wsList);
+				for (var i = 0; i < wsKeys.length; i++) {
+					var opt = $("<option>").append(wsKeys[i]);
+					$(wsSelect).append(opt);
+				}
+				$(wsSelect).trigger("change");
+				var publishModal = new gb.modal.Base({
+					"title" : "Publish",
+					"width" : 540,
+					"height" : 425,
+					"autoOpen" : true,
+					"body" : body,
+					"footer" : modalFooter
+				});
+
+				$(closeBtn).click(function() {
+					publishModal.close();
+				});
+				$(okBtn).click(function() {
+					console.log("create repo");
+				});
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
+		}
+	});
+};
+
+/**
+ * 해당 데이터스토어의 레이어를 조회한다.
+ * 
+ * @method gb.versioning.Repository#getListGeoServerLayer
+ */
+gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work, store) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"workspace" : work,
+		"datastore" : store
+	};
+
+	var checkURL = this.getListGeoserverLayerURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			var msg1 = $("<div>").append(textStatus);

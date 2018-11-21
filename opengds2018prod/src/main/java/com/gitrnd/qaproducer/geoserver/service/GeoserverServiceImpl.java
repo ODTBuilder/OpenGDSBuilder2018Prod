@@ -756,7 +756,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 									RESTDataStore dStore = dtGeoserverReader.getDatastore(workspace, datastore);
 									DTGSGeogigDatastoreEncoder dsEncoder = new DTGSGeogigDatastoreEncoder(dStore);
 									dsEncoder.setBranch(branch);
-									updated = dtPublisher.updateDatasotre(workspace, datastore, dsEncoder);
+									updated = dtPublisher.updateDatastore(workspace, datastore, dsEncoder);
 								}
 							}
 						}

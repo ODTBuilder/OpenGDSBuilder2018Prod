@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,9 +45,8 @@ public class QAWebController extends AbstractController {
 	@ResponseBody
 	public boolean validate(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("crs") String crs,
-			@RequestParam("qaVer") String qaVer, @RequestParam("qaType") String qaType,
-			@RequestParam("category") String cat, @RequestParam("prid") String prid,
-			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+			@RequestParam("qaVer") String qaVer, @RequestParam("qaType") String qaType, @RequestParam("cat") String cat,
+			@RequestParam("prid") String prid, @AuthenticationPrincipal LoginUser loginUser) throws Exception {
 
 		boolean success;
 

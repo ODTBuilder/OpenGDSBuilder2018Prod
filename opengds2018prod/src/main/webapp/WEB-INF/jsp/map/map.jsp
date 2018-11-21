@@ -204,6 +204,7 @@ html {
 				"remoteTree" : "geogig/getRemoteRepoTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"beginTransaction" : "geogig/beginTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"endTransaction" : "geogig/endTransaction.do?${_csrf.parameterName}=${_csrf.token}",
+				"cancelTransaction" : "geogig/cancelTransaction.do?${_csrf.parameterName}=${_csrf.token}",
 				"checkoutBranch" : "geogig/checkoutBranch.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRemoteRepository" : "geogig/removeRemoteRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeRepository" : "geogig/deleteRepository.do?${_csrf.parameterName}=${_csrf.token}",

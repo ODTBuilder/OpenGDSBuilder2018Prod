@@ -102,7 +102,9 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 					}
 				}
 			}
-			dsListObj.put(ws, dsArr);
+			if(dsArr.size() > 0) {
+				dsListObj.put(ws, dsArr);
+			}
 		}
 		return dsListObj;
 	}

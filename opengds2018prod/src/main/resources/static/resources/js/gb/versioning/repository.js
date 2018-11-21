@@ -69,6 +69,7 @@ gb.versioning.Repository = function(obj) {
 	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
 	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
 	this.endTransactionURL = url.endTransaction ? url.endTransaction : undefined;
+	this.cancelTransactionURL = url.cancelTransaction ? url.cancelTransaction : undefined;
 	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
 	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
 	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
@@ -597,6 +598,73 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
 };
 
 /**
+ * 트랜잭션 아이디를 폐기한다.
+ * 
+ * @method gb.versioning.Repository#cancelTransaction
+ * @param {String}
+ *            serverName - 등록한 지오서버 이름
+ * @param {String}
+ *            repoName - 레파지토리 이름
+ * @param {Sting}
+ *            tid - 트랜잭션 아이디
+ * @param {gb.modal.Base}
+ *            modal - 작업 완료후 닫을 Modal 객체
+ */
+gb.versioning.Repository.prototype.cancelTransaction = function(serverName, repoName, tid, modal, callback) {
+	var that = this;
+	var params = {
+		"serverName" : serverName,
+		"repoName" : repoName,
+		"transactionId" : tid
+	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getCancelTransactionURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var repo = that.getNowRepository();
+				if (repo.text === repoName) {
+					modal.close();
+					that.getJSTree().removeTransactionId(repo.id);
+					that.transitPage("server");
+					that.refreshList();
+					callback();
+				}
+			} else {
+				console.error("error - no remote branch");
+				var title = "Error";
+				var msg = "Transaction is not ended."
+				that.messageModal(title, msg);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
+};
+
+/**
  * 해당 레파지토리의 브랜치 목록을 조회한다.
  * 
  * @method gb.versioning.Repository#getBranchList
@@ -713,6 +781,16 @@ gb.versioning.Repository.prototype.getBeginTransactionURL = function() {
  */
 gb.versioning.Repository.prototype.getEndTransactionURL = function() {
 	return this.endTransactionURL;
+};
+
+/**
+ * 트랜잭션 아이디 폐기 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getCancelTransactionURL
+ * @return {String} 트랜잭션 아이디 주소 URL
+ */
+gb.versioning.Repository.prototype.getCancelTransactionURL = function() {
+	return this.cancelTransactionURL;
 };
 
 /**
@@ -984,60 +1062,114 @@ gb.versioning.Repository.prototype.open = function() {
  */
 gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branch) {
 	var that = this;
-	var params = {
-		"serverName" : server.text,
-		"repoName" : repo.text,
-		"branchName" : branch.text
-	}
-	// + "&" + jQuery.param(params),
-	var checkURL = this.getCheckoutBranchURL();
-	if (checkURL.indexOf("?") !== -1) {
-		checkURL += "&";
-		checkURL += jQuery.param(params);
-	} else {
-		checkURL += "?";
-		checkURL += jQuery.param(params);
-	}
-
-	$.ajax({
-		url : checkURL,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		// data : params,
-		// dataType : 'jsonp',
-		// jsonpCallback : 'getJson',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				var transactionId = data.transactionId;
-				var newTarget = data.newTarget;
-				var ggfn = that.getJSTree()._data.geogigfunction;
-				ggfn.transactionId[repo.id] = transactionId;
-				console.log(ggfn);
-				that.getJSTree().refresh_node(repo);
-				// if (repo.data === undefined) {
-				// repo.data = {
-				// "transactionId" : transactionId
-				// }
-				// } else {
-				// repo.data["transactionId"] = transactionId;
-				// }
-			} else {
-				var title = "Error";
-				var msg = "Checkout failed."
-				that.messageModal(title, msg);
+	var branches = repo.children;
+	var isCheckedout = false;
+	for (var i = 0; i < branches.length; i++) {
+		var br = that.getJSTree().get_node(branches[i]);
+		var bname = br.text;
+		if (branch.text !== bname) {
+			var state = br.state;
+			if (state.hasOwnProperty("merged") || state.hasOwnProperty("unmerged") || state.hasOwnProperty("staged")
+					|| state.hasOwnProperty("unstaged")) {
+				isCheckedout = true;
+				break;
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
-	});
+	}
+	var callback = function() {
+		var params = {
+			"serverName" : server.text,
+			"repoName" : repo.text,
+			"branchName" : branch.text
+		}
+		// + "&" + jQuery.param(params),
+		var checkURL = that.getCheckoutBranchURL();
+		if (checkURL.indexOf("?") !== -1) {
+			checkURL += "&";
+			checkURL += jQuery.param(params);
+		} else {
+			checkURL += "?";
+			checkURL += jQuery.param(params);
+		}
+
+		$.ajax({
+			url : checkURL,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : params,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					var transactionId = data.transactionId;
+					var newTarget = data.newTarget;
+					var ggfn = that.getJSTree()._data.geogigfunction;
+					ggfn.transactionId[repo.id] = transactionId;
+					console.log(ggfn);
+					that.setNowBranch(branch);
+					that.getJSTree().refresh_node(repo);
+					// if (repo.data === undefined) {
+					// repo.data = {
+					// "transactionId" : transactionId
+					// }
+					// } else {
+					// repo.data["transactionId"] = transactionId;
+					// }
+				} else {
+					var title = "Error";
+					var msg = "Checkout failed."
+					that.messageModal(title, msg);
+				}
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+
+			}
+		});
+	};
+
+	if (isCheckedout) {
+		var msg1 = $("<div>").text("Another branch has been checked out.").css({
+			"text-align" : "center",
+			"font-size" : "16px"
+		});
+		var msg2 = $("<div>").text('If you proceed, you will lose your changes. Do you want to proceed?').css({
+			"text-align" : "center",
+			"font-size" : "16px"
+		});
+		var body = $("<div>").append(msg1).append(msg2);
+		var closeBtn = $("<button>").css({
+			"float" : "right"
+		}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+		var okBtn = $("<button>").css({
+			"float" : "right"
+		}).addClass("gb-button").addClass("gb-button-primary").text("Discard and Checkout");
+		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+		var commitModal = new gb.modal.Base({
+			"title" : "Warning",
+			"width" : 310,
+			"height" : 200,
+			"autoOpen" : true,
+			"body" : body,
+			"footer" : buttonArea
+		});
+		$(closeBtn).click(function() {
+			commitModal.close();
+		});
+		$(okBtn).click(function() {
+			var tid = that.getJSTree().getTransactionId(repo.id);
+			that.cancelTransaction(server.text, repo.text, tid, commitModal, callback);
+		});
+	} else {
+		callback();
+	}
 };
 
 /**
@@ -2231,6 +2363,62 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 	});
 	$(okBtn).click(function() {
 		modal.close();
+	});
+};
+
+/**
+ * quit 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#quitModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ * @param {String}
+ *            tid - 종료할 트랜잭션 아이디
+ */
+gb.versioning.Repository.prototype.quitModal = function(server, repo, branch, tid) {
+	var that = this;
+	var msg1 = $("<div>").text("What would you like to do?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text("Current Branch: " + branch.text).css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var discardBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Discard");
+	var saveBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(saveBtn).append(discardBtn).append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : "End Transaction",
+		"width" : 370,
+		"height" : 176,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	$(discardBtn).click(function() {
+		that.cancelTransaction(server.text, repo.text, tid, modal);
+	});
+	$(saveBtn).click(function() {
+		that.endTransaction(server.text, repo.text, tid, modal);
 	});
 };
 

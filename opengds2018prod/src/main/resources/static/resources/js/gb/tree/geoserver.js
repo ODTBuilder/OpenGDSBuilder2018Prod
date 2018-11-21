@@ -47,7 +47,9 @@ gb.tree.GeoServer = function(obj) {
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
+	this.switchGeoGigBranchURL = url.switchGeoGigBranch ? url.switchGeoGigBranch : undefined;
 	this.uploadSHP = options.uploadSHP ? options.uploadSHP : undefined;
+
 	this.height = options.height || undefined;
 	this.downloadGeoserver = url.downloadGeoserver || undefined;
 	this.panelTitle = $("<p>").text("GeoServer").css({
@@ -114,8 +116,8 @@ gb.tree.GeoServer = function(obj) {
 	} else if ($(options.append).is("div")) {
 		$(options.append).append(this.panel);
 	}
-	
-	if(!this.height){
+
+	if (!this.height) {
 		$(document).ready(function() {
 			var parentHeight = $(that.panel).parent().innerHeight();
 			var headHeight = $(that.panel).find(".gb-article-head").outerHeight();
@@ -165,21 +167,31 @@ gb.tree.GeoServer = function(obj) {
 						'url' : function(node) {
 							var url = that.getGetTreeURL();
 							// if (node.id === "#") {
-							// url = that.getGetTreeURL() + "&type=server";
+							// url = that.getGetTreeURL() +
+							// "&type=server";
 							// } else if (node.type === "workspace") {
-							// url = that.getGetTreeURL() + "&type=workspace" +
-							// "&parent=" + node.parent + "&serverName=" +
+							// url = that.getGetTreeURL() +
+							// "&type=workspace" +
+							// "&parent=" + node.parent + "&serverName="
+							// +
 							// node.parent;
 							// } else if (node.type === "datastore") {
-							// url = that.getGetTreeURL() + "&type=datastore" +
+							// url = that.getGetTreeURL() +
+							// "&type=datastore" +
 							// "&parent=" + node.parent + "&serverName="
 							// + node.parents[1];
-							// } else if (node.type === "point" || node.type ===
-							// "multipoint" || node.type === "linestring"
-							// || node.type === "multilinestring" || node.type
-							// === "polygon" || node.type === "multipolygon") {
-							// url = that.getGetTreeURL() + "&type=layer" +
-							// "&parent=" + node.parent + "&serverName=" +
+							// } else if (node.type === "point" ||
+							// node.type ===
+							// "multipoint" || node.type ===
+							// "linestring"
+							// || node.type === "multilinestring" ||
+							// node.type
+							// === "polygon" || node.type ===
+							// "multipolygon") {
+							// url = that.getGetTreeURL() +
+							// "&type=layer" +
+							// "&parent=" + node.parent + "&serverName="
+							// +
 							// node.parents[2];
 							// }
 							// return that.getGetTreeURL();
@@ -203,10 +215,14 @@ gb.tree.GeoServer = function(obj) {
 								obj["serverName"] = node.parents[1];
 								obj["node"] = node.id
 							}
-							// else if (node.type === "point" || node.type ===
-							// "multipoint" || node.type === "linestring"
-							// || node.type === "multilinestring" || node.type
-							// === "polygon" || node.type === "multipolygon") {
+							// else if (node.type === "point" ||
+							// node.type ===
+							// "multipoint" || node.type ===
+							// "linestring"
+							// || node.type === "multilinestring" ||
+							// node.type
+							// === "polygon" || node.type ===
+							// "multipolygon") {
 							//
 							// }
 							console.log(obj);
@@ -223,10 +239,12 @@ gb.tree.GeoServer = function(obj) {
 					"getWFSFeature" : this.getWFSFeature
 				// "user" : "admin",
 				// "layerInfo" : undefined,
-				// "layerInfoURL" : "geoserver/getGeoLayerInfoList.ajax",
+				// "layerInfoURL" :
+				// "geoserver/getGeoLayerInfoList.ajax",
 				// "groupLayerInfoURL" :
 				// "geoserver/getGeoGroupLayerInfoList.ajax",
-				// "WMSLayerURL" : "http://175.116.181.42:9990/geoserver/wms",
+				// "WMSLayerURL" :
+				// "http://175.116.181.42:9990/geoserver/wms",
 				// "createLayer" : undefined,
 				// "deleteGroupLayer" : undefined,
 				// "deleteLayer" : undefined,
@@ -239,8 +257,89 @@ gb.tree.GeoServer = function(obj) {
 				"contextmenu" : {
 					items : function(o, cb) { // Could be an object
 						// directly
-						return {
-							"import" : {
+						var totalObj = {};
+						// 지오긱 저장소이면 브랜치 서브메뉴 객체를 만듬
+						var repoObj = {};
+						if (o.type === "datastore") {
+							var storeType = o.original.storeType;
+							if (storeType === "GeoGIG") {
+								var nowBranch = o.original.geogigBranch;
+								var branches = o.original.geogigBranches;
+								for (var i = 0; i < branches.length; i++) {
+									var obj = {
+										"separator_before" : true,
+										"separator_after" : false,
+										"label" : branches[i],
+										"action" : function(data) {
+											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+											console.log(data);
+											console.log(nowBranch);
+											var ds = obj;
+											var ws = inst.get_node(ds.parents[0]);
+											var server = inst.get_node(ds.parents[1]);
+											var targetBranch = data.item.label;
+											console.log(ds);
+											if (nowBranch === data.item.label) {
+
+											} else {
+												var msg1 = $("<div>").text("This will change the geoserver setting.").css({
+													"text-align" : "center",
+													"font-size" : "16px"
+												});
+												var msg2 = $("<div>").text("Other users can be affected.").css({
+													"text-align" : "center",
+													"font-size" : "16px"
+												});
+												var msg3 = $("<div>").text("Would you like to switch over to this branch?").css({
+													"text-align" : "center",
+													"font-size" : "16px"
+												});
+												var msg4 = $("<div>").text(data.item.label).css({
+													"text-align" : "center",
+													"font-size" : "24px"
+												});
+												var closeBtn = $("<button>").css({
+													"float" : "right"
+												}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+												var okBtn = $("<button>").css({
+													"float" : "right"
+												}).addClass("gb-button").addClass("gb-button-primary").text("Switch");
+
+												var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+												var modalFooter = $("<div>").append(buttonArea);
+
+												var gBody = $("<div>").append(msg1).append(msg2).append(msg3).append(msg4);
+												var switchModal = new gb.modal.Base({
+													"title" : "Branch Switch",
+													"width" : 414,
+													"height" : 228,
+													"autoOpen" : true,
+													"body" : gBody,
+													"footer" : modalFooter
+												});
+												$(closeBtn).click(function() {
+													switchModal.close();
+												});
+												$(okBtn).click(function() {
+													console.log("switch");
+													that.switchBranch(server.text, ws.text, ds.text, targetBranch, switchModal);
+												});
+											}
+										}
+									};
+									if (branches[i] === nowBranch) {
+										obj["icon"] = "fas fa-check";
+									}
+									repoObj[branches[i]] = obj;
+								}
+								console.log(repoObj);
+							}
+						}
+						// 임포트는 워크스페이스 포함 아래로 적용
+						if (o.type === "workspace" || o.type === "datastore" || o.type === "point" || o.type === "multipoint"
+								|| o.type === "linestring" || o.type === "multilinestring" || o.type === "polygon"
+								|| o.type === "multipolygon") {
+							var importObj = {
 								"separator_before" : true,
 								"icon" : "fas fa-file-import",
 								"separator_after" : true,
@@ -306,178 +405,184 @@ gb.tree.GeoServer = function(obj) {
 										}
 									}
 								}
-							},
-							"export" : {
-								"separator_before" : true,
-								"icon" : "fas fa-file-export",
-								"separator_after" : true,
-								"label" : "Export",
-								"action" : false,
-								"submenu" : {
-									"shp" : {
-										"separator_before" : true,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "SHP",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
-											}
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												inst.download_wfs_layer(selectedObj[i], "shape-zip");
+							};
+							totalObj["import"] = importObj;
+						}
+						// 익스포트는 아직 미정
+						var exportObj = {
+							"separator_before" : true,
+							"icon" : "fas fa-file-export",
+							"separator_after" : true,
+							"label" : "Export",
+							"action" : false,
+							"submenu" : {
+								"shp" : {
+									"separator_before" : true,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "SHP",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
 										}
-									},
-									"gml2" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "GML2",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
-											}
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												inst.download_wfs_layer(selectedObj[i], "gml2");
+										for (var i = 0; i < selectedObj.length; i++) {
+											inst.download_wfs_layer(selectedObj[i], "shape-zip");
+										}
+									}
+								},
+								"gml2" : {
+									"separator_before" : false,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "GML2",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
 										}
-									},
-									"gml3" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "GML3",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
-											}
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												inst.download_wfs_layer(selectedObj[i], "gml3");
+										for (var i = 0; i < selectedObj.length; i++) {
+											inst.download_wfs_layer(selectedObj[i], "gml2");
+										}
+									}
+								},
+								"gml3" : {
+									"separator_before" : false,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "GML3",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
 										}
-									},
-									"json" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "JSON",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
-											}
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												inst.download_wfs_layer(selectedObj[i], "application/json");
+										for (var i = 0; i < selectedObj.length; i++) {
+											inst.download_wfs_layer(selectedObj[i], "gml3");
+										}
+									}
+								},
+								"json" : {
+									"separator_before" : false,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "JSON",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
 										}
-									},
-									"csv" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "CSV",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
-											}
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												inst.download_wfs_layer(selectedObj[i], "csv");
+										for (var i = 0; i < selectedObj.length; i++) {
+											inst.download_wfs_layer(selectedObj[i], "application/json");
+										}
+									}
+								},
+								"csv" : {
+									"separator_before" : false,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "CSV",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
 										}
-									},
-									"png" : {
-										"separator_before" : true,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "PNG",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var selected = inst.get_selected();
-											var selectedObj = inst.get_selected(true);
-											for (var i = 0; i < selectedObj.length; i++) {
-												if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-														|| selectedObj[i].type === "geoserver") {
-													console.error("not support");
-													return;
-												}
+
+										for (var i = 0; i < selectedObj.length; i++) {
+											inst.download_wfs_layer(selectedObj[i], "csv");
+										}
+									}
+								},
+								"png" : {
+									"separator_before" : true,
+									"icon" : "fa fa-file-excel-o",
+									"separator_after" : false,
+									"label" : "PNG",
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var selected = inst.get_selected();
+										var selectedObj = inst.get_selected(true);
+										for (var i = 0; i < selectedObj.length; i++) {
+											if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+													|| selectedObj[i].type === "geoserver") {
+												console.error("not support");
+												return;
 											}
+										}
 
-											var a = {
-												serverName : undefined,
-												workspace : undefined,
-												geoLayerList : undefined
-											};
+										var a = {
+											serverName : undefined,
+											workspace : undefined,
+											geoLayerList : undefined
+										};
 
-											for (var i = 0; i < selectedObj.length; i++) {
-												a.serverName = selectedObj[i].id.split(":")[0];
-												a.workspace = selectedObj[i].id.split(":")[1];
-												a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
+										for (var i = 0; i < selectedObj.length; i++) {
+											a.serverName = selectedObj[i].id.split(":")[0];
+											a.workspace = selectedObj[i].id.split(":")[1];
+											a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
 
-												$.ajax({
-													url : inst._data.geoserver.getLayerInfo,
-													method : "POST",
-													contentType : "application/json; charset=UTF-8",
-													cache : false,
-													data : JSON.stringify(a),
-													beforeSend : function() { // 호출전실행
-														// loadImageShow();
-													},
-													traditional : true,
-													success : function(data, textStatus, jqXHR) {
-														var path = inst._data.geoserver.getMapWMS;
+											$.ajax({
+												url : inst._data.geoserver.getLayerInfo,
+												method : "POST",
+												contentType : "application/json; charset=UTF-8",
+												cache : false,
+												data : JSON.stringify(a),
+												beforeSend : function() { // 호출전실행
+													// loadImageShow();
+												},
+												traditional : true,
+												success : function(data, textStatus, jqXHR) {
+													var path = inst._data.geoserver.getMapWMS;
 
-														for (var i = 0; i < data.length; i++) {
-															data[i].serverName = a.serverName;
-															data[i].workspace = a.workspace;
-															inst.download_wms_layer(data[i], "image/png");
-														}
+													for (var i = 0; i < data.length; i++) {
+														data[i].serverName = a.serverName;
+														data[i].workspace = a.workspace;
+														inst.download_wms_layer(data[i], "image/png");
 													}
-												});
-											}
+												}
+											});
 										}
 									}
 								}
-							},
-							"upload" : {
+							}
+						}
+						// 업로드
+						if (o.type === "datastore") {
+							var uploadObj = {
 								"separator_before" : false,
 								"icon" : "fas fa-upload",
 								"separator_after" : false,
@@ -490,9 +595,6 @@ gb.tree.GeoServer = function(obj) {
 									}
 									return result;
 								},
-								// data.reference,
-								// this.get_parent(data.reference),
-								// "")),
 								"label" : "Upload",
 								/*
 								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
@@ -514,8 +616,14 @@ gb.tree.GeoServer = function(obj) {
 										upload.open();
 									}
 								}
-							},
-							"delete" : {
+							};
+							totalObj["upload"] = uploadObj;
+						}
+
+						// 삭제
+						if (o.type === "geoserver" || o.type === "point" || o.type === "multipoint" || o.type === "linestring"
+								|| o.type === "multilinestring" || o.type === "polygon" || o.type === "multipolygon") {
+							var deleteObj = {
 								"separator_before" : false,
 								"icon" : "fa fa-trash",
 								"separator_after" : false,
@@ -547,8 +655,37 @@ gb.tree.GeoServer = function(obj) {
 										that.openDeleteGeoServerLayer(server.text, work.text, layer.text);
 									}
 								}
-							},
-							"properties" : {
+							}
+							totalObj["delete"] = deleteObj;
+						}
+
+						if (o.type === "datastore" && o.original.storeType === "GeoGIG") {
+							var branchObj = {
+								"separator_before" : true,
+								"icon" : "fas fa-code-branch",
+								"separator_after" : true,
+								"label" : "Branch",
+								"action" : false,
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "datastore") {
+										var storeType = o.original.storeType;
+										if (storeType === "GeoGIG") {
+											result = false;
+										}
+									}
+									return result;
+								},
+								"submenu" : repoObj
+							}
+							totalObj["branch"] = branchObj;
+						}
+
+						if (o.type === "point" || o.type === "multipoint" || o.type === "linestring" || o.type === "multilinestring"
+								|| o.type === "polygon" || o.type === "multipolygon") {
+							var propObj = {
 								"separator_before" : false,
 								"icon" : "fa fa-info-circle",
 								"separator_after" : false,
@@ -582,7 +719,10 @@ gb.tree.GeoServer = function(obj) {
 									}
 								}
 							}
-						};
+							totalObj["properties"] = propObj;
+						}
+						console.log(totalObj);
+						return totalObj;
 					}
 				},
 				types : {
@@ -1130,6 +1270,22 @@ gb.tree.GeoServer.prototype.setGetTreeURL = function(url) {
 	this.getTreeURL = url;
 };
 /**
+ * 데이터스토어 타겟 브랜치 전환 요청을 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getSwitchGeoGigBranchURL
+ */
+gb.tree.GeoServer.prototype.getSwitchGeoGigBranchURL = function() {
+	return this.switchGeoGigBranchURL;
+};
+/**
+ * 데이터스토어 타겟 브랜치 전환 요청을 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setSwitchGeoGigBranchURL
+ */
+gb.tree.GeoServer.prototype.setSwitchGeoGigBranchURL = function(url) {
+	this.switchGeoGigBranchURL = url;
+};
+/**
  * SHP 파일 업로드 객체를 설정한다.
  * 
  * @method gb.tree.GeoServer#setUploadSHP
@@ -1180,5 +1336,64 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
 	});
 	$(okBtn).click(function() {
 		modal.close();
+	});
+};
+
+/**
+ * GeoGig 저장소의 타겟 브랜치를 변경한다.
+ * 
+ * @method gb.tree.GeoServer#switchBranch
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch, modal) {
+	var that = this;
+	console.log("switch branch");
+	var params = {
+		"serverName" : server,
+		"workspace" : work,
+		"datastore" : store,
+		"branch" : branch
+	};
+
+	var checkURL = this.getSwitchGeoGigBranchURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			modal.close();
+			if (data === 200) {
+				that.refreshList();
+			} else if (data === 500) {
+				that.messageModal("Error", "Request failed.");
+			} else if (data === 600) {
+				that.messageModal("Error", "Session expired.");
+			} else if (data === 603) {
+				that.messageModal("Error", "Geoserver not found.");
+			} else if (data === 605) {
+				that.messageModal("Error", "Geoserver info not found.");
+			} else if (data === 606) {
+				that.messageModal("Error", "Some layers have not been deleted.");
+			}
+		}
 	});
 };

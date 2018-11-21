@@ -167,59 +167,76 @@ gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
 gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 	console.log(code);
 	var that = this;
-	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
-		return response.json();
-	}).then(function(json) {
-		if (json.number_result !== 1) {
-			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
-			// +
-			// that.getEPSGCode());
-			that.setValidEPSG(false);
-			that.setProjection(undefined, undefined, undefined, undefined);
-			console.error("no crs");
-			// that.close();
-			return;
-		} else if (json.number_result < 1) {
-			// $(that.getMessage()).text("Error: Couldn't find EPSG Code. EPSG:"
-			// +
-			// that.getEPSGCode());
-			that.setValidEPSG(false);
-			that.setProjection(undefined, undefined, undefined, undefined);
-			console.error("no crs");
-			// that.close();
-			return;
-		}
-		var results = json['results'];
-		if (results && results.length > 0) {
-			for (var i = 0, ii = results.length; i < ii; i++) {
-				var result = results[i];
-				if (result) {
-					var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
-					if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
 
-						if (code === codes) {
-							that.setEPSGCode(code);
-							that.setValidEPSG(true);
-							that.setProjection(code, name, proj4def, bbox);
-							if (apply) {
-								that.applyProjection(code, name, proj4def, bbox, callback);
+	$.ajax({
+		url : 'https://epsg.io/?format=json&q=' + code,
+		dataType : "jsonp",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			var json = data;
+			if (json.number_result !== 1) {
+				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
+				// EPSG:"
+				// +
+				// that.getEPSGCode());
+				that.setValidEPSG(false);
+				that.setProjection(undefined, undefined, undefined, undefined);
+				console.error("no crs");
+				// that.close();
+				return;
+			} else if (json.number_result < 1) {
+				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
+				// EPSG:"
+				// +
+				// that.getEPSGCode());
+				that.setValidEPSG(false);
+				that.setProjection(undefined, undefined, undefined, undefined);
+				console.error("no crs");
+				// that.close();
+				return;
+			}
+			var results = json['results'];
+			if (results && results.length > 0) {
+				for (var i = 0, ii = results.length; i < ii; i++) {
+					var result = results[i];
+					if (result) {
+						var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
+						if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
+
+							if (code === codes) {
+								that.setEPSGCode(code);
+								that.setValidEPSG(true);
+								that.setProjection(code, name, proj4def, bbox);
+								if (apply) {
+									that.applyProjection(code, name, proj4def, bbox, callback);
+								}
 							}
-						}
 
-						return;
-					} else {
-						$(that.getMessage()).text("Error: Not support EPSG Code. EPSG:" + that.getEPSGCode());
-						console.error("no crs");
-						// that.close();
-						that.setValidEPSG(false);
-						that.setProjection(undefined, undefined, undefined, undefined);
-						return;
+							return;
+						} else {
+							$(that.getMessage()).text("Error: Not support EPSG Code. EPSG:" + that.getEPSGCode());
+							console.error("no crs");
+							// that.close();
+							that.setValidEPSG(false);
+							that.setProjection(undefined, undefined, undefined, undefined);
+							return;
+						}
 					}
 				}
 			}
+			// that.close();
+			return;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
 		}
-		// that.close();
-		return;
 	});
 };
 

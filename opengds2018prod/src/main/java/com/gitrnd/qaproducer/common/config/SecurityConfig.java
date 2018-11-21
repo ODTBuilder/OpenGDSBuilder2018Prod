@@ -44,7 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/user/signout.do"))
 				.logoutSuccessHandler(userLogoutSuccessHandler);
 		// .logoutSuccessUrl("/main.do")
-		http.csrf().ignoringAntMatchers("/uploaderror.do").and().csrf().ignoringAntMatchers("/mobile/validate.do");
+		http.csrf().ignoringAntMatchers("/uploaderror.do").and().csrf().ignoringAntMatchers("/mobile/validate.do").and()
+				.csrf().ignoringAntMatchers("/uploadGsError.do");
 	}
 
 	@Bean

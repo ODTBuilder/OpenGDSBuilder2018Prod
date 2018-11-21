@@ -55,7 +55,6 @@ import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
-import it.geosolutions.geoserver.rest.HTTPUtils;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
@@ -764,6 +763,21 @@ public class GeoserverServiceImpl implements GeoserverService {
 			}
 		}
 		return updated;
+	}
+	
+	@Override
+	public List<String> getStyleList(DTGeoserverManager geoserverManager){
+		List<String> styles = new ArrayList<String>();
+		if (geoserverManager != null) {
+			restStyleManager = geoserverManager.getStyleManager();
+		} else {
+			throw new IllegalArgumentException("Geoserver 정보 없음");
+		}
+		
+		if(restStyleManager!=null){
+			styles = restStyleManager.getStyles().getNames();
+		}
+		return styles;
 	}
 }
 

@@ -341,6 +341,35 @@ public class GeoserverController extends AbstractController {
 			proService.requestGeoserverInfo(dtGeoserverManager, request, response);
 		}
 	}
+	
+	
+	/**
+	 * @Description 스타일리스트 조회
+	 * @author SG.Lee
+	 * @Date 2018. 11. 21. 오후 5:17:54
+	 * @param request
+	 * @param response
+	 * @param loginUser
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws Exception List<String>
+	 * */
+	@RequestMapping(value = "getStyleList.ajax")
+	@ResponseBody
+	public List<String> getStyleList(HttpServletRequest request, HttpServletResponse response,
+			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException, Exception {
+		if (loginUser == null) {
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = request.getParameter("serverName");
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if (dtGeoserverManager == null) {
+			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+		} 
+		return geoserverService.getStyleList(dtGeoserverManager);
+	}
+	
 
 	/**
 	 * Geoserver Layer 조회 @author SG.Lee @Date 2017. 4 @param request @param

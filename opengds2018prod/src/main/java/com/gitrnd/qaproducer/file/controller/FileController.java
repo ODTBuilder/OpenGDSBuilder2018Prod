@@ -2,11 +2,12 @@ package com.gitrnd.qaproducer.file.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +28,10 @@ import com.gitrnd.qaproducer.file.service.DeleteFileService;
 import com.gitrnd.qaproducer.file.service.DownloadService;
 import com.gitrnd.qaproducer.file.service.RequestService;
 import com.gitrnd.qaproducer.file.service.UploadService;
-import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.domain.ValidationResult;
+import com.gitrnd.qaproducer.qa.service.QAWebService;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
 
 @Controller
@@ -55,7 +56,10 @@ public class FileController extends AbstractController {
 
 	@Autowired
 	ValidationResultService validationResultService;
-	
+
+	@Autowired
+	QAWebService webService;
+
 	@RequestMapping(value = "/deleteList.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteList(HttpServletRequest request, @RequestParam(value = "list", required = true) int[] list,
@@ -102,12 +106,13 @@ public class FileController extends AbstractController {
 	@RequestMapping(value = "/uploaderror.do", method = RequestMethod.POST)
 	public void uploadErrorProcess(MultipartHttpServletRequest request, HttpServletResponse response) throws Exception {
 		uploadService.SaveErrorFile(request);
-		if (deleteFileService.deleteOriginalZipFile(request.getParameter("user"),
-				Integer.parseInt(request.getParameter("fid")))) {
-			LOGGER.info("fid: {} file delete success!", request.getParameter("fid"));
-		} else {
-			LOGGER.info("ERROR!: fid: {} file delete fail!", request.getParameter("fid"));
-		}
+//		if (deleteFileService.deleteOriginalZipFile(request.getParameter("user"),
+//				Integer.parseInt(request.getParameter("fid")))) {
+//			LOGGER.info("fid: {} file delete success!", request.getParameter("fid"));
+//		} else {
+//			LOGGER.info("ERROR!: fid: {} file delete fail!", request.getParameter("fid"));
+//		}
+		deleteFileService.deleteOriginalZipFileWithPath(request.getParameter("user"), request.getParameter("fpath"));
 	}
 
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
@@ -212,12 +217,27 @@ public class FileController extends AbstractController {
 			// 옵션또는 파일이 제대로 넘어오지 않았을때 강제로 예외발생
 			if (qaVer == null || qaType == null || prid == null || prst == null) {
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
-			} else if (fileformat == null) {
-				throw new Exception("파일포맷을 설정해주세요.");
-			} else {
-				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
-				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid, prst.getPid());
 			}
+
+			else {
+				JSONParser jsonP = new JSONParser();
+				JSONObject param = (JSONObject) jsonP.parse(
+						"{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}");
+				JSONObject layers = (JSONObject) param.get("layers");
+
+				webService.validate("http://175.116.181.32:9999/geoserver", layers, prst.getCat(), crs, qaVer, qaType,
+						prid, prst.getPid(), loginUser.getIdx());
+			}
+			// 옵션또는 파일이 제대로 넘어오지 않았을때 강제로 예외발생
+//			if (qaVer == null || qaType == null || prid == null || prst == null) {
+//				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
+//			} else if (fileformat == null) {
+//				throw new Exception("파일포맷을 설정해주세요.");
+//			} else {
+//				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
+//				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid,
+//						prst.getPid());
+//			}
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");
 		}

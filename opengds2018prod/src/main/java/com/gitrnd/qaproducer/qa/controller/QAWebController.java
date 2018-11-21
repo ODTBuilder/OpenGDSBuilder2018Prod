@@ -144,14 +144,13 @@ public class QAWebController extends AbstractController {
 				success = false;
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
 			} else {
-
 				JSONObject serverObj = (JSONObject) geoserver.get("geoserver");
 				String serverName = (String) serverObj.get("servername");
 				JSONObject layers = (JSONObject) serverObj.get("layers");
 				DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser,
 						serverName);
 				String serverURL = geoserverManager.getRestURL();
-				success = webService.validate(serverURL, layers, prst.getCat(), crs, qaVer, qaType, prst.getPid(),
+				success = webService.validate(serverURL, layers, prst.getCat(), crs, qaVer, qaType, prid, prst.getPid(),
 						loginUser.getIdx());
 			}
 		} else {

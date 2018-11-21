@@ -740,7 +740,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 		DTGeoserverReader dtGeoserverReader = geoserverManager.getReader();
 		RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
-
+		dtPublisher = geoserverManager.getPublisher();
+		
 		boolean updated = false;
 		if (restWorkspaceList != null) {
 			for (RESTWorkspaceList.RESTShortWorkspace item : restWorkspaceList) {

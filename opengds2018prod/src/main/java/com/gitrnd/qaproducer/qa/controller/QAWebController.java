@@ -4,7 +4,6 @@
 package com.gitrnd.qaproducer.qa.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -43,12 +42,17 @@ public class QAWebController extends AbstractController {
 
 	@RequestMapping(value = "/validate.do", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean validate(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam("geoserver") JSONObject geoserver, @RequestParam("crs") String crs,
-			@RequestParam("qaVer") String qaVer, @RequestParam("qaType") String qaType, @RequestParam("cat") String cat,
-			@RequestParam("prid") String prid, @AuthenticationPrincipal LoginUser loginUser) throws Exception {
+	public boolean validate(HttpServletRequest request, @RequestBody JSONObject jsonObject,
+			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
 
-		boolean success;
+		boolean success = false;
+
+		JSONObject geoserver = (JSONObject) jsonObject.get("geoserver");
+		String crs = (String) jsonObject.get("crs");
+		String prid = (String) jsonObject.get("prid");
+		int cat = (Integer) jsonObject.get("cat");
+		String qaVer = (String) jsonObject.get("qaVer");
+		String qaType = (String) jsonObject.get("qaType");
 
 		Preset prst = null;
 		if (prid.equals("nonset")) {
@@ -156,9 +160,8 @@ public class QAWebController extends AbstractController {
 //							prid, prst.getPid(), loginUser.getIdx());
 //				}
 
-				JSONObject serverObj = (JSONObject) geoserver.get("geoserver");
-				String serverName = (String) serverObj.get("servername");
-				JSONObject layers = (JSONObject) serverObj.get("layers");
+				String serverName = (String) geoserver.get("servername");
+				JSONObject layers = (JSONObject) geoserver.get("layers");
 				DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser,
 						serverName);
 				String serverURL = geoserverManager.getRestURL();
@@ -168,6 +171,6 @@ public class QAWebController extends AbstractController {
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");
 		}
-		return true;
+		return success;
 	}
 }

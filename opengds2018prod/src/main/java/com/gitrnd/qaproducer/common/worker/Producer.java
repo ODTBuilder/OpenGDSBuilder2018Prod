@@ -22,6 +22,8 @@ public class Producer {
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
+
+		//String param = "{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}";
 		template.convertSendAndReceive(msg);
 		System.out.println("");
 	}

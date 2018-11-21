@@ -195,7 +195,7 @@ if (!gb.validation)
 		if(!preset.data("prid")){
 			this.messageContent.html("Preset ID가 없습니다.");
 		} else {
-			params.prid = preset.data("prid");
+			params.prid = preset.data("prid").toString();
 		}
 		
 		if(!preset.data("cat")){
@@ -632,14 +632,14 @@ if (!gb.validation)
 					
 					var deferredObj = 
 						$.ajax({
-						url : that.url.requestValidate + that.url.token,
-						type : "POST",
-						contentType : "application/json; charset=UTF-8",
-						dataType : "json",
-						cache : false,
-						data : JSON.stringify(params),
-						traditional: true
-					});
+							url : that.url.requestValidate + that.url.token,
+							type : "POST",
+							contentType : "application/json; charset=UTF-8",
+							dataType : "json",
+							cache : false,
+							data : JSON.stringify(params),
+							traditional: true
+						});
 					
 					deferredObj.done(function(data, textStatus, jqXHR) {
 						alert("검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");

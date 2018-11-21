@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -144,6 +145,19 @@ public class QAWebController extends AbstractController {
 				success = false;
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
 			} else {
+
+//				if (qaVer == null || qaType == null || prid == null || prst == null) {
+//					throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
+//				} else {
+//					JSONParser jsonP = new JSONParser();
+//					JSONObject param = (JSONObject) jsonP.parse(
+//							"{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}");
+//					JSONObject layers = (JSONObject) param.get("layers");
+//
+//					webService.validate("http://175.116.181.32:9999/geoserver", layers, prst.getCat(), crs, qaVer, qaType,
+//							prid, prst.getPid(), loginUser.getIdx());
+//				}
+
 				JSONObject serverObj = (JSONObject) geoserver.get("geoserver");
 				String serverName = (String) serverObj.get("servername");
 				JSONObject layers = (JSONObject) serverObj.get("layers");

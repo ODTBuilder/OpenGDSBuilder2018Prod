@@ -223,25 +223,13 @@ public class FileController extends AbstractController {
 			// 옵션또는 파일이 제대로 넘어오지 않았을때 강제로 예외발생
 			if (qaVer == null || qaType == null || prid == null || prst == null) {
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
+			} else if (fileformat == null) {
+				throw new Exception("파일포맷을 설정해주세요.");
 			} else {
-				JSONParser jsonP = new JSONParser();
-				JSONObject param = (JSONObject) jsonP.parse(
-						"{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}");
-				JSONObject layers = (JSONObject) param.get("layers");
-
-				webService.validate("http://175.116.181.32:9999/geoserver", layers, prst.getCat(), crs, qaVer, qaType,
-						prid, prst.getPid(), loginUser.getIdx());
+				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
+				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid,
+						prst.getPid());
 			}
-			// 옵션또는 파일이 제대로 넘어오지 않았을때 강제로 예외발생
-//			if (qaVer == null || qaType == null || prid == null || prst == null) {
-//				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
-//			} else if (fileformat == null) {
-//				throw new Exception("파일포맷을 설정해주세요.");
-//			} else {
-//				List<FileStatus> files = uploadService.SaveFile(request, loginUser);
-//				requestService.requestFileQAList(files, prst.getCat(), fileformat, crs, qaVer, qaType, prid,
-//						prst.getPid());
-//			}
 		} else {
 			throw new ValidationAuthException("해당 검수 요청 권한이 없습니다.");
 		}

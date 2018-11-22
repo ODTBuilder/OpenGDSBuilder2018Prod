@@ -301,4 +301,23 @@ public interface GeoserverService {
 	 */
 	public boolean updateGeogigGsStore(DTGeoserverManager geoserverManager, String workspace, String datastore,
 			String branch);
+	
+	/**
+	 * @Description 스타일리스트 조회
+	 * @author SG.Lee
+	 * @Date 2018. 11. 21. 오후 5:13:14
+	 * @param geoserverManager
+	 * @return List<String>
+	 * */
+	public List<String> getStyleList(DTGeoserverManager geoserverManager);
+	
+	/**
+	 * @Description 스타일리스트 조회 
+	 * @author SG.Lee
+	 * @Date 2018. 11. 21. 오후 6:00:41
+	 * @param geoserverManager
+	 * @param workspace
+	 * @return List<String>
+	 * */
+	public List<String> getStyleList(DTGeoserverManager geoserverManager, String workspace);
 }

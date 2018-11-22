@@ -174,7 +174,8 @@ html {
 			getMapWMS : "geoserver/geoserverWMSGetMap.ajax",
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
-			getLayerTile : "geoserver/geoserverWMSLayerLoad.do"
+			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
+			requestValidate : "web/validate.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
@@ -244,7 +245,11 @@ html {
 		var validation = new gb.validation.Validation({
 			"token" : urlList.token,
 			"autoOpen" : false,
-			"title" : "Validation"
+			"title" : "Validation",
+			"url": {
+				"token": urlList.token,
+				"requestValidate": urlList.requestValidate
+			}
 		});
 
 		$("#validation").click(function() {

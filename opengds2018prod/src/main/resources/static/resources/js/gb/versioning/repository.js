@@ -3974,19 +3974,17 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var workspace;
 	var datastore;
 
-	var wsLabel = $("<div>").text("Workspace");
+	var wsLabel = $("<div>").text("Workspace").css({
+		"padding" : "4px 10px 0 10px"
+	});
 	var wsSelect = $("<select>").addClass("gb-form");
 	var wsSelectDiv = $("<div>").append(wsSelect).css({
 		"padding" : "10px"
 	});
-	var dsLabel = $("<div>").text("Datastore");
-	var dsSelect = $("<select>").addClass("gb-form");
-	$(dsSelect).change(function() {
-		datastore = $(this).val();
-		console.log(workspace);
-		console.log(datastore);
-		that.getListGeoserverLayer(server, workspace, datastore);
+	var dsLabel = $("<div>").text("Datastore").css({
+		"padding" : "4px 10px 0 10px"
 	});
+	var dsSelect = $("<select>").addClass("gb-form");
 	var dsSelectDiv = $("<div>").append(dsSelect).css({
 		"padding" : "10px"
 	});
@@ -3997,14 +3995,31 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	var refBtn = $("<button>").append(refIcon).addClass("gb-button-clear").css({
 		"float" : "right"
-	}).click(function() {
-		workspace = $(wsSelect).val();
-		datastore = $(dsSelect).val();
-		that.getListGeoserverLayer(server, workspace, datastore);
 	});
 
-	var layerLabel = $("<div>").append("Layers").append(refBtn);
-	var layerList = $("<div>");
+	var layerLabel = $("<div>").append("Layers").append(refBtn).css({
+		"padding" : "4px 10px 0 10px"
+	});
+	// var layerList = $("<div>");
+	var layerList = $("<select>").attr({
+		"size" : "4"
+	}).addClass("gb-form").css({
+		"height" : "112px"
+	});
+	$(layerList).change(function() {
+		console.log(this.value);
+	});
+	$(dsSelect).change(function() {
+		datastore = $(this).val();
+		console.log(workspace);
+		console.log(datastore);
+		that.getListGeoserverLayer(server, workspace, datastore, layerList);
+	});
+	$(refBtn).click(function() {
+		workspace = $(wsSelect).val();
+		datastore = $(dsSelect).val();
+		that.getListGeoserverLayer(server, workspace, datastore, layerList);
+	})
 	var layerPanel = $("<div>").addClass("gb-article").append(layerList);
 	var right = $("<div>").css({
 		"width" : "50%",
@@ -4081,7 +4096,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				var publishModal = new gb.modal.Base({
 					"title" : "Publish",
 					"width" : 540,
-					"height" : 425,
+					"height" : 282,
 					"autoOpen" : true,
 					"body" : body,
 					"footer" : modalFooter
@@ -4092,6 +4107,18 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				});
 				$(okBtn).click(function() {
 					console.log("create repo");
+					var sv = server;
+					var ws = workspace;
+					var ds = datastore;
+					var lyr = $(layerList).val();
+					var rp = repo;
+					var br = branch;
+					if (!lyr) {
+						var msg1 = $("<div>").append("Please choose a layer.");
+						that.messageModal("Error", msg1);
+					} else {
+						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal);
+					}
 				});
 			}
 		},
@@ -4109,7 +4136,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
  * 
  * @method gb.versioning.Repository#getListGeoServerLayer
  */
-gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work, store) {
+gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work, store, select) {
 	var that = this;
 
 	var params = {
@@ -4138,7 +4165,63 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 		},
 		success : function(data) {
 			console.log(data);
+			if (Array.isArray(data)) {
+				$(select).empty();
+				for (var i = 0; i < data.length; i++) {
+					var opt = $("<option>").attr({
+						"value" : data[i].layerName
+					}).text(data[i].layerName + " [Published]");
+					$(select).append(opt);
+				}
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
+		}
+	});
+};
 
+/**
+ * 해당 레이어를 발행한다.
+ * 
+ * @method gb.versioning.Repository#publishGeogigLayer
+ */
+gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, store, layer, repo, branch, modal) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"workspace" : work,
+		"datastore" : store,
+		"layer" : layer,
+		"repoName" : repo,
+		"branchName" : branch
+	};
+
+	var checkURL = this.getPublishGeogigLayerURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			modal.close();
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			var msg1 = $("<div>").append(textStatus);

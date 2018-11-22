@@ -104,6 +104,7 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 			dtGeolayer = DTGeoLayer.build(response);
 			if (dtGeolayer != null) {
 				dtGeolayer.setStyle(layer.getDefaultStyle());
+				dtGeolayer.setStyleWorkspace(layer.getDefaultStyleWorkspace());
 			}
 		}
 		return dtGeolayer;

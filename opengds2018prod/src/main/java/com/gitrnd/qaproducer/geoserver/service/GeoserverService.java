@@ -310,4 +310,14 @@ public interface GeoserverService {
 	 * @return List<String>
 	 * */
 	public List<String> getStyleList(DTGeoserverManager geoserverManager);
+	
+	/**
+	 * @Description 스타일리스트 조회 
+	 * @author SG.Lee
+	 * @Date 2018. 11. 21. 오후 6:00:41
+	 * @param geoserverManager
+	 * @param workspace
+	 * @return List<String>
+	 * */
+	public List<String> getStyleList(DTGeoserverManager geoserverManager, String workspace);
 }

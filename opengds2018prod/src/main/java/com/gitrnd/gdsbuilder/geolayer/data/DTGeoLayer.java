@@ -85,6 +85,7 @@ public class DTGeoLayer {
 	private String geomType = ""; // 공간정보타입
 	private JSONObject attInfo = new JSONObject(); // 속성정보
 	private String style = "";
+	private String styleWorkspace = "";
 	private String sld = "";
 
 	/**
@@ -127,9 +128,6 @@ public class DTGeoLayer {
 	public DTGeoLayer(Element layerElem) {
 		RESTFeatureType featureType = new RESTFeatureType(layerElem);
 		this.nativeName = featureType.getNativeName();
-		if (nativeName.endsWith("geo_shp_37712013_A0070000_POINT")) {
-			System.out.println("test");
-		}
 		this.lName = featureType.getName();
 		this.title = featureType.getTitle();
 		this.abstractContent = featureType.getAbstract();
@@ -336,5 +334,12 @@ public class DTGeoLayer {
 
 	public void setGeomkey(String geomkey) {
 		this.geomkey = geomkey;
+	}
+	public String getStyleWorkspace() {
+		return styleWorkspace;
+	}
+
+	public void setStyleWorkspace(String styleWorkspace) {
+		this.styleWorkspace = styleWorkspace;
 	}
 }

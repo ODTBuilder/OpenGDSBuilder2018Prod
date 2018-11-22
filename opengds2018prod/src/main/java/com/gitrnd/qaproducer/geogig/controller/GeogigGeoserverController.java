@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCommandResponse;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -47,7 +48,7 @@ public class GeogigGeoserverController extends AbstractController {
 
 	@RequestMapping(value = "/listGeoserverLayer.do", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONArray publishGeogigLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public JSONArray listGeoserverLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "workspace", required = false) String workspace,
 			@RequestParam(value = "datastore", required = false) String datastore) {
@@ -58,7 +59,8 @@ public class GeogigGeoserverController extends AbstractController {
 
 	@RequestMapping(value = "/publishGeogigLayer.do", method = RequestMethod.POST)
 	@ResponseBody
-	public void publishGeogigLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigCommandResponse publishGeogigLayer(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "workspace", required = false) String workspace,
 			@RequestParam(value = "datastore", required = false) String datastore,
@@ -67,6 +69,6 @@ public class GeogigGeoserverController extends AbstractController {
 			@RequestParam(value = "branchName", required = false) String branchName) {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		geoserverService.publishGeogigLayer(geoserverManager, workspace, datastore, layer, repoName, branchName);
+		return geoserverService.publishGeogigLayer(geoserverManager, workspace, datastore, layer, repoName, branchName);
 	}
 }

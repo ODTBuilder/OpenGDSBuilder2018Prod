@@ -6,6 +6,7 @@ package com.gitrnd.qaproducer.qa.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,15 +43,18 @@ public class QAWebController extends AbstractController {
 
 	@RequestMapping(value = "/validate.do", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean validate(HttpServletRequest request, @RequestBody JSONObject jsonObject,
+	public boolean validate(HttpServletRequest request, @RequestBody String jsonStr,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
 
 		boolean success = false;
 
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObject = (JSONObject) parser.parse(jsonStr);
+
 		JSONObject geoserver = (JSONObject) jsonObject.get("geoserver");
 		String crs = (String) jsonObject.get("crs");
 		String prid = (String) jsonObject.get("prid");
-		int cat = (Integer) jsonObject.get("cat");
+
 		String qaVer = (String) jsonObject.get("qaVer");
 		String qaType = (String) jsonObject.get("qaType");
 

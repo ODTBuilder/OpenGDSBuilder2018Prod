@@ -49,24 +49,25 @@ public class QAWebService {
 	public boolean validate(String serverURL, JSONObject layers, int cid, String crs, String qaVer, String qaType,
 			String bPrid, int prid, int uIdx) {
 
-		FileStatus fileStatus = new FileStatus();
-		String fname = "";
-		Set set = layers.keySet();
-		Iterator iter = set.iterator();
-		int i = 0;
-		while (iter.hasNext()) {
-			String wsName = (String) iter.next();
-			if (i == 0) {
-				fname += wsName;
-			}
-			i++;
-		}
-		fname += "_" + set.size();
-		fileStatus.setFname(fname);
-		fileStatus.setStatus(1);
-		fileStatus.setUidx(uIdx);
-		fileStatusService.createFileStatus(fileStatus);
 		try {
+
+			FileStatus fileStatus = new FileStatus();
+			String fname = "";
+			Set set = layers.keySet();
+			Iterator iter = set.iterator();
+			int i = 0;
+			while (iter.hasNext()) {
+				String wsName = (String) iter.next();
+				if (i == 0) {
+					fname += wsName;
+				}
+			}
+			int otherSize = set.size() - 1;
+			fname += "_and_" + String.valueOf(otherSize) + "_others";
+			fileStatus.setFname(fname);
+			fileStatus.setStatus(1);
+			fileStatus.setUidx(uIdx);
+			fileStatusService.createFileStatus(fileStatus);
 			Long catetoryIdx = (long) cid;
 			int cIdx = catetoryIdx.intValue();
 			QACategory qaCat = qaCatService.retrieveQACategoryByIdx(cIdx);
@@ -96,7 +97,7 @@ public class QAWebService {
 			json.put("fid", fileStatus.getFid());
 			json.put("pid", pid);
 			json.put("prid", bPrid);
-			json.put("crs", "EPSG:" + crs);
+			json.put("crs", crs);
 			json.put("type", "web");
 			producer.produceWebMsg(json.toString());
 		} catch (Exception e) {

@@ -780,6 +780,21 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return styles;
 	}
+	
+	
+	@Override
+	public List<String> getStyleList(DTGeoserverManager geoserverManager, String workspace){
+		List<String> styles = new ArrayList<String>();
+		if (geoserverManager != null) {
+			restStyleManager = geoserverManager.getStyleManager();
+		} else {
+			throw new IllegalArgumentException("Geoserver 정보 없음");
+		}
+		if(restStyleManager!=null){
+			styles = restStyleManager.getStyles(workspace).getNames();
+		}
+		return styles;
+	}
 }
 
 /**

@@ -219,6 +219,11 @@ gb.versioning.Repository = function(obj) {
 	});
 	this.jstree = $(this.treeArea).jstree(true);
 
+	// $(this.treeArea).on('open_node.jstree', function(e, data) {
+	// console.log(data);
+	// that.getJSTree().deselect_all();
+	// that.getJSTree().select_node(data.node);
+	// });
 	var v = this.jstree.get_json('#', {
 		no_state : true,
 		flat : true
@@ -1148,13 +1153,8 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 					console.log(ggfn);
 					that.setNowBranch(branch);
 					that.getJSTree().refresh_node(repo);
-					// if (repo.data === undefined) {
-					// repo.data = {
-					// "transactionId" : transactionId
-					// }
-					// } else {
-					// repo.data["transactionId"] = transactionId;
-					// }
+					that.getJSTree().deselect_all();
+					that.getJSTree().select_node(branch);
 				} else {
 					var title = "Error";
 					var msg = "Checkout failed."
@@ -1949,7 +1949,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Host addres EX) 127.0.0.1"
+		"placeholder" : "Host name/addres EX) 127.0.0.1"
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -1971,7 +1971,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "Port number EX) 8080"
+		"placeholder" : "Port number EX) 5432"
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2188,11 +2188,128 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		var pass = $(rPassInput).val();
 		var rname = $(rrNameInput).val() === "" ? null : $(rrNameInput).val();
 		var rurl = $(rrURLInput).val() === "" ? null : $(rrURLInput).val();
+		if (typeof rurl === "string") {
+			if (rurl.indexOf("http://") === -1 && rurl.indexOf("http://") === -1) {
+				rurl = "http://" + rurl;
+			}
+		}
 		if (rname === null || rurl === null) {
 			rname = null;
 			rurl = null;
 		}
-		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+		if (repo === "" || host === "" || dbname === "" || scheme === "" || user === "" || pass === "") {
+			if (repo === "") {
+				$(rNameInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rNameInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (host === "") {
+				$(rHostInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rHostInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (port === "") {
+				$(rPortInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rPortInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (dbname === "") {
+				$(rDBInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rDBInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (scheme === "") {
+				$(rSchemeInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rSchemeInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (user === "") {
+				$(rIDInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rIDInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (pass === "") {
+				$(rPassInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rPassInput).css({
+					"background-color" : "#fff"
+				});
+			}
+
+			if (!($(rrNameInput).val() === "" && $(rrURLInput).val() === "")) {
+				$(rrNameInput).css({
+					"background-color" : "#fcf8e3"
+				});
+				$(rrURLInput).css({
+					"background-color" : "#fcf8e3"
+				});
+			} else {
+				$(rrNameInput).css({
+					"background-color" : "#fff"
+				});
+				$(rrURLInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			var title = "Error";
+			var msg = "Some required fields are empty."
+			that.messageModal(title, msg);
+		} else {
+			$(rNameInput).css({
+				"background-color" : "#fff"
+			});
+			$(rHostInput).css({
+				"background-color" : "#fff"
+			});
+			$(rPortInput).css({
+				"background-color" : "#fff"
+			});
+			$(rDBInput).css({
+				"background-color" : "#fff"
+			});
+			$(rSchemeInput).css({
+				"background-color" : "#fff"
+			});
+			$(rIDInput).css({
+				"background-color" : "#fff"
+			});
+			$(rPassInput).css({
+				"background-color" : "#fff"
+			});
+			$(rrNameInput).css({
+				"background-color" : "#fff"
+			});
+			$(rrURLInput).css({
+				"background-color" : "#fff"
+			});
+			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+		}
 	});
 };
 
@@ -2253,7 +2370,7 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 				that.refreshList();
 			} else {
 				var title = "Error";
-				var msg = "Init repository failed."
+				var msg = data.error;
 				that.messageModal(title, msg);
 			}
 		},
@@ -2913,7 +3030,42 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 		var repo = that.getNowRepository();
 		var name = $(nameInput).val();
 		var url = $(remoteURLInput).val();
-		that.addRemoteRepository(server.text, repo.text, name, url, modal);
+		if (name === "" || url === "") {
+			if (name === "") {
+				$(nameInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(nameInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (url === "") {
+				$(remoteURLInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(remoteURLInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			var title = "Error";
+			var msg = "Some required fields are empty."
+			that.messageModal(title, msg);
+		} else {
+			$(nameInput).css({
+				"background-color" : "#fff"
+			});
+			$(remoteURLInput).css({
+				"background-color" : "#fff"
+			});
+			if (typeof url === "string") {
+				if (url.indexOf("http://") === -1 && url.indexOf("http://") === -1) {
+					url = "http://" + url;
+				}
+			}
+			that.addRemoteRepository(server.text, repo.text, name, url, modal);
+		}
 	});
 };
 
@@ -2966,7 +3118,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 				that.refreshRemoteList();
 			} else {
 				var title = "Error";
-				var msg = "Create new branch failed."
+				var msg = data.error;
 				that.messageModal(title, msg);
 			}
 		},

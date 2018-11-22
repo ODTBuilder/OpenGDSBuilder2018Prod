@@ -3994,7 +3994,16 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 		"width" : "50%",
 		"float" : "left"
 	}).append(wsLabel).append(wsSelectDiv).append(dsLabel).append(dsSelectDiv);
-	var layerLabel = $("<div>").text("Layers");
+	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	var refBtn = $("<button>").append(refIcon).addClass("gb-button-clear").css({
+		"float" : "right"
+	}).click(function() {
+		workspace = $(wsSelect).val();
+		datastore = $(dsSelect).val();
+		that.getListGeoserverLayer(server, workspace, datastore);
+	});
+
+	var layerLabel = $("<div>").append("Layers").append(refBtn);
 	var layerList = $("<div>");
 	var layerPanel = $("<div>").addClass("gb-article").append(layerList);
 	var right = $("<div>").css({

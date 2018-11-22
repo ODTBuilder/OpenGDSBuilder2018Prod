@@ -102,7 +102,7 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 					}
 				}
 			}
-			if(dsArr.size() > 0) {
+			if (dsArr.size() > 0) {
 				dsListObj.put(ws, dsArr);
 			}
 		}
@@ -166,16 +166,18 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 				ResponseType.XML, ListParam.ALL);
 		List<String> featureTypeList = allGsLayerList.getFeatureTypeNames();
 		// unpublished layer
-		GeogigGeoserverLayerList listPulishedLayer = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
+		GeogigGeoserverLayerList listAvailableLayer = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
 				ResponseType.XML, ListParam.AVAILABLE);
-		List<String> publishedGsLayerList = listPulishedLayer.getFeatureTypeNames();
+		List<String> availableGsLayerList = listAvailableLayer.getFeatureTypeNames();
 		for (String featureType : featureTypeList) {
 			JSONObject layerObj = new JSONObject();
 			layerObj.put("layerName", featureType);
 			boolean isPublished = true;
-			for (String unPublishedFeatureType : publishedGsLayerList) {
-				if (featureType.equals(unPublishedFeatureType)) {
-					isPublished = false;
+			if (availableGsLayerList != null) {
+				for (String availableFeatureType : availableGsLayerList) {
+					if (featureType.equals(availableFeatureType)) {
+						isPublished = false;
+					}
 				}
 			}
 			layerObj.put("published", isPublished);

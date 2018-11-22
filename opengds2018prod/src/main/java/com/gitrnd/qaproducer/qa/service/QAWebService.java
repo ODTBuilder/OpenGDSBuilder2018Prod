@@ -49,6 +49,8 @@ public class QAWebService {
 	public boolean validate(String serverURL, JSONObject layers, int cid, String crs, String qaVer, String qaType,
 			String bPrid, int prid, int uIdx) {
 
+		try {
+		
 		FileStatus fileStatus = new FileStatus();
 		String fname = "";
 		Set set = layers.keySet();
@@ -61,47 +63,48 @@ public class QAWebService {
 			}
 			i++;
 		}
+	
+		
 		fname += "_" + set.size();
 		fileStatus.setFname(fname);
 		fileStatus.setStatus(1);
 		fileStatus.setUidx(uIdx);
 		fileStatusService.createFileStatus(fileStatus);
-		try {
-			Long catetoryIdx = (long) cid;
-			int cIdx = catetoryIdx.intValue();
-			QACategory qaCat = qaCatService.retrieveQACategoryByIdx(cIdx);
-			String qaTitle = qaCat.getTitle();
+		Long catetoryIdx = (long) cid;
+		int cIdx = catetoryIdx.intValue();
+		QACategory qaCat = qaCatService.retrieveQACategoryByIdx(cIdx);
+		String qaTitle = qaCat.getTitle();
 
-			QAProgress progress = new QAProgress();
-			progress.setUIdx(uIdx);
-			progress.setQaType(qaTitle);
-			progress.setPrid(prid);
+		QAProgress progress = new QAProgress();
+		progress.setUIdx(uIdx);
+		progress.setQaType(qaTitle);
+		progress.setPrid(prid);
 
-			progress.setQaState(FILEUPLOAD);
-			progress.setOriginName(fileStatus.getFname());
-			progress.setFIdx(fileStatus.getFid());
-			progress.setUIdx(uIdx);
-			progress.setQaType(qaTitle);
-			progress.setPrid(prid);
-			progress.setFileType(GEOSERVERQA);
-			qapgService.insertQARequest(progress);
+		progress.setQaState(FILEUPLOAD);
+		progress.setOriginName(fileStatus.getFname());
+		progress.setFIdx(fileStatus.getFid());
+		progress.setUIdx(uIdx);
+		progress.setQaType(qaTitle);
+		progress.setPrid(prid);
+		progress.setFileType(GEOSERVERQA);
+		qapgService.insertQARequest(progress);
 
-			int pid = progress.getPIdx();
-			JSONObject json = new JSONObject();
-			json.put("serverURL", serverURL);
-			json.put("layersMap", layers);
-			json.put("category", cid);
-			json.put("qaVer", qaVer);
-			json.put("qaType", qaType);
-			json.put("fid", fileStatus.getFid());
-			json.put("pid", pid);
-			json.put("prid", bPrid);
-			json.put("crs", "EPSG:" + crs);
-			json.put("type", "web");
-			producer.produceWebMsg(json.toString());
+		int pid = progress.getPIdx();
+		JSONObject json = new JSONObject();
+		json.put("serverURL", serverURL);
+		json.put("layersMap", layers);
+		json.put("category", cid);
+		json.put("qaVer", qaVer);
+		json.put("qaType", qaType);
+		json.put("fid", fileStatus.getFid());
+		json.put("pid", pid);
+		json.put("prid", bPrid);
+		json.put("crs", crs);
+		json.put("type", "web");
+		producer.produceWebMsg(json.toString());
 		} catch (Exception e) {
 			return false;
-		}
+		}	
 		return true;
 	}
 }

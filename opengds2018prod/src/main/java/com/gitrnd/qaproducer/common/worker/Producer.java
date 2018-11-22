@@ -23,7 +23,8 @@ public class Producer {
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
 
-		//String param = "{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}";
+		// String param =
+		// "{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}";
 		template.convertSendAndReceive(msg);
 		System.out.println("");
 	}
@@ -40,7 +41,7 @@ public class Producer {
 		return response;
 	}
 
-	public JSONObject produceWebMsg(String msg) {
+	public boolean produceWebMsg(String msg) {
 
 		System.out.println("Send msg = " + msg);
 
@@ -48,7 +49,7 @@ public class Producer {
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
 
-		JSONObject response = (JSONObject) template.convertSendAndReceive(msg);
+		boolean response = (boolean) template.convertSendAndReceive(msg);
 		return response;
 	}
 

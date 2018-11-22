@@ -68,5 +68,10 @@ public class GeogigGeoserverController extends AbstractController {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		geoserverService.publishGeogigLayer(geoserverManager, workspace, datastore, layer, repoName, branchName);
+
+		// [{"layerName":"gis_osm_places","published":true},
+		// {"layerName":"gis_osm_natural","published":false},
+		// {"layerName":"gis_osm_buildings","published":true}]
+
 	}
 }

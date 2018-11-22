@@ -4117,7 +4117,9 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 						var msg1 = $("<div>").append("Please choose a layer.");
 						that.messageModal("Error", msg1);
 					} else {
-						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal);
+						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal, function() {
+							that.getListGeoserverLayer(server, workspace, datastore, layerList);
+						});
 					}
 				});
 			}
@@ -4193,7 +4195,7 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
  * 
  * @method gb.versioning.Repository#publishGeogigLayer
  */
-gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, store, layer, repo, branch, modal) {
+gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, store, layer, repo, branch, modal, callback) {
 	var that = this;
 
 	var params = {
@@ -4225,7 +4227,17 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
 		},
 		success : function(data) {
 			console.log(data);
-			modal.close();
+			if (data.success === "true") {
+				var group = $("<div>").append("Layer has been published.");
+				that.messageModal("Message", group);
+				// modal.close();
+				if (typeof callback === "function") {
+					callback();
+				}
+			} else {
+				var group = $("<div>").append("Publish failed.");
+				that.messageModal("Error", group);
+			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			var msg1 = $("<div>").append(textStatus);

@@ -4170,7 +4170,11 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 				for (var i = 0; i < data.length; i++) {
 					var opt = $("<option>").attr({
 						"value" : data[i].layerName
-					}).text(data[i].layerName + " [Published]");
+					}).append(data[i].layerName);
+					if (data[i].published === true) {
+						$(opt).append(" [Published]");
+						$(opt).prop("disabled", true);
+					}
 					$(select).append(opt);
 				}
 			}

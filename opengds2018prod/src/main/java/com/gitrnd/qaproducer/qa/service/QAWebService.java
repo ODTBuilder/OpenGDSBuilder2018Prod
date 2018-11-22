@@ -50,61 +50,59 @@ public class QAWebService {
 			String bPrid, int prid, int uIdx) {
 
 		try {
-		
-		FileStatus fileStatus = new FileStatus();
-		String fname = "";
-		Set set = layers.keySet();
-		Iterator iter = set.iterator();
-		int i = 0;
-		while (iter.hasNext()) {
-			String wsName = (String) iter.next();
-			if (i == 0) {
-				fname += wsName;
+
+			FileStatus fileStatus = new FileStatus();
+			String fname = "";
+			Set set = layers.keySet();
+			Iterator iter = set.iterator();
+			int i = 0;
+			while (iter.hasNext()) {
+				String wsName = (String) iter.next();
+				if (i == 0) {
+					fname += wsName;
+				}
 			}
-			i++;
-		}
-	
-		
-		fname += "_" + set.size();
-		fileStatus.setFname(fname);
-		fileStatus.setStatus(1);
-		fileStatus.setUidx(uIdx);
-		fileStatusService.createFileStatus(fileStatus);
-		Long catetoryIdx = (long) cid;
-		int cIdx = catetoryIdx.intValue();
-		QACategory qaCat = qaCatService.retrieveQACategoryByIdx(cIdx);
-		String qaTitle = qaCat.getTitle();
+			int otherSize = set.size() - 1;
+			fname += "_and_" + String.valueOf(otherSize) + "_others";
+			fileStatus.setFname(fname);
+			fileStatus.setStatus(1);
+			fileStatus.setUidx(uIdx);
+			fileStatusService.createFileStatus(fileStatus);
+			Long catetoryIdx = (long) cid;
+			int cIdx = catetoryIdx.intValue();
+			QACategory qaCat = qaCatService.retrieveQACategoryByIdx(cIdx);
+			String qaTitle = qaCat.getTitle();
 
-		QAProgress progress = new QAProgress();
-		progress.setUIdx(uIdx);
-		progress.setQaType(qaTitle);
-		progress.setPrid(prid);
+			QAProgress progress = new QAProgress();
+			progress.setUIdx(uIdx);
+			progress.setQaType(qaTitle);
+			progress.setPrid(prid);
 
-		progress.setQaState(FILEUPLOAD);
-		progress.setOriginName(fileStatus.getFname());
-		progress.setFIdx(fileStatus.getFid());
-		progress.setUIdx(uIdx);
-		progress.setQaType(qaTitle);
-		progress.setPrid(prid);
-		progress.setFileType(GEOSERVERQA);
-		qapgService.insertQARequest(progress);
+			progress.setQaState(FILEUPLOAD);
+			progress.setOriginName(fileStatus.getFname());
+			progress.setFIdx(fileStatus.getFid());
+			progress.setUIdx(uIdx);
+			progress.setQaType(qaTitle);
+			progress.setPrid(prid);
+			progress.setFileType(GEOSERVERQA);
+			qapgService.insertQARequest(progress);
 
-		int pid = progress.getPIdx();
-		JSONObject json = new JSONObject();
-		json.put("serverURL", serverURL);
-		json.put("layersMap", layers);
-		json.put("category", cid);
-		json.put("qaVer", qaVer);
-		json.put("qaType", qaType);
-		json.put("fid", fileStatus.getFid());
-		json.put("pid", pid);
-		json.put("prid", bPrid);
-		json.put("crs", crs);
-		json.put("type", "web");
-		producer.produceWebMsg(json.toString());
+			int pid = progress.getPIdx();
+			JSONObject json = new JSONObject();
+			json.put("serverURL", serverURL);
+			json.put("layersMap", layers);
+			json.put("category", cid);
+			json.put("qaVer", qaVer);
+			json.put("qaType", qaType);
+			json.put("fid", fileStatus.getFid());
+			json.put("pid", pid);
+			json.put("prid", bPrid);
+			json.put("crs", crs);
+			json.put("type", "web");
+			producer.produceWebMsg(json.toString());
 		} catch (Exception e) {
 			return false;
-		}	
+		}
 		return true;
 	}
 }

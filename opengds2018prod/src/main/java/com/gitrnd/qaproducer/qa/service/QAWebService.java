@@ -62,8 +62,10 @@ public class QAWebService {
 					fname += wsName;
 				}
 			}
-			int otherSize = set.size() - 1;
-			fname += "_and_" + String.valueOf(otherSize) + "_others";
+			int size = set.size();
+			if (size > 2) {
+				fname += "_and_others";
+			}
 			fileStatus.setFname(fname);
 			fileStatus.setStatus(1);
 			fileStatus.setUidx(uIdx);

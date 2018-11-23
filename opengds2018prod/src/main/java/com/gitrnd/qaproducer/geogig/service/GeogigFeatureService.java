@@ -15,13 +15,13 @@ public interface GeogigFeatureService {
 	 * @param geoserverManager
 	 * @param repoName
 	 * @param path
-	 * @param oldIndex
-	 * @param newIndex
+	 * @param newCommitId
+	 * @param oldCommitId
 	 * @return
 	 * @throws JAXBException
 	 */
-	GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, int oldIndex,
-			int newIndex) throws JAXBException;
+	GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
+			String oldCommitId) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

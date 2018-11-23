@@ -69,11 +69,11 @@ public class GeogigFeatureController extends AbstractController {
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,
-			@RequestParam(value = "newIndex", required = false) int newIndex,
-			@RequestParam(value = "oldIndex", required = false) int oldIndex) throws JAXBException {
+			@RequestParam(value = "newCommitId", required = false) String newCommitId,
+			@RequestParam(value = "oldCommitId", required = false) String oldCommitId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureDiff(geoserverManager, repoName, path, newIndex, oldIndex);
+		return featureService.featureDiff(geoserverManager, repoName, path, newCommitId, oldCommitId);
 	}
 
 	@RequestMapping(value = "/featureRevert.do", method = RequestMethod.POST)

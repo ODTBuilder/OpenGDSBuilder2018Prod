@@ -37,24 +37,24 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
 public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
-	public GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, int newIndex,
-			int oldIndex) throws JAXBException {
+	public GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
+			String oldCommitId) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		String oldTreeish = "HEAD";
-		String newTreeish = "HEAD";
-
-		if (oldIndex != 0) {
-			oldTreeish += "~" + oldIndex;
-		}
+//		String oldTreeish = "HEAD";
+//		String newTreeish = "HEAD";
+//
+//		if (oldIndex != 0) {
+//			oldTreeish += "~" + oldIndex;
+//		}
 
 		DiffRepository diffRepos = new DiffRepository();
 		GeogigDiff geogigDiff = null;
 		try {
-			geogigDiff = diffRepos.executeCommand(url, user, pw, repoName, oldTreeish, newTreeish, path, null);
+			geogigDiff = diffRepos.executeCommand(url, user, pw, repoName, newCommitId, oldCommitId, path, null);
 		} catch (GeogigCommandException e) {
 			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
 			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();

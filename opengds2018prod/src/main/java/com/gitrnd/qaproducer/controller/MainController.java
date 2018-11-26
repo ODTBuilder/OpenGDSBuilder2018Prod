@@ -1,6 +1,5 @@
 package com.gitrnd.qaproducer.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import com.gitrnd.qaproducer.file.service.RequestService;
 import com.gitrnd.qaproducer.file.service.UploadService;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.service.PresetService;
-import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 import com.gitrnd.qaproducer.qa.service.ValidationResultService;
 
 @Controller

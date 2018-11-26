@@ -373,7 +373,7 @@ public class GeoserverController extends AbstractController {
 		if(workspace==null){
 			styles = geoserverService.getStyleList(dtGeoserverManager);
 		}else{
-			
+			styles = geoserverService.getStyleList(dtGeoserverManager, workspace);
 		}
 		
 		return styles;

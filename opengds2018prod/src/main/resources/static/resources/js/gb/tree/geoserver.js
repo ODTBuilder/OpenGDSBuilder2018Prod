@@ -702,11 +702,17 @@ gb.tree.GeoServer = function(obj) {
 								"label" : "Properties",
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									var arr, workspace = [];
 									/*
 									 * if (obj.type === "geoserver") {
 									 * that.openDeleteGeoServer(obj.id); }
 									 */
 									if (inst.is_selected(obj)) {
+										arr = inst.get_node(obj.parents[obj.parents.length -2]).children;
+										for(var i = 0; i < arr.length; i++){
+											workspace.push(inst.get_node(arr[i]).text);
+										}
+										that.properties.setWorkSpaceList(workspace);
 										that.properties.setForm({
 											geoserver : obj.id.split(":")[0],
 											workspace : obj.id.split(":")[1],
@@ -929,8 +935,8 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 
-	gNameInput.val("geoserver32");
-	gURLInput.val("http://175.116.181.32:9999/geoserver");
+	gNameInput.val("geoserver42");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
 	gIDInput.val("admin");
 	gPassInput.val("geoserver");
 };

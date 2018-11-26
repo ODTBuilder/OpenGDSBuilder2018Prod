@@ -215,7 +215,7 @@ public class GeogigRepositoryTree extends JSONArray {
 										RESTDataStore dStore = dtGeoserverReader.getDatastore(wsName, dsName);
 										if (dStore != null) {
 											String storeType = dStore.getStoreType();
-											if (storeType.equals("GeoGIG")) {
+											if (storeType != null && storeType.equals("GeoGIG")) {
 												Map<String, String> connetParams = dStore.getConnectionParameters();
 												String geogigRepos = connetParams.get("geogig_repository");
 												String reposName = geogigRepos.replace("geoserver://", "");

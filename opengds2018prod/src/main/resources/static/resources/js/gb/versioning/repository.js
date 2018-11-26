@@ -219,6 +219,11 @@ gb.versioning.Repository = function(obj) {
 	});
 	this.jstree = $(this.treeArea).jstree(true);
 
+	// $(this.treeArea).on('open_node.jstree', function(e, data) {
+	// console.log(data);
+	// that.getJSTree().deselect_all();
+	// that.getJSTree().select_node(data.node);
+	// });
 	var v = this.jstree.get_json('#', {
 		no_state : true,
 		flat : true
@@ -1148,13 +1153,8 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 					console.log(ggfn);
 					that.setNowBranch(branch);
 					that.getJSTree().refresh_node(repo);
-					// if (repo.data === undefined) {
-					// repo.data = {
-					// "transactionId" : transactionId
-					// }
-					// } else {
-					// repo.data["transactionId"] = transactionId;
-					// }
+					that.getJSTree().deselect_all();
+					that.getJSTree().select_node(branch);
 				} else {
 					var title = "Error";
 					var msg = "Checkout failed."
@@ -1949,7 +1949,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Host addres EX) 127.0.0.1"
+		"placeholder" : "Host name/addres EX) 127.0.0.1"
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -1971,7 +1971,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "Port number EX) 8080"
+		"placeholder" : "Port number EX) 5432"
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2188,11 +2188,128 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		var pass = $(rPassInput).val();
 		var rname = $(rrNameInput).val() === "" ? null : $(rrNameInput).val();
 		var rurl = $(rrURLInput).val() === "" ? null : $(rrURLInput).val();
+		if (typeof rurl === "string") {
+			if (rurl.indexOf("http://") === -1 && rurl.indexOf("http://") === -1) {
+				rurl = "http://" + rurl;
+			}
+		}
 		if (rname === null || rurl === null) {
 			rname = null;
 			rurl = null;
 		}
-		that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+		if (repo === "" || host === "" || dbname === "" || scheme === "" || user === "" || pass === "") {
+			if (repo === "") {
+				$(rNameInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rNameInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (host === "") {
+				$(rHostInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rHostInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (port === "") {
+				$(rPortInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rPortInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (dbname === "") {
+				$(rDBInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rDBInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (scheme === "") {
+				$(rSchemeInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rSchemeInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (user === "") {
+				$(rIDInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rIDInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (pass === "") {
+				$(rPassInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(rPassInput).css({
+					"background-color" : "#fff"
+				});
+			}
+
+			if (!($(rrNameInput).val() === "" && $(rrURLInput).val() === "")) {
+				$(rrNameInput).css({
+					"background-color" : "#fcf8e3"
+				});
+				$(rrURLInput).css({
+					"background-color" : "#fcf8e3"
+				});
+			} else {
+				$(rrNameInput).css({
+					"background-color" : "#fff"
+				});
+				$(rrURLInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			var title = "Error";
+			var msg = "Some required fields are empty."
+			that.messageModal(title, msg);
+		} else {
+			$(rNameInput).css({
+				"background-color" : "#fff"
+			});
+			$(rHostInput).css({
+				"background-color" : "#fff"
+			});
+			$(rPortInput).css({
+				"background-color" : "#fff"
+			});
+			$(rDBInput).css({
+				"background-color" : "#fff"
+			});
+			$(rSchemeInput).css({
+				"background-color" : "#fff"
+			});
+			$(rIDInput).css({
+				"background-color" : "#fff"
+			});
+			$(rPassInput).css({
+				"background-color" : "#fff"
+			});
+			$(rrNameInput).css({
+				"background-color" : "#fff"
+			});
+			$(rrURLInput).css({
+				"background-color" : "#fff"
+			});
+			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+		}
 	});
 };
 
@@ -2253,7 +2370,7 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 				that.refreshList();
 			} else {
 				var title = "Error";
-				var msg = "Init repository failed."
+				var msg = data.error;
 				that.messageModal(title, msg);
 			}
 		},
@@ -2913,7 +3030,42 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 		var repo = that.getNowRepository();
 		var name = $(nameInput).val();
 		var url = $(remoteURLInput).val();
-		that.addRemoteRepository(server.text, repo.text, name, url, modal);
+		if (name === "" || url === "") {
+			if (name === "") {
+				$(nameInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(nameInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			if (url === "") {
+				$(remoteURLInput).css({
+					"background-color" : "#f2dede"
+				});
+			} else {
+				$(remoteURLInput).css({
+					"background-color" : "#fff"
+				});
+			}
+			var title = "Error";
+			var msg = "Some required fields are empty."
+			that.messageModal(title, msg);
+		} else {
+			$(nameInput).css({
+				"background-color" : "#fff"
+			});
+			$(remoteURLInput).css({
+				"background-color" : "#fff"
+			});
+			if (typeof url === "string") {
+				if (url.indexOf("http://") === -1 && url.indexOf("http://") === -1) {
+					url = "http://" + url;
+				}
+			}
+			that.addRemoteRepository(server.text, repo.text, name, url, modal);
+		}
 	});
 };
 
@@ -2966,7 +3118,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 				that.refreshRemoteList();
 			} else {
 				var title = "Error";
-				var msg = "Create new branch failed."
+				var msg = data.error;
 				that.messageModal(title, msg);
 			}
 		},
@@ -3974,19 +4126,17 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var workspace;
 	var datastore;
 
-	var wsLabel = $("<div>").text("Workspace");
+	var wsLabel = $("<div>").text("Workspace").css({
+		"padding" : "4px 10px 0 10px"
+	});
 	var wsSelect = $("<select>").addClass("gb-form");
 	var wsSelectDiv = $("<div>").append(wsSelect).css({
 		"padding" : "10px"
 	});
-	var dsLabel = $("<div>").text("Datastore");
-	var dsSelect = $("<select>").addClass("gb-form");
-	$(dsSelect).change(function() {
-		datastore = $(this).val();
-		console.log(workspace);
-		console.log(datastore);
-		that.getListGeoserverLayer(server, workspace, datastore);
+	var dsLabel = $("<div>").text("Datastore").css({
+		"padding" : "4px 10px 0 10px"
 	});
+	var dsSelect = $("<select>").addClass("gb-form");
 	var dsSelectDiv = $("<div>").append(dsSelect).css({
 		"padding" : "10px"
 	});
@@ -3994,8 +4144,34 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 		"width" : "50%",
 		"float" : "left"
 	}).append(wsLabel).append(wsSelectDiv).append(dsLabel).append(dsSelectDiv);
-	var layerLabel = $("<div>").text("Layers");
-	var layerList = $("<div>");
+	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	var refBtn = $("<button>").append(refIcon).addClass("gb-button-clear").css({
+		"float" : "right"
+	});
+
+	var layerLabel = $("<div>").append("Layers").append(refBtn).css({
+		"padding" : "4px 10px 0 10px"
+	});
+	// var layerList = $("<div>");
+	var layerList = $("<select>").attr({
+		"size" : "4"
+	}).addClass("gb-form").css({
+		"height" : "112px"
+	});
+	$(layerList).change(function() {
+		console.log(this.value);
+	});
+	$(dsSelect).change(function() {
+		datastore = $(this).val();
+		console.log(workspace);
+		console.log(datastore);
+		that.getListGeoserverLayer(server, workspace, datastore, layerList);
+	});
+	$(refBtn).click(function() {
+		workspace = $(wsSelect).val();
+		datastore = $(dsSelect).val();
+		that.getListGeoserverLayer(server, workspace, datastore, layerList);
+	})
 	var layerPanel = $("<div>").addClass("gb-article").append(layerList);
 	var right = $("<div>").css({
 		"width" : "50%",
@@ -4072,7 +4248,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				var publishModal = new gb.modal.Base({
 					"title" : "Publish",
 					"width" : 540,
-					"height" : 425,
+					"height" : 282,
 					"autoOpen" : true,
 					"body" : body,
 					"footer" : modalFooter
@@ -4083,6 +4259,20 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				});
 				$(okBtn).click(function() {
 					console.log("create repo");
+					var sv = server;
+					var ws = workspace;
+					var ds = datastore;
+					var lyr = $(layerList).val();
+					var rp = repo;
+					var br = branch;
+					if (!lyr) {
+						var msg1 = $("<div>").append("Please choose a layer.");
+						that.messageModal("Error", msg1);
+					} else {
+						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal, function() {
+							that.getListGeoserverLayer(server, workspace, datastore, layerList);
+						});
+					}
 				});
 			}
 		},
@@ -4100,7 +4290,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
  * 
  * @method gb.versioning.Repository#getListGeoServerLayer
  */
-gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work, store) {
+gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work, store, select) {
 	var that = this;
 
 	var params = {
@@ -4129,7 +4319,77 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 		},
 		success : function(data) {
 			console.log(data);
+			if (Array.isArray(data)) {
+				$(select).empty();
+				for (var i = 0; i < data.length; i++) {
+					var opt = $("<option>").attr({
+						"value" : data[i].layerName
+					}).append(data[i].layerName);
+					if (data[i].published === true) {
+						$(opt).append(" [Published]");
+						$(opt).prop("disabled", true);
+					}
+					$(select).append(opt);
+				}
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
+		}
+	});
+};
 
+/**
+ * 해당 레이어를 발행한다.
+ * 
+ * @method gb.versioning.Repository#publishGeogigLayer
+ */
+gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, store, layer, repo, branch, modal, callback) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"workspace" : work,
+		"datastore" : store,
+		"layer" : layer,
+		"repoName" : repo,
+		"branchName" : branch
+	};
+
+	var checkURL = this.getPublishGeogigLayerURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				var group = $("<div>").append("Layer has been published.");
+				that.messageModal("Message", group);
+				// modal.close();
+				if (typeof callback === "function") {
+					callback();
+				}
+			} else {
+				var group = $("<div>").append("Publish failed.");
+				that.messageModal("Error", group);
+			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			var msg1 = $("<div>").append(textStatus);

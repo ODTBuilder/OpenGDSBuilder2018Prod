@@ -17,40 +17,58 @@ public class Producer {
 	@Value("${spring.rabbitmq.template.routing-key}")
 	private String routingKey;
 
+//	public void produceMsg(String msg) {
+//		System.out.println("Send msg = " + msg);
+//		template.setExchange(exchange);
+//		template.setRoutingKey(routingKey);
+//		template.setReplyTimeout(Long.MAX_VALUE);
+//		template.convertSendAndReceive(msg);
+//	}
+//
+//	public JSONObject produceMobileMsg(String msg) {
+//
+//		System.out.println("Send msg = " + msg);
+//		template.setExchange(exchange);
+//		template.setRoutingKey(routingKey);
+//		template.setReplyTimeout(Long.MAX_VALUE);
+//		JSONObject response = (JSONObject) template.convertSendAndReceive(msg);
+//		return response;
+//	}
+//
+//	public void produceWebMsg(String msg) {
+//
+//		System.out.println("Send msg = " + msg);
+//		template.setExchange(exchange);
+//		template.setRoutingKey(routingKey);
+//		template.setReplyTimeout(Long.MAX_VALUE);
+//		template.convertSendAndReceive(msg);
+//	}
+
 	public void produceMsg(String msg) {
 		System.out.println("Send msg = " + msg);
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
-
-		// String param =
-		// "{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}";
-		template.convertSendAndReceive(msg);
-		System.out.println("");
+		template.convertAndSend(msg);
 	}
 
 	public JSONObject produceMobileMsg(String msg) {
 
 		System.out.println("Send msg = " + msg);
-
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
-
 		JSONObject response = (JSONObject) template.convertSendAndReceive(msg);
 		return response;
 	}
 
-	public boolean produceWebMsg(String msg) {
+	public void produceWebMsg(String msg) {
 
 		System.out.println("Send msg = " + msg);
-
 		template.setExchange(exchange);
 		template.setRoutingKey(routingKey);
 		template.setReplyTimeout(Long.MAX_VALUE);
-
-		boolean response = (boolean) template.convertSendAndReceive(msg);
-		return response;
+		template.convertAndSend(msg);
 	}
 
 }

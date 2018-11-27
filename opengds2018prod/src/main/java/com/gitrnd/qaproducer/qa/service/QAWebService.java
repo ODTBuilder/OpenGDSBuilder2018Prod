@@ -102,9 +102,9 @@ public class QAWebService {
 			json.put("crs", crs);
 			json.put("type", "web");
 			producer.produceWebMsg(json.toString());
+			return true;
 		} catch (Exception e) {
 			return false;
 		}
-		return true;
 	}
 }

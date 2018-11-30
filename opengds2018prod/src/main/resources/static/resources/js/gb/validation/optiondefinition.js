@@ -91,7 +91,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"en" : "Unsmooth contour line curves"
 		},
 		"conBreak" : {
-			"ko" : "등고선 끊감 오류",
+			"ko" : "등고선 끊김 오류",
 			"en" : "Contour line disconnections"
 		},
 		"zValueAmbiguous" : {

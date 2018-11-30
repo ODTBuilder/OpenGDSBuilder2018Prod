@@ -3633,8 +3633,8 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 	// 레이어 코드
 	var layerCode = null;
 	if (!$(sel).parents().eq(4).find(".gb-optiondefinition-select-tolerancecode").prop("disabled")) {
-		layerCode = $(inp).parents().eq(4).find(".gb-optiondefinition-select-tolerancecode option").filter(":selected").attr("geom") === "none" ? null
-				: $(inp).parents().eq(4).find(".gb-optiondefinition-select-tolerancecode").val();
+		layerCode = $(sel).parents().eq(4).find(".gb-optiondefinition-select-tolerancecode option").filter(":selected").attr("geom") === "none" ? null
+				: $(sel).parents().eq(4).find(".gb-optiondefinition-select-tolerancecode").val();
 	}
 	// 수치
 	var number = null;

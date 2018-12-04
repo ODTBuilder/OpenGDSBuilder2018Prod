@@ -255,7 +255,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
-		"epsg" : this.getEPSGCode()
+		"srs" : this.getEPSGCode()
 	};
 	console.log(params);
 	var url = this.getUploadURL();
@@ -264,19 +264,19 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
 	console.log(queryString);
 	var queryParams = {};
-	if (queryString) {
+	/*if (queryString) {
 		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
 			return key === "" ? value : decodeURIComponent(value);
 		});
 	}
-	console.log(queryParams);
+	console.log(queryParams);*/
 	var finalParams = {};
-	$.extend(finalParams, params, queryParams);
+	$.extend(finalParams, params, {});
 	console.log(finalParams);
 
 	var form = $("<form>");
 	var formData = new FormData(form[0]);
-	formData.append("file", input.files[0]);
+	formData.append("MultipartHttpServletRequest", input.files[0]);
 	var keys = Object.keys(finalParams);
 	for (var i = 0; i < keys.length; i++) {
 		formData.append(keys[i], finalParams[keys[i]]);

@@ -234,7 +234,7 @@ gb.header.Base.prototype.createContent = function(list){
 	
 	
 	// close button 생성
-	var closeBtn = $("<button>");
+	/*var closeBtn = $("<button>");
 	adjustStyle(closeBtn, this.closeBtnStyle);
 	closeBtn.hover(function(){
 		$(this).css("color", "#4c6ef5");
@@ -249,7 +249,7 @@ gb.header.Base.prototype.createContent = function(list){
 	var closeSpan = $("<span>×</span>");
 	adjustStyle(closeSpan, this.closeSpanStyle);
 	
-	closeBtn.append(closeSpan);
+	closeBtn.append(closeSpan);*/
 	
 	// header content 생성
 	var iTag, aTag, liTag;
@@ -313,7 +313,7 @@ gb.header.Base.prototype.createContent = function(list){
 		}
 	}
 	
-	this.headerTag.append(closeBtn);
+	//this.headerTag.append(closeBtn);
 	this.headerTag.append(this.ulTagLeft);
 	this.headerTag.append(this.ulTagRight);
 	

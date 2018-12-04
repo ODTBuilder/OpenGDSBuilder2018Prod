@@ -175,7 +175,8 @@ html {
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
-			requestValidate : "web/validate.do"
+			requestValidate : "web/validate.do",
+			geoserverFileUpload : "geoserver/fileUpload.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
@@ -273,7 +274,7 @@ html {
 		});
 
 		var uploadSHP = new gb.geoserver.UploadSHP({
-			"url" : "file/fileUpload.ajax?${_csrf.parameterName}=${_csrf.token}"
+			"url" : urlList.geoserverFileUpload + urlList.token
 		});
 
 		var gtree = new gb.tree.GeoServer({

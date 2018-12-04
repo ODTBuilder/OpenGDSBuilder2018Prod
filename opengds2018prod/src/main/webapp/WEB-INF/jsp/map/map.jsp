@@ -176,7 +176,7 @@ html {
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
 			requestValidate : "web/validate.do",
-			geoserverFileUpload : "geoserver/fileUpload.do"
+			geoserverFileUpload : "geoserver/upload.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],

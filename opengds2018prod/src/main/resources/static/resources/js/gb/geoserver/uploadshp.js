@@ -284,7 +284,8 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	console.log(formData);
 
 	$.ajax({
-		url : withoutParamURL,
+		//url : withoutParamURL,
+		url : this.url,
 		method : "POST",
 		enctype : 'multipart/form-data',
 		contentType : false,

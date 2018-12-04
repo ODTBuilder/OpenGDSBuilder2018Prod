@@ -24,14 +24,22 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/dropzone/basic.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/dropzone/dropzone.css">
 <%-- 데이터 테이블 --%>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/datatables/css/dataTables.bootstrap4.css" />
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/js/datatables/css/select.bootstrap4.min.css" />
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/datatables/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/datatables/css/dataTables.bootstrap4.css" />
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/js/datatables/css/select.bootstrap4.min.css" />
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/datatables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/js/datatables/js/dataTables.bootstrap4.min.js"></script>
 <!-- 다운로드 js-->
 <script src="${pageContext.request.contextPath}/resources/js/download/download.js"></script>
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
+<!-- gb namespace -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
+<!-- gb.modal -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
 <!-- gb 임베드 베이스 -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/embed/base.js"></script>
 <!-- gb 레이어 정의 -->

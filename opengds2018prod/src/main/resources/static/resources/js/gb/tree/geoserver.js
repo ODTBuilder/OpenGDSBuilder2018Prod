@@ -708,8 +708,8 @@ gb.tree.GeoServer = function(obj) {
 									 * that.openDeleteGeoServer(obj.id); }
 									 */
 									if (inst.is_selected(obj)) {
-										arr = inst.get_node(obj.parents[obj.parents.length -2]).children;
-										for(var i = 0; i < arr.length; i++){
+										arr = inst.get_node(obj.parents[obj.parents.length - 2]).children;
+										for (var i = 0; i < arr.length; i++) {
 											workspace.push(inst.get_node(arr[i]).text);
 										}
 										that.properties.setWorkSpaceList(workspace);

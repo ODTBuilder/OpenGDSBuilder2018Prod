@@ -128,6 +128,14 @@ gb.validation.LayerDefinition = function(obj) {
 		"keyName" : {
 			"en" : "Key name:",
 			"ko" : "키 이름:"
+		},
+		"askDelCat" : {
+			"en" : "Are you sure you want to delete the selected layer category?",
+			"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
+		},
+		"askDelLayer" : {
+			"en" : "Are you sure you want to delete the selected layer?",
+			"ko" : "선택한 레이어를 삭제하시겠습니까?"
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -168,7 +176,14 @@ gb.validation.LayerDefinition = function(obj) {
 		});
 	}
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-category", function() {
-		that.deleteCategory(this);
+		var thisBtn = this;
+		var idx = $(thisBtn).parents().eq(4).index();
+		var strc = that.getStructure();
+		var elem = strc[idx];
+		var callback = function() {
+			that.deleteCategory(thisBtn);
+		};
+		that.deleteCategoryModal(elem.name, callback);
 		console.log(that.getStructure());
 	});
 
@@ -202,7 +217,23 @@ gb.validation.LayerDefinition = function(obj) {
 	});
 
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-layer", function() {
-		that.deleteLayer(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteLayer(thisBtn);
+		};
+		var catIdx = $(thisBtn).parents().eq(8).index();
+		console.log(catIdx);
+		var layerIdx = $(thisBtn).parents().eq(2).index();
+		console.log(layerIdx);
+		var strc = that.getStructure();
+		if (Array.isArray(strc)) {
+			var cat = strc[catIdx];
+			var layers = cat["layers"];
+			if (Array.isArray(layers)) {
+				var layer = cat["layers"][layerIdx]["code"] ? cat["layers"][layerIdx]["code"] : "";
+				that.deleteLayerModal(layer, callback);
+			}
+		}
 		console.log(that.getStructure());
 	});
 
@@ -995,4 +1026,88 @@ gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 			}
 		}
 	}
+};
+/*
+ * 카테고리 삭제전 확인창 출력
+ */
+gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, callback) {
+	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + catname + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	// var modalFooter =
+	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
+	var deleteModal = new gb.modal.Base({
+		"title" : "Delete Category",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
+};
+/*
+ * 레이어 삭제전 확인창 출력
+ */
+gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callback) {
+	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + layer + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	// var modalFooter =
+	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
+	var deleteModal = new gb.modal.Base({
+		"title" : "Delete Layer",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
 };

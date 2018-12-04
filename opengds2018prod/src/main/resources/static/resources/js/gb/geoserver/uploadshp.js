@@ -276,7 +276,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 
 	var form = $("<form>");
 	var formData = new FormData(form[0]);
-	formData.append("MultipartHttpServletRequest", input.files[0]);
+	formData.append("file", input.files[0]);
 	var keys = Object.keys(finalParams);
 	for (var i = 0; i < keys.length; i++) {
 		formData.append(keys[i], finalParams[keys[i]]);

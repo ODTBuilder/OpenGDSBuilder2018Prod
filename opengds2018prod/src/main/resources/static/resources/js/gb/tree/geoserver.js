@@ -344,68 +344,47 @@ gb.tree.GeoServer = function(obj) {
 								"icon" : "fas fa-file-import",
 								"separator_after" : true,
 								"label" : "Import",
-								"action" : false,
-								"submenu" : {
-									"wms" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-image-o",
-										"separator_after" : false,
-										"label" : "WMS",
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											var nodes = inst.get_selected();
-											console.log(nodes);
-											var selectedNum = nodes.length;
-											if (selectedNum === 1) {
-												var node = inst.get_node(nodes[0]);
-												var type = inst.get_type(node);
-												if (type === "workspace") {
-													inst.load_each_wms_layer(node, that.map.getLayers());
-												} else if (type === "datastore") {
-													inst.load_each_wms_layer(node, that.map.getLayers());
-												} else if (type === "point" || type === "multipoint" || type === "linestring"
-														|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
-													console.log(node);
-													inst.load_each_wms_layer(node, that.map.getLayers());
-												}
-											} else if (selectedNum > 1) {
-												var serverNum = 0;
-												var workNum = 0;
-												var storeNum = 0;
-												var layerNum = 0;
-												for (var i = 0; i < nodes.length; i++) {
-													var node = inst.get_node(nodes[i]);
-													var type = inst.get_type(node);
-													if (type === "geoserver") {
-														serverNum++;
-													} else if (type === "workspace") {
-														workNum++;
-													} else if (type === "datastore") {
-														storeNum++;
-													} else if (type === "layer") {
-														layerNum++;
-													}
-												}
-												if (selectedNum !== serverNum && selectedNum !== workNum && selectedNum !== storeNum
-														&& selectedNum !== layerNum) {
-													console.log("");
-												}
+								"action" : function(data) {
+									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									var nodes = inst.get_selected();
+									console.log(nodes);
+									var selectedNum = nodes.length;
+									if (selectedNum === 1) {
+										var node = inst.get_node(nodes[0]);
+										var type = inst.get_type(node);
+										if (type === "workspace") {
+											inst.load_each_wms_layer(node, that.map.getLayers());
+										} else if (type === "datastore") {
+											inst.load_each_wms_layer(node, that.map.getLayers());
+										} else if (type === "point" || type === "multipoint" || type === "linestring"
+												|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
+											console.log(node);
+											inst.load_each_wms_layer(node, that.map.getLayers());
+										}
+									} else if (selectedNum > 1) {
+										var serverNum = 0;
+										var workNum = 0;
+										var storeNum = 0;
+										var layerNum = 0;
+										for (var i = 0; i < nodes.length; i++) {
+											var node = inst.get_node(nodes[i]);
+											var type = inst.get_type(node);
+											if (type === "geoserver") {
+												serverNum++;
+											} else if (type === "workspace") {
+												workNum++;
+											} else if (type === "datastore") {
+												storeNum++;
+											} else if (type === "layer") {
+												layerNum++;
 											}
 										}
-									},
-									"wfs" : {
-										"separator_before" : false,
-										"icon" : "fa fa-file-excel-o",
-										"separator_after" : false,
-										"label" : "WFS",
-										"_disabled" : true,
-										"action" : function(data) {
-											var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-											inst.import_vector();
+										if (selectedNum !== serverNum && selectedNum !== workNum && selectedNum !== storeNum
+												&& selectedNum !== layerNum) {
+											console.log("");
 										}
 									}
 								}
-
 							};
 							totalObj["import"] = importObj;
 						}

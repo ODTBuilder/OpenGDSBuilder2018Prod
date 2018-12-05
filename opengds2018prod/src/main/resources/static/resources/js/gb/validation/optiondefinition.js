@@ -390,6 +390,10 @@ gb.validation.OptionDefinition = function(obj) {
 		"delOptModalTitle" : {
 			"en" : "Delete Option",
 			"ko" : "옵션 삭제"
+		},
+		"nodataoutput" : {
+			"en" : "No settings to export.",
+			"ko" : "내보낼 설정이 없습니다."
 		}
 	}
 
@@ -10544,7 +10548,25 @@ gb.validation.OptionDefinition.prototype.setJSONFile = function() {
 
 };
 
+gb.validation.OptionDefinition.prototype.isEmpty = function() {
+	var strc = this.getStructure();
+	var isEmpty = false;
+	var def = strc["definition"];
+	if (Array.isArray(def)) {
+		if (def.length === 0) {
+			isEmpty = true;
+		}
+	}
+	return isEmpty;
+};
+
 gb.validation.OptionDefinition.prototype.getJSONFile = function() {
+	var isEmpty = this.isEmpty();
+	if (isEmpty) {
+		this.setMessagePopup("danger", " " + this.translation.nodataoutput[this.locale]);
+		return;
+	}
+
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 

@@ -124,11 +124,14 @@ input.radio:checked+label::before {
 				tempLayerDef = JSON.stringify(layerDef.getStructure());
 			});
 			$(".MoveToStep3").click(function() {
+				if (layerDef.isEmpty()) {
+					gitrnd.alert("danger", " <spring:message code="lang.nolayerdef" />");
+					return;
+				}
 				$(".Step1").hide();
 				$(".Step2").hide();
 				$(".Step3").show();
 				$(".Step4").hide();
-
 				if (tempLayerDef != JSON.stringify(layerDef.getStructure())) {
 					optionDef.clearStructure();
 					gitrnd.alert("warning", " <spring:message code="lang.alertValidateItemReset" />");
@@ -136,6 +139,10 @@ input.radio:checked+label::before {
 				optionDef.init();
 			});
 			$(".MoveToStep4").click(function() {
+				if (optionDef.isEmpty()) {
+					gitrnd.alert("danger", " <spring:message code="lang.nooptiondef" />");
+					return;
+				}
 				$(".Step1").hide();
 				$(".Step2").hide();
 				$(".Step3").hide();
@@ -466,11 +473,13 @@ input.radio:checked+label::before {
 					<div class="OptionDefinitionArea"></div>
 				</section>
 				<section class="SettingSection Step4" style="display: none;">
-					<div class="row text-right" style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="col-md-12">
+					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+						<div class="col-md-6 text-left">
 							<button class="btn btn-default MoveToStep3">
 								<spring:message code="lang.prev" />
 							</button>
+						</div>
+						<div class="col-md-6 text-right">
 							<c:if test="${pid ne null}">
 								<button id="update-def" class="btn btn-default">
 									<spring:message code="lang.save" />

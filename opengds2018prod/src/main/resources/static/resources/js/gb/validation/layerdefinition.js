@@ -152,6 +152,14 @@ gb.validation.LayerDefinition = function(obj) {
 		"delAttrModalTitle" : {
 			"en" : "Delete Fixed Attribute",
 			"ko" : "고정 속성 삭제"
+		},
+		"nodataoutput" : {
+			"en" : "No settings to export.",
+			"ko" : "내보낼 설정이 없습니다."
+		},
+		"readfail" : {
+			"en" : "Unable to read file.",
+			"ko" : "파일을 읽을 수 없습니다."
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -179,8 +187,12 @@ gb.validation.LayerDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result);
-				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				try {
+					var obj = JSON.parse(reader.result);
+				} catch (e) {
+					that.setMessage("danger", " " + that.translation.readfail[that.locale]);
+					return;
+				}
 				var flag = that.setStructure(obj);
 				that.updateStructure();
 			});
@@ -578,7 +590,23 @@ gb.validation.LayerDefinition.prototype.setJSONFile = function() {
 
 };
 
+gb.validation.LayerDefinition.prototype.isEmpty = function() {
+	var strc = this.getStructure();
+	var isEmpty = true;
+	for ( var key in strc) {
+		if (strc.hasOwnProperty(key))
+			isEmpty = false;
+	}
+	return isEmpty;
+};
+
 gb.validation.LayerDefinition.prototype.getJSONFile = function() {
+	var isEmpty = this.isEmpty();
+	if (isEmpty) {
+		this.setMessage("danger", " " + this.translation.nodataoutput[this.locale]);
+		return;
+	}
+
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 

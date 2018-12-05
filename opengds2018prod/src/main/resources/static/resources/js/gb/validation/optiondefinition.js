@@ -370,6 +370,26 @@ gb.validation.OptionDefinition = function(obj) {
 		"notice" : {
 			"ko" : "알림",
 			"en" : "Notice"
+		},
+		"askDelCode" : {
+			"ko" : "레이어 코드를 삭제 하시겠습니까?",
+			"en" : "Are you sure you want to delete the layer code?"
+		},
+		"askDelAttr" : {
+			"ko" : "속성을 삭제 하시겠습니까?",
+			"en" : "Are you sure you want to delete the attribute?"
+		},
+		"delCatModalTitle" : {
+			"en" : "Delete Category",
+			"ko" : "분류 삭제"
+		},
+		"delLayerModalTitle" : {
+			"en" : "Delete Layer",
+			"ko" : "레이어 삭제"
+		},
+		"delOptModalTitle" : {
+			"en" : "Delete Option",
+			"ko" : "옵션 삭제"
 		}
 	}
 
@@ -2949,13 +2969,21 @@ gb.validation.OptionDefinition = function(obj) {
 
 	// 필터 레이어 코드 삭제 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-deletelayerfilter", function() {
-		that.deleteLayerCodeFilter(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteLayerCodeFilter(thisBtn);
+		};
+		that.deleteConfirmModal("code", callback);
 		console.log(that.getStructure());
 	});
 
 	// 필터 로우 삭제 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-deletefilterrow", function() {
-		that.deleteFilterRow(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteFilterRow(thisBtn);
+		};
+		that.deleteConfirmModal("attr", callback);
 		console.log(that.getStructure());
 	});
 
@@ -3030,19 +3058,31 @@ gb.validation.OptionDefinition = function(obj) {
 
 	// 피규어 로우 삭제 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-deletefigurerow", function() {
-		that.deleteFigureRow(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteFigureRow(thisBtn);
+		};
+		that.deleteConfirmModal("attr", callback);
 		console.log(that.getStructure());
 	});
 
 	// 피규어 레이어 코드 삭제 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-deletelayerfigure", function() {
-		that.deleteLayerCodeFigure(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteLayerCodeFigure(thisBtn);
+		};
+		that.deleteConfirmModal("code", callback);
 		console.log(that.getStructure());
 	});
 
 	// 톨러런스 레이어 코드 삭제 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-deletelayertolerance", function() {
-		that.deleteLayerCodeTolerance(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteLayerCodeTolerance(thisBtn);
+		};
+		that.deleteConfirmModal("code", callback);
 		console.log(that.getStructure());
 	});
 
@@ -10538,4 +10578,48 @@ gb.validation.OptionDefinition.prototype.getJSONFile = function() {
 		});
 		$(anchor)[0].click();
 	}
+};
+
+/*
+ * 제거 확인 모달
+ */
+gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, callback) {
+	var msg1 = $("<div>").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var title;
+	if (type === "code") {
+		$(msg1).text(this.translation.askDelCode[this.locale]);
+		title = this.translation.delLayerModalTitle[this.locale];
+	} else if (type === "attr") {
+		$(msg1).text(this.translation.askDelAttr[this.locale]);
+		title = this.translation.delOptModalTitle[this.locale];
+	}
+	var body = $("<div>").append(msg1);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var deleteModal = new gb.modal.Base({
+		"title" : title,
+		"width" : 310,
+		"height" : 172,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
 };

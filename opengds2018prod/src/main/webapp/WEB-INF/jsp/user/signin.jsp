@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GeoDT Online</title>
+<title>GeoDT Web</title>
 <jsp:include page="/WEB-INF/jsp/common/libimport.jsp" />
 <script>
 	function checkPassword(input) {

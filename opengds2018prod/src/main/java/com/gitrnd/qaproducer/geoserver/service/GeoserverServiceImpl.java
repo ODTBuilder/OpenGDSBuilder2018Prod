@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -151,31 +153,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 			dsFlag = dtReader.existsDatastore(workspace, datastore);
 
 			if (wsFlag && dsFlag) {
-				String originalName = "";
-				String srs = "";
-				String title = "";
-				String style = "";
-				String abstractContent = "";
-
-				Enumeration paramNames = request.getParameterNames();
-				while (paramNames.hasMoreElements()) {
-					String key = paramNames.nextElement().toString();
-					String value = request.getParameter(key);
-
-					if (key.toLowerCase().equals("srs")) {
-						srs = value;
-					} else if (key.toLowerCase().equals("title")) {
-						title = value;
-					} else if (key.toLowerCase().equals("style")) {
-						style = value;
-					} else if (key.toLowerCase().equals("abstractContent")) {
-						abstractContent = value;
-					}
-				}
-
 				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT";
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
+				
+				String uploadFilename = "";//업로드 파일명
+				
 				try {
 					tmp = Files.createTempDirectory(FileSystems.getDefault().getPath(outputFolderPath), "temp_");
 				} catch (IOException e1) {
@@ -192,6 +175,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 				int index = 0;
 
+				//파일구조 검사
 				// 2. get each file
 				while (itr.hasNext()) {
 					if (index < 1) {
@@ -202,26 +186,55 @@ public class GeoserverServiceImpl implements GeoserverService {
 							// 2.3 create new fileMeta
 							// FileStatus fileStatus = new FileStatus();
 							String trimFileName = mpf.getOriginalFilename().replaceAll(" ", "");
-							// String encodeFileName = URLEncoder.encode(trimFileName,
-							// "UTF-8");
+							int trimPos = trimFileName.lastIndexOf( "." );
+		                	String trimExt = trimFileName.substring( trimPos + 1 );
+							if(trimExt.endsWith("zip")){
+								// String encodeFileName = URLEncoder.encode(trimFileName,
+								// "UTF-8");
+								
+								saveFilePath = tmp.toString() + File.separator + trimFileName;
+								
+								BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(saveFilePath));
 
-							// 레이어 중복체크
-							int Idx = trimFileName.lastIndexOf(".");
+								// copy file to local disk (make sure the path "e.g.
+								// D:/temp/files" exists)
+								FileCopyUtils.copy(mpf.getBytes(), stream);
+								
+								ZipFile zipFile = new ZipFile(saveFilePath);
+								
+					            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+					            
+					            int shpIndex = 0;
+					            while(entries.hasMoreElements()){
+					                ZipEntry entry = entries.nextElement();
+					                if(entry.isDirectory()){
+					                	//파일구조 이상
+					                	logger.warn("압축파일내에 폴더있음");
+					                	return 608;
+					                } else {
+					                	String fullFileName = entry.getName();
+					                	int pos = fullFileName.lastIndexOf( "." );
+					                	String ext = fullFileName.substring( pos + 1 );
 
-							String _fileName = trimFileName.substring(0, Idx);
-
-							if (dtReader.existsLayer(workspace, _fileName)) {
-								// 레이어 중복
-								return 609;
+					                	if(ext.endsWith("shp")){
+					                		uploadFilename = fullFileName.substring(0, pos);
+					                		shpIndex++;
+					                	}
+					                }
+					            }
+					            
+					            if(shpIndex==0){
+					            	logger.warn("shp파일이 없음");
+					            	return 608;
+					            }else if(shpIndex>1){
+					            	logger.warn("shp파일이 1개이상");
+					            	return 608;
+					            }
+								index++;
+							}else{
+								logger.warn("zip파일이 아님");
+				            	return 608;
 							}
-
-							saveFilePath = tmp.toString() + File.separator + trimFileName;
-							BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(saveFilePath));
-
-							// copy file to local disk (make sure the path "e.g.
-							// D:/temp/files" exists)
-							FileCopyUtils.copy(mpf.getBytes(), stream);
-							index++;
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -234,11 +247,17 @@ public class GeoserverServiceImpl implements GeoserverService {
 					}
 				}
 
+				if (dtReader.existsLayer(workspace, uploadFilename, true)) {
+					// 레이어 중복
+					System.out.println("레이어중복");
+					return 609;
+				}
+
 				try {
 					// Geoserver에 레이어 발행
 					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
 							new File(saveFilePath).toURI());
-					if (serverPFlag) {
+					/*if (serverPFlag) {
 						puFlag = 200;
 						boolean upFlag = this.updateFeatureType(dtGeoManager, workspace, datastore, originalName,
 								originalName, title, abstractContent, srs, style, false);
@@ -251,8 +270,14 @@ public class GeoserverServiceImpl implements GeoserverService {
 					} else {
 						puFlag = 500;
 						logger.warn("발행실패");
+					}*/
+					if (serverPFlag) {
+						puFlag = 200;
+					} else {
+						puFlag = 500;
+						logger.warn("발행실패");
 					}
-				} catch (FileNotFoundException e) {
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					puFlag = 500;
 					logger.warn("발행실패");

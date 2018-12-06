@@ -247,9 +247,9 @@ html {
 			"token" : urlList.token,
 			"autoOpen" : false,
 			"title" : "Validation",
-			"url": {
-				"token": urlList.token,
-				"requestValidate": urlList.requestValidate
+			"url" : {
+				"token" : urlList.token,
+				"requestValidate" : urlList.requestValidate
 			}
 		});
 
@@ -290,6 +290,7 @@ html {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"deleteGeoServerLayer" : "geoserver/geoserverRemoveLayers.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : urlList.getMapWMS + urlList.token,
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
 				"getWFSFeature" : urlList.getWFSFeature + urlList.token,

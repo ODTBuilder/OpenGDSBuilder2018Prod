@@ -209,7 +209,7 @@ public class GeoserverController extends AbstractController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "geoserverWMSGetMap.ajax", method = RequestMethod.GET)
+	@RequestMapping(value = "/geoserverWMSGetMap.ajax", method = RequestMethod.GET)
 	@ResponseBody
 	public void geoserverGetWMSGetMap(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
@@ -238,7 +238,7 @@ public class GeoserverController extends AbstractController {
 	 * @throws ServletException
 	 * @throws IOException      void
 	 */
-	@RequestMapping(value = "geoserverWFSGetFeature.ajax", method = RequestMethod.GET)
+	@RequestMapping(value = "/geoserverWFSGetFeature.ajax", method = RequestMethod.GET)
 	@ResponseBody
 	public void geoserverGetWFSGetFeature(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException, Exception {
@@ -267,7 +267,7 @@ public class GeoserverController extends AbstractController {
 	 * @throws ServletException
 	 * @throws IOException      void
 	 */
-	@RequestMapping(value = "geoserverWMSGetFeatureInfo.ajax", method = RequestMethod.GET)
+	@RequestMapping(value = "/geoserverWMSGetFeatureInfo.ajax", method = RequestMethod.GET)
 	@ResponseBody
 	public void geoserverWMSGetFeatureInfo(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser)
@@ -297,7 +297,7 @@ public class GeoserverController extends AbstractController {
 	 * @throws ServletException
 	 * @throws IOException      void
 	 */
-	@RequestMapping(value = "geoserverWMSGetLegendGraphic.ajax")
+	@RequestMapping(value = "/geoserverWMSGetLegendGraphic.ajax")
 	@ResponseBody
 	public void geoserverWMSGetLegendGraphic(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException {
@@ -326,7 +326,7 @@ public class GeoserverController extends AbstractController {
 	 * @throws ServletException
 	 * @throws IOException      void
 	 */
-	@RequestMapping(value = "getDTGeoserverInfo.ajax")
+	@RequestMapping(value = "/getDTGeoserverInfo.ajax")
 	@ResponseBody
 	public void getDTGeoserverInfo(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException, Exception {
@@ -355,7 +355,7 @@ public class GeoserverController extends AbstractController {
 	 * @throws IOException
 	 * @throws Exception List<String>
 	 * */
-	@RequestMapping(value = "getStyleList.ajax")
+	@RequestMapping(value = "/getStyleList.ajax")
 	@ResponseBody
 	public List<String> getStyleList(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException, Exception {
@@ -385,7 +385,7 @@ public class GeoserverController extends AbstractController {
 	 * jsonObject @return DTGeoLayerList @throws
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "getGeoLayerInfoList.ajax")
+	@RequestMapping(value = "/getGeoLayerInfoList.ajax")
 	@ResponseBody
 	public DTGeoLayerList getGeoLayerList(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
@@ -414,7 +414,7 @@ public class GeoserverController extends AbstractController {
 	 * jsonObject @return DTGeoLayerList @throws
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "layerDuplicateCheck.ajax")
+	@RequestMapping(value = "/layerDuplicateCheck.ajax")
 	@ResponseBody
 	public JSONObject duplicateCheck(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {
@@ -447,7 +447,7 @@ public class GeoserverController extends AbstractController {
 	 * @return JSONObject
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "geoserverRemoveLayers.ajax")
+	@RequestMapping(value = "/geoserverRemoveLayers.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public int geoserverRemoveLayers(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {
@@ -474,7 +474,7 @@ public class GeoserverController extends AbstractController {
 	 * jsonObject @return DTGeoLayerList @throws
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "getGeoGroupLayerInfoList.ajax")
+	@RequestMapping(value = "/getGeoGroupLayerInfoList.ajax")
 	@ResponseBody
 	public DTGeoGroupLayerList getGeoGroupLayerInfoList(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {
@@ -498,7 +498,7 @@ public class GeoserverController extends AbstractController {
 		}
 	}
 
-	@RequestMapping(value = "publishGeoserverStyle.ajax")
+	@RequestMapping(value = "/publishGeoserverStyle.ajax")
 	@ResponseBody
 	public void publishGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {
@@ -512,7 +512,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.publishStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "updateGeoserverStyle.ajax")
+	@RequestMapping(value = "/updateGeoserverStyle.ajax")
 	@ResponseBody
 	public void updateGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {
@@ -525,7 +525,7 @@ public class GeoserverController extends AbstractController {
 		geoserverService.updateStyle(dtGeoserverManager, sldBody, name);
 	}
 
-	@RequestMapping(value = "removeGeoserverStyle.ajax")
+	@RequestMapping(value = "/removeGeoserverStyle.ajax")
 	@ResponseBody
 	public void removeGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) {

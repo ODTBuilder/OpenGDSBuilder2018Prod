@@ -136,6 +136,22 @@ gb.validation.LayerDefinition = function(obj) {
 		"askDelLayer" : {
 			"en" : "Are you sure you want to delete the selected layer?",
 			"ko" : "선택한 레이어를 삭제하시겠습니까?"
+		},
+		"askDelFixed" : {
+			"en" : "Are you sure you want to delete this fixed attribute?",
+			"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
+		},
+		"delCatModalTitle" : {
+			"en" : "Delete Category",
+			"ko" : "분류 삭제"
+		},
+		"delLayerModalTitle" : {
+			"en" : "Delete Layer",
+			"ko" : "레이어 삭제"
+		},
+		"delAttrModalTitle" : {
+			"en" : "Delete Fixed Attribute",
+			"ko" : "고정 속성 삭제"
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -238,7 +254,11 @@ gb.validation.LayerDefinition = function(obj) {
 	});
 
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-attribute", function() {
-		that.deleteAttribute(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteAttribute(thisBtn);
+		};
+		that.deleteFixedAttrModal(callback);
 		console.log(that.getStructure());
 	});
 
@@ -1051,7 +1071,7 @@ gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, 
 	// var modalFooter =
 	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Category",
+		"title" : this.translation.delCatModalTitle[this.locale],
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : false,
@@ -1093,9 +1113,44 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
 	// var modalFooter =
 	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Layer",
+		"title" : this.translation.delLayerModalTitle[this.locale],
 		"width" : 310,
 		"height" : 200,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
+};
+/*
+ * 고정속성 제거 모달
+ */
+gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback) {
+	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var body = $("<div>").append(msg1);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var deleteModal = new gb.modal.Base({
+		"title" : this.translation.delAttrModalTitle[this.locale],
+		"width" : 310,
+		"height" : 172,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea

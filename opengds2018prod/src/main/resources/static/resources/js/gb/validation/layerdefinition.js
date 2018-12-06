@@ -114,7 +114,7 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "[레이어 정의]가 변경 되었습니다"
 		},
 		"noticeNotExistLayer" : {
-			"en" : "category. There are no layers.",
+			"en" : " category has no layers.",
 			"ko" : "번째 분류에 포함된 레이어가 없습니다"
 		},
 		"noticeInvalidKey" : {
@@ -122,7 +122,7 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "은/는 유효한 키 이름이 아닙니다"
 		},
 		"noticeCategoryNameEnter" : {
-			"en" : "category. You must enter a category name.",
+			"en" : "th category. You must enter a category name.",
 			"ko" : "번째 분류의 분류명을 입력해야 합니다"
 		},
 		"keyName" : {
@@ -152,6 +152,18 @@ gb.validation.LayerDefinition = function(obj) {
 		"delAttrModalTitle" : {
 			"en" : "Delete Fixed Attribute",
 			"ko" : "고정 속성 삭제"
+		},
+		"nodataoutput" : {
+			"en" : "No settings to export.",
+			"ko" : "내보낼 설정이 없습니다."
+		},
+		"readfail" : {
+			"en" : "Unable to read file.",
+			"ko" : "파일을 읽을 수 없습니다."
+		},
+		"emptyobj" : {
+			"en" : "There are no defined layers.",
+			"ko" : "정의된 레이어가 없습니다."
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -179,8 +191,12 @@ gb.validation.LayerDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result);
-				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				try {
+					var obj = JSON.parse(reader.result);
+				} catch (e) {
+					that.setMessage("danger", " " + that.translation.readfail[that.locale]);
+					return;
+				}
 				var flag = that.setStructure(obj);
 				that.updateStructure();
 			});
@@ -567,6 +583,9 @@ gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 		this.structure = strc;
 		this.setMessage("success", " " + this.translation.noticeLayerDefUpdate[this.locale]);
 	}
+	if (this.isEmpty()) {
+		this.setMessage("warning", " " + this.translation.emptyobj[this.locale]);
+	}
 	return isOK;
 };
 
@@ -578,7 +597,23 @@ gb.validation.LayerDefinition.prototype.setJSONFile = function() {
 
 };
 
+gb.validation.LayerDefinition.prototype.isEmpty = function() {
+	var strc = this.getStructure();
+	var isEmpty = true;
+	for ( var key in strc) {
+		if (strc.hasOwnProperty(key))
+			isEmpty = false;
+	}
+	return isEmpty;
+};
+
 gb.validation.LayerDefinition.prototype.getJSONFile = function() {
+	var isEmpty = this.isEmpty();
+	if (isEmpty) {
+		this.setMessage("danger", " " + this.translation.nodataoutput[this.locale]);
+		return;
+	}
+
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 

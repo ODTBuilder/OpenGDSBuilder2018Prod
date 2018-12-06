@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GeoDT Online</title>
+<title>GeoDT Web</title>
 <jsp:include page="/WEB-INF/jsp/common/libimport.jsp" />
 <style>
 input.radio {
@@ -161,22 +161,35 @@ input.radio:checked+label::before {
 			});
 
 			$("#save-def").click(function() {
-				var data = new FormData();
+				var preData = new FormData();
+				preData.append("name", $("#def-name").val());
+				var prexhr = new XMLHttpRequest();
+				prexhr.open("POST", "${pageContext.request.contextPath}/option/retrievePresetNameByNameAndUidx.ajax?${_csrf.parameterName}=${_csrf.token}");
+				prexhr.onload = function() {
+					console.log('DONE', prexhr.readyState); // readyState will be 4
+					if (prexhr.response === "") {
+	 					var data = new FormData();
 
-				data.append("category", $("input[type=radio][name=qacat2]:checked").val());
-				data.append("version", $("input[type=radio][name=qacat1]:checked").val());
+	 					data.append("category", $("input[type=radio][name=qacat2]:checked").val());
+	 					data.append("version", $("input[type=radio][name=qacat1]:checked").val());
 
-				data.append("name", $("#def-name").val());
-				data.append("layer", JSON.stringify(layerDef.getStructure()));
-				data.append("option", JSON.stringify(optionDef.getStructure()));
+	 					data.append("name", $("#def-name").val());
+	 					data.append("layer", JSON.stringify(layerDef.getStructure()));
+	 					data.append("option", JSON.stringify(optionDef.getStructure()));
 
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "${pageContext.request.contextPath}/option/createpreset.ajax?${_csrf.parameterName}=${_csrf.token}");
-				xhr.onload = function() {
-					console.log('DONE', xhr.readyState); // readyState will be 4
-					window.location = "${pageContext.request.contextPath}/settinglist.do";
+	 					var xhr = new XMLHttpRequest();
+	 					xhr.open("POST", "${pageContext.request.contextPath}/option/createpreset.ajax?${_csrf.parameterName}=${_csrf.token}");
+	 					xhr.onload = function() {
+	 						console.log('DONE', xhr.readyState); // readyState will be 4
+	 						window.location = "${pageContext.request.contextPath}/settinglist.do";
+	 					};
+	 					xhr.send(data);
+					} else {
+						gitrnd.alert("danger", " <spring:message code="lang.duplconfigname" />");
+					}
 				};
-				xhr.send(data);
+				prexhr.send(preData);
+				
 			});
 			
 			$("#update-def").click(function() {

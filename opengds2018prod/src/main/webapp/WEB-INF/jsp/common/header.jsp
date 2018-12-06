@@ -11,7 +11,7 @@
 			</button>
 			<a class="navbar-brand" href="${pageContext.request.contextPath}/main.do"><img
 				style="height: 20px; width: auto; display: inline; margin-right: 10px; padding: 0;"
-				src="${pageContext.request.contextPath}/resources/img/onlyglobe.png" alt="GeoDT Online">GeoDT Online</a>
+				src="${pageContext.request.contextPath}/resources/img/onlyglobe.png" alt="GeoDT Web">GeoDT Web</a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-1">

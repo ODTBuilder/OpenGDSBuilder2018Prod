@@ -114,7 +114,7 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "[레이어 정의]가 변경 되었습니다"
 		},
 		"noticeNotExistLayer" : {
-			"en" : "category. There are no layers.",
+			"en" : " category has no layers.",
 			"ko" : "번째 분류에 포함된 레이어가 없습니다"
 		},
 		"noticeInvalidKey" : {
@@ -122,7 +122,7 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "은/는 유효한 키 이름이 아닙니다"
 		},
 		"noticeCategoryNameEnter" : {
-			"en" : "category. You must enter a category name.",
+			"en" : "th category. You must enter a category name.",
 			"ko" : "번째 분류의 분류명을 입력해야 합니다"
 		},
 		"keyName" : {
@@ -160,6 +160,10 @@ gb.validation.LayerDefinition = function(obj) {
 		"readfail" : {
 			"en" : "Unable to read file.",
 			"ko" : "파일을 읽을 수 없습니다."
+		},
+		"emptyobj" : {
+			"en" : "There are no defined layers.",
+			"ko" : "정의된 레이어가 없습니다."
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -578,6 +582,9 @@ gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 	if (isOK) {
 		this.structure = strc;
 		this.setMessage("success", " " + this.translation.noticeLayerDefUpdate[this.locale]);
+	}
+	if (this.isEmpty()) {
+		this.setMessage("warning", " " + this.translation.emptyobj[this.locale]);
 	}
 	return isOK;
 };

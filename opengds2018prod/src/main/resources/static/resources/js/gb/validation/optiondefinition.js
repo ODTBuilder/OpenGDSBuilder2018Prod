@@ -394,6 +394,78 @@ gb.validation.OptionDefinition = function(obj) {
 		"nodataoutput" : {
 			"en" : "No settings to export.",
 			"ko" : "내보낼 설정이 없습니다."
+		},
+		"emptyobj" : {
+			"en" : "There is no defined validation item.",
+			"ko" : "정의된 검수 항목이 없습니다."
+		},
+		"nobordercode" : {
+			"en" : "Border layer code is not entered.",
+			"ko" : "도곽선 Code가 입력되지 않았습니다."
+		},
+		"nobordergeom" : {
+			"en" : "Border layer geometry is not entered.",
+			"ko" : "도곽선 Geometry가 입력되지 않았습니다."
+		},
+		"invalidkeyname" : {
+			"en" : " - This key name is a invalid key name.",
+			"ko" : " 키 네임은 유효한 키 네임이 아닙니다."
+		},
+		"invalidkeyname" : {
+			"en" : " - This key name is invalid.",
+			"ko" : " - 키 네임은 유효하지 않습니다."
+		},
+		"invaliditem" : {
+			"en" : " - This validation item is invalid.",
+			"ko" : " - 검수 항목이 유효하지 않습니다."
+		},
+		"nocatname" : {
+			"en" : "th category name must be entered.",
+			"ko" : "번째 분류의 분류명을 입력해야 합니다."
+		},
+		"nolayercode" : {
+			"en" : " - layer code is not entered in the layer definition.",
+			"ko" : "레이어 코드는 레이어 정의에 입력되어 있지 않습니다."
+		},
+		"cat" : {
+			"en" : "Category",
+			"ko" : "분류"
+		},
+		"layercode" : {
+			"en" : "Layer code",
+			"ko" : "레이어 코드"
+		},
+		"valuesnullorarr" : {
+			"en" : "The values must be NULL or an array type.",
+			"ko" : "값은 NULL 또는 배열 형태여야 합니다."
+		},
+		"attrnullorarr" : {
+			"en" : "The attribute must be NULL or an array type.",
+			"ko" : "속성 검수는 NULL 또는 배열 형태여야 합니다."
+		},
+		"filternullorarr" : {
+			"en" : "The filter must be NULL or an array type.",
+			"ko" : "속성 필터는 NULL 또는 배열 형태여야 합니다."
+		},
+		"figurenullorarr" : {
+			"en" : "The condition must be NULL or an array type.",
+			"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
+		},
+		"tolernullorarr" : {
+			"en" : "The tolerance must be NULL or an array type.",
+			"ko" : "톨러런스 NULL 또는 배열 형태여야 합니다."
+		},
+		"relnullorarr" : {
+			"en" : "The condition must be NULL or an array type.",
+			"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
+		},
+		"defnull" : {
+			"en" : "The definition key must be an array.",
+			"ko" : "definition 키는 배열 형태여야 합니다."
+		},
+		"failimport" : {
+			"en" : "Setting input failed.",
+			"ko" : "설정 입력에 실패하였습니다."
 		}
 	}
 
@@ -3123,7 +3195,7 @@ gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, messag
 			.append(span);
 	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
-			.append(message);
+			.append(" " + message);
 	var jclass = "." + this.msg;
 	$(jclass).append(div);
 };
@@ -9847,11 +9919,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 		if (border !== null) {
 			if (!border.hasOwnProperty("code")) {
 				isOK = false;
-				this.setMessagePopup("danger", " 도곽선 Code가 입력되지 않았습니다.");
+				this.setMessagePopup("danger", this.translation.nobordercode[this.locale]);
 			}
 			if (!border.hasOwnProperty("geometry")) {
 				isOK = false;
-				this.setMessagePopup("danger", " 도곽선 Geometry가 입력되지 않았습니다.");
+				this.setMessagePopup("danger", this.translation.nobordergeom[this.locale]);
 			}
 		}
 	}
@@ -9864,11 +9936,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 				for (var j = 0; j < defKeys.length; j++) {
 					if (defElem.indexOf(defKeys[j]) === -1) {
 						isOK = false;
-						this.setMessagePopup("danger", defKeys[j] + " 키 네임은 유효한 키 네임이 아닙니다.");
+						this.setMessagePopup("danger", defKeys[j] + this.translation.invalidkeyname[this.locale]);
 					}
 					if (!definitions[i].hasOwnProperty("name")) {
 						isOK = false;
-						this.setMessagePopup("danger", (i + 1) + "번째 분류의 분류명을 입력해야 합니다.");
+						this.setMessagePopup("danger", this.translation.nocatname[this.locale]);
 					}
 					if (defKeys[j] === "options") {
 						var options = definitions[i]["options"];
@@ -9877,7 +9949,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 							for (var k = 0; k < optionKeys.length; k++) {
 								if (optionElem.indexOf(optionKeys[k]) === -1) {
 									isOK = false;
-									this.setMessagePopup("danger", optionKeys[k] + " 키 네임은 유효한 키 네임이 아닙니다.");
+									this.setMessagePopup("danger", optionKeys[k] + " " + this.translation.invalidkeyname[this.locale]);
 								} else {
 									if (options.hasOwnProperty(optionKeys[k])) {
 										var type3Obj = options[optionKeys[k]];
@@ -9886,7 +9958,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 											for (var l = 0; l < optionItemKeys.length; l++) {
 												if (optionItem.indexOf(optionItemKeys[l]) === -1) {
 													isOK = false;
-													this.setMessagePopup("danger", optionItemKeys[l] + " 검수 항목은 유효한 이름이 아닙니다.");
+													this.setMessagePopup("danger", optionItemKeys[l]
+															+ this.translation.invaliditem[this.locale]);
 													console.error("");
 												} else {
 													// 검수 항목 설정 객체 filter,
@@ -9897,7 +9970,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 													for (var m = 0; m < type4Keys.length; m++) {
 														if (optionNameElem.indexOf(type4Keys[m]) === -1) {
 															isOK = false;
-															this.setMessagePopup("danger", type4Keys[m] + "키 네임은 유효한 키 네임이 아닙니다.");
+															this.setMessagePopup("danger", type4Keys[m] + " "
+																	+ this.translation.invalidkeyname[this.locale]);
 															console.error("");
 														} else {
 															if (type4Keys[m] === "filter") {
@@ -9908,8 +9982,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																		for (var o = 0; o < filterKeys.length; o++) {
 																			if (filterElem.indexOf(filterKeys[o]) === -1) {
 																				isOK = false;
-																				this.setMessagePopup("danger", filterKeys[o]
-																						+ "키 네임은 유효한 키 네임이 아닙니다.");
+																				this.setMessagePopup("danger", filterKeys[o] + " "
+																						+ this.translation.invalidkeyname[this.locale]);
 																			} else {
 																				if (filterKeys[o] === "code") {
 																					if (filterArr[n]["code"] !== null
@@ -9944,16 +10018,25 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																													.setMessagePopup(
 																															"danger",
 																															nowCode
-																																	+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																	+ this.translation.nolayercode[this.locale]);
 																										}
 																									}
 																								}
 																							}
 																							if (nameExist === false && codeExist === false) {
 																								isOK = false;
-																								this.setMessagePopup("danger", "분류명 "
-																										+ nowName + "의 레이어코드 " + nowCode
-																										+ "는 레이어 정의에 입력되지 않았습니다.");
+																								this
+																										.setMessagePopup(
+																												"danger",
+																												this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowName
+																														+ ", "
+																														+ this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowCode
+																														+ " "
+																														+ this.translation.nolayercode[this.locale]);
 																							}
 																						}
 																					}
@@ -9970,9 +10053,12 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											.setMessagePopup(
 																													"danger",
 																													attrKeys[q]
-																															+ "키 네임은 유효한 키 네임이 아닙니다.");
-																									console.error(attrKeys[q]
-																											+ "키 네임은 유효한 키 네임이 아닙니다.");
+																															+ " "
+																															+ this.translation.invalidkeyname[this.locale]);
+																									console
+																											.error(attrKeys[q]
+																													+ " "
+																													+ this.translation.invalidkeyname[this.locale]);
 																								} else {
 																									if (attrKeys[q] === "values") {
 																										if (!Array
@@ -9982,7 +10068,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											this
 																													.setMessagePopup(
 																															"danger",
-																															"values는 null 또는 배열 형태여야 합니다.");
+																															this.translation.valuesnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -9991,8 +10077,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																						}
 																					} else {
 																						isOK = false;
-																						this.setMessagePopup("danger",
-																								"attribute는 null 또는 배열 형태여야 합니다.");
+																						this
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.attrnullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}
@@ -10001,7 +10089,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																	}
 																} else if (filterArr !== null && !Array.isArray(filterArr)) {
 																	isOK = false;
-																	this.setMessagePopup("danger", "filter는 null 또는 배열의 형태여야 합니다.");
+																	this.setMessagePopup("danger",
+																			this.translation.filternullorarr[this.locale]);
 																	console.error("");
 																}
 															} else if (type4Keys[m] === "figure") {
@@ -10012,8 +10101,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																		for (var o = 0; o < figureKeys.length; o++) {
 																			if (figureElem.indexOf(figureKeys[o]) === -1) {
 																				isOK = false;
-																				this.setMessagePopup("danger", figureKeys[o]
-																						+ "키 네임은 유효한 키 네임이 아닙니다.");
+																				this.setMessagePopup("danger", figureKeys[o] + " "
+																						+ this.translation.invalidkeyname[this.locale]);
 																				console.error("");
 																			} else {
 																				if (figureKeys[o] === "code") {
@@ -10049,16 +10138,26 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																													.setMessagePopup(
 																															"danger",
 																															nowCode
-																																	+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																	+ " "
+																																	+ this.translation.nolayercode[this.locale]);
 																										}
 																									}
 																								}
 																							}
 																							if (nameExist === false && codeExist === false) {
 																								isOK = false;
-																								this.setMessagePopup("danger", "분류명 "
-																										+ nowName + "의 레이어코드 " + nowCode
-																										+ "는 레이어 정의에 입력되지 않았습니다.");
+																								this
+																										.setMessagePopup(
+																												"danger",
+																												this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowName
+																														+ ", "
+																														+ this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowCode
+																														+ " "
+																														+ this.translation.nolayercode[this.locale]);
 																							}
 																						}
 																					}
@@ -10075,7 +10174,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											.setMessagePopup(
 																													"danger",
 																													attrKeys[q]
-																															+ "키 네임은 유효한 키 네임이 아닙니다.");
+																															+ " "
+																															+ this.translation.invalidkeyname[this.locale]);
 																									console.error("");
 																								} else {
 																									if (attrKeys[q] === "values") {
@@ -10086,7 +10186,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											this
 																													.setMessagePopup(
 																															"danger",
-																															"values는 null 또는 배열 형태여야 합니다.");
+																															this.translation.valuesnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10095,8 +10195,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																						}
 																					} else {
 																						isOK = false;
-																						this.setMessagePopup("danger",
-																								"attribute는 null 또는 배열 형태여야 합니다.");
+																						this
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.attrnullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}
@@ -10105,7 +10207,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																	}
 																} else if (figureArr !== null && !Array.isArray(figureArr)) {
 																	isOK = false;
-																	this.setMessagePopup("danger", "figure는 null 또는 배열의 형태여야 합니다.");
+																	this.setMessagePopup("danger",
+																			this.translation.figurenullorarr[this.locale]);
 																	console.error("");
 																}
 															} else if (type4Keys[m] === "tolerance") {
@@ -10116,8 +10219,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																		for (var o = 0; o < toleranceKeys.length; o++) {
 																			if (toleranceElem.indexOf(toleranceKeys[o]) === -1) {
 																				isOK = false;
-																				this.setMessagePopup("danger", toleranceKeys[o]
-																						+ "키 네임은 유효한 키 네임이 아닙니다.");
+																				this.setMessagePopup("danger", toleranceKeys[o] + " "
+																						+ this.translation.invalidkeyname[this.locale]);
 																			}
 																			if (toleranceKeys[o] === "code") {
 																				if (toleranceArr[n]["code"] !== null
@@ -10151,16 +10254,26 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												.setMessagePopup(
 																														"danger",
 																														nowCode
-																																+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																+ " "
+																																+ this.translation.nolayercode[this.locale]);
 																									}
 																								}
 																							}
 																						}
 																						if (nameExist === false && codeExist === false) {
 																							isOK = false;
-																							this.setMessagePopup("danger", "분류명 " + nowName
-																									+ "의 레이어코드 " + nowCode
-																									+ "는 레이어 정의에 입력되지 않았습니다.");
+																							this
+																									.setMessagePopup(
+																											"danger",
+																											this.translation.cat[this.locale]
+																													+ ": "
+																													+ nowName
+																													+ ", "
+																													+ this.translation.cat[this.locale]
+																													+ ": "
+																													+ nowCode
+																													+ " "
+																													+ this.translation.nolayercode[this.locale]);
 																						}
 																					}
 																				}
@@ -10169,7 +10282,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																	}
 																} else if (toleranceArr !== null && !Array.isArray(toleranceArr)) {
 																	isOK = false;
-																	this.setMessagePopup("danger", "tolerance는 null 또는 배열의 형태여야 합니다.");
+																	this.setMessagePopup("danger",
+																			this.translation.tolernullorarr[this.locale]);
 																	console.error("");
 																}
 															} else if (type4Keys[m] === "relation") {
@@ -10181,8 +10295,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																		for (var b = 0; b < relKeys.length; b++) {
 																			if (relationElem.indexOf(relKeys[b]) === -1) {
 																				isOK = false;
-																				this.setMessagePopup("danger", relKeys[b]
-																						+ "키 네임은 유효한 키 네임이 아닙니다.");
+																				this.setMessagePopup("danger", relKeys[b] + " "
+																						+ this.translation.invalidkeyname[this.locale]);
 																			} else {
 																				if (relKeys[b] === "filter") {
 																					var filterArr = rel["filter"];
@@ -10196,7 +10310,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											.setMessagePopup(
 																													"danger",
 																													filterKeys[o]
-																															+ "키 네임은 유효한 키 네임이 아닙니다.");
+																															+ " "
+																															+ this.translation.invalidkeyname[this.locale]);
 																								} else {
 																									if (filterKeys[o] === "code") {
 																										if (filterArr[n]["code"] !== null
@@ -10232,7 +10347,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																		.setMessagePopup(
 																																				"danger",
 																																				nowCode
-																																						+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																						+ " "
+																																						+ this.translation.nolayercode[this.locale]);
 																															}
 																														}
 																													}
@@ -10243,11 +10359,15 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																													this
 																															.setMessagePopup(
 																																	"danger",
-																																	"분류명 "
+																																	this.translation.cat[this.locale]
+																																			+ ": "
 																																			+ nowName
-																																			+ "의 레이어코드 "
+																																			+ ", "
+																																			+ this.translation.cat[this.locale]
+																																			+ ": "
 																																			+ nowCode
-																																			+ "는 레이어 정의에 입력되지 않았습니다.");
+																																			+ " "
+																																			+ this.translation.nolayercode[this.locale]);
 																												}
 																											}
 																										}
@@ -10266,10 +10386,12 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																.setMessagePopup(
 																																		"danger",
 																																		attrKeys[q]
-																																				+ "키 네임은 유효한 키 네임이 아닙니다.");
+																																				+ " "
+																																				+ this.translation.invalidkeyname[this.locale]);
 																														console
 																																.error(attrKeys[q]
-																																		+ "키 네임은 유효한 키 네임이 아닙니다.");
+																																		+ " "
+																																		+ this.translation.invalidkeyname[this.locale]);
 																													} else {
 																														if (attrKeys[q] === "values") {
 																															if (!Array
@@ -10279,7 +10401,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																this
 																																		.setMessagePopup(
 																																				"danger",
-																																				"values는 null 또는 배열 형태여야 합니다.");
+																																				this.translation.valuesnullorarr[this.locale]);
 																																console
 																																		.error("");
 																															}
@@ -10292,7 +10414,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											this
 																													.setMessagePopup(
 																															"danger",
-																															"attribute는 null 또는 배열 형태여야 합니다.");
+																															this.translation.attrnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10302,8 +10424,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					} else if (filterArr !== null
 																							&& !Array.isArray(filterArr)) {
 																						isOK = false;
-																						this.setMessagePopup("danger",
-																								"filter는 null 또는 배열의 형태여야 합니다.");
+																						this
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.filternullorarr[this.locale]);
 																						console.error("");
 																					}
 																				} else if (relKeys[b] === "figure") {
@@ -10318,7 +10442,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											.setMessagePopup(
 																													"danger",
 																													figureKeys[o]
-																															+ "키 네임은 유효한 키 네임이 아닙니다.");
+																															+ " "
+																															+ this.translation.invalidkeyname[this.locale]);
 																									console.error("");
 																								} else {
 																									if (figureKeys[o] === "code") {
@@ -10355,7 +10480,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																		.setMessagePopup(
 																																				"danger",
 																																				nowCode
-																																						+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																						+ " "
+																																						+ this.translation.nolayercode[this.locale]);
 																															}
 																														}
 																													}
@@ -10366,11 +10492,15 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																													this
 																															.setMessagePopup(
 																																	"danger",
-																																	"분류명 "
+																																	this.translation.cat[this.locale]
+																																			+ ": "
 																																			+ nowName
-																																			+ "의 레이어코드 "
+																																			+ ", "
+																																			+ this.translation.cat[this.locale]
+																																			+ ": "
 																																			+ nowCode
-																																			+ "는 레이어 정의에 입력되지 않았습니다.");
+																																			+ " "
+																																			+ this.translation.nolayercode[this.locale]);
 																												}
 																											}
 																										}
@@ -10389,7 +10519,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																.setMessagePopup(
 																																		"danger",
 																																		attrKeys[q]
-																																				+ "키 네임은 유효한 키 네임이 아닙니다.");
+																																				+ " "
+																																				+ this.translation.invalidkeyname[this.locale]);
 																														console.error("");
 																													} else {
 																														if (attrKeys[q] === "values") {
@@ -10400,7 +10531,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																this
 																																		.setMessagePopup(
 																																				"danger",
-																																				"values는 null 또는 배열 형태여야 합니다.");
+																																				this.translation.valuesnullorarr[this.locale]);
 																																console
 																																		.error("");
 																															}
@@ -10413,7 +10544,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											this
 																													.setMessagePopup(
 																															"danger",
-																															"attribute는 null 또는 배열 형태여야 합니다.");
+																															this.translation.attrnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10423,8 +10554,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					} else if (figureArr !== null
 																							&& !Array.isArray(figureArr)) {
 																						isOK = false;
-																						this.setMessagePopup("danger",
-																								"figure는 null 또는 배열의 형태여야 합니다.");
+																						this
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.figurenullorarr[this.locale]);
 																						console.error("");
 																					}
 																				} else if (relKeys[b] === "tolerance") {
@@ -10440,7 +10573,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											.setMessagePopup(
 																													"danger",
 																													toleranceKeys[o]
-																															+ "키 네임은 유효한 키 네임이 아닙니다.");
+																															+ " "
+																															+ this.translation.invalidkeyname[this.locale]);
 																								}
 																								if (toleranceKeys[o] === "code") {
 																									if (toleranceArr[n]["code"] !== null
@@ -10475,7 +10609,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																	.setMessagePopup(
 																																			"danger",
 																																			nowCode
-																																					+ "레이어 코드는 레이어 정의에 입력되어 있지 않습니다.");
+																																					+ " "
+																																					+ this.translation.nolayercode[this.locale]);
 																														}
 																													}
 																												}
@@ -10486,11 +10621,15 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												this
 																														.setMessagePopup(
 																																"danger",
-																																"분류명 "
+																																this.translation.cat[this.locale]
+																																		+ ": "
 																																		+ nowName
-																																		+ "의 레이어코드 "
+																																		+ ", "
+																																		+ this.translation.cat[this.locale]
+																																		+ ": "
 																																		+ nowCode
-																																		+ "는 레이어 정의에 입력되지 않았습니다.");
+																																		+ " "
+																																		+ this.translation.nolayercode[this.locale]);
 																											}
 																										}
 																									}
@@ -10500,8 +10639,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					} else if (toleranceArr !== null
 																							&& !Array.isArray(toleranceArr)) {
 																						isOK = false;
-																						this.setMessagePopup("danger",
-																								"tolerance는 null 또는 배열의 형태여야 합니다.");
+																						this
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.tolernullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}
@@ -10510,7 +10651,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																	}
 																} else if (relationArr !== null && !Array.isArray(relationArr)) {
 																	isOK = false;
-																	this.setMessagePopup("danger", "relation은 null 또는 배열의 형태여야 합니다.");
+																	this.setMessagePopup("danger", relnullorarr);
 																	console.error("");
 																}
 															}
@@ -10528,15 +10669,18 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 			}
 		} else {
 			isOK = false;
-			this.setMessagePopup("danger", " definition키는 배열 형태여야 합니다.");
+			this.setMessagePopup("danger", " " + this.translation.defnull[this.locale]);
 		}
 	} else {
 		isOK = false;
-		this.setMessagePopup("danger", " 옵션 정의가 입력되지 않았습니다.");
+		this.setMessagePopup("danger", " " + this.translation.failimport[this.locale]);
 	}
 	if (isOK) {
 		this.structure = strc;
-		this.setMessagePopup("success", " " + this.translation.validItemChgMsg[this.locale]);
+		this.setMessagePopup("success", this.translation.validItemChgMsg[this.locale]);
+	}
+	if (this.isEmpty()) {
+		this.setMessagePopup("warning", this.translation.emptyobj[this.locale]);
 	}
 };
 
@@ -10563,7 +10707,7 @@ gb.validation.OptionDefinition.prototype.isEmpty = function() {
 gb.validation.OptionDefinition.prototype.getJSONFile = function() {
 	var isEmpty = this.isEmpty();
 	if (isEmpty) {
-		this.setMessagePopup("danger", " " + this.translation.nodataoutput[this.locale]);
+		this.setMessagePopup("danger", this.translation.nodataoutput[this.locale]);
 		return;
 	}
 

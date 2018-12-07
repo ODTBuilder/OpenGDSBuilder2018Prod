@@ -255,7 +255,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
-		"epsg" : this.getEPSGCode()
+		"srs" : this.getEPSGCode()
 	};
 	console.log(params);
 	var url = this.getUploadURL();
@@ -264,14 +264,14 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
 	console.log(queryString);
 	var queryParams = {};
-	if (queryString) {
+	/*if (queryString) {
 		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
 			return key === "" ? value : decodeURIComponent(value);
 		});
 	}
-	console.log(queryParams);
+	console.log(queryParams);*/
 	var finalParams = {};
-	$.extend(finalParams, params, queryParams);
+	$.extend(finalParams, params, {});
 	console.log(finalParams);
 
 	var form = $("<form>");
@@ -284,7 +284,8 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	console.log(formData);
 
 	$.ajax({
-		url : withoutParamURL,
+		//url : withoutParamURL,
+		url : this.url,
 		method : "POST",
 		enctype : 'multipart/form-data',
 		contentType : false,

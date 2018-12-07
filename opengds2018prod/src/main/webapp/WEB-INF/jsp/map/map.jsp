@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GeoDT Online</title>
+<title>GeoDT Web</title>
 <jsp:include page="/WEB-INF/jsp/common/libimport_editor.jsp" />
 <style>
 /* .navbar-brand { */
@@ -175,7 +175,8 @@ html {
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
-			requestValidate : "web/validate.do"
+			requestValidate : "web/validate.do",
+			geoserverFileUpload : "geoserver/upload.do"
 		}
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
@@ -246,9 +247,9 @@ html {
 			"token" : urlList.token,
 			"autoOpen" : false,
 			"title" : "Validation",
-			"url": {
-				"token": urlList.token,
-				"requestValidate": urlList.requestValidate
+			"url" : {
+				"token" : urlList.token,
+				"requestValidate" : urlList.requestValidate
 			}
 		});
 
@@ -273,7 +274,7 @@ html {
 		});
 
 		var uploadSHP = new gb.geoserver.UploadSHP({
-			"url" : "file/fileUpload.ajax?${_csrf.parameterName}=${_csrf.token}"
+			"url" : urlList.geoserverFileUpload + urlList.token
 		});
 
 		var gtree = new gb.tree.GeoServer({
@@ -289,6 +290,7 @@ html {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"addGeoServer" : "geoserver/addGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"deleteGeoServer" : "geoserver/removeGeoserver.ajax?${_csrf.parameterName}=${_csrf.token}",
+				"deleteGeoServerLayer" : "geoserver/geoserverRemoveLayers.ajax?${_csrf.parameterName}=${_csrf.token}",
 				"getMapWMS" : urlList.getMapWMS + urlList.token,
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
 				"getWFSFeature" : urlList.getWFSFeature + urlList.token,

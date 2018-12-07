@@ -19,7 +19,7 @@ public class PresetRepository {
 	public Preset retrieveBasePreset(int cat) {
 		return presetMapper.retrieveBasePreset(cat);
 	}
-	
+
 	public Preset retrievePridByBasePreset(int cat) {
 		return presetMapper.retrievePridByBasePreset(cat);
 	}
@@ -31,8 +31,7 @@ public class PresetRepository {
 	public Preset retrieveCatByPreset(int pid) {
 		return presetMapper.retrieveCatByPreset(pid);
 	}
-	
-	
+
 	public List<Preset> retrievePresetByUidx(int uidx) {
 		return presetMapper.retrievePresetByUidx(uidx);
 	}
@@ -65,6 +64,10 @@ public class PresetRepository {
 
 	public Preset retrievePresetByIdAndUidx(Preset preset) {
 		return presetMapper.retrievePresetByIdAndUidx(preset);
+	}
+
+	public Preset retrievePresetNameByNameAndUidx(Preset preset) {
+		return presetMapper.retrievePresetNameByNameAndUidx(preset);
 	}
 
 }

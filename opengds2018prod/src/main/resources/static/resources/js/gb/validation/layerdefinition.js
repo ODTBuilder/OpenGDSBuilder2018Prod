@@ -114,7 +114,7 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "[레이어 정의]가 변경 되었습니다"
 		},
 		"noticeNotExistLayer" : {
-			"en" : "category. There are no layers.",
+			"en" : " category has no layers.",
 			"ko" : "번째 분류에 포함된 레이어가 없습니다"
 		},
 		"noticeInvalidKey" : {
@@ -122,12 +122,48 @@ gb.validation.LayerDefinition = function(obj) {
 			"ko" : "은/는 유효한 키 이름이 아닙니다"
 		},
 		"noticeCategoryNameEnter" : {
-			"en" : "category. You must enter a category name.",
+			"en" : "th category. You must enter a category name.",
 			"ko" : "번째 분류의 분류명을 입력해야 합니다"
 		},
 		"keyName" : {
 			"en" : "Key name:",
 			"ko" : "키 이름:"
+		},
+		"askDelCat" : {
+			"en" : "Are you sure you want to delete the selected layer category?",
+			"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
+		},
+		"askDelLayer" : {
+			"en" : "Are you sure you want to delete the selected layer?",
+			"ko" : "선택한 레이어를 삭제하시겠습니까?"
+		},
+		"askDelFixed" : {
+			"en" : "Are you sure you want to delete this fixed attribute?",
+			"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
+		},
+		"delCatModalTitle" : {
+			"en" : "Delete Category",
+			"ko" : "분류 삭제"
+		},
+		"delLayerModalTitle" : {
+			"en" : "Delete Layer",
+			"ko" : "레이어 삭제"
+		},
+		"delAttrModalTitle" : {
+			"en" : "Delete Fixed Attribute",
+			"ko" : "고정 속성 삭제"
+		},
+		"nodataoutput" : {
+			"en" : "No settings to export.",
+			"ko" : "내보낼 설정이 없습니다."
+		},
+		"readfail" : {
+			"en" : "Unable to read file.",
+			"ko" : "파일을 읽을 수 없습니다."
+		},
+		"emptyobj" : {
+			"en" : "There are no defined layers.",
+			"ko" : "정의된 레이어가 없습니다."
 		}
 	}
 	// this.panelBody = $("<div>").addClass("panel-body");
@@ -155,8 +191,12 @@ gb.validation.LayerDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result);
-				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				try {
+					var obj = JSON.parse(reader.result);
+				} catch (e) {
+					that.setMessage("danger", " " + that.translation.readfail[that.locale]);
+					return;
+				}
 				var flag = that.setStructure(obj);
 				that.updateStructure();
 			});
@@ -168,7 +208,14 @@ gb.validation.LayerDefinition = function(obj) {
 		});
 	}
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-category", function() {
-		that.deleteCategory(this);
+		var thisBtn = this;
+		var idx = $(thisBtn).parents().eq(4).index();
+		var strc = that.getStructure();
+		var elem = strc[idx];
+		var callback = function() {
+			that.deleteCategory(thisBtn);
+		};
+		that.deleteCategoryModal(elem.name, callback);
 		console.log(that.getStructure());
 	});
 
@@ -202,12 +249,32 @@ gb.validation.LayerDefinition = function(obj) {
 	});
 
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-layer", function() {
-		that.deleteLayer(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteLayer(thisBtn);
+		};
+		var catIdx = $(thisBtn).parents().eq(8).index();
+		console.log(catIdx);
+		var layerIdx = $(thisBtn).parents().eq(2).index();
+		console.log(layerIdx);
+		var strc = that.getStructure();
+		if (Array.isArray(strc)) {
+			var cat = strc[catIdx];
+			var layers = cat["layers"];
+			if (Array.isArray(layers)) {
+				var layer = cat["layers"][layerIdx]["code"] ? cat["layers"][layerIdx]["code"] : "";
+				that.deleteLayerModal(layer, callback);
+			}
+		}
 		console.log(that.getStructure());
 	});
 
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-attribute", function() {
-		that.deleteAttribute(this);
+		var thisBtn = this;
+		var callback = function() {
+			that.deleteAttribute(thisBtn);
+		};
+		that.deleteFixedAttrModal(callback);
 		console.log(that.getStructure());
 	});
 
@@ -516,6 +583,9 @@ gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 		this.structure = strc;
 		this.setMessage("success", " " + this.translation.noticeLayerDefUpdate[this.locale]);
 	}
+	if (this.isEmpty()) {
+		this.setMessage("warning", " " + this.translation.emptyobj[this.locale]);
+	}
 	return isOK;
 };
 
@@ -527,7 +597,23 @@ gb.validation.LayerDefinition.prototype.setJSONFile = function() {
 
 };
 
+gb.validation.LayerDefinition.prototype.isEmpty = function() {
+	var strc = this.getStructure();
+	var isEmpty = true;
+	for ( var key in strc) {
+		if (strc.hasOwnProperty(key))
+			isEmpty = false;
+	}
+	return isEmpty;
+};
+
 gb.validation.LayerDefinition.prototype.getJSONFile = function() {
+	var isEmpty = this.isEmpty();
+	if (isEmpty) {
+		this.setMessage("danger", " " + this.translation.nodataoutput[this.locale]);
+		return;
+	}
+
 	// Opera 8.0+
 	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 
@@ -995,4 +1081,123 @@ gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 			}
 		}
 	}
+};
+/*
+ * 카테고리 삭제전 확인창 출력
+ */
+gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, callback) {
+	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + catname + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	// var modalFooter =
+	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
+	var deleteModal = new gb.modal.Base({
+		"title" : this.translation.delCatModalTitle[this.locale],
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
+};
+/*
+ * 레이어 삭제전 확인창 출력
+ */
+gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callback) {
+	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + layer + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px",
+		"word-break" : "break-word"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	// var modalFooter =
+	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
+	var deleteModal = new gb.modal.Base({
+		"title" : this.translation.delLayerModalTitle[this.locale],
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
+};
+/*
+ * 고정속성 제거 모달
+ */
+gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback) {
+	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var body = $("<div>").append(msg1);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+	var deleteModal = new gb.modal.Base({
+		"title" : this.translation.delAttrModalTitle[this.locale],
+		"width" : 310,
+		"height" : 172,
+		"autoOpen" : false,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		deleteModal.close();
+	});
+	$(okBtn).click(function() {
+		if (typeof callback === "function") {
+			callback();
+		}
+		deleteModal.close();
+	});
+	deleteModal.open();
 };

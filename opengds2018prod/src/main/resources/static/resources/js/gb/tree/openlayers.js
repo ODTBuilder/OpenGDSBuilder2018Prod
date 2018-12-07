@@ -492,7 +492,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		"text-align" : "center"
 	});
 
-	var epsg = $("<div>").addClass("col-md-2").append("EPSG");
+	/*var epsg = $("<div>").addClass("col-md-2").append("EPSG");
 	var epsgInput = $("<input>").attr({
 		"type" : "text",
 		"placeholder" : "Default: 4326"
@@ -501,7 +501,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	var col1 = $("<div>").addClass("col-md-10").append(epsgInput);
 	var row1 = $("<div>").addClass("row").append(epsg).append(col1).css({
 		"margin-bottom" : "15px"
-	});
+	});*/
 
 	var encode = $("<div>").addClass("col-md-2").append("Encoding");
 	var encodeInput = $("<input>").attr({
@@ -523,7 +523,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 			.append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 
-	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(row1)
+	var gBody = $("<div>").append(uploadBtn).append(fileInfo)
 			.append(row2).css({
 				"display" : "table",
 				"width" : "100%"
@@ -532,7 +532,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	var addGeoServerModal = new gb.modal.Base({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
-		"height" : 350,
+		"height" : 280,
 		"autoOpen" : true,
 		"body" : gBody,
 		"footer" : modalFooter
@@ -587,7 +587,7 @@ gb.tree.loadShpZip = function(epsg, encode, file, map) {
 gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var that = this;
 
-	var file, result;
+	var file, result, imageInfo, readerInfo;
 
 	// 파일 선택 input
 	var fileSelect = 
@@ -606,13 +606,8 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 							
 							image.src = reader.result;
 							image.onload = function(){
-								new gb.layer.ImageLayer({
-									map: that.map,
-									url: reader.result,
-									width: image.width,
-									height: image.height,
-									title: file.name
-								});
+								imageInfo = image;
+								readerInfo = reader;
 							}
 						}
 						reader.readAsDataURL(file);
@@ -649,7 +644,16 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	}).addClass("gb-button").addClass("gb-button-default").text("Close");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Add")
+	.click(function(){
+		new gb.layer.ImageLayer({
+			map: that.map,
+			url: readerInfo.result,
+			width: imageInfo.width,
+			height: imageInfo.height,
+			title: file.name
+		});
+	});
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn)
 			.append(closeBtn);

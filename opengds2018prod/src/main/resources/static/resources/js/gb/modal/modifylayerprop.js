@@ -45,6 +45,19 @@ gb.edit.LABELSTYLE = {
 	"border-radius": ".28571429rem"
 }
 
+gb.edit.FIELDSTYLE = {
+	"width": "50%",
+	"padding-left": ".5em",
+	"padding-right": ".5em"
+}
+
+gb.edit.SELECTSTYLE = {
+}
+
+gb.edit.SELTITLESTYLE = {
+	"font-weight": "700"
+}
+
 gb.edit.ModifyLayerProperties = function(obj) {
 	var that = this;
 	var options = obj;
@@ -53,6 +66,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	this.serverInfo = undefined;
 	this.layerName = undefined;
 	this.srs = undefined;
+	this.workspaceList = [];
 	this.layerRecord = options.layerRecord ? options.layerRecord : undefined;
 	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
 	this.refer = options.refer ? options.refer : undefined;
@@ -83,29 +97,6 @@ gb.edit.ModifyLayerProperties = function(obj) {
 
 	this.tbody = $("<tbody>");
 	var tableTag = $("<table>").append(this.tbody);
-	
-	/*var group1 = this.createFormGroup({
-		label: {
-			"text": "Layer Name"
-		},
-		input: {
-			"class": "form-control",
-			"id": "layer-prop-name",
-			"type": "text"
-		}
-	});
-	
-	var group4 = this.createFormGroup({
-		label: {
-			"text": "SRS"
-		},
-		input: {
-			"class": "form-control",
-			"id": "layer-prop-srs",
-			"readonly": false,
-			"type": "text"
-		}
-	});*/
 	
 	this.body = $("<div>").append(tableTag);
 	
@@ -203,8 +194,9 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
 	
 	this.tbody.empty();
 	
-	var tr, key, value, label, labelKey, labelValue;
-	for(var i in list){
+	var that = this;
+	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option;
+	for(let i in list){
 		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
 		if(list[i] instanceof Object){
 			value = $("<td>").css(gb.edit.TDSTYLE);
@@ -234,7 +226,48 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
 								})
 								.css(gb.edit.INPUTSTYLE)
 						);
+			} else if(i === "style"){
+				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Workspace");
+				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				select.change(function(){
+					var params = {};
+					params.select = $("#styleSelect");
+					params.serverName = that.serverInfo.geoserver;
+					
+					if($(this).find("option:selected").val() === "workspace"){
+						params.workspace = $(this).find("option:selected").text();
+					}
+					
+					that.requestStyleList(params);
+				});
+				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				
+				option = $("<option>").val("geoserver").text(this.serverInfo.geoserver);
+				select.append(option);
+				for(let w = 0; w < this.workspaceList.length; w++){
+					option = $("<option>").val("workspace").text(this.workspaceList[w]);
+					select.append(option);
+					if(list.styleWorkspace === this.workspaceList[w]){
+						option.attr("selected", "selected");
+					}
+				}
+				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
+				
+				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Style");
+				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				value.append(selectField);
+				
+				this.requestStyleList({
+					select: select,
+					serverName: this.serverInfo.geoserver,
+					workspace: list.styleWorkspace,
+					style: list[i]
+				});
 			} else {
+				if(i === "styleWorkspace"){
+					continue;
+				}
 				value = $("<td>").css(gb.edit.TDSTYLE).text(list[i]);
 			}
 			
@@ -243,31 +276,6 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
 		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
 		this.tbody.append(tr);
 	}
-	
-	/*var label = options.label;
-	
-	var input = options.input;
-	
-	var labelTag = 
-		$("<label>")
-			.addClass("col-sm-2 col-form-label")
-			.attr({
-				"for": input.id
-			})
-			.text(label.text);
-	
-	var inputTag = 
-		$("<input>")
-			.addClass("layer-prop-input")
-			.addClass(input["class"])
-			.attr({
-				"id": input.id,
-				"type": input.type,
-				"readonly": input.readonly || false
-			});
-	
-	var inputDiv = $("<div>").addClass("col-sm-10").append(inputTag);
-	var div = $("<div>").addClass("form-group row").append(labelTag).append(inputDiv);*/
 }
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function(){
@@ -313,17 +321,16 @@ gb.edit.ModifyLayerProperties.prototype.setServerInfo = function(info) {
 gb.edit.ModifyLayerProperties.prototype.getServerInfo = function() {
 	return this.serverInfo;
 };
-gb.edit.ModifyLayerProperties.prototype.setInformation = function(info) {
-	this.information = info;
-};
-gb.edit.ModifyLayerProperties.prototype.getInformation = function() {
-	return this.information;
-};
-
 
 gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
-	this.setInformation(info);
 	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
+	this.requestStyleList("geoserver32");
+};
+
+gb.edit.ModifyLayerProperties.prototype.setWorkSpaceList = function(list) {
+	if(list instanceof Array){
+		this.workspaceList = list;
+	}
 };
 
 gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
@@ -368,14 +375,6 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 					that.srs = data[0].srs;
 					
 					that.createTableContent(data[0]);
-					
-					/*$("#layer-prop-name").val(data[0].lName);
-					$("#layer-prop-geom").val(data[0].geomType);
-					$("#layer-prop-geomkey").val(data[0].geomkey);
-					$("#layer-prop-srs").val(data[0].srs);
-					$("#layer-prop-geoserver").val(geoserver);
-					$("#layer-prop-workspace").val(workspace);
-					$("#layer-prop-datastore").val(datastore);*/
 				}
 
 				$("body").css("cursor", "default");
@@ -383,6 +382,48 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 		}
 	});
 };
+
+gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
+	var params = {};
+	var options = options;
+	var select = undefined;
+	var style = options.style || "";
+	
+	if(!!options.select){
+		select = options.select;
+	} else {
+		return;
+	}
+	
+	if(!!options.serverName){
+		params.serverName = options.serverName;
+	} else {
+		return;
+	}
+	
+	if(!!options.workspace){
+		params.workspace = options.workspace;
+	}
+	
+	$.ajax({
+		url : "geoserver/getStyleList.ajax" + this.token,
+		method : "GET",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : params,
+		success: function(data, textStatus, jqXHR){
+			select.empty();
+			var tag = undefined;
+			for(var i = 0; i < data.length; i++){
+				tag = $("<option>").val(data[i]).text(data[i]);
+				select.append(tag);
+				if(style === data[i]){
+					tag.attr("selected", "selected");
+				}
+			}
+		}
+	});
+}
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var layer = this.layer;

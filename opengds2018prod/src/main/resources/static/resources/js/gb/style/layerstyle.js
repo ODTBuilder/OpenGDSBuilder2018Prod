@@ -1119,12 +1119,6 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 				$(this.fillPicker).spectrum("set", "rgba(0, 0, 0, 0)");
 			}
 			
-			if (this.geom === "LineString" || this.geom === "MultiLineString") {
-				$(this.fillArea).hide();
-			} else {
-				$(this.fillArea).show();
-			}
-			
 			if (parseSld.hasOwnProperty("strokeRGBA")) {
 				$(this.linePicker).spectrum("set", parseSld["strokeRGBA"]);
 			}
@@ -1137,12 +1131,6 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 				$(this.radInput).val(parseFloat(parseSld["pointSize"] / 2));
 			} else {
 				$(this.radInput).val(parseFloat(1));
-			}
-			
-			if (this.geom === "Point" || this.geom === "MultiPoint") {
-				$(this.radArea).show();
-			} else {
-				$(this.radArea).hide();
 			}
 			
 			if (parseSld.hasOwnProperty("strokeDashArray")) {
@@ -1158,6 +1146,18 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			}
 		}
 
+	}
+	
+	if (this.geom === "LineString" || this.geom === "MultiLineString") {
+		$(this.fillArea).hide();
+	} else {
+		$(this.fillArea).show();
+	}
+	
+	if (this.geom === "Point" || this.geom === "MultiPoint") {
+		$(this.radArea).show();
+	} else {
+		$(this.radArea).hide();
 	}
 };
 /**

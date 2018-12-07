@@ -636,7 +636,11 @@ gb.header.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
 
 	if(!!this.selectedSource){
 		this.map.removeLayer(this.tempVector);
-		this.selectedSource.get("git").tempLayer.setMap(this.map);
+		if(this.getActiveTool()){
+			this.selectedSource.get("git").tempLayer.setMap(this.map);
+		} else {
+			this.selectedSource.get("git").tempLayer.setMap(null);
+		}
 	}
 
 	// this.map.removeLayer(this.managed);
@@ -952,15 +956,17 @@ gb.header.EditingTool.prototype.select = function(source) {
  */
 gb.header.EditingTool.prototype.draw = function(layer) {
 
-	if (this.isOn.draw) {
+	//if (this.isOn.draw) {
 		if (!!this.interaction.draw || !!this.interaction.updateDraw) {
-			this.deactiveIntrct_("snap");
-			this.deactiveIntrct_("draw");
-			this.deactiveBtn_("drawBtn");
-			this.map.removeLayer(this.managed);
+			if (this.interaction.draw.getActive()){
+				this.deactiveIntrct_("snap");
+				this.deactiveIntrct_("draw");
+				this.deactiveBtn_("drawBtn");
+				this.map.removeLayer(this.managed);
+				return;
+			}
 		}
-		return;
-	}
+	//}
 	this.map.removeLayer(this.managed);
 	var that = this;
 	if (this.interaction.select) {
@@ -1132,6 +1138,7 @@ gb.header.EditingTool.prototype.move = function(layer) {
 			this.interaction.select.getFeatures().clear();
 			this.deactiveIntrct_("move");
 			this.deactiveBtn_("moveBtn");
+			//this.map.removeLayer(this.tempVector);
 			// this.map.removeLayer(this.managed);
 		}
 		return;
@@ -1221,14 +1228,16 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
-	if (this.isOn.rotate) {
+	//if (this.isOn.rotate) {
 		if (!!this.interaction.rotate) {
-			this.interaction.select.getFeatures().clear();
-			this.deactiveIntrct_("rotate");
-			this.deactiveBtn_("rotateBtn");
+			if (this.interaction.rotate.getActive()){
+				this.interaction.select.getFeatures().clear();
+				this.deactiveIntrct_("rotate");
+				this.deactiveBtn_("rotateBtn");
+				return;
+			}
 		}
-		return;
-	}
+	//}
 
 	var that = this;
 
@@ -1301,15 +1310,17 @@ gb.header.EditingTool.prototype.modify = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
-	if (this.isOn.modify) {
+	//if (this.isOn.modify) {
 		if (!!this.interaction.modify) {
-			this.interaction.select.getFeatures().clear();
-			this.deactiveIntrct_("modify");
-			this.deactiveIntrct_("snap");
-			this.deactiveBtn_("modiBtn");
+			if (this.interaction.modify.getActive()) {
+				this.interaction.select.getFeatures().clear();
+				this.deactiveIntrct_("modify");
+				this.deactiveIntrct_("snap");
+				this.deactiveBtn_("modiBtn");
+				return;
+			}
 		}
-		return;
-	}
+	//}
 	var that = this;
 
 	var selectSource = this.selectedSource;
@@ -2418,7 +2429,7 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 		this.setVisibleWMS(true);
 		this.setVisibleWFS(false);
 		this.displayEditZoomHint(false);
-		this.deactiveAnotherInteraction(this.interaction.select);
+		this.deactiveAnotherInteraction();
 		this.deactiveAllBtn_();
 	} else {
 		this.setActiveTool(true);

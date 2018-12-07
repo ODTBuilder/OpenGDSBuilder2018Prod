@@ -47,6 +47,19 @@ if (!gb.validation)
 		},
 	};
 	
+	let BUTTONSTYLE = {
+		"width": "33.3333%",
+		"border": "none",
+		"background": "#e0e1e2 none",
+		"cursor": "pointer",
+		"padding": ".78571429em 0em .78571429em",
+		"font-weight": "700",
+		"border-top-left-radius": ".28571429rem",
+		"border-bottom-left-radius": ".28571429rem",
+		"line-height": "1em",
+		"color": "rgba(0,0,0,.6)"
+	};
+	
 	gb.validation.Validation = function(obj) {
 		obj.keep = true;
 		gb.modal.Base.call(this, obj);
@@ -62,8 +75,34 @@ if (!gb.validation)
 		
 		this.presetSelectTag = $("<select class='form-control'>");
 		
-		this.formatSelectTag = $("<select class='form-control validation-format-select'>");
-		this.formatSelectTag.append($("<option>").text("Select File Format:"));
+		this.verSelectTag = 
+			$("<div>")
+				.css({
+					"width": "100%",
+					"display": "inline-flex"
+				});
+		
+		var button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("지하시설물");
+		this.verSelectTag.append(button);
+		
+		button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("수치지도");
+		this.verSelectTag.append(button);
+		
+		button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("임상도");
+		this.verSelectTag.append(button);
+		
+		$(document).on("click", ".version-btn", function(){
+			
+			if($(this).hasClass("active")){
+				$(this).css("background", "none rgb(224, 225, 226)");
+				$(this).css("color", "rgba(0, 0, 0, 0.6)");
+			} else {
+				$(this).css("background", "#00b5ad none");
+				$(this).css("color", "#fff");
+			}
+			$(this).parent().find("button").removeClass("active");
+			$(this).addClass("active");
+		});
 		
 		this.srsSelectTag = $("<select class='form-control'>");
 		this.srsSelectTag.append($("<option>").text("좌표계를 선택해주세요:"));
@@ -576,7 +615,7 @@ if (!gb.validation)
 		
 		// ==================== Create Panel body HTML Start >>>>>>>>>>>>>>>>>>>>
 		var presetDiv = $("<div>").addClass("validation-custom-select").append(this.presetSelectTag);
-		//var formatDiv = $("<div>").addClass("validation-custom-select").append(this.formatSelectTag);
+		var verDiv = $("<div>").addClass("validation-custom-select").append(this.verSelectTag);
 		var srsDiv = $("<div>").addClass("validation-custom-select").append(this.srsSelectTag);
 		
 		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
@@ -586,10 +625,9 @@ if (!gb.validation)
 		var message = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
 		var body = 
 			$("<div>")
-				.append(presetDiv).append(srsDiv).append(message);
+				.append(presetDiv).append(verDiv).append(srsDiv).append(message);
 		
 		requestPreset(this, this.presetSelectTag, presetDiv, this.messageContent);
-		//customSelect(formatDiv);
 		customSelect(srsDiv);
 		
 		// <<<<<<<<<<<<<<<<<<<< Create Panel body HTML End ======================
@@ -671,6 +709,10 @@ if (!gb.validation)
 			success : function(data, textStatus, jqXHR) {
 				var option = $("<option>").val("false").text("사용자 정의 옵션을 선택해주세요:");
 				select.append(option);
+				
+				option = $("<option>").attr("data-cat", 0).attr("data-prid", "nonset").val("nonset").text("default");
+				select.append(option);
+				
 				for (var i = 0; i < data.length; i++) {
 					option = 
 						$("<option>")

@@ -61,7 +61,6 @@ import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 import it.geosolutions.geoserver.rest.encoder.GSLayerEncoder;
-import it.geosolutions.geoserver.rest.encoder.GSLayerGroupEncoder;
 import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 
@@ -158,6 +157,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 				Path tmp = null;
 				
 				String uploadFilename = "";//업로드 파일명
+				
+				
+				File file = new File(defaultTempPath);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
 				
 				try {
 					tmp = Files.createTempDirectory(FileSystems.getDefault().getPath(outputFolderPath), "temp_");
@@ -472,55 +477,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 		return dtReader.getDTGeoGroupLayerList(workspace, groupList);
 	}
 
-	/**
-	 * @since 2017. 6. 5.
-	 * @author SG.Lee
-	 * @param layerName
-	 * @return
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#removeGeoserverLayer(java.lang.String)
-	 */
-	@Override
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
-			String groupLayerName, String layerName) {
-		if (dtGeoManager != null) {
-			dtReader = dtGeoManager.getReader();
-			dtPublisher = dtGeoManager.getPublisher();
-		} else {
-			throw new IllegalArgumentException("Geoserver 정보 없음");
-		}
-
-		boolean isConfigureGroup = false;
-		boolean isRemoveFeatureType = false;
-		DTGeoGroupLayer dtGeoGroupLayer = dtReader.getDTGeoGroupLayer(workspace, groupLayerName);
-
-		if (dtGeoGroupLayer != null) {
-			List<String> layerList = dtGeoGroupLayer.getPublishedList().getNames();
-			layerList.remove(layerName);
-
-			GSLayerGroupEncoder groupEncoder = new GSLayerGroupEncoder();
-			groupEncoder.setName(dtGeoGroupLayer.getName());
-			groupEncoder.setWorkspace(dtGeoGroupLayer.getWorkspace());
-			groupEncoder.setBounds(dtGeoGroupLayer.getCRS(), dtGeoGroupLayer.getMinX(), dtGeoGroupLayer.getMaxY(),
-					dtGeoGroupLayer.getMinY(), dtGeoGroupLayer.getMaxY());
-			for (String name : layerList) {
-				groupEncoder.addLayer(workspace + ":" + name);
-			}
-			isConfigureGroup = dtPublisher.configureLayerGroup(workspace, groupLayerName, groupEncoder);
-			isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName, layerName);
-			// isRemoveLayer = dtPublisher.removeLayer(userVO.getId(),
-			// layerName);
-		} else {
-			isRemoveFeatureType = dtPublisher.unpublishFeatureType(workspace, dsName, layerName);
-			if (!isRemoveFeatureType) {
-				return false;
-			}
-			return true;
-		}
-		if (!isConfigureGroup && !isRemoveFeatureType) {
-			return false;
-		}
-		return true;
-	}
 
 	/**
 	 * @since 2018. 7. 5.6
@@ -532,11 +488,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 *      java.util.List)
 	 */
 	@Override
-	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList) {
+	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, String dsName, List<String> layerNameList) {
 		int resultFlag = 500;
 		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
-			boolean removeFlag = dtPublisher.removeLayers(workspace, layerNameList);
+			boolean removeFlag = dtPublisher.removeLayers(workspace, dsName, layerNameList);
 			if (removeFlag) {
 				resultFlag = 200; // 성공
 			} else {

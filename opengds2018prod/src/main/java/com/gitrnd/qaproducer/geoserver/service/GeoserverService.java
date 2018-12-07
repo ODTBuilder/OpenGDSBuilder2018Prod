@@ -155,20 +155,6 @@ public interface GeoserverService {
 	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace,
 			ArrayList<String> groupList);
 
-	/**
-	 * 그룹레이어 삭제
-	 * 
-	 * @author SG.Lee
-	 * @Date 2018. 7. 5. 오후 1:17:28
-	 * @param dtGeoManager   - DTGeoserverManager Object
-	 * @param workspace      - Geoserver Workspace명
-	 * @param dsName         - Geoserver Datasource명
-	 * @param groupLayerName - 그룹레이어명
-	 * @param layerName      - 레이어명
-	 * @return boolean
-	 */
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
-			String groupLayerName, String layerName);
 
 	/**
 	 * 다중 레이어를 삭제
@@ -177,10 +163,11 @@ public interface GeoserverService {
 	 * @Date 2017. 6. 5. 오전 10:40:17
 	 * @param dtGeoManager  - DTGeoserverManager Object
 	 * @param workspace     - Geoserver Workspace명
+	 * @param dsName         - Geoserver Datasource명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
 	 * @return int - 200 성공 - 500 요청실패 - 605 해당 조건에 맞는 서버존재X - 606 일부성공 또는 실패
 	 */
-	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
+	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, String dsName, List<String> layerNameList);
 
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제

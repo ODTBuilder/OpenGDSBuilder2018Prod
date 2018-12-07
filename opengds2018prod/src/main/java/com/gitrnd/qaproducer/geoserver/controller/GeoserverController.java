@@ -464,7 +464,8 @@ public class GeoserverController extends AbstractController {
 			resultFlag = 603;
 		} else {
 			String workspace = (String) jsonObject.get("workspace");
-			resultFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, layerList);
+			String datastore = (String) jsonObject.get("datastore");
+			resultFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, datastore, layerList);
 		}
 		return resultFlag;
 	}

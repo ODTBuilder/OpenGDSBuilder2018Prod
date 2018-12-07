@@ -629,13 +629,64 @@ gb.tree.GeoServer = function(obj) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 									if (obj.type === "geoserver") {
 										that.openDeleteGeoServer(obj.id);
-									} else if (obj.type === "geoserver" || obj.type === "point" || obj.type === "multipoint"
-											|| obj.type === "linestring" || obj.type === "multilinestring" || obj.type === "polygon"
-											|| obj.type === "multipolygon") {
-										var server = inst.get_node(obj.parents[2]);
-										var work = inst.get_node(obj.parents[1]);
-										var layer = obj;
-										that.openDeleteGeoServerLayer(server.text, work.text, layer.text);
+									} else if (obj.type === "point" || obj.type === "multipoint" || obj.type === "linestring"
+											|| obj.type === "multilinestring" || obj.type === "polygon" || obj.type === "multipolygon") {
+										var nodes = inst.get_selected(true);
+										var server = [];
+										var ws = [];
+										var ds = [];
+										var layers = [];
+										var layerstxt = [];
+										isValid = true;
+										for (var i = 0; i < nodes.length; i++) {
+											var node = nodes[i];
+											console.log(node);
+											if (node.type === "geoserver") {
+												if (server.indexOf(node.id) === -1) {
+													server.push(node.id);
+												}
+											} else if (node.type === "workspace") {
+												if (ws.indexOf(node.id) === -1) {
+													ws.push(node.id);
+												}
+											} else if (node.type === "datastore") {
+												if (ds.indexOf(node.id) === -1) {
+													ds.push(node.id);
+												}
+											} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring"
+													|| node.type === "multilinestring" || node.type === "polygon"
+													|| node.type === "multipolygon") {
+												if (layers.indexOf(node.id) === -1) {
+													layers.push(node.id);
+													layerstxt.push(node.text);
+												}
+											}
+										}
+										if (server.length > 1 || ws.length > 1 || ds.length > 1) {
+											isValid = false;
+											that.messageModal("Error", "동일 데이터 스토어에 포함된 레이어만 삭제할 수 있습니다.");
+										} else {
+											for (var i = 0; i < layers.length; i++) {
+												var layerNode = inst.get_node(layers[i]);
+												var serverId = inst.get_node(layerNode.parents[2]);
+												var workId = inst.get_node(layerNode.parents[1]);
+												var storeId = inst.get_node(layerNode.parents[0]);
+												if (server.length > 1 && server.indexOf(serverId.id) === -1) {
+													isValid = false;
+												}
+												if (ws.length > 1 && ws.indexOf(workId.id) === -1) {
+													isValid = false;
+												}
+												if (ds.length > 1 && ds.indexOf(storeId.id) === -1) {
+													isValid = false;
+												}
+											}
+											if (isValid) {
+												that.openDeleteGeoServerLayer(serverId.text, workId.text, layerstxt);
+											} else {
+												that.messageModal("Error", "동일 데이터 스토어에 포함된 레이어만 삭제할 수 있습니다.");
+											}
+										}
 									}
 								}
 							}
@@ -1071,11 +1122,24 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, la
 	var that = this;
 	console.log("open delete geoserver layer");
 	console.log(layer);
-	var msg1 = $("<div>").text("Are you sure to delete this layer?").css({
+	var todel;
+	if (Array.isArray(layer)) {
+		if (layer.length > 1) {
+			todel = '"' + layer[0] + '" ' + "and " + (layer.length - 1) + " more";
+		} else {
+			todel = '"' + layer[0] + '" ';
+		}
+	}
+	var msg1 = $("<div>").css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
-	var msg2 = $("<div>").text('"' + layer + '"').css({
+	if (layer.length > 1) {
+		$(msg1).text("Are you sure to delete these layers?")
+	} else {
+		$(msg1).text("Are you sure to delete this layer?")
+	}
+	var msg2 = $("<div>").text(todel).css({
 		"text-align" : "center",
 		"font-size" : "24px",
 		"word-break" : "break-word"
@@ -1125,7 +1189,7 @@ gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, lay
 	var params = {
 		"serverName" : geoserver,
 		"workspace" : work,
-		"layerList" : [ layer ]
+		"layerList" : typeof layer === "string" ? [ layer ] : Array.isArray(layer) ? layer : undefined
 	};
 
 	$.ajax({

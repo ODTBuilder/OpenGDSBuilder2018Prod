@@ -45,6 +45,7 @@ gb.crs.BaseCRS = function(obj) {
 
 	this.tout = false;
 	$(this.searchBar).keyup(function() {
+		that.setValidEPSG(false);
 		if (that.tout) {
 			clearTimeout(that.tout);
 		}

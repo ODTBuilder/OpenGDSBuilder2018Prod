@@ -219,14 +219,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											"serverName" : params["serverName"],
 											"workspace" : params["workspace"],
 											"LAYERS" : params["workspace"] + ":" + data[i].lName,
-//											"STYLES" : undefined,
+											// "STYLES" : undefined,
 											"VERSION" : "1.1.0",
 											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 											"TILED" : true,
 											"FORMAT" : 'image/png8',
 											"CRS" : data[i].srs,
-											"SLD_BODY": data[i].sld
+											"SLD_BODY" : data[i].sld
 										},
 										serverType : "geoserver"
 									})
@@ -238,7 +238,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									'layers' : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
-									"sld": data[i].sld
+									"sld" : data[i].sld
 								};
 								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 									git["geogigRepo"] = geogig["repo"];
@@ -338,14 +338,14 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										"serverName" : server.text,
 										"workspace" : workspace.text,
 										"LAYERS" : params["workspace"] + ":" + node.text,
-										//"STYLES" : data[i].style,
+										// "STYLES" : data[i].style,
 										"VERSION" : "1.1.0",
 										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
 												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
 										"TILED" : true,
 										"FORMAT" : 'image/png8',
 										"CRS" : data[i].srs,
-										"SLD_BODY": data[i].sld
+										"SLD_BODY" : data[i].sld
 									},
 									serverType : "geoserver"
 								})
@@ -357,7 +357,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								"layers" : data[i].lName,
 								"geometry" : data[i].geomType,
 								"editable" : true,
-								"sld": data[i].sld
+								"sld" : data[i].sld
 							};
 							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 								git["geogigRepo"] = geogig["repo"];

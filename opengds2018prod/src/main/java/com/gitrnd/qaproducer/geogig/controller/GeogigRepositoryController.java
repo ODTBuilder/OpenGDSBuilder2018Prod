@@ -155,4 +155,14 @@ public class GeogigRepositoryController extends AbstractController {
 		return reposService.fetchRepository(geoserverManager, repoName);
 	}
 
+	@RequestMapping(value = "/infoRepository.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigFetch infoRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return reposService.infoRepository(geoserverManager, repoName);
+	}
+
 }

@@ -1,5 +1,7 @@
 package com.gitrnd.qaproducer.common.worker;
 
+import java.util.LinkedList;
+
 import org.json.simple.JSONObject;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,12 @@ public class Producer {
 //		template.setRoutingKey(routingKey);
 //		template.setReplyTimeout(Long.MAX_VALUE);
 //		JSONObject response = (JSONObject) template.convertSendAndReceive(msg);
-//		return response;
+//		LinkedList arry = (LinkedList) response.get("features");
+//		if (arry.size() > 0) {
+//			return response;
+//		} else {
+//			return null;
+//		}
 //	}
 //
 //	public void produceWebMsg(String msg) {

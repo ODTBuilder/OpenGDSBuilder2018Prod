@@ -46,9 +46,15 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		try {
 			transaction = begin.executeCommand(url, user, pw, repoName);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				transaction = new GeogigTransaction();
+				transaction.setError(e.getMessage());
+				transaction.setSuccess("false");
+			}
 		}
 		return transaction;
 	}
@@ -79,9 +85,15 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 			commit.executeCommand(url, user, pw, repoName, transactionId, "", "", "");
 			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				transaction = new GeogigTransaction();
+				transaction.setError(e.getMessage());
+				transaction.setSuccess("false");
+			}
 		}
 		return transaction;
 	}
@@ -107,9 +119,15 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		try {
 			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigTransaction.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				transaction = (GeogigTransaction) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				transaction = new GeogigTransaction();
+				transaction.setError(e.getMessage());
+				transaction.setSuccess("false");
+			}
 		}
 		return transaction;
 	}

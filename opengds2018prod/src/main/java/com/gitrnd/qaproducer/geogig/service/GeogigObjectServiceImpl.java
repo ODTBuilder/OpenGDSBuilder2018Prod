@@ -46,9 +46,15 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 		try {
 			cat = catObj.executeCommand(url, user, pw, repoName, objectid);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCat.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			cat = (GeogigCat) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCat.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				cat = (GeogigCat) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				cat = new GeogigCat();
+				cat.setError(e.getMessage());
+				cat.setSuccess("false");
+			}
 		}
 		return cat;
 	}
@@ -97,9 +103,17 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				}
 			}
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			featureAtt = (GeogigFeatureAttribute) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				featureAtt = (GeogigFeatureAttribute) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				featureAtt = new GeogigFeatureAttribute();
+				featureAtt.setError(e.getMessage());
+				featureAtt.setSuccess("false");
+			}
+
 		}
 		return featureAtt;
 	}
@@ -144,9 +158,16 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				}
 			}
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			featureAtt = (GeogigFeatureAttribute) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				featureAtt = (GeogigFeatureAttribute) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				featureAtt = new GeogigFeatureAttribute();
+				featureAtt.setError(e.getMessage());
+				featureAtt.setSuccess("false");
+			}
 		}
 		return featureAtt;
 	}

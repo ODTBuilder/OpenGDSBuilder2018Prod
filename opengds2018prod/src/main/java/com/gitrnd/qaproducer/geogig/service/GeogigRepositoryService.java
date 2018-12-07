@@ -147,4 +147,11 @@ public interface GeogigRepositoryService {
 	 */
 	GeogigRepositoryDelete deleteRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException;
 
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @return
+	 */
+	GeogigFetch infoRepository(DTGeoserverManager geoserverManager, String repoName);
+
 }

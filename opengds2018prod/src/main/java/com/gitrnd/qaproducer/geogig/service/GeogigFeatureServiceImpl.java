@@ -44,21 +44,20 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-//		String oldTreeish = "HEAD";
-//		String newTreeish = "HEAD";
-//
-//		if (oldIndex != 0) {
-//			oldTreeish += "~" + oldIndex;
-//		}
-
 		DiffRepository diffRepos = new DiffRepository();
 		GeogigDiff geogigDiff = null;
 		try {
 			geogigDiff = diffRepos.executeCommand(url, user, pw, repoName, newCommitId, oldCommitId, path, null);
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			geogigDiff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigDiff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigDiff = new GeogigDiff();
+				geogigDiff.setError(e.getMessage());
+				geogigDiff.setSuccess("false");
+			}
 		}
 		return geogigDiff;
 	}
@@ -75,10 +74,16 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 		GeogigBlame geogigBlame = null;
 		try {
 			geogigBlame = featureBlame.executeCommand(url, user, pw, repoName, path, branch);
-		} catch (Exception e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBlame.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			geogigBlame = (GeogigBlame) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBlame.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigBlame = (GeogigBlame) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigBlame = new GeogigBlame();
+				geogigBlame.setError(e.getMessage());
+				geogigBlame.setSuccess("false");
+			}
 		}
 		return geogigBlame;
 	}
@@ -138,7 +143,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			if (e.isXml()) {
 				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryLog.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-				geogigLog = (GeogigRepositoryLog) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+				geogigLog = (GeogigRepositoryLog) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
 				simpleLog.setSuccess(geogigLog.getSuccess());
 				simpleLog.setError(geogigLog.getError());
 			} else {
@@ -146,7 +151,6 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				simpleLog.setSuccess("false");
 			}
 		}
-
 		return simpleLog;
 	}
 
@@ -177,9 +181,16 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				endTransaction.executeCommand(url, user, pw, repoName, transactionId);
 			}
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureRevert.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			geogigFeatureRevert = (GeogigFeatureRevert) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureRevert.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigFeatureRevert = (GeogigFeatureRevert) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigFeatureRevert = new GeogigFeatureRevert();
+				geogigFeatureRevert.setError(e.getMessage());
+				geogigFeatureRevert.setSuccess("false");
+			}
 		}
 		return geogigFeatureRevert;
 	}

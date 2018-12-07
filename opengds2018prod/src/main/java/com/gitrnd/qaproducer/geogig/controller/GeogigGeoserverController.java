@@ -31,7 +31,7 @@ import com.gitrnd.qaproducer.geogig.service.GeogigGeoserverService;
 public class GeogigGeoserverController extends AbstractController {
 
 	@Autowired
-	@Qualifier("test")
+	@Qualifier("gsService")
 	GeogigGeoserverService geoserverService;
 
 	@RequestMapping(value = "/getDataStoreList.do", method = RequestMethod.POST)

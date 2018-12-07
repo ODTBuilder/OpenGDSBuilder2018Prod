@@ -9,17 +9,15 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryDelete;
 
 public class DeleteRepository {
@@ -56,10 +54,10 @@ public class DeleteRepository {
 		ResponseEntity<GeogigRepositoryDelete> responseEntity = null;
 		try {
 			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigRepositoryDelete.class);
-		} catch (HttpClientErrorException e) {
-			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
-		} catch (HttpServerErrorException e) {
-			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+		} catch (RestClientResponseException e) {
+			throw new GeogigCommandException(e.getMessage(), e.getResponseBodyAsString(), e.getRawStatusCode());
+		} catch (ResourceAccessException e) {
+			throw new GeogigCommandException(e.getMessage());
 		}
 		return responseEntity.getBody();
 	}
@@ -89,10 +87,10 @@ public class DeleteRepository {
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
 		try {
 			restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
-		} catch (HttpClientErrorException e) {
-			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
-		} catch (HttpServerErrorException e) {
-			throw new GeogigCommandException(e.getResponseBodyAsString(), e.getStatusCode());
+		} catch (RestClientResponseException e) {
+			throw new GeogigCommandException(e.getMessage(), e.getResponseBodyAsString(), e.getRawStatusCode());
+		} catch (ResourceAccessException e) {
+			throw new GeogigCommandException(e.getMessage());
 		}
 	}
 }

@@ -45,7 +45,7 @@ gb.crs.BaseCRS = function(obj) {
 
 	this.tout = false;
 	$(this.searchBar).keyup(function() {
-		that.setValidEPSG(false);
+		that.setValidEPSG(1);
 		if (that.tout) {
 			clearTimeout(that.tout);
 		}
@@ -187,7 +187,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 				// EPSG:"
 				// +
 				// that.getEPSGCode());
-				that.setValidEPSG(false);
+				that.setValidEPSG(0);
 				that.setProjection(undefined, undefined, undefined, undefined);
 				console.error("no crs");
 				// that.close();
@@ -197,7 +197,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 				// EPSG:"
 				// +
 				// that.getEPSGCode());
-				that.setValidEPSG(false);
+				that.setValidEPSG(0);
 				that.setProjection(undefined, undefined, undefined, undefined);
 				console.error("no crs");
 				// that.close();
@@ -213,7 +213,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 
 							if (code === codes) {
 								that.setEPSGCode(code);
-								that.setValidEPSG(true);
+								that.setValidEPSG(2);
 								that.setProjection(code, name, proj4def, bbox);
 								if (apply) {
 									that.applyProjection(code, name, proj4def, bbox, callback);
@@ -223,7 +223,7 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 							return;
 						} else {
 							console.error("no crs");
-							that.setValidEPSG(false);
+							that.setValidEPSG(0);
 							that.setProjection(undefined, undefined, undefined, undefined);
 							return;
 						}
@@ -330,7 +330,7 @@ gb.crs.BaseCRS.prototype.getProjection = function() {
  * epsg 코드의 유효성을 설정한다.
  * 
  * @method gb.crs.BaseCRS#setValidEPSG
- * @param {Boolean}
+ * @param {Number}
  *            flag - EPSG 코드 유효성
  */
 gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
@@ -338,7 +338,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 
 	$(this.validIconSpan).empty();
 
-	if (flag) {
+	if (flag === 2) {
 		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
 		$(this.validIconSpan).append(validIcon);
 
@@ -348,10 +348,29 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
 				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
 			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-loading-icon");
+			}
 			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-valid-icon");
 		}
 		$(this.searchBtn).prop("disabled", false);
-	} else {
+	} else if (flag === 1) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-spinner").addClass("fa-spin");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-loading-icon");
+		}
+		$(this.searchBtn).prop("disabled", true);
+	} else if (flag === 0) {
 		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
 		$(this.validIconSpan).append(validIcon);
 
@@ -360,6 +379,9 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 		} else {
 			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
 				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-loading-icon");
 			}
 			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
 		}
@@ -374,7 +396,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
  * @return {Boolean} EPSG 코드 유효성
  */
 gb.crs.BaseCRS.prototype.getValidEPSG = function() {
-	return this.validEPSG;
+	return this.validEPSG === 2 ? true : false;
 };
 
 /**

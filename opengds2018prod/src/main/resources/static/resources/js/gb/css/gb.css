@@ -121,6 +121,12 @@ table.dataTable thead td.select-checkbox:before, table.dataTable thead th.select
 	font-size: 1.2em;
 }
 
+.gb-geoserver-uploadshp-epsg-loading-icon {
+	color: #495057;
+	text-shadow: #999999 2px 2px 2px;
+	font-size: 1.2em;
+}
+
 .gb-geoserver-uploadshp-epsg-icon {
 	vertical-align: text-top;
 	padding: 0 9px;

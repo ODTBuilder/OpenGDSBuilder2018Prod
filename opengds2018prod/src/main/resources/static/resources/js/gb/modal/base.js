@@ -48,9 +48,7 @@ gb.modal.Base = function(obj) {
 	if (footer) {
 		$(this.modalFooter).append(footer);
 	}
-// this.buttonArea = $("<span>").addClass("gb-modal-buttons");
-// this.modalFooter =
-// $("<div>").addClass("gb-modal-footer").append(this.buttonArea);
+
 	this.modal = $("<div>").addClass("gb-modal").css({
 		"width" : typeof this.width === "number" ? this.width+"px" : this.width,
 				"height" : typeof this.height === "number" ? this.height+"px" : this.height,
@@ -85,9 +83,11 @@ gb.modal.Base.prototype.getModalBody = function() {
  */
 gb.modal.Base.prototype.setModalBody = function(body) {
 	if (typeof body === "function") {
-		$(this.modalBody).append(body());
+		var inner = body();
+		$(this.modalBody).append(inner);
 	} else {
-		$(this.modalBody).append(body);
+		var inner = body;
+		$(this.modalBody).append(inner);
 	}
 };
 /**

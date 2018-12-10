@@ -140,11 +140,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 	public int shpCollectionPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore,
 			MultipartHttpServletRequest request) {
 		int puFlag = 500;
-
 		if (dtGeoManager != null && workspace != null && datastore != null) {
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
-
+			
 			boolean wsFlag = false;
 			boolean dsFlag = false;
 
@@ -214,6 +213,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 					                ZipEntry entry = entries.nextElement();
 					                if(entry.isDirectory()){
 					                	//파일구조 이상
+					                	deleteDirectory(tmp.toFile());
 					                	logger.warn("압축파일내에 폴더있음");
 					                	return 608;
 					                } else {
@@ -227,16 +227,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 					                	}
 					                }
 					            }
-					            
+					            zipFile.close();
 					            if(shpIndex==0){
+					            	deleteDirectory(tmp.toFile());
 					            	logger.warn("shp파일이 없음");
 					            	return 608;
 					            }else if(shpIndex>1){
+					            	deleteDirectory(tmp.toFile());
 					            	logger.warn("shp파일이 1개이상");
 					            	return 608;
 					            }
 								index++;
 							}else{
+								deleteDirectory(tmp.toFile());
 								logger.warn("zip파일이 아님");
 				            	return 608;
 							}
@@ -254,6 +257,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 				if (dtReader.existsLayer(workspace, uploadFilename, true)) {
 					// 레이어 중복
+					deleteDirectory(tmp.toFile());
 					System.out.println("레이어중복");
 					return 609;
 				}
@@ -279,11 +283,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 					if (serverPFlag) {
 						puFlag = 200;
 					} else {
+						deleteDirectory(tmp.toFile());
 						puFlag = 500;
 						logger.warn("발행실패");
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
+					deleteDirectory(tmp.toFile());
 					puFlag = 500;
 					logger.warn("발행실패");
 				}

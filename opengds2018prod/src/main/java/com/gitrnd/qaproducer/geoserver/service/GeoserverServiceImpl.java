@@ -157,6 +157,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
 				
+				File file = new File(defaultTempPath);
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+				
 				String uploadFilename = "";//업로드 파일명
 				
 				try {

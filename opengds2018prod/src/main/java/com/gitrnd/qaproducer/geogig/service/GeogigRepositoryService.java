@@ -7,12 +7,12 @@ import javax.xml.bind.JAXBException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigDelete;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryDelete;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInfo;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -151,7 +151,8 @@ public interface GeogigRepositoryService {
 	 * @param geoserverManager
 	 * @param repoName
 	 * @return
+	 * @throws JAXBException
 	 */
-	GeogigFetch infoRepository(DTGeoserverManager geoserverManager, String repoName);
+	GeogigRepositoryInfo infoRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException;
 
 }

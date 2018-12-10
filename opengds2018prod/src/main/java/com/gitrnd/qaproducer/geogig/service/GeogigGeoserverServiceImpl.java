@@ -20,7 +20,7 @@ import com.gitrnd.gdsbuilder.geogig.command.geoserver.PublishGeoserverLayer;
 import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Attribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.CatAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommandResponse;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverDataStore;
@@ -137,8 +137,8 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 				CatObject catObj = new CatObject();
 				GeogigCat geogigCat = catObj.executeCommand(url, user, pw, repoName, metadataId);
 				FeatureType featureType = geogigCat.getFeaturetype();
-				List<Attribute> attrList = featureType.getAttribute();
-				for (Attribute attr : attrList) {
+				List<CatAttribute> attrList = featureType.getAttribute();
+				for (CatAttribute attr : attrList) {
 					String geogigCrs = attr.getCrs();
 					if (geogigCrs != null) {
 						crs = geogigCrs;

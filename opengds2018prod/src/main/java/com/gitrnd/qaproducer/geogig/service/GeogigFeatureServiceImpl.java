@@ -15,21 +15,31 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.RevertFeature;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit.ChangeType;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame.BlameAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.CatAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute.Attribute;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -63,8 +73,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 	}
 
 	@Override
-	public GeogigBlame featureBlame(DTGeoserverManager geoserverManager, String repoName, String path, String branch)
-			throws JAXBException {
+	public GeogigFeatureAttribute featureAttribute(DTGeoserverManager geoserverManager, String repoName, String path,
+			String commit) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -72,20 +82,66 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 		FeatureBlame featureBlame = new FeatureBlame();
 		GeogigBlame geogigBlame = null;
+
+		String[] ids = path.split("/");
+		String layerName = ids[0];
+		String featureName = ids[1];
+
+		GeogigFeatureAttribute featureAtt = null;
 		try {
-			geogigBlame = featureBlame.executeCommand(url, user, pw, repoName, path, branch);
+			geogigBlame = featureBlame.executeCommand(url, user, pw, repoName, path, commit);
+			List<BlameAttribute> valueAttrList = geogigBlame.getAttributes();
+			LsTreeRepository lsTreeRepos = new LsTreeRepository();
+			GeogigRevisionTree geogigLsTree = lsTreeRepos.executeCommand(url, user, pw, repoName, path, true);
+			List<Node> nodes = geogigLsTree.getNodes();
+			for (Node node : nodes) {
+				if (path.equalsIgnoreCase(node.getPath())) {
+					featureAtt = new GeogigFeatureAttribute();
+					String metaId = node.getMetadataId();
+					CatObject catObj = new CatObject();
+					GeogigCat geogigCatMeta = catObj.executeCommand(url, user, pw, repoName, metaId);
+					FeatureType featureType = geogigCatMeta.getFeaturetype();
+					List<CatAttribute> typeAttrList = featureType.getAttribute();
+					List<Attribute> attrList = new ArrayList<>();
+					for (BlameAttribute valueAttr : valueAttrList) {
+						String name = valueAttr.getName();
+						String value = valueAttr.getValue();
+						for (CatAttribute typeAttr : typeAttrList) {
+							if (name.equals(typeAttr.getName())) {
+								String type = typeAttr.getType();
+								Attribute attr = new Attribute();
+								attr.setName(name);
+								attr.setValue(value);
+								attr.setType(type);
+								String crs = typeAttr.getCrs();
+								if (typeAttr.getCrs() != null) {
+									attr.setCrs(crs);
+								}
+								attrList.add(attr);
+							}
+						}
+					}
+					if (attrList.size() > 0) {
+						featureAtt.setAttributes(attrList);
+					}
+					featureAtt.setLayerName(layerName);
+					featureAtt.setFeatureId(featureName);
+					featureAtt.setSuccess("true");
+				}
+			}
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
 				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBlame.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-				geogigBlame = (GeogigBlame) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+				featureAtt = (GeogigFeatureAttribute) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
 			} else {
-				geogigBlame = new GeogigBlame();
-				geogigBlame.setError(e.getMessage());
-				geogigBlame.setSuccess("false");
+				featureAtt = new GeogigFeatureAttribute();
+				featureAtt.setError(e.getMessage());
+				featureAtt.setSuccess("false");
 			}
 		}
-		return geogigBlame;
+		return featureAtt;
 	}
 
 	@Override

@@ -65,6 +65,18 @@ gb.tree.OpenLayers = function(obj) {
 			}).click(function() {
 				that.openAddLayer();
 			});
+	var createGroupIcon = $("<i>").addClass("fas").addClass("fa-folder-open");
+	this.createGroupBtn = 
+		$("<button>")
+			.addClass("gb-button-clear")
+			.append(createGroupIcon)
+			.css({
+				"float" : "right"
+			})
+			.click(function() {
+				that.createGroupNode();
+			});
+	
 	var importFileIcon = $("<i>").addClass("far fa-lg").addClass(
 			"fa-file-archive");
 	this.importFileBtn = $("<button>").addClass("gb-button-clear").append(
@@ -97,7 +109,7 @@ gb.tree.OpenLayers = function(obj) {
 
 	this.titleArea = $("<div>").append(this.panelTitle).append(this.searchBtn)
 			.append(this.refBtn).append(this.addImgBtn).append(
-					this.importFileBtn).append(this.addBtn);
+					this.importFileBtn).append(this.createGroupBtn).append(this.addBtn);
 
 	this.searchInput = $("<input>").attr({
 		"type" : "text"
@@ -286,6 +298,22 @@ gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
  */
 gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
 	this.jstree._data.layerproperties.editingTool = param;
+};
+
+/**
+ * Tree에 Group Node를 생성한다.
+ * 
+ * @method gb.tree.OpenLayers#createGroupNode
+ */
+gb.tree.OpenLayers.prototype.createGroupNode = function() {
+	var tree = this.jstree;
+	
+	tree.create_group("#", {}, "first", function(
+			new_node) {
+		setTimeout(function() {
+			tree.edit(new_node);
+		}, 0);
+	});
 };
 
 /**

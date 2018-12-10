@@ -41,10 +41,14 @@ if (!gb.interaction)
 				return;
 			}
 			feature.on("change", function(e){
-				var drawCoords = feature.getGeometry().getCoordinates(false)[0];
+				var a = that.selected.getArray()[0].getGeometry();
+				var b = feature.getGeometry();
+				var drawCoords = b.getCoordinates(false)[0];
+				var polygons = undefined;
+				
 				if(drawCoords.length > 2){
 					if(ringAdded === false){
-						var testCoords = feature.getGeometry().getCoordinates(false)[0];
+						var testCoords = b.getCoordinates(false)[0];
 						var testCoordsLength = testCoords.length;
 						if(testCoords.length === 3 && 
 								testCoords[testCoordsLength - 1][0] === testCoords[testCoordsLength - 2][0] && 
@@ -52,36 +56,82 @@ if (!gb.interaction)
 							console.log("do nothing!!");
 							return;
 						} else {
-							that.selected.getArray()[0].getGeometry().appendLinearRing(
-								new ol.geom.LinearRing(
-									pushFirstElement(feature.getGeometry().getCoordinates()[0])
-								)
-							);
+							if(a.getType() === "Polygon"){
+								a.appendLinearRing(
+									new ol.geom.LinearRing(
+										pushFirstElement(b.getCoordinates()[0])
+									)
+								);
+							} else if(a.getType() === "MultiPolygon"){
+								polygons = a.getPolygons();
+								for(var i = 0; i < polygons.length; i++){
+									if(polygons[i].intersectsCoordinate(b.getFirstCoordinate())){
+										polygons[i].appendLinearRing(
+											new ol.geom.LinearRing(
+												pushFirstElement(b.getCoordinates()[0])
+											)
+										);
+										break;
+									}
+								}
+							}
+							
 							ringAdded = true;
 						}
 					} else {
-						var coordElemntLength = that.selected.getArray()[0].getGeometry().getCoordinates().length;
-						var coordsExt = that.selected.getArray()[0].getGeometry().getCoordinates()[0];
+						
+						var coordElemntLength, coordsExt;
 						var coordsInter = [];
-						if (coordElemntLength > 2) {
-							for (var i = 1; i < coordElemntLength - 1; i++) {
-								coordsInter.push(that.selected.getArray()[0].getGeometry().getCoordinates()[i]);
+						var setCoords = [];
+						
+						if(a.getType() === "Polygon"){
+							
+							coordElemntLength = a.getCoordinates().length;
+							coordsExt = a.getCoordinates()[0];
+							
+						} else if(a.getType() === "MultiPolygon"){
+							
+							polygons = a.getPolygons();
+							
+							for(var i = 0; i < polygons.length; i++){
+								if(polygons[i].intersectsCoordinate(b.getFirstCoordinate())){
+									polygons[i].setCoordinates(setCoords);
+									coordElemntLength = polygons[i].getCoordinates().length;
+									coordsExt = polygons[i].getCoordinates()[0];
+									break;
+								}
 							}
 						}
-						var setCoords = [];
+						
+						if (coordElemntLength > 2) {
+							for (var i = 1; i < coordElemntLength - 1; i++) {
+								coordsInter.push(a.getCoordinates()[i]);
+							}
+						}
 	
 						if (coordsInter.length > 0) {
 							setCoords.push(coordsExt);
 							for (var z = 0; z < coordsInter.length; z++) {
 								setCoords.push(coordsInter[z]);
 							}
-	
-							setCoords.push(pushFirstElement(feature.getGeometry().getCoordinates(false)[0]));
+							
+							setCoords.push(pushFirstElement(b.getCoordinates(false)[0]));
 						} else {
-							setCoords = [coordsExt, pushFirstElement(feature.getGeometry().getCoordinates(false)[0])];
+							
+							setCoords = [coordsExt, pushFirstElement(b.getCoordinates(false)[0])];
 						}
-	
-						that.selected.getArray()[0].getGeometry().setCoordinates(setCoords);
+						
+						if(a.getType() === "Polygon"){
+							a.setCoordinates(setCoords);
+						} else if(a.getType() === "MultiPolygon"){
+							polygons = a.getPolygons();
+							for(var i = 0; i < polygons.length; i++){
+								if(polygons[i].intersectsCoordinate(b.getFirstCoordinate())){
+									polygons[i].setCoordinates(setCoords);
+									break;
+								}
+							}
+						}
 					}
 				}
 			});
@@ -102,7 +152,8 @@ if (!gb.interaction)
 				alert("You must select only one feature");
 				return false;
 			} else {
-				if(this.selected.getArray()[0].getGeometry().getType() !== "Polygon"){
+				if(!(this.selected.getArray()[0].getGeometry().getType() === "Polygon" || 
+						this.selected.getArray()[0].getGeometry().getType() === "MultiPolygon")){
 					alert("Only Polygon geometry selections.");
 					return false;
 				} else {

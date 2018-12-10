@@ -452,6 +452,38 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 		}
 	};
 	/**
+	 * wms 레이어 보이기/숨기기 기능 활성화 여부
+	 * false 일 때 WFS 레이어 보기/숨김 기능 활성화
+	 * 
+	 * @private
+	 * @name _displayIndex
+	 * @plugin visibility
+	 */
+	this._displayIndex = true;
+	
+	/**
+	 * _displayIndex set 함수
+	 * 
+	 * @private
+	 * @name setDisplayIndex
+	 * @plugin visibility
+	 */
+	this.setDisplayIndex = function(bool){
+		this._displayIndex = bool;
+	};
+	
+	/**
+	 * _displayIndex get 함수
+	 * 
+	 * @private
+	 * @name getDisplayIndex
+	 * @plugin visibility
+	 */
+	this.getDisplayIndex = function(){
+		return this._displayIndex;
+	};
+	
+	/**
 	 * wms 레이어를 보이기/숨기기
 	 * 
 	 * @private
@@ -460,9 +492,10 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 	 */
 	this._displayTileLayer = function(node, bool) {
 		var layer = this.get_LayerById(node.id);
-		layer.setVisible(bool);
+		var showing = [];
+		var layers;
+		
 		if (layer instanceof ol.layer.Tile) {
-			var showing = [];
 			var children = JSON.parse(JSON.stringify(node.children)).reverse();
 			// console.log(children);
 			for (var i = 0; i < children.length; i++) {
@@ -474,6 +507,31 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 			params["LAYERS"] = showing.toString();
 			source.updateParams(params);
 		}
+		
+		if(this._displayIndex){
+			layer.setVisible(bool);
+		} else {
+			if(layer instanceof ol.layer.Vector){
+				layer.setVisible(bool);
+			} else if(layer instanceof ol.layer.Tile){
+				if(layer.get("git") instanceof Object){
+					if(layer.get("git").tempLayer instanceof ol.layer.Vector){
+						bool ? layer.get("git").tempLayer.setMap(this._data.core.map) : layer.get("git").tempLayer.setMap(bool);
+					}
+				}
+			} else if(layer instanceof ol.layer.Group){
+				layers = layer.getLayersArray();
+				for(let i = 0; i < layers.length; i++){
+					if(layers[i].get("git") instanceof Object){
+						if(layers[i].get("git").tempLayer instanceof ol.layer.Vector){
+							bool ? layers[i].get("git").tempLayer.setMap(this._data.core.map) : layers[i].get("git").tempLayer.setMap(null);
+						}
+					}
+				}
+			}
+		}
+		
+		
 	};
 	/**
 	 * wms 레이어를 업데이트한다.

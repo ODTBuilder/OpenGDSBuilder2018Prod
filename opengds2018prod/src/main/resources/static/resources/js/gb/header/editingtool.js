@@ -1450,8 +1450,8 @@ gb.header.EditingTool.prototype.remove = function(layer) {
 				stroke : stroke,
 				radius : 5
 			}),
-			fill : fill,
-			stroke : stroke
+			fill : undefined,
+			stroke : undefined
 		});
 
 		if (selectSource.get("git").tempLayer instanceof ol.layer.Vector) {
@@ -1473,9 +1473,9 @@ gb.header.EditingTool.prototype.remove = function(layer) {
 							data.source.addFeature(data.features[i]);
 						} else {
 							feature = data.source.getFeatureById(id);
-							data.source.removeFeature(feature);
-							data.source.clear();
+							feature.setStyle(data.defaultStyle);
 						}
+						data.that.featureRecord.deleteFeatureRemoved(data.source.get("git").tempLayer.get("id"), data.features[i].getId());
 					}
 				},
 				redo: function(data){
@@ -1495,6 +1495,7 @@ gb.header.EditingTool.prototype.remove = function(layer) {
 					that: that,
 					source: selectSource,
 					features: features.getArray().slice(),
+					defaultStyle: selectSource.get("git").tempLayer.getStyle(),
 					removeStyle: style
 				}
 			});
@@ -2230,11 +2231,13 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 			tileLayers.push(layer);
 		}
 		if(layer instanceof ol.layer.Group){
+			tileLayers.push(layer);
 			layer.getLayers().forEach(function(tile){
 				if(tile instanceof ol.layer.Tile){
 					tileLayers.push(tile);
 				}
 				if(tile instanceof ol.layer.Group){
+					tileLayers.push(tile);
 					tile.getLayers().forEach(function(node){
 						if(node instanceof ol.layer.Tile){
 							tileLayers.push(node);
@@ -2251,6 +2254,7 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 gb.header.EditingTool.prototype.loadWFS_ = function(){
 
 	var tileLayers = this.getTileLayersInMap(this.map);
+	var tree = this.otree.getJSTree();
 	var selectedLayer;
 	var vectorSource;
 
@@ -2266,8 +2270,22 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 						this.select(vectorSource);
 					}
 				}
+				
+				if(!!tree.get_node(tileLayers[i].get("treeid"))){
+					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+						vectorSource.get("git").tempLayer.setMap(this.map);
+					} else {
+						vectorSource.get("git").tempLayer.setMap(null);
+					}
+				}
 			} else {
-				this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
+				if(!!tree.get_node(tileLayers[i].get("treeid"))){
+					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
+					} else {
+						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(null);
+					}
+				}
 			}
 		}
 	}
@@ -2279,6 +2297,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 
 // hochul
 gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
+	var tree = this.otree.getJSTree();
 	var set;
 	if(bool){
 		set = this.map;
@@ -2287,7 +2306,13 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 	}
 
 	for(var i in this.vectorSourcesOfServer_){
-		this.vectorSourcesOfServer_[i].get("git").tempLayer.setMap(set);
+		if(!!tree.get_node(i)){
+			if(!tree.get_node(i).state.hiding){
+				this.vectorSourcesOfServer_[i].get("git").tempLayer.setMap(set);
+			} else {
+				this.vectorSourcesOfServer_[i].get("git").tempLayer.setMap(null);
+			}
+		}
 	}
 
 	for(var i in this.customVector_){
@@ -2298,9 +2323,16 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 // hochul
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	var tileLayers = this.getTileLayersInMap(this.map);
-
+	var tree = this.otree.getJSTree();
+	
 	for(var i = 0; i < tileLayers.length; i++){
-		tileLayers[i].setVisible(bool);
+		if(!!tree.get_node(tileLayers[i].get("treeid"))){
+			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+				tileLayers[i].setVisible(bool);
+			} else {
+				tileLayers[i].setVisible(false);
+			}
+		}
 	}
 }
 
@@ -2309,7 +2341,9 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	var tileLayers = this.getTileLayersInMap(this.map);
 
 	for(var i = 0; i < tileLayers.length; i++){
-		tileLayers[i].getSource().refresh();
+		if(tileLayers[i] instanceof ol.layer.Tile){
+			tileLayers[i].getSource().refresh();
+		}
 	}
 }
 
@@ -2425,6 +2459,9 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 // hochul
 gb.header.EditingTool.prototype.editToolToggle = function(){
 	if(this.getActiveTool()){
+		// openlayers tree wms layer 보기/숨김 기능 활성화
+		this.otree.getJSTree().setDisplayIndex(true);
+		
 		this.setActiveTool(false);
 		this.setVisibleWMS(true);
 		this.setVisibleWFS(false);
@@ -2432,6 +2469,9 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 		this.deactiveAnotherInteraction();
 		this.deactiveAllBtn_();
 	} else {
+		// openlayers tree wms layer 보기/숨김 기능 비활성화
+		this.otree.getJSTree().setDisplayIndex(false);
+		
 		this.setActiveTool(true);
 		this.setVisibleWMS(false);
 		if(this.map.getView().getZoom() > 11){

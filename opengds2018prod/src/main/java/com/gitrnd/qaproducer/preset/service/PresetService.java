@@ -68,7 +68,7 @@ public class PresetService {
 	}
 
 	@Transactional
-	public Preset retrievePresetNameByNameAndUidx(Preset preset) {
-		return presetRepository.retrievePresetNameByNameAndUidx(preset);
+	public List<Preset> retrievePresetNameByNameAndUidx(Preset preset) {
+		return presetRepository.retrievePresetNamesByNameAndUidx(preset);
 	}
 }

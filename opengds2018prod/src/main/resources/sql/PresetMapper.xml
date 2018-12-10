@@ -125,7 +125,7 @@
 		tb_qa_category.cid
 	</select>
 
-	<select id="retrievePresetNameByNameAndUidx" parameterType="com.gitrnd.qaproducer.preset.domain.Preset"
+	<select id="retrievePresetNamesByNameAndUidx" parameterType="com.gitrnd.qaproducer.preset.domain.Preset"
 		resultType="com.gitrnd.qaproducer.preset.domain.Preset">
 		SELECT
 		pid,
@@ -137,8 +137,27 @@
 		=
 		#{uidx}
 		AND
-		tb_preset.name =
+		name =
 		#{name}
+	</select>
+
+	<select id="retrievePresetNamesByNameAndUidxAndPid"
+		parameterType="com.gitrnd.qaproducer.preset.domain.Preset" resultType="com.gitrnd.qaproducer.preset.domain.Preset">
+		SELECT
+		pid,
+		cat,
+		name
+		FROM
+		tb_preset
+		WHERE uidx
+		=
+		#{uidx}
+		AND
+		name =
+		#{name}
+		AND
+		pid =
+		#{pid}
 	</select>
 
 	<insert id="createPreset" parameterType="com.gitrnd.qaproducer.preset.domain.Preset"

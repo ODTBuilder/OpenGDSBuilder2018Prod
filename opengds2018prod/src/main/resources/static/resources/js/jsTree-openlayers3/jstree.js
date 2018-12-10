@@ -13025,8 +13025,12 @@
 			 * @author 소이준
 			 */
 			$.jstreeol3.defaults.sort = function(a, b) {
-				var aIndex = this.get_LayerById(this.get_Id(a)).getZIndex();
-				var bIndex = this.get_LayerById(this.get_Id(b)).getZIndex();
+				try{
+					var aIndex = this.get_LayerById(this.get_Id(a)).getZIndex();
+					var bIndex = this.get_LayerById(this.get_Id(b)).getZIndex();	
+				}catch{
+					return 1 < 2 ? 1 : -1;
+				}
 				return aIndex < bIndex ? 1 : -1;
 			};
 			$.jstreeol3.plugins.sort = function(options, parent) {

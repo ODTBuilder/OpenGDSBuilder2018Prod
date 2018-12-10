@@ -264,9 +264,16 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			}
 
 		} else if (node.type === "workspace") {
+			var childrenLength = node.children.length;
+			console.log("자식노드: " + childrenLength);
+			var git = {
+				"allChildren" : childrenLength,
+				"loadedChildren" : 0
+			};
 			var workspace = new ol.layer.Group({});
 			workspace.set("id", node.id);
 			workspace.set("name", node.text);
+			workspace.set("git", git);
 
 			var children = node.children;
 			for (var i = 0; i < children.length; i++) {
@@ -279,22 +286,35 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				console.error("no collection to push");
 			}
 		} else if (node.type === "datastore") {
+			var childrenLength = node.children.length;
+			console.log("자식노드: " + childrenLength);
+			var git = {
+				"allChildren" : childrenLength,
+				"loadedChildren" : 0
+			};
 			var datastore = new ol.layer.Group({});
 			datastore.set("id", node.id);
 			datastore.set("name", node.text);
+			datastore.set("git", git);
 
 			var children = node.children;
 			var objNodes = [];
 			for (var i = 0; i < children.length; i++) {
 				var layer = this.get_node(children[i]);
-				objNodes.push(layer);
+				this.load_each_wms_layer(layer, datastore.getLayers());
+				// objNodes.push(layer);
 			}
 			if (collection instanceof ol.Collection) {
 				collection.push(datastore);
-				this.load_each_wms_layer(objNodes, datastore.getLayers());
 			} else {
 				console.error("no collection to push");
 			}
+			/*
+			 * if (collection instanceof ol.Collection) {
+			 * collection.push(datastore); this.load_each_wms_layer(objNodes,
+			 * datastore.getLayers()); } else { console.error("no collection to
+			 * push"); }
+			 */
 		} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring" || node.type === "multilinestring"
 				|| node.type === "polygon" || node.type === "multipolygon") {
 			var server = this.get_node(node.parents[2]);

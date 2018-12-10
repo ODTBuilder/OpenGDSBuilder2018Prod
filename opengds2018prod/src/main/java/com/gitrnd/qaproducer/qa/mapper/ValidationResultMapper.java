@@ -12,10 +12,12 @@ import com.gitrnd.qaproducer.qa.domain.ValidationResult;
 public interface ValidationResultMapper {
 
 	int countValidationResultByUidx(int idx);
-	
-	JSONArray retrieveValidationResultByUidx(Map<String,Object> params);
-	
+
+	JSONArray retrieveValidationResultByUidx(Map<String, Object> params);
+
 	ValidationResult retrieveValidationResultByPidx(int idx);
-	
-	int deleteValidationResult(ArrayList<ValidationResult> vrList);
+
+	int deleteValidationResults(ArrayList<ValidationResult> vrList);
+
+	int deleteValidationResult(ValidationResult result);
 }

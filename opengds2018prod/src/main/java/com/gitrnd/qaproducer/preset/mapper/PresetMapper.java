@@ -12,13 +12,13 @@ import com.gitrnd.qaproducer.preset.domain.Preset;
 public interface PresetMapper {
 
 	public Preset retrieveBasePreset(int cat);
-	
+
 	public Preset retrievePridByBasePreset(int cat);
 
 	public Preset retrievePresetById(int pid);
-	
+
 	public Preset retrieveCatByPreset(int pid);
-	
+
 	public int updatePreset(Preset preset);
 
 	public int deletePresets(ArrayList<Preset> prList);
@@ -28,6 +28,8 @@ public interface PresetMapper {
 	public List<Preset> retrievePresetNamesByUidx(int uidx);
 
 	public void createPreset(Preset preset);
-	
+
 	public Preset retrievePresetByIdAndUidx(Preset preset);
+
+	public Preset retrievePresetNameByNameAndUidx(Preset preset);
 }

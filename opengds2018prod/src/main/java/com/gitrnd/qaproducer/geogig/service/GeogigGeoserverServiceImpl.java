@@ -39,7 +39,7 @@ import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
  * @author GIT
  *
  */
-@Service("test")
+@Service("gsService")
 public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 
 	@Override
@@ -53,58 +53,67 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 
 		// get workspaces
 		ListGeoserverWorkSpace listGws = new ListGeoserverWorkSpace();
-		GeogigGeoserverWorkSpaceList geogigGws = listGws.executeCommand(url, user, pw, ResponseType.XML);
-		List<Workspace> workspaces = geogigGws.getWorkspaces();
-		for (Workspace workspace : workspaces) {
-			String wrName = workspace.getName();
-			// get datastores
-			ListGeoserverDataStore listGds = new ListGeoserverDataStore();
-			GeogigGeoserverDataStoreList geogigGdsList = listGds.executeCommand(url, user, pw, wrName,
-					ResponseType.XML);
-			List<DataStore> dataStores = geogigGdsList.getDataStores();
-			JSONArray dsArr = new JSONArray();
-			String ws = null;
-			for (DataStore dataStore : dataStores) {
-				String dsName = dataStore.getName();
-				GeoserverDataStore gds = new GeoserverDataStore();
-				GeogigGeoserverDataStore geogigGds = gds.executeCommand(url, user, pw, wrName, dsName,
-						ResponseType.XML);
-				String type = geogigGds.getType();
+		GeogigGeoserverWorkSpaceList geogigGws = null;
+		try {
+			geogigGws = listGws.executeCommand(url, user, pw, ResponseType.XML);
+			List<Workspace> workspaces = geogigGws.getWorkspaces();
+			if (workspaces != null) {
+				for (Workspace workspace : workspaces) {
+					String wrName = workspace.getName();
+					// get datastores
+					ListGeoserverDataStore listGds = new ListGeoserverDataStore();
+					GeogigGeoserverDataStoreList geogigGdsList = listGds.executeCommand(url, user, pw, wrName,
+							ResponseType.XML);
+					List<DataStore> dataStores = geogigGdsList.getDataStores();
+					if (dataStores != null) {
+						JSONArray dsArr = new JSONArray();
+						String ws = null;
+						for (DataStore dataStore : dataStores) {
+							String dsName = dataStore.getName();
+							GeoserverDataStore gds = new GeoserverDataStore();
+							GeogigGeoserverDataStore geogigGds = gds.executeCommand(url, user, pw, wrName, dsName,
+									ResponseType.XML);
+							String type = geogigGds.getType();
 
-				// check geogig type
-				if (type.equalsIgnoreCase("GeoGIG")) {
-					ConnectionParameters connParam = geogigGds.getConnetParams();
-					List<Entry> entryList = connParam.getEntryList();
-					// check geogig ws
-					boolean isWs = false;
-					for (Entry entry : entryList) {
-						String key = entry.getKey();
-						String value = entry.getXmlValue();
-						if (key.equalsIgnoreCase("geogig_repository")) {
-							String repoValue = value.replace("geoserver://", "");
-							if (repoValue.equalsIgnoreCase(repoName)) {
-								ws = wrName;
-								isWs = true;
-							}
-						}
-					}
-					// check geogig ds
-					if (isWs) {
-						for (Entry entry : entryList) {
-							String key = entry.getKey();
-							String value = entry.getXmlValue();
-							if (key.equalsIgnoreCase("branch")) {
-								if (value.equalsIgnoreCase(branchName)) {
-									dsArr.add(dsName);
+							// check geogig type
+							if (type.equalsIgnoreCase("GeoGIG")) {
+								ConnectionParameters connParam = geogigGds.getConnetParams();
+								List<Entry> entryList = connParam.getEntryList();
+								// check geogig ws
+								boolean isWs = false;
+								for (Entry entry : entryList) {
+									String key = entry.getKey();
+									String value = entry.getXmlValue();
+									if (key.equalsIgnoreCase("geogig_repository")) {
+										String repoValue = value.replace("geoserver://", "");
+										if (repoValue.equalsIgnoreCase(repoName)) {
+											ws = wrName;
+											isWs = true;
+										}
+									}
+								}
+								// check geogig ds
+								if (isWs) {
+									for (Entry entry : entryList) {
+										String key = entry.getKey();
+										String value = entry.getXmlValue();
+										if (key.equalsIgnoreCase("branch")) {
+											if (value.equalsIgnoreCase(branchName)) {
+												dsArr.add(dsName);
+											}
+										}
+									}
 								}
 							}
+						}
+						if (dsArr.size() > 0) {
+							dsListObj.put(ws, dsArr);
 						}
 					}
 				}
 			}
-			if (dsArr.size() > 0) {
-				dsListObj.put(ws, dsArr);
-			}
+		} catch (GeogigCommandException e) {
+			// TODO: handle exception
 		}
 		return dsListObj;
 	}
@@ -160,28 +169,34 @@ public class GeogigGeoserverServiceImpl implements GeogigGeoserverService {
 		String pw = geoserverManager.getPassword();
 
 		JSONArray layerArr = new JSONArray();
-		// all layer
-		ListGeoserverLayer listAllLayer = new ListGeoserverLayer();
-		GeogigGeoserverLayerList allGsLayerList = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
-				ResponseType.XML, ListParam.ALL);
-		List<String> featureTypeList = allGsLayerList.getFeatureTypeNames();
-		// unpublished layer
-		GeogigGeoserverLayerList listAvailableLayer = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
-				ResponseType.XML, ListParam.AVAILABLE);
-		List<String> availableGsLayerList = listAvailableLayer.getFeatureTypeNames();
-		for (String featureType : featureTypeList) {
-			JSONObject layerObj = new JSONObject();
-			layerObj.put("layerName", featureType);
-			boolean isPublished = true;
-			if (availableGsLayerList != null) {
-				for (String availableFeatureType : availableGsLayerList) {
-					if (featureType.equals(availableFeatureType)) {
-						isPublished = false;
+		try {
+			// all layer
+			ListGeoserverLayer listAllLayer = new ListGeoserverLayer();
+			GeogigGeoserverLayerList allGsLayerList = listAllLayer.executeCommand(url, user, pw, workspace, datastore,
+					ResponseType.XML, ListParam.ALL);
+			List<String> featureTypeList = allGsLayerList.getFeatureTypeNames();
+			if (featureTypeList != null) {
+				// unpublished layer
+				GeogigGeoserverLayerList listAvailableLayer = listAllLayer.executeCommand(url, user, pw, workspace,
+						datastore, ResponseType.XML, ListParam.AVAILABLE);
+				List<String> availableGsLayerList = listAvailableLayer.getFeatureTypeNames();
+				for (String featureType : featureTypeList) {
+					JSONObject layerObj = new JSONObject();
+					layerObj.put("layerName", featureType);
+					boolean isPublished = true;
+					if (availableGsLayerList != null) {
+						for (String availableFeatureType : availableGsLayerList) {
+							if (featureType.equals(availableFeatureType)) {
+								isPublished = false;
+							}
+						}
 					}
+					layerObj.put("published", isPublished);
+					layerArr.add(layerObj);
 				}
 			}
-			layerObj.put("published", isPublished);
-			layerArr.add(layerObj);
+		} catch (GeogigCommandException e) {
+			// TODO: handle exception
 		}
 		return layerArr;
 	}

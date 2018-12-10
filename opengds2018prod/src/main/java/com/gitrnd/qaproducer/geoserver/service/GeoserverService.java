@@ -79,7 +79,7 @@ public interface GeoserverService {
 	 * @param datastore    저장소
 	 * @param request      MultipartHttpServletRequest(
 	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류 607 :
-	 *         workspace 또는 datastore 존재 X 608 : 파일이 2개이상 609 : 레이어 중복
+	 *         workspace 또는 datastore 존재 X 608 : 파일구조 이상 609 : 레이어 중복
 	 */
 	public int shpCollectionPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore,
 			MultipartHttpServletRequest request);
@@ -155,20 +155,6 @@ public interface GeoserverService {
 	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace,
 			ArrayList<String> groupList);
 
-	/**
-	 * 그룹레이어 삭제
-	 * 
-	 * @author SG.Lee
-	 * @Date 2018. 7. 5. 오후 1:17:28
-	 * @param dtGeoManager   - DTGeoserverManager Object
-	 * @param workspace      - Geoserver Workspace명
-	 * @param dsName         - Geoserver Datasource명
-	 * @param groupLayerName - 그룹레이어명
-	 * @param layerName      - 레이어명
-	 * @return boolean
-	 */
-	public boolean removeDTGeoserverLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
-			String groupLayerName, String layerName);
 
 	/**
 	 * 다중 레이어를 삭제
@@ -177,10 +163,11 @@ public interface GeoserverService {
 	 * @Date 2017. 6. 5. 오전 10:40:17
 	 * @param dtGeoManager  - DTGeoserverManager Object
 	 * @param workspace     - Geoserver Workspace명
+	 * @param dsName         - Geoserver Datasource명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
 	 * @return int - 200 성공 - 500 요청실패 - 605 해당 조건에 맞는 서버존재X - 606 일부성공 또는 실패
 	 */
-	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, List<String> layerNameList);
+	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, String dsName, List<String> layerNameList);
 
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제

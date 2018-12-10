@@ -94,12 +94,12 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		return flag;
 	}
 
-	public boolean removeLayers(String wsName, List<String> layerNameList) {
+	public boolean removeLayers(String wsName, String storeName, List<String> layerNameList) {
 		boolean flag = false;
 		int flagCount = 0;
 		for (int i = 0; i < layerNameList.size(); i++) {
 			String layerName = (String) layerNameList.get(i);
-			flag = removeLayer(wsName, layerName);
+			flag = unpublishFeatureType(wsName, storeName, layerName);
 			if (!flag) {
 				flagCount++;
 			}

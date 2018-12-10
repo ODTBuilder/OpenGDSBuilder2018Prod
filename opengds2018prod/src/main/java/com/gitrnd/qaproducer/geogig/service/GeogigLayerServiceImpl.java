@@ -79,9 +79,15 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 				diff.setDiffs(diffs);
 			}
 		} catch (GeogigCommandException e) {
-			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			diff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getMessage()));
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				diff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				diff = new GeogigDiff();
+				diff.setError(e.getMessage());
+				diff.setSuccess("false");
+			}
 		}
 		return diff;
 	}

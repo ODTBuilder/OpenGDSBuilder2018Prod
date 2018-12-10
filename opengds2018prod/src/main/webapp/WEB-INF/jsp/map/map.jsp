@@ -258,7 +258,7 @@ html {
 		});
 
 		var frecord = new gb.edit.FeatureRecord({
-			id : "feature_id",
+			//id : "feature_id",
 			wfstURL : urlList.wfst + urlList.token,
 			layerInfoURL : urlList.getLayerInfo + urlList.token
 		});

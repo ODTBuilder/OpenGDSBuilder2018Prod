@@ -123,9 +123,10 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		"disabled": false
 	}).on("click", function() {
 		//var opt = that.getDefinitionForm();
-		that.saveLayerProperties();
-		that.close();
-		that.refresh();
+		if(!!that.saveLayerProperties()){
+			that.close();
+			that.refresh();
+		}
 	});
 	$(okBtn).addClass("btn");
 	$(okBtn).addClass("btn-primary");
@@ -426,8 +427,25 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 }
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
+	var that = this;
+	var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+	var num_pattern = /[0-9]/;
 	var layer = this.layer;
 	var serverInfo = this.getServerInfo();
+	
+	if(special_pattern.test($("#proplName").val()) === true){
+		alert("레이어 이름에 특수문자는 허용되지않습니다.");
+		return false;
+	}
+	if(special_pattern.test($("#proptitle").val()) === true){
+		alert("레이어 제목에 특수문자는 허용되지않습니다.");
+		return false;
+	}
+	/*if(!$.isNumeric($("#propsrs").val())){
+		alert("EPSG 코드는 숫자만 입력 가능합니다.");
+		return false;
+	}*/
+	
 	var arr = {
 		"serverName": serverInfo.geoserver,
 		"workspace": serverInfo.workspace,
@@ -448,4 +466,6 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 			console.log(data);
 		}
 	});
+	
+	return true;
 }

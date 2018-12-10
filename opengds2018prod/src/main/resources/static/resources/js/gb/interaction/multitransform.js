@@ -255,13 +255,39 @@ gb.interaction.MultiTransform.prototype.handleMoveEvent = function(evt) {
  */
 gb.interaction.MultiTransform.prototype.handleUpEvent = function(evt) {
 	var feature = this.features_.item(0);
-
+	var task = null;
+	var map = evt.map;
+	var element = evt.map.getTargetElement();
+	
 	if (feature) {
-		var map = evt.map;
-		var element = evt.map.getTargetElement();
-
 		if (element.style.cursor !== '' && this.task_ !== 'rotate' && !this.task_.match(/^scale/i)) {
 			this.flipAlgorithm_(feature, this.task_);
+			
+			task = this.selectTask_(map, feature, evt.pixel);
+
+			if (!!task) {
+				switch (task) {
+				case 'rotate':
+					element.style.cursor = 'pointer';
+					break;
+				case 'scaleW':
+					element.style.cursor = 'nw-resize';
+					break;
+				case 'scaleE':
+					element.style.cursor = 'ne-resize';
+					break;
+				default:
+					element.style.cursor = 'pointer';
+				}
+				this.task_ = task;
+			} else {
+				if (element.style.cursor !== '') {
+					element.style.cursor = '';
+				}
+				if (this.task_) {
+					this.task_ = null;
+				}
+			}
 		}
 	}
 

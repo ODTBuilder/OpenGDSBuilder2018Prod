@@ -66,8 +66,8 @@ public class PresetRepository {
 		return presetMapper.retrievePresetByIdAndUidx(preset);
 	}
 
-	public Preset retrievePresetNameByNameAndUidx(Preset preset) {
-		return presetMapper.retrievePresetNameByNameAndUidx(preset);
+	public List<Preset> retrievePresetNamesByNameAndUidx(Preset preset) {
+		return presetMapper.retrievePresetNamesByNameAndUidx(preset);
 	}
 
 }

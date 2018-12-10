@@ -31,5 +31,5 @@ public interface PresetMapper {
 
 	public Preset retrievePresetByIdAndUidx(Preset preset);
 
-	public Preset retrievePresetNameByNameAndUidx(Preset preset);
+	public List<Preset> retrievePresetNamesByNameAndUidx(Preset preset);
 }

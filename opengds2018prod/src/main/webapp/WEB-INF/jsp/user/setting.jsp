@@ -132,10 +132,12 @@ input.radio:checked+label::before {
 				$(".Step2").hide();
 				$(".Step3").show();
 				$(".Step4").hide();
-				if (tempLayerDef != JSON.stringify(layerDef.getStructure())) {
-					optionDef.clearStructure();
-					gitrnd.alert("warning", " <spring:message code="lang.alertValidateItemReset" />");
-				}
+// 				if (pid === undefined) {
+// 					if (tempLayerDef != JSON.stringify(layerDef.getStructure())) {
+// 						optionDef.clearStructure();
+// 						gitrnd.alert("warning", " <spring:message code="lang.alertValidateItemReset" />");
+// 					}
+// 				}
 				optionDef.init();
 			});
 			$(".MoveToStep4").click(function() {
@@ -174,7 +176,14 @@ input.radio:checked+label::before {
 				prexhr.open("POST", "${pageContext.request.contextPath}/option/retrievePresetNameByNameAndUidx.ajax?${_csrf.parameterName}=${_csrf.token}");
 				prexhr.onload = function() {
 					console.log('DONE', prexhr.readyState); // readyState will be 4
-					if (prexhr.response === "") {
+					var flag = false;
+					var obj = JSON.parse(prexhr.response);
+					if (obj === null || obj === undefined) {
+						flag = true;
+					} else if (Array.isArray(obj)) {
+						flag = true;
+					}
+					if (flag) {
 	 					var data = new FormData();
 
 	 					data.append("category", $("input[type=radio][name=qacat2]:checked").val());
@@ -200,22 +209,41 @@ input.radio:checked+label::before {
 			});
 			
 			$("#update-def").click(function() {
-				var data = new FormData();
+				var preData = new FormData();
+				preData.append("name", $("#def-name").val());
+				preData.append("pid", pid);
+				var prexhr = new XMLHttpRequest();
+				prexhr.open("POST", "${pageContext.request.contextPath}/option/retrievePresetNameByNameAndUidxAndPid.ajax?${_csrf.parameterName}=${_csrf.token}");
+				prexhr.onload = function() {
+					console.log('DONE', prexhr.readyState); // readyState will be 4
+					var flag = false;
+					var obj = JSON.parse(prexhr.response);
+					if (obj === null || obj === undefined) {
+						flag = true;
+					} else if (Array.isArray(obj)) {
+						flag = true;
+					}
+					if (flag) {
+						var data = new FormData();
+						data.append("category", $("input[type=radio][name=qacat2]:checked").val());
+						data.append("version", $("input[type=radio][name=qacat1]:checked").val());
+						data.append("pid", pid);
+						data.append("name", $("#def-name").val());
+						data.append("layer", JSON.stringify(layerDef.getStructure()));
+						data.append("option", JSON.stringify(optionDef.getStructure()));
 
-				data.append("category", $("input[type=radio][name=qacat2]:checked").val());
-				data.append("version", $("input[type=radio][name=qacat1]:checked").val());
-				data.append("pid", pid);
-				data.append("name", $("#def-name").val());
-				data.append("layer", JSON.stringify(layerDef.getStructure()));
-				data.append("option", JSON.stringify(optionDef.getStructure()));
-
-				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "${pageContext.request.contextPath}/option/updatePreset.ajax?${_csrf.parameterName}=${_csrf.token}");
-				xhr.onload = function() {
-					console.log('DONE', xhr.readyState); // readyState will be 4
-					window.location = "${pageContext.request.contextPath}/settinglist.do";
+						var xhr = new XMLHttpRequest();
+						xhr.open("POST", "${pageContext.request.contextPath}/option/updatePreset.ajax?${_csrf.parameterName}=${_csrf.token}");
+						xhr.onload = function() {
+							console.log('DONE', xhr.readyState); // readyState will be 4
+							window.location = "${pageContext.request.contextPath}/settinglist.do";
+						};
+						xhr.send(data);
+					} else {
+						gitrnd.alert("danger", " <spring:message code="lang.duplconfigname" />");
+					}
 				};
-				xhr.send(data);
+				prexhr.send(preData);
 			});
 
 			$("input[type=radio][name=qacat2]").change(function() {

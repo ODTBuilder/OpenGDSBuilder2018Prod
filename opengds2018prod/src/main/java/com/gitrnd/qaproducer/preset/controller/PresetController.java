@@ -182,4 +182,23 @@ public class PresetController {
 		}
 		return presets;
 	}
+
+	@RequestMapping(value = "/retrievePresetNameByNameAndUidxAndPid.ajax", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Preset> retrievePresetNameByNameAndUidxAndPid(HttpServletRequest request,
+			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+
+		List<Preset> presets;
+
+		if (loginUser != null) {
+			Preset preset = new Preset();
+			preset.setName(request.getParameter("name"));
+			preset.setPid(Integer.parseInt(request.getParameter("pid")));
+			preset.setUidx(loginUser.getIdx());
+			presets = presetService.retrievePresetNameByNameAndUidxAndPid(preset);
+		} else {
+			presets = null;
+		}
+		return presets;
+	}
 }

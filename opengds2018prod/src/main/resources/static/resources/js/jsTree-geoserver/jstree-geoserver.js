@@ -264,12 +264,22 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			}
 
 		} else if (node.type === "workspace") {
+
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.", 206);
+				console.error("layer duplicated");
+				return;
+			}
+
 			var childrenLength = node.children.length;
 			console.log("자식노드: " + childrenLength);
 			var git = {
 				"allChildren" : childrenLength,
-				"loadedChildren" : 0
+				"loadedChildren" : 0,
+				"failedChildren" : 0
 			};
+
 			var workspace = new ol.layer.Group({});
 			workspace.set("id", node.id);
 			workspace.set("name", node.text);
@@ -297,12 +307,39 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			var workspaceNode = this.get_node(node.parents[0]);
 			var datastoreNode = node;
 
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.", 206);
+				console.error("layer duplicated");
+
+				var parent = that._data.geoserver.clientTree.get_LayerByOLId(workspaceNode.id);
+				console.log(parent);
+				if (parent instanceof ol.layer.Group) {
+					var git = parent.get("git");
+					if (git !== undefined) {
+						var all = git["allChildren"];
+						var allInt = parseInt(all);
+						var fail = git["failedChildren"];
+						var failInt = parseInt(fail);
+						if (!isNaN(failInt)) {
+							git["failedChildren"] = failInt + 1;
+						}
+						if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+							that._data.geoserver.clientTree.refresh();
+						}
+					}
+				}
+				return;
+			}
+
 			var childrenLength = node.children.length;
 			console.log("자식노드: " + childrenLength);
 			var git = {
 				"allChildren" : childrenLength,
-				"loadedChildren" : 0
+				"loadedChildren" : 0,
+				"failedChildren" : 0
 			};
+
 			var datastore = new ol.layer.Group({});
 			datastore.set("id", node.id);
 			datastore.set("name", node.text);
@@ -337,9 +374,52 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			 */
 		} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring" || node.type === "multilinestring"
 				|| node.type === "polygon" || node.type === "multipolygon") {
+
 			var server = this.get_node(node.parents[2]);
 			var workspace = this.get_node(node.parents[1]);
 			var datastore = this.get_node(node.parents[0]);
+
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				console.error("layer duplicated");
+				var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
+				var parent = that._data.geoserver.clientTree.get_LayerByOLId(datastore.id);
+				console.log(parent);
+				if (parent instanceof ol.layer.Group) {
+					var git = parent.get("git");
+					if (git !== undefined) {
+						var all = git["allChildren"];
+						var allInt = parseInt(all);
+						var fail = git["failedChildren"];
+						var failInt = parseInt(fail);
+						if (!isNaN(failInt)) {
+							git["failedChildren"] = failInt + 1;
+						}
+						if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent === undefined)) {
+							that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+							that._data.geoserver.clientTree.refresh();
+						} else if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent instanceof ol.layer.Group)) {
+							var git = grandParent.get("git");
+							if (git !== undefined) {
+								var all = git["allChildren"];
+								var allInt = parseInt(all);
+								var fail = git["failedChildren"];
+								var failInt = parseInt(fail);
+								if (!isNaN(failInt)) {
+									git["failedChildren"] = failInt + 1;
+								}
+								if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+									console.log("done");
+									that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+									that._data.geoserver.clientTree.refresh();
+								}
+							}
+						}
+					}
+				}
+				return;
+			}
+
 			var geogig = {};
 			if (datastore.original.hasOwnProperty("storeType")) {
 				if (datastore.original.storeType === "GeoGIG") {
@@ -406,6 +486,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							wms.set("git", git);
 							wms.set("id", node.id);
 							wms.set("name", node.text);
+
 							if (collection instanceof ol.Collection) {
 								collection.push(wms);
 								// that._data.geoserver.clientTree.initTreeId();
@@ -417,13 +498,16 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										var all = git["allChildren"];
 										var allInt = parseInt(all);
 										var load = git["loadedChildren"];
-										var loaded = parseInt(load);
-										if (!isNaN(loaded)) {
-											git["loadedChildren"] = loaded + 1;
+										var loadInt = parseInt(load);
+										if (!isNaN(loadInt)) {
+											git["loadedChildren"] = loadInt + 1;
 										}
-										if (allInt === git["loadedChildren"]) {
-											console.log("all loaded");
+										if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+											console.log("done");
 											that._data.geoserver.clientTree.refresh();
+											if (git["failedChildren"] > 0) {
+												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+											}
 											var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
 											console.log(parent);
 											if (grandParent instanceof ol.layer.Group) {
@@ -432,13 +516,16 @@ $.jstree.plugins.geoserver = function(options, parent) {
 													var all = git["allChildren"];
 													var allInt = parseInt(all);
 													var load = git["loadedChildren"];
-													var loaded = parseInt(load);
-													if (!isNaN(loaded)) {
-														git["loadedChildren"] = loaded + 1;
+													var loadInt = parseInt(load);
+													if (!isNaN(loadInt)) {
+														git["loadedChildren"] = loadInt + 1;
 													}
-													if (allInt === git["loadedChildren"]) {
-														console.log("all loaded");
+													if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+														console.log("done");
 														that._data.geoserver.clientTree.refresh();
+														if (git["failedChildren"] > 0) {
+															that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+														}
 													}
 												}
 											} else {
@@ -457,6 +544,44 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				}
 			});
 		}
+	};
+
+	/**
+	 * 오류 메시지 창을 생성한다.
+	 * 
+	 * @method messageModal
+	 * @param {String}
+	 *            title - 모달의 타이틀
+	 * @param {String}
+	 *            msg - 보여줄 메세지
+	 * @param {Number}
+	 *            height - 모달의 높이(px)
+	 */
+	this.messageModal = function(title, msg, height) {
+		var that = this;
+		var msg1 = $("<div>").text(msg).css({
+			"text-align" : "center",
+			"font-size" : "16px",
+			"margin-top" : "18px",
+			"margin-bottom" : "18px"
+		});
+		var body = $("<div>").append(msg1);
+		var okBtn = $("<button>").css({
+			"float" : "right"
+		}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+
+		var modal = new gb.modal.Base({
+			"title" : title,
+			"width" : 310,
+			"height" : height,
+			"autoOpen" : true,
+			"body" : body,
+			"footer" : buttonArea
+		});
+		$(okBtn).click(function() {
+			modal.close();
+		});
 	};
 
 	/**

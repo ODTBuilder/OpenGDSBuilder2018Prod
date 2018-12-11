@@ -777,10 +777,10 @@
 							var last = that._data.core.layers.getLength() - 1;
 							that.git.lastPointer = that.setUniqueLayerZIndex(
 									addLayer, that.git.lastPointer);
-							// if (addLayer.get("id") === undefined) {
+							 if (addLayer.get("treeid") === undefined) {
 							that.setUniqueLayerId(addLayer, that
 									._createLayerId());
-							// }
+							 }
 							that.git.layerLength += 1;
 							if (that.git.isContextmenu) {
 								that.git.isContextmenu = false;

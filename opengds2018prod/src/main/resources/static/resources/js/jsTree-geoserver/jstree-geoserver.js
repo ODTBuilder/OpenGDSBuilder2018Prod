@@ -275,17 +275,28 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			workspace.set("name", node.text);
 			workspace.set("git", git);
 
+			if (collection instanceof ol.Collection) {
+				collection.push(workspace);
+				var domnode = that._data.geoserver.clientTree.get_node(workspace.get("treeid"), true);
+				$(domnode).addClass("jstreeol3-loading");
+				console.log(domnode);
+			} else {
+				console.error("no collection to push");
+			}
+
 			var children = node.children;
+			if (children.length === 0) {
+				that._data.geoserver.clientTree.refresh();
+			}
 			for (var i = 0; i < children.length; i++) {
 				var store = this.get_node(children[i]);
 				this.load_each_wms_layer(store, workspace.getLayers());
 			}
-			if (collection instanceof ol.Collection) {
-				collection.push(workspace);
-			} else {
-				console.error("no collection to push");
-			}
+
 		} else if (node.type === "datastore") {
+			var workspaceNode = this.get_node(node.parents[0]);
+			var datastoreNode = node;
+
 			var childrenLength = node.children.length;
 			console.log("자식노드: " + childrenLength);
 			var git = {
@@ -297,18 +308,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			datastore.set("name", node.text);
 			datastore.set("git", git);
 
+			if (collection instanceof ol.Collection) {
+				collection.push(datastore);
+				var domnode = that._data.geoserver.clientTree.get_node(datastore.get("treeid"), true);
+				$(domnode).addClass("jstreeol3-loading");
+				console.log(domnode);
+
+			} else {
+				console.error("no collection to push");
+			}
+
 			var children = node.children;
 			var objNodes = [];
+			if (children.length === 0) {
+				that._data.geoserver.clientTree.refresh();
+			}
 			for (var i = 0; i < children.length; i++) {
 				var layer = this.get_node(children[i]);
 				this.load_each_wms_layer(layer, datastore.getLayers());
 				// objNodes.push(layer);
 			}
-			if (collection instanceof ol.Collection) {
-				collection.push(datastore);
-			} else {
-				console.error("no collection to push");
-			}
+
 			/*
 			 * if (collection instanceof ol.Collection) {
 			 * collection.push(datastore); this.load_each_wms_layer(objNodes,
@@ -388,11 +408,50 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							wms.set("name", node.text);
 							if (collection instanceof ol.Collection) {
 								collection.push(wms);
-								that._data.geoserver.clientTree.initTreeId();
+								// that._data.geoserver.clientTree.initTreeId();
+								var parent = that._data.geoserver.clientTree.get_LayerByOLId(datastore.id);
+								console.log(parent);
+								if (parent instanceof ol.layer.Group) {
+									var git = parent.get("git");
+									if (git !== undefined) {
+										var all = git["allChildren"];
+										var allInt = parseInt(all);
+										var load = git["loadedChildren"];
+										var loaded = parseInt(load);
+										if (!isNaN(loaded)) {
+											git["loadedChildren"] = loaded + 1;
+										}
+										if (allInt === git["loadedChildren"]) {
+											console.log("all loaded");
+											that._data.geoserver.clientTree.refresh();
+											var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
+											console.log(parent);
+											if (grandParent instanceof ol.layer.Group) {
+												var git = grandParent.get("git");
+												if (git !== undefined) {
+													var all = git["allChildren"];
+													var allInt = parseInt(all);
+													var load = git["loadedChildren"];
+													var loaded = parseInt(load);
+													if (!isNaN(loaded)) {
+														git["loadedChildren"] = loaded + 1;
+													}
+													if (allInt === git["loadedChildren"]) {
+														console.log("all loaded");
+														that._data.geoserver.clientTree.refresh();
+													}
+												}
+											} else {
+												that._data.geoserver.clientTree.refresh();
+											}
+										}
+									}
+								} else {
+									that._data.geoserver.clientTree.refresh();
+								}
 							} else {
 								console.error("no collection to push");
 							}
-							that._data.geoserver.clientTree.refresh();
 						}
 					}
 				}

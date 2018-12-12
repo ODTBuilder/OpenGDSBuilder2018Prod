@@ -101,25 +101,40 @@ gb.edit.FeatureRecord.prototype.isEditing = function(layer) {
 	var c = this.getCreated();
 	var ckeys = Object.keys(c);
 	for (var i = 0; i < ckeys.length; i++) {
-		if (layer.get("id") === ckeys[i]) {
+		if(!layer){
 			result = true;
 			return result;
+		} else {
+			if (layer.get("id") === ckeys[i]) {
+				result = true;
+				return result;
+			}
 		}
 	}
 	var m = this.getModified();
 	var mkeys = Object.keys(m);
 	for (var i = 0; i < mkeys.length; i++) {
-		if (layer.get("id") === mkeys[i]) {
+		if(!layer){
 			result = true;
 			return result;
+		} else {
+			if (layer.get("id") === mkeys[i]) {
+				result = true;
+				return result;
+			}
 		}
 	}
 	var r = this.getRemoved();
 	var rkeys = Object.keys(r);
 	for (var i = 0; i < rkeys.length; i++) {
-		if (layer.get("id") === rkeys[i]) {
+		if(!layer){
 			result = true;
 			return result;
+		} else {
+			if (layer.get("id") === rkeys[i]) {
+				result = true;
+				return result;
+			}
 		}
 	}
 	return result;
@@ -504,6 +519,59 @@ gb.edit.FeatureRecord.prototype.deleteFeatureRemoved = function(layerId, feature
 	return feature;
 };
 
+gb.edit.FeatureRecord.prototype.save = function(editTool){
+	var that = this;
+	var edit = editTool;
+	
+	var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
+
+	var well = $("<div>").addClass("well").append(row2);
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Save");
+	var discardBtn = $("<button>").css({
+		"float" : "right",
+		"background": "#e0e1e2 none"
+	}).addClass("gb-button").addClass("gb-button-default").text("Discard");
+
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(discardBtn).append(okBtn).append(closeBtn);
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var gBody = $("<div>").append(well).css({
+		"display" : "table",
+		"width" : "100%"
+	});
+	var openSaveModal = new gb.modal.Base({
+		"title" : "저장",
+		"width" : 540,
+		"height" : 250,
+		"autoOpen" : true,
+		"body" : gBody,
+		"footer" : modalFooter
+	});
+
+	$(closeBtn).click(function() {
+		openSaveModal.close();
+	});
+
+	$(okBtn).click(function() {
+		that.sendWFSTTransaction(edit);
+		openSaveModal.close();
+	});
+	
+	$(discardBtn).click(function() {
+		that.created = {};
+		that.modified = {};
+		that.removed = {};
+		edit.editToolClose();
+		openSaveModal.close();
+	});
+}
+
 gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 	
 	var layers = {};
@@ -613,12 +681,10 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
-				edit.refreshTileLayer();
-				edit.refreshSources();
-				edit.deactiveAnotherInteraction();
 				that.created = {};
 				that.modified = {};
 				that.removed = {};
+				edit.editToolClose();
 			},
 			error: function(e) {
 				var errorMsg = e? (e.status + ' ' + e.statusText) : "";

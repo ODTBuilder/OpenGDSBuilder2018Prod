@@ -253,7 +253,8 @@ gb.tree.OpenLayers = function(obj) {
 					}
 				},
 				"functionmarker" : {
-					"snapping" : "fas fa-magnet"
+					"snapping" : "fas fa-magnet",
+					"editing": "fas fa-pencil-alt"
 				},
 				plugins : [ "contextmenu", "dnd", "search", "state", "sort",
 						"visibility", "layerproperties", "legends",
@@ -569,12 +570,12 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
-		gb.tree.loadShpZip(epsgInput.val(), encodeInput.val(), file, that.map);
+		gb.tree.loadShpZip(encodeInput.val(), file, that.map);
 		addGeoServerModal.close();
 	});
 };
 
-gb.tree.loadShpZip = function(epsg, encode, file, map) {
+gb.tree.loadShpZip = function(encode, file, map) {
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
 	var fileL = file;

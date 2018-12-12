@@ -167,6 +167,19 @@ html {
 			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
+		var isEditing = {
+			_active: false,
+			get: function(){
+				return this._active
+			},
+			set: function(bool){
+				this._active = Boolean(bool);
+			},
+			alert: function(){
+				alert("편집 기능 실행 중에는 할 수 없는 작업입니다.")
+			}
+		};
+	
 		var urlList = {
 			token : "?${_csrf.parameterName}=${_csrf.token}",
 			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
@@ -227,7 +240,11 @@ html {
 		});
 
 		$("#vermodal").click(function() {
-			vrepo.open();
+			if(!isEditing.get()){
+				vrepo.open();
+			} else {
+				isEditing.alert();
+			}
 		});
 
 		var crs = new gb.crs.BaseCRS({
@@ -254,7 +271,11 @@ html {
 		});
 
 		$("#validation").click(function() {
-			validation.open();
+			if(!isEditing.get()){
+				validation.open();
+			} else {
+				isEditing.alert();
+			}
 		});
 
 		var frecord = new gb.edit.FeatureRecord({
@@ -306,7 +327,7 @@ html {
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
-
+		
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -319,7 +340,8 @@ html {
 			imageTile : urlList.getLayerTile,
 			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en",
-			versioning : fhist
+			versioning : fhist,
+			isEditing : isEditing
 		});
 
 		$("#editTool").click(function(e) {
@@ -328,41 +350,7 @@ html {
 		});
 
 		$("#savePart").click(function() {
-			var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
-
-			var well = $("<div>").addClass("well").append(row2);
-
-			var closeBtn = $("<button>").css({
-				"float" : "right"
-			}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-			var okBtn = $("<button>").css({
-				"float" : "right"
-			}).addClass("gb-button").addClass("gb-button-primary").text("Save");
-
-			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-			var modalFooter = $("<div>").append(buttonArea);
-
-			var gBody = $("<div>").append(well).css({
-				"display" : "table",
-				"width" : "100%"
-			});
-			var openSaveModal = new gb.modal.Base({
-				"title" : "저장",
-				"width" : 540,
-				"height" : 250,
-				"autoOpen" : true,
-				"body" : gBody,
-				"footer" : modalFooter
-			});
-
-			$(closeBtn).click(function() {
-				openSaveModal.close();
-			});
-
-			$(okBtn).click(function() {
-				frecord.sendWFSTTransaction(epan);
-				openSaveModal.close();
-			});
+			frecord.save(epan);
 		});
 
 		// 거리, 면적 측정 기능 추가
@@ -561,6 +549,12 @@ html {
 
 		$(document).ready(function() {
 			gitrnd.resize();
+		});
+		
+		$(window).on("beforeunload", function(){
+			if(frecord.isEditing()){
+				return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다.";
+			}
 		});
 	</script>
 </body>

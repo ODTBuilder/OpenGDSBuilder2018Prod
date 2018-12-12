@@ -134,22 +134,59 @@ gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
  */
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
 	var that = this;
-	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
+	
+	// EPSG 입력 창 생성
+/*	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
 	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
 
 	this.setValidEPSG(false);
 
 	var inputDiv = $("<div>").css({
 		"margin" : "10px"
-	}).append(label).append(this.epsgInput).append(this.validIconSpan);
-	var message2 = $("<div>").text("2. Please input SHP file compressed in ZIP format");
-	var file = $("<input>").attr({
-		"type" : "file"
+	}).append(label).append(this.epsgInput).append(this.validIconSpan);*/
+	
+	var icon = $("<div>").addClass("fas fa-info-circle fa-2x");
+	var messageContent = $("<p>").css({
+		"margin": "0 10px"
+	}).html("Please input SHP file compressed in ZIP format");
+	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
+	
+	var file = 
+		$("<input accept='.zip'>")
+		.attr({
+			"type" : "file"
+		})
+		.change(function() {
+			if (!!this.files) {
+				file = this.files[0];
+				if (file.size > 0) {
+					fileInfo.text(file.name + ' , ' + file.size + ' kb');
+				}
+			}
+		});
+	
+	var fileArea = $("<button type='button'>").addClass(
+	"btn btn-primary btn-lg btn-block").text("Upload SHP file")
+	.mouseenter(function() {
+		$(this).css({
+			"background-color" : "#00c4bc"
+		});
+	}).mouseleave(function() {
+		$(this).css({
+			"background-color" : "#00b5ad"
+		});
+	}).click(function() {
+		file.click();
+	}).css({
+		"background-color" : "#00b5ad",
+		"border-color" : "transparent",
 	});
-	var fileArea = $("<div>").css({
-		"margin" : "10px"
-	}).append(file);
-	var bodyArea = $("<div>").append(message1).append(inputDiv).append(message2).append(fileArea);
+	
+	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
+		"text-align" : "center"
+	});
+	
+	var bodyArea = $("<div>").append(message2).append(fileArea).append(fileInfo);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -255,7 +292,6 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
-		"srs" : this.getEPSGCode()
 	};
 	console.log(params);
 	var url = this.getUploadURL();

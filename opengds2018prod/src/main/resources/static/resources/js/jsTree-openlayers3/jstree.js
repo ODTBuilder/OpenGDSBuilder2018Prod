@@ -10019,7 +10019,7 @@
 						 * 
 						 * @author 소이준
 						 */
-						"group" : {
+						/*"group" : {
 							"separator_before" : false,
 							"separator_after" : true,
 							"_disabled" : false, // (this.check("create_node",
@@ -10056,7 +10056,7 @@
 									}, 0);
 								});
 							}
-						},
+						},*/
 						"zoom" : {
 							"separator_before" : false,
 							"icon" : "fa fa-crosshairs",
@@ -10210,7 +10210,7 @@
 						// }
 						// }
 						// },
-						"properties" : {
+						/*"properties" : {
 							"separator_before" : false,
 							"icon" : "fa fa-info-circle",
 							"separator_after" : false,
@@ -10231,7 +10231,7 @@
 									// inst.delete_node_layer(obj);
 								}
 							}
-						},
+						},*/
 						"style" : {
 							"separator_before" : false,
 							"icon" : "fa fa-paint-brush",

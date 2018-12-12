@@ -35,6 +35,7 @@ gb.header.EditingTool = function(obj) {
 	this.layer = undefined;
 
 	// hochul
+	this.isEditing = options.isEditing instanceof Object ? options.isEditing : undefined;
 	this.vectorSourcesOfServer_ = {};
 	this.customVector_ = {};
 	this.copyPaste_ = undefined;
@@ -1525,13 +1526,33 @@ gb.header.EditingTool.prototype.remove = function(layer) {
  */
 gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 	var source = undefined;
-
+	var prevSelected = this.selectSources.item(0);
+	var prevTreeid;
+	if(prevSelected !== undefined){
+		if(!!prevSelected.get("git")){
+			prevTreeid = prevSelected.get("git").treeID || "";
+		}
+	}
+	var tree = this.otree.getJSTree();
+	
+	var layer = otree.getJSTree().get_LayerById(treeId);
+	
+	if(!(layer instanceof ol.layer.Group)){
+		// 이전에 선택된 Openlayer Tree Node의 Editing 아이콘을 삭제
+		if(tree.get_node(prevTreeid)){
+			tree.set_flag(tree.get_node(prevTreeid), "editing", false);
+		}
+		
+		// 현재 선택된 Openlayer Tree Node에 Editing 아이콘을 생성
+		if(tree.get_node(treeId)){
+			tree.set_flag(tree.get_node(treeId), "editing", true);
+		}
+	}
+	
 	if(this.getVectorSourceOfServer(treeId)){
 		source = this.getVectorSourceOfServer(treeId);
 	} else {
-		var layer;
-		if(otree.getJSTree().get_LayerById(treeId) instanceof ol.layer.Vector){
-			layer = otree.getJSTree().get_LayerById(treeId);
+		if(layer instanceof ol.layer.Vector){
 			source = layer.getSource();
 			if(!layer.get("id")){
 				layer.set("id", layer.get("treeid"));
@@ -1550,7 +1571,7 @@ gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 			}
 		}
 	}
-
+	
 	this.selectedSource = source;
 	if(source !== undefined){
 		this.selectSources.clear();
@@ -2456,30 +2477,80 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	return a;
 }
 
+//hochul
+gb.header.EditingTool.prototype.editToolOpen = function(){
+	// openlayers tree wms layer 보기/숨김 기능 비활성화
+	this.otree.getJSTree().setDisplayIndex(false);
+	
+	// editing tool 활성화 변수 설정
+	this.setActiveTool(true);
+	if(this.isEditing !== undefined){
+		if(this.isEditing.set instanceof Function){
+			this.isEditing.set(true);
+		}
+	}
+	
+	// WMS 레이어 숨김
+	this.setVisibleWMS(false);
+	
+	// 줌 레벨에 따른 실행 함수 결정
+	if(this.map.getView().getZoom() > 11){
+		// 화면확대 요구 메세지창 숨김
+		this.displayEditZoomHint(false);
+		
+		// WFS 레이어 로드
+		this.loadWFS_();
+	} else {
+		// 줌 레벨이 일정 이상이면 화면확대 요구 메세지창 생성
+		this.displayEditZoomHint(true);
+	}
+}
+
+//hochul
+gb.header.EditingTool.prototype.editToolClose = function(){
+	if(this.featureRecord.isEditing()){
+		this.featureRecord.save(this);
+		return;
+	}
+	// openlayers tree wms layer 보기/숨김 기능 활성화
+	this.otree.getJSTree().setDisplayIndex(true);
+	
+	// editing tool 활성화 변수 설정
+	this.setActiveTool(false);
+	if(this.isEditing !== undefined){
+		if(this.isEditing.set instanceof Function){
+			this.isEditing.set(false);
+		}
+	}
+	
+	// WMS 레이어 활성화
+	this.setVisibleWMS(true);
+	
+	// WFS 레이어 숨김
+	this.setVisibleWFS(false);
+	
+	// 화면확대 요구 메세지창 숨김
+	this.displayEditZoomHint(false);
+	
+	// 모든 interaction 비활성화
+	this.deactiveAnotherInteraction();
+	
+	// 모든 interaction 버튼 비활성화
+	this.deactiveAllBtn_();
+	
+	// WMS refresh
+	this.refreshTileLayer();
+	
+	// WFS refresh
+	this.refreshSources();
+}
+
 // hochul
 gb.header.EditingTool.prototype.editToolToggle = function(){
 	if(this.getActiveTool()){
-		// openlayers tree wms layer 보기/숨김 기능 활성화
-		this.otree.getJSTree().setDisplayIndex(true);
-		
-		this.setActiveTool(false);
-		this.setVisibleWMS(true);
-		this.setVisibleWFS(false);
-		this.displayEditZoomHint(false);
-		this.deactiveAnotherInteraction();
-		this.deactiveAllBtn_();
+		this.editToolClose();
 	} else {
-		// openlayers tree wms layer 보기/숨김 기능 비활성화
-		this.otree.getJSTree().setDisplayIndex(false);
-		
-		this.setActiveTool(true);
-		this.setVisibleWMS(false);
-		if(this.map.getView().getZoom() > 11){
-			this.displayEditZoomHint(false);
-			this.loadWFS_();
-		} else {
-			this.displayEditZoomHint(true);
-		}
+		this.editToolOpen();
 	}
 }
 

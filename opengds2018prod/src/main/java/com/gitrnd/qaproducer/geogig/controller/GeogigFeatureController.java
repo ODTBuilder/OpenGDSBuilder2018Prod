@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -36,16 +36,16 @@ public class GeogigFeatureController extends AbstractController {
 	@Qualifier("featureService")
 	GeogigFeatureService featureService;
 
-	@RequestMapping(value = "/featureBlame.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/featureAttribute.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigBlame featureBlame(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigFeatureAttribute featureBlame(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,
-			@RequestParam(value = "branch", required = false) String branch) throws JAXBException {
+			@RequestParam(value = "commitId", required = false) String commitId) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureBlame(geoserverManager, repoName, path, branch);
+		return featureService.featureAttribute(geoserverManager, repoName, path, commitId);
 	}
 
 	@RequestMapping(value = "/featureLog.do", method = RequestMethod.POST)

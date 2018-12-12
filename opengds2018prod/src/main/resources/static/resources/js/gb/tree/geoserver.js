@@ -662,29 +662,42 @@ gb.tree.GeoServer = function(obj) {
 												}
 											}
 										}
-										if (server.length > 1 || ws.length > 1 || ds.length > 1) {
+										if (server.length > 0 || ws.length > 0 || ds.length > 0) {
 											isValid = false;
-											that.messageModal("Error", "동일 데이터 스토어에 포함된 레이어만 삭제할 수 있습니다.");
+											that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
 										} else {
 											for (var i = 0; i < layers.length; i++) {
 												var layerNode = inst.get_node(layers[i]);
 												var serverId = inst.get_node(layerNode.parents[2]);
+												if (server.indexOf(serverId.id) === -1) {
+													server.push(serverId.id);
+												}
 												var workId = inst.get_node(layerNode.parents[1]);
+												if (ws.indexOf(workId.id) === -1) {
+													ws.push(workId.id);
+												}
 												var storeId = inst.get_node(layerNode.parents[0]);
-												if (server.length > 1 && server.indexOf(serverId.id) === -1) {
+												if (ds.indexOf(storeId.id) === -1) {
+													ds.push(storeId.id);
+												}
+												if (server.length > 1) {
 													isValid = false;
 												}
-												if (ws.length > 1 && ws.indexOf(workId.id) === -1) {
+												if (ws.length > 1) {
 													isValid = false;
 												}
-												if (ds.length > 1 && ds.indexOf(storeId.id) === -1) {
+												if (ds.length > 1) {
 													isValid = false;
 												}
 											}
 											if (isValid) {
-												that.openDeleteGeoServerLayer(serverId.text, workId.text, layerstxt);
+												var sendServer = inst.get_node(server[0]);
+												var sendws = inst.get_node(ws[0]);
+												var sendds = inst.get_node(ds[0]);
+
+												that.openDeleteGeoServerLayer(sendServer.text, sendws.text, sendds.text, layerstxt);
 											} else {
-												that.messageModal("Error", "동일 데이터 스토어에 포함된 레이어만 삭제할 수 있습니다.");
+												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
 											}
 										}
 									}
@@ -1019,13 +1032,13 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 			if (data === 200) {
 				that.refreshList();
 			} else if (data === 600) {
-				that.messageModal("Error", "Session expired.");
+				that.messageModal("Error", "Session expired.", 182);
 			} else if (data === 601) {
-				that.messageModal("Error", "Missing parameter.");
+				that.messageModal("Error", "Missing parameter.", 182);
 			} else if (data === 602) {
-				that.messageModal("Error", "Server name or URL duplicated.");
+				that.messageModal("Error", "Server name or URL duplicated.", 206);
 			} else if (data === 603) {
-				that.messageModal("Error", "Geoserver not found.");
+				that.messageModal("Error", "Geoserver not found.", 182);
 			}
 
 		}
@@ -1107,11 +1120,11 @@ gb.tree.GeoServer.prototype.deleteGeoServer = function(geoserver, callback) {
 			if (data === 200) {
 				that.refreshList();
 			} else if (data === 600) {
-				that.messageModal("Error", "Session expired.");
+				that.messageModal("Error", "Session expired.", 182);
 			} else if (data === 603) {
-				that.messageModal("Error", "Geoserver not found.");
+				that.messageModal("Error", "Geoserver not found.", 182);
 			} else if (data === 605) {
-				that.messageModal("Error", "Nothing to delete.");
+				that.messageModal("Error", "Nothing to delete.", 182);
 			}
 		}
 	});
@@ -1122,7 +1135,7 @@ gb.tree.GeoServer.prototype.deleteGeoServer = function(geoserver, callback) {
  * 
  * @method gb.tree.GeoServer#openDeleteGeoServerLayer
  */
-gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, layer) {
+gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, store, layer) {
 	var that = this;
 	console.log("open delete geoserver layer");
 	console.log(layer);
@@ -1156,21 +1169,20 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, la
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
 		"title" : "Delete Layer",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : false,
-		"body" : body
+		"body" : body,
+		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
 		deleteModal.close();
 	});
 	$(okBtn).click(function() {
-		that.deleteGeoServerLayer(server, work, layer, deleteModal);
+		that.deleteGeoServerLayer(server, work, store, layer, deleteModal);
 	});
-	$(deleteModal.getModal()).append(modalFooter);
 	deleteModal.open();
 };
 
@@ -1187,12 +1199,13 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, la
  * @param {gb.modal.Base}
  *            callback - 완료후 창을 닫을 모달 객체
  */
-gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, layer, callback) {
+gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, store, layer, callback) {
 	var that = this;
 	console.log("delete geoserver layer");
 	var params = {
 		"serverName" : geoserver,
 		"workspace" : work,
+		"datastore" : store,
 		"layerList" : typeof layer === "string" ? [ layer ] : Array.isArray(layer) ? layer : undefined
 	};
 
@@ -1213,15 +1226,15 @@ gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, lay
 			if (data === 200) {
 				that.refreshList();
 			} else if (data === 500) {
-				that.messageModal("Error", "Request failed.");
+				that.messageModal("Error", "Request failed.", 182);
 			} else if (data === 600) {
-				that.messageModal("Error", "Session expired.");
+				that.messageModal("Error", "Session expired.", 182);
 			} else if (data === 603) {
-				that.messageModal("Error", "Geoserver not found.");
+				that.messageModal("Error", "Geoserver not found.", 182);
 			} else if (data === 605) {
-				that.messageModal("Error", "Geoserver info not found.");
+				that.messageModal("Error", "Geoserver info not found.", 206);
 			} else if (data === 606) {
-				that.messageModal("Error", "Some layers have not been deleted.");
+				that.messageModal("Error", "Some layers have not been deleted.", 206);
 			}
 		}
 	});
@@ -1358,19 +1371,20 @@ gb.tree.GeoServer.prototype.getUploadSHP = function() {
  * 오류 메시지 창을 생성한다.
  * 
  * @method gb.tree.GeoServer#messageModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {String}
+ *            title - 모달의 타이틀
+ * @param {String}
+ *            msg - 보여줄 메세지
+ * @param {Number}
+ *            height - 모달의 높이(px)
  */
-gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
+gb.tree.GeoServer.prototype.messageModal = function(title, msg, height) {
 	var that = this;
 	var msg1 = $("<div>").text(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
-		"padding-top" : "26px"
+		"margin-top" : "18px",
+		"margin-bottom" : "18px"
 	});
 	var body = $("<div>").append(msg1);
 	var okBtn = $("<button>").css({
@@ -1381,7 +1395,7 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
 	var modal = new gb.modal.Base({
 		"title" : title,
 		"width" : 310,
-		"height" : 200,
+		"height" : height,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -1436,14 +1450,14 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
 			if (data === true) {
 				that.refreshList();
 			} else if (data === false) {
-				that.messageModal("Error", "Request failed.");
+				that.messageModal("Error", "Request failed.", 182);
 			}
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			var msg1 = $("<div>").append(textStatus);
 			var msg2 = $("<div>").append(errorThrown);
 			var group = $("<div>").append(msg1).append(msg2);
-			that.messageModal("Error", group);
+			that.messageModal("Error", group, 260);
 		}
 	});
 };

@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.gitrnd.gdsbuilder.geogig.command.repository;
 
 import java.util.Base64;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.HttpEntity;
@@ -21,46 +16,13 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInfo;
 
-/**
- * Geogig Config Command Execution Class
- * 
- * @author GIT
- *
- */
-public class ConfigRepository {
-
-	private static final Log logger = LogFactory.getLog(ConfigRepository.class);
+public class InfoRepository {
 
 	private static final String geogig = "geogig";
-	private static final String command = "config";
-	private static final String param_name = "name="; // optional
 
-	public enum ConfigName {
-
-		REPO_NAME("repo.name"), USER_NAME("user.name"), USER_EMAIL("user.email"), STORAGE_REFS("storage.refs"),
-		STORAGE_GRAPH("storage.graph"), STORAGE_OBJECTS("storage.objects"), STORAGE_INDEX("storage.index"),
-		POSTGRES_VERSION("postgres.version"), ROCKSDB_VERSION("rocksdb.version"), FILE_VERSION("file.version");
-
-		private String type;
-
-		private ConfigName(String type) {
-			this.type = type;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-	}
-
-	public GeogigConfig executeCommand(String baseURL, String username, String password, String repository,
-			ConfigName storageRefs) {
+	public GeogigRepositoryInfo executeCommand(String baseURL, String username, String password, String repository) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
@@ -78,16 +40,13 @@ public class ConfigRepository {
 		headers.add("Authorization", encodedAuth);
 
 		// url
-		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
+		String url = baseURL + "/" + geogig + "/repos/" + repository;
 
-		if (storageRefs != null) {
-			url += "?" + param_name + storageRefs.getType();
-		}
 		// request
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
-		ResponseEntity<GeogigConfig> responseEntity = null;
+		ResponseEntity<GeogigRepositoryInfo> responseEntity = null;
 		try {
-			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigConfig.class);
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigRepositoryInfo.class);
 		} catch (RestClientResponseException e) {
 			throw new GeogigCommandException(e.getMessage(), e.getResponseBodyAsString(), e.getRawStatusCode());
 		} catch (ResourceAccessException e) {
@@ -95,4 +54,5 @@ public class ConfigRepository {
 		}
 		return responseEntity.getBody();
 	}
+
 }

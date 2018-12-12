@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 import com.gitrnd.qaproducer.preset.mapper.PresetMapper;
 
@@ -66,8 +65,12 @@ public class PresetRepository {
 		return presetMapper.retrievePresetByIdAndUidx(preset);
 	}
 
-	public Preset retrievePresetNameByNameAndUidx(Preset preset) {
-		return presetMapper.retrievePresetNameByNameAndUidx(preset);
+	public List<Preset> retrievePresetNamesByNameAndUidx(Preset preset) {
+		return presetMapper.retrievePresetNamesByNameAndUidx(preset);
+	}
+
+	public List<Preset> retrievePresetNamesByNameAndUidxAndPid(Preset preset) {
+		return presetMapper.retrievePresetNamesByNameAndUidxAndPid(preset);
 	}
 
 }

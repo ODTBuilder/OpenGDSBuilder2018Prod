@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gitrnd.qaproducer.filestatus.domain.FileStatus;
 import com.gitrnd.qaproducer.preset.domain.Preset;
 
 @Mapper
@@ -31,5 +30,7 @@ public interface PresetMapper {
 
 	public Preset retrievePresetByIdAndUidx(Preset preset);
 
-	public Preset retrievePresetNameByNameAndUidx(Preset preset);
+	public List<Preset> retrievePresetNamesByNameAndUidx(Preset preset);
+	
+	public List<Preset> retrievePresetNamesByNameAndUidxAndPid(Preset preset);
 }

@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.service;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -16,12 +17,13 @@ import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Attribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.CatAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Commit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Feature;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.Subtree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute.Attribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -73,7 +75,7 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 		GeogigFeatureAttribute featureAtt = null;
 		try {
 			CatObject catObj = new CatObject();
-			List<Attribute> attrTypes = null;
+			List<CatAttribute> attrTypes = null;
 			GeogigCat catOurs = catObj.executeCommand(url, user, pw, repoName, commitId);
 			Commit commit = catOurs.getCommit();
 			if (commit != null) {
@@ -88,17 +90,33 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 					}
 				}
 				if (attrTypes != null) {
+					featureAtt = new GeogigFeatureAttribute();
 					GeogigCat catFeature = catObj.executeCommand(url, user, pw, repoName, featureId);
 					Feature feature = catFeature.getFeature();
-					List<Attribute> attrValues = feature.getAttribute();
-					for (int i = 0; i < attrTypes.size(); i++) {
-						Attribute type = attrTypes.get(i);
-						type.setValue(attrValues.get(i).getValue());
+					List<CatAttribute> attrValues = feature.getAttribute();
+					List<Attribute> attrList = new ArrayList<>();
+					for (CatAttribute attrType : attrTypes) {
+						String name = attrType.getName();
+						String type = attrType.getType();
+						Attribute attr = new Attribute();
+						attr.setName(name);
+						attr.setType(type);
+						String crs = attrType.getCrs();
+						if (attrType.getCrs() != null) {
+							attr.setCrs(crs);
+						}
+						attrList.add(attr);
 					}
-					featureAtt = new GeogigFeatureAttribute();
+					for (int i = 0; i < attrList.size(); i++) {
+						Attribute attr = attrList.get(i);
+						String value = attrValues.get(i).getValue();
+						attr.setValue(value);
+					}
+					if (attrList.size() > 0) {
+						featureAtt.setAttributes(attrList);
+					}
 					featureAtt.setLayerName(layerName);
 					featureAtt.setFeatureId(featureName);
-					featureAtt.setAttributes(attrTypes);
 					featureAtt.setSuccess("true");
 				}
 			}
@@ -134,25 +152,41 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 			CatObject catObj = new CatObject();
 			GeogigCat geogigCat = catObj.executeCommand(url, user, pw, repoName, objectid);
 			Feature feature = geogigCat.getFeature();
-			List<Attribute> attrValues = feature.getAttribute();
+			List<CatAttribute> attrValues = feature.getAttribute();
 			if (attrValues != null) {
 				LsTreeRepository lsTreeRepos = new LsTreeRepository();
 				GeogigRevisionTree geogigLsTree = lsTreeRepos.executeCommand(url, user, pw, repoName, path, true);
 				List<Node> nodes = geogigLsTree.getNodes();
 				for (Node node : nodes) {
 					if (path.equalsIgnoreCase(node.getPath())) {
+						featureAtt = new GeogigFeatureAttribute();
 						String metaId = node.getMetadataId();
 						GeogigCat geogigCatMeta = catObj.executeCommand(url, user, pw, repoName, metaId);
 						FeatureType featureType = geogigCatMeta.getFeaturetype();
-						List<Attribute> attrTypes = featureType.getAttribute();
-						for (int i = 0; i < attrTypes.size(); i++) {
-							Attribute type = attrTypes.get(i);
-							type.setValue(attrValues.get(i).getValue());
+						List<CatAttribute> typeAttrList = featureType.getAttribute();
+						List<Attribute> attrList = new ArrayList<>();
+						for (CatAttribute typeAttr : typeAttrList) {
+							String name = typeAttr.getName();
+							String type = typeAttr.getType();
+							Attribute attr = new Attribute();
+							attr.setName(name);
+							attr.setType(type);
+							String crs = typeAttr.getCrs();
+							if (typeAttr.getCrs() != null) {
+								attr.setCrs(crs);
+							}
+							attrList.add(attr);
 						}
-						featureAtt = new GeogigFeatureAttribute();
+						for (int i = 0; i < attrList.size(); i++) {
+							Attribute attr = attrList.get(i);
+							String value = attrValues.get(i).getValue();
+							attr.setValue(value);
+						}
+						if (attrList.size() > 0) {
+							featureAtt.setAttributes(attrList);
+						}
 						featureAtt.setLayerName(layerName);
 						featureAtt.setFeatureId(featureName);
-						featureAtt.setAttributes(attrTypes);
 						featureAtt.setSuccess("true");
 					}
 				}

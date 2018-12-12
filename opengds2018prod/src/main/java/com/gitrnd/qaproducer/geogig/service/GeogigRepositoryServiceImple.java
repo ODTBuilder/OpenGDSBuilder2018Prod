@@ -4,6 +4,7 @@
 package com.gitrnd.qaproducer.geogig.service;
 
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,7 +15,10 @@ import org.springframework.stereotype.Service;
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository.ConfigName;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DeleteRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.InfoRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.InitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.PullRepository;
@@ -27,11 +31,14 @@ import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigConfig.Config;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryDelete;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInfo;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
@@ -514,9 +521,47 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	}
 
 	@Override
-	public GeogigFetch infoRepository(DTGeoserverManager geoserverManager, String repoName) {
-		// TODO Auto-generated method stub
-		return null;
+	public GeogigRepositoryInfo infoRepository(DTGeoserverManager geoserverManager, String repoName)
+			throws JAXBException {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		InfoRepository infoRepos = new InfoRepository();
+		GeogigRepositoryInfo geogigReposInfo;
+		try {
+			geogigReposInfo = infoRepos.executeCommand(url, user, pw, repoName);
+			ConfigRepository configRepos = new ConfigRepository();
+			GeogigConfig geogigConfig = configRepos.executeCommand(url, user, pw, repoName, null);
+			List<Config> configList = geogigConfig.getConfigs();
+			for (Config config : configList) {
+				String name = config.getName();
+				String value = config.getValue();
+				if (name.equalsIgnoreCase(ConfigName.STORAGE_REFS.getType())) {
+					geogigReposInfo.setStorage(value);
+				} else if (name.equalsIgnoreCase(ConfigName.USER_NAME.getType())) {
+					geogigReposInfo.setUser(value);
+				} else if (name.equalsIgnoreCase(ConfigName.USER_EMAIL.getType())) {
+					geogigReposInfo.setEmail(value);
+				}
+			}
+			String geogigUrl = url + "/geogig/repos/" + repoName;
+			geogigReposInfo.setUrl(geogigUrl);
+			geogigReposInfo.setSuccess("true");
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInfo.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigReposInfo = (GeogigRepositoryInfo) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigReposInfo = new GeogigRepositoryInfo();
+				geogigReposInfo.setError(e.getMessage());
+				geogigReposInfo.setSuccess("false");
+			}
+		}
+		return geogigReposInfo;
 	}
 
 }

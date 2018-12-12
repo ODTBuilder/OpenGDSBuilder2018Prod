@@ -2,8 +2,8 @@ package com.gitrnd.qaproducer.geogig.service;
 
 import javax.xml.bind.JAXBException;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -31,8 +31,8 @@ public interface GeogigFeatureService {
 	 * @return
 	 * @throws JAXBException
 	 */
-	GeogigBlame featureBlame(DTGeoserverManager geoserverManager, String repoName, String path, String branch)
-			throws JAXBException;
+	GeogigFeatureAttribute featureAttribute(DTGeoserverManager geoserverManager, String repoName, String path,
+			String branch) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

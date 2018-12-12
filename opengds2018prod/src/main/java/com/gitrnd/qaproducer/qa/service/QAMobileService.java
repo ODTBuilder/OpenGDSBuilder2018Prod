@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gitrnd.qaproducer.common.worker.Producer;
+import com.gitrnd.qaproducer.common.worker.MobileProducer;
 
 /**
  * @author GIT
@@ -17,7 +17,7 @@ import com.gitrnd.qaproducer.common.worker.Producer;
 public class QAMobileService {
 
 	@Autowired
-	private Producer producer;
+	private MobileProducer producer;
 
 	/**
 	 * @param param

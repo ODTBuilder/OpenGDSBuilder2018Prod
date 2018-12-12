@@ -52,6 +52,10 @@ gb.tree.GeoServer = function(obj) {
 
 	this.height = options.height || undefined;
 	this.downloadGeoserver = url.downloadGeoserver || undefined;
+
+	this.loadingList = {};
+	this.loadingNumber = 0;
+
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
@@ -347,7 +351,13 @@ gb.tree.GeoServer = function(obj) {
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 									var nodes = inst.get_selected();
+									console.log(obj);
 									console.log(nodes);
+									var callback = function() {
+										console.log(that.getLoadingList());
+									};
+									that.openNodeRecursive(obj, callback);
+
 									var selectedNum = nodes.length;
 									if (selectedNum === 1) {
 										var node = inst.get_node(nodes[0]);
@@ -384,6 +394,7 @@ gb.tree.GeoServer = function(obj) {
 											console.log("");
 										}
 									}
+
 								}
 							};
 							totalObj["import"] = importObj;
@@ -846,6 +857,67 @@ gb.tree.GeoServer.prototype.getJSTree = function() {
  */
 gb.tree.GeoServer.prototype.setJSTree = function(jstree) {
 	this.jstree = jstree;
+};
+
+/**
+ * loadingNumber 객체를 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getLoadingNumber
+ * @return {Object} 로딩할 노드목록을 가진 객체
+ */
+gb.tree.GeoServer.prototype.getLoadingNumber = function() {
+	return this.loadingNumber;
+};
+
+/**
+ * loadingNumber 객체를 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setLoadingNumber
+ */
+gb.tree.GeoServer.prototype.setLoadingNumber = function(num) {
+	this.loadingNumber = num;
+};
+
+/**
+ * loadingList 객체를 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getLoadingList
+ * @return {Object} 로딩할 노드목록을 가진 객체
+ */
+gb.tree.GeoServer.prototype.getLoadingList = function() {
+	return this.loadingList;
+};
+
+/**
+ * loadingList 객체를 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setLoadingList
+ */
+gb.tree.GeoServer.prototype.setLoadingList = function(list) {
+	this.loadingList = list;
+};
+
+/**
+ * loadingList 객체에 노드를 추가한다.
+ * 
+ * @method gb.tree.GeoServer#setLoadingList
+ */
+gb.tree.GeoServer.prototype.addNodeToList = function(nodeId) {
+	this.loadingList[nodeId] = false;
+};
+
+/**
+ * loadingList 객체에 노드를 추가한다.
+ * 
+ * @method gb.tree.GeoServer#setLoadingList
+ */
+gb.tree.GeoServer.prototype.changeNodeToList = function(nodeId, flag) {
+	if (this.loadingList.hasOwnProperty(nodeId)) {
+		this.loadingList[nodeId] = flag;
+	} else {
+		console.error("there is no node id:", nodeId);
+		return;
+	}
 };
 
 /**
@@ -1460,4 +1532,42 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
 			that.messageModal("Error", group, 260);
 		}
 	});
+};
+
+/**
+ * 노드를 마지막 자식 노드까지 로드한다.
+ * 
+ * @method gb.tree.GeoServer#openNodeRecursive
+ * @param {Object}
+ *            node - 열려는 노드
+ */
+gb.tree.GeoServer.prototype.openNodeRecursive = function(node, afterOpen) {
+	var that = this;
+	var callback = function(opened, children) {
+		that.changeNodeToList(opened.id, true);
+		that.setLoadingNumber(that.getLoadingNumber() - 1);
+		console.log(that.getLoadingNumber());
+		if (children) {
+			var childrenNodes = opened.children;
+			for (var i = 0; i < childrenNodes.length; i++) {
+				var child = that.getJSTree().get_node(childrenNodes[i]);
+				if (i === (childrenNodes.length - 1)) {
+					that.openNodeRecursive(child, afterOpen);
+				} else {
+					that.openNodeRecursive(child, undefined);
+				}
+			}
+		} else {
+			if (typeof afterOpen === "function" && that.getLoadingNumber() === 0) {
+				afterOpen();
+			}
+		}
+	};
+	if (!that.getJSTree().is_open(node)) {
+		that.addNodeToList(node.id);
+		that.setLoadingNumber(that.getLoadingNumber() + 1);
+		console.log(that.getLoadingNumber());
+		that.getJSTree().open_node(node, callback);
+	}
+
 };

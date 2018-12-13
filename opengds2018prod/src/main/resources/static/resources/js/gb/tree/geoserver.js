@@ -53,8 +53,8 @@ gb.tree.GeoServer = function(obj) {
 	this.height = options.height || undefined;
 	this.downloadGeoserver = url.downloadGeoserver || undefined;
 
-	this.loadingList = {};
-	this.loadingNumber = 0;
+	this.loadingList = [];
+	this.loadingNumber = [];
 
 	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
@@ -353,47 +353,64 @@ gb.tree.GeoServer = function(obj) {
 									var nodes = inst.get_selected();
 									console.log(obj);
 									console.log(nodes);
+									var loadOrder = [];
 									var callback = function() {
-										console.log(that.getLoadingList());
-									};
-									that.openNodeRecursive(obj, callback);
-
-									var selectedNum = nodes.length;
-									if (selectedNum === 1) {
-										var node = inst.get_node(nodes[0]);
-										var type = inst.get_type(node);
-										if (type === "workspace") {
-											inst.load_each_wms_layer(node, that.map.getLayers());
-										} else if (type === "datastore") {
-											inst.load_each_wms_layer(node, that.map.getLayers());
-										} else if (type === "point" || type === "multipoint" || type === "linestring"
-												|| type === "multilinestring" || type === "polygon" || type === "multipolygon") {
-											console.log(node);
-											inst.load_each_wms_layer(node, that.map.getLayers());
-										}
-									} else if (selectedNum > 1) {
-										var serverNum = 0;
-										var workNum = 0;
-										var storeNum = 0;
-										var layerNum = 0;
 										for (var i = 0; i < nodes.length; i++) {
-											var node = inst.get_node(nodes[i]);
-											var type = inst.get_type(node);
-											if (type === "geoserver") {
-												serverNum++;
-											} else if (type === "workspace") {
-												workNum++;
-											} else if (type === "datastore") {
-												storeNum++;
-											} else if (type === "layer") {
-												layerNum++;
-											}
+											console.log(that.getLoadingList());
+											var pnode = inst.get_node(nodes[i]);
+											console.log("불러올 노드:", nodes[i]);
+											inst.load_each_wms_layer(pnode, that.map.getLayers());
 										}
-										if (selectedNum !== serverNum && selectedNum !== workNum && selectedNum !== storeNum
-												&& selectedNum !== layerNum) {
-											console.log("");
-										}
+									};
+									for (var i = 0; i < nodes.length; i++) {
+										var pnodeid = nodes[i];
+										console.log("선택한 노드:", pnodeid);
+										console.log(that.getLoadingList());
+										that.openNodeRecursive(i, inst.get_node(nodes[i]), callback);
 									}
+									// var selectedNum = nodes.length;
+									// if (selectedNum === 1) {
+									// var node = inst.get_node(nodes[0]);
+									// var type = inst.get_type(node);
+									// if (type === "workspace") {
+									// inst.load_each_wms_layer(node,
+									// that.map.getLayers());
+									// } else if (type === "datastore") {
+									// inst.load_each_wms_layer(node,
+									// that.map.getLayers());
+									// } else if (type === "point" || type ===
+									// "multipoint" || type === "linestring"
+									// || type === "multilinestring" || type ===
+									// "polygon" || type === "multipolygon") {
+									// console.log(node);
+									// inst.load_each_wms_layer(node,
+									// that.map.getLayers());
+									// }
+									// } else if (selectedNum > 1) {
+									// var serverNum = 0;
+									// var workNum = 0;
+									// var storeNum = 0;
+									// var layerNum = 0;
+									// for (var i = 0; i < nodes.length; i++) {
+									// var node = inst.get_node(nodes[i]);
+									// var type = inst.get_type(node);
+									// if (type === "geoserver") {
+									// serverNum++;
+									// } else if (type === "workspace") {
+									// workNum++;
+									// } else if (type === "datastore") {
+									// storeNum++;
+									// } else if (type === "layer") {
+									// layerNum++;
+									// }
+									// }
+									// if (selectedNum !== serverNum &&
+									// selectedNum !== workNum && selectedNum
+									// !== storeNum
+									// && selectedNum !== layerNum) {
+									// console.log("");
+									// }
+									// }
 
 								}
 							};
@@ -874,8 +891,8 @@ gb.tree.GeoServer.prototype.getLoadingNumber = function() {
  * 
  * @method gb.tree.GeoServer#setLoadingNumber
  */
-gb.tree.GeoServer.prototype.setLoadingNumber = function(num) {
-	this.loadingNumber = num;
+gb.tree.GeoServer.prototype.setLoadingNumber = function(idx, num) {
+	this.loadingNumber[idx] = num;
 };
 
 /**
@@ -902,8 +919,14 @@ gb.tree.GeoServer.prototype.setLoadingList = function(list) {
  * 
  * @method gb.tree.GeoServer#setLoadingList
  */
-gb.tree.GeoServer.prototype.addNodeToList = function(nodeId) {
-	this.loadingList[nodeId] = false;
+gb.tree.GeoServer.prototype.addNodeToList = function(idx, nodeId) {
+	if (this.loadingList[idx] === undefined) {
+		this.loadingList[idx] = {};
+	}
+	this.loadingList[idx][nodeId] = false;
+	if (this.getLoadingNumber()[idx] === undefined) {
+		this.setLoadingNumber(idx, -1);
+	}
 };
 
 /**
@@ -911,9 +934,9 @@ gb.tree.GeoServer.prototype.addNodeToList = function(nodeId) {
  * 
  * @method gb.tree.GeoServer#setLoadingList
  */
-gb.tree.GeoServer.prototype.changeNodeToList = function(nodeId, flag) {
-	if (this.loadingList.hasOwnProperty(nodeId)) {
-		this.loadingList[nodeId] = flag;
+gb.tree.GeoServer.prototype.changeNodeToList = function(idx, nodeId, flag) {
+	if (this.loadingList[idx].hasOwnProperty(nodeId)) {
+		this.loadingList[idx][nodeId] = flag;
 	} else {
 		console.error("there is no node id:", nodeId);
 		return;
@@ -1541,31 +1564,43 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
  * @param {Object}
  *            node - 열려는 노드
  */
-gb.tree.GeoServer.prototype.openNodeRecursive = function(node, afterOpen) {
+gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, afterOpen) {
 	var that = this;
+	var aftercallback = function() {
+		console.log(that.getLoadingList());
+		var pnode = that.getJSTree().get_node(node.id);
+		console.log("불러올 노드:", pnode);
+		that.getJSTree().load_each_wms_layer(pnode, that.map.getLayers());
+	};
 	var callback = function(opened, children) {
-		that.changeNodeToList(opened.id, true);
-		that.setLoadingNumber(that.getLoadingNumber() - 1);
+		that.changeNodeToList(idx, opened.id, true);
+		if (that.getLoadingNumber()[idx] > 0) {
+			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] - 1));
+		}
 		console.log(that.getLoadingNumber());
 		if (children) {
 			var childrenNodes = opened.children;
 			for (var i = 0; i < childrenNodes.length; i++) {
 				var child = that.getJSTree().get_node(childrenNodes[i]);
 				if (i === (childrenNodes.length - 1)) {
-					that.openNodeRecursive(child, afterOpen);
+					that.openNodeRecursive(idx, child, afterOpen);
+					// that.openNodeRecursive(idx, child, aftercallback);
 				} else {
-					that.openNodeRecursive(child, undefined);
+					that.openNodeRecursive(idx, child, undefined);
 				}
 			}
 		} else {
-			if (typeof afterOpen === "function" && that.getLoadingNumber() === 0) {
+			if (typeof afterOpen === "function" && that.getLoadingNumber()[idx] === 0) {
 				afterOpen();
 			}
 		}
 	};
 	if (!that.getJSTree().is_open(node)) {
-		that.addNodeToList(node.id);
-		that.setLoadingNumber(that.getLoadingNumber() + 1);
+		that.addNodeToList(idx, node.id);
+		if (that.getLoadingNumber()[idx] === -1) {
+			that.setLoadingNumber(idx, 0);
+		}
+		that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
 		console.log(that.getLoadingNumber());
 		that.getJSTree().open_node(node, callback);
 	}

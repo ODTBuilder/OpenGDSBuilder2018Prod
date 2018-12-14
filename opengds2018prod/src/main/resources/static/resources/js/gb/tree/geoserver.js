@@ -349,6 +349,15 @@ gb.tree.GeoServer = function(obj) {
 								"separator_after" : true,
 								"label" : "Import",
 								"action" : function(data) {
+									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+									// Edit Tool 활성화 상태시 실행 중지
+									if(isEdit instanceof Object){
+										if(isEdit.get()){
+											isEdit.alert();
+											return
+										}
+									}
+									
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 									var nodes = inst.get_selected();
 									console.log(obj);
@@ -654,6 +663,15 @@ gb.tree.GeoServer = function(obj) {
 								 * "icon" : "glyphicon glyphicon-leaf",
 								 */
 								"action" : function(data) {
+									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+									
+									if(isEdit instanceof Object){
+										if(isEdit.get()){
+											isEdit.alert();
+											return
+										}
+									}
+									
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 									if (obj.type === "geoserver") {
 										that.openDeleteGeoServer(obj.id);
@@ -1077,7 +1095,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		that.addGeoServer($(gNameInput).val(), $(gURLInput).val(), $(gIDInput).val(), $(gPassInput).val(), addGeoServerModal);
 	});
 	gNameInput.val("geoserver");
-	gURLInput.val("http://175.116.181.42:9990/geoserver");
+	gURLInput.val("http://175.116.181.32:9999/geoserver");
 	gIDInput.val("admin");
 	gPassInput.val("geoserver");
 };

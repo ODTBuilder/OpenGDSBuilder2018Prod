@@ -31,6 +31,10 @@ gb.tree.OpenLayers = function(obj) {
 	this.editingTool = options.editingTool || undefined;
 	this.token = options.token || "";
 	this.locale = options.locale || "en";
+	
+	// edit tool 활성화 여부 객체
+	this.isEditing = options.isEditing || undefined;
+	
 	this.createdLayer = {};
 	var url = options.url;
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint",
@@ -408,7 +412,6 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	var row1 = $("<div>").addClass("row").append(col1).append(col2).css({
 		"margin-bottom" : "15px"
 	});
-	;
 
 	var col3 = $("<div>").addClass("col-md-2").text(
 			this.translation.layerType[this.locale]);
@@ -423,9 +426,15 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 		$(geomSelect).append(option);
 	}
 	var col4 = $("<div>").addClass("col-md-10").append(geomSelect);
-	var row2 = $("<div>").addClass("row").append(col3).append(col4);
+	var row2 = $("<div>").addClass("row").append(col3).append(col4).css({
+		"margin-bottom" : "15px"
+	});
 
-	var well = $("<div>").addClass("well").append(row1).append(row2);
+	var col5 = $("<div>").addClass("col-md-2").text("Attribute");
+	var col6 = gb.tree.OpenLayers.getAttrForm().addClass("col-md-10");
+	var row3 = $("<div>").addClass("row").append(col5).append(col6);
+	
+	var well = $("<div>").addClass("well").append(row1).append(row2).append(row3);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -445,11 +454,20 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	var addGeoServerModal = new gb.modal.Base({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
-		"height" : 250,
 		"autoOpen" : true,
 		"body" : gBody,
 		"footer" : modalFooter
 	});
+	
+	addGeoServerModal.modalBody.css({
+		"max-height": "500px",
+		"overflow": "auto"
+	});
+	
+	addGeoServerModal.modalFooter.css({
+		"position": "relative"
+	});
+	
 	$(closeBtn).click(function() {
 		addGeoServerModal.close();
 	});
@@ -475,8 +493,76 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			vectorLayer.set("git", gitLayer);
 			vectorLayer.set("name", codeInput.val());
 			that.map.addLayer(vectorLayer);
+			that.refreshList();
 			addGeoServerModal.close();
 		});
+};
+
+gb.tree.OpenLayers.getAttrForm = function() {
+	var htd1 = $("<td>").text("Name");
+	var htd2 = $("<td>").text("Type");
+	var htd3 = $("<td>").text("Not Null");
+	var htd4 = $("<td>").text("Unique");
+	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4);
+
+	var key = $("<input>").addClass("form-control").attr({
+		"type" : "text"
+	});
+	var td1 = $("<td>").append(key);
+
+	var opt1 = $("<option>").text("Integer");
+	var opt2 = $("<option>").text("Double");
+	var opt3 = $("<option>").text("String");
+	var opt4 = $("<option>").text("Date");
+	var opt5 = $("<option>").text("Boolean");
+	var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
+	var td2 = $("<td>").append(type);
+
+	var nullable = $("<input>").attr({
+		"type" : "checkbox"
+	});
+	var td3 = $("<td>").append(nullable);
+
+	var unique = $("<input>").attr({
+		"type" : "checkbox"
+	});
+	var td4 = $("<td>").append(unique);
+
+	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4);
+	var typeFormBody = $("<tbody>").addClass("type-form-body").append(tr1);
+
+	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
+	var addBtn = $("<input>").addClass("gitbuilder-createlayer-addattr").addClass("btn").addClass("btn-default").attr({
+		"type" : "button",
+		"value" : "Add Attribute"
+	}).on("click", function() {
+		var key = $("<input>").addClass("form-control").attr({
+			"type" : "text"
+		});
+		var td1 = $("<td>").append(key);
+
+		var opt1 = $("<option>").text("Integer");
+		var opt2 = $("<option>").text("Double");
+		var opt3 = $("<option>").text("String");
+		var opt4 = $("<option>").text("Date");
+		var opt5 = $("<option>").text("Boolean");
+		var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
+		var td2 = $("<td>").append(type);
+
+		var nullable = $("<input>").attr({
+			"type" : "checkbox"
+		});
+		var td3 = $("<td>").append(nullable);
+
+		var unique = $("<input>").attr({
+			"type" : "checkbox"
+		});
+		var td4 = $("<td>").append(unique);
+		var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4);
+		$(".type-form-body").append(tr1);
+	});
+	
+	return $("<div>").append(table).append(addBtn);
 };
 
 /**

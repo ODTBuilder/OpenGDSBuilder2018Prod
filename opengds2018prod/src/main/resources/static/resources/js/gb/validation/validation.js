@@ -69,6 +69,8 @@ if (!gb.validation)
 	
 		this.url = options.url || "";
 		
+		this.isEditing = options.isEditing || undefined;
+		
 		this.geoserverTree = undefined;
 		this.workingTree = undefined;
 		this.messageContent = undefined;
@@ -201,6 +203,16 @@ if (!gb.validation)
 	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 	
+	gb.validation.Validation.prototype.open = function(){
+		if(this.isEditing instanceof Object){
+			if(this.isEditing.get()){
+				this.isEditing.alert();
+				return
+			}
+		}
+		
+		gb.modal.Base.prototype.open.call(this);
+	}
 	gb.validation.Validation.prototype.getParameter = function(){
 		var params = {};
 		var datastoreList = {};

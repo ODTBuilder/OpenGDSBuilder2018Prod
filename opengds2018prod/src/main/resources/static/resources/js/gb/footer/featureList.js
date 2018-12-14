@@ -117,6 +117,16 @@ if (!gb.footer)
 		});
 		
 		this.footerTag.on("footeropen", function(){
+			var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+			
+			if(isEdit instanceof Object){
+				if(isEdit.get()){
+					that.close();
+					isEdit.alert();
+					return
+				}
+			}
+			
 			that.onResize();
 		});
 		

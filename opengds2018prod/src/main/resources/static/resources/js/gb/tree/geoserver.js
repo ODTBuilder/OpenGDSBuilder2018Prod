@@ -1603,6 +1603,16 @@ gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, afterOpen) {
 		that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
 		console.log(that.getLoadingNumber());
 		that.getJSTree().open_node(node, callback);
+	} else {
+		that.addNodeToList(idx, node.id);
+		if (that.getLoadingNumber()[idx] === -1) {
+			that.setLoadingNumber(idx, 0);
+		}
+		that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
+		console.log(that.getLoadingNumber());
+		var already = node;
+		callback(node, node.children);
+		// that.getJSTree().load_each_wms_layer(node, that.map.getLayers());
 	}
 
 };

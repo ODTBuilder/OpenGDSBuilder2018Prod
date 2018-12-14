@@ -10161,13 +10161,52 @@
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
 								var map = inst._data.core.map;
-								if (inst.is_selected(obj)) {
-									var layers = inst.get_selected();
-									for (var i = 0; i < layers.length; i++) {
-										map.removeLayer(inst.get_LayerById(layers[i]));
+								var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+								
+								if(isEdit instanceof Object){
+									if(isEdit.get()){
+										isEdit.alert();
+										return
 									}
-									inst.delete_node(layers);
 								}
+								
+								var msg1 = $("<div>").text("Are you sure to delete these layers?").css({
+									"text-align" : "center",
+									"font-size" : "16px"
+								});
+								var body = $("<div>").append(msg1);
+								var closeBtn = $("<button>").css({
+									"float" : "right"
+								}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+								var okBtn = $("<button>").css({
+									"float" : "right"
+								}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+								var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+								var deleteModal = new gb.modal.Base({
+									"title" : "Delete Layer",
+									"width" : 310,
+									"height" : 200,
+									"autoOpen" : false,
+									"body" : body,
+									"footer" : buttonArea
+								});
+								
+								$(closeBtn).click(function() {
+									deleteModal.close();
+								});
+								
+								$(okBtn).click(function() {
+									if (inst.is_selected(obj)) {
+										var layers = inst.get_selected();
+										for (var i = 0; i < layers.length; i++) {
+											map.removeLayer(inst.get_LayerById(layers[i]));
+										}
+										inst.delete_node(layers);
+									}
+									deleteModal.close();
+								});
+								
+								deleteModal.open();
 							}
 						},
 						// "ccp" : {

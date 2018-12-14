@@ -167,19 +167,6 @@ html {
 			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
-		var isEditing = {
-			_active: false,
-			get: function(){
-				return this._active
-			},
-			set: function(bool){
-				this._active = Boolean(bool);
-			},
-			alert: function(){
-				alert("편집 기능 실행 중에는 할 수 없는 작업입니다.")
-			}
-		};
-	
 		var urlList = {
 			token : "?${_csrf.parameterName}=${_csrf.token}",
 			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
@@ -236,15 +223,12 @@ html {
 				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
-			}
+			},
+			"isEditing": gb.module.isEditing
 		});
 
 		$("#vermodal").click(function() {
-			if(!isEditing.get()){
-				vrepo.open();
-			} else {
-				isEditing.alert();
-			}
+			vrepo.open();
 		});
 
 		var crs = new gb.crs.BaseCRS({
@@ -267,15 +251,12 @@ html {
 			"url" : {
 				"token" : urlList.token,
 				"requestValidate" : urlList.requestValidate
-			}
+			},
+			"isEditing": gb.module.isEditing
 		});
 
 		$("#validation").click(function() {
-			if(!isEditing.get()){
-				validation.open();
-			} else {
-				isEditing.alert();
-			}
+			validation.open();
 		});
 
 		var frecord = new gb.edit.FeatureRecord({
@@ -341,7 +322,7 @@ html {
 			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en",
 			versioning : fhist,
-			isEditing : isEditing
+			isEditing : gb.module.isEditing
 		});
 
 		$("#editTool").click(function(e) {

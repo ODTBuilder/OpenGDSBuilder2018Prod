@@ -290,8 +290,8 @@ gb.header.EditingTool = function(obj) {
 
 	this.featurePop = new gb.panel.Base({
 		"width" : "240px",
-		"positionX" : 30,
-		"positionY" : 5,
+		"positionX" : 384,
+		"positionY" : 150,
 		"autoOpen" : false,
 		"body" : ftb
 	});
@@ -300,6 +300,7 @@ gb.header.EditingTool = function(obj) {
 		"max-height" : "300px",
 		"overflow-y" : "auto"
 	});
+	
 	var ath1 = $("<th>").text("Name");
 	var ath2 = $("<th>").text("Value");
 	var atr = $("<tr>").append(ath1).append(ath2);
@@ -312,6 +313,10 @@ gb.header.EditingTool = function(obj) {
 		"positionY" : 150,
 		"autoOpen" : false,
 		"body" : atb
+	});
+	$(this.attrPop.getPanel()).find(".gb-panel-body").css({
+		"max-height" : "400px",
+		"overflow-y" : "auto"
 	});
 
 	this.map.on('postcompose', function(evt) {
@@ -845,26 +850,29 @@ gb.header.EditingTool.prototype.select = function(source) {
 						"border" : "none"
 					}).val(attr[keys[i]]).on("input", function() {
 						var attrTemp = attrInfo[$(this).parent().prev().text()];
-						console.log(attrTemp.type);
-						switch (attrTemp.type) {
-						case "String":
+						var source = that.selectedSource;
+						var layer = source.get("git").tempLayer;
+						var obj = {};
+						obj[$(this).parent().prev().text()] = $(this).val();
+						that.feature.setProperties(obj);
+						that.featureRecord.update(layer, that.feature);
+						/*switch (typeof attrTemp) {
+						case "string":
 							if (that.isString($(this).val()) || ($(this).val() === "")) {
 								var obj = {};
 								obj[$(this).parent().prev().text()] = $(this).val();
 								that.feature.setProperties(obj);
 								that.featureRecord.update(that.getLayer(), that.feature);
-								console.log("set");
 							} else {
 								$(this).val("");
 							}
 							break;
-						case "Integer":
+						case "number":
 							if (that.isInteger($(this).val()) || ($(this).val() === "")) {
 								var obj = {};
 								obj[$(this).parent().prev().text()] = $(this).val();
 								that.feature.setProperties(obj);
 								that.featureRecord.update(that.getLayer(), that.feature);
-								console.log("set");
 							} else {
 								$(this).val("");
 							}
@@ -880,7 +888,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 								$(this).val("");
 							}
 							break;
-						case "Boolean":
+						case "boolean":
 							var valid = [ "t", "tr", "tru", "true", "f", "fa", "fal", "fals", "false" ];
 							if (valid.indexOf($(this).val()) !== -1) {
 								if (that.isBoolean($(this).val())) {
@@ -917,8 +925,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 							break;
 						default:
 							break;
-						}
-
+						}*/
 					});
 					var td2 = $("<td>").append(tform);
 					var tr = $("<tr>").append(td1).append(td2);
@@ -1526,27 +1533,29 @@ gb.header.EditingTool.prototype.remove = function(layer) {
  */
 gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 	var source = undefined;
-	var prevSelected = this.selectSources.item(0);
+	var tree = this.otree.getJSTree();
+	var layer = tree.get_LayerById(treeId);
+	
+	if(layer instanceof ol.layer.Group){
+		return this.selectedSource || source;
+	}
+	
+	var prevSelected = this.selectedSource;
 	var prevTreeid;
 	if(prevSelected !== undefined){
 		if(!!prevSelected.get("git")){
 			prevTreeid = prevSelected.get("git").treeID || "";
 		}
 	}
-	var tree = this.otree.getJSTree();
 	
-	var layer = otree.getJSTree().get_LayerById(treeId);
+	// 이전에 선택된 Openlayer Tree Node의 Editing 아이콘을 삭제
+	if(tree.get_node(prevTreeid)){
+		tree.set_flag(tree.get_node(prevTreeid), "editing", false);
+	}
 	
-	if(!(layer instanceof ol.layer.Group)){
-		// 이전에 선택된 Openlayer Tree Node의 Editing 아이콘을 삭제
-		if(tree.get_node(prevTreeid)){
-			tree.set_flag(tree.get_node(prevTreeid), "editing", false);
-		}
-		
-		// 현재 선택된 Openlayer Tree Node에 Editing 아이콘을 생성
-		if(tree.get_node(treeId)){
-			tree.set_flag(tree.get_node(treeId), "editing", true);
-		}
+	// 현재 선택된 Openlayer Tree Node에 Editing 아이콘을 생성
+	if(tree.get_node(treeId)){
+		tree.set_flag(tree.get_node(treeId), "editing", true);
 	}
 	
 	if(this.getVectorSourceOfServer(treeId)){
@@ -2218,6 +2227,8 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 	for(var i in this.interaction){
 		if(interaction !== this.interaction[i] && !!this.interaction[i]){
 			if(this.interaction[i] instanceof ol.interaction.Select && !bool){
+				this.selectSources.clear();
+				this.selectedSource = undefined;
 				this.interaction[i].getFeatures().clear();
 			}
 
@@ -2512,6 +2523,19 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 		this.featureRecord.save(this);
 		return;
 	}
+	
+	// 현재 선택된 layer node의 편집 아이콘 삭제
+	var prevSelected = this.selectSources.item(0);
+	var prevTreeid;
+	if(prevSelected !== undefined){
+		if(!!prevSelected.get("git")){
+			prevTreeid = prevSelected.get("git").treeID || "";
+		}
+	}
+	if(this.otree.getJSTree().get_node(prevTreeid)){
+		this.otree.getJSTree().set_flag(this.otree.getJSTree().get_node(prevTreeid), "editing", false);
+	}
+	
 	// openlayers tree wms layer 보기/숨김 기능 활성화
 	this.otree.getJSTree().setDisplayIndex(true);
 	

@@ -151,7 +151,8 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	}).html("Please input SHP file compressed in ZIP format");
 	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
 	
-	var file = 
+	var file;
+	var fileSelect = 
 		$("<input accept='.zip'>")
 		.attr({
 			"type" : "file"
@@ -176,7 +177,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 			"background-color" : "#00b5ad"
 		});
 	}).click(function() {
-		file.click();
+		fileSelect.click();
 	}).css({
 		"background-color" : "#00b5ad",
 		"border-color" : "transparent",
@@ -209,7 +210,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
-		that.uploadFile(file[0], function() {
+		that.uploadFile(file, function() {
 			uploadModal.close();
 		});
 	});
@@ -312,7 +313,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 
 	var form = $("<form>");
 	var formData = new FormData(form[0]);
-	formData.append("file", input.files[0]);
+	formData.append("file", input);
 	var keys = Object.keys(finalParams);
 	for (var i = 0; i < keys.length; i++) {
 		formData.append(keys[i], finalParams[keys[i]]);

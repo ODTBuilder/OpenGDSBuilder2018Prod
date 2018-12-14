@@ -19,6 +19,7 @@ public class GeogigCommandException extends IllegalArgumentException {
 		super(message);
 		this.responseBodyAsString = responseBodyAsString;
 		this.xml = true;
+		this.rawStatusCode = rawStatusCode;
 	}
 
 	public boolean isXml() {

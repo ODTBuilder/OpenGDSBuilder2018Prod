@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.StatusRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CheckoutBranch;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.CreateBranch;
@@ -25,7 +26,6 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCheckout;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigMerge;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryInit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Header;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigStatus.Staged;
@@ -62,7 +62,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 			checkout.setTransactionId(transactionId);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
-				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigCheckout.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				checkout = (GeogigCheckout) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
 			} else {
@@ -70,6 +70,8 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 				checkout.setError(e.getMessage());
 				checkout.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(checkout.getError());
+			checkout.setError(geogigStatus.getStatus());
 		}
 		return checkout;
 	}
@@ -165,7 +167,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 			branch = create.executeCommand(url, user, pw, repoName, branchName, source);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
-				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBranch.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				branch = (GeogigBranch) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
 			} else {
@@ -173,6 +175,8 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 				branch.setError(e.getMessage());
 				branch.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(branch.getError());
+			branch.setError(geogigStatus.getStatus());
 		}
 		return branch;
 	}
@@ -204,7 +208,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 			branch.setRemoteBranchList(remoteList);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
-				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBranch.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				branch = (GeogigBranch) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
 			} else {
@@ -212,6 +216,8 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 				branch.setError(e.getMessage());
 				branch.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(branch.getError());
+			branch.setError(geogigStatus.getStatus());
 		}
 		return branch;
 	}
@@ -238,7 +244,7 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 			branch = merge.executeCommand(url, user, pw, repoName, transactionId, branchName);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
-				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRepositoryInit.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigMerge.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				branch = (GeogigMerge) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
 			} else {
@@ -246,6 +252,8 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 				branch.setError(e.getMessage());
 				branch.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(branch.getError());
+			branch.setError(geogigStatus.getStatus());
 		}
 		return branch;
 	}
@@ -287,6 +295,8 @@ public class GeogigBranchServiceImpl implements GeogigBranchService {
 					branch.setError(e.getMessage());
 					branch.setSuccess("false");
 				}
+				GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(branch.getError());
+				branch.setError(geogigStatus.getStatus());
 			}
 			checkoutList.add(branch);
 		}

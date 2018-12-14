@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
@@ -55,6 +56,8 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 				transaction.setError(e.getMessage());
 				transaction.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(transaction.getError());
+			transaction.setError(geogigStatus.getStatus());
 		}
 		return transaction;
 	}
@@ -94,6 +97,8 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 				transaction.setError(e.getMessage());
 				transaction.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(transaction.getError());
+			transaction.setError(geogigStatus.getStatus());
 		}
 		return transaction;
 	}
@@ -128,6 +133,8 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 				transaction.setError(e.getMessage());
 				transaction.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(transaction.getError());
+			transaction.setError(geogigStatus.getStatus());
 		}
 		return transaction;
 	}

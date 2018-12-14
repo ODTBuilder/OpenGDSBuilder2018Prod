@@ -466,7 +466,11 @@ gb.validation.OptionDefinition = function(obj) {
 		"failimport" : {
 			"en" : "Setting input failed.",
 			"ko" : "설정 입력에 실패하였습니다."
-		}
+		},
+		"readfail" : {
+			"en" : "Unable to read file.",
+			"ko" : "파일을 읽을 수 없습니다."
+		},
 	}
 
 	this.optItem = {
@@ -2919,8 +2923,12 @@ gb.validation.OptionDefinition = function(obj) {
 			}
 			reader.readAsText(fileList[0]);
 			$(reader).on("load", function(event) {
-				var obj = JSON.parse(reader.result);
-				// var obj = JSON.parse(reader.result.replace(/(\s*)/g, ''));
+				try {
+					var obj = JSON.parse(reader.result);
+				} catch (e) {
+					that.setMessagePopup("danger", " " + that.translation.readfail[that.locale]);
+					return;
+				}
 				that.setStructure(obj);
 				that.updateStructure();
 			});

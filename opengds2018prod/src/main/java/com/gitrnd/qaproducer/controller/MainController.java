@@ -61,8 +61,10 @@ public class MainController {
 			mav.addObject("username", loginUser.getUsername());
 			mav.addObject("fname", loginUser.getFname());
 			mav.addObject("lname", loginUser.getLname());
+			mav.setViewName("redirect:map.do");
+		}else{
+			mav.setViewName("/user/signin");
 		}
-		mav.setViewName("/main/main");
 		String header = request.getHeader("User-Agent");
 		if (header != null) {
 			if (header.indexOf("Trident") > -1) {
@@ -80,8 +82,10 @@ public class MainController {
 			mav.addObject("username", loginUser.getUsername());
 			mav.addObject("fname", loginUser.getFname());
 			mav.addObject("lname", loginUser.getLname());
+			mav.setViewName("redirect:map.do");
+		}else{
+			mav.setViewName("/user/signin");
 		}
-		mav.setViewName("/main/main");
 		String header = request.getHeader("User-Agent");
 		if (header != null) {
 			if (header.indexOf("Trident") > -1) {

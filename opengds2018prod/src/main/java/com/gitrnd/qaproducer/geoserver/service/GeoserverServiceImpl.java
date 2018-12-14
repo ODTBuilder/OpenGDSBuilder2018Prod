@@ -649,25 +649,28 @@ public class GeoserverServiceImpl implements GeoserverService {
 			System.err.println("OriginalName may not be empty!");
 			return false;
 		}
-		if (name != null && !name.isEmpty()) {
+		if (name != null) {
 			fte.setName(name);
 		}
-		if (title != null && !title.isEmpty()) {
+		if (title != null) {
 			fte.setTitle(title);
 		}
-		if (abstractContent != null && !abstractContent.isEmpty()) {
+		if (abstractContent != null) {
 			fte.setAbstract(abstractContent);
 		}
-		if (srs != null && !srs.isEmpty()) {
+		if (srs != null) {
 			fte.setSRS(srs);
-			dtPublisher.recalculate(workspace, dsName, originalName, EnLayerBboxRecalculate.ALL);
 		}
-		if (style != null && !style.isEmpty()) {
+		if (style != null) {
 			layerEncoder = new GSLayerEncoder();
 			layerEncoder.setDefaultStyle(style);
 		}
 
 		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, originalName, fte, layerEncoder, attChangeFlag);
+		
+		if (srs != null) {
+			dtPublisher.recalculate(workspace, dsName, originalName, EnLayerBboxRecalculate.ALL);
+		}
 
 		return updateFlag;
 	}

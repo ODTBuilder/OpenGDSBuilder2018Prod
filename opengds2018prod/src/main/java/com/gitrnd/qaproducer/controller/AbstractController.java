@@ -34,6 +34,8 @@ import com.gitrnd.gdsbuilder.geoserver.factory.DTGeoserverFactory;
 import com.gitrnd.gdsbuilder.geoserver.factory.impl.DTGeoserverFactoryImpl;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
+import it.geosolutions.geoserver.rest.HTTPUtils;
+
 
 
 
@@ -167,11 +169,15 @@ public class AbstractController {
 		else{
 			DTGeoserverFactory factory = new DTGeoserverFactoryImpl();
 			try {
-				DTGeoserverManager dtManager = factory.createDTGeoserverManager(serverURL, id, pw);
-				dtGeoManagers.put(serverName, dtManager);
-				this.updateSession(request, "geoserver", dtGeoManagers);
+				if(HTTPUtils.httpPing(serverURL + "/rest/", id, pw)){
+					DTGeoserverManager dtManager = factory.createDTGeoserverManager(serverURL, id, pw);
+					dtGeoManagers.put(serverName, dtManager);
+					this.updateSession(request, "geoserver", dtGeoManagers);
+				}else{
+					return 604;
+				}
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
+				// Server URL http 형식이 아님
 				return 604;
 			}
 		}

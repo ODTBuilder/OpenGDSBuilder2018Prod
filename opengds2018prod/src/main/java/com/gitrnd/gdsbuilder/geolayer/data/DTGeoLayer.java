@@ -135,14 +135,27 @@ public class DTGeoLayer {
 		this.attInfo = this.buildAttType(layerElem);
 		this.dsType = this.buildStoreType(layerElem);
 		this.srs = this.buildSRS(layerElem);
-		this.nbBox.put("minx", featureType.getNativeBoundingBox().getMinX());
-		this.nbBox.put("miny", featureType.getNativeBoundingBox().getMinY());
-		this.nbBox.put("maxx", featureType.getNativeBoundingBox().getMaxX());
-		this.nbBox.put("maxy", featureType.getNativeBoundingBox().getMaxY());
-		this.llbBox.put("minx", featureType.getLatLonBoundingBox().getMinX());
-		this.llbBox.put("miny", featureType.getLatLonBoundingBox().getMinY());
-		this.llbBox.put("maxx", featureType.getLatLonBoundingBox().getMaxX());
-		this.llbBox.put("maxy", featureType.getLatLonBoundingBox().getMaxY());
+		
+		try {
+			this.nbBox.put("minx", featureType.getNativeBoundingBox().getMinX());
+			this.nbBox.put("miny", featureType.getNativeBoundingBox().getMinY());
+			this.nbBox.put("maxx", featureType.getNativeBoundingBox().getMaxX());
+			this.nbBox.put("maxy", featureType.getNativeBoundingBox().getMaxY());
+			this.llbBox.put("minx", featureType.getLatLonBoundingBox().getMinX());
+			this.llbBox.put("miny", featureType.getLatLonBoundingBox().getMinY());
+			this.llbBox.put("maxx", featureType.getLatLonBoundingBox().getMaxX());
+			this.llbBox.put("maxy", featureType.getLatLonBoundingBox().getMaxY());
+		} catch (Exception e) {
+			// TODO: handle exception
+			this.nbBox.put("minx", null);
+			this.nbBox.put("miny", null);
+			this.nbBox.put("maxx", null);
+			this.nbBox.put("maxy", null);
+			this.llbBox.put("minx", null);
+			this.llbBox.put("miny", null);
+			this.llbBox.put("maxx", null);
+			this.llbBox.put("maxy", null);
+		}
 	}
 
 	/**

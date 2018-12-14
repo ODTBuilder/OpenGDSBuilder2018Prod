@@ -524,7 +524,7 @@ html {
 				var winWidth = $(window).innerWidth();
 				//컨텐츠 (지도) 영역의 너비 지정
 				//.builderLayer -> 사이드바
-				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true));
+				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true))-1;
 				//사이드바의 높이 지정
 				$(".builderLayer").outerHeight(conHeight);
 				//편집영역의 높이 지정

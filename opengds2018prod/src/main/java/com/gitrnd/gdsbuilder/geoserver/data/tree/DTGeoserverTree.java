@@ -254,24 +254,26 @@ public class DTGeoserverTree extends JSONArray {
 												dsTree.put("text", dsName);
 												dsTree.put("type", "datastore");
 												dsTree.put("storeType", storeType);
-												if (storeType.equals("GeoGIG")) {
-													Map<String, String> connetParams = dStore.getConnectionParameters();
-													String geogigRepos = connetParams.get("geogig_repository");
-													String reposName = geogigRepos.replace("geoserver://", "");
-													dsTree.put("geogigRepos", reposName);
-													String branchName = connetParams.get("branch");
-													dsTree.put("geogigBranch", branchName);
-													ListBranch listBranch = new ListBranch();
-													GeogigBranch geogigBranch = listBranch.executeCommand(
-															dtGeoManager.getRestURL(), dtGeoManager.getUsername(),
-															dtGeoManager.getPassword(), reposName, false);
-													List<Branch> branchList = geogigBranch.getLocalBranchList();
-													JSONArray branchArr = new JSONArray();
-													for (Branch branch : branchList) {
-														branchArr.add(branch.getName());
+												if(storeType!=null){
+													if (storeType.equals("GeoGIG")) {
+														Map<String, String> connetParams = dStore.getConnectionParameters();
+														String geogigRepos = connetParams.get("geogig_repository");
+														String reposName = geogigRepos.replace("geoserver://", "");
+														dsTree.put("geogigRepos", reposName);
+														String branchName = connetParams.get("branch");
+														dsTree.put("geogigBranch", branchName);
+														ListBranch listBranch = new ListBranch();
+														GeogigBranch geogigBranch = listBranch.executeCommand(
+																dtGeoManager.getRestURL(), dtGeoManager.getUsername(),
+																dtGeoManager.getPassword(), reposName, false);
+														List<Branch> branchList = geogigBranch.getLocalBranchList();
+														JSONArray branchArr = new JSONArray();
+														for (Branch branch : branchList) {
+															branchArr.add(branch.getName());
+														}
+														dsTree.put("geogigBranches", branchArr);
+														System.out.println("");
 													}
-													dsTree.put("geogigBranches", branchArr);
-													System.out.println("");
 												}
 												RESTFeatureTypeList ftList = dtGeoserverReader
 														.getFeatureTypes(workspace, dsName);
@@ -284,7 +286,6 @@ public class DTGeoserverTree extends JSONArray {
 												} else {
 													dsTree.put("children", false);
 												}
-
 												super.add(dsTree);
 											}
 										}

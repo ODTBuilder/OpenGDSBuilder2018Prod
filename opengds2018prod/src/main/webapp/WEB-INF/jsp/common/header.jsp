@@ -9,9 +9,9 @@
 				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${pageContext.request.contextPath}/main.do"><img
+			<a class="navbar-brand" href="${pageContext.request.contextPath}/main.do" style="padding-top: 12px;"><img
 				style="height: 20px; width: auto; display: inline; margin-right: 10px; padding: 0;"
-				src="${pageContext.request.contextPath}/resources/img/onlyglobe.png" alt="GeoDT Web">GeoDT Web</a>
+				src="${pageContext.request.contextPath}/resources/img/LOGO_GeoDT_web.png" alt="GeoDT Web"></a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="navbar-collapse-1">

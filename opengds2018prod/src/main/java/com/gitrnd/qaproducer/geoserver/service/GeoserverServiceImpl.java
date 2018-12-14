@@ -156,20 +156,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
 
-<<<<<<< HEAD
-=======
 				String uploadFilename = "";// 업로드 파일명
 
->>>>>>> editor
 				File file = new File(defaultTempPath);
 				if (!file.exists()) {
 					file.mkdirs();
 				}
-<<<<<<< HEAD
-				String uploadFilename = "";// 업로드 파일명
-=======
 
->>>>>>> editor
 				try {
 					tmp = Files.createTempDirectory(FileSystems.getDefault().getPath(outputFolderPath), "temp_");
 				} catch (IOException e1) {
@@ -200,21 +193,12 @@ public class GeoserverServiceImpl implements GeoserverService {
 							int trimPos = trimFileName.lastIndexOf(".");
 							String trimExt = trimFileName.substring(trimPos + 1);
 							if (trimExt.endsWith("zip")) {
-<<<<<<< HEAD
-								// String encodeFileName = URLEncoder.encode(trimFileName,
-								// "UTF-8");
 
-								saveFilePath = tmp.toString() + File.separator + trimFileName;
-
-								BufferedOutputStream stream = new BufferedOutputStream(
-										new FileOutputStream(saveFilePath));
-=======
 								// String encodeFileName =
 								// URLEncoder.encode(trimFileName,
 								// "UTF-8");
 
 								saveFilePath = tmp.toString() + File.separator + trimFileName;
->>>>>>> editor
 
 								BufferedOutputStream stream = new BufferedOutputStream(
 										new FileOutputStream(saveFilePath));
@@ -282,20 +266,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
 							new File(saveFilePath).toURI());
 					/*
-					 * if (serverPFlag) { puFlag = 200; boolean upFlag =
-<<<<<<< HEAD
-					 * this.updateFeatureType(dtGeoManager, workspace, datastore, originalName,
-					 * originalName, title, abstractContent, srs, style, false); if (!upFlag) { //
-					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패"); dtPublisher.removeLayer(workspace,
-					 * originalName); puFlag = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
-=======
-					 * this.updateFeatureType(dtGeoManager, workspace,
+					 * if (serverPFlag) { puFlag = 200; boolean upFlag = <<<<<<<
+					 * HEAD this.updateFeatureType(dtGeoManager, workspace,
 					 * datastore, originalName, originalName, title,
 					 * abstractContent, srs, style, false); if (!upFlag) { //
 					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패");
 					 * dtPublisher.removeLayer(workspace, originalName); puFlag
 					 * = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
->>>>>>> editor
+					 * ======= this.updateFeatureType(dtGeoManager, workspace,
+					 * datastore, originalName, originalName, title,
+					 * abstractContent, srs, style, false); if (!upFlag) { //
+					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패");
+					 * dtPublisher.removeLayer(workspace, originalName); puFlag
+					 * = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+					 * >>>>>>> editor
 					 */
 					if (serverPFlag) {
 						puFlag = 200;

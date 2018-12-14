@@ -12,50 +12,49 @@ if (!gb.edit)
 	gb.edit = {};
 
 gb.edit.TDSTYLE = {
-	"padding": ".78571429em .78571429em"
+	"padding" : ".78571429em .78571429em"
 }
 
 gb.edit.TDKEYSTYLE = {
-	"padding": ".78571429em .78571429em",
-	"background": "rgba(0,0,0,.03)",
-	"font-weight": "700"
+	"padding" : ".78571429em .78571429em",
+	"background" : "rgba(0,0,0,.03)",
+	"font-weight" : "700"
 }
 
 gb.edit.TRSTYLE = {
-	"border-bottom": "1px solid rgba(0,0,0,.1)"
+	"border-bottom" : "1px solid rgba(0,0,0,.1)"
 }
 
 gb.edit.INPUTSTYLE = {
-	"width": "100%",
-	"border": "1px solid rgba(34,36,38,.15)",
-	"border-radius": ".28571429rem",
-	"line-height": "1.21428571em",
-	"padding": ".67857143em 1em"
+	"width" : "100%",
+	"border" : "1px solid rgba(34,36,38,.15)",
+	"border-radius" : ".28571429rem",
+	"line-height" : "1.21428571em",
+	"padding" : ".67857143em 1em"
 
 }
 
 gb.edit.LABELSTYLE = {
-	"display": "inline-block",
-	"background": "#e0e1e2 none",
-	"color": "rgba(0,0,0,.6)",
-	"margin": "0 .25em .25em 0",
-	"padding": ".78571429em 1.5em .78571429em",
-	"font-weight": "700",
-	"line-height": "1em",
-	"border-radius": ".28571429rem"
+	"display" : "inline-block",
+	"background" : "#e0e1e2 none",
+	"color" : "rgba(0,0,0,.6)",
+	"margin" : "0 .25em .25em 0",
+	"padding" : ".78571429em 1.5em .78571429em",
+	"font-weight" : "700",
+	"line-height" : "1em",
+	"border-radius" : ".28571429rem"
 }
 
 gb.edit.FIELDSTYLE = {
-	"width": "50%",
-	"padding-left": ".5em",
-	"padding-right": ".5em"
+	"width" : "50%",
+	"padding-left" : ".5em",
+	"padding-right" : ".5em"
 }
 
-gb.edit.SELECTSTYLE = {
-}
+gb.edit.SELECTSTYLE = {}
 
 gb.edit.SELTITLESTYLE = {
-	"font-weight": "700"
+	"font-weight" : "700"
 }
 
 gb.edit.ModifyLayerProperties = function(obj) {
@@ -97,11 +96,14 @@ gb.edit.ModifyLayerProperties = function(obj) {
 
 	this.tbody = $("<tbody>");
 	var tableTag = $("<table>").append(this.tbody);
-	
+
 	this.body = $("<div>").append(tableTag);
-	
+
 	// that.setForm("ngi", "layer");
-	$(this.body).addClass("modal-body").css({"height": "550px", "overflow-y": "auto"});
+	$(this.body).addClass("modal-body").css({
+		"height" : "550px",
+		"overflow-y" : "auto"
+	});
 	/*
 	 * 
 	 * 
@@ -120,10 +122,10 @@ gb.edit.ModifyLayerProperties = function(obj) {
 
 	var okBtn = this.okBtn = $("<button>").attr({
 		"type" : "button",
-		"disabled": false
+		"disabled" : false
 	}).on("click", function() {
-		//var opt = that.getDefinitionForm();
-		if(!!that.saveLayerProperties()){
+		// var opt = that.getDefinitionForm();
+		if (!!that.saveLayerProperties()) {
 			that.close();
 			that.refresh();
 		}
@@ -164,46 +166,46 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		keyboard : true,
 		show : false,
 	});
-	
-	$(".layer-prop-input").on("keyup", function(e){
+
+	$(".layer-prop-input").on("keyup", function(e) {
 		var bool = true;
 		var id = e.target.id;
 		var value = e.target.value;
-		
-		if(id === "propsrs"){
-			if(value !== that.srs){
+
+		if (id === "propsrs") {
+			if (value !== that.srs) {
 				bool = false;
 			}
 		}
-		
-		if(id === "proplName"){
-			if(value !== that.layerName){
+
+		if (id === "proplName") {
+			if (value !== that.layerName) {
 				bool = false;
 			}
 		}
-		
+
 		that.okBtn.attr({
-			"disabled": bool
+			"disabled" : bool
 		});
 	});
 }
-gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
+gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	var list = obj || false;
-	if(!list){
+	if (!list) {
 		return;
 	}
-	
+
 	this.tbody.empty();
-	
+
 	var that = this;
 	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option;
-	for(let i in list){
+	for ( let i in list) {
 		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
-		if(list[i] instanceof Object){
+		if (list[i] instanceof Object) {
 			value = $("<td>").css(gb.edit.TDSTYLE);
-			for(var j in list[i]){
+			for ( var j in list[i]) {
 				labelKey = $("<span>").text(j);
-				if(list[i][j] instanceof Object){
+				if (list[i][j] instanceof Object) {
 					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
 				} else {
 					labelValue = $("<span>").text(list[i][j]);
@@ -212,74 +214,66 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj){
 				value.append(label);
 			}
 		} else {
-			if(i === "lName" || i === "srs" || i === "title"){
-				value = 
-					$("<td>")
-						.css(gb.edit.TDSTYLE)
-						.append(
-							$("<input>")
-								.addClass("layer-prop-input")
-								.attr({
-									"id": "prop" + i,
-									"value": list[i],
-									"type": "text",
-									"readonly": false
-								})
-								.css(gb.edit.INPUTSTYLE)
-						);
-			} else if(i === "style"){
+			if (i === "lName" || i === "srs" || i === "title") {
+				value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
+					"id" : "prop" + i,
+					"value" : list[i],
+					"type" : "text",
+					"readonly" : false
+				}).css(gb.edit.INPUTSTYLE));
+			} else if (i === "style") {
 				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Workspace");
 				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
-				select.change(function(){
+				select.change(function() {
 					var params = {};
 					params.select = $("#styleSelect");
 					params.serverName = that.serverInfo.geoserver;
-					
-					if($(this).find("option:selected").val() === "workspace"){
+
+					if ($(this).find("option:selected").val() === "workspace") {
 						params.workspace = $(this).find("option:selected").text();
 					}
-					
+
 					that.requestStyleList(params);
 				});
 				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
-				
+
 				option = $("<option>").val("geoserver").text(this.serverInfo.geoserver);
 				select.append(option);
-				for(let w = 0; w < this.workspaceList.length; w++){
+				for (let w = 0; w < this.workspaceList.length; w++) {
 					option = $("<option>").val("workspace").text(this.workspaceList[w]);
 					select.append(option);
-					if(list.styleWorkspace === this.workspaceList[w]){
+					if (list.styleWorkspace === this.workspaceList[w]) {
 						option.attr("selected", "selected");
 					}
 				}
 				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
-				
+
 				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Style");
 				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
 				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
 				value.append(selectField);
-				
+
 				this.requestStyleList({
-					select: select,
-					serverName: this.serverInfo.geoserver,
-					workspace: list.styleWorkspace,
-					style: list[i]
+					select : select,
+					serverName : this.serverInfo.geoserver,
+					workspace : list.styleWorkspace,
+					style : list[i]
 				});
 			} else {
-				if(i === "styleWorkspace"){
+				if (i === "styleWorkspace") {
 					continue;
 				}
 				value = $("<td>").css(gb.edit.TDSTYLE).text(list[i]);
 			}
-			
+
 		}
-		
+
 		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
 		this.tbody.append(tr);
 	}
 }
 
-gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function(){
+gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function() {
 	return 1;
 }
 
@@ -329,28 +323,25 @@ gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
 };
 
 gb.edit.ModifyLayerProperties.prototype.setWorkSpaceList = function(list) {
-	if(list instanceof Array){
+	if (list instanceof Array) {
 		this.workspaceList = list;
 	}
 };
 
 gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	var that = this;
-	var geoserver = info.geoserver || false,
-		workspace = info.workspace || false,
-		datastore = info.datastore || false,
-		layername = info.layername || false;
-	
-	if(!geoserver || !workspace || !datastore || !layername){
+	var geoserver = info.geoserver || false, workspace = info.workspace || false, datastore = info.datastore || false, layername = info.layername || false;
+
+	if (!geoserver || !workspace || !datastore || !layername) {
 		console.error("Missed Parameter");
 		return;
 	}
-	
+
 	this.setServerInfo(info);
-	
+
 	var arr = {
-		"serverName": geoserver,
-		"workspace": workspace,
+		"serverName" : geoserver,
+		"workspace" : workspace,
 		"geoLayerList" : [ layername ]
 	}
 	$.ajax({
@@ -370,11 +361,11 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 			if (Array.isArray(data)) {
 				if (data.length === 1) {
 					var arra = [];
-					
+
 					that.setLayer(data[0]);
 					that.layerName = data[0].lName;
 					that.srs = data[0].srs;
-					
+
 					that.createTableContent(data[0]);
 				}
 
@@ -389,36 +380,36 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var options = options;
 	var select = undefined;
 	var style = options.style || "";
-	
-	if(!!options.select){
+
+	if (!!options.select) {
 		select = options.select;
 	} else {
 		return;
 	}
-	
-	if(!!options.serverName){
+
+	if (!!options.serverName) {
 		params.serverName = options.serverName;
 	} else {
 		return;
 	}
-	
-	if(!!options.workspace){
+
+	if (!!options.workspace) {
 		params.workspace = options.workspace;
 	}
-	
+
 	$.ajax({
 		url : "geoserver/getStyleList.ajax" + this.token,
 		method : "GET",
 		contentType : "application/json; charset=UTF-8",
 		cache : false,
 		data : params,
-		success: function(data, textStatus, jqXHR){
+		success : function(data, textStatus, jqXHR) {
 			select.empty();
 			var tag = undefined;
-			for(var i = 0; i < data.length; i++){
+			for (var i = 0; i < data.length; i++) {
 				tag = $("<option>").val(data[i]).text(data[i]);
 				select.append(tag);
-				if(style === data[i]){
+				if (style === data[i]) {
 					tag.attr("selected", "selected");
 				}
 			}
@@ -432,40 +423,40 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var num_pattern = /[0-9]/;
 	var layer = this.layer;
 	var serverInfo = this.getServerInfo();
-	
-	if(special_pattern.test($("#proplName").val()) === true){
+
+	if (special_pattern.test($("#proplName").val()) === true) {
 		alert("레이어 이름에 특수문자는 허용되지않습니다.");
 		return false;
 	}
-	if(special_pattern.test($("#proptitle").val()) === true){
+	if (special_pattern.test($("#proptitle").val()) === true) {
 		alert("레이어 제목에 특수문자는 허용되지않습니다.");
 		return false;
 	}
-	/*if(!$.isNumeric($("#propsrs").val())){
-		alert("EPSG 코드는 숫자만 입력 가능합니다.");
-		return false;
-	}*/
-	
+	/*
+	 * if(!$.isNumeric($("#propsrs").val())){ alert("EPSG 코드는 숫자만 입력 가능합니다.");
+	 * return false; }
+	 */
+
 	var arr = {
-		"serverName": serverInfo.geoserver,
-		"workspace": serverInfo.workspace,
-		"datastore": serverInfo.datastore,
-		"originalName": serverInfo.layername,
-		"name": $("#proplName").val(),
-		"title": $("#proptitle").val(),
-		"srs": $("#propsrs").val()
+		"serverName" : serverInfo.geoserver,
+		"workspace" : serverInfo.workspace,
+		"datastore" : serverInfo.datastore,
+		"originalName" : serverInfo.layername,
+		"name" : $("#proplName").val(),
+		"title" : $("#proptitle").val(),
+		"srs" : $("#propsrs").val()
 	}
-	
+
 	$.ajax({
 		url : "geoserver/updateLayer.ajax" + this.token,
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		cache : false,
 		data : JSON.stringify(arr),
-		success: function(data, textStatus, jqXHR){
+		success : function(data, textStatus, jqXHR) {
 			console.log(data);
 		}
 	});
-	
+
 	return true;
 }

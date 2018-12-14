@@ -104,6 +104,11 @@ html {
 .gb-footer-span:hover {
 	cursor: pointer;
 }
+
+.modal-open {
+	overflow: hidden;
+	padding-right: 0 !important;
+}
 </style>
 </head>
 <body>

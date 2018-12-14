@@ -81,8 +81,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 	/*
 	 * public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
-	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher =
-	 * dtGeoManager.getPublisher(); }else{ throw new
+	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher
+	 * = dtGeoManager.getPublisher(); }else{ throw new
 	 * IllegalArgumentException("Geoserver 정보 없음"); } }
 	 */
 	@Override
@@ -156,11 +156,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
 
+<<<<<<< HEAD
+=======
+				String uploadFilename = "";// 업로드 파일명
+
+>>>>>>> editor
 				File file = new File(defaultTempPath);
 				if (!file.exists()) {
 					file.mkdirs();
 				}
+<<<<<<< HEAD
 				String uploadFilename = "";// 업로드 파일명
+=======
+
+>>>>>>> editor
 				try {
 					tmp = Files.createTempDirectory(FileSystems.getDefault().getPath(outputFolderPath), "temp_");
 				} catch (IOException e1) {
@@ -191,6 +200,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 							int trimPos = trimFileName.lastIndexOf(".");
 							String trimExt = trimFileName.substring(trimPos + 1);
 							if (trimExt.endsWith("zip")) {
+<<<<<<< HEAD
 								// String encodeFileName = URLEncoder.encode(trimFileName,
 								// "UTF-8");
 
@@ -198,8 +208,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 								BufferedOutputStream stream = new BufferedOutputStream(
 										new FileOutputStream(saveFilePath));
+=======
+								// String encodeFileName =
+								// URLEncoder.encode(trimFileName,
+								// "UTF-8");
 
-								// copy file to local disk (make sure the path "e.g.
+								saveFilePath = tmp.toString() + File.separator + trimFileName;
+>>>>>>> editor
+
+								BufferedOutputStream stream = new BufferedOutputStream(
+										new FileOutputStream(saveFilePath));
+
+								// copy file to local disk (make sure the path
+								// "e.g.
 								// D:/temp/files" exists)
 								FileCopyUtils.copy(mpf.getBytes(), stream);
 
@@ -262,10 +283,19 @@ public class GeoserverServiceImpl implements GeoserverService {
 							new File(saveFilePath).toURI());
 					/*
 					 * if (serverPFlag) { puFlag = 200; boolean upFlag =
+<<<<<<< HEAD
 					 * this.updateFeatureType(dtGeoManager, workspace, datastore, originalName,
 					 * originalName, title, abstractContent, srs, style, false); if (!upFlag) { //
 					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패"); dtPublisher.removeLayer(workspace,
 					 * originalName); puFlag = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+=======
+					 * this.updateFeatureType(dtGeoManager, workspace,
+					 * datastore, originalName, originalName, title,
+					 * abstractContent, srs, style, false); if (!upFlag) { //
+					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패");
+					 * dtPublisher.removeLayer(workspace, originalName); puFlag
+					 * = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+>>>>>>> editor
 					 */
 					if (serverPFlag) {
 						puFlag = 200;

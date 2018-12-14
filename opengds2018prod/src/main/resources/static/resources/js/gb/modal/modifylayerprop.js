@@ -26,7 +26,7 @@ gb.edit.TRSTYLE = {
 }
 
 gb.edit.INPUTSTYLE = {
-	"width" : "100%",
+	"width" : "inherit",
 	"border" : "1px solid rgba(34,36,38,.15)",
 	"border-radius" : ".28571429rem",
 	"line-height" : "1.21428571em",
@@ -70,6 +70,10 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
 	this.refer = options.refer ? options.refer : undefined;
 	this.token = options.token || "";
+	
+	this.validIconSpan = undefined;
+	this.searchBtn = undefined;
+	
 	var xSpan = $("<span>").attr({
 		"aria-hidden" : true
 	}).html("&times;");
@@ -198,7 +202,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	this.tbody.empty();
 
 	var that = this;
-	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option;
+	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search;
 	for ( let i in list) {
 		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
 		if (list[i] instanceof Object) {
@@ -214,7 +218,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				value.append(label);
 			}
 		} else {
-			if (i === "lName" || i === "srs" || i === "title") {
+			if (i === "lName" || i === "title") {
 				value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
 					"id" : "prop" + i,
 					"value" : list[i],
@@ -259,6 +263,41 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					workspace : list.styleWorkspace,
 					style : list[i]
 				});
+			} else if(i === "srs"){
+				search = 
+					$("<input>")
+					.addClass("layer-prop-input")
+					.attr({
+						"id" : "prop" + i,
+						"value" : list[i] ? list[i].replace(/[^0-9]/g, "") : "",
+						"type" : "text",
+						"readonly" : false
+					})
+					.css(gb.edit.INPUTSTYLE);
+				
+				var tout = false;
+				$(search).keyup(function() {
+					that.setValidEPSG(1);
+					if (tout) {
+						clearTimeout(tout);
+					}
+					that.tout = setTimeout(function() {
+						var v = $(search).val();
+						that.searchEPSGCode(v);
+					}, 250);
+				});
+				
+				this.validIconSpan = $("<span>").css({
+					"margin-left" : "15px",
+					"margin-right" : "0"
+				});
+				
+				value = 
+					$("<td>")
+						.append($("<span>").text("EPSG: "))
+						.append(search)
+						.append(this.validIconSpan)
+						.css(gb.edit.TDSTYLE);
 			} else {
 				if (i === "styleWorkspace") {
 					continue;
@@ -444,7 +483,7 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 		"originalName" : serverInfo.layername,
 		"name" : $("#proplName").val(),
 		"title" : $("#proptitle").val(),
-		"srs" : $("#propsrs").val()
+		"srs" : "EPSG:" + $("#propsrs").val()
 	}
 
 	$.ajax({
@@ -460,3 +499,125 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 
 	return true;
 }
+
+/**
+ * epsg 코드의 유효성을 설정한다.
+ * 
+ * @method gb.edit.ModifyLayerProperties#setValidEPSG
+ * @param {Number}
+ *            flag - EPSG 코드 유효성
+ */
+gb.edit.ModifyLayerProperties.prototype.setValidEPSG = function(flag) {
+	$(this.validIconSpan).empty();
+
+	if (flag === 2) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-loading-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-valid-icon");
+		}
+		$(this.searchBtn).prop("disabled", false);
+	} else if (flag === 1) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-spinner").addClass("fa-spin");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-loading-icon");
+		}
+		$(this.searchBtn).prop("disabled", true);
+	} else if (flag === 0) {
+		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
+		$(this.validIconSpan).append(validIcon);
+
+		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
+			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		} else {
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
+			}
+			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
+				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-loading-icon");
+			}
+			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
+		}
+		$(this.searchBtn).prop("disabled", true);
+	}
+};
+
+/**
+ * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
+ * 
+ * @method gb.edit.ModifyLayerProperties#searchEPSGCode
+ * @param {String}
+ *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ */
+gb.edit.ModifyLayerProperties.prototype.searchEPSGCode = function(code, apply, callback) {
+	var that = this;
+
+	$.ajax({
+		url : 'https://epsg.io/?format=json&q=' + code,
+		dataType : "jsonp",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			var json = data;
+			if (json.number_result !== 1) {
+				that.setValidEPSG(0);
+				console.error("no crs");
+				return;
+			} else if (json.number_result < 1) {
+				that.setValidEPSG(0);
+				console.error("no crs");
+				return;
+			}
+			var results = json['results'];
+			if (results && results.length > 0) {
+				for (var i = 0, ii = results.length; i < ii; i++) {
+					var result = results[i];
+					if (result) {
+						var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
+						if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
+
+							if (code === codes) {
+								that.setValidEPSG(2);
+							}
+
+							return;
+						} else {
+							console.error("no crs");
+							that.setValidEPSG(0);
+							return;
+						}
+					}
+				}
+			}
+			return;
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			that.applyProjection(null, null, null, null, callback);
+		}
+	});
+};

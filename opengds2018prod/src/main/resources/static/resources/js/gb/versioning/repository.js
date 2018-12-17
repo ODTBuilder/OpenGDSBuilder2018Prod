@@ -88,6 +88,9 @@ gb.versioning.Repository = function(obj) {
 	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
 	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
 
+	// edit tool 활성화 여부 객체
+	this.isEditing = options.isEditing || undefined;
+	
 	this.nowRepo = undefined;
 	this.nowRemoteRepo = undefined;
 	this.nowRepoServer = undefined;
@@ -1083,6 +1086,13 @@ gb.versioning.Repository.prototype.setNowServer = function(server) {
  * @override
  */
 gb.versioning.Repository.prototype.open = function() {
+	if(this.isEditing instanceof Object){
+		if(this.isEditing.get()){
+			this.isEditing.alert();
+			return
+		}
+	}
+	
 	gb.modal.Base.prototype.open.call(this);
 	this.refreshList();
 };

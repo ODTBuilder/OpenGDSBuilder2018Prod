@@ -134,22 +134,60 @@ gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
  */
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
 	var that = this;
-	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
+	
+	// EPSG 입력 창 생성
+/*	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
 	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
 
 	this.setValidEPSG(false);
 
 	var inputDiv = $("<div>").css({
 		"margin" : "10px"
-	}).append(label).append(this.epsgInput).append(this.validIconSpan);
-	var message2 = $("<div>").text("2. Please input SHP file compressed in ZIP format");
-	var file = $("<input>").attr({
-		"type" : "file"
+	}).append(label).append(this.epsgInput).append(this.validIconSpan);*/
+	
+	var icon = $("<div>").addClass("fas fa-info-circle fa-2x");
+	var messageContent = $("<p>").css({
+		"margin": "0 10px"
+	}).html("Please input SHP file compressed in ZIP format");
+	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
+	
+	var file;
+	var fileSelect = 
+		$("<input accept='.zip'>")
+		.attr({
+			"type" : "file"
+		})
+		.change(function() {
+			if (!!this.files) {
+				file = this.files[0];
+				if (file.size > 0) {
+					fileInfo.text(file.name + ' , ' + file.size + ' kb');
+				}
+			}
+		});
+	
+	var fileArea = $("<button type='button'>").addClass(
+	"btn btn-primary btn-lg btn-block").text("Upload SHP file")
+	.mouseenter(function() {
+		$(this).css({
+			"background-color" : "#00c4bc"
+		});
+	}).mouseleave(function() {
+		$(this).css({
+			"background-color" : "#00b5ad"
+		});
+	}).click(function() {
+		fileSelect.click();
+	}).css({
+		"background-color" : "#00b5ad",
+		"border-color" : "transparent",
 	});
-	var fileArea = $("<div>").css({
-		"margin" : "10px"
-	}).append(file);
-	var bodyArea = $("<div>").append(message1).append(inputDiv).append(message2).append(fileArea);
+	
+	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
+		"text-align" : "center"
+	});
+	
+	var bodyArea = $("<div>").append(message2).append(fileArea).append(fileInfo);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -172,9 +210,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
-		that.uploadFile(file[0], function() {
-			uploadModal.close();
-		});
+		that.uploadFile(file, uploadModal);
 	});
 };
 
@@ -247,23 +283,21 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
  * @method gb.geoserver.UploadSHP#uploadFile
  * @param {Element}
  */
-gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
-	console.log(this.getUploadURL());
-	console.log(input);
+gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 	var that = this;
+	var modal = modal;
+	
 	var params = {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
-		"srs" : this.getEPSGCode()
 	};
-	console.log(params);
+	
 	var url = this.getUploadURL();
 	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
-	console.log(withoutParamURL);
 	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
-	console.log(queryString);
 	var queryParams = {};
+	
 	/*if (queryString) {
 		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
 			return key === "" ? value : decodeURIComponent(value);
@@ -272,16 +306,14 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	console.log(queryParams);*/
 	var finalParams = {};
 	$.extend(finalParams, params, {});
-	console.log(finalParams);
 
 	var form = $("<form>");
 	var formData = new FormData(form[0]);
-	formData.append("file", input.files[0]);
+	formData.append("file", input);
 	var keys = Object.keys(finalParams);
 	for (var i = 0; i < keys.length; i++) {
 		formData.append(keys[i], finalParams[keys[i]]);
 	}
-	console.log(formData);
 
 	$.ajax({
 		//url : withoutParamURL,
@@ -293,16 +325,33 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			modal.modal.append(
+				$("<div id='shp-upload-loading'>").css({
+					"z-index": "10",
+					"position": "absolute",
+					"left": "0",
+					"top": "0",
+					"width": "100%",
+					"height": "100%",
+					"text-align": "center",
+					"background-color": "rgba(0, 0, 0, 0.4)"
+				}).append(
+					$("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+						"position": "relative",
+						"top": "50%",
+						"margin-top": "-5em"
+					})
+				)
+			);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			$("#shp-upload-loading").remove();
 		},
 		success : function(data) {
 			console.log(data);
 			// that.refreshList();
-			if (typeof callback === "function") {
-				callback();
-			}
+			modal.close();
 		}
 	});
 }

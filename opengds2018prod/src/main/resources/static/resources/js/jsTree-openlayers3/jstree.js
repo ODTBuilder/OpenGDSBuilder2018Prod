@@ -777,10 +777,10 @@
 							var last = that._data.core.layers.getLength() - 1;
 							that.git.lastPointer = that.setUniqueLayerZIndex(
 									addLayer, that.git.lastPointer);
-							// if (addLayer.get("id") === undefined) {
+							 if (addLayer.get("treeid") === undefined) {
 							that.setUniqueLayerId(addLayer, that
 									._createLayerId());
-							// }
+							 }
 							that.git.layerLength += 1;
 							if (that.git.isContextmenu) {
 								that.git.isContextmenu = false;
@@ -10019,7 +10019,7 @@
 						 * 
 						 * @author 소이준
 						 */
-						"group" : {
+						/*"group" : {
 							"separator_before" : false,
 							"separator_after" : true,
 							"_disabled" : false, // (this.check("create_node",
@@ -10056,7 +10056,7 @@
 									}, 0);
 								});
 							}
-						},
+						},*/
 						"zoom" : {
 							"separator_before" : false,
 							"icon" : "fa fa-crosshairs",
@@ -10161,13 +10161,52 @@
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
 								var map = inst._data.core.map;
-								if (inst.is_selected(obj)) {
-									var layers = inst.get_selected();
-									for (var i = 0; i < layers.length; i++) {
-										map.removeLayer(inst.get_LayerById(layers[i]));
+								var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+								
+								if(isEdit instanceof Object){
+									if(isEdit.get()){
+										isEdit.alert();
+										return
 									}
-									inst.delete_node(layers);
 								}
+								
+								var msg1 = $("<div>").text("Are you sure to delete these layers?").css({
+									"text-align" : "center",
+									"font-size" : "16px"
+								});
+								var body = $("<div>").append(msg1);
+								var closeBtn = $("<button>").css({
+									"float" : "right"
+								}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+								var okBtn = $("<button>").css({
+									"float" : "right"
+								}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+								var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+								var deleteModal = new gb.modal.Base({
+									"title" : "Delete Layer",
+									"width" : 310,
+									"height" : 200,
+									"autoOpen" : false,
+									"body" : body,
+									"footer" : buttonArea
+								});
+								
+								$(closeBtn).click(function() {
+									deleteModal.close();
+								});
+								
+								$(okBtn).click(function() {
+									if (inst.is_selected(obj)) {
+										var layers = inst.get_selected();
+										for (var i = 0; i < layers.length; i++) {
+											map.removeLayer(inst.get_LayerById(layers[i]));
+										}
+										inst.delete_node(layers);
+									}
+									deleteModal.close();
+								});
+								
+								deleteModal.open();
 							}
 						},
 						// "ccp" : {
@@ -10210,7 +10249,7 @@
 						// }
 						// }
 						// },
-						"properties" : {
+						/*"properties" : {
 							"separator_before" : false,
 							"icon" : "fa fa-info-circle",
 							"separator_after" : false,
@@ -10231,7 +10270,7 @@
 									// inst.delete_node_layer(obj);
 								}
 							}
-						},
+						},*/
 						"style" : {
 							"separator_before" : false,
 							"icon" : "fa fa-paint-brush",
@@ -13025,8 +13064,12 @@
 			 * @author 소이준
 			 */
 			$.jstreeol3.defaults.sort = function(a, b) {
-				var aIndex = this.get_LayerById(this.get_Id(a)).getZIndex();
-				var bIndex = this.get_LayerById(this.get_Id(b)).getZIndex();
+				try{
+					var aIndex = this.get_LayerById(this.get_Id(a)).getZIndex();
+					var bIndex = this.get_LayerById(this.get_Id(b)).getZIndex();	
+				}catch{
+					return 1 < 2 ? 1 : -1;
+				}
 				return aIndex < bIndex ? 1 : -1;
 			};
 			$.jstreeol3.plugins.sort = function(options, parent) {

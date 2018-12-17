@@ -81,8 +81,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 
 	/*
 	 * public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
-	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher =
-	 * dtGeoManager.getPublisher(); }else{ throw new
+	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher
+	 * = dtGeoManager.getPublisher(); }else{ throw new
 	 * IllegalArgumentException("Geoserver 정보 없음"); } }
 	 */
 	@Override
@@ -156,11 +156,13 @@ public class GeoserverServiceImpl implements GeoserverService {
 				String outputFolderPath = defaultTempPath;
 				Path tmp = null;
 
+				String uploadFilename = "";// 업로드 파일명
+
 				File file = new File(defaultTempPath);
 				if (!file.exists()) {
 					file.mkdirs();
 				}
-				String uploadFilename = "";// 업로드 파일명
+
 				try {
 					tmp = Files.createTempDirectory(FileSystems.getDefault().getPath(outputFolderPath), "temp_");
 				} catch (IOException e1) {
@@ -191,7 +193,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 							int trimPos = trimFileName.lastIndexOf(".");
 							String trimExt = trimFileName.substring(trimPos + 1);
 							if (trimExt.endsWith("zip")) {
-								// String encodeFileName = URLEncoder.encode(trimFileName,
+
+								// String encodeFileName =
+								// URLEncoder.encode(trimFileName,
 								// "UTF-8");
 
 								saveFilePath = tmp.toString() + File.separator + trimFileName;
@@ -199,7 +203,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 								BufferedOutputStream stream = new BufferedOutputStream(
 										new FileOutputStream(saveFilePath));
 
-								// copy file to local disk (make sure the path "e.g.
+								// copy file to local disk (make sure the path
+								// "e.g.
 								// D:/temp/files" exists)
 								FileCopyUtils.copy(mpf.getBytes(), stream);
 
@@ -261,11 +266,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
 							new File(saveFilePath).toURI());
 					/*
-					 * if (serverPFlag) { puFlag = 200; boolean upFlag =
-					 * this.updateFeatureType(dtGeoManager, workspace, datastore, originalName,
-					 * originalName, title, abstractContent, srs, style, false); if (!upFlag) { //
-					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패"); dtPublisher.removeLayer(workspace,
-					 * originalName); puFlag = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+					 * if (serverPFlag) { puFlag = 200; boolean upFlag = <<<<<<<
+					 * HEAD this.updateFeatureType(dtGeoManager, workspace,
+					 * datastore, originalName, originalName, title,
+					 * abstractContent, srs, style, false); if (!upFlag) { //
+					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패");
+					 * dtPublisher.removeLayer(workspace, originalName); puFlag
+					 * = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+					 * ======= this.updateFeatureType(dtGeoManager, workspace,
+					 * datastore, originalName, originalName, title,
+					 * abstractContent, srs, style, false); if (!upFlag) { //
+					 * 실패시 발행 레이어 삭제 logger.warn("레이어 업데이트 실패");
+					 * dtPublisher.removeLayer(workspace, originalName); puFlag
+					 * = 500; } } else { puFlag = 500; logger.warn("발행실패"); }
+					 * >>>>>>> editor
 					 */
 					if (serverPFlag) {
 						puFlag = 200;
@@ -634,25 +648,28 @@ public class GeoserverServiceImpl implements GeoserverService {
 			System.err.println("OriginalName may not be empty!");
 			return false;
 		}
-		if (name != null && !name.isEmpty()) {
+		if (name != null) {
 			fte.setName(name);
 		}
-		if (title != null && !title.isEmpty()) {
+		if (title != null) {
 			fte.setTitle(title);
 		}
-		if (abstractContent != null && !abstractContent.isEmpty()) {
+		if (abstractContent != null) {
 			fte.setAbstract(abstractContent);
 		}
-		if (srs != null && !srs.isEmpty()) {
+		if (srs != null) {
 			fte.setSRS(srs);
-			dtPublisher.recalculate(workspace, dsName, originalName, EnLayerBboxRecalculate.ALL);
 		}
-		if (style != null && !style.isEmpty()) {
+		if (style != null) {
 			layerEncoder = new GSLayerEncoder();
 			layerEncoder.setDefaultStyle(style);
 		}
 
 		updateFlag = dtPublisher.updateFeatureType(workspace, dsName, originalName, fte, layerEncoder, attChangeFlag);
+		
+		if (srs != null) {
+			dtPublisher.recalculate(workspace, dsName, originalName, EnLayerBboxRecalculate.ALL);
+		}
 
 		return updateFlag;
 	}

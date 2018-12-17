@@ -562,13 +562,12 @@ public class GeoserverController extends AbstractController {
 		String workspace = (String) request.getParameter("workspace");
 		String datastore = (String) request.getParameter("datastore");
 		if (dtGeoserverManager == null) {
-			response.sendError(500, "Geoserver 세션이 존재하지 않습니다.");
+			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
 		} else if (workspace.equals("") || workspace == null) {
-			response.sendError(500, "workspace를 입력하지 않았습니다.");
+			response.sendError(500, "workspace를 입력하지 않았습니다.");//에러코드 작성할것
 		} else {
-			geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager, workspace, datastore, request);
+			response.sendError(geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager, workspace, datastore, request));
 		}
-		geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager, workspace, datastore, request);
 	}
 
 	@RequestMapping(value = "/updateGeogigGsStore.do", method = RequestMethod.POST)

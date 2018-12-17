@@ -104,6 +104,11 @@ html {
 .gb-footer-span:hover {
 	cursor: pointer;
 }
+
+.modal-open {
+	overflow: hidden;
+	padding-right: 0 !important;
+}
 </style>
 </head>
 <body>
@@ -223,7 +228,8 @@ html {
 				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
-			}
+			},
+			"isEditing": gb.module.isEditing
 		});
 
 		$("#vermodal").click(function() {
@@ -250,7 +256,8 @@ html {
 			"url" : {
 				"token" : urlList.token,
 				"requestValidate" : urlList.requestValidate
-			}
+			},
+			"isEditing": gb.module.isEditing
 		});
 
 		$("#validation").click(function() {
@@ -306,7 +313,7 @@ html {
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
-
+		
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -319,7 +326,8 @@ html {
 			imageTile : urlList.getLayerTile,
 			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en",
-			versioning : fhist
+			versioning : fhist,
+			isEditing : gb.module.isEditing
 		});
 
 		$("#editTool").click(function(e) {
@@ -328,41 +336,7 @@ html {
 		});
 
 		$("#savePart").click(function() {
-			var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
-
-			var well = $("<div>").addClass("well").append(row2);
-
-			var closeBtn = $("<button>").css({
-				"float" : "right"
-			}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-			var okBtn = $("<button>").css({
-				"float" : "right"
-			}).addClass("gb-button").addClass("gb-button-primary").text("Save");
-
-			var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-			var modalFooter = $("<div>").append(buttonArea);
-
-			var gBody = $("<div>").append(well).css({
-				"display" : "table",
-				"width" : "100%"
-			});
-			var openSaveModal = new gb.modal.Base({
-				"title" : "저장",
-				"width" : 540,
-				"height" : 250,
-				"autoOpen" : true,
-				"body" : gBody,
-				"footer" : modalFooter
-			});
-
-			$(closeBtn).click(function() {
-				openSaveModal.close();
-			});
-
-			$(okBtn).click(function() {
-				frecord.sendWFSTTransaction(epan);
-				openSaveModal.close();
-			});
+			frecord.save(epan);
 		});
 
 		// 거리, 면적 측정 기능 추가
@@ -531,7 +505,7 @@ html {
 				var winWidth = $(window).innerWidth();
 				//컨텐츠 (지도) 영역의 너비 지정
 				//.builderLayer -> 사이드바
-				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true));
+				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true))-1;
 				//사이드바의 높이 지정
 				$(".builderLayer").outerHeight(conHeight);
 				//편집영역의 높이 지정
@@ -561,6 +535,12 @@ html {
 
 		$(document).ready(function() {
 			gitrnd.resize();
+		});
+		
+		$(window).on("beforeunload", function(){
+			if(frecord.isEditing()){
+				return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다.";
+			}
 		});
 	</script>
 </body>

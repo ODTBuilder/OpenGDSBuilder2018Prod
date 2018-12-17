@@ -51,7 +51,22 @@ public interface GeoserverService {
 	 * @param srs          좌표계
 	 * @return boolean
 	 */
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+	/**
+	 * @Description 
+	 * @author SG.Lee
+	 * @Date 2018. 12. 14. 오후 2:48:33
+	 * @param dtGeoManager
+	 * @param workspace    작업공간
+	 * @param dsName       저장소
+	 * @param layerName    레이어명
+	 * @param zipFile      대상파일(shp,dxf,shx...)
+	 * @param srs          좌표계
+	 * @return int		   200 발행성공
+	 *                     500 서버에러
+	 *                     605 서버존재X
+	 *                     610 발행실패
+	 * */
+	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs);
 
 	/**
@@ -65,9 +80,12 @@ public interface GeoserverService {
 	 * @param zipFile      대상파일(shp,dxf,shx...)
 	 * @param srs          좌표계
 	 * @param defaultStyle 스타일
-	 * @return boolean
+	 * @return int		   200 발행성공
+	 *                     500 서버에러
+	 *                     605 서버존재X
+	 *                     610 발행실패
 	 */
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs, String defaultStyle);
 
 	/**

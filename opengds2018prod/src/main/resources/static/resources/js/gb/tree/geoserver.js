@@ -1139,7 +1139,7 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 		complete : function() {
 			$("body").css("cursor", "default");
 		},
-		success : function(data) {
+		success : function(data,textStatus,jqXHR) {
 			console.log(data);
 			callback.close();
 			if (data === 200) {
@@ -1153,8 +1153,15 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 			} else if (data === 603) {
 				that.messageModal("Error", "Geoserver not found.", 182);
 			}
+		}		
+	}).fail(function(xhr, status, errorThrown) {
 
-		}
+	    $("#text").html("오류가 발생했습니다.<br>")
+
+	    .append("오류명: " + errorThrown + "<br>")
+
+	    .append("상태: " + status);
+
 	});
 };
 

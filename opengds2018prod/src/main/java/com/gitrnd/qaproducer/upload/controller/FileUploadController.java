@@ -63,6 +63,7 @@ public class FileUploadController extends AbstractController{
 	public @ResponseBody LinkedList<FileMeta> fileUploadRequest(MultipartHttpServletRequest request,
 			HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser) throws Throwable {
 		if(loginUser==null){
+			response.sendError(600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
 		String serverName = request.getParameter("serverName");

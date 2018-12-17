@@ -39,10 +39,6 @@ public class FileMeta {
 	private long uploadFlag;
 	private List<String> successLayers = new ArrayList<String>();
 	
-	/* 700 - 파일구조 에러
-	 * 701 - 중복에러
-	 * 702 - 발행실패
-	*/
 	private List<Map<String,Long>> failLayers = new ArrayList<Map<String,Long>>();
 
 	private byte[] bytes;

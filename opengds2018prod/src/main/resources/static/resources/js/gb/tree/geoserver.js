@@ -948,21 +948,6 @@ gb.tree.GeoServer.prototype.addNodeToLoadingList = function(idx, nodeId) {
 };
 
 /**
- * loadingList 객체에 노드를 추가한다.
- * 
- * @method gb.tree.GeoServer#setLoadingList
- */
-gb.tree.GeoServer.prototype.addNodeToList = function(idx, nodeId) {
-	if (this.getLoadingList()[idx] === undefined) {
-		this.loadingList[idx] = {};
-	}
-	if (this.getLoadingNumber()[idx] === undefined) {
-		this.setLoadingNumber(idx, -1);
-		this.changeNodeOnLoadingList(idx, nodeId, false);
-	}
-};
-
-/**
  * loadingList 객체를 설정한다.
  * 
  * @method gb.tree.GeoServer#setLoadingList

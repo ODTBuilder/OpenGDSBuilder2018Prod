@@ -7758,58 +7758,40 @@
 				 * @param {mixed}
 				 *            obj
 				 */
-				zoom_to_fit : function(obj) {
-					var layer = this.get_LayerById(obj.id);
+				zoom_to_fit : function(layer, ext) {
+					var that = this;
 					if (layer instanceof ol.layer.Group) {
-						var extent = ol.extent.createEmpty();
 						layer
 								.getLayers()
 								.forEach(
 										function(layer2) {
-											if (layer2.getSource() instanceof ol.source.TileWMS) {
-												var param = layer2.getSource()
-														.getParams();
-												var keys = Object.keys(param);
-												var bbx = "bbox";
-												for (var i = 0; i < keys.length; i++) {
-													if (keys[i].toLowerCase() === bbx
-															.toLowerCase()) {
-														var bbox = param[keys[i]]
-																.split(",");
-														ol.extent.extend(
-																extent, bbox);
-														break;
-													}
-												}
-											} else if (layer2.source instanceof ol.source.Vector) {
-												ol.extent.extend(extent, layer2
-														.getSource()
-														.getExtent());
-											}
+												var extent = that.zoom_to_fit(layer2, ext);
+												ol.extent.extend(
+														ext, extent);
 										});
-						this._data.core.map.getView().fit(extent,
-								this._data.core.map.getSize());
-						return;
+					} else if(layer instanceof ol.layer.Base) {
+							 if (layer.getSource() instanceof ol.source.TileWMS) {
+									var param = layer.getSource()
+											.getParams();
+									var keys = Object.keys(param);
+									var bbx = "bbox";
+									for (var i = 0; i < keys.length; i++) {
+										if (keys[i].toLowerCase() === bbx
+												.toLowerCase()) {
+											var bbox = param[keys[i]]
+													.split(",");
+											ol.extent.extend(
+													ext, bbox);
+											break;
+										}
+									}
+								} else if (layer.source instanceof ol.source.Vector) {
+									ol.extent.extend(ext, layer
+											.getSource()
+											.getExtent());
+								}
 					}
-					var source = layer.getSource();
-					if (source instanceof ol.source.TileWMS) {
-						var param = source.getParams();
-						// console.log(param);
-						var keys = Object.keys(param);
-						var bbx = "bbox";
-						for (var i = 0; i < keys.length; i++) {
-							if (keys[i].toLowerCase() === bbx.toLowerCase()) {
-								var bbox = param[keys[i]].split(",");
-								var view = this._data.core.map.getView();
-								view.fit(bbox, this._data.core.map.getSize());
-								break;
-							}
-						}
-					} else if (source instanceof ol.source.Vector) {
-						var view = this._data.core.map.getView();
-						view.fit(source.getExtent(), this._data.core.map
-								.getSize());
-					}
+					return ext;
 				},
 				/**
 				 * put a node in edit mode (input field to rename the node)
@@ -10019,44 +10001,25 @@
 						 * 
 						 * @author 소이준
 						 */
-						/*"group" : {
-							"separator_before" : false,
-							"separator_after" : true,
-							"_disabled" : false, // (this.check("create_node",
-							// data.reference, {},
-							// "last")),
-							"label" : "Create group",
-							"action" : function(data) {
-								var inst = $.jstreeol3
-										.reference(data.reference), obj = inst
-										.get_node(data.reference);
-								inst.create_group(obj, {}, "first", function(
-										new_node) {
-									setTimeout(function() {
-										inst.edit(new_node);
-									}, 0);
-								});
-							}
-						},
-						"create" : {
-							"separator_before" : false,
-							"separator_after" : true,
-							"_disabled" : false, // (this.check("create_node",
-							// data.reference, {},
-							// "last")),
-							"label" : "Create",
-							"action" : function(data) {
-								var inst = $.jstreeol3
-										.reference(data.reference), obj = inst
-										.get_node(data.reference);
-								inst.create_node(obj, {}, "last", function(
-										new_node) {
-									setTimeout(function() {
-										inst.edit(new_node);
-									}, 0);
-								});
-							}
-						},*/
+						/*
+						 * "group" : { "separator_before" : false,
+						 * "separator_after" : true, "_disabled" : false, //
+						 * (this.check("create_node", // data.reference, {}, //
+						 * "last")), "label" : "Create group", "action" :
+						 * function(data) { var inst = $.jstreeol3
+						 * .reference(data.reference), obj = inst
+						 * .get_node(data.reference); inst.create_group(obj, {},
+						 * "first", function( new_node) { setTimeout(function() {
+						 * inst.edit(new_node); }, 0); }); } }, "create" : {
+						 * "separator_before" : false, "separator_after" : true,
+						 * "_disabled" : false, // (this.check("create_node", //
+						 * data.reference, {}, // "last")), "label" : "Create",
+						 * "action" : function(data) { var inst = $.jstreeol3
+						 * .reference(data.reference), obj = inst
+						 * .get_node(data.reference); inst.create_node(obj, {},
+						 * "last", function( new_node) { setTimeout(function() {
+						 * inst.edit(new_node); }, 0); }); } },
+						 */
 						"zoom" : {
 							"separator_before" : false,
 							"icon" : "fa fa-crosshairs",
@@ -10075,9 +10038,12 @@
 										.reference(data.reference), obj = inst
 										.get_node(data.reference);
 								var layer = inst.get_LayerById(obj.id);
+								var extent = ol.extent.createEmpty();
 								// inst._data.layerproperties.editingTool.zoomToFit(layer);
 								// inst._data.layerproperties.editingTool.setWMSSource(layer,
-								inst.zoom_to_fit(obj);
+								var wholeExt = inst.zoom_to_fit(layer, extent);
+								var view = inst._data.core.map.getView();
+								view.fit(wholeExt, inst._data.core.map.getSize());
 							}
 						},
 						// "rename" : {
@@ -10249,28 +10215,20 @@
 						// }
 						// }
 						// },
-						/*"properties" : {
-							"separator_before" : false,
-							"icon" : "fa fa-info-circle",
-							"separator_after" : false,
-							"_disabled" : false, // (this.check("delete_node",
-							// data.reference,
-							// this.get_parent(data.reference),
-							// "")),
-							"label" : "Properties",
-							"action" : function(data) {
-								var inst = $.jstreeol3
-										.reference(data.reference), obj = inst
-										.get_node(data.reference);
-								if (inst.is_selected(obj)) {
-									// inst.delete_node_layer(inst.get_selected());
-									var layer = inst.get_LayerById(obj.id);
-									console.log(layer);
-								} else {
-									// inst.delete_node_layer(obj);
-								}
-							}
-						},*/
+						/*
+						 * "properties" : { "separator_before" : false, "icon" :
+						 * "fa fa-info-circle", "separator_after" : false,
+						 * "_disabled" : false, // (this.check("delete_node", //
+						 * data.reference, // this.get_parent(data.reference), //
+						 * "")), "label" : "Properties", "action" :
+						 * function(data) { var inst = $.jstreeol3
+						 * .reference(data.reference), obj = inst
+						 * .get_node(data.reference); if (inst.is_selected(obj)) { //
+						 * inst.delete_node_layer(inst.get_selected()); var
+						 * layer = inst.get_LayerById(obj.id);
+						 * console.log(layer); } else { //
+						 * inst.delete_node_layer(obj); } } },
+						 */
 						"style" : {
 							"separator_before" : false,
 							"icon" : "fa fa-paint-brush",

@@ -15,6 +15,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
@@ -68,6 +69,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				geogigDiff.setError(e.getMessage());
 				geogigDiff.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigDiff.getError());
+			geogigDiff.setError(geogigStatus.getStatus());
 		}
 		return geogigDiff;
 	}
@@ -131,7 +134,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			}
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
-				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigBlame.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFeatureAttribute.class);
 				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				featureAtt = (GeogigFeatureAttribute) unmarshaller
 						.unmarshal(new StringReader(e.getResponseBodyAsString()));
@@ -140,6 +143,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				featureAtt.setError(e.getMessage());
 				featureAtt.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(featureAtt.getError());
+			featureAtt.setError(geogigStatus.getStatus());
 		}
 		return featureAtt;
 	}
@@ -206,6 +211,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				simpleLog.setError(e.getMessage());
 				simpleLog.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(simpleLog.getError());
+			simpleLog.setError(geogigStatus.getStatus());
 		}
 		return simpleLog;
 	}
@@ -247,6 +254,8 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 				geogigFeatureRevert.setError(e.getMessage());
 				geogigFeatureRevert.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigFeatureRevert.getError());
+			geogigFeatureRevert.setError(geogigStatus.getStatus());
 		}
 		return geogigFeatureRevert;
 	}

@@ -63,14 +63,14 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	@Override
 	public void requestGetMap(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException{
 		if(dtGeoManager==null){
-			response.sendError(500, "Null Geoserver");
+			response.sendError(605);
 		}else{
 			if(!workspace.equals("")&&workspace!=null){
 				WMSGetMap wmsGetMap = this.createWMSGetMap(dtGeoManager, workspace, request);
 				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
 				geoserverService.requestWMSGetMap(wmsGetMap);
 			}else{
-				response.sendError(500, "workspace를 입력해주세요.");
+				response.sendError(601);
 			}
 		}
 	}
@@ -148,14 +148,14 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	public void requestGetFeature(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		// String urlParam = this.createGetFeatureInfoURL(request);
 		if(dtGeoManager==null){
-			response.sendError(500, "Null Geoserver");
+			response.sendError(605);
 		}else{
 			if(!workspace.equals("")&&workspace!=null){
 				WFSGetFeature wfsGetFeature = this.createWFSGetFeature(dtGeoManager, workspace, request);
 				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
 				geoserverService.requestWFSGetFeature(wfsGetFeature);
 			}else{
-				response.sendError(500, "workspace를 입력해주세요.");
+				response.sendError(601);
 			}
 		}
 	};
@@ -210,14 +210,14 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	@Override
 	public void requestGetFeatureInfo(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if(dtGeoManager==null){
-			response.sendError(500, "Null Geoserver");
+			response.sendError(605);
 		}else{
 			if(!workspace.equals("")&&workspace!=null){
 				WMSGetFeatureInfo getFeatureInfo = this.getWMSGetFeatureInfo(dtGeoManager, workspace, request);
 				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
 				geoserverService.requestWMSGetFeatureInfo(getFeatureInfo);
 			}else{
-				response.sendError(500, "workspace를 입력해주세요.");
+				response.sendError(601);
 			}
 		}
 	}
@@ -314,14 +314,14 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	@Override
 	public void requestWMSGetLegendGraphic(DTGeoserverManager dtGeoManager, String workspace, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		if(dtGeoManager==null){
-			response.sendError(500, "Null Geoserver");
+			response.sendError(605);
 		}else{
 			if(!workspace.equals("")&&workspace!=null){
 				WMSGetLegendGraphic getLegendGraphic = this.getWMSGetLegendGraphic(dtGeoManager, workspace, request);
 				DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
 				geoserverService.requestWMSGetLegendGraphic(getLegendGraphic);
 			}else{
-				response.sendError(500, "workspace를 입력해주세요.");
+				response.sendError(601);
 			}
 		}
 	}
@@ -375,7 +375,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	@Override
 	public void requestGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response) throws IOException{
 		if(dtGeoManager==null){
-			response.sendError(500, "Null Geoserver");
+			response.sendError(605);
 		}else{
 			DTGeoserverInfo dtGeoserverInfo = this.getDTGeoserverInfo(dtGeoManager, request);
 			DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);

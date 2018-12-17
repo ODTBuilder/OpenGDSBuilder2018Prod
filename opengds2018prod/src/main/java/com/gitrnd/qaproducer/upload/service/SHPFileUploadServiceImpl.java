@@ -110,14 +110,14 @@ public class SHPFileUploadServiceImpl implements SHPFileUploadService {
 					} finally {
 						File shpZipFile = new File(createZipPath);
 						
-						boolean publishFlag = false;
+						int publishFlag = 500;
 						if(style!=null&&!style.equals("")){
 							publishFlag = geoserverService.shpLayerPublishGeoserver(dtGeoManager, wsName, dsName, layerName, shpZipFile, src);
 						}else{
 							publishFlag = geoserverService.shpLayerPublishGeoserver(dtGeoManager, wsName, dsName, layerName, shpZipFile, src, style);
 						}
 						
-						if(publishFlag){
+						if(publishFlag==200){
 							fileMeta.getSuccessLayers().add(layerName);
 						}else{
 							Map<String, Long> failMap = new HashMap<String,Long>(); 

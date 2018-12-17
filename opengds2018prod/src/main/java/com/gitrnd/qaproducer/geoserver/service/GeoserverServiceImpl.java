@@ -79,46 +79,51 @@ public class GeoserverServiceImpl implements GeoserverService {
 	private DTGeoserverPublisher dtPublisher;
 	private GeoServerRESTStyleManager restStyleManager;
 
-	/*
-	 * public GeoserverServiceImpl(DTGeoserverManager dtGeoManager){
-	 * if(dtGeoManager!=null){ dtReader = dtGeoManager.getReader(); dtPublisher
-	 * = dtGeoManager.getPublisher(); }else{ throw new
-	 * IllegalArgumentException("Geoserver 정보 없음"); } }
+	/**
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#shpLayerPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, java.lang.String, java.io.File, java.lang.String)
 	 */
 	@Override
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs) {
-		boolean puFlag = false;
+		int puFlag = 500;
 		if (dtGeoManager != null) {
 			dtPublisher = dtGeoManager.getPublisher();
 			try {
-				puFlag = dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs);
+				if(dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs)){
+					puFlag = 200;
+					logger.info(layerName + "레이어는 정상적으로 발행되었습니다.");
+				}else{
+					puFlag = 610;
+				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				logger.warn("발행실패");
+				puFlag = 610;
 			}
 		} else {
-			throw new IllegalArgumentException("Geoserver 정보 없음");
+			puFlag = 605;
 		}
-
 		return puFlag;
 	}
 
 	@Override
-	public boolean shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs, String defaultStyle) {
-		boolean puFlag = false;
+		int puFlag = 500;
 		if (dtGeoManager != null) {
-			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
 			try {
-				puFlag = dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs, defaultStyle);
+				if(dtPublisher.publishShp(workspace, dsName, layerName, zipFile, srs, defaultStyle)){
+					puFlag = 200;
+					logger.info(layerName + "레이어는 정상적으로 발행되었습니다.");
+				}else{
+					puFlag = 610;
+				}
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				logger.warn("발행실패");
+				puFlag = 610;
 			}
 		} else {
-			throw new IllegalArgumentException("Geoserver 정보 없음");
+			puFlag = 605;
 		}
 		return puFlag;
 	}

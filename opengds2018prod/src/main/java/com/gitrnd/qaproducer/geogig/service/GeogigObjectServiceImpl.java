@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.object.CatObject;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
@@ -57,6 +58,8 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				cat.setError(e.getMessage());
 				cat.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(cat.getError());
+			cat.setError(geogigStatus.getStatus());
 		}
 		return cat;
 	}
@@ -131,7 +134,8 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				featureAtt.setError(e.getMessage());
 				featureAtt.setSuccess("false");
 			}
-
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(featureAtt.getError());
+			featureAtt.setError(geogigStatus.getStatus());
 		}
 		return featureAtt;
 	}
@@ -202,6 +206,8 @@ public class GeogigObjectServiceImpl implements GeogigObjectService {
 				featureAtt.setError(e.getMessage());
 				featureAtt.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(featureAtt.getError());
+			featureAtt.setError(geogigStatus.getStatus());
 		}
 		return featureAtt;
 	}

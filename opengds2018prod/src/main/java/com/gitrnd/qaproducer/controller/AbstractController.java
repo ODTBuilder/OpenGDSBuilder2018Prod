@@ -315,13 +315,13 @@ public class AbstractController {
 	/**
 	 * @Description 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 16. 오전 10:03:14
+	 * @Date 2018. 12. 14. 오후 1:27:42
 	 * @param request
 	 * @param loginUser
-	 * @return boolean
+	 * @return int
 	 * */
-	public boolean checkUserGeoserver(HttpServletRequest request, LoginUser loginUser){
-		boolean flag = false;
+	public int checkUserGeoserver(HttpServletRequest request, LoginUser loginUser){
+		int flag = 500;
 		
 		String serverName = "";
 		Enumeration paramNames = request.getParameterNames();
@@ -336,20 +336,20 @@ public class AbstractController {
 		
 		if(serverName.equals("")){
 			LOGGER.error("Geoserver 이름이 입력되지 않음");
-			return false;
+			return 601;
 		}
 		
 		DTGeoserverManagerList dtGeoManagers = (DTGeoserverManagerList)this.getSession(request, "geoserver");
 		if(dtGeoManagers==null){
 			LOGGER.error("Geoserver 세션 존재 X");
-			return false;
+			return 603;
 		}else{
 			Iterator<String> keys = dtGeoManagers.keySet().iterator();
 	        while( keys.hasNext() ){
 	            String key = keys.next();
 	            //세션에 같은 이름이 존재할시 
 	            if(serverName.equals(key)){
-	            	flag = true;
+	            	flag = 200;
 	            	break;
 	            }
 	        }

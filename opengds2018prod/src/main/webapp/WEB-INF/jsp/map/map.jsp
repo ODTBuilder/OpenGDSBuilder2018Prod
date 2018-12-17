@@ -229,7 +229,7 @@ html {
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
 			},
-			"isEditing": gb.module.isEditing
+			"isEditing" : gb.module.isEditing
 		});
 
 		$("#vermodal").click(function() {
@@ -257,7 +257,7 @@ html {
 				"token" : urlList.token,
 				"requestValidate" : urlList.requestValidate
 			},
-			"isEditing": gb.module.isEditing
+			"isEditing" : gb.module.isEditing
 		});
 
 		$("#validation").click(function() {
@@ -310,10 +310,11 @@ html {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureAttribute" : "geogig/featureAttribute.do?${_csrf.parameterName}=${_csrf.token}",
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
-		
+
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -505,7 +506,7 @@ html {
 				var winWidth = $(window).innerWidth();
 				//컨텐츠 (지도) 영역의 너비 지정
 				//.builderLayer -> 사이드바
-				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true))-1;
+				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true)) - 1;
 				//사이드바의 높이 지정
 				$(".builderLayer").outerHeight(conHeight);
 				//편집영역의 높이 지정
@@ -536,9 +537,9 @@ html {
 		$(document).ready(function() {
 			gitrnd.resize();
 		});
-		
-		$(window).on("beforeunload", function(){
-			if(frecord.isEditing()){
+
+		$(window).on("beforeunload", function() {
+			if (frecord.isEditing()) {
 				return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다.";
 			}
 		});

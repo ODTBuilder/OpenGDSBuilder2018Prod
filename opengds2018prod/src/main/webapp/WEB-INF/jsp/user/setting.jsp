@@ -176,12 +176,12 @@ input.radio:checked+label::before {
 				prexhr.open("POST", "${pageContext.request.contextPath}/option/retrievePresetNameByNameAndUidx.ajax?${_csrf.parameterName}=${_csrf.token}");
 				prexhr.onload = function() {
 					console.log('DONE', prexhr.readyState); // readyState will be 4
-					var flag = false;
+					var flag = true;
 					var obj = JSON.parse(prexhr.response);
-					if (obj === null || obj === undefined) {
-						flag = true;
-					} else if (Array.isArray(obj)) {
-						flag = true;
+					if (Array.isArray(obj)) {
+						if (obj.length > 0) {
+							flag = false;	
+						}
 					}
 					if (flag) {
 	 					var data = new FormData();
@@ -216,12 +216,12 @@ input.radio:checked+label::before {
 				prexhr.open("POST", "${pageContext.request.contextPath}/option/retrievePresetNameByNameAndUidxAndPid.ajax?${_csrf.parameterName}=${_csrf.token}");
 				prexhr.onload = function() {
 					console.log('DONE', prexhr.readyState); // readyState will be 4
-					var flag = false;
+					var flag = true;
 					var obj = JSON.parse(prexhr.response);
-					if (obj === null || obj === undefined) {
-						flag = true;
-					} else if (Array.isArray(obj)) {
-						flag = true;
+					if (Array.isArray(obj)) {
+						if (obj.length > 0) {
+							flag = false;	
+						}
 					}
 					if (flag) {
 						var data = new FormData();

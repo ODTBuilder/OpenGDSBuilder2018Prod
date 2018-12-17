@@ -2227,8 +2227,6 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 	for(var i in this.interaction){
 		if(interaction !== this.interaction[i] && !!this.interaction[i]){
 			if(this.interaction[i] instanceof ol.interaction.Select && !bool){
-				this.selectSources.clear();
-				this.selectedSource = undefined;
 				this.interaction[i].getFeatures().clear();
 			}
 
@@ -2293,6 +2291,9 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	for(var i in tileLayers){
 		if(typeof tileLayers[i].get("git") === "object"){
 			if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid"))){
+				if(tileLayers[i] instanceof ol.layer.Group){
+					continue;
+				}
 				vectorSource = this.setVectorSourceOfServer(tileLayers[i].get("git"), tileLayers[i].get("id"), 
 						tileLayers[i].get("name"), tileLayers[i].get("treeid"), tileLayers[i].getSource().getParams()["SLD_BODY"]);
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
@@ -2525,7 +2526,7 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 	}
 	
 	// 현재 선택된 layer node의 편집 아이콘 삭제
-	var prevSelected = this.selectSources.item(0);
+	var prevSelected = this.selectedSource;
 	var prevTreeid;
 	if(prevSelected !== undefined){
 		if(!!prevSelected.get("git")){
@@ -2567,6 +2568,9 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 	
 	// WFS refresh
 	this.refreshSources();
+	
+	this.selectSources.clear();
+	this.selectedSource = undefined;
 }
 
 // hochul

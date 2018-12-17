@@ -503,7 +503,8 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var htd2 = $("<td>").text("Type");
 	var htd3 = $("<td>").text("Not Null");
 	var htd4 = $("<td>").text("Unique");
-	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4);
+	var htd5 = $("<td>");
+	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
 
 	var key = $("<input>").addClass("form-control").attr({
 		"type" : "text"
@@ -528,7 +529,13 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	});
 	var td4 = $("<td>").append(unique);
 
-	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4);
+	var trash = $("<a href='#'>").append($("<i>").addClass("far fa-trash-alt"));
+	trash.click(function(){
+		$(this).parent().parent().remove();
+	});
+	var td5 = $("<td>").append(trash);
+	
+	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
 	var typeFormBody = $("<tbody>").addClass("type-form-body").append(tr1);
 
 	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
@@ -558,7 +565,14 @@ gb.tree.OpenLayers.getAttrForm = function() {
 			"type" : "checkbox"
 		});
 		var td4 = $("<td>").append(unique);
-		var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4);
+		
+		var trash = $("<a href='#'>").append($("<i>").addClass("far fa-trash-alt"));
+		trash.click(function(){
+			$(this).parent().parent().remove();
+		});
+		var td5 = $("<td>").append(trash);
+		
+		var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
 		$(".type-form-body").append(tr1);
 	});
 	

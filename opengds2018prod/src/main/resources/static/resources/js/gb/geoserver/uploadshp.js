@@ -210,9 +210,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
-		that.uploadFile(file, function() {
-			uploadModal.close();
-		});
+		that.uploadFile(file, uploadModal);
 	});
 };
 
@@ -285,22 +283,21 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
  * @method gb.geoserver.UploadSHP#uploadFile
  * @param {Element}
  */
-gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
-	console.log(this.getUploadURL());
-	console.log(input);
+gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 	var that = this;
+	var modal = modal;
+	
 	var params = {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
 	};
-	console.log(params);
+	
 	var url = this.getUploadURL();
 	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
-	console.log(withoutParamURL);
 	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
-	console.log(queryString);
 	var queryParams = {};
+	
 	/*if (queryString) {
 		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
 			return key === "" ? value : decodeURIComponent(value);
@@ -309,7 +306,6 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	console.log(queryParams);*/
 	var finalParams = {};
 	$.extend(finalParams, params, {});
-	console.log(finalParams);
 
 	var form = $("<form>");
 	var formData = new FormData(form[0]);
@@ -318,7 +314,6 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 	for (var i = 0; i < keys.length; i++) {
 		formData.append(keys[i], finalParams[keys[i]]);
 	}
-	console.log(formData);
 
 	$.ajax({
 		//url : withoutParamURL,
@@ -330,16 +325,33 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, callback) {
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			modal.modal.append(
+				$("<div id='shp-upload-loading'>").css({
+					"z-index": "10",
+					"position": "absolute",
+					"left": "0",
+					"top": "0",
+					"width": "100%",
+					"height": "100%",
+					"text-align": "center",
+					"background-color": "rgba(0, 0, 0, 0.4)"
+				}).append(
+					$("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+						"position": "relative",
+						"top": "50%",
+						"margin-top": "-5em"
+					})
+				)
+			);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			$("#shp-upload-loading").remove();
 		},
 		success : function(data) {
 			console.log(data);
 			// that.refreshList();
-			if (typeof callback === "function") {
-				callback();
-			}
+			modal.close();
 		}
 	});
 }

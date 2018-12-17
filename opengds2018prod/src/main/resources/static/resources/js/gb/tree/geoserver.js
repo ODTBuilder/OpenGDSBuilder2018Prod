@@ -89,13 +89,20 @@ gb.tree.GeoServer = function(obj) {
 	});
 	this.tout = false;
 	$(this.searchInput).keyup(function() {
-		if (that.tout) {
-			clearTimeout(that.tout);
-		}
-		that.tout = setTimeout(function() {
+		var root = that.getJSTree().get_node("#");
+		var nodes = root.children;
+		var callback = function() {
 			var v = $(that.searchInput).val();
 			that.getJSTree().search(v);
-		}, 250);
+		};
+		that.initLoadingList();
+		that.initLoadingNumber();
+		for (var i = 0; i < nodes.length; i++) {
+			var pnodeid = nodes[i];
+			console.log("선택한 노드:", pnodeid);
+			console.log(that.getLoadingList());
+			that.openNodeRecursive(i, that.getJSTree().get_node(nodes[i]), pnodeid, callback, true);
+		}
 	});
 	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
 	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
@@ -363,19 +370,18 @@ gb.tree.GeoServer = function(obj) {
 									console.log(obj);
 									console.log(nodes);
 									var loadOrder = [];
-									var callback = function() {
-										for (var i = 0; i < nodes.length; i++) {
-											console.log(that.getLoadingList());
-											var pnode = inst.get_node(nodes[i]);
-											console.log("불러올 노드:", nodes[i]);
-											inst.load_each_wms_layer(pnode, that.map.getLayers());
-										}
+									var callback = function(id) {
+										console.log(that.getLoadingList());
+										var pnode = inst.get_node(id);
+										inst.load_each_wms_layer(pnode, that.map.getLayers());
 									};
+									that.initLoadingList();
+									that.initLoadingNumber();
 									for (var i = 0; i < nodes.length; i++) {
 										var pnodeid = nodes[i];
 										console.log("선택한 노드:", pnodeid);
 										console.log(that.getLoadingList());
-										that.openNodeRecursive(i, inst.get_node(nodes[i]), callback);
+										that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 									}
 									// var selectedNum = nodes.length;
 									// if (selectedNum === 1) {
@@ -914,6 +920,15 @@ gb.tree.GeoServer.prototype.setLoadingNumber = function(idx, num) {
 };
 
 /**
+ * loadingNumber 객체를 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setLoadingNumber
+ */
+gb.tree.GeoServer.prototype.initLoadingNumber = function() {
+	this.loadingNumber = [];
+};
+
+/**
  * loadingList 객체를 반환한다.
  * 
  * @method gb.tree.GeoServer#getLoadingList
@@ -933,18 +948,30 @@ gb.tree.GeoServer.prototype.setLoadingList = function(list) {
 };
 
 /**
- * loadingList 객체에 노드를 추가한다.
+ * loadingList 목록에 추가한다.
+ * 
+ * @method gb.tree.GeoServer#addLoadingList
+ */
+gb.tree.GeoServer.prototype.addNodeToLoadingList = function(idx, nodeId) {
+	var list = this.getLoadingList();
+	if (Array.isArray(list)) {
+		if (list[idx] === undefined) {
+			list[idx] = {};
+			this.setLoadingNumber(idx, 1);
+		}
+		list[idx][nodeId] = false;
+	} else {
+		console.error("로딩 리스트 객체가 배열이 아닙니다.");
+	}
+};
+
+/**
+ * loadingList 객체를 설정한다.
  * 
  * @method gb.tree.GeoServer#setLoadingList
  */
-gb.tree.GeoServer.prototype.addNodeToList = function(idx, nodeId) {
-	if (this.loadingList[idx] === undefined) {
-		this.loadingList[idx] = {};
-	}
-	this.loadingList[idx][nodeId] = false;
-	if (this.getLoadingNumber()[idx] === undefined) {
-		this.setLoadingNumber(idx, -1);
-	}
+gb.tree.GeoServer.prototype.initLoadingList = function() {
+	this.loadingList = [];
 };
 
 /**
@@ -952,9 +979,21 @@ gb.tree.GeoServer.prototype.addNodeToList = function(idx, nodeId) {
  * 
  * @method gb.tree.GeoServer#setLoadingList
  */
-gb.tree.GeoServer.prototype.changeNodeToList = function(idx, nodeId, flag) {
-	if (this.loadingList[idx].hasOwnProperty(nodeId)) {
-		this.loadingList[idx][nodeId] = flag;
+gb.tree.GeoServer.prototype.changeNodeOnLoadingList = function(idx, nodeId, flag) {
+	var that = this;
+	var list = this.getLoadingList();
+	if (list[idx].hasOwnProperty(nodeId)) {
+		list[idx][nodeId] = flag;
+		// if (that.getLoadingNumber()[idx] === -1) {
+		// that.setLoadingNumber(idx, 0);
+		// }
+		if (flag) {
+			if (that.getLoadingNumber()[idx] > 0) {
+				that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] - 1));
+			}
+		} else {
+			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
+		}
 	} else {
 		console.error("there is no node id:", nodeId);
 		return;
@@ -1586,58 +1625,55 @@ gb.tree.GeoServer.prototype.switchBranch = function(server, work, store, branch,
  * 노드를 마지막 자식 노드까지 로드한다.
  * 
  * @method gb.tree.GeoServer#openNodeRecursive
+ * @param {Number}
+ *            idx - 레이어 목록에서 선택한 노드들의 인덱스
  * @param {Object}
  *            node - 열려는 노드
+ * @param {Object}
+ *            topNode - 레이어 목록에서 선택한 노드
+ * @param {Function}
+ *            afterOpen - 로드후 실행할 콜백함수
+ * @param {Boolean}
+ *            each - 각 노드를 불러왔을 때마다 콜백 함수를 실행할지 지정
  */
-gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, afterOpen) {
+gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, topNode, afterOpen, each) {
 	var that = this;
-	var aftercallback = function() {
-		console.log(that.getLoadingList());
-		var pnode = that.getJSTree().get_node(node.id);
-		console.log("불러올 노드:", pnode);
-		that.getJSTree().load_each_wms_layer(pnode, that.map.getLayers());
-	};
 	var callback = function(opened, children) {
-		that.changeNodeToList(idx, opened.id, true);
-		if (that.getLoadingNumber()[idx] > 0) {
-			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] - 1));
+		if (that.getLoadingNumber()[idx] > -1) {
+			that.setLoadingNumber(idx, that.getLoadingNumber()[idx] + opened.children.length);
 		}
-		console.log(that.getLoadingNumber());
+		console.log("현재 로딩 리스트 인덱스에 로딩되야할 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
+		that.changeNodeOnLoadingList(idx, opened.id, true);
+		console.log("현재 로딩이 완료된 부모 노드는: ", opened.id.toString());
+		console.log("현재 로딩 리스트 인덱스에 로딩되야할 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
 		if (children) {
 			var childrenNodes = opened.children;
 			for (var i = 0; i < childrenNodes.length; i++) {
+				that.addNodeToLoadingList(idx, childrenNodes[i]);
 				var child = that.getJSTree().get_node(childrenNodes[i]);
-				if (i === (childrenNodes.length - 1)) {
-					that.openNodeRecursive(idx, child, afterOpen);
-					// that.openNodeRecursive(idx, child, aftercallback);
+				console.log("지금 로딩 리스트에 추가된 자식 노드는: ", child.id.toString());
+				console.log("지금 로딩 리스트의 로딩되야할 자식 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
+				if (each) {
+					that.openNodeRecursive(idx, child, topNode, afterOpen, true);
 				} else {
-					that.openNodeRecursive(idx, child, undefined);
+					if (i === (childrenNodes.length - 1)) {
+						that.openNodeRecursive(idx, child, topNode, afterOpen, false);
+					} else {
+						that.openNodeRecursive(idx, child, topNode, undefined, false);
+					}
 				}
 			}
 		} else {
 			if (typeof afterOpen === "function" && that.getLoadingNumber()[idx] === 0) {
-				afterOpen();
+				afterOpen(topNode);
 			}
 		}
 	};
+	that.addNodeToLoadingList(idx, node.id);
 	if (!that.getJSTree().is_open(node)) {
-		that.addNodeToList(idx, node.id);
-		if (that.getLoadingNumber()[idx] === -1) {
-			that.setLoadingNumber(idx, 0);
-		}
-		that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
-		console.log(that.getLoadingNumber());
 		that.getJSTree().open_node(node, callback);
 	} else {
-		that.addNodeToList(idx, node.id);
-		if (that.getLoadingNumber()[idx] === -1) {
-			that.setLoadingNumber(idx, 0);
-		}
-		that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
-		console.log(that.getLoadingNumber());
 		var already = node;
-		callback(node, node.children);
-		// that.getJSTree().load_each_wms_layer(node, that.map.getLayers());
+		callback(node, node.children.length > 0);
 	}
-
 };

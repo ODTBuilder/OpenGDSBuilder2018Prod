@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ListRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
@@ -184,54 +185,59 @@ public class GeogigRepositoryTree extends JSONArray {
 				if (param.length > 0) {
 					String server = param[0];
 					// repository
-					ListRepository listRepos = new ListRepository();
-					GeogigRepository geogigRepo = listRepos.executeCommand(baseURL, username, password);
-					List<Repo> repos = geogigRepo.getRepos();
-					for (Repo repo : repos) {
-						String name = repo.getName();
-						String reposId = server + ":" + name;
-						String storageType = null;
-						try {
-							// repos type
-							ConfigRepository configRepos = new ConfigRepository();
-							GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password, name,
-									null);
-							List<Config> configs = geogigConfig.getConfigs();
-							for (Config config : configs) {
-								if (config.getName().equals("storage.refs")) {
-									storageType = config.getValue();
+					try {
+						ListRepository listRepos = new ListRepository();
+						GeogigRepository geogigRepo = listRepos.executeCommand(baseURL, username, password);
+						if (geogigRepo != null) {
+							List<Repo> repos = geogigRepo.getRepos();
+							for (Repo repo : repos) {
+								String name = repo.getName();
+								String reposId = server + ":" + name;
+								String storageType = null;
+								// repos type
+								ConfigRepository configRepos = new ConfigRepository();
+								GeogigConfig geogigConfig = configRepos.executeCommand(baseURL, username, password,
+										name, null);
+								List<Config> configs = geogigConfig.getConfigs();
+								for (Config config : configs) {
+									if (config.getName().equals("storage.refs")) {
+										storageType = config.getValue();
+									}
 								}
-							}
-							ListBranch listBranch = new ListBranch();
-							GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name, false);
-							List<Branch> localList = branches.getLocalBranchList();
-
-							if (localList != null) {
-								if (localList.size() > 0) {
-									this.addRepo(parent, reposId, name, storageType, true);
+								ListBranch listBranch = new ListBranch();
+								GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, name,
+										false);
+								List<Branch> localList = branches.getLocalBranchList();
+								if (localList != null) {
+									if (localList.size() > 0) {
+										this.addRepository(parent, reposId, name, storageType, true);
+									} else {
+										this.addRepository(parent, reposId, name, storageType, false);
+									}
 								} else {
-									this.addRepo(parent, reposId, name, storageType, false);
+									this.addRepository(parent, reposId, name, storageType, false);
 								}
-							} else {
-								this.addRepo(parent, reposId, name, storageType, false);
 							}
-						} catch (GeogigCommandException e) {
-							this.addRepo(parent, reposId, name, storageType, false);
 						}
+					} catch (GeogigCommandException e) {
+						GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(e.getMessage());
+						String status = geogigStatus.getStatus();
+						this.addRepository(parent, status, status, null, false);
 					}
 				}
 			} else if (type == EnGeogigRepositoryTreeType.BRANCH) {
 				if (param.length > 1) {
 					String repository = param[1];
-					ListBranch listBranch = new ListBranch();
-					GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository, false);
-					List<Branch> localList = branches.getLocalBranchList();
-					for (Branch localBranch : localList) {
-						String branchName = localBranch.getName();
-						String branchId = parent + ":" + branchName;
-						boolean children = false;
-						boolean geoserver = false;
-						try {
+					try {
+						ListBranch listBranch = new ListBranch();
+						GeogigBranch branches = listBranch.executeCommand(baseURL, username, password, repository,
+								false);
+						List<Branch> localList = branches.getLocalBranchList();
+						for (Branch localBranch : localList) {
+							String branchName = localBranch.getName();
+							String branchId = parent + ":" + branchName;
+							boolean children = false;
+							boolean geoserver = false;
 							// geoserver 저장소 존재 여부 확인
 							DTGeoserverReader dtGeoserverReader = dtGeoserver.getReader();
 							RESTWorkspaceList restWorkspaceList = dtGeoserverReader.getWorkspaces();
@@ -291,9 +297,11 @@ public class GeogigRepositoryTree extends JSONArray {
 							} else {
 								this.addBranch(parent, branchId, branchName, null, children, geoserver);
 							}
-						} catch (GeogigCommandException e) {
-							this.addBranch(parent, branchId, branchName, null, children, geoserver);
 						}
+					} catch (GeogigCommandException e) {
+						GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(e.getMessage());
+						String status = geogigStatus.getStatus();
+						this.addBranch(parent, status, status, null, null, null);
 					}
 				}
 			} else if (type == EnGeogigRepositoryTreeType.LAYER) {
@@ -309,10 +317,12 @@ public class GeogigRepositoryTree extends JSONArray {
 						for (Node node : nodes) {
 							String path = node.getPath();
 							String pathId = parent + ":" + path;
-							this.addTree(parent, pathId, path);
+							this.addLayer(parent, pathId, path);
 						}
 					} catch (GeogigCommandException e) {
-						this.addTree(parent, null, null);
+						GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(e.getMessage());
+						String status = geogigStatus.getStatus();
+						this.addLayer(parent, status, status);
 					}
 				}
 			} else {
@@ -355,23 +365,9 @@ public class GeogigRepositoryTree extends JSONArray {
 	/**
 	 * @param parent
 	 * @param text
-	 */
-	private void addTree(String parent, String id, String text) {
-		JSONObject repoJson = new JSONObject();
-		repoJson.put("parent", parent);
-		repoJson.put("id", id);
-		repoJson.put("text", text);
-		repoJson.put("type", "layer");
-		repoJson.put("children", false);
-		super.add(repoJson);
-	}
-
-	/**
-	 * @param parent
-	 * @param text
 	 * @param type
 	 */
-	private void addRepo(String parent, String id, String text, String type, boolean children) {
+	private void addRepository(String parent, String id, String text, String type, boolean children) {
 		JSONObject repoJson = new JSONObject();
 		repoJson.put("parent", parent);
 		repoJson.put("id", id);
@@ -387,7 +383,7 @@ public class GeogigRepositoryTree extends JSONArray {
 	 * @param text
 	 * @param status
 	 */
-	private void addBranch(String parent, String id, String text, String status, boolean children, boolean geoserver) {
+	private void addBranch(String parent, String id, String text, String status, Boolean children, Boolean geoserver) {
 		JSONObject branchJson = new JSONObject();
 		branchJson.put("parent", parent);
 		branchJson.put("id", id);
@@ -398,4 +394,19 @@ public class GeogigRepositoryTree extends JSONArray {
 		branchJson.put("geoserver", geoserver);
 		super.add(branchJson);
 	}
+
+	/**
+	 * @param parent
+	 * @param text
+	 */
+	private void addLayer(String parent, String id, String text) {
+		JSONObject repoJson = new JSONObject();
+		repoJson.put("parent", parent);
+		repoJson.put("id", id);
+		repoJson.put("text", text);
+		repoJson.put("type", "layer");
+		repoJson.put("children", false);
+		super.add(repoJson);
+	}
+
 }

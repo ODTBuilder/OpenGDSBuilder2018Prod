@@ -13,6 +13,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.AddRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.CommitRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.ConfigRepository;
@@ -132,6 +133,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				geogigReposInit.setError(e.getMessage());
 				geogigReposInit.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigReposInit.getError());
+			geogigReposInit.setError(geogigStatus.getStatus());
 		}
 		return geogigReposInit;
 	}
@@ -168,6 +171,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				geogigRepos.setError(e.getMessage());
 				geogigRepos.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigRepos.getError());
+			geogigRepos.setError(geogigStatus.getStatus());
 		}
 		return geogigRepos;
 	}
@@ -202,6 +207,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				geogigAdd.setError(e.getMessage());
 				geogigAdd.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigAdd.getError());
+			geogigAdd.setError(geogigStatus.getStatus());
 		}
 		return geogigAdd;
 	}
@@ -276,6 +283,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				remotes.setError(e.getMessage());
 				remotes.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(remotes.getError());
+			remotes.setError(geogigStatus.getStatus());
 		}
 		return remotes;
 	}
@@ -325,10 +334,11 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				remotes.setError(e.getMessage());
 				remotes.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(remotes.getError());
+			remotes.setError(geogigStatus.getStatus());
 			// delete remote
 			RemoveRemoteRepository remove = new RemoveRemoteRepository();
 			remove.executeCommand(url, user, pw, repoName, remoteName);
-
 		}
 		return remotes;
 	}
@@ -363,6 +373,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				remotes.setError(e.getMessage());
 				remotes.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(remotes.getError());
+			remotes.setError(geogigStatus.getStatus());
 		}
 		return remotes;
 	}
@@ -396,6 +408,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				remote.setError(e.getMessage());
 				remote.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(remote.getError());
+			remote.setError(geogigStatus.getStatus());
 		}
 		return remote;
 	}
@@ -420,30 +434,31 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String authorName = loginUser.getUsername();
 		String authorEmail = loginUser.getEmail();
 
-		PingRemoteRepository pingRepos = new PingRemoteRepository();
-		GeogigRemoteRepository geogigRemote = pingRepos.executeCommand(url, user, pw, repoName, remoteName);
-
-		PullRepository pull = new PullRepository();
 		GeogigPull geogigPull = null;
-		if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
-			try {
+		try {
+			PullRepository pull = new PullRepository();
+			PingRemoteRepository pingRepos = new PingRemoteRepository();
+			GeogigRemoteRepository geogigRemote = pingRepos.executeCommand(url, user, pw, repoName, remoteName);
+			if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
 				geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,
 						remoteBranchName, authorName, authorEmail);
-			} catch (GeogigCommandException e) {
-				if (e.isXml()) {
-					JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPull.class);
-					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-					geogigPull = (GeogigPull) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
-				} else {
-					geogigPull = new GeogigPull();
-					geogigPull.setError(e.getMessage());
-					geogigPull.setSuccess("false");
-				}
+			} else {
+				geogigPull = new GeogigPull();
+				geogigPull.setSuccess("false");
+				geogigPull.setError(GeogigExceptionStatus.REMOTE_CONNECTION_FAIL.getStatus());
 			}
-		} else {
-			geogigPull = new GeogigPull();
-			geogigPull.setError("ping false");
-			geogigPull.setSuccess("false");
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPull.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigPull = (GeogigPull) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigPull = new GeogigPull();
+				geogigPull.setError(e.getMessage());
+				geogigPull.setSuccess("false");
+			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigPull.getError());
+			geogigPull.setError(geogigStatus.getStatus());
 		}
 		return geogigPull;
 	}
@@ -464,34 +479,33 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		PingRemoteRepository pingRepos = new PingRemoteRepository();
-		GeogigRemoteRepository geogigRemote = pingRepos.executeCommand(url, user, pw, repoName, remoteName);
-
-		PushRepository push = new PushRepository();
 		GeogigPush geogigPush = null;
-
-		if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
-			try {
+		try {
+			PingRemoteRepository pingRepos = new PingRemoteRepository();
+			GeogigRemoteRepository geogigRemote = pingRepos.executeCommand(url, user, pw, repoName, remoteName);
+			PushRepository push = new PushRepository();
+			if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
 				geogigPush = push.executeCommand(url, user, pw, repoName, remoteName, branchName, remoteBranchName);
-			} catch (GeogigCommandException e) {
-				if (e.isXml()) {
-					JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPush.class);
-					Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-					geogigPush = (GeogigPush) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
-				} else {
-					geogigPush = new GeogigPush();
-					geogigPush.setError(e.getMessage());
-					geogigPush.setSuccess("false");
-				}
+			} else{
+				geogigPush = new GeogigPush();
+				geogigPush.setSuccess("false");
+				geogigPush.setError(GeogigExceptionStatus.REMOTE_CONNECTION_FAIL.getStatus());
+			}	
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPush.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigPush = (GeogigPush) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigPush = new GeogigPush();
+				geogigPush.setError(e.getMessage());
+				geogigPush.setSuccess("false");
 			}
-		} else {
-			geogigPush = new GeogigPush();
-			geogigPush.setError("ping false");
-			geogigPush.setSuccess("false");
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigPush.getError());
+			geogigPush.setError(geogigStatus.getStatus());
 		}
 		return geogigPush;
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -560,6 +574,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				geogigReposInfo.setError(e.getMessage());
 				geogigReposInfo.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigReposInfo.getError());
+			geogigReposInfo.setError(geogigStatus.getStatus());
 		}
 		return geogigReposInfo;
 	}

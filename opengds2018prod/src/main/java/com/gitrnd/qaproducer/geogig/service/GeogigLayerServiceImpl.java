@@ -14,6 +14,7 @@ import javax.xml.bind.Unmarshaller;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
+import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
@@ -88,6 +89,8 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 				diff.setError(e.getMessage());
 				diff.setSuccess("false");
 			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(diff.getError());
+			diff.setError(geogigStatus.getStatus());
 		}
 		return diff;
 	}

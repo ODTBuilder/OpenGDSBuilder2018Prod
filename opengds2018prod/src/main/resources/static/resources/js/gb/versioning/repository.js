@@ -96,6 +96,10 @@ gb.versioning.Repository = function(obj) {
 	this.nowRepoServer = undefined;
 	this.nowBranch = undefined;
 	this.nowLayer = undefined;
+
+	this.loadingList = [];
+	this.loadingNumber = [];
+
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
@@ -126,13 +130,28 @@ gb.versioning.Repository = function(obj) {
 		"width" : "94%"
 	});
 	$(this.searchInput).keyup(function() {
-		if (that.tout) {
-			clearTimeout(that.tout);
-		}
-		that.tout = setTimeout(function() {
+		// if (that.tout) {
+		// clearTimeout(that.tout);
+		// }
+		// that.tout = setTimeout(function() {
+		// var v = $(that.searchInput).val();
+		// that.getJSTree().search(v);
+		// }, 250);
+
+		var root = that.getJSTree().get_node("#");
+		var nodes = root.children;
+		var callback = function() {
 			var v = $(that.searchInput).val();
 			that.getJSTree().search(v);
-		}, 250);
+		};
+		that.initLoadingList();
+		that.initLoadingNumber();
+		for (var i = 0; i < nodes.length; i++) {
+			var pnodeid = nodes[i];
+			console.log("선택한 노드:", pnodeid);
+			console.log(that.getLoadingList());
+			that.openNodeRecursive(i, that.getJSTree().get_node(nodes[i]), pnodeid, callback, true);
+		}
 	});
 	var head = $("<div>").addClass("gb-article-head").append(this.searchInput).append(this.refBtn);
 	this.treeArea = $("<div>");
@@ -4408,4 +4427,161 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
 			that.messageModal("Error", group);
 		}
 	});
+};
+
+/**
+ * 노드를 마지막 자식 노드까지 로드한다.
+ * 
+ * @method gb.versioning.Repository#openNodeRecursive
+ * @param {Number}
+ *            idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {Object}
+ *            node - 열려는 노드
+ * @param {Object}
+ *            topNode - 레이어 목록에서 선택한 노드
+ * @param {Function}
+ *            afterOpen - 로드후 실행할 콜백함수
+ * @param {Boolean}
+ *            each - 각 노드를 불러왔을 때마다 콜백 함수를 실행할지 지정
+ */
+gb.versioning.Repository.prototype.openNodeRecursive = function(idx, node, topNode, afterOpen, each) {
+	var that = this;
+	var callback = function(opened, children) {
+		if (that.getLoadingNumber()[idx] > -1) {
+			that.setLoadingNumber(idx, that.getLoadingNumber()[idx] + opened.children.length);
+		}
+		console.log("현재 로딩 리스트 인덱스에 로딩되야할 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
+		that.changeNodeOnLoadingList(idx, opened.id, true);
+		console.log("현재 로딩이 완료된 부모 노드는: ", opened.id.toString());
+		console.log("현재 로딩 리스트 인덱스에 로딩되야할 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
+		if (children) {
+			var childrenNodes = opened.children;
+			for (var i = 0; i < childrenNodes.length; i++) {
+				that.addNodeToLoadingList(idx, childrenNodes[i]);
+				var child = that.getJSTree().get_node(childrenNodes[i]);
+				console.log("지금 로딩 리스트에 추가된 자식 노드는: ", child.id.toString());
+				console.log("지금 로딩 리스트의 로딩되야할 자식 노드의 개수는: ", that.getLoadingNumber()[idx].toString());
+				if (each) {
+					that.openNodeRecursive(idx, child, topNode, afterOpen, true);
+				} else {
+					if (i === (childrenNodes.length - 1)) {
+						that.openNodeRecursive(idx, child, topNode, afterOpen, false);
+					} else {
+						that.openNodeRecursive(idx, child, topNode, undefined, false);
+					}
+				}
+			}
+		} else {
+			if (typeof afterOpen === "function" && that.getLoadingNumber()[idx] === 0) {
+				afterOpen(topNode);
+			}
+		}
+	};
+	that.addNodeToLoadingList(idx, node.id);
+	if (!that.getJSTree().is_open(node)) {
+		that.getJSTree().open_node(node, callback);
+	} else {
+		var already = node;
+		callback(node, node.children.length > 0);
+	}
+};
+
+/**
+ * loadingNumber 객체를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getLoadingNumber
+ * @return {Object} 로딩할 노드목록을 가진 객체
+ */
+gb.versioning.Repository.prototype.getLoadingNumber = function() {
+	return this.loadingNumber;
+};
+
+/**
+ * loadingNumber 객체를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setLoadingNumber
+ */
+gb.versioning.Repository.prototype.setLoadingNumber = function(idx, num) {
+	this.loadingNumber[idx] = num;
+};
+
+/**
+ * loadingNumber 객체를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setLoadingNumber
+ */
+gb.versioning.Repository.prototype.initLoadingNumber = function() {
+	this.loadingNumber = [];
+};
+
+/**
+ * loadingList 객체를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getLoadingList
+ * @return {Object} 로딩할 노드목록을 가진 객체
+ */
+gb.versioning.Repository.prototype.getLoadingList = function() {
+	return this.loadingList;
+};
+
+/**
+ * loadingList 객체를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setLoadingList
+ */
+gb.versioning.Repository.prototype.setLoadingList = function(list) {
+	this.loadingList = list;
+};
+
+/**
+ * loadingList 목록에 추가한다.
+ * 
+ * @method gb.versioning.Repository#addLoadingList
+ */
+gb.versioning.Repository.prototype.addNodeToLoadingList = function(idx, nodeId) {
+	var list = this.getLoadingList();
+	if (Array.isArray(list)) {
+		if (list[idx] === undefined) {
+			list[idx] = {};
+			this.setLoadingNumber(idx, 1);
+		}
+		list[idx][nodeId] = false;
+	} else {
+		console.error("로딩 리스트 객체가 배열이 아닙니다.");
+	}
+};
+
+/**
+ * loadingList 객체를 설정한다.
+ * 
+ * @method gb.versioning.Repository#setLoadingList
+ */
+gb.versioning.Repository.prototype.initLoadingList = function() {
+	this.loadingList = [];
+};
+
+/**
+ * loadingList 객체에 노드를 추가한다.
+ * 
+ * @method gb.versioning.Repository#setLoadingList
+ */
+gb.versioning.Repository.prototype.changeNodeOnLoadingList = function(idx, nodeId, flag) {
+	var that = this;
+	var list = this.getLoadingList();
+	if (list[idx].hasOwnProperty(nodeId)) {
+		list[idx][nodeId] = flag;
+		// if (that.getLoadingNumber()[idx] === -1) {
+		// that.setLoadingNumber(idx, 0);
+		// }
+		if (flag) {
+			if (that.getLoadingNumber()[idx] > 0) {
+				that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] - 1));
+			}
+		} else {
+			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
+		}
+	} else {
+		console.error("there is no node id:", nodeId);
+		return;
+	}
 };

@@ -2612,7 +2612,11 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 			$(rrURLInput).css({
 				"background-color" : "#fff"
 			});
-			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+			var callback = function(){
+				$(okBtn).prop("disabled", false);
+			};
+			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal, callback);
+			$(this).prop("disabled", true);
 		}
 	});
 };
@@ -2628,7 +2632,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal) {
+gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal, callback) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -2666,6 +2670,9 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			if (typeof callback === "function") {
+				callback();
+			}
 		},
 		success : function(data) {
 			console.log(data);

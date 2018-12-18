@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRemove;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
@@ -60,4 +61,16 @@ public class GeogigLayerController extends AbstractController {
 		return layerService.diffLayer(geoserverManager, repoName, newIndex, oldIndex, layerName);
 	}
 
+	@RequestMapping(value = "/removeLayer.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigRemove removeLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "transactionId", required = false) String transactionId,
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "recursive", required = false) boolean recursive) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return layerService.removeLayer(geoserverManager, repoName, transactionId, path, recursive);
+	}
 }

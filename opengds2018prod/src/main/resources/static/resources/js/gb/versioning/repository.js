@@ -4530,14 +4530,16 @@ gb.versioning.Repository.prototype.removeLayer = function(server, repo, tid, pat
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				var group = $("<div>").append("Layer has been published.");
-				that.messageModal("Message", group);
-				// modal.close();
-				if (typeof callback === "function") {
-					callback();
+				if (data.error === null) {
+					var group = $("<div>").append("Layer has been deleted.");
+					that.messageModal("Message", group);
+					 modal.close();
+					if (typeof callback === "function") {
+						callback();
+					}	
 				}
 			} else {
-				var group = $("<div>").append("Publish failed.");
+				var group = $("<div>").append("Delete failed.");
 				that.messageModal("Error", group);
 			}
 		},

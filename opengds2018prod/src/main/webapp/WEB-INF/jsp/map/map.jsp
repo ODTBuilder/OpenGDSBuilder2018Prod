@@ -227,7 +227,8 @@ html {
 				"catConflictFeatureObject" : "geogig/catConflictFeatureObject.do?${_csrf.parameterName}=${_csrf.token}",
 				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
+				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});

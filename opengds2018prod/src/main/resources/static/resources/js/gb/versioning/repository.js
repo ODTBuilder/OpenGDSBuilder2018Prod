@@ -87,6 +87,7 @@ gb.versioning.Repository = function(obj) {
 	this.dataStoreListURL = url.dataStoreList ? url.dataStoreList : undefined;
 	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
 	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
+	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
 
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
@@ -994,6 +995,16 @@ gb.versioning.Repository.prototype.getPublishGeogigLayerURL = function() {
 };
 
 /**
+ * removeGeogigLayer 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRemoveGeogigLayerURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getRemoveGeogigLayerURL = function() {
+	return this.removeGeogigLayerURL;
+};
+
+/**
  * 현재 보고있는 리모트 레파지토리의 이름을 반환한다.
  * 
  * @method gb.versioning.Repository#getNowRemoteRepository
@@ -1394,7 +1405,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		checkURL += jQuery.param(params);
 	}
 
-	var msg1 = $("<div>").text("Are you sure to delete this remote repository?").css({
+	var msg1 = $("<div>").text("Are you sure to remove this remote repository?").css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -1408,11 +1419,11 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var deleteModal = new gb.modal.Base({
-		"title" : "Delete remote repository",
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove remote repository",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -1420,7 +1431,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
-		deleteModal.close();
+		removeModal.close();
 	});
 	$(okBtn).click(function() {
 		$.ajax({
@@ -1440,7 +1451,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				console.log(data);
 				if (data.success === "true") {
 					that.refreshRemoteList();
-					deleteModal.close();
+					removeModal.close();
 				} else {
 					var title = "Error";
 					var msg = "Remove failed."
@@ -2422,7 +2433,7 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
  */
 gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	var that = this;
-	var msg1 = $("<div>").text("Are you sure to delete this repository?").css({
+	var msg1 = $("<div>").text("Are you sure to remove this repository?").css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -2436,11 +2447,11 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Repository",
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove Repository",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -2448,10 +2459,10 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
-		deleteModal.close();
+		removeModal.close();
 	});
 	$(okBtn).click(function() {
-		that.removeRepository(that.getNowServer().text, that.getNowRepository().text, deleteModal);
+		that.removeRepository(that.getNowServer().text, that.getNowRepository().text, removeModal);
 	});
 };
 
@@ -4050,8 +4061,8 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 						});
 					} else {
 						that.getTargetMap().updateSize();
-						var td1 = $("<td>").text("Deleted");
-						var td2 = $("<td>").text("Deleted");
+						var td1 = $("<td>").text("Removed");
+						var td2 = $("<td>").text("Removed");
 						var tr = $("<tr>").append(td1).append(td2);
 						$(tattrtbody).append(tr);
 					}
@@ -4417,6 +4428,118 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
 				}
 			} else {
 				var group = $("<div>").append("Publish failed.");
+				that.messageModal("Error", group);
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			var msg1 = $("<div>").append(textStatus);
+			var msg2 = $("<div>").append(errorThrown);
+			var group = $("<div>").append(msg1).append(msg2);
+			that.messageModal("Error", group);
+		}
+	});
+};
+
+/**
+ * 레이어 삭제 확인창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#removeLayerModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
+	var that = this;
+	var msg1 = $("<div>").text("Are you sure to remove this layer?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + layer + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove Repository",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		removeModal.close();
+	});
+	$(okBtn).click(function() {
+		var server = that.getNowServer();
+		var repo = that.getNowRepository();
+		var tid = that.getJSTree().getTransactionId(repo.id);
+		var path = layer;
+		var callback = function(){
+			that.refreshList();
+		};
+		that.removeLayer(server.text, repo.text, tid, path, removeModal, callback);
+	});
+};
+
+/**
+ * 해당 레이어를 삭제한다.
+ * 
+ * @method gb.versioning.Repository#removeLayer
+ */
+gb.versioning.Repository.prototype.removeLayer = function(server, repo, tid, path,  modal, callback) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"transactionId" : tid,
+		"path" : path,
+		"recursive" : true
+	};
+
+	var checkURL = this.getRemoveGeogigLayerURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.error === null) {
+					var group = $("<div>").append("Layer has been deleted.");
+					that.messageModal("Message", group);
+					 modal.close();
+					if (typeof callback === "function") {
+						callback();
+					}	
+				}
+			} else {
+				var group = $("<div>").append("Delete failed.");
 				that.messageModal("Error", group);
 			}
 		},

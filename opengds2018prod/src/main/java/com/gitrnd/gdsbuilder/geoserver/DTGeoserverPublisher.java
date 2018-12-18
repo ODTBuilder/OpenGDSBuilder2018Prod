@@ -1,6 +1,7 @@
 
 package com.gitrnd.gdsbuilder.geoserver;
 
+import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -218,13 +219,9 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		StringBuilder putUrl = new StringBuilder(this.restURL).append("/rest/workspaces/").append(workspace)
 				.append("/datastores/").append(datastore).append(".xml");
 
-		String updateResult = HTTPUtils.putXml(putUrl.toString(), dsXml, "admin", "geoserver");
+		String updateResult = HTTPUtils.putXml(putUrl.toString(), dsXml, this.gsuser, this.gspass);
 		boolean updated = updateResult != null;
-		if (!updated) {
-			LOGGER.warn("Update 요청 실패");
-		} else {
-			LOGGER.warn("Update 요청 성공");
-		}
+		updated = reload();
 		return updated;
 	}
 }

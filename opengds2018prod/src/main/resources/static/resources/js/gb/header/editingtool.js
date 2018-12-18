@@ -406,12 +406,32 @@ gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
  */
 gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
+	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
+	if (layers.length !== 1) {
+		return;
+	}
+	var layer = layers[0];
+	var git = layer.get("git");
+	if (git !== undefined) {
+		if (!(git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch"))) {
+			alert("피처 이력을 지원하지 않는 레이어 입니다.");
+			return;
+		}
+	} else {
+		alert("피처 이력을 지원하지 않는 레이어 입니다.");
+		return;
+	}
 	if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
 		vfeature.close();
 	} else {
-		var layers = $(this.treeElement).jstreeol3("get_selected_layer");
-		var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
-		if (layers.length === 1 && feature) {
+		var nfeature = feature instanceof ol.Feature ? feature : this.interaction.select !== undefined ? this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined : undefined;
+// this.interaction.select.getFeatures().getLength() === 1 ?
+// this.interaction.select.getFeatures().item(0) : undefined;
+		if (nfeature === undefined) {
+			alert("피처를 선택해 주세요.");
+			return;
+		}
+		if (layers.length === 1 && nfeature) {
 			var layer = layers[0];
 			console.log(layer);
 			var git = layer.get("git");
@@ -425,7 +445,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 			var layerName = layer.get("name");
 			console.log(layerName);
 			console.log(feature);
-			var path = layerName+"/"+feature.getId();
+			var path = layerName+"/"+nfeature.getId();
 			console.log(path);
 // vfeature.open();
 			if (vfeature !== undefined) {
@@ -435,7 +455,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 					vfeature.setServer(geoserver);
 					vfeature.setRepo(repo);
 					vfeature.setPath(path);
-					vfeature.setFeature(feature);
+					vfeature.setFeature(nfeature);
 					vfeature.refresh();
 
 				} else {
@@ -443,6 +463,9 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 				}
 				vfeature.open();
 			}
+		} else {
+			alert("피처를 선택해 주세요.");
+			return;
 		}
 	}
 };

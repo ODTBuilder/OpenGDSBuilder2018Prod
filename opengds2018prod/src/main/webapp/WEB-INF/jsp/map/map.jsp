@@ -172,6 +172,8 @@ html {
 			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
+		var locale = '<spring:message code="lang.localeCode" />';
+
 		var urlList = {
 			token : "?${_csrf.parameterName}=${_csrf.token}",
 			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
@@ -183,6 +185,7 @@ html {
 			requestValidate : "web/validate.do",
 			geoserverFileUpload : "geoserver/upload.do"
 		}
+
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
 			"upperMap" : {
@@ -205,6 +208,7 @@ html {
 		});
 
 		var vrepo = new gb.versioning.Repository({
+			"locale" : locale !== "" ? locale : "en",
 			"epsg" : "4326",
 			"url" : {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
@@ -286,6 +290,7 @@ html {
 		});
 
 		var gtree = new gb.tree.GeoServer({
+			"locale" : locale !== "" ? locale : "en",
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),

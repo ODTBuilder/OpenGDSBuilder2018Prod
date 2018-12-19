@@ -423,6 +423,7 @@ html {
 			toggleTarget : "#feature-toggle-btn",
 			wfstURL : urlList.wfst + urlList.token,
 			layerInfoURL : urlList.getLayerInfo + urlList.token,
+			getFeatureURL : urlList.getWFSFeature + urlList.token,
 			isDisplay : false
 		});
 
@@ -452,13 +453,7 @@ html {
 			if (featureList.footerTag.css("display") === "none") {
 				return;
 			} else {
-				featureList.updateFeatureList({
-					url : urlList.getWFSFeature + urlList.token,
-					treeid : treeid,
-					geoserver : layer.get('git') ? layer.get('git').geoserver : undefined,
-					workspace : layer.get('git') ? layer.get('git').workspace : undefined,
-					layerName : layer.get('name')
-				});
+				featureList.updateFeatureList(layer);
 			}
 		});
 

@@ -7785,7 +7785,7 @@
 											break;
 										}
 									}
-								} else if (layer.source instanceof ol.source.Vector) {
+								} else if (layer.getSource() instanceof ol.source.Vector) {
 									ol.extent.extend(ext, layer
 											.getSource()
 											.getExtent());

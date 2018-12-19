@@ -27,6 +27,8 @@ if (!gb.footer)
 		
 		this.layerInfoURL = options.layerInfoURL || '';
 		
+		this.getFeatureURL = options.getFeatureURL || '';
+		
 		/**
 		 * 현재 선택된 레이어의 JSTree ID
 		 */
@@ -46,6 +48,16 @@ if (!gb.footer)
 		 * DataTable ID 고유번호
 		 */
 		this.countId = 0;
+		
+		/**
+		 * feature 요청 리스트 시작 index
+		 */
+		this.startIndex = 0;
+		
+		/**
+		 * feature 요청 리스트 최대 개수
+		 */
+		this.maxFeatures = 10;
 		
 		/**
 		 * footer content에 생성할 table element의 ID
@@ -353,6 +365,12 @@ if (!gb.footer)
 			}*/]
 		});
 		
+		$("#" + this.tableId + this.countId).parent().scroll(function(){
+			if($(this).scrollTop() + $(this).height() == $(this).children(":first").height()){
+				
+			}
+		})
+		
 		$("#altEditor-modal").on("edited", function(e, data){
 			var feature, keys;
 			var layer = that.attrList[that.selectedLayer];
@@ -393,19 +411,13 @@ if (!gb.footer)
 		this.onResize();
 	}
 	
-	gb.footer.FeatureList.prototype.updateFeatureList = function(opt){
-		var options = opt || {};
+	gb.footer.FeatureList.prototype.updateFeatureList = function(layer){
+		var options = layer.get("git") || {};
 		
-		var treeid = options.treeid;
+		var treeid = layer.get("treeid");
 		
 		if(!!this.attrList[treeid]){
-			this.updateTable(treeid)
-			return;
-		}
-		
-		var url = options.url;
-		if(!url){
-			console.error('gb.footer.FeatureList: url is required');
+			this.updateTable(treeid);
 			return;
 		}
 		
@@ -421,25 +433,27 @@ if (!gb.footer)
 			return;
 		}
 		
-		var layerName = options.layerName;
+		var layerName = layer.get("name");
 		if(!layerName){
 			console.error('gb.footer.FeatureList: layer name is required');
 			return;
 		}
 		
 		var list = this.attrList;
-		
+		this.startIndex = 0;
 		var defaultParameters = {
 			"serverName": geoserver,
 			"workspace": workspace,
 			"version" : "1.0.0",
 			"typeName" : layerName,
 			"outputformat" : "application/json",
+			"maxFeatures": this.maxFeatures,
+			"startIndex": this.startIndex
 		};
 
 		var that = this;
 		$.ajax({
-			url : url,
+			url : this.getFeatureURL,
 			type : "GET",
 			contentType : "application/json; charset=UTF-8",
 			data : defaultParameters,
@@ -473,6 +487,10 @@ if (!gb.footer)
 				console.log(errorThrown);
 			}
 		});
+	}
+	
+	gb.footer.FeatureList.prototype.nextFeatureList = function(layer){
+		
 	}
 	
 	gb.footer.FeatureList.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){

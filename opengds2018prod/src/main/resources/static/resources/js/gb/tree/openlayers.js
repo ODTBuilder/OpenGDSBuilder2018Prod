@@ -481,16 +481,52 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 				"multilinestring": "MultiLineString", 
 				"multipolygon": "MultiPolygon"
 			};
+			
 			var vectorLayer = new ol.layer.Vector({
 				source : new ol.source.Vector({})
 			});
+			
 			var type = geomSelect.find("option:selected").val();
+			
+			var attributes = [],
+				bool = true,
+				attribute;
+			
+			$(".type-form-body").children().each(function(){
+				if(!$(this).children().eq(0).find("input:text").val()){
+					bool = false;
+				}
+				attribute = new gb.layer.Attribute({
+					originFieldName : $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, ''),
+					fieldName : $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, ''),
+					type : $(this).children().eq(1).find("select").val(),
+					decimal : $(this).children().eq(1).find("select").val() === "Double" ? 30 : null,
+					size : 256,
+					isUnique : $(this).children().eq(3).find("input:checkbox").prop("checked") ? true : false,
+					nullable : $(this).children().eq(2).find("input:checkbox").prop("checked") ? false : true,
+					isNew : true
+				});
+				attributes.push(attribute);
+			});
+			
+			if(!bool){
+				alert("속성값 이름을 입력해주세요!");
+				return;
+			}
+			
 			var gitLayer = {
 				"editable" : true,
 				"geometry" : geoType[type],
-				"validation" : false
+				"validation" : false,
+				"attribute" : attributes
 			};
 			vectorLayer.set("git", gitLayer);
+			
+			if(!codeInput.val()){
+				alert("Layer 이름을 입력해주세요!");
+				return;
+			}
+			
 			vectorLayer.set("name", codeInput.val());
 			that.map.addLayer(vectorLayer);
 			that.refreshList();
@@ -506,7 +542,7 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var htd5 = $("<td>");
 	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
 
-	var key = $("<input>").addClass("form-control").attr({
+	/*var key = $("<input>").addClass("form-control").attr({
 		"type" : "text"
 	});
 	var td1 = $("<td>").append(key);
@@ -535,8 +571,8 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	});
 	var td5 = $("<td>").append(trash);
 	
-	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
-	var typeFormBody = $("<tbody>").addClass("type-form-body").append(tr1);
+	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);*/
+	var typeFormBody = $("<tbody>").addClass("type-form-body");
 
 	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
 	var addBtn = $("<input>").addClass("gitbuilder-createlayer-addattr").addClass("btn").addClass("btn-default").attr({
@@ -670,12 +706,12 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
-		gb.tree.loadShpZip(encodeInput.val(), file, that.map);
+		gb.tree.loadShpZip(encodeInput.val(), file, that.map, that.refreshList);
 		addGeoServerModal.close();
 	});
 };
 
-gb.tree.loadShpZip = function(encode, file, map) {
+gb.tree.loadShpZip = function(encode, file, map, callback) {
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
 	var fileL = file;
@@ -701,8 +737,8 @@ gb.tree.loadShpZip = function(encode, file, map) {
 				vectorLayer.set("git", gitLayer);
 				vectorLayer.set("name", fileL.name);
 				map.addLayer(vectorLayer);
-				map.getView().fit([ geojson.bbox[1], geojson.bbox[0] ],
-						[ geojson.bbox[3], geojson.bbox[2] ]);
+				map.getView().fit(geojson.bbox, map.getSize());
+				callback();
 			}
 		});
 	}

@@ -1042,20 +1042,45 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 		this.interaction.draw.on("drawend", function(evt) {
 			console.log(evt);
 			gb.undo.setActive(true);
-
+			
 			var source = that.selectedSource;
 			var layer = source.get("git").tempLayer;
+			var arr = that.selectedSource.getFeatures() instanceof Array ? that.selectedSource.getFeatures() : [];
+			var item = arr[0];
+			var prop, setProp = {};
+			
+			if(item instanceof ol.Feature){
+				prop = item.getProperties();
+				for(let key in prop){
+					if(prop[key] instanceof Object){
+						continue;
+					}
+					
+					setProp[key] = "";
+				}
+			} else {
+				if(layer.get("git") instanceof Object){
+					if(layer.get("git").attribute instanceof Array){
+						for(let i = 0; i < layer.get("git").attribute.length; i++){
+							prop = layer.get("git").attribute[i];
+							setProp[prop.fieldName] = "";
+						}
+					}
+				}
+			}
+			
 			if (!!source) {
 				var feature = evt.feature;
-				var c = that.featureRecord.getCreated();
-				var l = c[source.get("git").layerID];
+				var l = source.getFeatureById(source.get("git").layerID + ".new0")
+				feature.setProperties(setProp);
+				
 				if (!l) {
 					var fid = source.get("git").layerID + ".new0";
 					feature.setId(fid);
 					that.featureRecord.create(layer, feature);
 				} else {
-					var count = 0;
-					while(!!l[source.get("git").layerID + ".new" + count]){
+					var count = 1;
+					while(source.getFeatureById(source.get("git").layerID + ".new" + count) !== null){
 						count++;
 					}
 					var fid = source.get("git").layerID + ".new" + count;

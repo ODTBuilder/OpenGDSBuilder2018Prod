@@ -178,9 +178,15 @@ gb.edit.FeatureRecord.prototype.isRemoved = function(layer, feature) {
  */
 gb.edit.FeatureRecord.prototype.create = function(layer, feature) {
 	var id = layer.get("id");
+	
 	if(!id){
 		return;
 	}
+	
+	if(!id.split(":")[1] || !id.split(":")[3]){
+		return;
+	}
+	
 	if (!this.created[id]) {
 		this.created[id] = {};
 		this.requestLayerInfo(id.split(":")[0], id.split(":")[1], id.split(":")[3], this.created[id]);
@@ -200,6 +206,15 @@ gb.edit.FeatureRecord.prototype.create = function(layer, feature) {
  */
 gb.edit.FeatureRecord.prototype.remove = function(layer, feature) {
 	var id = layer.get("id");
+	
+	if(!id){
+		return;
+	}
+	
+	if(!id.split(":")[1] || !id.split(":")[3]){
+		return;
+	}
+	
 	if (!this.removed[id]) {
 		this.removed[id] = {};
 		this.requestLayerInfo(id.split(":")[0], id.split(":")[1], id.split(":")[3], this.removed[id]);
@@ -258,6 +273,15 @@ gb.edit.FeatureRecord.prototype.removeByLayer = function(layerId) {
  */
 gb.edit.FeatureRecord.prototype.update = function(layer, feature) {
 	var id = layer.get("id");
+	
+	if(!id){
+		return;
+	}
+	
+	if(!id.split(":")[1] || !id.split(":")[3]){
+		return;
+	}
+	
 	if (!this.modified) {
 		this.modified = {};
 	}

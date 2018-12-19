@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.GeogigExceptionStatus;
 import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
+import com.gitrnd.gdsbuilder.geogig.command.repository.RemovePath;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff.Diff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRemove;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -93,5 +95,33 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 			diff.setError(geogigStatus.getStatus());
 		}
 		return diff;
+	}
+
+	@Override
+	public GeogigRemove removeLayer(DTGeoserverManager geoserverManager, String repoName, String transactionId,
+			String path, boolean recursive) throws JAXBException {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		RemovePath remove = new RemovePath();
+		GeogigRemove geogigRemove = null;
+		try {
+			geogigRemove = remove.executeCommand(url, user, pw, repoName, transactionId, path, recursive);
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigRemove.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigRemove = (GeogigRemove) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigRemove = new GeogigRemove();
+				geogigRemove.setError(e.getMessage());
+				geogigRemove.setSuccess("false");
+			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigRemove.getError());
+			geogigRemove.setError(geogigStatus.getStatus());
+		}
+		return geogigRemove;
 	}
 }

@@ -172,6 +172,8 @@ html {
 			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
 	<script type="text/javascript">
+		var locale = '<spring:message code="lang.localeCode" />';
+
 		var urlList = {
 			token : "?${_csrf.parameterName}=${_csrf.token}",
 			wfst : "${pageContext.request.contextPath}/geoserver/geoserverWFSTransaction.ajax",
@@ -183,6 +185,7 @@ html {
 			requestValidate : "web/validate.do",
 			geoserverFileUpload : "geoserver/upload.do"
 		}
+
 		var gbMap = new gb.Map({
 			"target" : $(".bind")[0],
 			"upperMap" : {
@@ -205,6 +208,7 @@ html {
 		});
 
 		var vrepo = new gb.versioning.Repository({
+			"locale" : locale !== "" ? locale : "en",
 			"epsg" : "4326",
 			"url" : {
 				"serverTree" : "geogig/getWorkingTree.ajax?${_csrf.parameterName}=${_csrf.token}",
@@ -227,9 +231,10 @@ html {
 				"catConflictFeatureObject" : "geogig/catConflictFeatureObject.do?${_csrf.parameterName}=${_csrf.token}",
 				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}"
+				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}"
 			},
-			"isEditing": gb.module.isEditing
+			"isEditing" : gb.module.isEditing
 		});
 
 		$("#vermodal").click(function() {
@@ -257,7 +262,7 @@ html {
 				"token" : urlList.token,
 				"requestValidate" : urlList.requestValidate
 			},
-			"isEditing": gb.module.isEditing
+			"isEditing" : gb.module.isEditing
 		});
 
 		$("#validation").click(function() {
@@ -285,6 +290,7 @@ html {
 		});
 
 		var gtree = new gb.tree.GeoServer({
+			"locale" : locale !== "" ? locale : "en",
 			"append" : $(".builderLayerGeoServerPanel")[0],
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
@@ -310,10 +316,11 @@ html {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureAttribute" : "geogig/featureAttribute.do?${_csrf.parameterName}=${_csrf.token}",
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
-		
+
 		// EditTool 활성화
 		var epan = new gb.header.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
@@ -505,7 +512,7 @@ html {
 				var winWidth = $(window).innerWidth();
 				//컨텐츠 (지도) 영역의 너비 지정
 				//.builderLayer -> 사이드바
-				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true))-1;
+				var mapWidth = winWidth - ($(".builderLayer").outerWidth(true)) - 1;
 				//사이드바의 높이 지정
 				$(".builderLayer").outerHeight(conHeight);
 				//편집영역의 높이 지정
@@ -536,9 +543,9 @@ html {
 		$(document).ready(function() {
 			gitrnd.resize();
 		});
-		
-		$(window).on("beforeunload", function(){
-			if(frecord.isEditing()){
+
+		$(window).on("beforeunload", function() {
+			if (frecord.isEditing()) {
 				return "이 페이지를 벗어나면 작성된 내용은 저장되지 않습니다.";
 			}
 		});

@@ -373,7 +373,8 @@ gb.header.EditingTool = function(obj) {
 	});
 
 	// SOYIJUN
-	if (this.getVersioningFeature() !== undefined) {
+	if (this.getVersioningFeature() instanceof gb.versioning.Feature) {
+		console.log($(that.treeElement).jstreeol3("get_selected_layer"));
 		this.getVersioningFeature().setEditingTool(this);
 		console.log(this.ulTagRight);
 		var iTag = $("<i>").addClass("fas").addClass("fa-history").attr("aria-hidden", "true").css(this.iStyle);
@@ -405,12 +406,32 @@ gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
  */
 gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
+	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
+	if (layers.length !== 1) {
+		return;
+	}
+	var layer = layers[0];
+	var git = layer.get("git");
+	if (git !== undefined) {
+		if (!(git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch"))) {
+			alert("피처 이력을 지원하지 않는 레이어 입니다.");
+			return;
+		}
+	} else {
+		alert("피처 이력을 지원하지 않는 레이어 입니다.");
+		return;
+	}
 	if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
 		vfeature.close();
 	} else {
-		var layers = $(this.treeElement).jstreeol3("get_selected_layer");
-		var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
-		if (layers.length === 1 && feature) {
+		var nfeature = feature instanceof ol.Feature ? feature : this.interaction.select !== undefined ? this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined : undefined;
+// this.interaction.select.getFeatures().getLength() === 1 ?
+// this.interaction.select.getFeatures().item(0) : undefined;
+		if (nfeature === undefined) {
+			alert("피처를 선택해 주세요.");
+			return;
+		}
+		if (layers.length === 1 && nfeature) {
 			var layer = layers[0];
 			console.log(layer);
 			var git = layer.get("git");
@@ -424,7 +445,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 			var layerName = layer.get("name");
 			console.log(layerName);
 			console.log(feature);
-			var path = layerName+"/"+feature.getId();
+			var path = layerName+"/"+nfeature.getId();
 			console.log(path);
 // vfeature.open();
 			if (vfeature !== undefined) {
@@ -434,7 +455,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 					vfeature.setServer(geoserver);
 					vfeature.setRepo(repo);
 					vfeature.setPath(path);
-					vfeature.setFeature(feature);
+					vfeature.setFeature(nfeature);
 					vfeature.refresh();
 
 				} else {
@@ -442,6 +463,9 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 				}
 				vfeature.open();
 			}
+		} else {
+			alert("피처를 선택해 주세요.");
+			return;
 		}
 	}
 };
@@ -766,7 +790,18 @@ gb.header.EditingTool.prototype.select = function(source) {
 	this.interaction.select.on("select", function(evt) {
 		console.log("select-interact");
 		var features = that.interaction.select.getFeatures();
-		if (that.getVersioningFeature() !== undefined && features.getLength() === 1) {
+		var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+		var slayer;
+		if (slayers.length === 1) {
+			slayer = slayers[0];
+		}
+		var git;
+		if (slayer !== undefined) {
+			git = slayer.get("git");	
+		}
+		
+		if (that.getVersioningFeature() instanceof gb.versioning.Feature && features.getLength() === 1 && git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch")) {
+			console.log($(that.treeElement).jstreeol3("get_selected_layer"));
 			var feature = features.item(0);
 			that.updateFeatureHistoryModal(feature);
 		} else {
@@ -775,9 +810,11 @@ gb.header.EditingTool.prototype.select = function(source) {
 		}
 	});
 	this.interaction.select.getFeatures().on("change:length", function(evt) {
+		var vfeature = that.getVersioningFeature();
 		that.features = that.interaction.select.getFeatures();
 		$(that.featureTB).empty();
 		if (that.features.getLength() > 1) {
+			vfeature.close();
 			that.featurePop.close();
 			for (var i = 0; i < that.features.getLength(); i++) {
 				var idx = that.features.item(i).getId().substring(that.features.item(i).getId().indexOf(".") + 1);
@@ -856,76 +893,49 @@ gb.header.EditingTool.prototype.select = function(source) {
 						obj[$(this).parent().prev().text()] = $(this).val();
 						that.feature.setProperties(obj);
 						that.featureRecord.update(layer, that.feature);
-						/*switch (typeof attrTemp) {
-						case "string":
-							if (that.isString($(this).val()) || ($(this).val() === "")) {
-								var obj = {};
-								obj[$(this).parent().prev().text()] = $(this).val();
-								that.feature.setProperties(obj);
-								that.featureRecord.update(that.getLayer(), that.feature);
-							} else {
-								$(this).val("");
-							}
-							break;
-						case "number":
-							if (that.isInteger($(this).val()) || ($(this).val() === "")) {
-								var obj = {};
-								obj[$(this).parent().prev().text()] = $(this).val();
-								that.feature.setProperties(obj);
-								that.featureRecord.update(that.getLayer(), that.feature);
-							} else {
-								$(this).val("");
-							}
-							break;
-						case "Double":
-							if (that.isDouble($(this).val()) || ($(this).val() === "")) {
-								var obj = {};
-								obj[$(this).parent().prev().text()] = $(this).val();
-								that.feature.setProperties(obj);
-								that.featureRecord.update(that.getLayer(), that.feature);
-								console.log("set");
-							} else {
-								$(this).val("");
-							}
-							break;
-						case "boolean":
-							var valid = [ "t", "tr", "tru", "true", "f", "fa", "fal", "fals", "false" ];
-							if (valid.indexOf($(this).val()) !== -1) {
-								if (that.isBoolean($(this).val())) {
-									var obj = {};
-									obj[$(this).parent().prev().text()] = $(this).val();
-									that.feature.setProperties(obj);
-									that.featureRecord.update(that.getLayer(), that.feature);
-									console.log("set");
-								}
-							} else if ($(this).val() === "") {
-								var obj = {};
-								obj[$(this).parent().prev().text()] = $(this).val();
-								that.feature.setProperties(obj);
-								that.featureRecord.update(that.getLayer(), that.feature);
-								console.log("set");
-							} else {
-								$(this).val("");
-							}
-							break;
-						case "Date":
-							if ($(this).val().length === 10) {
-								if (that.isDate($(this).val())) {
-									var obj = {};
-									obj[$(this).parent().prev().text()] = $(this).val();
-									that.feature.setProperties(obj);
-									that.featureRecord.update(that.getLayer(), that.feature);
-									console.log("set");
-								} else {
-									$(this).val("");
-								}
-							} else if ($(this).val().length > 10) {
-								$(this).val("");
-							}
-							break;
-						default:
-							break;
-						}*/
+						/*
+						 * switch (typeof attrTemp) { case "string": if
+						 * (that.isString($(this).val()) || ($(this).val() ===
+						 * "")) { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); } else { $(this).val(""); } break;
+						 * case "number": if (that.isInteger($(this).val()) ||
+						 * ($(this).val() === "")) { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); } else { $(this).val(""); } break;
+						 * case "Double": if (that.isDouble($(this).val()) ||
+						 * ($(this).val() === "")) { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); console.log("set"); } else {
+						 * $(this).val(""); } break; case "boolean": var valid = [
+						 * "t", "tr", "tru", "true", "f", "fa", "fal", "fals",
+						 * "false" ]; if (valid.indexOf($(this).val()) !== -1) {
+						 * if (that.isBoolean($(this).val())) { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); console.log("set"); } } else if
+						 * ($(this).val() === "") { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); console.log("set"); } else {
+						 * $(this).val(""); } break; case "Date": if
+						 * ($(this).val().length === 10) { if
+						 * (that.isDate($(this).val())) { var obj = {};
+						 * obj[$(this).parent().prev().text()] = $(this).val();
+						 * that.feature.setProperties(obj);
+						 * that.featureRecord.update(that.getLayer(),
+						 * that.feature); console.log("set"); } else {
+						 * $(this).val(""); } } else if ($(this).val().length >
+						 * 10) { $(this).val(""); } break; default: break; }
+						 */
 					});
 					var td2 = $("<td>").append(tform);
 					var tr = $("<tr>").append(td1).append(td2);
@@ -944,6 +954,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 		} else {
 			that.featurePop.close();
 			that.attrPop.close();
+			vfeature.close();
 		}
 
 	});
@@ -964,7 +975,7 @@ gb.header.EditingTool.prototype.select = function(source) {
  */
 gb.header.EditingTool.prototype.draw = function(layer) {
 
-	//if (this.isOn.draw) {
+	// if (this.isOn.draw) {
 		if (!!this.interaction.draw || !!this.interaction.updateDraw) {
 			if (this.interaction.draw.getActive()){
 				this.deactiveIntrct_("snap");
@@ -974,7 +985,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 				return;
 			}
 		}
-	//}
+	// }
 	this.map.removeLayer(this.managed);
 	var that = this;
 	if (this.interaction.select) {
@@ -1146,7 +1157,7 @@ gb.header.EditingTool.prototype.move = function(layer) {
 			this.interaction.select.getFeatures().clear();
 			this.deactiveIntrct_("move");
 			this.deactiveBtn_("moveBtn");
-			//this.map.removeLayer(this.tempVector);
+			// this.map.removeLayer(this.tempVector);
 			// this.map.removeLayer(this.managed);
 		}
 		return;
@@ -1236,7 +1247,7 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
-	//if (this.isOn.rotate) {
+	// if (this.isOn.rotate) {
 		if (!!this.interaction.rotate) {
 			if (this.interaction.rotate.getActive()){
 				this.interaction.select.getFeatures().clear();
@@ -1245,7 +1256,7 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 				return;
 			}
 		}
-	//}
+	// }
 
 	var that = this;
 
@@ -1318,7 +1329,7 @@ gb.header.EditingTool.prototype.modify = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
-	//if (this.isOn.modify) {
+	// if (this.isOn.modify) {
 		if (!!this.interaction.modify) {
 			if (this.interaction.modify.getActive()) {
 				this.interaction.select.getFeatures().clear();
@@ -1328,7 +1339,7 @@ gb.header.EditingTool.prototype.modify = function(layer) {
 				return;
 			}
 		}
-	//}
+	// }
 	var that = this;
 
 	var selectSource = this.selectedSource;
@@ -2489,7 +2500,7 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	return a;
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.editToolOpen = function(){
 	// openlayers tree wms layer 보기/숨김 기능 비활성화
 	this.otree.getJSTree().setDisplayIndex(false);
@@ -2518,7 +2529,7 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	}
 }
 
-//hochul
+// hochul
 gb.header.EditingTool.prototype.editToolClose = function(){
 	if(this.featureRecord.isEditing()){
 		this.featureRecord.save(this);

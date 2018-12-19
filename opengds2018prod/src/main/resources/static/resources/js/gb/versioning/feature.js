@@ -24,6 +24,7 @@ gb.versioning.Feature = function(obj) {
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
 	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
+	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
 
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
@@ -413,7 +414,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 								"serverName" : server,
 								"repoName" : repo,
 								"path" : elem.path,
-								"commitId" : elem.oldObjectId,
+								"commitId" : elem.oldObjectId
 							}
 							console.log(oldParams);
 
@@ -519,7 +520,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 								"serverName" : server,
 								"repoName" : repo,
 								"path" : elem.newPath,
-								"commitId" : elem.newObjectId,
+								"commitId" : elem.newObjectId
 							}
 							console.log(newParams);
 
@@ -619,8 +620,215 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 							});
 						}
 					} else {
-						that.getLeftMap().getLayers().clear();
-						that.getRightMap().getLayers().clear();
+
+						var oldParams = {
+							"serverName" : server,
+							"repoName" : repo,
+							"path" : path,
+							"commitId" : oidx
+						}
+						console.log(oldParams);
+
+						var oldURL = that.getFeatureAttributeURL();
+						if (oldURL.indexOf("?") !== -1) {
+							oldURL += "&";
+							oldURL += jQuery.param(oldParams);
+						} else {
+							oldURL += "?";
+							oldURL += jQuery.param(oldParams);
+						}
+
+						$.ajax({
+							url : oldURL,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data_old) {
+								console.log(data_old);
+								if (data_old.success === "true" && data_old.error === null) {
+									var attr = data_old.attributes;
+									for (var i = 0; i < attr.length; i++) {
+										if (attr[i].crs !== null
+												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+											var oldwkt = attr[i].value;
+											if (oldwkt !== undefined && oldwkt !== null) {
+												var format = new ol.format.WKT();
+												var geom = format.readGeometry(oldwkt);
+												var feature = new ol.Feature({
+													"geometry" : geom
+												});
+
+												var style = new ol.style.Style({
+													image : new ol.style.Circle({
+														radius : 5,
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													}),
+													stroke : new ol.style.Stroke({
+														width : 1,
+														color : 'orange'
+													}),
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												});
+
+												var vlayer = new ol.layer.Vector({
+													"style" : style,
+													"source" : new ol.source.Vector({
+														"features" : [ feature ]
+													}),
+													"zIndex" : 2
+												});
+
+												var osm = new ol.layer.Tile({
+													"source" : new ol.source.OSM(),
+													"zIndex" : 1
+												});
+
+												that.getLeftMap().updateSize();
+												that.getLeftMap().getLayers().clear();
+												that.getLeftMap().addLayer(osm);
+												that.getLeftMap().addLayer(vlayer);
+												// that.getLeftMap().getView().fit(geom);
+
+												// this.leftcrs = new
+												// gb.crs.BaseCRS({
+												// "autoOpen" : false,
+												// "title" : "Base CRS",
+												// "message" :
+												// $(".epsg-now"),
+												// "maps" : [
+												// that.getLeftMap() ],
+												// "epsg" : crs,
+												// "callback" : function() {
+												// that.getLeftMap().getView().fit(geom);
+												// }
+												// });
+											}
+										} else {
+											var otd1 = $("<td>").text(attr[i].name);
+											var otd2 = $("<td>").text(attr[i].value);
+											var otr1 = $("<tr>").append(otd1).append(otd2);
+											$(that.getLeftTBody()).append(otr1);
+										}
+									}
+								}
+							}
+						});
+
+						var newParams = {
+							"serverName" : server,
+							"repoName" : repo,
+							"path" : path,
+							"commitId" : nidx
+						}
+						console.log(newParams);
+
+						var newURL = that.getFeatureAttributeURL();
+						if (newURL.indexOf("?") !== -1) {
+							newURL += "&";
+							newURL += jQuery.param(newParams);
+						} else {
+							newURL += "?";
+							newURL += jQuery.param(newParams);
+						}
+
+						$.ajax({
+							url : newURL,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data_new) {
+								console.log(data_new);
+								if (data_new.success === "true" && data_new.error === null) {
+									var attr = data_new.attributes;
+									for (var i = 0; i < attr.length; i++) {
+										if (attr[i].crs !== null
+												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+											var newwkt = attr[i].value;
+											if (newwkt !== undefined && newwkt !== null) {
+												var format = new ol.format.WKT();
+												var geom = format.readGeometry(newwkt);
+												var feature = new ol.Feature({
+													"geometry" : geom
+												});
+
+												var style = new ol.style.Style({
+													image : new ol.style.Circle({
+														radius : 5,
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													}),
+													stroke : new ol.style.Stroke({
+														width : 1,
+														color : 'orange'
+													}),
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												});
+
+												var vlayer = new ol.layer.Vector({
+													"style" : style,
+													"source" : new ol.source.Vector({
+														"features" : [ feature ]
+													}),
+													"zIndex" : 2
+												});
+
+												var osm = new ol.layer.Tile({
+													"source" : new ol.source.OSM(),
+													"zIndex" : 1
+												});
+
+												that.getRightMap().updateSize();
+												that.getRightMap().getLayers().clear();
+												that.getRightMap().addLayer(osm);
+												that.getRightMap().addLayer(vlayer);
+												// that.getLeftMap().getView().fit(geom);
+
+												this.crs = new gb.crs.BaseCRS({
+													"autoOpen" : false,
+													"title" : "Base CRS",
+													"message" : $(".epsg-now"),
+													"maps" : [ that.getLeftMap(), that.getRightMap() ],
+													"epsg" : crs,
+													"callback" : function() {
+														that.getRightMap().getView().fit(geom);
+													}
+												});
+											}
+										} else {
+											var ctd1 = $("<td>").text(attr[i].name);
+											var ctd2 = $("<td>").text(attr[i].value);
+											var ctr1 = $("<tr>").append(ctd1).append(ctd2);
+											$(that.getRightTBody()).append(ctr1);
+										}
+									}
+								}
+							}
+						});
 					}
 				}
 			}
@@ -1262,6 +1470,15 @@ gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
  */
 gb.versioning.Feature.prototype.getFeatureRevertURL = function() {
 	return this.featureRevertURL;
+};
+
+/**
+ * 피처 비교 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Feature#getFeatureAttributeURL
+ */
+gb.versioning.Feature.prototype.getFeatureAttributeURL = function() {
+	return this.featureAttributeURL;
 };
 
 /**

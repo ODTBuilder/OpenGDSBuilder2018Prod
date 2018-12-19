@@ -338,6 +338,9 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
 					} else if (type === "layer") {
+						var pnode = this.get_node(node.parent);
+						var states = Object.keys(pnode.state);
+
 						var historyBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("History").css({
 							"display" : "inline-block"
 						}).click(function() {
@@ -351,12 +354,32 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							// that._data.geogigfunction.repository.mergeModal(server.text,
 							// repo.text, branch.text);
 						});
-						var publishBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Publish").css({
+						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Delete").css({
 							"display" : "inline-block"
+						}).click(function() {
+							var server = that.get_node(node.parents[2]);
+							var repo = that.get_node(node.parents[1]);
+							var branch = that.get_node(node.parents[0]);
+							var layer = node;
+							that._data.geogigfunction.repository.setNowServer(server);
+							that._data.geogigfunction.repository.setNowRepository(repo);
+							that._data.geogigfunction.repository.setNowBranch(branch);
+							that._data.geogigfunction.repository.removeLayerModal(layer.text);
 						});
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(publishBtn);
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
+
+						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
+								|| states.indexOf("unstaged") !== -1) {
+							// $(removeBtn).css("display", "inline-block");
+							$(removeBtn).prop("disabled", false);
+
+						} else {
+							// $(removeBtn).css("display", "none");
+							$(removeBtn).prop("disabled", true);
+						}
+
 						var obj = this.get_node(node, true);
-						// $(obj[0].childNodes[1]).after(btnArea);
+						$(obj[0].childNodes[1]).after(btnArea);
 					}
 				}, this)).on('load_node.jstree', $.proxy(function(e, data) {
 			console.log("delete layer");

@@ -312,6 +312,7 @@ public class DTGeoserverTree extends JSONArray {
 											layerTree.put("parent", parent);
 											layerTree.put("text", dtGLayer.getlName());
 											layerTree.put("type", dtGLayer.getGeomType().toLowerCase());
+											layerTree.put("nativeName", dtGLayer.getNativeName());
 											layerTree.put("children", false);
 											super.add(layerTree);
 										}

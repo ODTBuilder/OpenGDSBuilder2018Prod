@@ -87,7 +87,10 @@ gb.versioning.Repository = function(obj) {
 	this.dataStoreListURL = url.dataStoreList ? url.dataStoreList : undefined;
 	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
 	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
+	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
 
+	this.locale = options.locale ? options.locale : "en";
+	
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
 	
@@ -100,6 +103,277 @@ gb.versioning.Repository = function(obj) {
 	this.loadingList = [];
 	this.loadingNumber = [];
 
+	this.translation = {
+			"400err" : {
+				"ko" : "요청값 잘못입력",
+				"en" : "Bad request"
+			},
+			"404err" : {
+				"ko" : "페이지 없음",
+				"en" : "Not found"
+			},
+			"405err" : {
+				"ko" : "요청 타입 에러",
+				"en" : "Method not allowed"
+			},
+			"406err" : {
+				"ko" : "요청 형식 에러",
+				"en" : "Not acceptable"
+			},
+			"407err" : {
+				"ko" : "프록시 에러",
+				"en" : "Proxy authentication required"
+			},
+			"408err" : {
+				"ko" : "요청시간 초과",
+				"en" : "Request timeout"
+			},
+			"415err" : {
+				"ko" : "지원하지 않는 타입 요청",
+				"en" : "Unsupported media type"
+			},
+			"500err" : {
+				"ko" : "서버 내부 오류",
+				"en" : "Internal server error"
+			},
+			"800err" : {
+				"ko" : "Transaction 시작 후 다시 요청하세요.",
+				"en" : "No transaction was specified, this command requires a transaction to preserve the stability of the repository."
+			},
+			"801err" : {
+				"ko" : "해당 Transaction ID가 존재하지 않습니다.",
+				"en" : "A transaction with the provided ID could not be found."
+			},
+			"802err" : {
+				"ko" : "해당 Geogig 저장소가 존재하지 않습니다.",
+				"en" : "Repository not found."
+			},
+			"803err" : {
+				"ko" : "옵션에 잘못된 값이 지정되었습니다.",
+				"en" : "Invalid value specified for option. "
+			},
+			"804err" : {
+				"ko" : "해당 Geogig 명령어가 존재하지 않습니다.",
+				"en" : "Not a geogig command."
+			},
+			"805err" : {
+				"ko" : "기존 Transaction 을 종료 후 다시 요청하세요.",
+				"en" : "Tried to start a transaction within a transaction."
+			},
+			"806err" : {
+				"ko" : "Branch나 Commit 이력을 확인할 수 없습니다.",
+				"en" : "Could not resolve branch or commit."
+			},
+			"807err" : {
+				"ko" : "해당 경로의 Feature 가 유효하지 않습니다.",
+				"en" : "The supplied path does not resolve to a feature."
+			},
+			"808err" : {
+				"ko" : "해당 경로가 존재하지 않습니다.",
+				"en" : "The supplied path does not exist."
+			},
+			"809err" : {
+				"ko" : "응답 결과가 없습니다.",
+				"en" : "No response"
+			},
+			"810err" : {
+				"ko" : "올바르지 않은 ObjectId 입니다.",
+				"en" : "You must specify a valid non-null ObjectId."
+			},
+			"811err" : {
+				"ko" : "해당 ObjectId가 Geogig 저장소 내에 존재하지 않습니다.",
+				"en" : "The specified ObjectId was not found in the respository."
+			},
+			"812err" : {
+				"ko" : "해당 저장소에 HEAD가 없어 체크아웃 할 수 없습니다.",
+				"en" : "Repository has no HEAD, can't checkout."
+			},
+			"813err" : {
+				"ko" : "ours 또는 theirs로 피처를 지정하여 충돌을 해결하세요.",
+				"en" : "Please specify either ours or theirs to update the feature path specified."
+			},
+			"814err" : {
+				"ko" : "Branch나 Commit 이력이 존재하지 않습니다.",
+				"en" : "No branch or commit specified for checkout."
+			},
+			"815err" : {
+				"ko" : "속성을 등록할 때에 key 값을 입력해야합니다.",
+				"en" : "You must specify the key when setting a config key."
+			},
+			"816err" : {
+				"ko" : "속성을 등록할 때에 value 값을 입력해야합니다.",
+				"en" : "You must specify the value when setting a config key."
+			},
+			"817err" : {
+				"ko" : "Old Commit Id가 올바르지 않습니다.",
+				"en" : "Invalid old ref spec."
+			},
+			"818err" : {
+				"ko" : "해당 경로가 유효하지 않습니다.",
+				"en" : "Invalid path was specified."
+			},
+			"819err" : {
+				"ko" : "새로운 Fetch 이력이 존재하지 않습니다.",
+				"en" : "Nothing specified to fetch from."
+			},
+			"820err" : {
+				"ko" : "원격 Geogig 저장소로부터 Fetch 이력을 받아올 수 없습니다.",
+				"en" : "Unable to fetch, the remote history is shallow."
+			},
+			"821err" : {
+				"ko" : "해당 경로가 유효하지 않습니다.",
+				"en" : "Couldn't resolve the given path."
+			},
+			"822err" : {
+				"ko" : "유효하지 않은 FeatureType 입니다.",
+				"en" : "Couldn't resolve the given path to a feature type."
+			},
+			"823err" : {
+				"ko" : "저장소에 HEAD가 존재하지 않아 Merge 할 수 없습니다.",
+				"en" : "Repository has no HEAD, can't merge."
+			},
+			"824err" : {
+				"ko" : "해당 Commit 이력을 확인할 수 없습니다.",
+				"en" : "Couldn't resolve to a commit."
+			},
+			"825err" : {
+				"ko" : "원격 Geogig 저장소로부터 Pull 할 수 없습니다.",
+				"en" : "Unable to pull, the remote history is shallow."
+			},
+			"826err" : {
+				"ko" : "원격 Geogig 저장소에 변경사항이 있으므로 Push 할 수 없습니다. Pull 한 후 다시 요청하세요.",
+				"en" : "Push failed: The remote repository has changes that would be lost in the event of a push."
+			},
+			"827err" : {
+				"ko" : "해당 저장소는 원격 Geogig 저장소에 Push 할 변경사항이 없습니다.",
+				"en" : "Push failed: There is not enough local history to complete the push."
+			},
+			"828err" : {
+				"ko" : "원격 Geogig 저장소가 존재하지 않습니다.",
+				"en" : "REMOTE_NOT_FOUND"
+			},
+			"829err" : {
+				"ko" : "원격 Geogig 저장소 URL이 유효하지 않습니다.",
+				"en" : "No URL was specified."
+			},
+			"830err" : {
+				"ko" : "해당 Object ID가 유효하지 않습니다.",
+				"en" : "Object ID could not be resolved to a feature."
+			},
+			"831err" : {
+				"ko" : "해당 Object ID가 유효하지 않습니다.",
+				"en" : "Invalid reference."
+			},
+			"832err" : {
+				"ko" : "Geogig 저장소의 상위 Commit 이력을 찾을 수 없습니다.",
+				"en" : "Parent tree couldn't be found in the repository."
+			},
+			"833err" : {
+				"ko" : "New Commit ID는 유효한 Commit 이력이 아닙니다.",
+				"en" : "New commit id did not resolve to a valid tree."
+			},
+			"834err" : {
+				"ko" : "Old Commit ID는 유효한 Commit 이력이 아닙니다.",
+				"en" : "Old commit id did not resolve to a valid tree."
+			},
+			"835err" : {
+				"ko" : "해당 Feature는 Commit 이력에 존재하지 않습니다. ",
+				"en" : "The feature was not found in either commit tree."
+			},
+			"836err" : {
+				"ko" : "삭제할 Geogig 저장소가 존재하지 않습니다.",
+				"en" : "No repository to delete."
+			},
+			"837err" : {
+				"ko" : "Commit 이력이 존재하지 않습니다.",
+				"en" : "Commit not found."
+			},
+			"838err" : {
+				"ko" : "URI가 유효하지 않습니다.",
+				"en" : "Unable to resolve URI of newly created repository."
+			},
+			"839err" : {
+				"ko" : "지원하지 않는 명령어입니다.",
+				"en" : "The request method is unsupported for this operation."
+			},
+			"840err" : {
+				"ko" : "해당 데이터베이스의 파라미터가 유효하지 않습니다.",
+				"en" : "Unable to connect using the specified database parameters."
+			},
+			"841err" : {
+				"ko" : "이미 존재하는 Geogig 저장소입니다. ",
+				"en" : "Cannot run init on an already initialized repository."
+			},
+			"842err" : {
+				"ko" : "Commit 이력에 해당 tree Id가 존재하지 않습니다.",
+				"en" : "Couldn't resolve commit's treeId"
+			},
+			"843err" : {
+				"ko" : "유효하지 않은 POST data 입니다.",
+				"en" : "Invalid POST data."
+			},
+			"844err" : {
+				"ko" : "token이 유효하지 않습니다. ",
+				"en" : "You must specify the correct token to delete a repository."
+			},
+			"845err" : {
+				"ko" : "token이 존재하지 않거나 만료되었습니다.",
+				"en" : "The specified token does not exist or has expired."
+			},
+			"846err" : {
+				"ko" : "value를 theirs 또는 ours로 입력해야합니다. ",
+				"en" : "Can not set 'value' to 'true' with 'theirs' or 'ours' set."
+			},
+			"847err" : {
+				"ko" : "이미 존재하는 Geogig 저장소 이름입니다. ",
+				"en" : "The specified repository name is already in use, please try a different name"
+			},
+			"848err" : {
+				"ko" : "Remote Repository에 연결할 수 없습니다.",
+				"en" : "Unable to connect remote repository."
+			},
+			"849err" : {
+				"ko" : "Geoserver에 연결할 수 없습니다.",
+				"en" : "Connection refused"
+			},
+			"850err" : {
+				"ko" : "Geogig 저장소 생성을 실패했습니다. connection parameters를 정확히 입력하세요.",
+				"en" : "Read timed out"
+			},
+			"851err" : {
+				"ko" : "Geogig 저장소 생성을 실패했습니다. connection parameters를 정확히 입력하세요.",
+				"en" : "PSQLException: ERROR: schema does not exist"
+			},
+			"852err" : {
+				"ko" : "이미 존재하는 Remote Geogig 저장소입니다. ",
+				"en" : "REMOTE_ALREADY_EXISTS"
+			},
+			"853err" : {
+				"ko" : "해당 Remote Geogig 저장소를 찾을 수 없습니다. ",
+				"en" : "java.io.FileNotFoundException"
+			},
+			"854err" : {
+				"ko" : "Remote Repository URL이 유효하지 않습니다.",
+				"en" : "java.net.UnknownHostException"
+			},
+			"855err" : {
+				"ko" : "Remote Repository URL이 유효하지 않습니다.",
+				"en" : "Expected authority"
+			},
+			"856err" : {
+				"ko" : "Remote Repository URL이 유효하지 않습니다.",
+				"en" : "java.net.MalformedURLException"
+			},
+			"857err" : {
+				"ko" : "충돌을 해결하세요",
+				"en" : "You need to resolve your index first."
+			},
+			"err" : {
+				"ko" : "오류",
+				"en" : "Error"
+			}
+	};
+	
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
@@ -554,10 +828,14 @@ gb.versioning.Repository.prototype.beginTransaction = function(serverName, repoN
 		},
 		success : function(data) {
 			console.log(data);
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
+			if (data.success === "true") {
+				
+			} else {
+				that.errorModal(data.error);
+			}
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -615,15 +893,11 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
 					that.refreshList();
 				}
 			} else {
-				console.error("error - no remote branch");
-				var title = "Error";
-				var msg = "Transaction is not ended."
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -682,15 +956,11 @@ gb.versioning.Repository.prototype.cancelTransaction = function(serverName, repo
 					callback();
 				}
 			} else {
-				console.error("error - no remote branch");
-				var title = "Error";
-				var msg = "Transaction is not ended."
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -738,9 +1008,6 @@ gb.versioning.Repository.prototype.getBranchList = function(serverName, repoName
 		success : function(data) {
 			console.log(data);
 			callback(data);
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
 	});
 };
@@ -991,6 +1258,16 @@ gb.versioning.Repository.prototype.getListGeoserverLayerURL = function() {
  */
 gb.versioning.Repository.prototype.getPublishGeogigLayerURL = function() {
 	return this.publishGeogigLayerURL;
+};
+
+/**
+ * removeGeogigLayer 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRemoveGeogigLayerURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getRemoveGeogigLayerURL = function() {
+	return this.removeGeogigLayerURL;
 };
 
 /**
@@ -1394,7 +1671,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		checkURL += jQuery.param(params);
 	}
 
-	var msg1 = $("<div>").text("Are you sure to delete this remote repository?").css({
+	var msg1 = $("<div>").text("Are you sure to remove this remote repository?").css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -1408,11 +1685,11 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var deleteModal = new gb.modal.Base({
-		"title" : "Delete remote repository",
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove remote repository",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -1420,7 +1697,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
-		deleteModal.close();
+		removeModal.close();
 	});
 	$(okBtn).click(function() {
 		$.ajax({
@@ -1440,7 +1717,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 				console.log(data);
 				if (data.success === "true") {
 					that.refreshRemoteList();
-					deleteModal.close();
+					removeModal.close();
 				} else {
 					var title = "Error";
 					var msg = "Remove failed."
@@ -1816,9 +2093,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 				that.messageModal(title, msg);
 			}
 		} else {
-			var title = "Error";
-			var msg = "Couldn't get branch list."
-			that.messageModal(title, msg);
+			that.errorModal(data.error);
 		}
 	};
 	this.getBranchList(server, repo, callback);
@@ -2218,7 +2493,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		var rname = $(rrNameInput).val() === "" ? null : $(rrNameInput).val();
 		var rurl = $(rrURLInput).val() === "" ? null : $(rrURLInput).val();
 		if (typeof rurl === "string") {
-			if (rurl.indexOf("http://") === -1 && rurl.indexOf("http://") === -1) {
+			if (rurl.indexOf("http://") === -1 && rurl.indexOf("https://") === -1) {
 				rurl = "http://" + rurl;
 			}
 		}
@@ -2337,7 +2612,11 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 			$(rrURLInput).css({
 				"background-color" : "#fff"
 			});
-			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal);
+			var callback = function(){
+				$(okBtn).prop("disabled", false);
+			};
+			that.initRepository(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, createRepoModal, callback);
+			$(this).prop("disabled", true);
 		}
 	});
 };
@@ -2353,7 +2632,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal) {
+gb.versioning.Repository.prototype.initRepository = function(server, repo, host, port, dbname, scheme, user, pass, rname, rurl, modal, callback) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -2391,6 +2670,9 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			if (typeof callback === "function") {
+				callback();
+			}
 		},
 		success : function(data) {
 			console.log(data);
@@ -2398,14 +2680,11 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 				modal.close();
 				that.refreshList();
 			} else {
-				var title = "Error";
-				var msg = data.error;
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -2422,7 +2701,7 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
  */
 gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	var that = this;
-	var msg1 = $("<div>").text("Are you sure to delete this repository?").css({
+	var msg1 = $("<div>").text("Are you sure to remove this repository?").css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -2436,11 +2715,11 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Repository",
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove Repository",
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -2448,10 +2727,10 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 		"footer" : buttonArea
 	});
 	$(closeBtn).click(function() {
-		deleteModal.close();
+		removeModal.close();
 	});
 	$(okBtn).click(function() {
-		that.removeRepository(that.getNowServer().text, that.getNowRepository().text, deleteModal);
+		that.removeRepository(that.getNowServer().text, that.getNowRepository().text, removeModal);
 	});
 };
 
@@ -2500,11 +2779,12 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
 			if (data.success === "true") {
 				modal.close();
 				that.refreshList();
+			} else {
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -2519,12 +2799,13 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.messageModal = function(title, msg) {
+gb.versioning.Repository.prototype.messageModal = function(title, msg, height) {
 	var that = this;
-	var msg1 = $("<div>").append(msg).css({
+	var msg1 = $("<div>").text(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
-		"padding-top" : "26px"
+		"margin-top" : "18px",
+		"margin-bottom" : "18px"
 	});
 	var body = $("<div>").append(msg1);
 	var okBtn = $("<button>").css({
@@ -2534,8 +2815,8 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 
 	var modal = new gb.modal.Base({
 		"title" : title,
-		"width" : 432,
-		"height" : 218,
+		"width" : 310,
+		"height" : height,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -2931,14 +3212,11 @@ gb.versioning.Repository.prototype.createNewBranch = function(server, repo, bran
 				modal.close();
 				that.refreshList();
 			} else {
-				var title = "Error";
-				var msg = "Create new branch failed."
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -3089,7 +3367,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 				"background-color" : "#fff"
 			});
 			if (typeof url === "string") {
-				if (url.indexOf("http://") === -1 && url.indexOf("http://") === -1) {
+				if (url.indexOf("http://") === -1 && url.indexOf("https://") === -1) {
 					url = "http://" + url;
 				}
 			}
@@ -3146,14 +3424,11 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 				modal.close();
 				that.refreshRemoteList();
 			} else {
-				var title = "Error";
-				var msg = data.error;
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -3604,11 +3879,11 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 					that.endTransaction(server, repo, tid, commitModal);
 				});
 			} else {
-				var title = "Error";
-				var msg = "Override failed. Please try again."
-				that.messageModal(title, msg);
+				that.errorModal(data.error);
 			}
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 }
 
@@ -4039,36 +4314,27 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 										}
 									}
 								} else {
-									var title = "Error";
-									var msg = "Retrieve feature failed."
-									that.messageModal(title, msg);
+									that.errorModal(data.error);
 								}
-							},
-							error : function(jqXHR, textStatus, errorThrown) {
-
 							}
+						}).fail(function(xhr, status, errorThrown) {
+							that.errorModal(xhr.responseJSON.status);
 						});
 					} else {
 						that.getTargetMap().updateSize();
-						var td1 = $("<td>").text("Deleted");
-						var td2 = $("<td>").text("Deleted");
+						var td1 = $("<td>").text("Removed");
+						var td2 = $("<td>").text("Removed");
 						var tr = $("<tr>").append(td1).append(td2);
 						$(tattrtbody).append(tr);
 					}
 				} else {
-					var title = "Error";
-					var msg = "Retrieve feature failed."
-					that.messageModal(title, msg);
+					that.errorModal(data.error);
 				}
-			},
-			error : function(jqXHR, textStatus, errorThrown) {
-
 			}
+		}).fail(function(xhr, status, errorThrown) {
+			that.errorModal(xhr.responseJSON.status);
 		});
-	} else {
-
 	}
-
 };
 
 /**
@@ -4304,13 +4570,9 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 					}
 				});
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			var msg1 = $("<div>").append(textStatus);
-			var msg2 = $("<div>").append(errorThrown);
-			var group = $("<div>").append(msg1).append(msg2);
-			that.messageModal("Error", group);
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -4361,13 +4623,9 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 					$(select).append(opt);
 				}
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			var msg1 = $("<div>").append(textStatus);
-			var msg2 = $("<div>").append(errorThrown);
-			var group = $("<div>").append(msg1).append(msg2);
-			that.messageModal("Error", group);
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -4416,16 +4674,118 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
 					callback();
 				}
 			} else {
-				var group = $("<div>").append("Publish failed.");
-				that.messageModal("Error", group);
+				that.errorModal(data.error);
 			}
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			var msg1 = $("<div>").append(textStatus);
-			var msg2 = $("<div>").append(errorThrown);
-			var group = $("<div>").append(msg1).append(msg2);
-			that.messageModal("Error", group);
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
+	});
+};
+
+/**
+ * 레이어 삭제 확인창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#removeLayerModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
+	var that = this;
+	var msg1 = $("<div>").text("Are you sure to remove this layer?").css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text('"' + layer + '"').css({
+		"text-align" : "center",
+		"font-size" : "24px"
+	});
+	var body = $("<div>").append(msg1).append(msg2);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var removeModal = new gb.modal.Base({
+		"title" : "Remove Repository",
+		"width" : 310,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		removeModal.close();
+	});
+	$(okBtn).click(function() {
+		var server = that.getNowServer();
+		var repo = that.getNowRepository();
+		var tid = that.getJSTree().getTransactionId(repo.id);
+		var path = layer;
+		var callback = function(){
+			that.refreshList();
+		};
+		that.removeLayer(server.text, repo.text, tid, path, removeModal, callback);
+	});
+};
+
+/**
+ * 해당 레이어를 삭제한다.
+ * 
+ * @method gb.versioning.Repository#removeLayer
+ */
+gb.versioning.Repository.prototype.removeLayer = function(server, repo, tid, path,  modal, callback) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"transactionId" : tid,
+		"path" : path,
+		"recursive" : true
+	};
+
+	var checkURL = this.getRemoveGeogigLayerURL();
+	if (checkURL.indexOf("?") !== -1) {
+		checkURL += "&";
+		checkURL += jQuery.param(params);
+	} else {
+		checkURL += "?";
+		checkURL += jQuery.param(params);
+	}
+	$.ajax({
+		url : checkURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.error === null) {
+					var group = $("<div>").append("Layer has been deleted.");
+					that.messageModal("Message", group);
+					 modal.close();
+					if (typeof callback === "function") {
+						callback();
+					}	
+				}
+			} else {
+				that.errorModal(data.error);
+			}
+		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 };
 
@@ -4583,5 +4943,21 @@ gb.versioning.Repository.prototype.changeNodeOnLoadingList = function(idx, nodeI
 	} else {
 		console.error("there is no node id:", nodeId);
 		return;
+	}
+};
+
+/**
+ * GeoGig 저장소의 타겟 브랜치를 변경한다.
+ * 
+ * @method gb.tree.GeoServer#switchBranch
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ */
+gb.versioning.Repository.prototype.errorModal = function(code) {
+	var that = this;
+	if (parseInt(code) === 850) {
+		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 222);
+	} else {
+		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 182);	
 	}
 };

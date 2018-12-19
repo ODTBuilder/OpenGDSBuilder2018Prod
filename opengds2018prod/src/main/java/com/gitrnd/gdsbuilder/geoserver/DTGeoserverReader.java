@@ -161,8 +161,6 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 				DTGeoLayer dtGeoLayer = null;
 				dtGeoLayer = getDTGeoLayer(workspace, layerName);
 				if (dtGeoLayer != null) {
-					RESTLayer layer = getLayer(workspace, layerName);
-//					dtGeoLayer.setStyle(layer.getDefaultStyle());
 					geoLayerList.add(dtGeoLayer);
 				}
 			}

@@ -21,7 +21,8 @@ if (!gb.validation)
 		"Digital Map 2.0" : 1,
 		"Underground Map 1.0" : 2,
 		"Underground Map 2.0" : 2,
-		"Forest Map" : 2
+		"Forest Map" : 2,
+		"nonset" : 3
 	};
 	
 	const QATYPE = {
@@ -57,7 +58,10 @@ if (!gb.validation)
 		"border-top-left-radius": ".28571429rem",
 		"border-bottom-left-radius": ".28571429rem",
 		"line-height": "1em",
-		"color": "rgba(0,0,0,.6)"
+		"color": "rgba(0,0,0,.6)",
+		"cursor": "default",
+		"opacity": ".45",
+		"pointer-events": "none"
 	};
 	
 	gb.validation.Validation = function(obj) {
@@ -84,13 +88,13 @@ if (!gb.validation)
 					"display": "inline-flex"
 				});
 		
-		var button = $("<button id='ug5' class='version-btn'>").css(BUTTONSTYLE).text("지하시설물");
+		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text("지하시설물");
 		this.verSelectTag.append(button);
 		
-		button = $("<button id='nm5' class='version-btn'>").css(BUTTONSTYLE).text("수치지도");
+		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).css(BUTTONSTYLE).text("수치지도");
 		this.verSelectTag.append(button);
 		
-		button = $("<button id='fr5' class='version-btn'>").css(BUTTONSTYLE).text("임상도");
+		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text("임상도");
 		this.verSelectTag.append(button);
 		
 		$(document).on("click", ".version-btn", function(){
@@ -103,6 +107,12 @@ if (!gb.validation)
 				"background": "#00b5ad none",
 				"color": "#fff"
 			});
+			
+			if($(this).data("index") === 1){
+				that.messageContent.html($(this).text() + " 는(은) workspace를 여러개 선택할 수 있습니다.");
+			} else if($(this).data("index") === 2){
+				that.messageContent.html($(this).text() + " 는(은) workspace를 하나만 선택할 수 있습니다.");
+			}
 		});
 		
 		this.srsSelectTag = $("<select class='form-control'>");
@@ -238,22 +248,36 @@ if (!gb.validation)
 		
 		if(!srs.val()){
 			this.messageContent.html("좌표계를 선택해야합니다.");
+			return;
 		} else {
 			params.crs = "EPSG:" + srs.val();
 		}
 		
 		if(!preset.data("prid")){
 			this.messageContent.html("Preset ID가 없습니다.");
+			return;
 		} else {
 			params.prid = preset.data("prid").toString();
 		}
 		
-		if(!preset.data("cat")){
-			this.messageContent.html("Category ID가 없습니다.");
+		if(preset.data("prid") === "nonset"){
+			params.qaVer = "qa2";
+			params.qaType = $(".version-btn.active").attr("id");
+			
+			for(let i in QATYPE){
+				if(QATYPE[i].ver === params.qaVer && QATYPE[i].type === params.qaType){
+					params.cat = i;
+				}
+			}
 		} else {
-			params.cat = preset.data("cat");
-			params.qaVer = QATYPE[preset.data("cat").toString()].ver;
-			params.qaType = QATYPE[preset.data("cat").toString()].type;
+			if(!preset.data("cat")){
+				this.messageContent.html("Category ID가 없습니다.");
+				return;
+			} else {
+				params.cat = preset.data("cat");
+				params.qaVer = QATYPE[preset.data("cat").toString()].ver;
+				params.qaType = QATYPE[preset.data("cat").toString()].type;
+			}
 		}
 		
 		return params;
@@ -724,7 +748,13 @@ if (!gb.validation)
 				var option = $("<option>").val("false").text("사용자 정의 옵션을 선택해주세요:");
 				select.append(option);
 				
-				option = $("<option>").attr("data-cat", 0).attr("data-prid", "nonset").val("nonset").text("default");
+				option = 
+					$("<option>")
+						.attr("data-title", "nonset")
+						.attr("data-cat", 0)
+						.attr("data-prid", "nonset")
+						.val("nonset")
+						.text("not set");
 				select.append(option);
 				
 				for (var i = 0; i < data.length; i++) {
@@ -778,6 +808,20 @@ if (!gb.validation)
 						this.setAttribute("class", "same-as-selected");
 						if(!!s.options[i].dataset.title){
 							if(!!INDEXLIST[s.options[i].dataset.title]){
+								if(INDEXLIST[s.options[i].dataset.title] === 3){
+									message.html("검수 하려는 파일의 타입을 선택해주세요.");
+									$(".version-btn").css({
+										"cursor": "pointer",
+										"opacity": "1",
+										"pointer-events": "auto"
+									});
+								} else {
+									$(".version-btn").css({
+										"cursor": "default",
+										"opacity": ".45",
+										"pointer-events": "none"
+									});
+								}
 								if(INDEXLIST[s.options[i].dataset.title] === 1){
 									message.html(s.options[i].dataset.title + "는 workspace를 여러개 선택할 수 있습니다.");
 								} else if(INDEXLIST[s.options[i].dataset.title] === 2){

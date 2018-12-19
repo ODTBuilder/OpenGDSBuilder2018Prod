@@ -757,6 +757,7 @@ gb.tree.GeoServer = function(obj) {
 										});
 										upload.open();
 									}
+								}
 							};
 							totalObj["upload"] = uploadObj;
 						}

@@ -99,8 +99,7 @@ public interface GeoserverService {
 	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류 607 :
 	 *         workspace 또는 datastore 존재 X 608 : 파일구조 이상 609 : 레이어 중복
 	 */
-	public int shpCollectionPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore,
-			MultipartHttpServletRequest request);
+	public int shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication);
 
 	/**
 	 * @Description 에러 레이어 발행

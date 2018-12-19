@@ -48,6 +48,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdom.JDOMException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +64,7 @@ import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
+import com.gitrnd.gdsbuilder.geoserver.service.en.EnFeatureTypeList;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.HTTPUtils;
@@ -221,26 +226,77 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	}
 
 	// 발행되어있는 레이어 목록
-	public String getConfiguredFeatureTypes(String wsName, String dsName, String type) {
-		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "featuretypes" + "." + type
+	public String getConfiguredFeatureTypes(String wsName, String dsName, String format) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "featuretypes" + "." + format
 				+ "?list=configured";
 		return load(url);
 	}
 
 	// 발행되어있지 않은 레이어 목록
-	public String getAvailableFeatureTypes(String wsName, String dsName, String type) {
-		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+	public String getAvailableFeatureTypes(String wsName, String dsName, String format) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + format
 				+ "?list=available";
 		return load(url);
 	}
 
 	// 모든 레이어 목록
-	public String getAllFeatureTypes(String wsName, String dsName, String type) {
-		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + type
+	public String getAllFeatureTypes(String wsName, String dsName, String format) {
+		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + format
 				+ "?list=all";
 		return load(url);
 	}
 
+	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores, EnFeatureTypeList type) {
+		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml?list="+type.getType();
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("### Retrieving featuretypes from " + url);
+		}
+		return RESTFeatureTypeList.build(load(url));
+	}
+	
+	/**
+	 * @Description 이용가능한 레이어 존재여부(발행만 안된상태)ㅒ
+	 * @author SG.Lee
+	 * @Date 2018. 12. 19. 오후 3:34:53
+	 * @param workspace
+	 * @param datastores
+	 * @param layerName
+	 * @return boolean
+	 * */
+	public boolean existsFeatureTypesAvailable(String workspace, String datastores, String layerName){
+		boolean result = false;
+		String featuresString = this.getAvailableFeatureTypes(workspace, datastores, "json");
+		if(featuresString!=null){
+			JSONParser parser = new JSONParser();
+			try {
+				Object obj;
+				obj = parser.parse( featuresString );
+				try {
+					JSONObject jsonObj = (JSONObject) obj;
+					JSONObject jsonList = (JSONObject) jsonObj.get("list");
+					JSONArray arrString = (JSONArray) jsonList.get("string"); 
+					if(arrString!=null){
+						for(int i =0; i<arrString.size(); i++){
+							if(layerName!=null){
+								if(arrString.get(i).equals(layerName)){
+									result = true;
+									break;
+								}
+							}else{
+								LOGGER.debug("layerName Null");
+								break;
+							}
+						}
+					}
+				} catch (ClassCastException e) {}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				LOGGER.debug("Json 파싱에러");
+			}
+		}
+		return result;
+	}
+	
 	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
 		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml";
 		if (LOGGER.isDebugEnabled()) {
@@ -248,7 +304,7 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		}
 		return RESTFeatureTypeList.build(load(url));
 	}
-
+	
 	private String load(String url) {
 		LOGGER.info("Loading from REST path " + url);
 		String response = HTTPUtils.get(baseurl + url, username, password);

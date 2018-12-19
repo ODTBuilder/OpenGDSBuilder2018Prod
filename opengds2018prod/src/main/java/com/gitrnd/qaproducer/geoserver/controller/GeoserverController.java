@@ -489,26 +489,24 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/geoserverRemoveLayers.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public int geoserverRemoveLayers(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject jsonObject,
+	public boolean geoserverRemoveLayers(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject jsonObject,
 			@AuthenticationPrincipal LoginUser loginUser) throws IOException {
-		int resultFlag = 500;
+		boolean resultFlag = false; 
 		if (loginUser == null) {
-			resultFlag = 600;
-			response.sendError(resultFlag);
+			response.sendError(600);
 		}
 		List<String> layerList = new ArrayList<String>();
 		layerList = (ArrayList<String>) jsonObject.get("layerList");
 		String serverName = (String) jsonObject.get("serverName");
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		if (dtGeoserverManager == null) {
-			resultFlag = 603;
-			response.sendError(resultFlag);
+			response.sendError(603);
 		} else {
 			String workspace = (String) jsonObject.get("workspace");
 			String datastore = (String) jsonObject.get("datastore");
-			resultFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, datastore, layerList);
-			if(resultFlag!=200){
-				response.sendError(resultFlag);
+			int nFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, datastore, layerList);
+			if(nFlag!=200){
+				response.sendError(nFlag);
 			}
 		}
 		return resultFlag;
@@ -610,12 +608,20 @@ public class GeoserverController extends AbstractController {
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		String workspace = (String) request.getParameter("workspace");
 		String datastore = (String) request.getParameter("datastore");
+		String ignorePublication = (String) request.getParameter("ignorePublication");
+		boolean iPFlag = false;
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null) {
-			response.sendError(601, "workspace를 입력하지 않았습니다.");
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication == null) {
+			if(ignorePublication.toUpperCase().equals("TRUE")){
+				iPFlag = true;
+			}else if(ignorePublication.toUpperCase().equals("FALSE")){
+				iPFlag = false;
+			}else{
+				response.sendError(601, "미입력 텍스트가 존재합니다.");
+			}
 		} else {
-			response.sendError(geoserverService.shpCollectionPublishGeoserver(dtGeoserverManager, workspace, datastore, request));
+			geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
 		}
 	}
 

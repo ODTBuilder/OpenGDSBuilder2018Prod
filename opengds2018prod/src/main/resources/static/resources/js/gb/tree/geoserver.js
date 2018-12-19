@@ -722,40 +722,42 @@ gb.tree.GeoServer = function(obj) {
 						// 업로드
 						if (o.type === "datastore") {
 							var uploadObj = {
-								"separator_before" : false,
-								"icon" : "fas fa-upload",
-								"separator_after" : false,
-								"_disabled" : function() {
-									console.log(o);
-									console.log(cb);
-									var result = true;
-									if (o.type === "datastore") {
-										result = false;
-									}
-									return result;
-								},
-								"label" : "Upload",
-								/*
-								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
-								 * "icon" : "glyphicon glyphicon-leaf",
-								 */
-								"action" : function(data) {
-									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									if (obj.type === "datastore") {
-										var upload = that.getUploadSHP();
-										var datastore = obj.text;
-										var workspace = inst.get_node(obj.parent).text;
-										var geoserver = inst.get_node(obj.parents[1]).text;
-										console.log(datastore);
-										console.log(workspace);
-										console.log(geoserver);
-										upload.setGeoServer(geoserver);
-										upload.setWorkspace(workspace);
-										upload.setDatastore(datastore);
-										upload.setCallback(function(){
-											inst.refresh();
-										});
-										upload.open();
+									"separator_before" : false,
+									"icon" : "fas fa-upload",
+									"separator_after" : false,
+									"_disabled" : function() {
+										console.log(o);
+										console.log(cb);
+										var result = true;
+										if (o.type === "datastore") {
+											result = false;
+										}
+										return result;
+									},
+									"label" : "Upload",
+									/*
+									 * ! "shortcut" : 113, "shortcut_label" :
+									 * 'F2', "icon" : "glyphicon
+									 * glyphicon-leaf",
+									 */
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										if (obj.type === "datastore") {
+											var upload = that.getUploadSHP();
+											var datastore = obj.text;
+											var workspace = inst.get_node(obj.parent).text;
+											var geoserver = inst.get_node(obj.parents[1]).text;
+											console.log(datastore);
+											console.log(workspace);
+											console.log(geoserver);
+											upload.setGeoServer(geoserver);
+											upload.setWorkspace(workspace);
+											upload.setDatastore(datastore);
+											upload.setCallback(function(){
+												inst.refresh();
+											});
+											upload.open();
+										}
 									}
 								}
 							};

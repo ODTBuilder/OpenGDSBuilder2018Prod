@@ -4102,13 +4102,13 @@
 							if(obj.icon === "gb-icon"){
 								var customIcon = document.createElement('div');
 								customIcon.className = obj.icon + '-' + obj.type.toLowerCase();
-								customIcon.style.background = obj.li_attr.fillColor || '#666';
-								customIcon.style.border = '2px solid ' + obj.li_attr.lineColor || '#666';
+								customIcon.style.background = obj.original.fillColor || '#666';
+								customIcon.style.border = '2px solid ' + obj.original.lineColor || '#666';
 								node.childNodes[1].childNodes[0].style.position = 'relative';
 								node.childNodes[1].childNodes[0].appendChild(customIcon);
 								if(obj.type.toLowerCase() === "linestring" || obj.type.toLowerCase() === "multilinestring"){
 									node.childNodes[1].childNodes[0].className += ' gb-fa-rotate-135';
-									customIcon.style.background = obj.li_attr.lineColor || '#666';
+									customIcon.style.background = obj.original.lineColor || '#666';
 								}
 							}
 						} else {

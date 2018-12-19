@@ -23,6 +23,7 @@ gb.geoserver.UploadSHP = function(obj) {
 	this.geoserver;
 	this.workspace;
 	this.datastore;
+	this.callback;
 	this.validEPSG = false;
 	this.epsg = undefined;
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
@@ -215,6 +216,27 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 };
 
 /**
+ * callback 함수를 설정한다.
+ * 
+ * @method gb.geoserver.UploadSHP#setCallback
+ * @param {String}
+ *            geoserver - 설정할 지오서버의 이름
+ */
+gb.geoserver.UploadSHP.prototype.setCallback = function(callback) {
+	this.callback = callback;
+}
+
+/**
+ * callback 함수를 반환한다.
+ * 
+ * @method gb.geoserver.UploadSHP#getCallback
+ * @return {String} 설정한 지오서버의 이름
+ */
+gb.geoserver.UploadSHP.prototype.getCallback = function() {
+	return this.callback;
+}
+
+/**
  * 지오서버를 설정한다.
  * 
  * @method gb.geoserver.UploadSHP#setGeoServer
@@ -350,7 +372,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 		},
 		success : function(data) {
 			console.log(data);
-			// that.refreshList();
+			that.callback();
 			modal.close();
 		}
 	});

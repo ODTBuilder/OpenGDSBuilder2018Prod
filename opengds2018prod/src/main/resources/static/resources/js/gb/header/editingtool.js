@@ -2629,7 +2629,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 			this.targetElement.append(notice);
 		}
 
-		this.deactiveAnotherInteraction();
+		//this.deactiveAnotherInteraction();
 	} else {
 		$("#zoomNotice").remove();
 		this.headerTag.find(".edit-zoom-hint").remove();

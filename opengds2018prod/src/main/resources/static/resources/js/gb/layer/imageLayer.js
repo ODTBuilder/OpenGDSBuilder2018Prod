@@ -169,6 +169,10 @@ if (!gb.layer)
 			that.map.addLayer(this.imageLayer);
 			
 			that.map.removeInteraction(that);
+			
+			this.imageLayer.on("change", function(e){
+				console.log(e);
+			})
 		});
 		this.listener_.push(endEvent);
 		
@@ -285,6 +289,7 @@ if (!gb.layer)
 	}
 	
 	gb.layer.ImageLayer.prototype.move = function(){
+		var that = this;
 		var features = this.vector.getSource().getFeatures();
 		var collection = new ol.Collection();
 		

@@ -84,26 +84,25 @@ if (!gb.validation)
 					"display": "inline-flex"
 				});
 		
-		var button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("지하시설물");
+		var button = $("<button id='ug5' class='version-btn'>").css(BUTTONSTYLE).text("지하시설물");
 		this.verSelectTag.append(button);
 		
-		button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("수치지도");
+		button = $("<button id='nm5' class='version-btn'>").css(BUTTONSTYLE).text("수치지도");
 		this.verSelectTag.append(button);
 		
-		button = $("<button class='version-btn'>").css(BUTTONSTYLE).text("임상도");
+		button = $("<button id='fr5' class='version-btn'>").css(BUTTONSTYLE).text("임상도");
 		this.verSelectTag.append(button);
 		
 		$(document).on("click", ".version-btn", function(){
+			$(this).parent().find("button").removeClass("active").css({
+				"background": "none rgb(224, 225, 226)",
+				"color": "rgba(0, 0, 0, 0.6)"
+			});
 			
-			if($(this).hasClass("active")){
-				$(this).css("background", "none rgb(224, 225, 226)");
-				$(this).css("color", "rgba(0, 0, 0, 0.6)");
-			} else {
-				$(this).css("background", "#00b5ad none");
-				$(this).css("color", "#fff");
-			}
-			$(this).parent().find("button").removeClass("active");
-			$(this).addClass("active");
+			$(this).addClass("active").css({
+				"background": "#00b5ad none",
+				"color": "#fff"
+			});
 		});
 		
 		this.srsSelectTag = $("<select class='form-control'>");
@@ -157,7 +156,7 @@ if (!gb.validation)
 			'background: #fffaf3;' +
 			'line-height: 1.4285em;' +
 			'padding: 4px 4px;' +
-			'margin-bottom: 10px;' +
+			'margin: 10px 0;' +
 			'color: #573a08;' +
 			'display: flex;' +
 			'width: 100%;' +
@@ -317,10 +316,15 @@ if (!gb.validation)
 			$("<div class='col-md-6'>")
 				.append(rightContent);
 		
+		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
+		var messageContent = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
+		var message = $("<div>").addClass("col-md-12 ").append(messageContent);
+		
 		var body = 
 			$("<div class='row'>")
 				.append(left)
 				.append(right)
+				.append(message)
 				.css({
 					"width": "700px"
 				});
@@ -630,15 +634,13 @@ if (!gb.validation)
 		var verDiv = $("<div>").addClass("validation-custom-select").append(this.verSelectTag);
 		var srsDiv = $("<div>").addClass("validation-custom-select").append(this.srsSelectTag);
 		
-		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
+		var body = 
+			$("<div>")
+				.append(presetDiv).append(verDiv).append(srsDiv);
+		
 		this.messageContent = $("<p>").css({
 			"margin": "0 3px"
 		}).html("사용자 정의 옵션을 먼저 선택해주세요.");
-		var message = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
-		var body = 
-			$("<div>")
-				.append(presetDiv).append(verDiv).append(srsDiv).append(message);
-		
 		requestPreset(this, this.presetSelectTag, presetDiv, this.messageContent);
 		customSelect(srsDiv);
 		

@@ -18,6 +18,7 @@ gb.edit.FeatureRecord = function(obj) {
 	this.id = obj.id ? obj.id : false;
 	this.wfstURL = obj.wfstURL || '';
 	this.layerInfoURL = obj.layerInfoURL || '';
+	this.editTool = undefined;
 }
 /**
  * 임시보관 중인 새로운 feature들을 반환한다.
@@ -522,6 +523,7 @@ gb.edit.FeatureRecord.prototype.deleteFeatureRemoved = function(layerId, feature
 gb.edit.FeatureRecord.prototype.save = function(editTool){
 	var that = this;
 	var edit = editTool;
+	this.editTool = editTool;
 	
 	var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
 
@@ -559,7 +561,33 @@ gb.edit.FeatureRecord.prototype.save = function(editTool){
 	});
 
 	$(okBtn).click(function() {
+		
+		// loading div 생성
+		$("body").append(
+			$("<div id='shp-upload-loading'>").css({
+				"z-index": "10",
+				"position": "absolute",
+				"left": "0",
+				"top": "0",
+				"width": "100%",
+				"height": "100%",
+				"text-align": "center",
+				"background-color": "rgba(0, 0, 0, 0.4)"
+			}).append(
+				$("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+					"position": "relative",
+					"top": "50%",
+					"margin-top": "-5em"
+				})
+			)
+		);
+		
 		that.sendWFSTTransaction(edit);
+		
+		if(gb.undo){
+			gb.undo.invalidateAll();
+		}
+		
 		openSaveModal.close();
 	});
 	
@@ -568,112 +596,163 @@ gb.edit.FeatureRecord.prototype.save = function(editTool){
 		that.modified = {};
 		that.removed = {};
 		edit.editToolClose();
+		if(gb.undo){
+			gb.undo.invalidateAll();
+		}
 		openSaveModal.close();
 	});
 }
 
-gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
-	
-	var layers = {};
-	var format = new ol.format.WFS();
+gb.edit.FeatureRecord.prototype.closeEditTool = function(editTool){
+	var count = 0;
 	var edit = editTool;
 	
-	for(let layer in this.created){
-		for(let feature in this.created[layer]){
-			if(feature === "geomKey"){
-				continue;
+	for(let i in this.created){
+		for(let j in this.created[i]){
+			if(j !== "geomKey"){
+				count++;
 			}
-			if(!layers[layer]){
-				layers[layer] = {};
-				layers[layer].created = [];
-				layers[layer].modified = null;
-				layers[layer].removed = null;
-			} else {
-				if(layers[layer].created === null){
-					layers[layer].created = [];
-				}
-			}
-			
-			var geomKey = this.created[layer][feature].getGeometryName();
-			this.created[layer][feature].setGeometryName(this.created[layer].geomKey);
-			this.created[layer][feature].set(this.created[layer].geomKey, this.created[layer][feature].get(geomKey));
-			this.created[layer][feature].unset(geomKey);
-			layers[layer].created.push(this.created[layer][feature]);
-		}
-	}
-	for(let layer in this.modified){
-		for(let feature in this.modified[layer]){
-			if(feature === "geomKey"){
-				continue;
-			}
-			if(!layers[layer]){
-				layers[layer] = {};
-				layers[layer].created = null;
-				layers[layer].modified = [];
-				layers[layer].removed = null;
-			} else {
-				if(layers[layer].modified === null){
-					layers[layer].modified = [];
-				}
-			}
-			var geomKey = this.modified[layer][feature].getGeometryName();
-			this.modified[layer][feature].setGeometryName(this.modified[layer].geomKey);
-			this.modified[layer][feature].set(this.modified[layer].geomKey, this.modified[layer][feature].get(geomKey));
-			this.modified[layer][feature].unset(geomKey);
-			layers[layer].modified.push(this.modified[layer][feature]);
-		}
-	}
-	for(let layer in this.removed){
-		for(let feature in this.removed[layer]){
-			if(feature === "geomKey"){
-				continue;
-			}
-			if(!layers[layer]){
-				layers[layer] = {};
-				layers[layer].created = null;
-				layers[layer].modified = null;
-				layers[layer].removed = [];
-			} else {
-				if(layers[layer].removed === null){
-					layers[layer].removed = [];
-				}
-			}
-			var geomKey = this.removed[layer][feature].getGeometryName();
-			this.removed[layer][feature].setGeometryName(this.removed[layer].geomKey);
-			this.removed[layer][feature].set(this.removed[layer].geomKey, this.removed[layer][feature].get(geomKey));
-			this.removed[layer][feature].unset(geomKey);
-			layers[layer].removed.push(this.removed[layer][feature]);
 		}
 	}
 	
-	var geoserver, workspace, repo, layername, split, node;
-	for(let layer in layers){
-		split = layer.split(":");
-		geoserver = layer.split(":")[0];
-		workspace = layer.split(":")[1];
-		repo = layer.split(":")[2];
-		layername = "";
-		for(let i in split){
-			if(i > 2){
-				layername += "_" + split[i];
+	for(let i in this.modified){
+		for(let j in this.modified[i]){
+			if(j !== "geomKey"){
+				count++;
 			}
 		}
-		layername = layername.substring(1);
-		
-		node = format.writeTransaction(layers[layer].created, layers[layer].modified, layers[layer].removed, {
-			"featureNS": workspace,
-			"featurePrefix": workspace,
-			"featureType": layername,
-			"version": "1.0.0"
-		});
-		
-		var param = {
+	}
+	
+	for(let i in this.removed){
+		for(let j in this.removed[i]){
+			if(j !== "geomKey"){
+				count++;
+			}
+		}
+	}
+	
+	if(!count){
+		this.created = {};
+		this.modified = {};
+		this.removed = {};
+		$("#shp-upload-loading").remove();
+		edit.editToolClose();
+	}
+}
+
+gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
+	var that = this;
+	var geoserver, workspace, repo, layername, split, node, param;
+	var geomKey, layerid, type;
+	var layers = {};
+	var arr = [];
+	var edit = editTool;
+	var format = new ol.format.WFS();
+	
+	if(Object.keys(this.modified).length !== 0){
+		layerid = Object.keys(this.modified)[0];
+		type = "modified";
+		for(let feature in this.modified[layerid]){
+			if(feature === "geomKey"){
+				continue;
+			}
+			
+			var geomKey = this.modified[layerid][feature].getGeometryName();
+			this.modified[layerid][feature].setGeometryName(this.modified[layerid].geomKey);
+			this.modified[layerid][feature].set(this.modified[layerid].geomKey, this.modified[layerid][feature].get(geomKey));
+			this.modified[layerid][feature].unset(geomKey);
+			arr.push(this.modified[layerid][feature]);
+		}
+		delete this.modified[layerid];
+	} else {
+		if(Object.keys(this.removed).length !== 0){
+			layerid = Object.keys(this.removed)[0];
+			type = "removed";
+			for(let feature in this.removed[layerid]){
+				if(feature === "geomKey"){
+					continue;
+				}
+				
+				geomKey = this.removed[layerid][feature].getGeometryName();
+				this.removed[layerid][feature].setGeometryName(this.removed[layerid].geomKey);
+				this.removed[layerid][feature].set(this.removed[layerid].geomKey, this.removed[layerid][feature].get(geomKey));
+				this.removed[layerid][feature].unset(geomKey);
+				arr.push(this.removed[layerid][feature]);
+			}
+			delete this.removed[layerid];
+		} else {
+			if(Object.keys(this.created).length !== 0){
+				layerid = Object.keys(this.created)[0];
+				type = "created";
+				for(let feature in this.created[layerid]){
+					if(feature === "geomKey"){
+						continue;
+					}
+					
+					geomKey = this.created[layerid][feature].getGeometryName();
+					this.created[layerid][feature].setGeometryName(this.created[layerid].geomKey);
+					this.created[layerid][feature].set(this.created[layerid].geomKey, this.created[layerid][feature].get(geomKey));
+					this.created[layerid][feature].unset(geomKey);
+					arr.push(this.created[layerid][feature]);
+				}
+				delete this.created[layerid];
+			} else {
+				this.closeEditTool(edit);
+				return;
+			}
+		}
+	}
+	
+	split = layerid.split(":");
+	geoserver = layerid.split(":")[0];
+	workspace = layerid.split(":")[1];
+	repo = layerid.split(":")[2];
+	layername = "";
+	
+	for(let i in split){
+		if(i > 2){
+			layername += "_" + split[i];
+		}
+	}
+	
+	layername = layername.substring(1);
+	
+	switch(type){
+		case "created":
+			node = format.writeTransaction(arr, null, null, {
+				"featureNS": workspace,
+				"featurePrefix": workspace,
+				"featureType": layername,
+				"version": "1.0.0"
+			});
+			break;
+		case "modified":
+			this.wfstCallback(arr, "modified", {
+				geoserver: geoserver,
+				workspace: workspace,
+				layername: layername,
+				layer: layerid
+			});
+			break;
+		case "removed":
+			node = format.writeTransaction(null, null, arr, {
+				"featureNS": workspace,
+				"featurePrefix": workspace,
+				"featureType": layername,
+				"version": "1.0.0"
+			});
+			break;
+		default:
+			return
+	}
+	
+	if(type === "created" || type === "removed"){
+		param = {
 			"serverName": geoserver,
 			"workspace": workspace,
 			"wfstXml": '<?xml version="1.0" encoding="utf-8"?>'+new XMLSerializer().serializeToString(node)
 		};
 		
-		var that = this;
 		$.ajax({
 			type: "POST",
 			url: this.wfstURL,
@@ -681,10 +760,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			contentType: 'application/json; charset=utf-8',
 			success: function(data) {
 				var result = format.readTransactionResponse(data);
-				that.created = {};
-				that.modified = {};
-				that.removed = {};
-				edit.editToolClose();
+				that.sendWFSTTransaction(edit);
 			},
 			error: function(e) {
 				var errorMsg = e? (e.status + ' ' + e.statusText) : "";
@@ -693,4 +769,79 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			context: this
 		});
 	}
+}
+
+gb.edit.FeatureRecord.prototype.wfstCallback = function(array, type, options){
+	var that = this;
+	var node, param, sel, feature;
+	var arr = array;
+	var t = type;
+	var opt = options;
+	var format = new ol.format.WFS();
+	
+	if(!(arr instanceof Array)){
+		return;
+	}
+	
+	if(arr.length === 0){
+		this.sendWFSTTransaction(this.editTool);
+		return;
+	}
+	
+	if(!(opt instanceof Object)){
+		return;
+	}
+	
+	feature = arr.pop();
+	
+	switch(t){
+		case "created":
+			node = format.writeTransaction([feature], null, null, {
+				"featureNS": opt.workspace,
+				"featurePrefix": opt.workspace,
+				"featureType": opt.layername,
+				"version": "1.0.0"
+			});
+			break;
+		case "modified":
+			node = format.writeTransaction(null, [feature], null, {
+				"featureNS": opt.workspace,
+				"featurePrefix": opt.workspace,
+				"featureType": opt.layername,
+				"version": "1.0.0"
+			});
+			break;
+		case "removed":
+			node = format.writeTransaction(null, null, [feature], {
+				"featureNS": opt.workspace,
+				"featurePrefix": opt.workspace,
+				"featureType": opt.layername,
+				"version": "1.0.0"
+			});
+			break;
+		default:
+			return
+	}
+	
+	param = {
+		"serverName": opt.geoserver,
+		"workspace": opt.workspace,
+		"wfstXml": '<?xml version="1.0" encoding="utf-8"?>'+new XMLSerializer().serializeToString(node)
+	};
+	
+	$.ajax({
+		type: "POST",
+		url: this.wfstURL,
+		data: JSON.stringify(param),
+		contentType: 'application/json; charset=utf-8',
+		success: function(data) {
+			var result = format.readTransactionResponse(data);
+			that.wfstCallback(arr, t, opt);
+		},
+		error: function(e) {
+			var errorMsg = e? (e.status + ' ' + e.statusText) : "";
+			console.log(errorMsg);
+		},
+		context: this
+	});
 }

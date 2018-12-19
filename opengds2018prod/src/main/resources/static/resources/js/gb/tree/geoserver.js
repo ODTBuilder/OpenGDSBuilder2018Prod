@@ -639,6 +639,9 @@ gb.tree.GeoServer = function(obj) {
 										upload.setGeoServer(geoserver);
 										upload.setWorkspace(workspace);
 										upload.setDatastore(datastore);
+										upload.setCallback(function(){
+											inst.refresh();
+										});
 										upload.open();
 									}
 								}

@@ -47,7 +47,8 @@ gb.map.MousePosition = function(obj){
 	 * @private
 	 */
 	this.mousePositionControl = new ol.control.MousePosition({
-		projection: this.projection,
+//		projection: this.projection,
+		projection: "EPSG:4326",
 		className: "map-mouse-position",
 		target: this.element[0],
 		undefinedHTML: "&nbsp"

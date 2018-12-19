@@ -82,10 +82,8 @@ public class GeogigTransactionServiceImpl implements GeogigTransactionService {
 		GeogigTransaction transaction = null;
 
 		try {
-//			AddRepository add = new AddRepository();
-//			add.executeCommand(url, user, pw, repoName, transactionId);
-//			CommitRepository commit = new CommitRepository();
-//			commit.executeCommand(url, user, pw, repoName, transactionId, "", "", "");
+			CommitRepository commit = new CommitRepository();
+			commit.executeCommand(url, user, pw, repoName, transactionId, "", "", "");
 			transaction = end.executeCommand(url, user, pw, repoName, transactionId);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {

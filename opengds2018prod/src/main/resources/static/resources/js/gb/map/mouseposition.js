@@ -17,48 +17,54 @@ if (!gb.map)
  * @author 김호철
  * @date 2018.07.30
  */
-gb.map.MousePosition = function(obj){
+gb.map.MousePosition = function(obj) {
 	var options = obj || {};
-	
+
 	/**
 	 * ol.Map 객체
+	 * 
 	 * @type {ol.Map}
 	 * @private
 	 */
 	this.map = options.map;
-	
+
 	/**
 	 * projection
+	 * 
 	 * @type {String}
 	 * @private
 	 */
 	this.projection = options.projection || this.map.getView().getProjection().getCode();
-	
+
 	/**
 	 * 좌표정보를 가시화할 jquery 인스턴스
+	 * 
 	 * @type {$}
 	 * @private
 	 */
 	this.element = options.element || $(".mouse-position");
-	
+
 	/**
 	 * openlayers mouse position control
+	 * 
 	 * @type {ol.control.MousePosition}
 	 * @private
 	 */
 	this.mousePositionControl = new ol.control.MousePosition({
-		projection: this.projection,
-		className: "map-mouse-position",
-		target: this.element[0],
-		undefinedHTML: "&nbsp"
+		projection : this.projection,
+		// projection : "EPSG:4326",
+		className : "map-mouse-position",
+		coordinateFormat : ol.coordinate.createStringXY(4),
+		target : this.element[0],
+		undefinedHTML : "&nbsp"
 	});
-	
 	this.map.addControl(this.mousePositionControl);
+	console.log(this.projection);
 }
 
-gb.map.MousePosition.prototype.setProjection = function(proj){
+gb.map.MousePosition.prototype.setProjection = function(proj) {
 	var projection;
-	if(!proj){
+	if (!proj) {
 		projection = this.map.getView().getProjection().getCode();
 	} else {
 		projection = proj;

@@ -238,7 +238,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									'layers' : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
-									"sld" : data[i].sld
+									"sld" : data[i].sld,
+									"native" : data[i].nativeName
 								};
 								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 									git["geogigRepo"] = geogig["repo"];
@@ -477,7 +478,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								"layers" : data[i].lName,
 								"geometry" : data[i].geomType,
 								"editable" : true,
-								"sld" : data[i].sld
+								"sld" : data[i].sld,
+								"native" : data[i].nativeName
 							};
 							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 								git["geogigRepo"] = geogig["repo"];

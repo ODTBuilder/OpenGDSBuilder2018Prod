@@ -133,5 +133,6 @@
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
 <!-- gb.layer-->
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/attributeinfo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/imageLayer.js"></script>

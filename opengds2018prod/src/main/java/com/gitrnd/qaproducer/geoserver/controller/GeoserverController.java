@@ -608,18 +608,12 @@ public class GeoserverController extends AbstractController {
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		String workspace = (String) request.getParameter("workspace");
 		String datastore = (String) request.getParameter("datastore");
-		String ignorePublication = (String) request.getParameter("ignorePublication");
-		boolean iPFlag = false;
+//		String ignorePublication = (String) request.getParameter("ignorePublication");
+		boolean iPFlag = true;
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication == null) {
-			if(ignorePublication.toUpperCase().equals("TRUE")){
-				iPFlag = true;
-			}else if(ignorePublication.toUpperCase().equals("FALSE")){
-				iPFlag = false;
-			}else{
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null) {
 				response.sendError(601, "미입력 텍스트가 존재합니다.");
-			}
 		} else {
 			geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
 		}

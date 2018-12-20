@@ -18,6 +18,7 @@ public class WFSGetFeature {
 	private String sortBy = "";
 	private String propertyName = "";
 	private String srsName="";
+	private String cql_filter="";
 	private int startIndex = -1;
 	
 	public WFSGetFeature(){};
@@ -61,7 +62,7 @@ public class WFSGetFeature {
 	}
 	
 	public WFSGetFeature(String serverURL, String version, String typeName, EnWFSOutputFormat outputformat, int maxFeatures, String bbox,
-			String format_options, String featureID, String sortBy, String propertyName, String srsName, int startIndex) {
+			String format_options, String featureID, String sortBy, String propertyName, String srsName, int startIndex, String cql_filter) {
 		super();
 		if(!serverURL.trim().equals("")){
 			this.serverURL = serverURL;
@@ -98,6 +99,9 @@ public class WFSGetFeature {
 		}
 		if(startIndex>-1){
 			this.startIndex = startIndex;
+		}
+		if (!cql_filter.trim().equals("")) {
+			this.cql_filter = cql_filter;
 		}
 	}
 	
@@ -202,6 +206,7 @@ public class WFSGetFeature {
 		this.startIndex = startIndex;
 	}
 	
+	
 	public String getWFSGetFeatureURL(){
 		StringBuffer urlBuffer = new StringBuffer();
 		if(!this.serverURL.trim().equals("")){
@@ -257,6 +262,9 @@ public class WFSGetFeature {
 			}if(startIndex>-1){
 				urlBuffer.append("&");
 				urlBuffer.append("startIndex="+startIndex);
+			}if(!this.cql_filter.trim().equals("")){
+				urlBuffer.append("&");
+				urlBuffer.append("cql_filter:"+cql_filter);
 			}
 		}
 		else

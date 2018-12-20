@@ -141,11 +141,9 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 														layerStyle.setLegend(m[dpc[i]], g);
 														layerStyle.updateStyle();
 													} else if (layer instanceof ol.layer.Vector) {
-														console.log(g);
-														var source = layer.getSource();
-														if (source instanceof ol.source.Vector) {
-															
-														}
+														layerStyle.setLayer(layer);
+														layerStyle.setLegend(m[dpc[i]], g);
+														layerStyle.updateStyle();
 													}
 													if (git && git.hasOwnProperty("fake")) {
 														if (git.fake === "child") {

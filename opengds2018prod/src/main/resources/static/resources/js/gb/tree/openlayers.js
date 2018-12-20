@@ -967,29 +967,6 @@ gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) 
 				vectorLayer.set("git", gitLayer);
 				vectorLayer.set("name", fileL.name);
 				
-				var style = new ol.style.Style({
-					"fill" : ftype === "Polygon" || ftype === "MultiPolygon" ? new ol.style.Fill({
-						"color" : [ 0,0,0,1 ]
-					}) : undefined,
-					"stroke" : ftype === "Polygon" || ftype === "MultiPolygon" || ftype === "LineString"
-							|| ftype === "MultiLineString" ? new ol.style.Stroke({
-						"color" : [ 0,0,0,1 ],
-						"width" : 1
-					}) : undefined,
-					"image" : ftype === "Point" || ftype === "MultiPoint" ? new ol.style.Circle({
-						"radius" : 3,
-						"fill" : new ol.style.Fill({
-							"color" : [ 0,0,0,1 ]
-						}),
-						"stroke" : new ol.style.Stroke({
-							"color" : [ 0,0,0,1 ],
-							"width" : 1
-						})
-					}) : undefined
-				});
-
-				vectorLayer.setStyle(style);
-				
 				map.addLayer(vectorLayer);
 				map.getView().fit(geojson.bbox, map.getSize());
 				callback();

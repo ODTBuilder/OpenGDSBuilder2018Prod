@@ -173,6 +173,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 		String sortBy = "";
 		String propertyName = "";
 		String srsName = "";
+		String cql_filter = "";
 		int startIndex = -1;
 
 		
@@ -206,10 +207,12 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				srsName = value;
 			} else if (key.toLowerCase().equals("startindex")) {
 				startIndex = Integer.parseInt(value);
+			} else if(key.toLowerCase().equals("cql_filter")) {
+				cql_filter = value;
 			}
 		}
 		return new WFSGetFeature(serverURL, version, typeName, outputformat, maxFeatures, bbox, format_options,
-				featureID, sortBy, propertyName, srsName, startIndex);
+				featureID, sortBy, propertyName, srsName, startIndex, cql_filter);
 	}
 
 	@Override

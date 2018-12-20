@@ -15,6 +15,7 @@ if (!gb.footer)
 	 * @constructor
 	 */
 	gb.footer.FeatureList = function(obj) {
+		obj.title = "";
 		gb.footer.Base.call(this, obj);
 		
 		var that = this;
@@ -82,7 +83,8 @@ if (!gb.footer)
 			
 		this.titleAreaStyle = {
 			"position": "absolute",
-			"display": "none",
+			"width": "100%",
+			"z-index": "2",
 			"padding": "8px 16px"
 		};
 		
@@ -121,10 +123,20 @@ if (!gb.footer)
 				]
 			],
 			info: false,
+			searching: false,
 			paging: false,
 			scrollX: true,
 			scrollY: true,
-			scrollCollapse: true
+			scrollCollapse: true,
+			dom: "Bfrtip",
+			select: "single",
+			responsive: true,
+			altEditor: true,
+			buttons: [{
+				extend: "selected",
+				text: "Edit",
+				name: "edit"
+			}]
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
@@ -155,6 +167,28 @@ if (!gb.footer)
 		this.footerTag.on("footerclose", function(){
 			if(!$.isEmptyObject(that.editedFeature)){
 				that.openSaveModal();
+			} else {
+				that.tableElement = that.createTableElement();
+				that.dataTable = that.tableElement.DataTable({
+					columns: [
+						{title: 'Column1'},
+						{title: 'Column2'}
+					],
+					data: [
+						[
+							'Row 1 Data 1',
+							'Row 1 Data 2'
+						]
+					],
+					info: false,
+					paging: false,
+					searching: false,
+					scrollX: true,
+					scrollY: true,
+					scrollCollapse: true
+				});
+				that.tableElement.find("tbody > tr").css("background-color", "transparent");
+				that.footerTag.find("label").css("color", "#DDD");
 			}
 		});
 		
@@ -197,6 +231,10 @@ if (!gb.footer)
 		table.on("click", "tr", function(){
 			var data = that.dataTable.row(this).data();
 			if(data.length === 0){
+				return;
+			}
+			
+			if(data[0].getGeometry === undefined){
 				return;
 			}
 			
@@ -308,6 +346,65 @@ if (!gb.footer)
 		});
 	}
 	
+	gb.footer.FeatureList.prototype.searchTable = function(column, value){
+		var that = this;
+		var col = column,
+			val = value;
+		
+		if(!this.parameters){
+			return;
+		}
+		
+		if(!val){
+			this.updateTable(this.selectedLayer);
+		} else {
+			this.parameters["cql_filter"] = col + "=" + val;
+			$.ajax({
+				url : this.getFeatureURL,
+				type : "GET",
+				contentType : "application/json; charset=UTF-8",
+				data : this.parameters,
+				dataType : "JSON",
+				success : function(errorData, textStatus, jqXHR) {
+					/*var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
+					var data = [],
+						features = {},
+						col = [];
+					
+					for(var i in format){
+						if(!col.length){
+							col = format[i].getKeys();
+						}
+						features[format[i].getId()] = format[i];
+					}
+					
+					for(var id in features){
+						var arr = [];
+						for(var i = 0; i < col.length; i++){
+							if(col[i] === "geometry"){
+								arr.push(features[id]);
+							} else {
+								arr.push(features[id].get(col[i]));
+							}
+						}
+						data.push(arr);
+						
+					}
+					
+					that.dataTable.rows.add(data).draw();
+					that.tableElement.find("tbody > tr").css("background-color", "transparent");
+					that.footerTag.find("label").css("color", "#DDD");
+					$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);*/
+					console.log(that.parameters);
+					console.log(errorData);
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					console.log(errorThrown);
+				}
+			});
+		}
+	}
+	
 	/**
 	 * DataTable Table 내용 갱신
 	 * @param {String} treeid
@@ -320,6 +417,33 @@ if (!gb.footer)
 		var features = this.attrList[treeid].features;
 		var column = [],
 			data= [];
+		var select = $("<select>").addClass("gb-form").css({
+			"float": "right",
+			"width": "auto",
+			"margin-right": "10px"
+		});
+		var icon = $("<i>").addClass("fas fa-search fa-lg");
+		var button = $("<button>").addClass("gb-button gb-button-primary").css({
+			"float": "right"
+		}).append(icon);
+		var input = $("<input>").addClass("gb-input").css({
+			"float": "right",
+			"border": "1px solid rgba(34, 36, 38, 0.15)",
+			"border-radius": "0.285714rem",
+			"line-height": "2px",
+			"color": "#555",
+			"padding": "8px 4px"
+		});
+		
+		button.click(function(e){
+			that.searchTable(select.find("option:selected").val(), input.val());
+		});
+		
+		input.keypress(function(e){
+			if(e.which == 13){
+				that.searchTable(select.find("option:selected").val(), input.val());
+			}
+		});
 		
 		for(var i = 0; i < col.length; i++){
 			if(col[i] === "geometry"){
@@ -331,6 +455,8 @@ if (!gb.footer)
 				column.push({
 					title: col[i]
 				});
+				
+				select.append($("<option>").val(col[i]).text(col[i]));
 			}
 		}
 		
@@ -355,6 +481,7 @@ if (!gb.footer)
 			columns: column,
 			data: data,
 			info: false,
+			searching: false,
 			paging: false,
 			scrollX: true,
 			scrollY: "100%",
@@ -375,10 +502,17 @@ if (!gb.footer)
 			}*/]
 		});
 		
+		this.footerTag.find(".footer-header").empty();
+		this.footerTag.find(".footer-header").append(button);
+		this.footerTag.find(".footer-header").append(input);
+		this.footerTag.find(".footer-header").append(select);
+		
 		$("#" + this.tableId + this.countId).parent().scroll(function(){
 			if($(this).scrollTop() + $(this).height() == $(this).children(":first").height()){
-				that.scrollTop = $(this).scrollTop();
-				that.nextFeatureList();
+				if(that.scrollTop !== $(this).scrollTop()){
+					that.scrollTop = $(this).scrollTop();
+					that.nextFeatureList();
+				}
 			}
 		})
 		
@@ -425,12 +559,36 @@ if (!gb.footer)
 	gb.footer.FeatureList.prototype.updateFeatureList = function(layer){
 		var options = layer.get("git") || {};
 		
+		var list = this.attrList;
+		
 		var treeid = layer.get("treeid");
 		
-		if(!!this.attrList[treeid]){
+		this.parameters = undefined;
+		
+		if(layer instanceof ol.layer.Vector){
+			var data = {},
+				col = [],
+				features = layer.getSource().getFeatures();
+			
+			list[treeid] = {};
+			
+			for(var i in features){
+				if(!col.length){
+					col = features[i].getKeys();
+					list[treeid].geomKey = features[i].getGeometryName();
+				}
+				data[features[i].getId()] = features[i];
+			}
+			list[treeid].col = col;
+			list[treeid].features = data;
 			this.updateTable(treeid);
 			return;
 		}
+		
+		/*if(!!this.attrList[treeid]){
+			this.updateTable(treeid);
+			return;
+		}*/
 		
 		var geoserver = options.geoserver;
 		if(!geoserver){
@@ -450,7 +608,6 @@ if (!gb.footer)
 			return;
 		}
 		
-		var list = this.attrList;
 		this.startIndex = 0;
 		this.scrollTop = 0;
 		this.parameters = {
@@ -502,6 +659,9 @@ if (!gb.footer)
 	}
 	
 	gb.footer.FeatureList.prototype.nextFeatureList = function(){
+		if(!this.parameters){
+			return;
+		}
 		var that = this;
 		this.startIndex = this.startIndex + this.maxFeatures;
 		this.parameters.startIndex = this.startIndex;
@@ -529,16 +689,16 @@ if (!gb.footer)
 					var arr = [];
 					for(var i = 0; i < col.length; i++){
 						if(col[i] === "geometry"){
-							//arr.push(features[id]);
-							continue;
+							arr.push(features[id]);
 						} else {
 							arr.push(features[id].get(col[i]));
 						}
 					}
 					data.push(arr);
+					
 				}
 				
-				that.dataTable.row.add(data).draw();
+				that.dataTable.rows.add(data).draw();
 				that.tableElement.find("tbody > tr").css("background-color", "transparent");
 				that.footerTag.find("label").css("color", "#DDD");
 				$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);

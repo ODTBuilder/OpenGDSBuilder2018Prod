@@ -369,6 +369,9 @@ gb.header.EditingTool = function(obj) {
 			source.clear();
 			delete that.vectorSourcesOfServer_[id];
 		}
+		if(that.customVector_[id]){
+			delete that.customVector_[id];
+		}
 		that.refreshTileLayer();
 	});
 

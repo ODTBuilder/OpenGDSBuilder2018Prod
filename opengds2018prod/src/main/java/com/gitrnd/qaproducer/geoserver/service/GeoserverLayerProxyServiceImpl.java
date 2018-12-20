@@ -204,7 +204,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				srsName = value;
 			} else if (key.toLowerCase().equals("srsname")) {
 				srsName = value;
-			} else if (key.toLowerCase().equals("startIndex")) {
+			} else if (key.toLowerCase().equals("startindex")) {
 				startIndex = Integer.parseInt(value);
 			}
 		}

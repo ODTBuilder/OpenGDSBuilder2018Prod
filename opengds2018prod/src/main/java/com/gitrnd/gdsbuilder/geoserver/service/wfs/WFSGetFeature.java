@@ -18,6 +18,7 @@ public class WFSGetFeature {
 	private String sortBy = "";
 	private String propertyName = "";
 	private String srsName="";
+	private int startIndex = -1;
 	
 	public WFSGetFeature(){};
 	
@@ -58,6 +59,49 @@ public class WFSGetFeature {
 			this.srsName = srsName;
 		}
 	}
+	
+	public WFSGetFeature(String serverURL, String version, String typeName, EnWFSOutputFormat outputformat, int maxFeatures, String bbox,
+			String format_options, String featureID, String sortBy, String propertyName, String srsName, int startIndex) {
+		super();
+		if(!serverURL.trim().equals("")){
+			this.serverURL = serverURL;
+		}
+		if (!version.trim().equals("")) {
+			this.version = version;
+		}
+		if (!typeName.trim().equals("")) {
+			this.typeName = typeName;
+		}
+		if (outputformat!=null) {
+			this.outputformat = outputformat;
+		}
+		if (maxFeatures!=0) {
+			this.maxFeatures = maxFeatures;
+		}
+		if (!bbox.trim().equals("")) {
+			this.bbox = bbox;
+		}
+		if (!format_options.trim().equals("")) {
+			this.format_options = format_options;
+		}
+		if (!featureID.trim().equals("")) {
+			this.featureID = featureID;
+		}
+		if (!sortBy.trim().equals("")) {
+			this.sortBy = sortBy;
+		}
+		if (!propertyName.trim().equals("")) {
+			this.propertyName = propertyName;
+		}
+		if (!srsName.trim().equals("")) {
+			this.srsName = srsName;
+		}
+		if(startIndex>-1){
+			this.startIndex = startIndex;
+		}
+	}
+	
+	
 	
 	public String getSrsName() {
 		return srsName;
@@ -150,6 +194,14 @@ public class WFSGetFeature {
 		this.propertyName = propertyName;
 	}
 	
+	public int getStartIndex() {
+		return startIndex;
+	}
+
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+	}
+	
 	public String getWFSGetFeatureURL(){
 		StringBuffer urlBuffer = new StringBuffer();
 		if(!this.serverURL.trim().equals("")){
@@ -202,6 +254,9 @@ public class WFSGetFeature {
 			}if(!this.srsName.trim().equals("")){
 				urlBuffer.append("&");
 				urlBuffer.append("srsName="+srsName);
+			}if(startIndex>-1){
+				urlBuffer.append("&");
+				urlBuffer.append("startIndex="+startIndex);
 			}
 		}
 		else

@@ -782,36 +782,25 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var htd5 = $("<td>");
 	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
 
-	/*var key = $("<input>").addClass("form-control").attr({
-		"type" : "text"
-	});
-	var td1 = $("<td>").append(key);
-
-	var opt1 = $("<option>").text("Integer");
-	var opt2 = $("<option>").text("Double");
-	var opt3 = $("<option>").text("String");
-	var opt4 = $("<option>").text("Date");
-	var opt5 = $("<option>").text("Boolean");
-	var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
-	var td2 = $("<td>").append(type);
-
-	var nullable = $("<input>").attr({
-		"type" : "checkbox"
-	});
-	var td3 = $("<td>").append(nullable);
-
-	var unique = $("<input>").attr({
-		"type" : "checkbox"
-	});
-	var td4 = $("<td>").append(unique);
-
-	var trash = $("<a href='#'>").append($("<i>").addClass("far fa-trash-alt"));
-	trash.click(function() {
-		$(this).parent().parent().remove();
-	});
-	var td5 = $("<td>").append(trash);
-	
-	var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);*/
+	/*
+	 * var key = $("<input>").addClass("form-control").attr({ "type" : "text"
+	 * }); var td1 = $("<td>").append(key);
+	 * 
+	 * var opt1 = $("<option>").text("Integer"); var opt2 = $("<option>").text("Double");
+	 * var opt3 = $("<option>").text("String"); var opt4 = $("<option>").text("Date");
+	 * var opt5 = $("<option>").text("Boolean"); var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
+	 * var td2 = $("<td>").append(type);
+	 * 
+	 * var nullable = $("<input>").attr({ "type" : "checkbox" }); var td3 = $("<td>").append(nullable);
+	 * 
+	 * var unique = $("<input>").attr({ "type" : "checkbox" }); var td4 = $("<td>").append(unique);
+	 * 
+	 * var trash = $("<a href='#'>").append($("<i>").addClass("far
+	 * fa-trash-alt")); trash.click(function() {
+	 * $(this).parent().parent().remove(); }); var td5 = $("<td>").append(trash);
+	 * 
+	 * var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
+	 */
 	var typeFormBody = $("<tbody>").addClass("type-form-body");
 
 	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
@@ -940,12 +929,15 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
-		gb.tree.loadShpZip(encodeInput.val(), file, that.map, that.refreshList);
+		var callback = function(){
+			that.refreshList();
+		};
+		that.loadShpZip(encodeInput.val(), file, that.map, callback);
 		addGeoServerModal.close();
 	});
 };
 
-gb.tree.loadShpZip = function(encode, file, map, callback) {
+gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) {
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
 	var fileL = file;
@@ -963,13 +955,41 @@ gb.tree.loadShpZip = function(encode, file, map, callback) {
 						features : features
 					})
 				});
+				var ftype;
+				if (features.length > 0) {
+					 ftype = features[0].getGeometry().getType();
+				}
 				var gitLayer = {
 						"editable" : true,
-						"geometry" : features[0].getGeometry().getType(),
+						"geometry" : ftype,
 						"validation" : false
 				};
 				vectorLayer.set("git", gitLayer);
 				vectorLayer.set("name", fileL.name);
+				
+				var style = new ol.style.Style({
+					"fill" : ftype === "Polygon" || ftype === "MultiPolygon" ? new ol.style.Fill({
+						"color" : [ 0,0,0,1 ]
+					}) : undefined,
+					"stroke" : ftype === "Polygon" || ftype === "MultiPolygon" || ftype === "LineString"
+							|| ftype === "MultiLineString" ? new ol.style.Stroke({
+						"color" : [ 0,0,0,1 ],
+						"width" : 1
+					}) : undefined,
+					"image" : ftype === "Point" || ftype === "MultiPoint" ? new ol.style.Circle({
+						"radius" : 3,
+						"fill" : new ol.style.Fill({
+							"color" : [ 0,0,0,1 ]
+						}),
+						"stroke" : new ol.style.Stroke({
+							"color" : [ 0,0,0,1 ],
+							"width" : 1
+						})
+					}) : undefined
+				});
+
+				vectorLayer.setStyle(style);
+				
 				map.addLayer(vectorLayer);
 				map.getView().fit(geojson.bbox, map.getSize());
 				callback();

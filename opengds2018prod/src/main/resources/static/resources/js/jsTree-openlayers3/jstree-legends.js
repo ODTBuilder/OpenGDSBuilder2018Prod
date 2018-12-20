@@ -115,17 +115,37 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 													if (layer instanceof ol.layer.Tile) {
 														var source = layer.getSource();
 														if (source instanceof ol.source.TileWMS) {
-															/*m[dpc[i]].icon = g.url + "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="
-																	+ g.format + "&WIDTH=" + g.width + "&HEIGHT=" + g.height + "&LAYER="
-																	+ git.workspace + ":" + layer.get("name")
-																	+ "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" + "&serverName="
-																	+ git.geoserver + "&workspace=" + git.workspace;*/
+															/*
+															 * m[dpc[i]].icon =
+															 * g.url +
+															 * "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=" +
+															 * g.format +
+															 * "&WIDTH=" +
+															 * g.width +
+															 * "&HEIGHT=" +
+															 * g.height +
+															 * "&LAYER=" +
+															 * git.workspace +
+															 * ":" +
+															 * layer.get("name") +
+															 * "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" +
+															 * "&serverName=" +
+															 * git.geoserver +
+															 * "&workspace=" +
+															 * git.workspace;
+															 */
 															m[dpc[i]].icon = "gb-icon";
 														}
 														// hochul
 														layerStyle.setLayer(layer);
 														layerStyle.setLegend(m[dpc[i]], g);
 														layerStyle.updateStyle();
+													} else if (layer instanceof ol.layer.Vector) {
+														console.log(g);
+														var source = layer.getSource();
+														if (source instanceof ol.source.Vector) {
+															
+														}
 													}
 													if (git && git.hasOwnProperty("fake")) {
 														if (git.fake === "child") {

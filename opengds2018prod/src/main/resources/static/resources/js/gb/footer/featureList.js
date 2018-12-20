@@ -35,6 +35,16 @@ if (!gb.footer)
 		this.selectedLayer = undefined;
 		
 		/**
+		 * feature 요청 parameter
+		 */
+		this.parameters = undefined;
+		
+		/**
+		 * scrollTop height
+		 */
+		this.scrollTop = undefined;
+		
+		/**
 		 * JSTree의 treeid가 key이고 value는 feature의 속성 key값인 col, feature의 속성값인 data로 구성
 		 */
 		this.attrList = {};
@@ -367,7 +377,8 @@ if (!gb.footer)
 		
 		$("#" + this.tableId + this.countId).parent().scroll(function(){
 			if($(this).scrollTop() + $(this).height() == $(this).children(":first").height()){
-				
+				that.scrollTop = $(this).scrollTop();
+				that.nextFeatureList();
 			}
 		})
 		
@@ -441,7 +452,8 @@ if (!gb.footer)
 		
 		var list = this.attrList;
 		this.startIndex = 0;
-		var defaultParameters = {
+		this.scrollTop = 0;
+		this.parameters = {
 			"serverName": geoserver,
 			"workspace": workspace,
 			"version" : "1.0.0",
@@ -456,7 +468,7 @@ if (!gb.footer)
 			url : this.getFeatureURL,
 			type : "GET",
 			contentType : "application/json; charset=UTF-8",
-			data : defaultParameters,
+			data : this.parameters,
 			dataType : "JSON",
 			success : function(errorData, textStatus, jqXHR) {
 				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
@@ -489,8 +501,52 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.nextFeatureList = function(layer){
+	gb.footer.FeatureList.prototype.nextFeatureList = function(){
+		var that = this;
+		this.startIndex = this.startIndex + this.maxFeatures;
+		this.parameters.startIndex = this.startIndex;
 		
+		$.ajax({
+			url : this.getFeatureURL,
+			type : "GET",
+			contentType : "application/json; charset=UTF-8",
+			data : this.parameters,
+			dataType : "JSON",
+			success : function(errorData, textStatus, jqXHR) {
+				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
+				var data = [],
+					features = {},
+					col = [];
+				
+				for(var i in format){
+					if(!col.length){
+						col = format[i].getKeys();
+					}
+					features[format[i].getId()] = format[i];
+				}
+				
+				for(var id in features){
+					var arr = [];
+					for(var i = 0; i < col.length; i++){
+						if(col[i] === "geometry"){
+							//arr.push(features[id]);
+							continue;
+						} else {
+							arr.push(features[id].get(col[i]));
+						}
+					}
+					data.push(arr);
+				}
+				
+				that.dataTable.row.add(data).draw();
+				that.tableElement.find("tbody > tr").css("background-color", "transparent");
+				that.footerTag.find("label").css("color", "#DDD");
+				$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(errorThrown);
+			}
+		});
 	}
 	
 	gb.footer.FeatureList.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){

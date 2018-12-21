@@ -368,7 +368,7 @@ if (!gb.footer)
 		if(!val){
 			this.updateFeatureList(this.selectedLayer);
 		} else {
-			this.parameters["cql_filter"] = col + "='" + val + "'";
+			this.parameters["cql_filter"] = encodeURI(col + " LIKE '%" + val + "%'");
 			$.ajax({
 				url : this.getFeatureURL,
 				type : "GET",

@@ -1221,6 +1221,11 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"display" : "table-row"
 	});
 
+	$(gNameInput).val("geo32");
+	$(gURLInput).val("http://175.116.181.32:9999/geoserver");
+	$(gIDInput).val("admin");
+	$(gPassInput).val("geoserver");
+	
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text("Close");

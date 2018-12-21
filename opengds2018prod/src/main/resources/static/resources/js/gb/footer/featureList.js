@@ -33,6 +33,11 @@ if (!gb.footer)
 		/**
 		 * 현재 선택된 레이어의 JSTree ID
 		 */
+		this.selectedTreeId = undefined;
+		
+		/**
+		 * 현재 선택된 레이어
+		 */
 		this.selectedLayer = undefined;
 		
 		/**
@@ -350,15 +355,20 @@ if (!gb.footer)
 		var that = this;
 		var col = column,
 			val = value;
+		var list = this.attrList;
+		var treeid = this.selectedTreeId;
 		
 		if(!this.parameters){
 			return;
 		}
 		
+		this.startIndex = 0;
+		this.parameters.startIndex = this.startIndex;
+		
 		if(!val){
-			this.updateTable(this.selectedLayer);
+			this.updateFeatureList(this.selectedLayer);
 		} else {
-			this.parameters["cql_filter"] = col + "=" + val;
+			this.parameters["cql_filter"] = col + "='" + val + "'";
 			$.ajax({
 				url : this.getFeatureURL,
 				type : "GET",
@@ -366,35 +376,25 @@ if (!gb.footer)
 				data : this.parameters,
 				dataType : "JSON",
 				success : function(errorData, textStatus, jqXHR) {
-					/*var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
-					var data = [],
-						features = {},
+					var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
+					var th = [],
+						td = [],
+						data = {},
 						col = [];
 					
 					for(var i in format){
-						if(!col.length){
+						if(!th.length){
 							col = format[i].getKeys();
 						}
-						features[format[i].getId()] = format[i];
+						data[format[i].getId()] = format[i];
 					}
 					
-					for(var id in features){
-						var arr = [];
-						for(var i = 0; i < col.length; i++){
-							if(col[i] === "geometry"){
-								arr.push(features[id]);
-							} else {
-								arr.push(features[id].get(col[i]));
-							}
-						}
-						data.push(arr);
-						
-					}
+					list[treeid].col = col;
+					list[treeid].features = data;
 					
-					that.dataTable.rows.add(data).draw();
-					that.tableElement.find("tbody > tr").css("background-color", "transparent");
-					that.footerTag.find("label").css("color", "#DDD");
-					$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);*/
+					that.requestLayerInfo(list[treeid].serverName, list[treeid].workspace, list[treeid].layerName, treeid);
+					that.updateTable(treeid);
+					
 					console.log(that.parameters);
 					console.log(errorData);
 				},
@@ -411,7 +411,7 @@ if (!gb.footer)
 	 */
 	gb.footer.FeatureList.prototype.updateTable = function(treeid){
 		var that = this;
-		this.selectedLayer = treeid;
+		this.selectedTreeId = treeid;
 		
 		var col = this.attrList[treeid].col;
 		var features = this.attrList[treeid].features;
@@ -518,8 +518,8 @@ if (!gb.footer)
 		
 		$("#altEditor-modal").on("edited", function(e, data){
 			var feature, keys;
-			var layer = that.attrList[that.selectedLayer];
-			var geomKey = that.attrList[that.selectedLayer].geomKey;
+			var layer = that.attrList[that.selectedTreeId];
+			var geomKey = that.attrList[that.selectedTreeId].geomKey;
 				
 			for(let i = 0; i < data.length; i++){
 				if(data[i] instanceof ol.Feature){
@@ -535,11 +535,11 @@ if (!gb.footer)
 				feature.set(keys[i], data[i]);
 			}
 			
-			if(!that.editedFeature[that.selectedLayer]){
-				that.editedFeature[that.selectedLayer] = {};
-				that.editedFeature[that.selectedLayer].serverName = layer.serverName;
-				that.editedFeature[that.selectedLayer].workspace = layer.workspace;
-				that.editedFeature[that.selectedLayer].layerName = layer.layerName;
+			if(!that.editedFeature[that.selectedTreeId]){
+				that.editedFeature[that.selectedTreeId] = {};
+				that.editedFeature[that.selectedTreeId].serverName = layer.serverName;
+				that.editedFeature[that.selectedTreeId].workspace = layer.workspace;
+				that.editedFeature[that.selectedTreeId].layerName = layer.layerName;
 			}
 			
 			if(!!geomKey){
@@ -548,7 +548,7 @@ if (!gb.footer)
 				feature.unset("geometry");
 			}
 			
-			that.editedFeature[that.selectedLayer].feature = feature;
+			that.editedFeature[that.selectedTreeId].feature = feature;
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
@@ -563,6 +563,7 @@ if (!gb.footer)
 		
 		var treeid = layer.get("treeid");
 		
+		this.selectedLayer = layer;
 		this.parameters = undefined;
 		
 		if(layer instanceof ol.layer.Vector){

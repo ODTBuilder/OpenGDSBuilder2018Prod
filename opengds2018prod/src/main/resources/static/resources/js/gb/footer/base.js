@@ -153,7 +153,7 @@ gb.footer.Base.prototype.createFooter = function(opt){
 	this.contentTag = $("<div class='footer-content'>");
 	this.adjustStyle_(this.contentTag, this.contentAreaStyle);
 	
-	this.title = opt.title || "Title";
+	this.title = opt.title || "";
 	
 	this.titleTag = $("<h3>");
 	this.adjustStyle_(this.titleTag, this.titleStyle);

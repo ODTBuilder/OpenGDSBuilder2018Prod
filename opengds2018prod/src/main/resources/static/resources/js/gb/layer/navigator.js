@@ -28,6 +28,16 @@ gb.layer.Navigator = function(obj) {
 	
 	this.count = 0;
 	
+	/**
+	 * feature 요청 리스트 최대 개수
+	 */
+	this.maxFeatures = 1;
+	
+	/**
+	 * 현재 선택된 레이어
+	 */
+	this.selectedLayer = undefined;
+	
 	this.td2 = $("<div>").css({
 		"display" : "inline-block"
 	});
@@ -58,6 +68,9 @@ gb.layer.Navigator.prototype.setFeatures = function(Layer){
 		console.error("Not supported layer type");
 		return;
 	}
+	
+	this.count = 0;
+	this.selectedLayer = layer;
 }
 
 gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace, layer){
@@ -67,7 +80,9 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		workspace: workspace,
 		typeName: layer,
 		version: "1.0.0",
-		outputformat: "application/json"
+		outputformat: "application/json",
+		maxFeatures: this.maxFeatures,
+		startIndex: this.count
 	};
 	
 	$.ajax({
@@ -78,7 +93,8 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		dataType: "JSON",
 		success: function(data, textStatus, jqXHR) {
 			that.featureList = new ol.format.GeoJSON().readFeatures(JSON.stringify(data));
-			that.updateNavigator();
+			that.showFeatureInfo(that.featureList[0]);
+			that.open();
 		},
 		error: function(e) {
 			var errorMsg = e? (e.status + ' ' + e.statusText) : "";
@@ -178,6 +194,9 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	var keys = Object.keys(prop);
 	$(this.tbody).empty();
 	for (var i = 0; i < keys.length; i++) {
+		if(prop[keys[i]] instanceof Object){
+			continue;
+		}
 		var td1 = $("<td>").text(keys[i]);
 		var td2 = $("<td>").attr("colspan", 2).text(prop[keys[i]]);
 		var tr1 = $("<tr>").append(td1).append(td2);
@@ -190,26 +209,50 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 
 gb.layer.Navigator.prototype.prev = function(){
 	var features = this.featureList;
-	if (this.count > 0 && this.count <= features.length) {
-		this.count--;
-	} else {
+	
+	if (this.count <= 0){
 		return;
 	}
-	var feature = features[this.count];
-	if (feature) {
-		this.showFeatureInfo(feature);
+	
+	if(this.selectedLayer instanceof ol.layer.Tile){
+		this.count--;
+		var git = this.selectedLayer.get("git");
+		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"));
+	} else if(this.selectedLayer instanceof ol.layer.Vector){
+		if (this.count > 0 && this.count <= features.length) {
+			this.count--;
+		} else {
+			return;
+		}
+		
+		if (features[this.count]) {
+			this.showFeatureInfo(features[this.count]);
+		}
+	} else {
+		console.error("Not supported layer type");
+		return;
 	}
 }
 
 gb.layer.Navigator.prototype.next = function(){
 	var features = this.featureList;
-	if (this.count >= 0 && this.count < features.length) {
+	
+	if(this.selectedLayer instanceof ol.layer.Tile){
 		this.count++;
+		var git = this.selectedLayer.get("git");
+		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"));
+	} else if(this.selectedLayer instanceof ol.layer.Vector){
+		if (this.count >= 0 && this.count < features.length) {
+			this.count++;
+		} else {
+			return;
+		}
+		
+		if (features[this.count]) {
+			this.showFeatureInfo(features[this.count]);
+		}
 	} else {
+		console.error("Not supported layer type");
 		return;
-	}
-	var feature = features[this.count];
-	if (feature) {
-		this.showFeatureInfo(feature);
 	}
 }

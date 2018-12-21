@@ -15,6 +15,7 @@ if (!gb.footer)
 	 * @constructor
 	 */
 	gb.footer.FeatureList = function(obj) {
+		obj.title = "";
 		gb.footer.Base.call(this, obj);
 		
 		var that = this;
@@ -32,7 +33,22 @@ if (!gb.footer)
 		/**
 		 * 현재 선택된 레이어의 JSTree ID
 		 */
+		this.selectedTreeId = undefined;
+		
+		/**
+		 * 현재 선택된 레이어
+		 */
 		this.selectedLayer = undefined;
+		
+		/**
+		 * feature 요청 parameter
+		 */
+		this.parameters = undefined;
+		
+		/**
+		 * scrollTop height
+		 */
+		this.scrollTop = undefined;
 		
 		/**
 		 * JSTree의 treeid가 key이고 value는 feature의 속성 key값인 col, feature의 속성값인 data로 구성
@@ -72,7 +88,8 @@ if (!gb.footer)
 			
 		this.titleAreaStyle = {
 			"position": "absolute",
-			"display": "none",
+			"width": "100%",
+			"z-index": "2",
 			"padding": "8px 16px"
 		};
 		
@@ -111,10 +128,20 @@ if (!gb.footer)
 				]
 			],
 			info: false,
+			searching: false,
 			paging: false,
 			scrollX: true,
 			scrollY: true,
-			scrollCollapse: true
+			scrollCollapse: true,
+			dom: "Bfrtip",
+			select: "single",
+			responsive: true,
+			altEditor: true,
+			buttons: [{
+				extend: "selected",
+				text: "Edit",
+				name: "edit"
+			}]
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
@@ -145,6 +172,28 @@ if (!gb.footer)
 		this.footerTag.on("footerclose", function(){
 			if(!$.isEmptyObject(that.editedFeature)){
 				that.openSaveModal();
+			} else {
+				that.tableElement = that.createTableElement();
+				that.dataTable = that.tableElement.DataTable({
+					columns: [
+						{title: 'Column1'},
+						{title: 'Column2'}
+					],
+					data: [
+						[
+							'Row 1 Data 1',
+							'Row 1 Data 2'
+						]
+					],
+					info: false,
+					paging: false,
+					searching: false,
+					scrollX: true,
+					scrollY: true,
+					scrollCollapse: true
+				});
+				that.tableElement.find("tbody > tr").css("background-color", "transparent");
+				that.footerTag.find("label").css("color", "#DDD");
 			}
 		});
 		
@@ -187,6 +236,10 @@ if (!gb.footer)
 		table.on("click", "tr", function(){
 			var data = that.dataTable.row(this).data();
 			if(data.length === 0){
+				return;
+			}
+			
+			if(data[0].getGeometry === undefined){
 				return;
 			}
 			
@@ -294,8 +347,62 @@ if (!gb.footer)
 			openSaveModal.close();
 		});
 		$(okBtn).click(function() {
-			that.sendWFSTTransaction();
+			that.sendWFSTTransaction(openSaveModal);
 		});
+	}
+	
+	gb.footer.FeatureList.prototype.searchTable = function(column, value){
+		var that = this;
+		var col = column,
+			val = value;
+		var list = this.attrList;
+		var treeid = this.selectedTreeId;
+		
+		if(!this.parameters){
+			return;
+		}
+		
+		this.startIndex = 0;
+		this.parameters.startIndex = this.startIndex;
+		
+		if(!val){
+			this.updateFeatureList(this.selectedLayer);
+		} else {
+			this.parameters["cql_filter"] = encodeURI(col + " LIKE '%" + val + "%'");
+			$.ajax({
+				url : this.getFeatureURL,
+				type : "GET",
+				contentType : "application/json; charset=UTF-8",
+				data : this.parameters,
+				dataType : "JSON",
+				success : function(errorData, textStatus, jqXHR) {
+					var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
+					var th = [],
+						td = [],
+						data = {},
+						col = [];
+					
+					for(var i in format){
+						if(!th.length){
+							col = format[i].getKeys();
+						}
+						data[format[i].getId()] = format[i];
+					}
+					
+					list[treeid].col = col;
+					list[treeid].features = data;
+					
+					that.requestLayerInfo(list[treeid].serverName, list[treeid].workspace, list[treeid].layerName, treeid);
+					that.updateTable(treeid);
+					
+					console.log(that.parameters);
+					console.log(errorData);
+				},
+				error: function(jqXHR, textStatus, errorThrown){
+					console.log(errorThrown);
+				}
+			});
+		}
 	}
 	
 	/**
@@ -304,12 +411,39 @@ if (!gb.footer)
 	 */
 	gb.footer.FeatureList.prototype.updateTable = function(treeid){
 		var that = this;
-		this.selectedLayer = treeid;
+		this.selectedTreeId = treeid;
 		
 		var col = this.attrList[treeid].col;
 		var features = this.attrList[treeid].features;
 		var column = [],
 			data= [];
+		var select = $("<select>").addClass("gb-form").css({
+			"float": "right",
+			"width": "auto",
+			"margin-right": "10px"
+		});
+		var icon = $("<i>").addClass("fas fa-search fa-lg");
+		var button = $("<button>").addClass("gb-button gb-button-primary").css({
+			"float": "right"
+		}).append(icon);
+		var input = $("<input>").addClass("gb-input").css({
+			"float": "right",
+			"border": "1px solid rgba(34, 36, 38, 0.15)",
+			"border-radius": "0.285714rem",
+			"line-height": "2px",
+			"color": "#555",
+			"padding": "8px 4px"
+		});
+		
+		button.click(function(e){
+			that.searchTable(select.find("option:selected").val(), input.val());
+		});
+		
+		input.keypress(function(e){
+			if(e.which == 13){
+				that.searchTable(select.find("option:selected").val(), input.val());
+			}
+		});
 		
 		for(var i = 0; i < col.length; i++){
 			if(col[i] === "geometry"){
@@ -321,6 +455,8 @@ if (!gb.footer)
 				column.push({
 					title: col[i]
 				});
+				
+				select.append($("<option>").val(col[i]).text(col[i]));
 			}
 		}
 		
@@ -345,6 +481,7 @@ if (!gb.footer)
 			columns: column,
 			data: data,
 			info: false,
+			searching: false,
 			paging: false,
 			scrollX: true,
 			scrollY: "100%",
@@ -365,16 +502,25 @@ if (!gb.footer)
 			}*/]
 		});
 		
+		this.footerTag.find(".dt-buttons").css({"z-index": "3"});
+		this.footerTag.find(".footer-header").empty();
+		this.footerTag.find(".footer-header").append(button);
+		this.footerTag.find(".footer-header").append(input);
+		this.footerTag.find(".footer-header").append(select);
+		
 		$("#" + this.tableId + this.countId).parent().scroll(function(){
 			if($(this).scrollTop() + $(this).height() == $(this).children(":first").height()){
-				
+				if(that.scrollTop !== $(this).scrollTop()){
+					that.scrollTop = $(this).scrollTop();
+					that.nextFeatureList();
+				}
 			}
 		})
 		
 		$("#altEditor-modal").on("edited", function(e, data){
 			var feature, keys;
-			var layer = that.attrList[that.selectedLayer];
-			var geomKey = that.attrList[that.selectedLayer].geomKey;
+			var layer = that.attrList[that.selectedTreeId];
+			var geomKey = that.attrList[that.selectedTreeId].geomKey;
 				
 			for(let i = 0; i < data.length; i++){
 				if(data[i] instanceof ol.Feature){
@@ -390,11 +536,11 @@ if (!gb.footer)
 				feature.set(keys[i], data[i]);
 			}
 			
-			if(!that.editedFeature[that.selectedLayer]){
-				that.editedFeature[that.selectedLayer] = {};
-				that.editedFeature[that.selectedLayer].serverName = layer.serverName;
-				that.editedFeature[that.selectedLayer].workspace = layer.workspace;
-				that.editedFeature[that.selectedLayer].layerName = layer.layerName;
+			if(!that.editedFeature[that.selectedTreeId]){
+				that.editedFeature[that.selectedTreeId] = {};
+				that.editedFeature[that.selectedTreeId].serverName = layer.serverName;
+				that.editedFeature[that.selectedTreeId].workspace = layer.workspace;
+				that.editedFeature[that.selectedTreeId].layerName = layer.layerName;
 			}
 			
 			if(!!geomKey){
@@ -403,7 +549,7 @@ if (!gb.footer)
 				feature.unset("geometry");
 			}
 			
-			that.editedFeature[that.selectedLayer].feature = feature;
+			that.editedFeature[that.selectedTreeId].feature = feature;
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");
@@ -414,12 +560,37 @@ if (!gb.footer)
 	gb.footer.FeatureList.prototype.updateFeatureList = function(layer){
 		var options = layer.get("git") || {};
 		
+		var list = this.attrList;
+		
 		var treeid = layer.get("treeid");
 		
-		if(!!this.attrList[treeid]){
+		this.selectedLayer = layer;
+		this.parameters = undefined;
+		
+		if(layer instanceof ol.layer.Vector){
+			var data = {},
+				col = [],
+				features = layer.getSource().getFeatures();
+			
+			list[treeid] = {};
+			
+			for(var i in features){
+				if(!col.length){
+					col = features[i].getKeys();
+					list[treeid].geomKey = features[i].getGeometryName();
+				}
+				data[features[i].getId()] = features[i];
+			}
+			list[treeid].col = col;
+			list[treeid].features = data;
 			this.updateTable(treeid);
 			return;
 		}
+		
+		/*if(!!this.attrList[treeid]){
+			this.updateTable(treeid);
+			return;
+		}*/
 		
 		var geoserver = options.geoserver;
 		if(!geoserver){
@@ -439,9 +610,9 @@ if (!gb.footer)
 			return;
 		}
 		
-		var list = this.attrList;
 		this.startIndex = 0;
-		var defaultParameters = {
+		this.scrollTop = 0;
+		this.parameters = {
 			"serverName": geoserver,
 			"workspace": workspace,
 			"version" : "1.0.0",
@@ -456,7 +627,7 @@ if (!gb.footer)
 			url : this.getFeatureURL,
 			type : "GET",
 			contentType : "application/json; charset=UTF-8",
-			data : defaultParameters,
+			data : this.parameters,
 			dataType : "JSON",
 			success : function(errorData, textStatus, jqXHR) {
 				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
@@ -489,8 +660,55 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.nextFeatureList = function(layer){
+	gb.footer.FeatureList.prototype.nextFeatureList = function(){
+		if(!this.parameters){
+			return;
+		}
+		var that = this;
+		this.startIndex = this.startIndex + this.maxFeatures;
+		this.parameters.startIndex = this.startIndex;
 		
+		$.ajax({
+			url : this.getFeatureURL,
+			type : "GET",
+			contentType : "application/json; charset=UTF-8",
+			data : this.parameters,
+			dataType : "JSON",
+			success : function(errorData, textStatus, jqXHR) {
+				var format = new ol.format.GeoJSON().readFeatures(JSON.stringify(errorData));
+				var data = [],
+					features = {},
+					col = [];
+				
+				for(var i in format){
+					if(!col.length){
+						col = format[i].getKeys();
+					}
+					features[format[i].getId()] = format[i];
+				}
+				
+				for(var id in features){
+					var arr = [];
+					for(var i = 0; i < col.length; i++){
+						if(col[i] === "geometry"){
+							arr.push(features[id]);
+						} else {
+							arr.push(features[id].get(col[i]));
+						}
+					}
+					data.push(arr);
+					
+				}
+				
+				that.dataTable.rows.add(data).draw();
+				that.tableElement.find("tbody > tr").css("background-color", "transparent");
+				that.footerTag.find("label").css("color", "#DDD");
+				$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(errorThrown);
+			}
+		});
 	}
 	
 	gb.footer.FeatureList.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){
@@ -518,10 +736,11 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.sendWFSTTransaction = function(){
+	gb.footer.FeatureList.prototype.sendWFSTTransaction = function(openSaveModal){
 		var featureInfo = this.editedFeature;
 		var format = new ol.format.WFS();
 		var node, param;
+		var modal = openSaveModal;
 		
 		for(var treeid in featureInfo){
 			node = format.writeTransaction(null, [featureInfo[treeid].feature], null, {
@@ -544,7 +763,7 @@ if (!gb.footer)
 				contentType: 'application/json; charset=utf-8',
 				success: function(data) {
 					var result = format.readTransactionResponse(data);
-					console.log(result);
+					modal.close();
 				},
 				error: function(e) {
 					var errorMsg = e? (e.status + ' ' + e.statusText) : "";

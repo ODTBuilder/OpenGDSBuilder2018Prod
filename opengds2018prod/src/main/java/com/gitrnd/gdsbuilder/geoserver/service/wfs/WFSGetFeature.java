@@ -264,7 +264,7 @@ public class WFSGetFeature {
 				urlBuffer.append("startIndex="+startIndex);
 			}if(!this.cql_filter.trim().equals("")){
 				urlBuffer.append("&");
-				urlBuffer.append("cql_filter:"+cql_filter);
+				urlBuffer.append("cql_filter="+cql_filter);
 			}
 		}
 		else

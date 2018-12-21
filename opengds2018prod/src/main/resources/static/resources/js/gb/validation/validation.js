@@ -114,6 +114,15 @@ if (!gb.validation)
 			} else if ($(this).data("index") === 2) {
 				that.messageContent.html($(this).text() + " 는(은) workspace를 하나만 선택할 수 있습니다.");
 			}
+			var nowPidx  = parseInt($(this).attr("data-index"));
+			if (nowPidx !== presetIndex_) {
+				var arr = that.workingTree.get_node("#").children || [];
+				for (var t = 0; t < arr.length; t++) {
+					that.workingTree.delete_node(arr[t]);
+				}
+			}
+			presetIndex_ = nowPidx;
+			console.log(presetIndex_);
 		});
 
 		this.srsSelectTag = $("<select class='form-control'>");
@@ -406,7 +415,7 @@ if (!gb.validation)
 					} else if (typeof selects[i] === "object") {
 						newload = tree.get_node(selects[i].id);
 					}
-//					children = selects[i].children || [];
+					// children = selects[i].children || [];
 					children = newload.children || [];
 					// 선택된 node의 자식 node들을 전부 추가
 					that.createChildren(tree, workTree, children);
@@ -729,12 +738,13 @@ if (!gb.validation)
 						if (!!s.options[i].dataset.title) {
 							if (!!INDEXLIST[s.options[i].dataset.title]) {
 								if (INDEXLIST[s.options[i].dataset.title] === 3) {
-									message.html("검수 하려는 파일의 타입을 선택해주세요.");
+									message.html("검수 종류를 선택해주세요.");
 									$(".version-btn").css({
 										"cursor" : "pointer",
 										"opacity" : "1",
 										"pointer-events" : "auto"
 									});
+									$("#nm5").trigger("click");
 								} else {
 									$(".version-btn").css({
 										"cursor" : "default",

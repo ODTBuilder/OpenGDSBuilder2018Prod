@@ -722,6 +722,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			};
 			
 			var vectorLayer = new ol.layer.Vector({
+				renderMode : "image",
 				source : new ol.source.Vector({})
 			});
 			
@@ -1147,7 +1148,7 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 };
 
 /**
- * 레이어 삭제 확인창을 연다.
+ * 레이어 삭제
  * 
  * @method gb.tree.OpenLayers#deleteLayer
  */

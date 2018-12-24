@@ -609,7 +609,7 @@
 						if (!!git) {
 							if (git.hasOwnProperty("fake")) {
 								if (git.fake === "parent") {
-									layer.setZIndex(zidx);
+									layer.setZIndex(lastZidx);
 									lastZidx++;
 									var layers = layer.get("git").layers;
 									for (var i = 0; i < layers.getLength(); i++) {
@@ -617,15 +617,15 @@
 												layers.item(i), lastZidx);
 									}
 								} else if (git.fake === "child") {
-									layer.setZIndex(zidx);
+									layer.setZIndex(lastZidx);
 									lastZidx++;
 								}
 							} else {
-								layer.setZIndex(zidx);
+								layer.setZIndex(lastZidx);
 								lastZidx++;
 							}
 						} else {
-							layer.setZIndex(zidx);
+							layer.setZIndex(lastZidx);
 							lastZidx++;
 						}
 					}

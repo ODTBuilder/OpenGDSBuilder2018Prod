@@ -494,7 +494,9 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 			var parentId = nnode.parent;
 			if (parentId !== "#") {
 				var player = this.get_LayerById(parentId);
-				player.setVisible(bool);
+				if (player instanceof ol.layer.Group) {
+					player.setVisible(bool);
+				}
 				var pnode = this.get_node(parentId);
 				if (pnode.parent !== "#") {
 					this._visibleParentLayer(pnode, bool);
@@ -542,7 +544,13 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 			if (this._displayIndex) {
 				layer.setVisible(bool);
 			} else {
-				layer.setVisible(bool);
+				if (layer.get("renderMode").toLowerCase() === "image") {
+					if (layer.get("git").tempLayer instanceof ol.layer.Vector) {
+						if (layer.get("git").tempLayer.get("renderMode").toLowerCase() !== "image") {
+							bool ? layer.get("git").tempLayer.setMap(this._data.core.map) : layer.get("git").tempLayer.setMap(bool);
+						}
+					}
+				}
 			}
 
 		} else if (layer instanceof ol.layer.Tile) {
@@ -574,6 +582,7 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 
 		}
 	};
+
 	/**
 	 * wms 레이어를 업데이트한다.
 	 * 

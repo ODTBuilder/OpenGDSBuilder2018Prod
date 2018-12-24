@@ -54,10 +54,12 @@ gb.header.EditingTool = function(obj) {
 		features : this.features
 	});
 	this.tempVector = new ol.layer.Vector({
+		renderMode: "vector",
 		source : this.tempSource
 	});
 
 	this.managed = new ol.layer.Vector({
+		renderMode: "vector",
 		source : this.tempSource
 	});
 	this.managed.set("name", "temp_vector");
@@ -829,7 +831,16 @@ gb.header.EditingTool.prototype.select = function(source) {
 					"value" : gitAttr.treeID + "," + feature.getId()
 				}).text("Selecting feature").click(function() {
 					var param = $(this).attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					that.count = 1;
 					clearInterval(that.interval);
 					feature.setStyle(undefined);
@@ -841,7 +852,16 @@ gb.header.EditingTool.prototype.select = function(source) {
 				var td2 = $("<td>").append(anc);
 				var tr = $("<tr>").append(td1).append(td2).mouseenter(function(evt) {
 					var param = $(this).find("a").attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					feature.setStyle(that.highlightStyles1);
 					that.interval = setInterval(function() {
 						var val = that.count % 2;
@@ -854,7 +874,16 @@ gb.header.EditingTool.prototype.select = function(source) {
 					}, 500);
 				}).mouseleave(function() {
 					var param = $(this).find("a").attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					that.count = 1;
 					clearInterval(that.interval);
 					feature.setStyle(undefined);
@@ -2322,11 +2351,12 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 }
 
 // yijun
-gb.header.EditingTool.prototype.getVectorLayersInMap = function(collection, dish){
+gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection, dish){
 	var that = this;
 	collection.forEach(function(layer){
 		if (layer instanceof ol.layer.Vector) {
 			if (layer.get("renderMode").toLowerCase() !== "image") {
+				console.log(layer);
 				if (Array.isArray(dish)) {
 					dish.push(layer);
 				} else {
@@ -2335,7 +2365,7 @@ gb.header.EditingTool.prototype.getVectorLayersInMap = function(collection, dish
 			}
 		} else if (layer instanceof ol.layer.Group) {
 			var innerLayers = layer.getLayers();
-			that.getVectorLayersInMap(innerLayers, dish);
+			that.getVectorVectorLayersInMap(innerLayers, dish);
 		}
 	});
 	return dish;
@@ -2413,7 +2443,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 gb.header.EditingTool.prototype.loadVector_ = function(){
 	var rootLayers =  this.map.getLayers();
 	var dish = [];
-	var vecLayers = this.getVectorLayersInMap(rootLayers, dish);
+	var vecLayers = this.getImageVectorLayersInMap(rootLayers, dish);
 	var tree = this.otree.getJSTree();
 	var selectedLayer;
 	var vectorSource;
@@ -2453,9 +2483,9 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 		}
 	}
 
-	for(var i in this.customVector_){
-		this.customVector_[i].get("git").tempLayer.setVisible(true);
-	}
+// for(var i in this.customVector_){
+// this.customVector_[i].get("git").tempLayer.setVisible(true);
+// }
 }
 
 // hochul
@@ -2503,7 +2533,7 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 gb.header.EditingTool.prototype.setVisibleVectorVector = function(bool){
 	var rootLayers = this.map.getLayers();
 	var dish = [];
-	var vecLayers = this.getVectorLayersInMap(rootLayers, dish);
+	var vecLayers = this.getVectorVectorLayersInMap(rootLayers, dish);
 	var tree = this.otree.getJSTree();
 	
 	for(var i = 0; i < vecLayers.length; i++){
@@ -2597,6 +2627,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 		this.vectorSourcesOfServer_[treeid] = vectorSource;
 
 		var layer = new ol.layer.Vector({
+			renderMode: "vector",
 			source: vectorSource
 		});
 		layer.set("id", layerid);
@@ -2728,13 +2759,10 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	if(this.map.getView().getZoom() > 11){
 		// 화면확대 요구 메세지창 숨김
 		this.displayEditZoomHint(false);
-		
 		// WFS 레이어 로드
 		this.loadWFS_();
-		
 		// 벡터벡터 레이어 로드
 		this.loadVector_();
-		
 		// 벡터벡터 레이어 보이기
 		this.setVisibleVectorVector(true);
 	} else {

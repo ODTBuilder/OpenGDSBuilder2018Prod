@@ -266,6 +266,7 @@ gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, 
 		var newProjCode = 'EPSG:' + code;
 		$(this.getMessage()).text(newProjCode);
 		proj4.defs(newProjCode, proj4def);
+		ol.proj.proj4.register(proj4);
 		var newProj = ol.proj.get(newProjCode);
 		ol.proj.addProjection(newProj);
 		var fromLonLat = ol.proj.getTransform('EPSG:4326', newProj);

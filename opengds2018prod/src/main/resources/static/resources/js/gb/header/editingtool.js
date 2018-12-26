@@ -37,6 +37,7 @@ gb.header.EditingTool = function(obj) {
 	// hochul
 	this.isEditing = options.isEditing instanceof Object ? options.isEditing : undefined;
 	this.vectorSourcesOfServer_ = {};
+	this.vectorSourcesOfVector_ = {};
 	this.customVector_ = {};
 	this.copyPaste_ = undefined;
 	this.wfsURL = options.wfsURL;
@@ -53,10 +54,12 @@ gb.header.EditingTool = function(obj) {
 		features : this.features
 	});
 	this.tempVector = new ol.layer.Vector({
+		renderMode: "vector",
 		source : this.tempSource
 	});
 
 	this.managed = new ol.layer.Vector({
+		renderMode: "vector",
 		source : this.tempSource
 	});
 	this.managed.set("name", "temp_vector");
@@ -341,10 +344,12 @@ gb.header.EditingTool = function(obj) {
 		if(that.getActiveTool()){
 			if(zoom > 11 && !preventReload){
 				that.loadWFS_();
+				that.loadVector_();
 				that.displayEditZoomHint(false);
 				preventReload = true;
 			} else if(zoom <= 11 && preventReload) {
 				that.setVisibleWFS(false);
+				that.setVisibleImageVector(false);
 				that.displayEditZoomHint(true);
 				preventReload = false;
 			}
@@ -356,6 +361,7 @@ gb.header.EditingTool = function(obj) {
 			if(that.map.getView().getZoom() > 11){
 				if(data.selected.length === 1){
 					that.select(that.updateSelected(data.selected[0]));
+					that.moveUpEditingLayer_();
 				}
 			}
 		}
@@ -820,15 +826,25 @@ gb.header.EditingTool.prototype.select = function(source) {
 			vfeature.close();
 			that.featurePop.close();
 			for (var i = 0; i < that.features.getLength(); i++) {
-				var idx = that.features.item(i).getId().substring(that.features.item(i).getId().indexOf(".") + 1);
-				var td1 = $("<td>").text(idx);
+				var idx = that.features.item(i).getId();
+				var fno = idx ? idx.substring(that.features.item(i).getId().indexOf(".") + 1) : "";
+				var td1 = $("<td>").text(fno);
 				var feature = that.features.item(i);
 				var gitAttr = that.selectedSource.get("git");
 				var anc = $("<a>").addClass("gb-edit-sel-flist").css("cursor", "pointer").attr({
 					"value" : gitAttr.treeID + "," + feature.getId()
 				}).text("Selecting feature").click(function() {
 					var param = $(this).attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					that.count = 1;
 					clearInterval(that.interval);
 					feature.setStyle(undefined);
@@ -840,7 +856,16 @@ gb.header.EditingTool.prototype.select = function(source) {
 				var td2 = $("<td>").append(anc);
 				var tr = $("<tr>").append(td1).append(td2).mouseenter(function(evt) {
 					var param = $(this).find("a").attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					feature.setStyle(that.highlightStyles1);
 					that.interval = setInterval(function() {
 						var val = that.count % 2;
@@ -853,7 +878,16 @@ gb.header.EditingTool.prototype.select = function(source) {
 					}, 500);
 				}).mouseleave(function() {
 					var param = $(this).find("a").attr("value").split(",");
-					feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);
+					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+					if (slayers.length !== 1) {
+						console.error("레이어는 하나만 선택해야 합니다.");
+						return;
+					}
+					if (slayers[0] instanceof ol.layer.Tile) {
+						feature = that.getVectorSourceOfServer(param[0]).getFeatureById(param[1]);	
+					} else if (slayers[0] instanceof ol.layer.Vector) {
+						feature = that.getVectorSourceOfVector(param[0]).getFeatureById(param[1]);
+					}
 					that.count = 1;
 					clearInterval(that.interval);
 					feature.setStyle(undefined);
@@ -2319,6 +2353,48 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 
 	return tileLayers;
 }
+
+// yijun
+gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection, dish){
+	var that = this;
+	collection.forEach(function(layer){
+		if (layer instanceof ol.layer.Vector) {
+			if (layer.get("renderMode").toLowerCase() !== "image") {
+				console.log(layer);
+				if (Array.isArray(dish)) {
+					dish.push(layer);
+				} else {
+					console.error("리턴 객체는 배열이어야 합니다");
+				}
+			}
+		} else if (layer instanceof ol.layer.Group) {
+			var innerLayers = layer.getLayers();
+			that.getVectorVectorLayersInMap(innerLayers, dish);
+		}
+	});
+	return dish;
+}
+
+// yijun
+gb.header.EditingTool.prototype.getImageVectorLayersInMap = function(collection, dish){
+	var that = this;
+	collection.forEach(function(layer){
+		if (layer instanceof ol.layer.Vector) {
+			if (layer.get("renderMode").toLowerCase() === "image") {
+				if (Array.isArray(dish)) {
+					dish.push(layer);
+				} else {
+					console.error("리턴 객체는 배열이어야 합니다");
+				}	
+			}
+		} else if (layer instanceof ol.layer.Group) {
+			var innerLayers = layer.getLayers();
+			that.getImageVectorLayersInMap(innerLayers, dish);
+		}
+	});
+	return dish;
+}
+
 // hochul
 gb.header.EditingTool.prototype.loadWFS_ = function(){
 
@@ -2345,6 +2421,8 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+						zidx = tileLayers[i].getZIndex();
+						vectorSource.get("git").tempLayer.setZIndex(zidx);
 						vectorSource.get("git").tempLayer.setMap(this.map);
 					} else {
 						vectorSource.get("git").tempLayer.setMap(null);
@@ -2353,6 +2431,8 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 			} else {
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+						zidx = tileLayers[i].getZIndex();
+						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
 					} else {
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(null);
@@ -2365,6 +2445,77 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	for(var i in this.customVector_){
 		this.customVector_[i].get("git").tempLayer.setVisible(true);
 	}
+}
+
+// yijun
+gb.header.EditingTool.prototype.moveUpEditingLayer_ = function(){
+	var layers  = $(this.treeElement).jstreeol3("get_selected_layer");
+	var layer;
+	if (layers.length === 1) {
+		layer = layers[0];
+	}
+	if (layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile) {
+		var source = layer.getSource();
+		var git = layer.get("git");
+		var tlayer = git.tempLayer;
+		if (tlayer instanceof ol.layer.Vector) {
+			tlayer.setMap(null);
+			tlayer.setMap(this.map);	
+		}
+	}
+};
+
+// yijun
+gb.header.EditingTool.prototype.loadVector_ = function(){
+	var rootLayers =  this.map.getLayers();
+	var dish = [];
+	var vecLayers = this.getImageVectorLayersInMap(rootLayers, dish);
+	var tree = this.otree.getJSTree();
+	var selectedLayer;
+	var vectorSource;
+
+	for(var i in vecLayers){
+		if(typeof vecLayers[i].get("git") === "object"){
+			if(!this.getVectorSourceOfVector(vecLayers[i].get("treeid"))){
+				if(vecLayers[i] instanceof ol.layer.Group){
+					continue;
+				}
+				vectorSource = this.setVectorSourceOfVector(vecLayers[i].get("git"), vecLayers[i].get("id"), 
+						vecLayers[i].get("name"), vecLayers[i].get("treeid"));
+				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
+				if(selectedLayer.length === 1){
+					if(vecLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
+						this.updateSelected(selectedLayer[0].get("treeid"));
+						this.select(vectorSource);
+					}
+				}
+				
+				if(!!tree.get_node(vecLayers[i].get("treeid"))){
+					if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
+						zidx = vecLayers[i].getZIndex();
+						vectorSource.get("git").tempLayer.setZIndex(zidx);
+						vectorSource.get("git").tempLayer.setMap(this.map);
+					} else {
+						vectorSource.get("git").tempLayer.setMap(null);
+					}
+				}
+			} else {
+				if(!!tree.get_node(vecLayers[i].get("treeid"))){
+					if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
+						zidx = vecLayers[i].getZIndex();
+						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
+						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
+					} else {
+						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setMap(null);
+					}
+				}
+			}
+		}
+	}
+
+// for(var i in this.customVector_){
+// this.customVector_[i].get("git").tempLayer.setVisible(true);
+// }
 }
 
 // hochul
@@ -2380,6 +2531,17 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 	for(var i in this.vectorSourcesOfServer_){
 		if(!!tree.get_node(i)){
 			if(!tree.get_node(i).state.hiding){
+				var vlayer = tree.get_LayerById(i);
+				if (vlayer !== undefined) {
+					zidx = vlayer.getZIndex();
+					var git = vlayer.get("git");
+					if (git !== undefined) {
+						var tlayer = git.tempLayer;
+						if (tlayer !== undefined) {
+							tlayer.setZIndex(zidx);
+						}
+					}					
+				}
 				this.vectorSourcesOfServer_[i].get("git").tempLayer.setMap(set);
 			} else {
 				this.vectorSourcesOfServer_[i].get("git").tempLayer.setMap(null);
@@ -2400,9 +2562,53 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	for(var i = 0; i < tileLayers.length; i++){
 		if(!!tree.get_node(tileLayers[i].get("treeid"))){
 			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+				zidx = tileLayers[i].getZIndex();
+				var git = tileLayers[i].get("git");
+				if (git !== undefined) {
+					var tlayer = git.tempLayer;
+					if (tlayer !== undefined) {
+						tlayer.setZIndex(zidx);
+					}
+				}
 				tileLayers[i].setVisible(bool);
 			} else {
 				tileLayers[i].setVisible(false);
+			}
+		}
+	}
+}
+
+// yijun
+gb.header.EditingTool.prototype.setVisibleVectorVector = function(bool){
+	var rootLayers = this.map.getLayers();
+	var dish = [];
+	var vecLayers = this.getVectorVectorLayersInMap(rootLayers, dish);
+	var tree = this.otree.getJSTree();
+	
+	for(var i = 0; i < vecLayers.length; i++){
+		if(!!tree.get_node(vecLayers[i].get("treeid"))){
+			if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
+				vecLayers[i].setVisible(bool);
+			} else {
+				vecLayers[i].setVisible(false);
+			}
+		}
+	}
+}
+
+// yijun
+gb.header.EditingTool.prototype.setVisibleImageVector = function(bool){
+	var rootLayers = this.map.getLayers();
+	var dish = [];
+	var vecLayers = this.getImageVectorLayersInMap(rootLayers, dish);
+	var tree = this.otree.getJSTree();
+	
+	for(var i = 0; i < vecLayers.length; i++){
+		if(!!tree.get_node(vecLayers[i].get("treeid"))){
+			if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
+				vecLayers[i].setVisible(bool);
+			} else {
+				vecLayers[i].setVisible(false);
 			}
 		}
 	}
@@ -2470,11 +2676,12 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 		this.vectorSourcesOfServer_[treeid] = vectorSource;
 
 		var layer = new ol.layer.Vector({
+			renderMode: "vector",
 			source: vectorSource
 		});
 		layer.set("id", layerid);
 		layer.set("name", layername);
-		layer.setMap(this.map);
+// layer.setMap(this.map);
 
 		if(sld !== undefined){
 			var symbol = gb.style.LayerStyle.prototype.parseSymbolizer.call(this, sld);
@@ -2514,6 +2721,42 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 	return null;
 }
 
+// yijun
+gb.header.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId, layerName, treeId){
+	var git = obj || {};
+	var layerid = layerId;
+	var layername = layerName;
+	var treeid = treeId;
+	var url = this.wfsURL;
+	if(!this.getVectorSourceOfServer(treeid)){
+		var vlayer = this.otree.getJSTree().get_LayerById(treeId);
+		var vectorSource = vlayer instanceof ol.layer.Vector ? vlayer.getSource() : undefined;
+		console.log(layerid);
+		this.vectorSourcesOfVector_[treeid] = vectorSource;
+
+		var layer = new ol.layer.Vector({
+			renderMode: "vector",
+			source: vectorSource
+		});
+		layer.set("id", layerid);
+		layer.set("name", layername);
+		if (vlayer.getStyle() !== undefined) {
+			layer.setStyle(vlayer.getStyle());
+		}
+// layer.setMap(this.map);
+
+		
+
+		git.layerID = layerid;
+		git.tempLayer = layer;
+		git.treeID = treeid;
+		vectorSource.set("git", git);
+
+		return vectorSource;
+	}
+	return null;
+}
+
 // hochul
 gb.header.EditingTool.prototype.getVectorSourceOfServer = function(treeId){
 	return this.vectorSourcesOfServer_[treeId];
@@ -2524,6 +2767,20 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	var a = [];
 	for(var i in this.vectorSourcesOfServer_){
 		a.push(this.vectorSourcesOfServer_[i]);
+	}
+	return a;
+}
+
+// yijun
+gb.header.EditingTool.prototype.getVectorSourceOfVector = function(treeId){
+	return this.vectorSourcesOfVector_[treeId];
+}
+
+// yijun
+gb.header.EditingTool.prototype.getVectorSourcesOfVector = function(){
+	var a = [];
+	for(var i in this.vectorSourcesOfVector_){
+		a.push(this.vectorSourcesOfVector_[i]);
 	}
 	return a;
 }
@@ -2544,13 +2801,27 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	// WMS 레이어 숨김
 	this.setVisibleWMS(false);
 	
+	// 이미지 벡터 레이어 숨김
+	this.setVisibleImageVector(false);
+	
 	// 줌 레벨에 따른 실행 함수 결정
 	if(this.map.getView().getZoom() > 11){
 		// 화면확대 요구 메세지창 숨김
 		this.displayEditZoomHint(false);
-		
 		// WFS 레이어 로드
 		this.loadWFS_();
+		// 벡터벡터 레이어 로드
+		this.loadVector_();
+		// 벡터벡터 레이어 보이기
+		this.setVisibleVectorVector(true);
+		// 선택 레이어 업데이트
+		var selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
+		if (selectedLayer.length ===1) {
+			var treeid = selectedLayer[0].get("treeid");
+			this.select(this.updateSelected(treeid));
+			// 현재 편집중인 레이어의 zindex를 최상위로
+			this.moveUpEditingLayer_();
+		}
 	} else {
 		// 줌 레벨이 일정 이상이면 화면확대 요구 메세지창 생성
 		this.displayEditZoomHint(true);
@@ -2589,6 +2860,12 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 	
 	// WMS 레이어 활성화
 	this.setVisibleWMS(true);
+	
+	// 이미지 벡터 활성화
+	this.setVisibleImageVector(true);
+	
+	// 벡터 벡터 활성화
+	this.setVisibleVectorVector(false);
 	
 	// WFS 레이어 숨김
 	this.setVisibleWFS(false);
@@ -2668,7 +2945,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 			this.targetElement.append(notice);
 		}
 
-		//this.deactiveAnotherInteraction();
+		// this.deactiveAnotherInteraction();
 	} else {
 		$("#zoomNotice").remove();
 		this.headerTag.find(".edit-zoom-hint").remove();

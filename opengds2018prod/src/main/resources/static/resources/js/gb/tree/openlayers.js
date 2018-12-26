@@ -722,6 +722,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			};
 			
 			var vectorLayer = new ol.layer.Vector({
+				renderMode : "image",
 				source : new ol.source.Vector({})
 			});
 			
@@ -947,10 +948,17 @@ gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) 
 			url : fileL,
 			encoding : encode
 		}, function(geojson) {
+			console.log(geojson);
 			var features = (new ol.format.GeoJSON()).readFeatures(geojson);
-
+			
 			if (!!features.length) {
+				var lname = fileL.name.split(".")[0];
+				for (var i = 0; i < features.length; i++) {
+					features[i].setId(lname+"."+i);
+				}
+				console.log(features);
 				var vectorLayer = new ol.layer.Vector({
+					renderMode: 'image',
 					source : new ol.source.Vector({
 						features : features
 					})
@@ -966,6 +974,7 @@ gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) 
 				};
 				vectorLayer.set("git", gitLayer);
 				vectorLayer.set("name", fileL.name);
+				vectorLayer.set("id", "shp:"+fileL.name);
 				
 				map.addLayer(vectorLayer);
 				map.getView().fit(geojson.bbox, map.getSize());
@@ -1139,7 +1148,7 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 };
 
 /**
- * 레이어 삭제 확인창을 연다.
+ * 레이어 삭제
  * 
  * @method gb.tree.OpenLayers#deleteLayer
  */

@@ -587,7 +587,7 @@ if (!gb.layer)
 	 */
 	gb.layer.Pointer.Event = function(type, feature, mapBrowserPointerEvent) {
 
-		ol.events.Event.call(this, type);
+		//ol.events.Event.call(this, type);
 
 		/**
 		 * The features being modified.
@@ -605,7 +605,7 @@ if (!gb.layer)
 		 */
 		this.mapBrowserEvent = mapBrowserPointerEvent;
 	};
-	ol.inherits(gb.layer.Pointer.Event, ol.events.Event);
+	//ol.inherits(gb.layer.Pointer.Event, ol.events.Event);
 	
 	/**
 	 * 이벤트 영역을 {ol.style.Style}객체로 그려낸다.

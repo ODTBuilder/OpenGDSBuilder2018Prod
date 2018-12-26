@@ -179,8 +179,8 @@ gb.interaction.MeasureTip = function(opt_options) {
 	 * @return {String}
 	 * @private
 	 */
-	this.formatArea_ = function(polygon) {
-		var area = polygon.getArea();
+	this.formatArea_ = function(polygon, srs) {
+		var area = ol.sphere.getArea(polygon, srs);
 		var output;
 		if (area > 10000) {
 			output = (Math.round(area/1000000*100)/100) + ' ' + 'km<sup>2</sup>';
@@ -199,16 +199,16 @@ gb.interaction.MeasureTip = function(opt_options) {
 	 * @return {String}
 	 * @private
 	 */
-	this.formatLength_ = function(line) {
+	this.formatLength_ = function(line, srs) {
 		var length = 0;
 		var output;
 		if (line instanceof ol.geom.MultiLineString) {
 			var lines = line.getLineStrings();
 			for (var i = 0; i < lines.length; ++i) {
-				length += Math.round(lines[i].getLength()*100)/100;
+				length += Math.round(ol.sphere.getLength(lines[i], srs)*100)/100;
 			}
 		} else if (line instanceof ol.geom.LineString) {
-			length = Math.round(line.getLength() * 100) / 100;
+			length = Math.round(ol.sphere.getLength(line, srs) * 100) / 100;
 		} else {
 			console.error('not support type');
 			return;
@@ -231,10 +231,10 @@ gb.interaction.MeasureTip = function(opt_options) {
 			var output, tipCoord;
 
 			if (geom instanceof ol.geom.Polygon) {
-				output = that.formatArea_(geom);
+				output = that.formatArea_(geom, that.map.getView().getProjection().getCode());
 				tipCoord = geom.getInteriorPoint().getCoordinates();
 			} else if (geom instanceof ol.geom.LineString) {
-				output = that.formatLength_(geom);
+				output = that.formatLength_(geom, that.map.getView().getProjection().getCode());
 				tipCoord = geom.getLastCoordinate();
 			}
 			measureTip.element.innerHTML = output;

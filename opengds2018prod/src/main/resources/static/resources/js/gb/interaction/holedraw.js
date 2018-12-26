@@ -95,9 +95,8 @@ if (!gb.interaction)
 							
 							for(var i = 0; i < polygons.length; i++){
 								if(polygons[i].intersectsCoordinate(b.getFirstCoordinate())){
-									polygons[i].setCoordinates(setCoords);
 									coordElemntLength = polygons[i].getCoordinates().length;
-									coordsExt = polygons[i].getCoordinates()[0];
+									coordsExt = a.getCoordinates()[i][0];
 									break;
 								}
 							}

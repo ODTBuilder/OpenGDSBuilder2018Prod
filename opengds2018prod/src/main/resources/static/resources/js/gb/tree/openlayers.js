@@ -288,6 +288,9 @@ gb.tree.OpenLayers = function(obj) {
 									.reference(data.reference), obj = inst
 									.get_node(data.reference);
 									var layer = inst.get_LayerById(obj.id);
+									if(layer instanceof ol.layer.Image){
+										layer = layer.get("vectorLayer");
+									}
 									var extent = ol.extent.createEmpty();
 									// inst._data.layerproperties.editingTool.zoomToFit(layer);
 									// inst._data.layerproperties.editingTool.setWMSSource(layer,
@@ -1051,7 +1054,8 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 			url : readerInfo.result,
 			width : imageInfo.width,
 			height : imageInfo.height,
-			title : file.name
+			title : file.name,
+			jstree: that.jstree
 		});
 	});
 

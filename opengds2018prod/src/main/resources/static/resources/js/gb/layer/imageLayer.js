@@ -61,6 +61,13 @@ if (!gb.layer)
 		this.baseDiv = options.baseDiv ? $(options.baseDiv) : $(".bind > div:last-child");
 		
 		/**
+		 * Openlayers JSTree 객체
+		 * @type {Object}
+		 * @private
+		 */
+		this.jstree = options.jstree || undefined;
+		
+		/**
 		 * Image Layer
 		 * 
 		 * @type {ol.layer.Image}
@@ -177,6 +184,14 @@ if (!gb.layer)
 		this.listener_.push(endEvent);
 		
 		this.map.addInteraction(this);
+		
+		if(this.jstree !== undefined){
+			this.jstree.element.on("delete_node_layer.jstreeol3", function(e, data){
+				that.vector.setMap(null)
+				that.deActiveEdit();
+				that.removeMenuBar();
+			});
+		}
 	}
 	
 	ol.inherits(gb.layer.ImageLayer, ol.interaction.Draw);

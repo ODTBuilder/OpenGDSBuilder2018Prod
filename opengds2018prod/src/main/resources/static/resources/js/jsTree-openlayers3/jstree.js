@@ -6579,6 +6579,7 @@
 						map.removeLayer(layer);
 						this.git.lastPointer -= subVal;
 					}
+					
 					var root = this.get_node("#");
 					var underRoot;
 					if (obj.parents.length > 1) {

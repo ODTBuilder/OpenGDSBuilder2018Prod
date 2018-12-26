@@ -656,7 +656,7 @@ gb.interaction.MultiTransformEventType = {
  */
 gb.interaction.MultiTransform.Event = function(type, feature, mapBrowserPointerEvent) {
 
-	ol.events.Event.call(this, type);
+//	ol.events.Event.call(this, type);
 
 	/**
 	 * The features being modified.
@@ -674,4 +674,4 @@ gb.interaction.MultiTransform.Event = function(type, feature, mapBrowserPointerE
 	 */
 	this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-ol.inherits(gb.interaction.MultiTransform.Event, ol.events.Event);
+//ol.inherits(gb.interaction.MultiTransform.Event, ol.events.Event);

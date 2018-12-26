@@ -180,7 +180,7 @@ gb.interaction.MeasureTip = function(opt_options) {
 	 * @private
 	 */
 	this.formatArea_ = function(polygon, srs) {
-		var area = ol.sphere.getArea(polygon, srs);
+		var area = ol.sphere.getArea(polygon, {projection: srs});
 		var output;
 		if (area > 10000) {
 			output = (Math.round(area/1000000*100)/100) + ' ' + 'km<sup>2</sup>';
@@ -205,10 +205,10 @@ gb.interaction.MeasureTip = function(opt_options) {
 		if (line instanceof ol.geom.MultiLineString) {
 			var lines = line.getLineStrings();
 			for (var i = 0; i < lines.length; ++i) {
-				length += Math.round(ol.sphere.getLength(lines[i], srs)*100)/100;
+				length += Math.round(ol.sphere.getLength(lines[i], {projection: srs})*100)/100;
 			}
 		} else if (line instanceof ol.geom.LineString) {
-			length = Math.round(ol.sphere.getLength(line, srs) * 100) / 100;
+			length = Math.round(ol.sphere.getLength(line, {projection: srs}) * 100) / 100;
 		} else {
 			console.error('not support type');
 			return;

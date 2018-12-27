@@ -2397,8 +2397,8 @@ gb.header.EditingTool.prototype.getImageVectorLayersInMap = function(collection,
 
 // hochul
 gb.header.EditingTool.prototype.loadWFS_ = function(){
-
-	var tileLayers = this.getTileLayersInMap(this.map);
+	var that = this;
+	var tileLayers = that.getTileLayersInMap(that.map);
 	var tree = this.otree.getJSTree();
 	var selectedLayer;
 	var vectorSource;
@@ -2422,7 +2422,9 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
 						zidx = tileLayers[i].getZIndex();
-						vectorSource.get("git").tempLayer.setZIndex(zidx);
+						if (!isNaN(parseInt(zidx))) {
+							vectorSource.get("git").tempLayer.setZIndex(zidx);	
+						}
 						vectorSource.get("git").tempLayer.setMap(this.map);
 					} else {
 						vectorSource.get("git").tempLayer.setMap(null);
@@ -2432,7 +2434,9 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
 						zidx = tileLayers[i].getZIndex();
-						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
+						if (!isNaN(parseInt(zidx))) {
+							this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
+						}
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
 					} else {
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(null);
@@ -2493,7 +2497,9 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 				if(!!tree.get_node(vecLayers[i].get("treeid"))){
 					if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
 						zidx = vecLayers[i].getZIndex();
-						vectorSource.get("git").tempLayer.setZIndex(zidx);
+						if (!isNaN(parseInt(zidx))) {
+							vectorSource.get("git").tempLayer.setZIndex(zidx);
+						}
 						vectorSource.get("git").tempLayer.setMap(this.map);
 					} else {
 						vectorSource.get("git").tempLayer.setMap(null);
@@ -2503,7 +2509,9 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 				if(!!tree.get_node(vecLayers[i].get("treeid"))){
 					if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
 						zidx = vecLayers[i].getZIndex();
-						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
+						if (!isNaN(parseInt(zidx))) {
+							this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
+						}
 						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
 					} else {
 						this.getVectorSourceOfVector(vecLayers[i].get("treeid")).get("git").tempLayer.setMap(null);

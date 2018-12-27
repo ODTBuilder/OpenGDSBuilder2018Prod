@@ -13,7 +13,7 @@ OpenGeoDT 팀
 
 특징
 =====
-- OpenGDSBuilder2018Prod 은 자사 GIS 통합 솔루션인 GeoDT 2.2 을 기반으로한 웹용 공간데이터 편집/검수 솔루션임.
+- OpenGDSBuilder2018Prod 은 자사 GIS 통합 솔루션인 GeoDT 2.2 을 기반으로한 웹 공간데이터 편집/검수 솔루션임.
 - 웹 페이지상에서 공간정보의 기하학적/논리적 구조와 속성값에 대한 검수편집 기능을 제공함(파일 검수, Geoserver Layer 검수 지원)
 - 다양한 웹 브라우저 지원가능, 플러그인 및 ActiveX 설치 없이 사용 가능함.
 - JavaScript, Java 라이브러리 형태로 개발되어 사용자 요구사항에 따라 커스터 마이징 및 확장이 가능함.
@@ -88,8 +88,8 @@ Getting Started
 - 서버 실행 후 메인 페이지 url 접속 
  <pre><code> http://[host]:[port]/opengds/builder.do </code></pre>
 - 테스트 계정으로 로그인
- <pre><code> id : admin<br>
- pw : 1234<br> </code></pre>
+ <pre><code> id : guest<br>
+ pw : guest<br> </code></pre>
 - 편집도구 초기화면 접속 
 
 ### 5. 검수 Test 파일 및 설정 파일 다운로드 ###

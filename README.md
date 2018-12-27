@@ -1,8 +1,5 @@
-# OpenGDSBuilder2018Prod
-OpenGDS/Builder/Validator/DS
-
 <a name="korean"></a>
-Validator-v1.0 (공간자료 검증도구 v1.0) 
+OpenGDSBuilder2018Prod (공간자료 검증도구) 
 =======
 이 프로젝트는 국토공간정보연구사업 중 [공간정보 SW 활용을 위한 오픈소스 가공기술 개발]과제의 4차년도 연구성과 입니다.<br>
 정식 버전은 차후에 통합된 환경에서 제공될 예정입니다.<br>

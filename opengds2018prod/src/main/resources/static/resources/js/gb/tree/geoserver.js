@@ -178,6 +178,14 @@ gb.tree.GeoServer = function(obj) {
 				"ko" : "닫기",
 				"en" : "Close"
 			},
+			"remove" : {
+				"ko" : "삭제",
+				"en" : "Remove"
+			},
+			"removeserver" : {
+				"ko" : "닫기",
+				"en" : "Close"
+			},
 	};
 	this.panelTitle = $("<p>").text(this.translation.geoserver[this.locale]).css({
 		"margin" : "0",
@@ -736,9 +744,8 @@ gb.tree.GeoServer = function(obj) {
 								},
 								"label" : "Upload",
 								/*
-								 * ! "shortcut" : 113, "shortcut_label" :
-								 * 'F2', "icon" : "glyphicon
-								 * glyphicon-leaf",
+								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
+								 * "icon" : "glyphicon glyphicon-leaf",
 								 */
 								"action" : function(data) {
 									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
@@ -1125,7 +1132,7 @@ gb.tree.GeoServer.prototype.changeNodeOnLoadingList = function(idx, nodeId, flag
  */
 gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	var that = this;
-	var gName = $("<div>").text("Name: ").css({
+	var gName = $("<div>").text(that.translation["name"][that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -1173,7 +1180,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"display" : "table-row"
 	});
 
-	var gID = $("<div>").text("ID: ").css({
+	var gID = $("<div>").text(that.translation["id"][that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -1197,7 +1204,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"display" : "table-row"
 	});
 
-	var gPass = $("<div>").text("Password: ").css({
+	var gPass = $("<div>").text(that.translation["password"][that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -1228,10 +1235,10 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation["close"][that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation["add"][that.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -1243,7 +1250,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"height" : "250px"
 	});
 	var addGeoServerModal = new gb.modal.Base({
-		"title" : "Add GeoServer",
+		"title" : that.translation["addgeoserver"][that.locale],
 		"width" : 540,
 		"height" : 400,
 		"autoOpen" : true,

@@ -105,27 +105,43 @@ Getting Started
    * 모든 폴더 및 파일에 특수문자 입력 불가</code></pre>
 - 레이어 설정 파일 (layer_setting.json) 확인<br>
 <pre><code> ** 레이어 설정 파일 json 구조 **
-    { 
-      레이어대분류명 : {
-        "code" : [
-          레이어명
-         ],
-         "geom" : geometry 타입,
-         "area" : true/false
-      }
-    }
+    [{ 
+      "layers" : [{
+        "geometry" : geometry타입,
+        "fix" : [{
+          "values" : [val1, val2, val3, ...],
+          "isnull" : boolean,
+          "length" : float,
+          "type" : 속성유형,
+          "name" : 속성명},
+          ...
+        ],
+        "code" : 레이어코드 },
+        ...
+      ],
+      "name" : 레이어그룹명 },
+      ...
+    ]
 </code></pre>
 - 검수 설정 파일 (validation_setting.json) 확인<br>
 <pre><code> ** 검수 설정 파일 json 구조 **
-    { 
-      레이어대분류명 : {
-        검수항목1 : true/false,
-        검수항목2 : {
-          "figure" : 수치값
+    {
+      "definition" : [{
+        "name" : 레이어그룹명,
+        "options" : {
+          "attribute" : {
+            검수항목1 : {
+              "filter" : 속성필터,
+              "relation" : 관계레이어,
+              "figure" : 수치조건
+            },
+            ...
+          }
         }
     }
 </code></pre>
 ** 레이어 설정 파일 및 검수 설정 파일은 편집화면에 업로드 후 편집 가능
+** 자세한 내용은 GeoDT Web 웹검수 매뉴얼 "검수 항목 세부설정" 부분 참조
 
 ### 6. 검수 실행 및 오류 네비게이터 실행 ###
 - 메인 페이지 url 접속 및 로그인

@@ -75,7 +75,7 @@ Getting Started
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 zip 파일 형태로 Project Import
 - eclipse와 톰캣 연동 후 해당 프로젝트 서버 생성
-- server.xml 파일의 Context path를 "/opengds"로 변경
+- server.xml 파일의 Context path를 "/geodt"로 변경
 - src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
 <pre><code> url=http://[host]:[port]/geoserver<br>
  id=[admin]<br>
@@ -85,7 +85,7 @@ Getting Started
  property name="username" value="[username]" <br>
  property name="password" value="[password]" <br></code></pre>
 - 서버 실행 후 메인 페이지 url 접속 
- <pre><code> http://[host]:[port]/opengds/builder.do </code></pre>
+ <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
 - 테스트 계정으로 로그인
  <pre><code> id : guest<br>
  pw : guest<br> </code></pre>
@@ -144,7 +144,7 @@ Getting Started
         }
     }
 </code></pre>
-** 레이어 설정 파일 및 검수 설정 파일은 편집화면에 업로드 후 편집 가능
+** 레이어 설정 파일 및 검수 설정 파일은 편집화면에 업로드 후 편집 가능<br>
 ** 자세한 내용은 GeoDT Web 웹검수 매뉴얼 "검수 항목 세부설정" 부분 참조
 
 ### 6. 검수 실행 및 오류 네비게이터 실행 ###

@@ -328,10 +328,8 @@ html {
 			featureRecord : frecord,
 			otree : otree,
 			wfsURL : urlList.getWFSFeature + urlList.token,
-			getFeatureInfo : urlList.getFeatureInfo + urlList.token,
 			layerInfo : urlList.getLayerInfo + urlList.token,
 			imageTile : urlList.getLayerTile,
-			getFeature : urlList.getWFSFeature + urlList.token,
 			locale : "en",
 			versioning : fhist,
 			isEditing : gb.module.isEditing

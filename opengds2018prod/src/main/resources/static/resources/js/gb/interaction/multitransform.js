@@ -654,24 +654,24 @@ gb.interaction.MultiTransformEventType = {
  *            mapBrowserPointerEvent Associated
  *            {@link ol.MapBrowserPointerEvent}.
  */
-gb.interaction.MultiTransform.Event = function(type, feature, mapBrowserPointerEvent) {
+/*gb.interaction.MultiTransform.Event = function(type, feature, mapBrowserPointerEvent) {
 
-//	ol.events.Event.call(this, type);
+	ol.events.condition.call(this, type);
 
-	/**
+	*//**
 	 * The features being modified.
 	 * 
 	 * @type {ol.Feature}
 	 * @api
-	 */
+	 *//*
 	this.feature = feature;
 
-	/**
+	*//**
 	 * Associated {@link ol.MapBrowserEvent}.
 	 * 
 	 * @type {ol.MapBrowserEvent}
 	 * @api
-	 */
+	 *//*
 	this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-//ol.inherits(gb.interaction.MultiTransform.Event, ol.events.Event);
+ol.inherits(gb.interaction.MultiTransform.Event, ol.events.condition);*/

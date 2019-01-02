@@ -27,8 +27,6 @@ gb.header.EditingTool = function(obj) {
 	this.selected = options.selected ? options.selected : undefined;
 	this.layerInfo = options.layerInfo ? options.layerInfo : undefined;
 	this.imageTile = options.imageTile ? options.imageTile : undefined;
-	this.getFeature = options.getFeature ? options.getFeature : undefined;
-	this.getFeatureInfo = options.getFeatureInfo ? options.getFeatureInfo : undefined;
 	this.versioningFeature = options.versioning instanceof gb.versioning.Feature ? options.versioning : undefined; 
 	this.selectedSource = undefined;
 	this.selectSources = new ol.Collection();
@@ -43,6 +41,25 @@ gb.header.EditingTool = function(obj) {
 	this.wfsURL = options.wfsURL;
 	this.otree.setEditingTool(this);
 
+	this.locale = options.locale || "en";
+	this.translation = {
+		"notSupportHistory" : {
+			"en" : "This layer is not support feature history",
+			"ko" : "피처 이력을 지원하지 않는 레이어 입니다."
+		},
+		"alertSelectFeature" : {
+			"en" : "you should select Feature",
+			"ko" : "피처를 선택해 주세요."
+		},
+		"alertSelectOneLayer" : {
+			"en" : "you must select only one Layer",
+			"ko" : "레이어는 하나만 선택해야 합니다."
+		},
+		"returnMustArray" : {
+			"en" : "The return type must be an array",
+			"ko" : "리턴 객체는 배열이어야 합니다"
+		}
+	}
 
 	this.snapWMS = [];
 	this.snapSource = new ol.source.Vector();
@@ -423,11 +440,11 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var git = layer.get("git");
 	if (git !== undefined) {
 		if (!(git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch"))) {
-			alert("피처 이력을 지원하지 않는 레이어 입니다.");
+			alert(this.translation.notSupportHistory[this.locale]);
 			return;
 		}
 	} else {
-		alert("피처 이력을 지원하지 않는 레이어 입니다.");
+		alert(this.translation.notSupportHistory[this.locale]);
 		return;
 	}
 	if ($(vfeature.getPanel().getPanel()).css("display") !== "none") {
@@ -437,7 +454,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 // this.interaction.select.getFeatures().getLength() === 1 ?
 // this.interaction.select.getFeatures().item(0) : undefined;
 		if (nfeature === undefined) {
-			alert("피처를 선택해 주세요.");
+			alert(this.translation.alertSelectFeature[this.locale]);
 			return;
 		}
 		if (layers.length === 1 && nfeature) {
@@ -473,7 +490,7 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 				vfeature.open();
 			}
 		} else {
-			alert("피처를 선택해 주세요.");
+			alert(this.translation.alertSelectFeature[this.locale]);
 			return;
 		}
 	}
@@ -837,7 +854,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 					var param = $(this).attr("value").split(",");
 					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
 					if (slayers.length !== 1) {
-						console.error("레이어는 하나만 선택해야 합니다.");
+						console.error(this.translation.alertSelectOneLayer[this.locale]);
 						return;
 					}
 					if (slayers[0] instanceof ol.layer.Tile) {
@@ -858,7 +875,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 					var param = $(this).find("a").attr("value").split(",");
 					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
 					if (slayers.length !== 1) {
-						console.error("레이어는 하나만 선택해야 합니다.");
+						console.error(this.translation.alertSelectOneLayer[this.locale]);
 						return;
 					}
 					if (slayers[0] instanceof ol.layer.Tile) {
@@ -880,7 +897,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 					var param = $(this).find("a").attr("value").split(",");
 					var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
 					if (slayers.length !== 1) {
-						console.error("레이어는 하나만 선택해야 합니다.");
+						console.error(this.translation.alertSelectOneLayer[this.locale]);
 						return;
 					}
 					if (slayers[0] instanceof ol.layer.Tile) {
@@ -1295,7 +1312,7 @@ gb.header.EditingTool.prototype.move = function(layer) {
 		this.tempVector.setSource(selectSource);
 		this.map.addLayer(this.tempVector);
 	} else {
-		console.error("select features");
+		console.error(this.translation.alertSelectFeature[this.locale]);
 	}
 };
 /**
@@ -1377,7 +1394,7 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 		this.activeIntrct_("rotate");
 		this.activeBtn_("rotateBtn");
 	} else {
-		console.error("select features");
+		console.error(this.translation.alertSelectFeature[this.locale]);
 	}
 };
 /**
@@ -1492,7 +1509,7 @@ gb.header.EditingTool.prototype.modify = function(layer) {
 		this.activeIntrct_("modify");
 		this.activeBtn_("modiBtn");
 	} else {
-		console.error("select features");
+		console.error(this.translation.alertSelectFeature[this.locale]);
 	}
 };
 /**
@@ -1594,7 +1611,7 @@ gb.header.EditingTool.prototype.remove = function(layer) {
 		this.interaction.select.getFeatures().clear();
 
 	} else {
-		console.error("select features");
+		console.error(this.translation.alertSelectFeature[this.locale]);
 	}
 };
 
@@ -2271,8 +2288,8 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	adjustStyle(aTag, this.aStyle);
 	adjustStyle(liTag, this.liStyle);
 
-	if(this.translator[content]){
-		aTag.html(this.translator[content][this.locale]);
+	if(this.translation[content]){
+		aTag.html(this.translation[content][this.locale]);
 	} else {
 		aTag.html(content);
 	}
@@ -2364,7 +2381,7 @@ gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection
 				if (Array.isArray(dish)) {
 					dish.push(layer);
 				} else {
-					console.error("리턴 객체는 배열이어야 합니다");
+					console.error(this.translation.returnMustArray[this.locale]);
 				}
 			}
 		} else if (layer instanceof ol.layer.Group) {
@@ -2384,7 +2401,7 @@ gb.header.EditingTool.prototype.getImageVectorLayersInMap = function(collection,
 				if (Array.isArray(dish)) {
 					dish.push(layer);
 				} else {
-					console.error("리턴 객체는 배열이어야 합니다");
+					console.error(this.translation.returnMustArray[this.locale]);
 				}	
 			}
 		} else if (layer instanceof ol.layer.Group) {
@@ -2430,6 +2447,11 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				}
 			} else {
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
+					
+					if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git")){
+						continue;
+					}
+					
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
 						zidx = tileLayers[i].getZIndex();
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
@@ -2717,6 +2739,8 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 		vectorSource.set("git", git);
 
 		return vectorSource;
+	} else {
+		console.log(treeid);
 	}
 	return null;
 }

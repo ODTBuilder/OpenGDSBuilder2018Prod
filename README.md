@@ -70,6 +70,7 @@ Getting Started
 - 편집도구 초기화면 접속 
 
 ### 5. 지원 기능 ###
+![edit_tool](https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png)
 - Openlayers Layer 편집 기능 지원
 - Geoserver Layer 검수 및 공간정보 파일 검수 지원
 - Openlayers Layer 객체 Navigator 기능 지원

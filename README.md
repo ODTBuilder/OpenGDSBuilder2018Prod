@@ -72,8 +72,10 @@ Getting Started
 ### 5. 지원 기능 ###
 ![edit_tool](https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png)
 - Openlayers Layer 편집 기능 지원
+![default](https://user-images.githubusercontent.com/11713603/50584588-ca734e80-0eb3-11e9-965d-7aca0a2fac4b.png)
 - Geoserver Layer 검수 및 공간정보 파일 검수 지원
 - Openlayers Layer 객체 Navigator 기능 지원
+![20181115_161702_080](https://user-images.githubusercontent.com/11713603/50584579-bd565f80-0eb3-11e9-8318-a8672eef256a.jpg)
 - Geoserver Layer 분산 버전 관리(버저닝) 기능 지원
 
 사용 라이브러리

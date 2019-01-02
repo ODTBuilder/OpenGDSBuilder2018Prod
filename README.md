@@ -69,78 +69,11 @@ Getting Started
  pw : guest<br> </code></pre>
 - 편집도구 초기화면 접속 
 
-### 5. 검수 Test 파일 및 설정 파일 준비 ###
-- 검수 Test 파일 구조 확인
-<pre><code> ** 검수 Test zip 파일 구조 **
-   // 국가기본도 zip 파일 구조
-   압축파일.zip
-     ㄴ폴더 (도엽명)
-          ㄴ test1.shp
-          ㄴ test2.shp
-          ㄴ test3.shp
-          
-   // 지하시설물도, 임상도 zip 파일 구조
-   압축파일.zip
-     ㄴ test1.shp
-     ㄴ test2.shp
-     ㄴ test3.shp
-   * 모든 폴더 및 파일에 특수문자 입력 불가</code></pre>
-- 레이어 설정 파일 (layer_setting.json) 확인<br>
-<pre><code> ** 레이어 설정 파일 json 구조 **
-    [{ 
-      "layers" : [{
-        "geometry" : geometry타입,
-        "fix" : [{
-          "values" : [val1, val2, val3, ...],
-          "isnull" : boolean,
-          "length" : float,
-          "type" : 속성유형,
-          "name" : 속성명},
-          ...
-        ],
-        "code" : 레이어코드 },
-        ...
-      ],
-      "name" : 레이어그룹명 },
-      ...
-    ]
-</code></pre>
-- 검수 설정 파일 (validation_setting.json) 확인<br>
-<pre><code> ** 검수 설정 파일 json 구조 **
-    {
-      "definition" : [{
-        "name" : 레이어그룹명,
-        "options" : {
-          "attribute" : {
-            검수항목1 : {
-              "filter" : 속성필터,
-              "relation" : 관계레이어,
-              "figure" : 수치조건
-            },
-            ...
-          }
-        }
-    }
-</code></pre>
-** 레이어 설정 파일 및 검수 설정 파일은 편집화면에 업로드 후 편집 가능<br>
-** 자세한 내용은 GeoDT Web 웹검수 매뉴얼 "검수 항목 세부설정" 부분 참조
-
-### 6. 검수 실행 및 오류 네비게이터 실행 ###
-- 메인 페이지 url 접속 및 로그인
-<pre><code> http://[host]:[port]/geodt/main.do </code></pre>
-- 설정 페이지로 이동 후 레이어 설정 파일 및 검수 설정 파일 업로드 및 생성
-<pre><code> 화면 상단 메뉴 “설정” 클릭 -> 새로 만들기 -> 수치지도, 구조화 선택 후 다음 버튼 클릭 </code></pre>
-- 레이어 설정 파일 업로드 
-<pre><code> 설정 파일 불러오기 버튼 클릭 -> layer_setting.json 업로드 -> 다음 버튼 클릭</code></pre>
-- 검수 설정 파일 업로드 
-<pre><code> 설정 파일 불러오기 버튼 클릭 -> validation_setting.json 업로드 -> 다음 버튼 클릭 -> 옵션 정의 이름 설정 후 저장 </code></pre>
-- 검수 수행
-<pre><code> 화면 상단 메뉴 “검수” 클릭 -> 사용자 설정 부분에서 방금 전 설정한 옵션을 선택 -> 파일형식 shp 선택, 좌표계 “중부원점 투영좌표계” 선택 ->검수 Test 파일 업로드 -> 검수 요청 버튼 클릭 </code></pre>
-- 검수 결과
-<pre><code> 화면 상단 메뉴 “요청목록” 클릭 -> 파일 이름과 검수 요청 시간을 확인 -> <br>상태 메시지가 완료가 될 때까지 대기 -> 검수 결과 파일 다운로드 링크 클릭 </code></pre>
-- 검수 결과 확인 및 네비게이터
-<pre><code> 화면 상단 메뉴 “편집” 클릭 -> 좌측 하단 “Now editing” 패널 부분 zip file 아이콘 클릭 -> 검수 Test 파일 및 검수 결과 파일 업로드 -> “Now editing” 패널 부분 검수 결과 부분 항목 우클릭 후 “Navigator” 클릭 -> 화면 우측에 오류 네비게이터의 화살표 버튼을 클릭하며 오류 사항 확인 </code></pre>
-
+### 5. 지원 기능 ###
+- Openlayers Layer 편집 기능 지원
+- Geoserver Layer 검수 및 공간정보 파일 검수 지원
+- Openlayers Layer 객체 Navigator 기능 지원
+- Geoserver Layer 분산 버전 관리(버저닝) 기능 지원
 
 사용 라이브러리
 =====

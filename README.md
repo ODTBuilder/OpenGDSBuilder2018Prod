@@ -92,7 +92,7 @@ Getting Started
 5. ApacheCommons 1.3.3 (Apache License 2.0) commons.apache.org/proper/commons-logging/
 6. JACKSON 1.9.7 (Apache License (AL) 2.0, LGPL 2.1)
 7. JSON 20160212 (MIT License)
-8. Openlayers3 3.13.0 (FreeBSD) www.openlayers.org
+8. Openlayers3 v5.3.0 (FreeBSD) www.openlayers.org
 9. Spectrum 1.8.0 (MIT) http://numeraljs.com/
 10. Bootstrap v3.3.2 (MIT) http://getbootstrap.com
 11. JSTS (EPL) http://bjornharrtell.github.io/jsts/

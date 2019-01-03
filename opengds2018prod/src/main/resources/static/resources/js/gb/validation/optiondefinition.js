@@ -471,6 +471,10 @@ gb.validation.OptionDefinition = function(obj) {
 			"en" : "Unable to read file.",
 			"ko" : "파일을 읽을 수 없습니다."
 		},
+		"clearsetting" : {
+			"en" : "Clear Setting",
+			"ko" : "설정 초기화"
+		}
 	}
 
 	this.optItem = {
@@ -3015,6 +3019,11 @@ gb.validation.OptionDefinition = function(obj) {
 	// 속성 필터 레이어 코드 추가 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-filteraddcode", function() {
 		that.addLayerCodeFilter(this);
+	});
+
+	// 속성 필터 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting", function() {
+		that.clearFilterSetting();
 	});
 
 	// 속성 검수 레이어 코드 추가 버튼 클릭
@@ -8239,6 +8248,57 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 	}
 };
 
+gb.validation.OptionDefinition.prototype.clearFilterSetting = function() {
+	var that = this;
+	var cat = this.getLayerDefinition().getStructure();
+
+	var sec = false;
+	if (this.nowDetailCategory !== undefined) {
+		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
+			sec = true;
+		}
+	}
+
+	var category;
+	if (sec) {
+		category = this.nowRelationCategory;
+	} else {
+		category = this.nowCategory;
+		var definition = this.getStructure()["definition"];
+		if (Array.isArray(definition)) {
+			for (var i = 0; i < definition.length; i++) {
+				var name = definition[i].name;
+				if (name === this.nowCategory) {
+					// 검수 항목 정보
+					var optItem = this.optItem[this.nowOption.alias];
+					// 검수 타입
+					var type3 = optItem["purpose"];
+					var optionType = definition[i]["options"][type3];
+					if (optionType !== undefined) {
+						var keys = Object.keys(optionType);
+						if (keys.indexOf(this.nowOption.alias) !== -1) {
+							delete definition[i]["options"][type3][this.nowOption.alias];
+						}
+						var afterKeys = Object.keys(optionType);
+						if (afterKeys.length === 0) {
+							delete definition[i]["options"][type3];
+						}
+//						that.printDetailForm(this, false);
+					}
+				}
+			}
+		}
+	}
+
+	console.log(cat);
+	console.log(this.getStructure());
+	console.log(this.nowCategory);
+	console.log(this.nowOption);
+	console.log(this.nowDetailCategory);
+	console.log(this.nowRelationCategory);
+	console.log(this.nowRelationDetailCategory);
+};
+
 gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
@@ -9382,7 +9442,14 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
+
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiltersetting")
+				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 		console.log(this.getStructure());

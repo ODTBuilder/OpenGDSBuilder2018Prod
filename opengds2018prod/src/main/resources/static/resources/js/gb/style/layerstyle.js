@@ -217,10 +217,16 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 
 	if (layer instanceof ol.layer.Vector) {
 		layer.setStyle(style);
-		var git = layer.get("git");
-		var vectorLayer = git.tempLayer;
-		if (vectorLayer !== undefined) {
-			vectorLayer.setStyle(style);
+		var lsource = layer.getSource();
+		if (lsource !== undefined) {
+			var git = lsource.get("git");
+			var vectorLayer;
+			if (git !== undefined) {
+				vectorLayer = git.tempLayer;
+			}
+			if (vectorLayer !== undefined) {
+				vectorLayer.setStyle(style);
+			}
 		}
 		this.close();
 	} else if (layer instanceof ol.layer.Tile) {

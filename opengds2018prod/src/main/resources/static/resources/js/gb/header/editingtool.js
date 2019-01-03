@@ -2718,7 +2718,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 					"lineCap": "butt"
 				}),
 				"image": new ol.style.Circle({
-					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize) : null,
+					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize)/2 : null,
 					"fill": new ol.style.Fill({
 						"color": !!symbol.fillRGBA ? ol.color.asArray(symbol.fillRGBA) : null
 					}),

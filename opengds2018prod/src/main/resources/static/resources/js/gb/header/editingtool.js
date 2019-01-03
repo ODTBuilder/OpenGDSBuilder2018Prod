@@ -2421,10 +2421,6 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
-						zidx = tileLayers[i].getZIndex();
-						if (!isNaN(parseInt(zidx))) {
-							vectorSource.get("git").tempLayer.setZIndex(zidx);	
-						}
 						vectorSource.get("git").tempLayer.setMap(this.map);
 					} else {
 						vectorSource.get("git").tempLayer.setMap(null);
@@ -2433,10 +2429,6 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 			} else {
 				if(!!tree.get_node(tileLayers[i].get("treeid"))){
 					if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
-						zidx = tileLayers[i].getZIndex();
-						if (!isNaN(parseInt(zidx))) {
-							this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setZIndex(zidx);
-						}
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(this.map);
 					} else {
 						this.getVectorSourceOfServer(tileLayers[i].get("treeid")).get("git").tempLayer.setMap(null);
@@ -2446,9 +2438,9 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 		}
 	}
 
-	for(var i in this.customVector_){
-		this.customVector_[i].get("git").tempLayer.setVisible(true);
-	}
+// for(var i in this.customVector_){
+// this.customVector_[i].get("git").tempLayer.setVisible(true);
+// }
 }
 
 // yijun
@@ -2736,7 +2728,7 @@ gb.header.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId,
 	var layername = layerName;
 	var treeid = treeId;
 	var url = this.wfsURL;
-	if(!this.getVectorSourceOfServer(treeid)){
+	if(!this.getVectorSourceOfVector(treeid)){
 		var vlayer = this.otree.getJSTree().get_LayerById(treeId);
 		var vectorSource = vlayer instanceof ol.layer.Vector ? vlayer.getSource() : undefined;
 		console.log(layerid);

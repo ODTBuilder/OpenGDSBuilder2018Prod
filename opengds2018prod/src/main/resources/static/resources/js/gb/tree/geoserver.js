@@ -186,6 +186,58 @@ gb.tree.GeoServer = function(obj) {
 				"ko" : "닫기",
 				"en" : "Close"
 			},
+			"import" : {
+				"ko" : "불러오기",
+				"en" : "Import"
+			},
+			"export" : {
+				"ko" : "내보내기",
+				"en" : "Export"
+			},
+			"upload" : {
+				"ko" : "업로드",
+				"en" : "Upload"
+			},
+			"branch" : {
+				"ko" : "브랜치",
+				"en" : "Branch"
+			},
+			"prop" : {
+				"ko" : "속성",
+				"en" : "Properties"
+			},
+			"removegeo" : {
+				"ko" : "지오서버 삭제",
+				"en" : "Remove GeoServer"
+			},
+			"removelayer" : {
+				"ko" : "레이어 삭제",
+				"en" : "Remove Layer"
+			},
+			"removegeomsg" : {
+				"ko" : "아래 지오서버를 목록에서 삭제하시겠습니까?",
+				"en" : "Are you sure to remove this GeoServer?"
+			},
+			"removelayermsg1" : {
+				"ko" : "아래 레이어를 지오서버에서 삭제하시겠습니까?",
+				"en" : "Are you sure to remove this layer?"
+			},
+			"removelayermsg2" : {
+				"ko" : "아래 레이어들을 지오서버에서 삭제하시겠습니까?",
+				"en" : "Are you sure to remove these layers?"
+			},
+			"and" : {
+				"ko" : "외",
+				"en" : "and"
+			},
+			"more" : {
+				"ko" : "개",
+				"en" : "more"
+			},
+			"cancel" : {
+				"ko" : "취소",
+				"en" : "Cancel"
+			},
 	};
 	this.panelTitle = $("<p>").text(this.translation.geoserver[this.locale]).css({
 		"margin" : "0",
@@ -413,15 +465,18 @@ gb.tree.GeoServer = function(obj) {
 												} else {
 													var msg1 = $("<div>").text("This will change the geoserver setting.").css({
 														"text-align" : "center",
-														"font-size" : "16px"
+														"font-size" : "16px",
+														"word-break" : "keep-all"
 													});
 													var msg2 = $("<div>").text("Other users can be affected.").css({
 														"text-align" : "center",
-														"font-size" : "16px"
+														"font-size" : "16px",
+														"word-break" : "keep-all"
 													});
 													var msg3 = $("<div>").text("Would you like to switch over to this branch?").css({
 														"text-align" : "center",
-														"font-size" : "16px"
+														"font-size" : "16px",
+														"word-break" : "keep-all"
 													});
 													var msg4 = $("<div>").text(data.item.label).css({
 														"text-align" : "center",
@@ -472,7 +527,7 @@ gb.tree.GeoServer = function(obj) {
 									"separator_before" : true,
 									"icon" : "fas fa-file-import",
 									"separator_after" : true,
-									"label" : "Import",
+									"label" : that.translation.import[that.locale],
 									"action" : function(data) {
 										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
 										// Edit Tool 활성화 상태시 실행 중지
@@ -561,7 +616,7 @@ gb.tree.GeoServer = function(obj) {
 									"separator_before" : true,
 									"icon" : "fas fa-file-export",
 									"separator_after" : true,
-									"label" : "Export",
+									"label" : that.translation.export[that.locale],
 									"action" : false,
 									"submenu" : {
 										"shp" : {
@@ -742,7 +797,7 @@ gb.tree.GeoServer = function(obj) {
 									}
 									return result;
 								},
-								"label" : "Upload",
+								"label" : that.translation.upload[that.locale],
 								/*
 								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
 								 * "icon" : "glyphicon glyphicon-leaf",
@@ -787,7 +842,7 @@ gb.tree.GeoServer = function(obj) {
 										}
 										return result;
 									},
-									"label" : "Delete",
+									"label" : that.translation.remove[that.locale],
 									/*
 									 * ! "shortcut" : 113, "shortcut_label" :
 									 * 'F2', "icon" : "glyphicon
@@ -888,7 +943,7 @@ gb.tree.GeoServer = function(obj) {
 									"separator_before" : true,
 									"icon" : "fas fa-code-branch",
 									"separator_after" : true,
-									"label" : "Branch",
+									"label" : that.translation.branch[that.locale],
 									"action" : false,
 									"_disabled" : function() {
 										console.log(o);
@@ -923,7 +978,7 @@ gb.tree.GeoServer = function(obj) {
 										}
 										return result;
 									},
-									"label" : "Properties",
+									"label" : that.translation.prop[that.locale],
 									"action" : function(data) {
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var arr, workspace = [];
@@ -1324,27 +1379,28 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	var that = this;
 	console.log("open delete geoserver");
-	var msg1 = $("<div>").text("Are you sure to delete this server?").css({
+	var msg1 = $("<div>").text(this.translation.removegeomsg[this.locale]).css({
 		"text-align" : "center",
-		"font-size" : "16px"
+		"font-size" : "16px",
+		"word-break" : "keep-all"
 	});
 	var msg2 = $("<div>").text('"' + geoserver + '"').css({
 		"text-align" : "center",
 		"font-size" : "24px",
-		"word-break" : "break-word"
+		"word-break" : "keep-all"
 	});
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
-		"title" : "Delete GeoServer",
-		"width" : 310,
+		"title" : this.translation.removegeo[this.locale],
+		"width" : 340,
 		"height" : 200,
 		"autoOpen" : false,
 		"body" : body
@@ -1409,37 +1465,38 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, st
 	var todel;
 	if (Array.isArray(layer)) {
 		if (layer.length > 1) {
-			todel = '"' + layer[0] + '" ' + "and " + (layer.length - 1) + " more";
+			todel = '"' + layer[0] + '" ' + that.translation.and[that.locale]+" " + (layer.length - 1) +that.translation.more[that.locale];
 		} else {
 			todel = '"' + layer[0] + '" ';
 		}
 	}
 	var msg1 = $("<div>").css({
 		"text-align" : "center",
-		"font-size" : "16px"
+		"font-size" : "16px",
+		"word-break" : "keep-all"
 	});
 	if (layer.length > 1) {
-		$(msg1).text("Are you sure to delete these layers?")
+		$(msg1).text(that.translation.removelayermsg2[that.locale]);
 	} else {
-		$(msg1).text("Are you sure to delete this layer?")
+		$(msg1).text(that.translation.removelayermsg1[that.locale]);
 	}
 	var msg2 = $("<div>").text(todel).css({
 		"text-align" : "center",
 		"font-size" : "24px",
-		"word-break" : "break-word"
+		"word-break" : "keep-all"
 	});
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.remove[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Layer",
-		"width" : 310,
-		"height" : 200,
+		"title" : that.translation.removelayer[that.locale],
+		"width" : 340,
+		"height" : 225,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea
@@ -1643,7 +1700,8 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg, height) {
 		"text-align" : "center",
 		"font-size" : "16px",
 		"margin-top" : "18px",
-		"margin-bottom" : "18px"
+		"margin-bottom" : "18px",
+		"word-break" : "keep-all"
 	});
 	var body = $("<div>").append(msg1);
 	var okBtn = $("<button>").css({

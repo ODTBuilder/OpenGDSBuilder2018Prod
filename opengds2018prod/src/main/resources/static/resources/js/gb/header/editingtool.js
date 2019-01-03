@@ -2709,25 +2709,25 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 			var symbol = gb.style.LayerStyle.prototype.parseSymbolizer.call(this, sld);
 			var style = new ol.style.Style({
 				"fill": new ol.style.Fill({
-					"color": ol.color.asArray(symbol.fillRGBA)
+					"color": !!symbol.fillRGBA ? ol.color.asArray(symbol.fillRGBA) : null
 				}),
 				"stroke": new ol.style.Stroke({
-					"color": ol.color.asArray(symbol.strokeRGBA),
-					"width": symbol.strokeWidth,
-					"lineDash": symbol.strokeDashArray,
+					"color": ol.color.asArray(symbol.strokeRGBA || null),
+					"width": symbol.strokeWidth || null,
+					"lineDash": symbol.strokeDashArray || null,
 					"lineCap": "butt"
 				}),
 				"image": new ol.style.Circle({
-					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize) : undefined,
-							"fill": new ol.style.Fill({
-								"color": ol.color.asArray(symbol.fillRGBA)
-							}),
-							"stroke": new ol.style.Stroke({
-								"color": ol.color.asArray(symbol.strokeRGBA),
-								"width": symbol.strokeWidth,
-								"lineDash": symbol.strokeDashArray,
-								"lineCap": "butt"
-							})
+					"radius": !!symbol.pointSize ? parseFloat(symbol.pointSize) : null,
+					"fill": new ol.style.Fill({
+						"color": !!symbol.fillRGBA ? ol.color.asArray(symbol.fillRGBA) : null
+					}),
+					"stroke": new ol.style.Stroke({
+						"color": !!symbol.strokeRGBA ? ol.color.asArray(symbol.strokeRGBA) : null,
+						"width": symbol.strokeWidth || null,
+						"lineDash": symbol.strokeDashArray || null,
+						"lineCap": "butt"
+					})
 				})
 			});
 			layer.setStyle(style);

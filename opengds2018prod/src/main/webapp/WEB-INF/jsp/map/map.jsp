@@ -200,7 +200,8 @@ html {
 
 		var gbBaseMap = new gb.style.BaseMap({
 			"map" : gbMap.getLowerMap(),
-			"defaultBaseMap" : "osm"
+			"defaultBaseMap" : "osm",
+			"locale" : locale !== "" ? locale : "en"
 		});
 
 		$("#changeBase").click(function() {

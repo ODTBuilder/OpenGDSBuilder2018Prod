@@ -55,7 +55,7 @@ gb.style.BaseMap = function(obj) {
 	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
 	gb.modal.Base.call(this, obj);
-	
+
 	this.map = options.map ? options.map : undefined;
 	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
 	this.layers = options.layers ? options.layers : undefined;

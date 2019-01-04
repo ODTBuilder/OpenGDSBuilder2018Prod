@@ -244,7 +244,7 @@ html {
 
 		var crs = new gb.crs.BaseCRS({
 			"autoOpen" : false,
-			"title" : "Base CRS",
+			"locale" : locale !== "" ? locale : "en",
 			"message" : $(".epsg-now"),
 			"maps" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
 			"epsg" : "4326"

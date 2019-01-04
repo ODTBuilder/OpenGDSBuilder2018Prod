@@ -216,6 +216,9 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 			});
 
 	if (layer instanceof ol.layer.Vector) {
+		if(layer.get("git") === undefined || layer.get("git") === null){
+			return;
+		}
 		layer.setStyle(style);
 		var lsource = layer.getSource();
 		if (lsource !== undefined) {

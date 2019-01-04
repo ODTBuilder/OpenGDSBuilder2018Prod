@@ -155,7 +155,7 @@ gb.interaction.MultiTransform.prototype.handleDownEvent = function(evt) {
 			this.flatInteriorPoint_ = [ x, y ];
 		}
 	}
-	this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMSTART, feature, evt));
+	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMSTART, feature, evt));
 	return (!!feature && !!this.task_);
 };
 
@@ -191,7 +191,7 @@ gb.interaction.MultiTransform.prototype.handleDragEvent = function(evt) {
 			feature.getGeometry().scale(magni[1], magni[1], this.flatInteriorPoint_);
 		}
 	}
-	this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMING, feature, evt));
+	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMING, feature, evt));
 	this.prevCursor_ = evt.coordinate;
 };
 
@@ -298,7 +298,7 @@ gb.interaction.MultiTransform.prototype.handleUpEvent = function(evt) {
 		this.flatInteriorPoint = null;
 		element.style.cursor = '';
 	}
-	this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMEND, feature, evt));
+	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMEND, feature, evt));
 	return false;
 };
 

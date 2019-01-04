@@ -75,12 +75,12 @@ gb.validation.OptionDefinition = function(obj) {
 			"en" : "Duplicated points"
 		},
 		"smallLength" : {
-			"ko" : "허용 범위 이하 길이",
-			"en" : "Segments under length tolerance limit"
+			"ko" : "허용 범위 길이",
+			"en" : "Segments between length tolerance limit"
 		},
 		"smallArea" : {
-			"ko" : "허용 범위 이하 면적",
-			"en" : "Areas under tolerance limit"
+			"ko" : "허용 범위 면적",
+			"en" : "Areas between tolerance limit"
 		},
 		"conIntersected" : {
 			"ko" : "등고선 교차 오류",
@@ -3021,9 +3021,19 @@ gb.validation.OptionDefinition = function(obj) {
 		that.addLayerCodeFilter(this);
 	});
 
-	// 속성 필터 세팅 클리어 버튼 클릭
+	// 필터 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting", function() {
-		that.clearFilterSetting();
+		that.clearSetting("filter");
+	});
+
+	// 피규어 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiguresetting", function() {
+		that.clearSetting("figure");
+	});
+
+	// 톨러런스 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-cleartolerancesetting", function() {
+		that.clearSetting("tolerance");
 	});
 
 	// 속성 검수 레이어 코드 추가 버튼 클릭
@@ -7955,9 +7965,13 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 												}
 											} else {
-												def[i]["options"][type3][this.nowOption.alias] = {
-													"relation" : [ obj ]
-												};
+												if (def[i]["options"][type3][this.nowOption.alias] !== undefined) {
+													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+												} else {
+													def[i]["options"][type3][this.nowOption.alias] = {
+														"relation" : [ obj ]
+													};
+												}
 											}
 										} else {
 											def[i]["options"][type3][this.nowOption.alias] = obj;
@@ -8248,10 +8262,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 	}
 };
 
-gb.validation.OptionDefinition.prototype.clearFilterSetting = function() {
+gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 	var that = this;
 	var cat = this.getLayerDefinition().getStructure();
-
 	var sec = false;
 	if (this.nowDetailCategory !== undefined) {
 		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
@@ -8277,13 +8290,39 @@ gb.validation.OptionDefinition.prototype.clearFilterSetting = function() {
 					if (optionType !== undefined) {
 						var keys = Object.keys(optionType);
 						if (keys.indexOf(this.nowOption.alias) !== -1) {
-							delete definition[i]["options"][type3][this.nowOption.alias];
+							var filter = definition[i]["options"][type3][this.nowOption.alias][type];
+							if (filter !== undefined) {
+								delete definition[i]["options"][type3][this.nowOption.alias][type];
+							}
+							var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
+							if (keys2.length === 0) {
+								delete definition[i]["options"][type3][this.nowOption.alias];
+							}
 						}
 						var afterKeys = Object.keys(optionType);
 						if (afterKeys.length === 0) {
 							delete definition[i]["options"][type3];
 						}
-//						that.printDetailForm(this, false);
+						var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
+
+						if (type === "filter") {
+							$(btn).attr({
+								"value" : "filter"
+							}).text("Filter");
+						} else if (type === "figure") {
+							$(btn).attr({
+								"value" : "figure"
+							}).text("Figure");
+						} else if (type === "tolerance") {
+							$(btn).attr({
+								"value" : "tolerance"
+							}).text("Tolerance");
+						} else if (type === "relation") {
+							$(btn).attr({
+								"value" : "relation"
+							}).text("Relation");
+						}
+						that.printDetailForm(btn, false);
 					}
 				}
 			}
@@ -9611,11 +9650,17 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		 */
 
 	} else if (type === "figure") {
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiguresetting")
+				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-figureaddcode").text(
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 
@@ -9795,11 +9840,18 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 			}
 		}
 	} else if (type === "tolerance") {
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
+				"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-toleranceaddcode").text(
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
+
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 

@@ -371,7 +371,155 @@ gb.versioning.Repository = function(obj) {
 			"err" : {
 				"ko" : "오류",
 				"en" : "Error"
-			}
+			},
+			"geogig" : {
+				"ko" : "지오긱",
+				"en" : "GeoGig"
+			},
+			"close" : {
+				"ko" : "닫기",
+				"en" : "Close"
+			},
+			"newrepo" : {
+				"ko" : "새로운 저장소",
+				"en" : "New Repository"
+			},
+			"newbranch" : {
+				"ko" : "새로운 브랜치",
+				"en" : "New Branch"
+			},
+			"remoterepo" : {
+				"ko" : "원격 저장소",
+				"en" : "Remote Repository"
+			},
+			"remove" : {
+				"ko" : "삭제",
+				"en" : "Remove"
+			},
+			"checkout" : {
+				"ko" : "체크아웃",
+				"en" : "Checkout"
+			},
+			"pull" : {
+				"ko" : "풀",
+				"en" : "Pull"
+			},
+			"push" : {
+				"ko" : "푸시",
+				"en" : "Push"
+			},
+			"merge" : {
+				"ko" : "머지",
+				"en" : "Merge"
+			},
+			"publish" : {
+				"ko" : "발행",
+				"en" : "Publish"
+			},
+			"geoserver" : {
+				"ko" : "지오서버",
+				"en" : "GeoServer"
+			},
+			"repository" : {
+				"ko" : "저장소",
+				"en" : "Repository"
+			},
+			"targetbranch" : {
+				"ko" : "목표 브랜치",
+				"en" : "Target Branch"
+			},
+			"cancel" : {
+				"ko" : "취소",
+				"en" : "Cancel"
+			},
+			"create" : {
+				"ko" : "생성",
+				"en" : "Create"
+			},
+			"name" : {
+				"ko" : "이름",
+				"en" : "Name"
+			},
+			"namemsg" : {
+				"ko" : "저장소 이름",
+				"en" : "Repository name"
+			},
+			"host" : {
+				"ko" : "호스트 주소",
+				"en" : "Host"
+			},
+			"hostmsg" : {
+				"ko" : "호스트 주소 예시) 127.0.0.1",
+				"en" : "Host address EX) 127.0.0.1"
+			},
+			"port" : {
+				"ko" : "포트",
+				"en" : "Port"
+			},
+			"portmsg" : {
+				"ko" : "포트 번호 예시)5432",
+				"en" : "Host"
+			},
+			"db" : {
+				"ko" : "데이터베이스",
+				"en" : "Database"
+			},
+			"dbmsg" : {
+				"ko" : "데이터베이스 이름",
+				"en" : "Database name"
+			},
+			"scheme" : {
+				"ko" : "스키마",
+				"en" : "Scheme"
+			},
+			"schememsg" : {
+				"ko" : "스키마 이름",
+				"en" : "Scheme name"
+			},
+			"username" : {
+				"ko" : "사용자 이름",
+				"en" : "User Name"
+			},
+			"usernamemsg" : {
+				"ko" : "데이터베이스 사용자 이름",
+				"en" : "Database user name"
+			},
+			"password" : {
+				"ko" : "비밀번호",
+				"en" : "Password"
+			},
+			"passwordmsg" : {
+				"ko" : "데이터베이스 사용자 비밀번호",
+				"en" : "Database user password"
+			},
+			"pullfrom" : {
+				"ko" : "원격 저장소로부터 풀 받기",
+				"en" : "Pull from remote repository"
+			},
+			"remoreponame" : {
+				"ko" : "저장소 이름",
+				"en" : "Repository name"
+			},
+			"remoreponamemsg" : {
+				"ko" : "지오서버에 등록된 원격 저장소의 이름",
+				"en" : "The original name of remote repository on GeoServer"
+			},
+			"remorepourl" : {
+				"ko" : "저장소 URL",
+				"en" : "Repository URL"
+			},
+			"remorepourlmsg" : {
+				"ko" : "원격 저장소의 URL",
+				"en" : "The URL of remote repository"
+			},
+			"host" : {
+				"ko" : "호스트 주소",
+				"en" : "Host"
+			},
+			"publish" : {
+				"ko" : "발행",
+				"en" : "Publish"
+			},
 	};
 	
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({

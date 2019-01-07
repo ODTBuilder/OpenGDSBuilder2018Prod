@@ -99,15 +99,15 @@ input.radio:checked+label::before {
 				xhr.setRequestHeader(header, token);
 			});
 
-			$(".QA-Type-Sect").tooltip({
-				"html" : true,
-				"placement" : "right"
-			});
+// 			$(".QA-Type-Sect").tooltip({
+// 				"html" : true,
+// 				"placement" : "right"
+// 			});
 			
-			$(".QA-detail-sect").tooltip({
-				"html" : true,
-				"placement" : "right"
-			});
+// 			$(".QA-detail-sect").tooltip({
+// 				"html" : true,
+// 				"placement" : "right"
+// 			});
 			
 			$(".MoveToStep1").click(function() {
 				$(".Step1").show();

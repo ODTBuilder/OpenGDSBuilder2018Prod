@@ -31,17 +31,36 @@ if (!gb.style)
 	gb.style = {};
 gb.style.BaseMap = function(obj) {
 	var that = this;
+
+	this.translation = {
+		"bmap" : {
+			"ko" : "배경지도",
+			"en" : "Base Map"
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"ok" : {
+			"ko" : "확인",
+			"en" : "OK"
+		}
+	};
+	var options = obj ? obj : {};
+	this.locale = options.locale ? options.locale : "en";
+
 	obj.width = 788;
 	obj.height = 331;
 	obj.autoOpen = false;
-	obj.title = "Base Map";
+	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
 	gb.modal.Base.call(this, obj);
-	var options = obj ? obj : {};
+
 	this.map = options.map ? options.map : undefined;
 	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
 	this.layers = options.layers ? options.layers : undefined;
 	this.now = undefined;
+
 	this.bases = {
 		osm : {
 			name : "OpenStreetMap",
@@ -156,12 +175,12 @@ gb.style.BaseMap = function(obj) {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK").click(function() {
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(function() {
 		var val = $(that.getModalBody()).find(':radio[name="basemap"]:checked').val();
 		that.changeLayer(val);
 	});

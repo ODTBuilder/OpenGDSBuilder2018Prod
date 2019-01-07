@@ -200,7 +200,8 @@ html {
 
 		var gbBaseMap = new gb.style.BaseMap({
 			"map" : gbMap.getLowerMap(),
-			"defaultBaseMap" : "osm"
+			"defaultBaseMap" : "osm",
+			"locale" : locale !== "" ? locale : "en"
 		});
 
 		$("#changeBase").click(function() {
@@ -243,7 +244,7 @@ html {
 
 		var crs = new gb.crs.BaseCRS({
 			"autoOpen" : false,
-			"title" : "Base CRS",
+			"locale" : locale !== "" ? locale : "en",
 			"message" : $(".epsg-now"),
 			"maps" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
 			"epsg" : "4326"

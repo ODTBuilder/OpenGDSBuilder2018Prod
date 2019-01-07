@@ -75,12 +75,12 @@ gb.validation.OptionDefinition = function(obj) {
 			"en" : "Duplicated points"
 		},
 		"smallLength" : {
-			"ko" : "허용 범위 이하 길이",
-			"en" : "Segments under length tolerance limit"
+			"ko" : "허용 범위 길이",
+			"en" : "Segments between length tolerance limit"
 		},
 		"smallArea" : {
-			"ko" : "허용 범위 이하 면적",
-			"en" : "Areas under tolerance limit"
+			"ko" : "허용 범위 면적",
+			"en" : "Areas between tolerance limit"
 		},
 		"conIntersected" : {
 			"ko" : "등고선 교차 오류",
@@ -471,6 +471,10 @@ gb.validation.OptionDefinition = function(obj) {
 			"en" : "Unable to read file.",
 			"ko" : "파일을 읽을 수 없습니다."
 		},
+		"clearsetting" : {
+			"en" : "Clear Setting",
+			"ko" : "설정 초기화"
+		}
 	}
 
 	this.optItem = {
@@ -3015,6 +3019,21 @@ gb.validation.OptionDefinition = function(obj) {
 	// 속성 필터 레이어 코드 추가 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-filteraddcode", function() {
 		that.addLayerCodeFilter(this);
+	});
+
+	// 필터 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting", function() {
+		that.clearSetting("filter");
+	});
+
+	// 피규어 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiguresetting", function() {
+		that.clearSetting("figure");
+	});
+
+	// 톨러런스 세팅 클리어 버튼 클릭
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-cleartolerancesetting", function() {
+		that.clearSetting("tolerance");
 	});
 
 	// 속성 검수 레이어 코드 추가 버튼 클릭
@@ -7946,9 +7965,13 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 												}
 											} else {
-												def[i]["options"][type3][this.nowOption.alias] = {
-													"relation" : [ obj ]
-												};
+												if (def[i]["options"][type3][this.nowOption.alias] !== undefined) {
+													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+												} else {
+													def[i]["options"][type3][this.nowOption.alias] = {
+														"relation" : [ obj ]
+													};
+												}
 											}
 										} else {
 											def[i]["options"][type3][this.nowOption.alias] = obj;
@@ -8237,6 +8260,82 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 			}
 		}
 	}
+};
+
+gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
+	var that = this;
+	var cat = this.getLayerDefinition().getStructure();
+	var sec = false;
+	if (this.nowDetailCategory !== undefined) {
+		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
+			sec = true;
+		}
+	}
+
+	var category;
+	if (sec) {
+		category = this.nowRelationCategory;
+	} else {
+		category = this.nowCategory;
+		var definition = this.getStructure()["definition"];
+		if (Array.isArray(definition)) {
+			for (var i = 0; i < definition.length; i++) {
+				var name = definition[i].name;
+				if (name === this.nowCategory) {
+					// 검수 항목 정보
+					var optItem = this.optItem[this.nowOption.alias];
+					// 검수 타입
+					var type3 = optItem["purpose"];
+					var optionType = definition[i]["options"][type3];
+					if (optionType !== undefined) {
+						var keys = Object.keys(optionType);
+						if (keys.indexOf(this.nowOption.alias) !== -1) {
+							var filter = definition[i]["options"][type3][this.nowOption.alias][type];
+							if (filter !== undefined) {
+								delete definition[i]["options"][type3][this.nowOption.alias][type];
+							}
+							var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
+							if (keys2.length === 0) {
+								delete definition[i]["options"][type3][this.nowOption.alias];
+							}
+						}
+						var afterKeys = Object.keys(optionType);
+						if (afterKeys.length === 0) {
+							delete definition[i]["options"][type3];
+						}
+						var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
+
+						if (type === "filter") {
+							$(btn).attr({
+								"value" : "filter"
+							}).text("Filter");
+						} else if (type === "figure") {
+							$(btn).attr({
+								"value" : "figure"
+							}).text("Figure");
+						} else if (type === "tolerance") {
+							$(btn).attr({
+								"value" : "tolerance"
+							}).text("Tolerance");
+						} else if (type === "relation") {
+							$(btn).attr({
+								"value" : "relation"
+							}).text("Relation");
+						}
+						that.printDetailForm(btn, false);
+					}
+				}
+			}
+		}
+	}
+
+	console.log(cat);
+	console.log(this.getStructure());
+	console.log(this.nowCategory);
+	console.log(this.nowOption);
+	console.log(this.nowDetailCategory);
+	console.log(this.nowRelationCategory);
+	console.log(this.nowRelationDetailCategory);
 };
 
 gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
@@ -9382,7 +9481,14 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
+
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiltersetting")
+				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 		console.log(this.getStructure());
@@ -9544,11 +9650,17 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		 */
 
 	} else if (type === "figure") {
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiguresetting")
+				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-figureaddcode").text(
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 
@@ -9728,11 +9840,18 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 			}
 		}
 	} else if (type === "tolerance") {
+		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
+				"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).css("width", "100%");
+		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
+		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
+
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-toleranceaddcode").text(
 				this.translation.addLayerCode[this.locale]).css("width", "100%");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
+
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
+		$(this.optionArea).append(clearSettingBtnRow);
 		$(this.optionArea).append(addCodeBtnRow);
 		$(this.optionArea).append(tupleArea);
 

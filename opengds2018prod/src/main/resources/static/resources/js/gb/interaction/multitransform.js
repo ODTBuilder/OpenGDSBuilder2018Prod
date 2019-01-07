@@ -156,6 +156,7 @@ gb.interaction.MultiTransform.prototype.handleDownEvent = function(evt) {
 		}
 	}
 	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMSTART, feature, evt));
+	this.dispatchEvent(gb.interaction.MultiTransformEventType.TRANSFORMSTART);
 	return (!!feature && !!this.task_);
 };
 
@@ -192,6 +193,7 @@ gb.interaction.MultiTransform.prototype.handleDragEvent = function(evt) {
 		}
 	}
 	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMING, feature, evt));
+	this.dispatchEvent(gb.interaction.MultiTransformEventType.TRANSFORMING);
 	this.prevCursor_ = evt.coordinate;
 };
 
@@ -299,6 +301,7 @@ gb.interaction.MultiTransform.prototype.handleUpEvent = function(evt) {
 		element.style.cursor = '';
 	}
 	//this.dispatchEvent(new gb.interaction.MultiTransform.Event(gb.interaction.MultiTransformEventType.TRANSFORMEND, feature, evt));
+	this.dispatchEvent(gb.interaction.MultiTransformEventType.TRANSFORMEND);
 	return false;
 };
 

@@ -1357,14 +1357,19 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 
 		var lastCoord;
 		this.interaction.rotate.on("transformstart", function(evt) {
-			if(!evt.feature){
+			var feature = evt.target.getFeatures().item(0);
+			if(!feature){
 				return;
 			}
-			lastCoord = evt.feature.getGeometry().getCoordinates();
+			lastCoord = feature.getGeometry().getCoordinates();
 		});
 		this.interaction.rotate.on("transformend", function(evt) {
 
-			var feature = evt.feature;
+			var feature = evt.target.getFeatures().item(0);
+			if(!feature){
+				return;
+			}
+			
 			that.featureRecord.update(selectSource.get("git").tempLayer, feature);
 
 			gb.undo.pushAction({
@@ -2460,9 +2465,9 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 		}
 	}
 
-// for(var i in this.customVector_){
-// this.customVector_[i].get("git").tempLayer.setVisible(true);
-// }
+	for(var i in this.customVector_){
+		this.customVector_[i].get("git").tempLayer.setVisible(true);
+	}
 }
 
 // yijun
@@ -2535,9 +2540,9 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 		}
 	}
 
-// for(var i in this.customVector_){
-// this.customVector_[i].get("git").tempLayer.setVisible(true);
-// }
+	for(var i in this.customVector_){
+		this.customVector_[i].get("git").tempLayer.setVisible(true);
+	}
 }
 
 // hochul

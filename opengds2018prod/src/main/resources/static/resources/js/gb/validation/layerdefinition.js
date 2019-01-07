@@ -303,11 +303,11 @@ gb.validation.LayerDefinition = function(obj) {
 		console.log(that.getStructure());
 	});
 
-	$(this.panelBody).tooltip({
-		"html" : true,
-		"placement" : "right",
-		"selector" : ".gb-layerdefinition-input-categoryname"
-	});
+//	$(this.panelBody).tooltip({
+//		"html" : true,
+//		"placement" : "right",
+//		"selector" : ".gb-layerdefinition-input-categoryname"
+//	});
 
 };
 gb.validation.LayerDefinition.prototype = Object.create(gb.validation.LayerDefinition.prototype);

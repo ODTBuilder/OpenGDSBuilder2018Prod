@@ -24,12 +24,33 @@
  * @date 2017. 07.26
  */
 gb.crs.BaseCRS = function(obj) {
+	this.translation = {
+		"bcrs" : {
+			"ko" : "기본 좌표계",
+			"en" : "Base CRS"
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"ok" : {
+			"ko" : "확인",
+			"en" : "OK"
+		},
+		"applyingerror" : {
+			"ko" : "오류: 좌표계 적용 실패",
+			"en" : "Error: Applying CRS Failed"
+		}
+	};
+	var options = obj ? obj : {};
+	this.locale = options.locale ? options.locale : "en";
+	obj.title = this.translation.bcrs[this.locale];
 	obj.width = 435;
 	obj.height = 180;
 	obj.keep = true;
 	gb.modal.Base.call(this, obj);
 	var that = this;
-	var options = obj ? obj : {};
+
 	this.message = options.message ? options.message : undefined;
 	this.maps = options.maps ? options.maps : undefined;
 	this.epsg = options.epsg ? options.epsg : "3857";
@@ -67,12 +88,12 @@ gb.crs.BaseCRS = function(obj) {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
 	this.searchBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK").click(
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(
 			function() {
 				var val = $(that.searchBar).val().replace(/(\s*)/g, '');
 				// that.searchEPSGCode(val);
@@ -255,7 +276,7 @@ gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, 
 	var that = this;
 	var view;
 	if (code === null || name === null || proj4def === null || bbox === null) {
-		$(that.getMessage()).text("EPSG:3857 [Error: Applying CRS Failed.]");
+		$(that.getMessage()).text("EPSG:3857 " + "[" + this.translation.applyingerror[this.locale] + "]");
 		view = new ol.View({
 			projection : 'EPSG:3857',
 			center : [ 0, 0 ],

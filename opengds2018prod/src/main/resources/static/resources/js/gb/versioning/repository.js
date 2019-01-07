@@ -57,52 +57,6 @@
  * @date 2018. 07.13
  */
 gb.versioning.Repository = function(obj) {
-	obj.width = 730;
-	obj.height = 450;
-	obj.title = "GeoGig";
-	obj.autoOpen = false;
-	gb.modal.Base.call(this, obj);
-	var that = this;
-	var options = obj ? obj : {};
-	this.epsg = options.epsg ? options.epsg : undefined;
-	var url = options.url ? options.url : {};
-	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
-	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
-	this.endTransactionURL = url.endTransaction ? url.endTransaction : undefined;
-	this.cancelTransactionURL = url.cancelTransaction ? url.cancelTransaction : undefined;
-	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
-	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
-	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
-	this.removeRepositoryURL = url.removeRepository ? url.removeRepository : undefined;
-	this.branchListURL = url.branchList ? url.branchList : undefined;
-	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
-	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
-	this.pullRepositoryURL = url.pullRepository ? url.pullRepository : undefined;
-	this.pushRepositoryURL = url.pushRepository ? url.pushRepository : undefined;
-	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
-	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
-	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
-	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
-	this.catConflictFeatureObjectURL = url.catConflictFeatureObject ? url.catConflictFeatureObject : undefined;
-	this.dataStoreListURL = url.dataStoreList ? url.dataStoreList : undefined;
-	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
-	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
-	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
-
-	this.locale = options.locale ? options.locale : "en";
-	
-	// edit tool 활성화 여부 객체
-	this.isEditing = options.isEditing || undefined;
-	
-	this.nowRepo = undefined;
-	this.nowRemoteRepo = undefined;
-	this.nowRepoServer = undefined;
-	this.nowBranch = undefined;
-	this.nowLayer = undefined;
-
-	this.loadingList = [];
-	this.loadingNumber = [];
-
 	this.translation = {
 			"400err" : {
 				"ko" : "요청값 잘못입력",
@@ -373,8 +327,8 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Error"
 			},
 			"geogig" : {
-				"ko" : "지오긱",
-				"en" : "GeoGig"
+				"ko" : "버전 관리",
+				"en" : "Version Control"
 			},
 			"close" : {
 				"ko" : "닫기",
@@ -396,6 +350,22 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "삭제",
 				"en" : "Remove"
 			},
+			"fetch" : {
+				"ko" : "가져오기",
+				"en" : "Fetch"
+			},
+			"end" : {
+				"ko" : "작업 종료",
+				"en" : "End"
+			},
+			"add" : {
+				"ko" : "추가",
+				"en" : "Add"
+			},
+			"commit" : {
+				"ko" : "커밋",
+				"en" : "Commit"
+			},
 			"checkout" : {
 				"ko" : "체크아웃",
 				"en" : "Checkout"
@@ -409,12 +379,32 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Push"
 			},
 			"merge" : {
-				"ko" : "머지",
+				"ko" : "병합",
 				"en" : "Merge"
 			},
 			"publish" : {
 				"ko" : "발행",
 				"en" : "Publish"
+			},
+			"history" : {
+				"ko" : "이력",
+				"en" : "History"
+			},
+			"staged" : {
+				"ko" : "스태이지 됨",
+				"en" : "Staged"
+			},
+			"unstaged" : {
+				"ko" : "스태이지 안됨",
+				"en" : "Unstaged"
+			},
+			"merged" : {
+				"ko" : "병합됨",
+				"en" : "Merged"
+			},
+			"unmerged" : {
+				"ko" : "병합안됨",
+				"en" : "Unmerged"
 			},
 			"geoserver" : {
 				"ko" : "지오서버",
@@ -435,6 +425,10 @@ gb.versioning.Repository = function(obj) {
 			"create" : {
 				"ko" : "생성",
 				"en" : "Create"
+			},
+			"createrepo" : {
+				"ko" : "저장소 생성",
+				"en" : "Create Repository"
 			},
 			"name" : {
 				"ko" : "이름",
@@ -520,8 +514,160 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "발행",
 				"en" : "Publish"
 			},
+			"emptyfield" : {
+				"ko" : "필수 입력 필드가 비어있습니다.",
+				"en" : "Some required fields are empty."
+			},
+			"removerepomsg" : {
+				"ko" : "이 저장소를 삭제하시겠습니까?",
+				"en" : "Are you sure to remove this repository?"
+			},
+			"removerepo" : {
+				"ko" : "저장소 삭제",
+				"en" : "Remove Repository"
+			},
+			"ok" : {
+				"ko" : "확인",
+				"en" : "OK"
+			},
+			"removelayer" : {
+				"ko" : "레이어 삭제",
+				"en" : "Remove Layer"
+			},
+			"removelayermsg" : {
+				"ko" : "레이어를 삭제하시겠습니까?",
+				"en" : "Are you sure to remove this layer?"
+			},
+			"chkoutfail" : {
+				"ko" : "체크아웃에 실패했습니다.",
+				"en" : "Checkout failed."
+			},
+			"ischkout1" : {
+				"ko" : "다른 브랜치가 체크아웃 되어있습니다.",
+				"en" : "Another branch has been checked out."
+			},
+			"ischkout2" : {
+				"ko" : "진행하면 현재 변경사항을 잃습니다. 진행하시겠습니까?",
+				"en" : 'If you proceed, you will lose your changes. Do you want to proceed?'
+			},
+			"dnc" : {
+				"ko" : "폐기 후 체크아웃",
+				"en" : "Discard and Checkout"
+			},
+			"warning" : {
+				"ko" : "경고",
+				"en" : "Warning"
+			},
+			"removeremoterepo" : {
+				"ko" : "원격 저장소 삭제",
+				"en" : "Remove Remote Repository"
+			},
+			"removeremoterepomsg" : {
+				"ko" : "원격 저장소를 삭제하시겠습니까?",
+				"en" : "Are you sure to remove this remote repository?"
+			},
+			"removeremotefail" : {
+				"ko" : "원격 저장소 삭제에 실패했습니다.",
+				"en" : "Remove Remote Repository Fail"
+			},
+			"mergecompl1" : {
+				"ko" : "병합이 완료되었습니다.",
+				"en" : "Merge is complete."
+			},
+			"mergecompl2" : {
+				"ko" : "변경 사항을 브랜치에 반영하시겠습니까?",
+				"en" : 'Do you want to commit the changes to your branch?'
+			},
+			"later" : {
+				"ko" : "나중에",
+				"en" : "Later"
+			},
+			"cmitchnges" : {
+				"ko" : "변경사항 적용",
+				"en" : "Commit Changes"
+			},
+			"conflmsg1" : {
+				"ko" : "충돌하는 객체가 있습니다.",
+				"en" : "There are conflicting features."
+			},
+			"conflmsg2" : {
+				"ko" : "충돌을 해결하시겠습니까?",
+				"en" : 'Would you like to resolve conflicts?'
+			},
+			"resolve" : {
+				"ko" : "해결하기",
+				"en" : 'Resolve'
+			},
+			"conflicts" : {
+				"ko" : "충돌 사항",
+				"en" : 'Conflicts'
+			},
+			"mergefail" : {
+				"ko" : "병합에 실패했습니다.",
+				"en" : 'Merge failed.'
+			},
+			"nobranch" : {
+				"ko" : "브랜치 목록을 가져올수 없었습니다.",
+				"en" : "Couldn't get the branch list."
+			},
+			"cub" : {
+				"ko" : "현재 브랜치",
+				"en" : "Current Branch"
+			},
+			"tab" : {
+				"ko" : "목표 브랜치",
+				"en" : "Target Branch"
+			},
 	};
+	var options = obj ? obj : {};
+	this.locale = options.locale ? options.locale : "en";
 	
+	obj.width = 730;
+	obj.height = 450;
+	obj.title = this.translation.geogig[this.locale];
+	obj.autoOpen = false;
+	gb.modal.Base.call(this, obj);
+	var that = this;
+	
+	this.epsg = options.epsg ? options.epsg : undefined;
+	var url = options.url ? options.url : {};
+	this.serverTreeURL = url.serverTree ? url.serverTree : undefined;
+	this.beginTransactionURL = url.beginTransaction ? url.beginTransaction : undefined;
+	this.endTransactionURL = url.endTransaction ? url.endTransaction : undefined;
+	this.cancelTransactionURL = url.cancelTransaction ? url.cancelTransaction : undefined;
+	this.checkoutURL = url.checkoutBranch ? url.checkoutBranch : undefined;
+	this.remoteTreeURL = url.remoteTree ? url.remoteTree : undefined;
+	this.removeRemoteRepositoryURL = url.removeRemoteRepository ? url.removeRemoteRepository : undefined;
+	this.removeRepositoryURL = url.removeRepository ? url.removeRepository : undefined;
+	this.branchListURL = url.branchList ? url.branchList : undefined;
+	this.mergeBranchURL = url.mergeBranch ? url.mergeBranch : undefined;
+	this.initRepositoryURL = url.initRepository ? url.initRepository : undefined;
+	this.pullRepositoryURL = url.pullRepository ? url.pullRepository : undefined;
+	this.pushRepositoryURL = url.pushRepository ? url.pushRepository : undefined;
+	this.createBranchURL = url.createBranch ? url.createBranch : undefined;
+	this.addRemoteRepositoryURL = url.addRemoteRepository ? url.addRemoteRepository : undefined;
+	this.resolveConflictURL = url.resolveConflict ? url.resolveConflict : undefined;
+	this.featureBlameURL = url.featureBlame ? url.featureBlame : undefined;
+	this.catConflictFeatureObjectURL = url.catConflictFeatureObject ? url.catConflictFeatureObject : undefined;
+	this.dataStoreListURL = url.dataStoreList ? url.dataStoreList : undefined;
+	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
+	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
+	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
+
+	
+	
+	// edit tool 활성화 여부 객체
+	this.isEditing = options.isEditing || undefined;
+	
+	this.nowRepo = undefined;
+	this.nowRemoteRepo = undefined;
+	this.nowRepoServer = undefined;
+	this.nowBranch = undefined;
+	this.nowLayer = undefined;
+
+	this.loadingList = [];
+	this.loadingNumber = [];
+
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
@@ -806,7 +952,7 @@ gb.versioning.Repository = function(obj) {
 	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
 
@@ -1610,8 +1756,8 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 					that.getJSTree().deselect_all();
 					that.getJSTree().select_node(branch);
 				} else {
-					var title = "Error";
-					var msg = "Checkout failed."
+					var title = this.translation.err[this.locale];
+					var msg = this.translation.chkoutfail[this.locale];
 					that.messageModal(title, msg);
 				}
 			},
@@ -1622,25 +1768,25 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 	};
 
 	if (isCheckedout) {
-		var msg1 = $("<div>").text("Another branch has been checked out.").css({
+		var msg1 = $("<div>").text(this.translation.ischkout1[this.locale]).css({
 			"text-align" : "center",
 			"font-size" : "16px"
 		});
-		var msg2 = $("<div>").text('If you proceed, you will lose your changes. Do you want to proceed?').css({
+		var msg2 = $("<div>").text(this.translation.ischkout2[this.locale]).css({
 			"text-align" : "center",
 			"font-size" : "16px"
 		});
 		var body = $("<div>").append(msg1).append(msg2);
 		var closeBtn = $("<button>").css({
 			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+		}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 		var okBtn = $("<button>").css({
 			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-primary").text("Discard and Checkout");
+		}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.dnc[this.locale]);
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 		var commitModal = new gb.modal.Base({
-			"title" : "Warning",
+			"title" : this.translation.warning[this.locale],
 			"width" : 310,
 			"height" : 200,
 			"autoOpen" : true,
@@ -1707,25 +1853,25 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 			console.log(data);
 			if (data.success === "true") {
 				if (data.merge.conflicts === null) {
-					var msg1 = $("<div>").text("Merge is complete.").css({
+					var msg1 = $("<div>").text(that.translation.mergecompl1[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
-					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					var msg2 = $("<div>").text(that.translation.mergecompl2[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1).append(msg2);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.later[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Commit Changes",
+						"title" : that.translation.cmitchnges[that.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -1742,25 +1888,25 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 				} else {
 					var confl = parseInt(data.merge.conflicts);
 					console.log(confl);
-					var msg1 = $("<div>").text("There are conflicting features.").css({
+					var msg1 = $("<div>").text(that.translation.conflmsg1[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
-					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+					var msg2 = $("<div>").text(that.translation.conflmsg2[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1).append(msg2);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.resolve[this.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Conflict",
+						"title" : this.translation.confilcts[this.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -1780,8 +1926,8 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 							});
 				}
 			} else {
-				var title = "Error";
-				var msg = "Merge failed."
+				var title = that.translation.err[that.locale];
+				var msg = that.translation.mergefail[that.locale];
 				that.messageModal(title, msg);
 			}
 		},
@@ -1819,7 +1965,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 		checkURL += jQuery.param(params);
 	}
 
-	var msg1 = $("<div>").text("Are you sure to remove this remote repository?").css({
+	var msg1 = $("<div>").text(this.translation.removeremoterepomsg[this.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -1830,14 +1976,14 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var removeModal = new gb.modal.Base({
-		"title" : "Remove remote repository",
+		"title" : this.translation.removeremoterepo[this.locale],
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -1867,14 +2013,14 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 					that.refreshRemoteList();
 					removeModal.close();
 				} else {
-					var title = "Error";
-					var msg = "Remove failed."
+					var title = this.translation.err[this.locale];
+					var msg = this.translation.removeremotefail[this.locale];
 					that.messageModal(title, msg);
 				}
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
-				var title = "Error";
-				var msg = "Remove failed."
+				var title = this.translation.err[this.locale];
+				var msg = this.translation.removeremotefail[this.locale];
 				that.messageModal(title, msg);
 			}
 		});
@@ -2371,7 +2517,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var that = this;
 
-	var rName = $("<div>").text("Name: ").css({
+	var rName = $("<div>").text(this.translation.name[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2379,7 +2525,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rNameInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Repository name"
+		"placeholder" : this.translation.namemsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2393,7 +2539,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rHost = $("<div>").text("Host: ").css({
+	var rHost = $("<div>").text(this.translation.host[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2401,7 +2547,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rHostInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Host name/addres EX) 127.0.0.1"
+		"placeholder" : this.translation.hostmsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2415,7 +2561,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rPort = $("<div>").text("Port: ").css({
+	var rPort = $("<div>").text(this.translation.port[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2423,7 +2569,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rPortInput = $("<input>").attr({
 		"type" : "number",
-		"placeholder" : "Port number EX) 5432"
+		"placeholder" : this.translation.portmsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2437,7 +2583,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rDB = $("<div>").text("Database: ").css({
+	var rDB = $("<div>").text(this.translation.db[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2445,7 +2591,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rDBInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Database name"
+		"placeholder" : this.translation.dbmsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2459,7 +2605,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rScheme = $("<div>").text("Scheme: ").css({
+	var rScheme = $("<div>").text(this.translation.scheme[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2467,7 +2613,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rSchemeInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Scheme name"
+		"placeholder" : this.translation.schememsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2481,7 +2627,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rID = $("<div>").text("User Name: ").css({
+	var rID = $("<div>").text(this.translation.username[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2489,7 +2635,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rIDInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Database user name"
+		"placeholder" : this.translation.usernamemsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2503,7 +2649,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rPass = $("<div>").text("Password: ").css({
+	var rPass = $("<div>").text(this.translation.password[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2511,7 +2657,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rPassInput = $("<input>").attr({
 		"type" : "password",
-		"placeholder" : "Database password"
+		"placeholder" : this.translation.passwordmsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2525,7 +2671,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rrName = $("<div>").text("Repository Name: ").css({
+	var rrName = $("<div>").text(this.translation.remoreponame[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2533,7 +2679,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rrNameInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Remote Repository Name"
+		"placeholder" : this.translation.remoreponamemsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2547,7 +2693,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 		"display" : "table-row"
 	});
 
-	var rrURL = $("<div>").text("Repository URL: ").css({
+	var rrURL = $("<div>").text(this.translation.remorepourl[this.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "20%",
 		"text-align" : "right",
@@ -2555,7 +2701,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 	var rrURLInput = $("<input>").attr({
 		"type" : "text",
-		"placeholder" : "Remote Repository URL"
+		"placeholder" : this.translation.remorepourlmsg[this.locale]
 	}).addClass("gb-form").css({
 		"width" : "83%",
 		"margin-left" : "6px"
@@ -2568,29 +2714,35 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	var rrURLArea = $("<div>").append(rrURL).append(rrURLInputDiv).css({
 		"display" : "table-row"
 	});
-
+	var tbArea = $("<div>").css({
+		"display" : "table",
+		"width" : "100%"
+	}).append(rrNameArea).append(rrURLArea);
+	
 	var remoteInputArea = $("<div>").css({
 		"display" : "none",
 		"padding" : "10px",
 		"width" : "100%",
-		"height" : "109px"
-	}).append(rrNameArea).append(rrURLArea);
+		"height" : "109px",
+		"display" : "none"
+	}).append(tbArea);
 
 	var icon = $("<i>").addClass("fas").addClass("fa-caret-down");
-	var pullBtn = $("<button>").append(icon).append(" Pull from Remote Repository").addClass("gb-button-clear").click(function() {
-		$(remoteInputArea).toggle();
+	var pullBtn = $("<button>").append(icon).append(" "+this.translation.pullfrom[this.locale]).addClass("gb-button-clear").click(function() {
 		if ($(remoteInputArea).css("display") === "none") {
-			if ($(this).find("i").hasClass("fa-caret-up")) {
-				$(this).find("i").removeClass("fa-caret-up");
-				$(this).find("i").addClass("fa-caret-down");
-			}
-			createRepoModal.setHeight(425);
-		} else if ($(remoteInputArea).css("display") === "block") {
 			if ($(this).find("i").hasClass("fa-caret-down")) {
 				$(this).find("i").removeClass("fa-caret-down");
 				$(this).find("i").addClass("fa-caret-up");
 			}
-			createRepoModal.setHeight(514);
+			createRepoModal.setHeight(514);	
+			$(remoteInputArea).css("display", "block");
+		} else if ($(remoteInputArea).css("display") === "block") {
+			if ($(this).find("i").hasClass("fa-caret-up")) {
+				$(this).find("i").removeClass("fa-caret-up");
+				$(this).find("i").addClass("fa-caret-down");
+			}
+			createRepoModal.setHeight(425);				
+			$(remoteInputArea).css("display", "none");
 		}
 	});
 	var pullBtnRow = $("<div>").append(pullBtn).css({
@@ -2600,10 +2752,10 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Create");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.create[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -2618,7 +2770,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 
 	var repoBody = $("<div>").append(rBody).append(pullBtnRow).append(remoteInputArea);
 	var createRepoModal = new gb.modal.Base({
-		"title" : "Create Repository",
+		"title" : this.translation.createrepo[this.locale],
 		"width" : 540,
 		"height" : 425,
 		"autoOpen" : true,
@@ -2729,8 +2881,8 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 					"background-color" : "#fff"
 				});
 			}
-			var title = "Error";
-			var msg = "Some required fields are empty."
+			var title = this.translation.err[this.locale];
+			var msg = this.translation.emptyfield[this.locale];
 			that.messageModal(title, msg);
 		} else {
 			$(rNameInput).css({
@@ -2849,7 +3001,7 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
  */
 gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	var that = this;
-	var msg1 = $("<div>").text("Are you sure to remove this repository?").css({
+	var msg1 = $("<div>").text(this.translation.removerepomsg[this.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -2860,14 +3012,14 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var removeModal = new gb.modal.Base({
-		"title" : "Remove Repository",
+		"title" : this.translation.removerepo[this.locale],
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,
@@ -2958,7 +3110,7 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg, height) {
 	var body = $("<div>").append(msg1);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
 	var modal = new gb.modal.Base({
@@ -3069,14 +3221,14 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 				}
 			}
 		} else {
-			var title = "Error";
-			var msg = "Couldn't get branch list."
+			var title = that.translation.err[that.locale];
+			var msg = that.translation.nobranch[that.locale];
 			that.messageModal(title, msg);
 		}
 	};
 	this.getBranchList(server, repo, callback);
 
-	var serverName = $("<span>").text("GeoServer: ").css({
+	var serverName = $("<span>").text(that.translation.geoserver[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3091,7 +3243,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	var geoserverArea = $("<div>").append(serverName).append(serverNameValArea).css({
 		"display" : "table-row"
 	});
-	var repoName = $("<span>").text("Repository: ").css({
+	var repoName = $("<span>").text(that.translation.repository[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3106,7 +3258,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	var repoNameArea = $("<div>").append(repoName).append(repoNameValArea).css({
 		"display" : "table-row"
 	});
-	var cubName = $("<span>").text("Current Branch: ").css({
+	var cubName = $("<span>").text(that.translation.cub[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3121,7 +3273,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	var cubArea = $("<div>").append(cubName).append(cubNameValArea).css({
 		"display" : "table-row"
 	});
-	var tabName = $("<span>").text("Target Branch: ").css({
+	var tabName = $("<span>").text(that.translation.tab[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3145,14 +3297,14 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 	var mergeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Merge");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.merge[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(mergeBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Merge",
+		"title" : that.translation.merge[that.locale],
 		"width" : 370,
 		"height" : 268,
 		"autoOpen" : true,
@@ -4843,7 +4995,7 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
  */
 gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
 	var that = this;
-	var msg1 = $("<div>").text("Are you sure to remove this layer?").css({
+	var msg1 = $("<div>").text(this.translation.removelayermsg[this.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -4854,14 +5006,14 @@ gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Remove");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var removeModal = new gb.modal.Base({
-		"title" : "Remove Repository",
+		"title" : this.translation.removelayer[this.locale],
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : true,

@@ -4937,7 +4937,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				}
 				$(wsSelect).trigger("change");
 				var publishModal = new gb.modal.Base({
-					"title" : this.translation.publish[this.locale],
+					"title" : that.translation.publish[that.locale],
 					"width" : 540,
 					"height" : 282,
 					"autoOpen" : true,
@@ -5013,7 +5013,7 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 						"value" : data[i].layerName
 					}).append(data[i].layerName);
 					if (data[i].published === true) {
-						$(opt).append(" ["+this.translation.published[this.locale]+"]");
+						$(opt).append(" ["+that.translation.published[that.locale]+"]");
 						$(opt).prop("disabled", true);
 					}
 					$(select).append(opt);

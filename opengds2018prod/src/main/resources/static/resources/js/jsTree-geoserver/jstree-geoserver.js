@@ -1518,19 +1518,5 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		});
 	};
 
-	/**
-	 * wfs레이어를 클라이언트로 임포트
-	 * 
-	 * @name $.jstree.plugins.geoserver.import_vector
-	 * @plugin geoserver
-	 * @author 소이준
-	 */
-	this.import_vector = function(obj) {
-		var that = this;
-
-		// options.map.addLayer(layer);
-		console.log("vector");
-	};
-
 };
 // $.jstree.defaults.plugins.push("geoserver");

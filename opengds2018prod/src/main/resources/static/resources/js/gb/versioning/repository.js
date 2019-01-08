@@ -713,6 +713,34 @@ gb.versioning.Repository = function(obj) {
 			"message" : {
 				"ko" : "알림",
 				"en" : "Message"
+			},
+			"info" : {
+				"ko" : "정보",
+				"en" : "Information"
+			},
+			"url" : {
+				"ko" : "URL",
+				"en" : "URL"
+			},
+			"location" : {
+				"ko" : "위치",
+				"en" : "Location"
+			},
+			"storage" : {
+				"ko" : "저장소 형식",
+				"en" : "Storage Type"
+			},
+			"user" : {
+				"ko" : "소유자",
+				"en" : "Commiter"
+			},
+			"email" : {
+				"ko" : "이메일",
+				"en" : "E-mail"
+			},
+			"repoinfo" : {
+				"ko" : "저장소 정보",
+				"en" : "Repository Information"
 			}
 	};
 	var options = obj ? obj : {};
@@ -749,7 +777,7 @@ gb.versioning.Repository = function(obj) {
 	this.listGeoserverLayerURL = url.listGeoserverLayer ? url.listGeoserverLayer : undefined;
 	this.publishGeogigLayerURL = url.publishGeogigLayer ? url.publishGeogigLayer : undefined;
 	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
-
+	this.infoRepositoryURL = url.infoRepository ? url.infoRepository : undefined;
 	
 	
 	// edit tool 활성화 여부 객체
@@ -1658,6 +1686,16 @@ gb.versioning.Repository.prototype.getPublishGeogigLayerURL = function() {
  */
 gb.versioning.Repository.prototype.getRemoveGeogigLayerURL = function() {
 	return this.removeGeogigLayerURL;
+};
+
+/**
+ * infoRepository 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getInfoRepositoryURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getInfoRepositoryURL = function() {
+	return this.infoRepositoryURL;
 };
 
 /**
@@ -5128,6 +5166,187 @@ gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
 			that.refreshList();
 		};
 		that.removeLayer(server.text, repo.text, tid, path, removeModal, callback);
+	});
+};
+
+/**
+ * 레파지토리 정보 확인창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#removeLayerModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName) {
+	var that = this;
+	
+	var namekey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"vertical-align" : "middle"	,
+		"text-align" : "right",
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var nameval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row1 = $("<div>").css({
+		"display" : "table-row"
+	}).append(namekey).append(nameval);
+	
+	var urlkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.url[this.locale]+": ");
+	var urlval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row2 = $("<div>").css({
+		"display" : "table-row"
+	}).append(urlkey).append(urlval);
+	
+	var lockey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.location[this.locale]+": ");
+	var locval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row3 = $("<div>").css({
+		"display" : "table-row"
+	}).append(lockey).append(locval);
+	
+	var storagekey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.storage[this.locale]+": ");
+	var storageval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row4 = $("<div>").css({
+		"display" : "table-row"
+	}).append(storagekey).append(storageval);
+	
+	var userkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.user[this.locale]+": ");
+	var userval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row5 = $("<div>").css({
+		"display" : "table-row"
+	}).append(userkey).append(userval);
+	
+	var emailkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.email[this.locale]+": ");
+	var emailval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row6 = $("<div>").css({
+		"display" : "table-row"
+	}).append(emailkey).append(emailval);
+	var tb = $("<div>").css({
+		"display" : "table"
+	}).append(row1).append(row2).append(row3).append(row4).append(row5).append(row6);
+	var body = $("<div>").append(tb);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+	var params = {
+			"serverName" : serverName,
+			"repoName" : repoName
+		}
+		// + "&" + jQuery.param(params),
+		var tranURL = this.getInfoRepositoryURL();
+		if (tranURL.indexOf("?") !== -1) {
+			tranURL += "&";
+			tranURL += jQuery.param(params);
+		} else {
+			tranURL += "?";
+			tranURL += jQuery.param(params);
+		}
+
+		$.ajax({
+			url : tranURL,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			// data : params,
+			// dataType : 'jsonp',
+			// jsonpCallback : 'getJson',
+			beforeSend : function() {
+				// $("body").css("cursor", "wait");
+			},
+			complete : function() {
+				// $("body").css("cursor", "default");
+			},
+			success : function(data) {
+				console.log(data);
+				if (data.success === "true") {
+					$(nameval).html(data.name);
+					$(urlval).html(data.url);
+					$(locval).html(data.location);
+					$(storageval).html(data.storage);
+					$(userval).html(data.user);
+					$(emailval).html(data.email);
+				} else {
+					that.errorModal(data.error);
+				}
+			}
+		}).fail(function(xhr, status, errorThrown) {
+			that.errorModal(xhr.responseJSON.status);
+		});
+		
+	var removeModal = new gb.modal.Base({
+		"title" : this.translation.repoinfo[this.locale],
+		"width" : 420,
+		"height" : 345,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		removeModal.close();
 	});
 };
 

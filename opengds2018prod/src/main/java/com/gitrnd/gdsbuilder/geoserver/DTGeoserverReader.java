@@ -255,7 +255,7 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	
 	
 	public String getGeoserverInfo(DTGeoserverInfo dtGeoserverInfo) {
-		String url = dtGeoserverInfo.getServerURL();
+		String url = dtGeoserverInfo.getDTGeoserverInfoURL();
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("### Retrieving featuretypes from " + url);
 		}

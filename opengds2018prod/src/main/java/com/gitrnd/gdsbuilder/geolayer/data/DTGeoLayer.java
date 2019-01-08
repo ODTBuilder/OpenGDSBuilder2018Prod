@@ -175,7 +175,9 @@ public class DTGeoLayer {
 					String geomAtt = attElement.getChildText("binding");
 					int size = geomAtt.length();
 					if (size > 28) {
-						geomType = attElement.getChildText("binding").substring(28);
+						int pos = geomAtt.lastIndexOf( "." );
+						geomType = geomAtt.substring( pos + 1 );
+//						geomType = attElement.getChildText("binding").substring(28);
 						break;
 					} else {
 						geomType = "";

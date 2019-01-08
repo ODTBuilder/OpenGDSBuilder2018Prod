@@ -359,8 +359,9 @@ public class GeoserverController extends AbstractController {
 	 */
 	@RequestMapping(value = "/getDTGeoserverInfo.ajax")
 	@ResponseBody
-	public void getDTGeoserverInfo(HttpServletRequest request, HttpServletResponse response,
+	public String getDTGeoserverInfo(HttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws ServletException, IOException, Exception {
+		String result = "";
 		if (loginUser == null) {
 			response.sendError(600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -370,8 +371,9 @@ public class GeoserverController extends AbstractController {
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
 		} else {
-			proService.requestGeoserverInfo(dtGeoserverManager, request, response);
+			result = proService.requestGeoserverInfo(dtGeoserverManager, request, response);
 		}
+		return result;
 	}
 	
 	

@@ -65,6 +65,7 @@ import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnFeatureTypeList;
+import com.gitrnd.gdsbuilder.geoserver.service.inf.DTGeoserverInfo;
 
 import it.geosolutions.geoserver.rest.GeoServerRESTReader;
 import it.geosolutions.geoserver.rest.HTTPUtils;
@@ -251,6 +252,16 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		}
 		return RESTFeatureTypeList.build(load(url));
 	}
+	
+	
+	public String getGeoserverInfo(DTGeoserverInfo dtGeoserverInfo) {
+		String url = dtGeoserverInfo.getServerURL();
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("### Retrieving featuretypes from " + url);
+		}
+		return loadFullURL(url);
+	}
+	
 	
 	/**
 	 * @Description 이용가능한 레이어 존재여부(발행만 안된상태)ㅒ

@@ -238,6 +238,30 @@ gb.tree.GeoServer = function(obj) {
 				"ko" : "취소",
 				"en" : "Cancel"
 			},
+			"switchbr1" : {
+				"ko" : "지오서버의 설정이 변경됩니다.",
+				"en" : "This will change the geoserver setting."
+			},
+			"switchbr1" : {
+				"ko" : "지오서버의 설정이 변경됩니다.",
+				"en" : "This will change the geoserver setting."
+			},
+			"switchbr2" : {
+				"ko" : "다른 사용자에게 영향을 미칠 수 있습니다.",
+				"en" : "Other users can be affected."
+			},
+			"switchbr3" : {
+				"ko" : "해당 브랜치로 변경하시겠습니까?",
+				"en" : "Would you like to switch over to this branch?"
+			},
+			"brswitch" : {
+				"ko" : "브랜치 변경",
+				"en" : "Switch Branch"
+			},
+			"switch" : {
+				"ko" : "변경",
+				"en" : "Switch"
+			}
 	};
 	this.panelTitle = $("<p>").text(this.translation.geoserver[this.locale]).css({
 		"margin" : "0",
@@ -463,17 +487,17 @@ gb.tree.GeoServer = function(obj) {
 												if (nowBranch === data.item.label) {
 
 												} else {
-													var msg1 = $("<div>").text("This will change the geoserver setting.").css({
+													var msg1 = $("<div>").text(that.translation.switchbr1[that.locale]).css({
 														"text-align" : "center",
 														"font-size" : "16px",
 														"word-break" : "keep-all"
 													});
-													var msg2 = $("<div>").text("Other users can be affected.").css({
+													var msg2 = $("<div>").text(that.translation.switchbr2[that.locale]).css({
 														"text-align" : "center",
 														"font-size" : "16px",
 														"word-break" : "keep-all"
 													});
-													var msg3 = $("<div>").text("Would you like to switch over to this branch?").css({
+													var msg3 = $("<div>").text(that.translation.switchbr3[that.locale]).css({
 														"text-align" : "center",
 														"font-size" : "16px",
 														"word-break" : "keep-all"
@@ -484,17 +508,17 @@ gb.tree.GeoServer = function(obj) {
 													});
 													var closeBtn = $("<button>").css({
 														"float" : "right"
-													}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+													}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 													var okBtn = $("<button>").css({
 														"float" : "right"
-													}).addClass("gb-button").addClass("gb-button-primary").text("Switch");
+													}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.switch[that.locale]);
 
 													var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 													var modalFooter = $("<div>").append(buttonArea);
 
 													var gBody = $("<div>").append(msg1).append(msg2).append(msg3).append(msg4);
 													var switchModal = new gb.modal.Base({
-														"title" : "Branch Switch",
+														"title" : that.translation.brswitch[that.locale],
 														"width" : 414,
 														"height" : 228,
 														"autoOpen" : true,

@@ -618,6 +618,102 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "목표 브랜치",
 				"en" : "Target Branch"
 			},
+			"addremorepo" : {
+				"ko" : "원격 저장소 추가",
+				"en" : "Add Remote Repository"
+			},
+			"no" : {
+				"ko" : "번호",
+				"en" : "No"
+			},
+			"layer" : {
+				"ko" : "레이어",
+				"en" : "Layer"
+			},
+			"fid" : {
+				"ko" : "객체ID",
+				"en" : "Feature ID"
+			},
+			"resolution" : {
+				"ko" : "해결방법",
+				"en" : "Resolution"
+			},
+			"detail" : {
+				"ko" : "세부 정보",
+				"en" : "Detail"
+			},
+			"use" : {
+				"ko" : "사용",
+				"en" : "Use"
+			},
+			"resolveconfl" : {
+				"ko" : "충돌 해결",
+				"en" : "Resolve Conflicts"
+			},
+			"click" : {
+				"ko" : "클릭",
+				"en" : "Click"
+			},
+			"confilcts" : {
+				"ko" : "충돌사항",
+				"en" : "Conflicts"
+			},
+			"value" : {
+				"ko" : "값",
+				"en" : "Value"
+			},
+			"compareconfl" : {
+				"ko" : "충돌 객체 비교",
+				"en" : "Compare Conflicts"
+			},
+			"workspace" : {
+				"ko" : "워크스페이스",
+				"en" : "Workspace"
+			},
+			"datastore" : {
+				"ko" : "데이터스토어",
+				"en" : "Datastore"
+			},
+			"layers" : {
+				"ko" : "레이어",
+				"en" : "Layers"
+			},
+			"publish" : {
+				"ko" : "발행",
+				"en" : "Publish"
+			},
+			"nodatastoremsg1" : {
+				"ko" : "이 브랜치에 연결된 데이터스토어가 없습니다.",
+				"en" : "There is no datastore connected with this branch."
+			},
+			"nodatastoremsg2" : {
+				"ko" : "브랜치와 연결된 데이터스토어를 만들어 주세요.",
+				"en" : "Please make a datastore connected with the branch."
+			},
+			"chooselayer" : {
+				"ko" : "레이어를 선택해주세요.",
+				"en" : "Please choose a layer."
+			},
+			"removed" : {
+				"ko" : "삭제됨",
+				"en" : "Removed"
+			},
+			"published" : {
+				"ko" : "발행됨",
+				"en" : "Published"
+			},
+			"layerdel" : {
+				"ko" : "레이어가 삭제되었습니다.",
+				"en" : "Layer has been deleted."
+			},
+			"layerpub" : {
+				"ko" : "레이어가 발행되었습니다.",
+				"en" : "Layer has been published."
+			},
+			"message" : {
+				"ko" : "알림",
+				"en" : "Message"
+			}
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -1902,11 +1998,11 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.resolve[this.locale]);
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : this.translation.confilcts[this.locale],
+						"title" : that.translation.confilcts[that.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -3363,7 +3459,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	};
 	this.getBranchList(server, repo, callback);
 
-	var serverName = $("<span>").text("GeoServer: ").css({
+	var serverName = $("<span>").text(that.translation.geoserver[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3378,7 +3474,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var geoserverArea = $("<div>").append(serverName).append(serverNameVal).css({
 		"display" : "table-row"
 	});
-	var repoName = $("<span>").text("Repository: ").css({
+	var repoName = $("<span>").text(that.translation.repository[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3393,7 +3489,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var repoNameArea = $("<div>").append(repoName).append(repoNameVal).css({
 		"display" : "table-row"
 	});
-	var cubName = $("<span>").text("New Branch: ").css({
+	var cubName = $("<span>").text(that.translation.newbranch[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3413,7 +3509,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	var cubArea = $("<div>").append(cubName).append(nameArea).css({
 		"display" : "table-row"
 	});
-	var tabName = $("<span>").text("Target Branch: ").css({
+	var tabName = $("<span>").text(that.translation.tab[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3438,14 +3534,14 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var createBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Create");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.create[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(createBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "New Branch",
+		"title" : this.translation.newbranch[this.locale],
 		"width" : 370,
 		"height" : 268,
 		"autoOpen" : true,
@@ -3534,7 +3630,7 @@ gb.versioning.Repository.prototype.createNewBranch = function(server, repo, bran
 gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var that = this;
 
-	var serverName = $("<span>").text("GeoServer: ").css({
+	var serverName = $("<span>").text(that.translation.geoserver[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3549,7 +3645,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var geoserverArea = $("<div>").append(serverName).append(serverNameVal).css({
 		"display" : "table-row"
 	});
-	var repoName = $("<span>").text("Repository: ").css({
+	var repoName = $("<span>").text(that.translation.repository[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3564,7 +3660,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var repoNameArea = $("<div>").append(repoName).append(repoNameVal).css({
 		"display" : "table-row"
 	});
-	var remoteName = $("<span>").text("Remote Repository Name: ").css({
+	var remoteName = $("<span>").text(that.translation.remoreponame[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3584,7 +3680,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	var remoteNameArea = $("<div>").append(remoteName).append(nameArea).css({
 		"display" : "table-row"
 	});
-	var remoteURL = $("<span>").text("Remote Repository URL: ").css({
+	var remoteURL = $("<span>").text(that.translation.remorepourl[that.locale]+": ").css({
 		"display" : "table-cell",
 		"width" : "35%",
 		"text-align" : "right",
@@ -3615,14 +3711,14 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var addBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(addBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Add Remote Repository",
+		"title" : this.translation.addremorepo[this.locale],
 		"width" : 570,
 		"height" : 268,
 		"autoOpen" : true,
@@ -3656,8 +3752,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 					"background-color" : "#fff"
 				});
 			}
-			var title = "Error";
-			var msg = "Some required fields are empty."
+			var title = this.translation.err[this.locale];
+			var msg = this.translation.emptyfield[this.locale];
 			that.messageModal(title, msg);
 		} else {
 			$(nameInput).css({
@@ -3752,7 +3848,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, trepo, cub, tab, ours, theirs, features, cmodal) {
 	var that = this;
 
-	var serverName = $("<span>").text("GeoServer: ").css({
+	var serverName = $("<span>").text(this.translation.geoserver[this.locale]+": ").css({
 		// "display" : "table-cell",
 		// "width" : "20%",
 		"text-align" : "right",
@@ -3767,7 +3863,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var geoserverArea = $("<span>").append(serverName).append(serverNameVal).css({
 	// "display" : "table-row"
 	});
-	var repoName = $("<span>").text("Repository: ").css({
+	var repoName = $("<span>").text(this.translation.repository[this.locale]+": ").css({
 		// "display" : "table-cell",
 		// "width" : "20%",
 		"text-align" : "right",
@@ -3783,7 +3879,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	// "display" : "table-row"
 	});
 
-	var cubName = $("<span>").text("Current branch: ").css({
+	var cubName = $("<span>").text(this.translation.cub[this.locale]+": ").css({
 		// "display" : "table-cell",
 		// "width" : "20%",
 		"text-align" : "right",
@@ -3799,7 +3895,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	// "display" : "table-row"
 	});
 
-	var tabName = $("<span>").text("Target branch: ").css({
+	var tabName = $("<span>").text(this.translation.tab[this.locale]+": ").css({
 		// "display" : "table-cell",
 		// "width" : "20%",
 		"text-align" : "right",
@@ -3816,11 +3912,11 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	var col1 = $("<th>").addClass("select-checkbox");
-	var col2 = $("<th>").text("No");
-	var col3 = $("<th>").text("Layer");
-	var col4 = $("<th>").text("Feature ID");
-	var col5 = $("<th>").text("Resolution");
-	var col6 = $("<th>").text("Detail");
+	var col2 = $("<th>").text(this.translation.no[this.locale]);
+	var col3 = $("<th>").text(this.translation.layer[this.locale]);
+	var col4 = $("<th>").text(this.translation.fid[this.locale]);
+	var col5 = $("<th>").text(this.translation.resolution[this.locale]);
+	var col6 = $("<th>").text(this.translation.detail[this.locale]);
 	var row1 = $("<tr>").append(col1).append(col2).append(col3).append(col4).append(col5).append(col6);
 	var thead = $("<thead>").append(row1);
 	var tbody = $("<tbody>");
@@ -3831,11 +3927,11 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	});
 
 	var selectedLabel = $("<span>").text("Selected Items");
-	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + repo + " - " + cub + "]").css({
+	var useCubBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(this.translation.use[this.locale]+" [" + repo + " - " + cub + "]").css({
 		"display" : "inline-block",
 		"width" : "49%"
 	});
-	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text("Use [" + trepo + " - " + tab + "]").css({
+	var useTabBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(this.translation.use[this.locale]+" [" + trepo + " - " + tab + "]").css({
 		"display" : "inline-block",
 		"width" : "49%"
 	});
@@ -3857,14 +3953,14 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	var body = $("<div>").append(tableArea).append(wholeSelectBody);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Merge");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.merge[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Resolve Conflicts",
+		"title" : this.translation.resolveconfl[this.locale],
 		"width" : 770,
 		"height" : 800,
 		"autoOpen" : true,
@@ -3899,13 +3995,13 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 			"orderable" : false,
 			"className" : "select-checkbox gb-repository-select-checkbox"
 		}, {
-			"title" : "No"
+			"title" : this.translation.no[this.locale]
 		}, {
-			"title" : "Layer"
+			"title" : this.translation.layer[this.locale]
 		}, {
-			"title" : "Feature ID"
+			"title" : this.translation.fid[this.locale]
 		}, {
-			"title" : "Resolution",
+			"title" : this.translation.resolution[this.locale],
 			'searchable' : false,
 			"orderable" : false,
 			"render" : function(d, t, r, m) {
@@ -3934,11 +4030,11 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 				return $(select).prop("outerHTML");
 			}
 		}, {
-			"title" : "Detail",
+			"title" : this.translation.detail[this.locale],
 			'searchable' : false,
 			"orderable" : false,
 			"data" : null,
-			"defaultContent" : "<button class='gb-button gb-button-default gb-repository-conflict-detail'>Click</button>"
+			"defaultContent" : "<button class='gb-button gb-button-default gb-repository-conflict-detail'>"+this.translation.click[this.locale]+"</button>"
 		} ],
 		"select" : {
 			"style" : 'multi',
@@ -4146,25 +4242,25 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 				}
 			}
 			if (success === true) {
-				var msg1 = $("<div>").text("Merge is complete.").css({
+				var msg1 = $("<div>").text(that.translation.mergecompl1[that.locale]).css({
 					"text-align" : "center",
 					"font-size" : "16px"
 				});
-				var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+				var msg2 = $("<div>").text(that.translation.mergecompl2[that.locale]).css({
 					"text-align" : "center",
 					"font-size" : "16px"
 				});
 				var body = $("<div>").append(msg1).append(msg2);
 				var closeBtn = $("<button>").css({
 					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-default").text("Later");
+				}).addClass("gb-button").addClass("gb-button-default").text(that.translation.later[that.locale]);
 				var okBtn = $("<button>").css({
 					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+				}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 				var commitModal = new gb.modal.Base({
-					"title" : "Commit Changes",
+					"title" : that.translation.cmitchnges[that.locale],
 					"width" : 310,
 					"height" : 200,
 					"autoOpen" : true,
@@ -4220,8 +4316,8 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "height" : "200px",
 	// "background-color" : "#dbdbdb"
 	// });
-	var cheadtd1 = $("<th>").text("Name");
-	var cheadtd2 = $("<th>").text("Value");
+	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
 	var cattrtbody = $("<tbody>").css({
@@ -4263,8 +4359,8 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "height" : "200px",
 	// "background-color" : "#dbdbdb"
 	// });
-	var theadtd1 = $("<th>").text("Name");
-	var theadtd2 = $("<th>").text("Value");
+	var theadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var theadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
 	var tattrtbody = $("<tbody>").css({
@@ -4320,14 +4416,14 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Use");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Compare Conflicts",
+		"title" : that.translation.compareconfl[that.locale],
 		"width" : 770,
 		"height" : 840,
 		"autoOpen" : true,
@@ -4721,14 +4817,14 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var workspace;
 	var datastore;
 
-	var wsLabel = $("<div>").text("Workspace").css({
+	var wsLabel = $("<div>").text(this.translation.workspace[this.locale]).css({
 		"padding" : "4px 10px 0 10px"
 	});
 	var wsSelect = $("<select>").addClass("gb-form");
 	var wsSelectDiv = $("<div>").append(wsSelect).css({
 		"padding" : "10px"
 	});
-	var dsLabel = $("<div>").text("Datastore").css({
+	var dsLabel = $("<div>").text(this.translation.datastore[this.locale]).css({
 		"padding" : "4px 10px 0 10px"
 	});
 	var dsSelect = $("<select>").addClass("gb-form");
@@ -4744,7 +4840,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 		"float" : "right"
 	});
 
-	var layerLabel = $("<div>").append("Layers").append(refBtn).css({
+	var layerLabel = $("<div>").append(this.translation.layer[this.locale]).append(refBtn).css({
 		"padding" : "4px 10px 0 10px"
 	});
 	// var layerList = $("<div>");
@@ -4789,10 +4885,10 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	});
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Publish");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.publish[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -4828,10 +4924,10 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 			wsList = data;
 			if (Object.keys(data).length === 0) {
 				console.error("No result");
-				var msg1 = $("<div>").append("There is no datastore connected with this branch.");
-				var msg2 = $("<div>").append("Please make a datastore connected with the branch.");
+				var msg1 = $("<div>").append(this.translation.nodatastoremsg1[this.locale]);
+				var msg2 = $("<div>").append(this.translation.nodatastoremsg2[this.locale]);
 				var group = $("<div>").append(msg1).append(msg2);
-				that.messageModal("Error", group);
+				that.messageModal(this.translation.err[this.locale], group);
 			} else {
 				$(wsSelect).empty();
 				var wsKeys = Object.keys(wsList);
@@ -4841,7 +4937,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 				}
 				$(wsSelect).trigger("change");
 				var publishModal = new gb.modal.Base({
-					"title" : "Publish",
+					"title" : this.translation.publish[this.locale],
 					"width" : 540,
 					"height" : 282,
 					"autoOpen" : true,
@@ -4861,8 +4957,8 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 					var rp = repo;
 					var br = branch;
 					if (!lyr) {
-						var msg1 = $("<div>").append("Please choose a layer.");
-						that.messageModal("Error", msg1);
+						var msg1 = $("<div>").append(this.translation.chooselayer[this.locale]);
+						that.messageModal(this.translation.err[this.locale], msg1);
 					} else {
 						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal, function() {
 							that.getListGeoserverLayer(server, workspace, datastore, layerList);
@@ -4917,7 +5013,7 @@ gb.versioning.Repository.prototype.getListGeoserverLayer = function(server, work
 						"value" : data[i].layerName
 					}).append(data[i].layerName);
 					if (data[i].published === true) {
-						$(opt).append(" [Published]");
+						$(opt).append(" ["+this.translation.published[this.locale]+"]");
 						$(opt).prop("disabled", true);
 					}
 					$(select).append(opt);
@@ -4967,8 +5063,8 @@ gb.versioning.Repository.prototype.publishGeogigLayer = function(server, work, s
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				var group = $("<div>").append("Layer has been published.");
-				that.messageModal("Message", group);
+				var group = $("<div>").append(that.translation.layerpub[that.locale]);
+				that.messageModal(that.translation.message[that.locale], group);
 				// modal.close();
 				if (typeof callback === "function") {
 					callback();
@@ -5073,8 +5169,8 @@ gb.versioning.Repository.prototype.removeLayer = function(server, repo, tid, pat
 			console.log(data);
 			if (data.success === "true") {
 				if (data.error === null) {
-					var group = $("<div>").append("Layer has been deleted.");
-					that.messageModal("Message", group);
+					var group = $("<div>").append(that.translation.layerdel[that.locale]);
+					that.messageModal(that.translation.message[that.locale], group);
 					 modal.close();
 					if (typeof callback === "function") {
 						callback();

@@ -419,7 +419,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				datastore = value;
 			} else if (key.toLowerCase().equals("layers")) {
 				layers = value;
-			} else if (key.toLowerCase().equals("fileFormat")) {
+			} else if (key.toLowerCase().equals("format")) {
 				fileFormat = value;
 			}
 		}

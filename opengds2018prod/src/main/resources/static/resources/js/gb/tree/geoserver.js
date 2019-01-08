@@ -43,7 +43,8 @@ gb.tree.GeoServer = function(obj) {
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
-	this.deleteGeoServerLayerURL = url.deleteGeoServerLayer ? url.deleteGeoServerLayer : undefined;
+	this.geoserverInfoURL = url.geoserverInfo ? url.geoserverInfo : undefined;
+	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;
 	this.getLayerInfo = url.getLayerInfo ? url.getLayerInfo : undefined;
@@ -261,6 +262,10 @@ gb.tree.GeoServer = function(obj) {
 			"switch" : {
 				"ko" : "변경",
 				"en" : "Switch"
+			},
+			"info" : {
+				"ko" : "정보",
+				"en" : "Information"
 			}
 	};
 	this.panelTitle = $("<p>").text(this.translation.geoserver[this.locale]).css({
@@ -463,6 +468,42 @@ gb.tree.GeoServer = function(obj) {
 					items : function(o, cb) { // Could be an object
 						// directly
 						var totalObj = {};
+						if (o.type === "geoserver") {
+							var infoObj = {
+									"separator_before" : false,
+									"icon" : "fas fa-info",
+									"separator_after" : false,
+									"_disabled" : function() {
+										console.log(o);
+										console.log(cb);
+										var result = true;
+										if (o.type === "geoserver") {
+											result = false;
+										}
+										return result;
+									},
+									"label" : that.translation.info[that.locale],
+									/*
+									 * ! "shortcut" : 113, "shortcut_label" :
+									 * 'F2', "icon" : "glyphicon
+									 * glyphicon-leaf",
+									 */
+									"action" : function(data) {
+										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+// if(isEdit instanceof Object){
+// if(isEdit.get()){
+// isEdit.alert();
+// return
+// }
+// }
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										var server = obj.text;
+										console.log(server);
+										that.geoserverInfoModal(server);
+									}
+							}
+							totalObj["info"] = infoObj;
+						}
 						// 지오긱 저장소이면 브랜치 서브메뉴 객체를 만듬
 						var repoObj = {};
 						if (o.type === "datastore") {
@@ -809,42 +850,43 @@ gb.tree.GeoServer = function(obj) {
 						// 업로드
 						if (o.type === "datastore") {
 							var uploadObj = {
-								"separator_before" : false,
-								"icon" : "fas fa-upload",
-								"separator_after" : false,
-								"_disabled" : function() {
-									console.log(o);
-									console.log(cb);
-									var result = true;
-									if (o.type === "datastore") {
-										result = false;
+									"separator_before" : false,
+									"icon" : "fas fa-upload",
+									"separator_after" : false,
+									"_disabled" : function() {
+										console.log(o);
+										console.log(cb);
+										var result = true;
+										if (o.type === "datastore") {
+											result = false;
+										}
+										return result;
+									},
+									"label" : that.translation.upload[that.locale],
+									/*
+									 * ! "shortcut" : 113, "shortcut_label" :
+									 * 'F2', "icon" : "glyphicon
+									 * glyphicon-leaf",
+									 */
+									"action" : function(data) {
+										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+										if (obj.type === "datastore") {
+											var upload = that.getUploadSHP();
+											var datastore = obj.text;
+											var workspace = inst.get_node(obj.parent).text;
+											var geoserver = inst.get_node(obj.parents[1]).text;
+											console.log(datastore);
+											console.log(workspace);
+											console.log(geoserver);
+											upload.setGeoServer(geoserver);
+											upload.setWorkspace(workspace);
+											upload.setDatastore(datastore);
+											upload.setCallback(function(){
+												inst.refresh();
+											});
+											upload.open();
+										}
 									}
-									return result;
-								},
-								"label" : that.translation.upload[that.locale],
-								/*
-								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
-								 * "icon" : "glyphicon glyphicon-leaf",
-								 */
-								"action" : function(data) {
-									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									if (obj.type === "datastore") {
-										var upload = that.getUploadSHP();
-										var datastore = obj.text;
-										var workspace = inst.get_node(obj.parent).text;
-										var geoserver = inst.get_node(obj.parents[1]).text;
-										console.log(datastore);
-										console.log(workspace);
-										console.log(geoserver);
-										upload.setGeoServer(geoserver);
-										upload.setWorkspace(workspace);
-										upload.setDatastore(datastore);
-										upload.setCallback(function(){
-											inst.refresh();
-										});
-										upload.open();
-									}
-								}
 							}
 							totalObj["upload"] = uploadObj;
 						}
@@ -1311,7 +1353,7 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	$(gURLInput).val("http://175.116.181.32:9999/geoserver");
 	$(gIDInput).val("admin");
 	$(gPassInput).val("geoserver");
-	
+
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text(that.translation["close"][that.locale]);
@@ -1650,6 +1692,25 @@ gb.tree.GeoServer.prototype.getDeleteGeoServerURL = function() {
 gb.tree.GeoServer.prototype.setDeleteGeoServerURL = function(url) {
 	this.deleteGeoServerURL = url;
 };
+
+/**
+ * 지오서버 정보 조회를 위한 URL을 반환한다.
+ * 
+ * @method gb.tree.GeoServer#getGeoServerInfoURL
+ */
+gb.tree.GeoServer.prototype.getGeoServerInfoURL = function() {
+	return this.geoserverInfoURL;
+};
+
+/**
+ * 지오서버 정보 조회를 위한 URL을 설정한다.
+ * 
+ * @method gb.tree.GeoServer#setGeoServerInfoURL
+ */
+gb.tree.GeoServer.prototype.setGeoServerInfoURL = function(url) {
+	this.geoserverInfoURL = url;
+};
+
 /**
  * 지오서버 레이어 삭제를 위한 URL을 반환한다.
  * 
@@ -1868,4 +1929,187 @@ gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, topNode, aft
 gb.tree.GeoServer.prototype.errorModal = function(code) {
 	var that = this;
 	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 182);
+};
+
+/**
+ * 레파지토리 정보 확인창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#removeLayerModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
+	var that = this;
+
+	var namekey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"vertical-align" : "middle"	,
+		"text-align" : "right",
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var nameval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row1 = $("<div>").css({
+		"display" : "table-row"
+	}).append(namekey).append(nameval);
+
+	var urlkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var urlval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row2 = $("<div>").css({
+		"display" : "table-row"
+	}).append(urlkey).append(urlval);
+
+	var lockey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var locval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row3 = $("<div>").css({
+		"display" : "table-row"
+	}).append(lockey).append(locval);
+
+	var storagekey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var storageval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row4 = $("<div>").css({
+		"display" : "table-row"
+	}).append(storagekey).append(storageval);
+
+	var userkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var userval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row5 = $("<div>").css({
+		"display" : "table-row"
+	}).append(userkey).append(userval);
+
+	var emailkey = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "20%",
+		"text-align" : "right",
+		"vertical-align" : "middle"	,
+		"padding" : "8px"
+	}).text(this.translation.name[this.locale]+": ");
+	var emailval = $("<div>").css({
+		"display" : "table-cell",
+		"width" : "80%",
+		"word-break":" break-word",
+		"vertical-align" : "middle"	
+	});
+	var row6 = $("<div>").css({
+		"display" : "table-row"
+	}).append(emailkey).append(emailval);
+	var tb = $("<div>").css({
+		"display" : "table"
+	}).append(row1).append(row2).append(row3).append(row4).append(row5).append(row6);
+	var body = $("<div>").append(tb);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+	var params = {
+			"serverName" : serverName,
+			"type" : "server",
+			"format" : "json",
+	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getGeoServerInfoURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				$(nameval).html(data.name);
+				$(urlval).html(data.url);
+				$(locval).html(data.location);
+				$(storageval).html(data.storage);
+				$(userval).html(data.user);
+				$(emailval).html(data.email);
+			} else {
+				that.errorModal(data.error);
+			}
+		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
+	});
+
+	var removeModal = new gb.modal.Base({
+		"title" : this.translation.name[this.locale],
+		"width" : 420,
+		"height" : 345,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		removeModal.close();
+	});
+
 };

@@ -310,6 +310,7 @@ html {
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
 				"getWFSFeature" : urlList.getWFSFeature + urlList.token,
 				"switchGeoGigBranch" : "geoserver/updateGeogigGsStore.do?${_csrf.parameterName}=${_csrf.token}",
+				"geoserverInfo" : "geoserver/getDTGeoserverInfo.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

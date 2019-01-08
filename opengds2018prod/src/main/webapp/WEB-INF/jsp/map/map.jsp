@@ -233,7 +233,8 @@ html {
 				"dataStoreList" : "geogig/getDataStoreList.do?${_csrf.parameterName}=${_csrf.token}",
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}"
+				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});
@@ -309,6 +310,7 @@ html {
 				"getLayerInfo" : urlList.getLayerInfo + urlList.token,
 				"getWFSFeature" : urlList.getWFSFeature + urlList.token,
 				"switchGeoGigBranch" : "geoserver/updateGeogigGsStore.do?${_csrf.parameterName}=${_csrf.token}",
+				"geoserverInfo" : "geoserver/getDTGeoserverInfo.ajax?${_csrf.parameterName}=${_csrf.token}"
 			}
 		});
 

@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
+import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.service.DTGeoserverServiceManager;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnGetFeatureInfoFormat;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnWFSOutputFormat;
@@ -381,15 +382,16 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 	}
 	
 	@Override
-	public void requestGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response) throws IOException{
+	public String requestGeoserverInfo(DTGeoserverManager dtGeoManager, HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String result = "";
 		if(dtGeoManager==null){
 			response.sendError(605);
 		}else{
 			DTGeoserverInfo dtGeoserverInfo = this.getDTGeoserverInfo(dtGeoManager, request);
-			DTGeoserverServiceManager geoserverService = new DTGeoserverServiceManagerImpl(request, response);
-			geoserverService.requestGeoserverInfo(dtGeoserverInfo);
+			DTGeoserverReader dtGeoserverReader = dtGeoManager.getReader();
+			result = dtGeoserverReader.getGeoserverInfo(dtGeoserverInfo);
 		}
-		
+		return result;
 	}
 	
 	
@@ -419,7 +421,7 @@ public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyServic
 				datastore = value;
 			} else if (key.toLowerCase().equals("layers")) {
 				layers = value;
-			} else if (key.toLowerCase().equals("fileFormat")) {
+			} else if (key.toLowerCase().equals("format")) {
 				fileFormat = value;
 			}
 		}

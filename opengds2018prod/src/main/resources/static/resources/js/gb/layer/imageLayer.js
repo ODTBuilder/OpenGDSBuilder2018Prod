@@ -14,6 +14,7 @@ if (!gb.layer)
 	 * @version 0.01
 	 */
 	gb.layer.ImageLayer = function(obj) {
+		var that = this;
 		var options = obj;
 		
 		/**
@@ -133,13 +134,42 @@ if (!gb.layer)
 		
 		this.vector.setMap(this.map);
 		
+		var toggleKey = false;
+		$(window).bind("keypress.imageDraw", function(e){
+			if(e.keyCode === 114 || e.which === 114){
+				toggleKey = !toggleKey;
+			}
+		});
+		
+		function geometryFunction(coordinates, geometry){
+			var geometry = geometry;
+			var coordinates = coordinates;
+			
+			if(toggleKey){
+				var center = coordinates[0];
+				var last = coordinates[1];
+				var dx = Math.abs(center[0] - last[0]);
+				var ratio = (that.imageHeight || 0) / (that.imageWidth || Infinity);
+				var y = center[1] - dx*ratio;
+				var newCoordinates = [[[center[0], center[1]], [last[0], center[1]], [last[0], y], [center[0], y], [center[0], center[1]]]];
+				
+				if(geometry){
+					geometry.setCoordinates(newCoordinates);
+				} else {
+					geometry = new ol.geom.Polygon(newCoordinates);
+				}
+			} else {
+				geometry = ol.interaction.Draw.createBox()(coordinates, geometry);
+			}
+			return geometry;
+		}
+		
 		ol.interaction.Draw.call(this, {
 			type: "Circle",
-			geometryFunction: ol.interaction.Draw.createBox(),
+			geometryFunction: geometryFunction,
 			source: source
 		});
 		
-		var that = this;
 		var startEvent = this.on("drawstart", function(evt){
 			that.vector.setMap(that.getMap());
 		});
@@ -179,7 +209,9 @@ if (!gb.layer)
 			
 			this.imageLayer.on("change", function(e){
 				console.log(e);
-			})
+			});
+			
+			$(window).unbind("keypress.imageDraw");
 		});
 		this.listener_.push(endEvent);
 		

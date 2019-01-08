@@ -50,7 +50,7 @@ gb.style.BaseMap = function(obj) {
 	this.locale = options.locale ? options.locale : "en";
 
 	obj.width = 788;
-	obj.height = 331;
+	obj.height = "auto";
 	obj.autoOpen = false;
 	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
@@ -62,6 +62,80 @@ gb.style.BaseMap = function(obj) {
 	this.now = undefined;
 
 	this.bases = {
+		worldLight : {
+			name : "World Light",
+			thumb : "gb-base-thumbnail-wlight",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.TileJSON({
+					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+					crossOrigin: 'anonymous'
+				})
+			})
+		},
+		worldBright : {
+			name : "World Bright",
+			thumb : "gb-base-thumbnail-wbright",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.TileJSON({
+					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
+					crossOrigin: 'anonymous'
+				})
+			})
+		},
+		worldBlack : {
+			name : "World Black",
+			thumb : "gb-base-thumbnail-wblack",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.TileJSON({
+					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+					crossOrigin: 'anonymous'
+				})
+			})
+		},
+		geography : {
+			name : "Geography",
+			thumb : "gb-base-thumbnail-geography",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.TileJSON({
+					url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+					crossOrigin: 'anonymous'
+				})
+			})
+		},
+		toner : {
+			name : "Toner",
+			thumb : "gb-base-thumbnail-toner",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.Stamen({
+					layer: "toner"
+				})
+			})
+		},
+		water : {
+			name : "Water Color",
+			thumb : "gb-base-thumbnail-water",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.Stamen({
+					layer: "watercolor"
+				})
+			})
+		},
+		terrain : {
+			name : "Terrian",
+			thumb : "gb-base-thumbnail-terrian",
+			layer : new ol.layer.Tile({
+				visible : false,
+				source: new ol.source.Stamen({
+					layer: "terrain"
+				})
+			})
+		},
 		osm : {
 			name : "OpenStreetMap",
 			thumb : "gb-base-thumbnail-osm",

@@ -384,7 +384,7 @@ gb.header.EditingTool = function(obj) {
 		}
 	});
 
-	this.treeElement.on("delete_node.jstreeol3", function(e, data){
+	this.treeElement.on("delete_node_layer.jstreeol3", function(e, data){
 		var id = data.node.id;
 		var source = that.getVectorSourceOfServer(id);
 		if(!!source){
@@ -393,6 +393,7 @@ gb.header.EditingTool = function(obj) {
 			delete that.vectorSourcesOfServer_[id];
 		}
 		if(that.customVector_[id]){
+			that.customVector_[id].get("git").tempLayer.setVisible(false);
 			delete that.customVector_[id];
 		}
 		that.refreshTileLayer();
@@ -1631,7 +1632,7 @@ gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 	var tree = this.otree.getJSTree();
 	var layer = tree.get_LayerById(treeId);
 	
-	if(layer instanceof ol.layer.Group){
+	if(layer instanceof ol.layer.Group || layer instanceof ol.layer.Image){
 		return this.selectedSource || source;
 	}
 	

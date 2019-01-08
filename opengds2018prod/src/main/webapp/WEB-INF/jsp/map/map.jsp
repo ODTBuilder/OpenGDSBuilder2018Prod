@@ -393,7 +393,8 @@ html {
 
 		// hole draw interaction
 		var hole = new gb.interaction.HoleDraw({
-			selected : epan.selected
+			editTool : epan,
+			featureRecord : frecord
 		});
 
 		hole.on("change:active", function(evt) {

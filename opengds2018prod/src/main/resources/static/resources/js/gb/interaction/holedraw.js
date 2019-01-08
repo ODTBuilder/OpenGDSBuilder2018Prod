@@ -18,9 +18,13 @@ if (!gb.interaction)
 		var that = this;
 		var options = opt_options ? opt_options : {};
 		
-		this.coordinates = undefined;
+		this.featureRecord = options.featureRecord || undefined;
 		
-		this.selected = options.selected;
+		this.editTool = options.editTool || undefined;
+		//this.coordinates = undefined;
+		
+		this.selected = this.editTool ? this.editTool.selected : undefined;
+		
 		/**
 		 * 임시 vector source
 		 * @type {ol.source.Vector}
@@ -158,6 +162,8 @@ if (!gb.interaction)
 		this.on("drawend", function(e){
 			/*var a = that.selected.getArray()[0].getGeometry();
 			a.setCoordinates(that.coordinates);*/
+			var updateFeature = that.selected.getArray()[0];
+			that.featureRecord.update(that.editTool.selectedSource.get("git").tempLayer, updateFeature);
 		});
 	};
 	ol.inherits(gb.interaction.HoleDraw, ol.interaction.Draw);

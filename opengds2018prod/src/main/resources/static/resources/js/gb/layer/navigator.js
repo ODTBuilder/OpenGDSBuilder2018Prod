@@ -57,10 +57,11 @@ gb.layer.Navigator = function(obj) {
 
 gb.layer.Navigator.prototype.setFeatures = function(Layer){
 	var layer = Layer;
+	this.count = 0;
 	
 	if(layer instanceof ol.layer.Tile){
 		var git = layer.get("git");
-		this.requestFeatureList(git.geoserver, git.workspace, layer.get("name"));
+		this.requestFeatureList(git.geoserver, git.workspace, layer.get("name"), true);
 	} else if(layer instanceof ol.layer.Vector){
 		this.featureList = layer.getSource().getFeatures();
 		this.updateNavigator();
@@ -69,11 +70,11 @@ gb.layer.Navigator.prototype.setFeatures = function(Layer){
 		return;
 	}
 	
-	this.count = 0;
+	
 	this.selectedLayer = layer;
 }
 
-gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace, layer){
+gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace, layer, mode){
 	var that = this;
 	var a = {
 		serverName: serverName,
@@ -92,6 +93,11 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		data: a,
 		dataType: "JSON",
 		success: function(data, textStatus, jqXHR) {
+			if(mode){
+				that.count++;
+			} else {
+				that.count--;
+			}
 			that.featureList = new ol.format.GeoJSON().readFeatures(JSON.stringify(data));
 			that.showFeatureInfo(that.featureList[0]);
 			that.open();
@@ -215,9 +221,8 @@ gb.layer.Navigator.prototype.prev = function(){
 	}
 	
 	if(this.selectedLayer instanceof ol.layer.Tile){
-		this.count--;
 		var git = this.selectedLayer.get("git");
-		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"));
+		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"), false);
 	} else if(this.selectedLayer instanceof ol.layer.Vector){
 		if (this.count > 0 && this.count <= features.length) {
 			this.count--;
@@ -238,9 +243,8 @@ gb.layer.Navigator.prototype.next = function(){
 	var features = this.featureList;
 	
 	if(this.selectedLayer instanceof ol.layer.Tile){
-		this.count++;
 		var git = this.selectedLayer.get("git");
-		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"));
+		this.requestFeatureList(git.geoserver, git.workspace, this.selectedLayer.get("name"), true);
 	} else if(this.selectedLayer instanceof ol.layer.Vector){
 		if (this.count >= 0 && this.count < features.length) {
 			this.count++;

@@ -516,7 +516,7 @@
 				 * 
 				 * @name $.jstreeol3.defaults.core.dblclick_toggle
 				 */
-				dblclick_toggle : true
+				dblclick_toggle : false
 			};
 			$.jstreeol3.core.prototype = {
 				/**

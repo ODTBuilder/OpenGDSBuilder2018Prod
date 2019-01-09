@@ -26,8 +26,31 @@ gb.geoserver.UploadSHP = function(obj) {
 	this.callback;
 	this.validEPSG = false;
 	this.epsg = undefined;
+	this.locale = options.locale ? options.locale : "en";
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
 
+	this.translation = {
+		"uploadshp" : {
+			"ko" : "SHP 레이어 업로드",
+			"en" : "Upload SHP Layer"
+		},
+		"inzip" : {
+			"ko" : "업로드할 SHP 파일은 ZIP 형태로 압축해주세요. ",
+			"en" : "Please input SHP file compressed in ZIP format."
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"add" : {
+			"ko" : "추가",
+			"en" : "Add"
+		},
+		"browse" : {
+			"ko" : "찾아보기",
+			"en" : "Browse"
+		}
+	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
 		"placeholder" : "EX) 3857"
@@ -135,72 +158,69 @@ gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
  */
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
 	var that = this;
-	
+
 	// EPSG 입력 창 생성
-/*	var message1 = $("<div>").text("1. Select your coordinate system(EPSG).");
-	var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
+	/*
+	 * var message1 = $("<div>").text("1. Select your coordinate
+	 * system(EPSG)."); var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
+	 * 
+	 * this.setValidEPSG(false);
+	 * 
+	 * var inputDiv = $("<div>").css({ "margin" : "10px"
+	 * }).append(label).append(this.epsgInput).append(this.validIconSpan);
+	 */
 
-	this.setValidEPSG(false);
-
-	var inputDiv = $("<div>").css({
-		"margin" : "10px"
-	}).append(label).append(this.epsgInput).append(this.validIconSpan);*/
-	
 	var icon = $("<div>").addClass("fas fa-info-circle fa-2x");
 	var messageContent = $("<p>").css({
-		"margin": "0 10px"
-	}).html("Please input SHP file compressed in ZIP format");
+		"margin" : "0 10px"
+	}).html(this.translation.inzip[this.locale]);
 	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
-	
+
 	var file;
-	var fileSelect = 
-		$("<input accept='.zip'>")
-		.attr({
-			"type" : "file"
-		})
-		.change(function() {
-			if (!!this.files) {
-				file = this.files[0];
-				if (file.size > 0) {
-					fileInfo.text(file.name + ' , ' + file.size + ' kb');
-				}
+	var fileSelect = $("<input accept='.zip'>").attr({
+		"type" : "file"
+	}).change(function() {
+		if (!!this.files) {
+			file = this.files[0];
+			if (file.size > 0) {
+				fileInfo.text(file.name + ' , ' + file.size + ' kb');
 			}
-		});
-	
-	var fileArea = $("<button type='button'>").addClass(
-	"btn btn-primary btn-lg btn-block").text("Upload SHP file")
-	.mouseenter(function() {
-		$(this).css({
-			"background-color" : "#00c4bc"
-		});
-	}).mouseleave(function() {
-		$(this).css({
-			"background-color" : "#00b5ad"
-		});
-	}).click(function() {
-		fileSelect.click();
-	}).css({
-		"background-color" : "#00b5ad",
-		"border-color" : "transparent",
+		}
 	});
-	
+
+	var fileArea = $("<button type='button'>").addClass("btn btn-primary btn-lg btn-block").text(this.translation.browse[this.locale])
+			.mouseenter(function() {
+				$(this).css({
+					"background-color" : "#00c4bc"
+				});
+			}).mouseleave(function() {
+				$(this).css({
+					"background-color" : "#00b5ad"
+				});
+			}).click(function() {
+				fileSelect.click();
+			}).css({
+				"background-color" : "#00b5ad",
+				"border-color" : "transparent",
+			});
+
 	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
 		"text-align" : "center"
 	});
-	
+
 	var bodyArea = $("<div>").append(message2).append(fileArea).append(fileInfo);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 	var uploadModal = new gb.modal.Base({
-		"title" : "Upload SHP File",
+		"title" : this.translation.uploadshp[this.locale],
 		"width" : 355,
 		"height" : 286,
 		"autoOpen" : true,
@@ -308,24 +328,24 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
 gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 	var that = this;
 	var modal = modal;
-	
+
 	var params = {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
 	};
-	
+
 	var url = this.getUploadURL();
 	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
 	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
 	var queryParams = {};
-	
-	/*if (queryString) {
-		queryParams = JSON.parse('{"' + queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function(key, value) {
-			return key === "" ? value : decodeURIComponent(value);
-		});
-	}
-	console.log(queryParams);*/
+
+	/*
+	 * if (queryString) { queryParams = JSON.parse('{"' +
+	 * queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+	 * function(key, value) { return key === "" ? value :
+	 * decodeURIComponent(value); }); } console.log(queryParams);
+	 */
 	var finalParams = {};
 	$.extend(finalParams, params, {});
 
@@ -338,7 +358,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 	}
 
 	$.ajax({
-		//url : withoutParamURL,
+		// url : withoutParamURL,
 		url : this.url,
 		method : "POST",
 		enctype : 'multipart/form-data',
@@ -347,24 +367,20 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
-			modal.modal.append(
-				$("<div id='shp-upload-loading'>").css({
-					"z-index": "10",
-					"position": "absolute",
-					"left": "0",
-					"top": "0",
-					"width": "100%",
-					"height": "100%",
-					"text-align": "center",
-					"background-color": "rgba(0, 0, 0, 0.4)"
-				}).append(
-					$("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-						"position": "relative",
-						"top": "50%",
-						"margin-top": "-5em"
-					})
-				)
-			);
+			modal.modal.append($("<div id='shp-upload-loading'>").css({
+				"z-index" : "10",
+				"position" : "absolute",
+				"left" : "0",
+				"top" : "0",
+				"width" : "100%",
+				"height" : "100%",
+				"text-align" : "center",
+				"background-color" : "rgba(0, 0, 0, 0.4)"
+			}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+				"position" : "relative",
+				"top" : "50%",
+				"margin-top" : "-5em"
+			})));
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");

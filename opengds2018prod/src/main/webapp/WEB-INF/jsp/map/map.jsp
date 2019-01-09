@@ -288,7 +288,8 @@ html {
 		});
 
 		var uploadSHP = new gb.geoserver.UploadSHP({
-			"url" : urlList.geoserverFileUpload + urlList.token
+			"url" : urlList.geoserverFileUpload + urlList.token,
+			"locale" : locale !== "" ? locale : "en"
 		});
 
 		var gtree = new gb.tree.GeoServer({

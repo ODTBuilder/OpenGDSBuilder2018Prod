@@ -1463,13 +1463,13 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var modalFooter = $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.Base({
 		"title" : this.translation.removegeo[this.locale],
 		"width" : 340,
 		"height" : 200,
 		"autoOpen" : false,
-		"body" : body
+		"body" : body,
+		"footer": buttonArea
 	});
 	$(closeBtn).click(function() {
 		deleteModal.close();
@@ -1477,7 +1477,6 @@ gb.tree.GeoServer.prototype.openDeleteGeoServer = function(geoserver) {
 	$(okBtn).click(function() {
 		that.deleteGeoServer(geoserver, deleteModal);
 	});
-	$(deleteModal.getModal()).append(modalFooter);
 	deleteModal.open();
 };
 

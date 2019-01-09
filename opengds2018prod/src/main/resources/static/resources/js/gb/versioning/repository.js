@@ -5339,8 +5339,8 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		
 	var removeModal = new gb.modal.Base({
 		"title" : this.translation.repoinfo[this.locale],
-		"width" : 420,
-		"height" : 345,
+		"width" : 526,
+		"height" : 366,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea

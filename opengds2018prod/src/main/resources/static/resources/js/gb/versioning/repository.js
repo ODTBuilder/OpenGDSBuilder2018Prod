@@ -5188,13 +5188,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"vertical-align" : "middle"	,
 		"text-align" : "right",
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.name[this.locale]);
 	var nameval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row1 = $("<div>").css({
 		"display" : "table-row"
@@ -5205,13 +5210,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.url[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.url[this.locale]);
 	var urlval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row2 = $("<div>").css({
 		"display" : "table-row"
@@ -5222,13 +5232,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.location[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.location[this.locale]);
 	var locval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row3 = $("<div>").css({
 		"display" : "table-row"
@@ -5239,13 +5254,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.storage[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.storage[this.locale]);
 	var storageval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row4 = $("<div>").css({
 		"display" : "table-row"
@@ -5256,13 +5276,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.user[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.user[this.locale]);
 	var userval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row5 = $("<div>").css({
 		"display" : "table-row"
@@ -5273,13 +5298,18 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		"width" : "20%",
 		"text-align" : "right",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.email[this.locale]+": ");
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.email[this.locale]);
 	var emailval = $("<div>").css({
 		"display" : "table-cell",
 		"width" : "80%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row6 = $("<div>").css({
 		"display" : "table-row"

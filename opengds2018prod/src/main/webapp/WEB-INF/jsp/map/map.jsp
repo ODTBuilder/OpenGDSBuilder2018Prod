@@ -399,7 +399,8 @@ html {
 		});
 
 		var uploadSHP = new gb.geoserver.UploadSHP({
-			"url" : urlList.geoserverFileUpload + urlList.token
+			"url" : urlList.geoserverFileUpload + urlList.token,
+			"locale" : locale !== "" ? locale : "en"
 		});
 
 		var gtree = new gb.tree.GeoServer({
@@ -408,8 +409,9 @@ html {
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
 			"properties" : new gb.edit.ModifyLayerProperties({
-				token : urlList.token,
-				featureRecord : frecord
+				"token" : urlList.token,
+				"featureRecord" : frecord,
+				"locale" : locale !== "" ? locale : "en"
 			}),
 			"uploadSHP" : uploadSHP,
 			"url" : {

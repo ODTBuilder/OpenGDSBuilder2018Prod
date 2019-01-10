@@ -266,9 +266,17 @@ gb.tree.GeoServer = function(obj) {
 			"info" : {
 				"ko" : "정보",
 				"en" : "Information"
+			},
+			"serverinfo" : {
+				"ko" : "GeoServer 정보",
+				"en" : "GeoServer Information"
+			},
+			"version" : {
+				"ko" : "버전",
+				"en" : "Version"
 			}
 	};
-	this.panelTitle = $("<p>").text(this.translation.geoserver[this.locale]).css({
+	this.panelTitle = $("<p>").text("GeoServer").css({
 		"margin" : "0",
 		"float" : "left"
 	});
@@ -1944,110 +1952,120 @@ gb.tree.GeoServer.prototype.errorModal = function(code) {
 gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	var that = this;
 
-	var namekey = $("<div>").css({
+	var geoserverkey = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "20%",
+		"width" : "30%",
 		"vertical-align" : "middle"	,
 		"text-align" : "right",
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var nameval = $("<div>").css({
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text("GeoServer "+this.translation.version[this.locale]);
+	var geoserverval = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "80%",
+		"width" : "70%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row1 = $("<div>").css({
 		"display" : "table-row"
-	}).append(namekey).append(nameval);
+	}).append(geoserverkey).append(geoserverval);
 
-	var urlkey = $("<div>").css({
+	var geotoolskey = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "20%",
-		"text-align" : "right",
+		"width" : "30%",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var urlval = $("<div>").css({
+		"text-align" : "right",
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text("GeoTools "+this.translation.version[this.locale]);
+	var geotoolsval = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "80%",
+		"width" : "70%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row2 = $("<div>").css({
 		"display" : "table-row"
-	}).append(urlkey).append(urlval);
+	}).append(geotoolskey).append(geotoolsval);
 
-	var lockey = $("<div>").css({
+	var cachekey = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "20%",
-		"text-align" : "right",
+		"width" : "30%",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var locval = $("<div>").css({
+		"text-align" : "right",
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text("GeoWebCache "+this.translation.version[this.locale]);
+	var cacheval = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "80%",
+		"width" : "70%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row3 = $("<div>").css({
 		"display" : "table-row"
-	}).append(lockey).append(locval);
+	}).append(cachekey).append(cacheval);
 
-	var storagekey = $("<div>").css({
+	var idkey = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "20%",
-		"text-align" : "right",
+		"width" : "30%",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var storageval = $("<div>").css({
+		"text-align" : "right",
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text(this.translation.id[this.locale]);
+	var idval = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "80%",
+		"width" : "70%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row4 = $("<div>").css({
 		"display" : "table-row"
-	}).append(storagekey).append(storageval);
+	}).append(idkey).append(idval);
 
-	var userkey = $("<div>").css({
+	var urlkey = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "20%",
-		"text-align" : "right",
+		"width" : "30%",
 		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var userval = $("<div>").css({
+		"text-align" : "right",
+		"padding": "0.785714em", 
+		"background": "rgba(0, 0, 0, 0.03)", 
+		"font-weight": "700",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	}).text("URL");
+	var urlval = $("<div>").css({
 		"display" : "table-cell",
-		"width" : "80%",
+		"width" : "70%",
 		"word-break":" break-word",
-		"vertical-align" : "middle"	
+		"vertical-align" : "middle"	,
+		"padding": "0.785714em",
+		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
 	});
 	var row5 = $("<div>").css({
 		"display" : "table-row"
-	}).append(userkey).append(userval);
+	}).append(urlkey).append(urlval);
 
-	var emailkey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "20%",
-		"text-align" : "right",
-		"vertical-align" : "middle"	,
-		"padding" : "8px"
-	}).text(this.translation.name[this.locale]+": ");
-	var emailval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "80%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	
-	});
-	var row6 = $("<div>").css({
-		"display" : "table-row"
-	}).append(emailkey).append(emailval);
 	var tb = $("<div>").css({
-		"display" : "table"
-	}).append(row1).append(row2).append(row3).append(row4).append(row5).append(row6);
+		"display" : "table",
+		"width" : "100%"
+	}).append(row1).append(row2).append(row3).append(row4).append(row5);
 	var body = $("<div>").append(tb);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -2084,15 +2102,15 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 		},
 		success : function(data) {
 			console.log(data);
-			if (data.success === "true") {
-				$(nameval).html(data.name);
-				$(urlval).html(data.url);
-				$(locval).html(data.location);
-				$(storageval).html(data.storage);
-				$(userval).html(data.user);
-				$(emailval).html(data.email);
-			} else {
-				that.errorModal(data.error);
+			if (data !== undefined) {
+				data = JSON.parse(data);
+				var resource = data.about.resource;
+				var info = data.info;
+				$(geoserverval).html(resource[0]["Version"]);
+				$(geotoolsval).html(resource[1]["Version"]);
+				$(cacheval).html(resource[2]["Version"]);
+				$(idval).html(info.id);
+				$(urlval).html(info.url);
 			}
 		}
 	}).fail(function(xhr, status, errorThrown) {
@@ -2100,9 +2118,8 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	});
 
 	var removeModal = new gb.modal.Base({
-		"title" : this.translation.name[this.locale],
-		"width" : 420,
-		"height" : 345,
+		"title" : this.translation.serverinfo[this.locale],
+		"width" : 574,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea

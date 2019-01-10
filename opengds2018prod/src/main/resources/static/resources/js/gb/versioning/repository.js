@@ -2868,14 +2868,12 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 				$(this).find("i").removeClass("fa-caret-down");
 				$(this).find("i").addClass("fa-caret-up");
 			}
-			createRepoModal.setHeight(514);	
 			$(remoteInputArea).css("display", "block");
 		} else if ($(remoteInputArea).css("display") === "block") {
 			if ($(this).find("i").hasClass("fa-caret-up")) {
 				$(this).find("i").removeClass("fa-caret-up");
 				$(this).find("i").addClass("fa-caret-down");
 			}
-			createRepoModal.setHeight(425);				
 			$(remoteInputArea).css("display", "none");
 		}
 	});

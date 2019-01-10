@@ -439,6 +439,7 @@ html {
 		});
 
 		var fhist = new gb.versioning.Feature({
+			"locale" : locale !== "" ? locale : "en",
 			"url" : {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",

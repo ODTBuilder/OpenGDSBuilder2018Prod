@@ -25,7 +25,137 @@ gb.versioning.Feature = function(obj) {
 	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
 	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
-
+	this.locale = options.locale ? options.locale : "en";
+	this.translation = {
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"refresh" : {
+			"ko" : "새로고침",
+			"en" : "Refresh"
+		},
+		"author" : {
+			"ko" : "작성자",
+			"en" : "Author"
+		},
+		"time" : {
+			"ko" : "시간",
+			"en" : "Time"
+		},
+		"type" : {
+			"ko" : "변경종류",
+			"en" : "Type"
+		},
+		"changes" : {
+			"ko" : "변경사항",
+			"en" : "Changes"
+		},
+		"revert" : {
+			"ko" : "되돌리기",
+			"en" : "Revert"
+		},
+		"readmore" : {
+			"ko" : "더 보기",
+			"en" : "Read More"
+		},
+		"detail" : {
+			"ko" : "자세히",
+			"en" : "Detail"
+		},
+		"cmft" : {
+			"ko" : "커밋된 객체",
+			"en" : "Commited Feature"
+		},
+		"name" : {
+			"ko" : "이름",
+			"en" : "Name"
+		},
+		"value" : {
+			"ko" : "값",
+			"en" : "Value"
+		},
+		"latestft" : {
+			"ko" : "최신 객체",
+			"en" : "Latest Feature"
+		},
+		"use" : {
+			"ko" : "사용",
+			"en" : "Use"
+		},
+		"contrastchg" : {
+			"ko" : "변경사항 비교",
+			"en" : "Contrast The Changes"
+		},
+		"revertmsg1" : {
+			"ko" : "해당 커밋 시점으로 객체를 되돌립니다.",
+			"en" : "Revert the feature to the point in time when it was committed."
+		},
+		"revertmsg2" : {
+			"ko" : "진행하시겠습니까?",
+			"en" : 'Do you want to proceed?'
+		},
+		"revertsucc" : {
+			"ko" : "객체가 성공적으로 되돌려졌습니다.",
+			"en" : "Feature reverted successfully."
+		},
+		"revertfail" : {
+			"ko" : "되돌리기 실패했습니다.",
+			"en" : "Revert failed."
+		},
+		"conflictmsg1" : {
+			"ko" : "충돌 객체가 있습니다. 해결하시겠습니까?",
+			"en" : 'There are conflicting features. Do you want to resolve?'
+		},
+		"resolve" : {
+			"ko" : "해결하기",
+			"en" : 'Resolve'
+		},
+		"revertingft" : {
+			"ko" : "객체 되돌리기",
+			"en" : "Reverting Feature"
+		},
+		"conflft" : {
+			"ko" : "충돌 객체",
+			"en" : "Conflicted Feature"
+		},
+		"override" : {
+			"ko" : "덮어쓰기",
+			"en" : "Overwrite"
+		},
+		"compaconfl" : {
+			"ko" : "충돌객체 비교",
+			"en" : "Compare Conflicts"
+		},
+		"retreveftfail" : {
+			"ko" : "되돌리기에 실패했습니다.",
+			"en" : "Retrieve feature failed."
+		},
+		"deleted" : {
+			"ko" : "삭제됨",
+			"en" : "Deleted"
+		},
+		"ok" : {
+			"ko" : "확인",
+			"en" : "OK"
+		},
+		"cancel" : {
+			"ko" : "취소",
+			"en" : "Cancel"
+		},
+		"message" : {
+			"ko" : "알림",
+			"en" : "Message"
+		},
+		"nocommit" : {
+			"ko" : "불러올 이력이 없습니다.",
+			"en" : "No commits to load"
+		},
+		"run" : {
+			"ko" : "수행",
+			"en" : "Run"
+		}
+	};
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -68,7 +198,7 @@ gb.versioning.Feature = function(obj) {
 
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
 	this.panel = new gb.panel.Base({
-		"width" : 458,
+		"width" : 500,
 		"height" : 550,
 		"positionX" : 4,
 		"right" : true,
@@ -77,18 +207,19 @@ gb.versioning.Feature = function(obj) {
 	});
 
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
-	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" Refresh").click(function() {
-		that.refresh();
-	});
+	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" " + that.translation.refresh[that.locale]).click(
+			function() {
+				that.refresh();
+			});
 	var refBtnarea = $("<div>").css({
 		"text-align" : "center"
 	}).append(refBtn);
 
-	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Author");
-	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Time");
-	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Type");
-	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Changes");
-	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text("Revert");
+	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.author[that.locale]);
+	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.time[that.locale]);
+	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.type[that.locale]);
+	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.changes[that.locale]);
+	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.revert[that.locale]);
 	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4).append(th5);
 	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
 		"text-align" : "center"
@@ -101,15 +232,16 @@ gb.versioning.Feature = function(obj) {
 	}).append(thead).append(this.tbody);
 
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
-	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" Read more").click(function() {
-		var geoserver = that.getServer();
-		var repo = that.getRepo();
-		var path = that.getPath();
-		var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
-		var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
-		var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-		that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
-	});
+	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" " + that.translation.readmore[that.locale]).click(
+			function() {
+				var geoserver = that.getServer();
+				var repo = that.getRepo();
+				var path = that.getPath();
+				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
+				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
+				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
+			});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
 	}).append(btn);
@@ -207,8 +339,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
 						if (data.simpleCommits[i].commitId === early) {
 							if (data.simpleCommits.length === 1) {
-								var title = "Message";
-								var msg = "No commits to load";
+								var title = that.translation.message[that.locale];
+								var msg = that.translation.nocommit[that.locale];
 								that.messageModal(title, msg);
 							}
 							continue;
@@ -220,7 +352,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
 					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
 					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-detail-btn").text("Detail").attr({
+							"gb-versioning-feature-detail-btn").text(that.translation.detail[that.locale]).attr({
 						"title" : data.simpleCommits[i].message,
 						"value" : data.simpleCommits[i].commitId,
 						"idx" : data.simpleCommits[i].cIdx
@@ -242,7 +374,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					}).append(button);
 
 					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-revert-btn").text("Run").click(function() {
+							"gb-versioning-feature-revert-btn").text(that.translation.run[that.locale]).click(function() {
 						var geoserver = that.getServer();
 						var repo = that.getRepo();
 						var path = that.getPath();
@@ -290,12 +422,12 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
 	var that = this;
 
-	var olabel = $("<div>").append("Commited Feature").addClass("gb-form").css({
+	var olabel = $("<div>").append(that.translation.cmft[that.locale]).addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
-	var oheadtd1 = $("<th>").text("Name");
-	var oheadtd2 = $("<th>").text("Value");
+	var oheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var oheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
 	var oattrthead = $("<thead>").append(oheadth);
 	this.oattrtbody = $("<tbody>").css({
@@ -305,9 +437,9 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	});
 	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
 	var oattribute = $("<div>").append(oattrtable).css({
-		"height" : "370px",
+		"height" : "240px",
 		"width" : "100%",
-		"overflow" : "hidden"
+		"overflow" : "auto"
 	});
 	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).css({
 		"float" : "left",
@@ -315,12 +447,12 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"padding" : "10px"
 	});
 
-	var clabel = $("<div>").append("Latest Feature").addClass("gb-form").css({
+	var clabel = $("<div>").append(that.translation.latestft[that.locale]).addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
-	var cheadtd1 = $("<th>").text("Name");
-	var cheadtd2 = $("<th>").text("Value");
+	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
 	this.cattrtbody = $("<tbody>").css({
@@ -333,9 +465,9 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"table-layout" : "fixed"
 	});
 	var cattribute = $("<div>").append(cattrtable).css({
-		"height" : "370px",
+		"height" : "240px",
 		"width" : "100%",
-		"overflow" : "hidden"
+		"overflow" : "auto"
 	});
 
 	$(this.oattrtbody).on("scroll", function() {
@@ -348,20 +480,22 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"padding" : "10px"
 	});
 
-	var ocarea = $("<div>").append(oarea).append(carea);
+	var ocarea = $("<div>").css({
+		"height" : "496px"
+	}).append(oarea).append(carea);
 
 	var body = $("<div>").append(ocarea);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Use");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Contrast The Changes",
+		"title" : that.translation.contrastchg[that.locale],
 		"width" : 770,
 		"height" : 840,
 		"autoOpen" : true,
@@ -847,11 +981,11 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
  */
 gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc) {
 	var that = this;
-	var msg1 = $("<div>").text("Revert the feature to the point in time when it was committed.").css({
+	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
-	var msg2 = $("<div>").text('Do you want to proceed?').css({
+	var msg2 = $("<div>").text(that.translation.revertmsg2[that.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
@@ -863,14 +997,14 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 	var body = $("<div>").append(msg1).append(msg2).append(msg3);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Revert");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var commitModal = new gb.modal.Base({
-		"title" : "Revert",
+		"title" : that.translation.revert[that.locale],
 		"width" : 494,
 		"height" : 200,
 		"autoOpen" : true,
@@ -928,18 +1062,18 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 			console.log(data);
 			if (data.success === "true") {
 				if (data.merge.conflicts === null) {
-					var msg1 = $("<div>").text("Feature reverted successfully.").css({
+					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("OK");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Revert",
+						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
 						"autoOpen" : true,
@@ -952,25 +1086,25 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 					});
 					rmodal.close();
 				} else if (Array.isArray(data.merge.conflicts)) {
-					var msg1 = $("<div>").text("Revert failed.").css({
+					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
-					var msg2 = $("<div>").text('There are conflicting features. Do you want to resolve?').css({
+					var msg2 = $("<div>").text(that.translation.conflictmsg1[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1).append(msg2);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Revert",
+						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
 						"autoOpen" : true,
@@ -1002,12 +1136,12 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	var that = this;
 
-	var crepo = $("<div>").append("Reverting Feature").addClass("gb-form").css({
+	var crepo = $("<div>").append(that.translation.revertingft[that.locale]).addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
-	var cheadtd1 = $("<th>").text("Name");
-	var cheadtd2 = $("<th>").text("Value");
+	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
 	var cattrtbody = $("<tbody>").css({
@@ -1017,9 +1151,9 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	});
 	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
 	var cattribute = $("<div>").append(cattrtable).css({
-		"height" : "370px",
+		"height" : "240px",
 		"width" : "100%",
-		"overflow" : "hidden"
+		"overflow" : "auto"
 	});
 	var carea = $("<div>").append(crepo).append(this.comfeature).append(cattribute).css({
 		"float" : "left",
@@ -1036,7 +1170,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	// "layers" : []
 	// });
 
-	var trepo = $("<div>").append("Conflicted Feature").addClass("gb-form").css({
+	var trepo = $("<div>").append(that.translation.conflft[that.locale]).addClass("gb-form").css({
 		"text-align" : "center"
 	});
 
@@ -1045,8 +1179,8 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	// "height" : "200px",
 	// "background-color" : "#dbdbdb"
 	// });
-	var theadtd1 = $("<th>").text("Name");
-	var theadtd2 = $("<th>").text("Value");
+	var theadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var theadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
 	var tattrtbody = $("<tbody>").css({
@@ -1059,9 +1193,9 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 		"table-layout" : "fixed"
 	});
 	var tattribute = $("<div>").append(tattrtable).css({
-		"height" : "370px",
+		"height" : "240px",
 		"width" : "100%",
-		"overflow" : "hidden"
+		"overflow" : "auto"
 	});
 
 	$(cattrtbody).on("scroll", function() {
@@ -1086,10 +1220,10 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var cubOpt = $("<option>").text("Reverting Feature").attr({
+	var cubOpt = $("<option>").text(that.translation.revertingft[that.locale]).attr({
 		"value" : "ours"
 	});
-	var tabOpt = $("<option>").text("Conflicted Feature").attr({
+	var tabOpt = $("<option>").text(that.translation.conflft[that.locale]).attr({
 		"value" : "theirs"
 	});
 	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
@@ -1102,16 +1236,15 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Override");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.override[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "Compare Conflicts",
+		"title" : that.translation.compaconfl[that.locale],
 		"width" : 770,
-		"height" : 840,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -1396,8 +1529,8 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 										}
 									}
 								} else {
-									var title = "Error";
-									var msg = "Retrieve feature failed."
+									var title = that.translation.err[that.locale];
+									var msg = that.translation.retreveftfail[that.locale];
 									that.messageModal(title, msg);
 								}
 							},
@@ -1407,14 +1540,14 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 						});
 					} else {
 						that.getTargetMap().updateSize();
-						var td1 = $("<td>").text("Deleted");
-						var td2 = $("<td>").text("Deleted");
+						var td1 = $("<td>").text(that.translation.deleted[that.locale]);
+						var td2 = $("<td>").text(that.translation.deleted[that.locale]);
 						var tr = $("<tr>").append(td1).append(td2);
 						$(tattrtbody).append(tr);
 					}
 				} else {
-					var title = "Error";
-					var msg = "Retrieve feature failed."
+					var title = that.translation.err[that.locale];
+					var msg = that.translation.retreveftfail[that.locale];
 					that.messageModal(title, msg);
 				}
 			},
@@ -1675,13 +1808,12 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 	var that = this;
 	var msg1 = $("<div>").text(msg).css({
 		"text-align" : "center",
-		"font-size" : "16px",
-		"padding-top" : "26px"
+		"font-size" : "16px"
 	});
 	var body = $("<div>").append(msg1);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
 	var modal = new gb.modal.Base({

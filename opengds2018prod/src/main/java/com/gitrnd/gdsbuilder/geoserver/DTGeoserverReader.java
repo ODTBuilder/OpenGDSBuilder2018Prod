@@ -254,12 +254,29 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	public String getGeoserverInfo(DTGeoserverInfo dtGeoserverInfo) {
-		String url = dtGeoserverInfo.getServerURL();
+		String url = dtGeoserverInfo.getDTGeoserverInfoURL();
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("### Retrieving featuretypes from " + url);
 		}
-		return loadFullURL(url);
+		String result = loadFullURL(url);
+		JSONParser parser = new JSONParser();
+		Object obj;
+		try {
+			obj = parser.parse( result );
+			JSONObject jsonObj = (JSONObject) obj;
+			
+			JSONObject serverInfoDetail = new JSONObject();
+			serverInfoDetail.put("url", this.baseurl);
+			serverInfoDetail.put("id", this.username);
+			jsonObj.put("info", serverInfoDetail);
+			result = jsonObj.toJSONString();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			result = "Geoserver Info Error";
+		}
+		return result;
 	}
 	
 	

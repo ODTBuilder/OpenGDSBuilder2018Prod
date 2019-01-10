@@ -58,6 +58,14 @@ gb.header.EditingTool = function(obj) {
 		"returnMustArray" : {
 			"en" : "The return type must be an array",
 			"ko" : "리턴 객체는 배열이어야 합니다"
+		},
+		"editToolHint" : {
+			"en" : "Please zoom in to edit",
+			"ko" : "편집하시려면 확대해주세요"
+		},
+		"changes" : {
+			"en" : "Changes",
+			"ko" : "변경이력"
 		}
 	}
 
@@ -405,7 +413,7 @@ gb.header.EditingTool = function(obj) {
 		this.getVersioningFeature().setEditingTool(this);
 		console.log(this.ulTagRight);
 		var iTag = $("<i>").addClass("fas").addClass("fa-history").attr("aria-hidden", "true").css(this.iStyle);
-		var aTag = $("<a>").attr("href", "#").append(iTag).append("Changes").css(this.aStyle).click(function(){
+		var aTag = $("<a>").attr("href", "#").append(iTag).append(this.translation.changes[this.locale]).css(this.aStyle).click(function(){
 			that.toggleFeatureHistoryModal();
 		});
 		aTag.hover(function(){
@@ -2936,7 +2944,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 
 			var editZoomHintTag = $("<h1 class='edit-zoom-hint'>");
 			var icon = $("<span>").html("<i class='fas fa-exclamation-circle'></i>");
-			var text = $("<span>").html("Zoom in to edit");
+			var text = $("<span>").html(this.translation.editToolHint[this.locale]);
 
 			editZoomHintTag.css("margin-top", "6px");
 			editZoomHintTag.css("padding-left", "6px");
@@ -2948,7 +2956,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 			
 			var that = this;
 			var icon = $("<i class='fas fa-plus'>");
-			var span = $("<span class='label'>").append(icon).append("편집하시려면 확대해주세요");
+			var span = $("<span class='label'>").append(icon).append(this.translation.editToolHint[this.locale]);
 			
 			var btn = $("<button class='zoom-in'>").css({
 				"margin": "auto",

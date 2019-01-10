@@ -148,7 +148,7 @@ html {
 				<li><a href="#" title="Version Control" id="vermodal"> <i class="fas fa-code-branch fa-lg"
 						style="color: #344762;"></i> <spring:message code="lang.versioning" />
 				</a></li>
-				<li><a href="#" title="Information" id="binfo"> <i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
+				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
 						<spring:message code="lang.info" />
 				</a></li>
 			</ul>
@@ -165,12 +165,120 @@ html {
 		<!-- 		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 118px;"></span></span> -->
 		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#"
 			class="epsg-now btn-link"></a></span> <span id="feature-toggle-btn" class="navbar-left gb-footer-span"><i
-			class="fas fa-th"></i>&nbsp;<span class="btn-link">List</span></span> <span id="cmd-toggle-btn"
-			class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span class="btn-link">Command</span></span>
+			class="fas fa-th"></i>&nbsp;<span class="btn-link"><spring:message code="lang.featureList" /></span></span> <span id="cmd-toggle-btn"
+			class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span class="btn-link"><spring:message code="lang.command" /></span></span>
 		<span class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>&nbsp;</span><span
 			class="mouse-position btn-link" style="display: inline-block;"></span></span> <span
 			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
 	</nav>
+	<div id="infoModal" tabindex="-1" role="dialog" class="modal fade" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 class="modal-title"><spring:message code="lang.info" /></h4>
+				</div>
+				<div class="modal-body" style="height: 550px; overflow-y: auto;">
+					<h4 class="gb-horizontal"><spring:message code="lang.buildInfo" /></h4>
+					<table style="width: 100%; margin-bottom: 50px;">
+						<tbody>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoDT Web <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em;">1.0</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message code="lang.gitAddress" /></td>
+								<td style="padding: 0.785714em;"><a href="https://github.com/ODTBuilder/OpenGDSBuilder2018Prod" title="Generalization Process">https://github.com/ODTBuilder/OpenGDSBuilder2018Prod</a></td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message code="lang.buildDate" /></td>
+								<td style="padding: 0.785714em;">2019-01-08 18:00</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Java <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em;">OpenJDK 1.8.0.111 64bit</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">PostgreSQL <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em;">9.4</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoTools <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em;">16.5</td>
+							</tr>
+						</tbody>
+					</table>
+					<h4 class="gb-horizontal"><spring:message code="lang.license" /></h4>
+					<table style="width: 100%; margin-bottom: 50px;">
+						<tbody>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">
+									<spring:message code="lang.licenseLGPL" /> 3.0 (LGPL v3.0)
+								</td>
+								<td style="padding: 0.785714em;">
+									<a href="http://www.opensource.org/licenses/lgpl-3.0.html" class="gb-href-link">
+										GNU LESSER GENERAL PUBLIC LICENSE
+									</a><br>
+									<p>Version 3, 29 June 2007<p>
+									<p>Copyright (C) 2007 Free Software Foundation, Inc. <a href="http://fsf.org" class="gb-href-link">http://fsf.org</a></p>
+									<p>Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.<p>
+									<p>This version of the GNU Lesser General Public License incorporates the terms and conditions of version 3 of the GNU General Public License, supplemented by the additional permissions listed below.</p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<h4 class="gb-horizontal"><spring:message code="lang.useLibrary" /></h4>
+					<table style="width: 100%;">
+						<tbody>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoTools</td>
+								<td style="padding: 0.785714em;">
+									<a href="http://www.gnu.org/licenses/lgpl-2.1.html" class="gb-href-link">
+										<spring:message code="lang.licenseLGPL" /> 2.1 (LGPL v2.1)
+									</a>
+								</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">PostgreSQL</td>
+								<td style="padding: 0.785714em;">
+									<a href="https://www.postgresql.org/about/licence/" class="gb-href-link">
+										The PostgreSQL Licence (PostgreSQL)
+									</a>
+								</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Geoserver</td>
+								<td style="padding: 0.785714em;">
+									<a href="https://opensource.org/licenses/gpl-2.0.php" class="gb-href-link">
+										<spring:message code="lang.licenseGPL" /> (GPLv2)
+									</a>
+								</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Geogig</td>
+								<td style="padding: 0.785714em;">
+									<a href="http://opensource.org/licenses/BSD-3-Clause" class="gb-href-link">
+										3-Clause BSD License (BSD-3-Clause)
+									</a>
+								</td>
+							</tr>
+							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Apache</td>
+								<td style="padding: 0.785714em;">
+									<a href="http://www.apache.org/licenses/LICENSE-2.0" class="gb-href-link">
+										Apache License 2.0
+									</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<span style="float: right;">
+						<button type="button" data-dismiss="modal" class="btn btn-default"><spring:message code="lang.close" /></button>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
 	<script type="text/javascript">
 		var locale = '<spring:message code="lang.localeCode" />';
 
@@ -259,7 +367,8 @@ html {
 		var validation = new gb.validation.Validation({
 			"token" : urlList.token,
 			"autoOpen" : false,
-			"title" : "Validation",
+			"locale" : locale,
+			"title" : "<spring:message code='lang.validation' />",
 			"url" : {
 				"token" : urlList.token,
 				"requestValidate" : urlList.requestValidate
@@ -273,11 +382,13 @@ html {
 
 		var frecord = new gb.edit.FeatureRecord({
 			//id : "feature_id",
+			locale : locale,
 			wfstURL : urlList.wfst + urlList.token,
 			layerInfoURL : urlList.getLayerInfo + urlList.token
 		});
 
 		var otree = new gb.tree.OpenLayers({
+			"locale" : locale || "en",
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"frecord" : frecord,
@@ -333,7 +444,7 @@ html {
 			wfsURL : urlList.getWFSFeature + urlList.token,
 			layerInfo : urlList.getLayerInfo + urlList.token,
 			imageTile : urlList.getLayerTile,
-			locale : "en",
+			locale : locale || "en",
 			versioning : fhist,
 			isEditing : gb.module.isEditing
 		});
@@ -378,14 +489,14 @@ html {
 
 		epan.addInteraction({
 			icon : "fas fa-ruler-combined",
-			content : "area",
+			content : "<spring:message code='lang.area' />",
 			interaction : measureArea,
 			"float" : "right"
 		});
 
 		epan.addInteraction({
 			icon : "fas fa-ruler-vertical",
-			content : "length",
+			content : "<spring:message code='lang.length' />",
 			interaction : measureLength,
 			"float" : "right",
 			clickEvent : function() {
@@ -409,7 +520,7 @@ html {
 
 		epan.addInteraction({
 			icon : "fab fa-bitbucket",
-			content : "Hole",
+			content : "<spring:message code='lang.hole' />",
 			interaction : hole,
 			selectActive : true,
 			"float" : "right",
@@ -463,7 +574,8 @@ html {
 		var commandLine = new gb.footer.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
 			jstree : otree,
-			title : "Command Line",
+			locale : locale,
+			title : "<spring:message code='lang.command' />",
 			serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,

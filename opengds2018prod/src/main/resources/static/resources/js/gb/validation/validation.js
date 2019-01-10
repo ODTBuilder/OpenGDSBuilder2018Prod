@@ -16,6 +16,71 @@ if (!gb.validation)
 
 	let presetIndex_ = 0;
 
+	var locale = locale || "en";
+	
+	const translation = {
+		"add" : {
+			"ko" : "추가",
+			"en" : "Add"
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"remove" : {
+			"ko" : "제거",
+			"en" : "Remove"
+		},
+		"start" : {
+			"ko" : "시작",
+			"en" : "Start"
+		},
+		"validation" : {
+			"ko" : "검수",
+			"en" : "Validation"
+		},
+		"geoserver" : {
+			"ko" : "지오서버",
+			"en" : "Geoserver"
+		},
+		"validateList" : {
+			"ko" : "검수 목록",
+			"en" : "Validate List"
+		},
+		"digitalMap" : {
+			"ko" : "수치지도",
+			"en" : "Digital Map"
+		},
+		"under" : {
+			"ko" : "지하시설물",
+			"en" : "Under Facility"
+		},
+		"forestMap" : {
+			"ko" : "임상도",
+			"en" : "Forest Map"
+		},
+		"selectUserOptionHint" : {
+			"ko" : "사용자 정의 옵션을 선택해주세요",
+			"en" : "Please Select The User Option"
+		},
+		"selectCrsHint" : {
+			"ko" : "좌표계를 선택해주세요",
+			"en" : "Please Select The CRS"
+		},
+		"selectCrsHint" : {
+			"ko" : "좌표계를 선택해주세요",
+			"en" : "Please Select The CRS"
+		},
+		"selectNodeHint" : {
+			"ko" : "는(은) workspace를 하나만 선택할 수 있습니다",
+			"en" : "can only select one workspace"
+		},
+		"selectNodesHint" : {
+			"ko" : "는(은) workspace를 여러개 선택할 수 있습니다",
+			"en" : "can select multiple workspace"
+		}
+	};
+	
 	const INDEXLIST = {
 		"Digital Map 1.0" : 1,
 		"Digital Map 2.0" : 1,
@@ -75,6 +140,8 @@ if (!gb.validation)
 
 		this.isEditing = options.isEditing || undefined;
 
+		this.locale = locale = options.locale || "en";
+		
 		this.geoserverTree = undefined;
 		this.workingTree = undefined;
 		this.messageContent = undefined;
@@ -89,13 +156,13 @@ if (!gb.validation)
 			"display" : "inline-flex"
 		});
 
-		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text("지하시설물");
+		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.under[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).css(BUTTONSTYLE).text("수치지도");
+		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).css(BUTTONSTYLE).text(translation.digitalMap[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text("임상도");
+		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.forestMap[this.locale]);
 		this.verSelectTag.append(button);
 
 		$(document).on("click", ".version-btn", function() {
@@ -110,9 +177,9 @@ if (!gb.validation)
 			});
 
 			if ($(this).data("index") === 1) {
-				that.messageContent.html($(this).text() + " 는(은) workspace를 여러개 선택할 수 있습니다.");
+				that.messageContent.html($(this).text() + " " + translation.selectNodesHint[that.locale]);
 			} else if ($(this).data("index") === 2) {
-				that.messageContent.html($(this).text() + " 는(은) workspace를 하나만 선택할 수 있습니다.");
+				that.messageContent.html($(this).text() + " " + translation.selectNodeHint[that.locale]);
 			}
 			var nowPidx  = parseInt($(this).attr("data-index"));
 			if (nowPidx !== presetIndex_) {
@@ -126,7 +193,7 @@ if (!gb.validation)
 		});
 
 		this.srsSelectTag = $("<select class='form-control'>");
-		this.srsSelectTag.append($("<option>").text("좌표계를 선택해주세요:"));
+		this.srsSelectTag.append($("<option>").text(translation.selectCrsHint[this.locale]));
 		this.srsSelectTag.append($("<option>").val("5186").text("중부원점 투영좌표계(Central Belt 2010)"));
 		this.srsSelectTag.append($("<option>").val("4737").text("GRS80 경위도 좌표계(Korean 2000)"));
 		this.srsSelectTag.append($("<option>").val("4326").text("WGS84 경위도 좌표계(전지구 좌표계)"));
@@ -217,15 +284,15 @@ if (!gb.validation)
 		}
 
 		if (!srs.val()) {
-			this.messageContent.html("좌표계를 선택해야합니다.");
-			return;
+			this.messageContent.html(translation.selectCrsHint[this.locale]);
+			return false;
 		} else {
 			params.crs = "EPSG:" + srs.val();
 		}
 
 		if (!preset.data("prid")) {
 			this.messageContent.html("Preset ID가 없습니다.");
-			return;
+			return false;
 		} else {
 			params.prid = preset.data("prid").toString();
 		}
@@ -242,7 +309,7 @@ if (!gb.validation)
 		} else {
 			if (!preset.data("cat")) {
 				this.messageContent.html("Category ID가 없습니다.");
-				return;
+				return false;
 			} else {
 				params.cat = preset.data("cat");
 				params.qaVer = QATYPE[preset.data("cat").toString()].ver;
@@ -326,6 +393,7 @@ if (!gb.validation)
 		var gtree = new gb.tree.GeoServer({
 			"append" : treeContent[0],
 			"height" : "502px",
+			"locale" : this.locale,
 			"url" : {
 				"getTree" : "geoserver/getGeolayerCollectionTree.ajax" + this.url.token,
 				"addGeoServer" : "geoserver/addGeoserver.ajax" + this.url.token,
@@ -359,7 +427,7 @@ if (!gb.validation)
 				"background-color" : "#e0e1e2",
 				"color" : "#333"
 			})
-		}).append(icon).append("Add");
+		}).append(icon).append(translation.add[this.locale]);
 
 		panelFooter.on("click", function(e) {
 			var i, arr, children;
@@ -559,7 +627,7 @@ if (!gb.validation)
 
 		this.workingTree = treeContent.jstree(true);
 
-		var panelTitle = $("<p>").text("Validate List").css({
+		var panelTitle = $("<p>").text(translation.validateList[this.locale]).css({
 			"margin" : "0",
 			"float" : "left"
 		});
@@ -586,7 +654,7 @@ if (!gb.validation)
 				"background-color" : "#e0e1e2",
 				"color" : "#333"
 			})
-		}).append($("<i class='fas fa-minus'>")).append("Remove");
+		}).append($("<i class='fas fa-minus'>")).append(translation.remove[this.locale]);
 
 		panelFooter.on("click", function(e) {
 			var workTree = that.workingTree;
@@ -615,7 +683,7 @@ if (!gb.validation)
 
 		this.messageContent = $("<p>").css({
 			"margin" : "0 3px"
-		}).html("사용자 정의 옵션을 먼저 선택해주세요.");
+		}).html(translation.selectUserOptionHint[this.locale]);
 		requestPreset(this, this.presetSelectTag, presetDiv, this.messageContent);
 		customSelect(srsDiv);
 
@@ -634,15 +702,19 @@ if (!gb.validation)
 
 		var closeBtn = $("<button>").css({
 			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-default").text("Close").click(function() {
+		}).addClass("gb-button").addClass("gb-button-default").text(translation.close[this.locale]).click(function() {
 			that.close();
 		});
 
 		var startBtn = $("<button>").css({
 			"float" : "right"
-		}).addClass("gb-button").addClass("gb-button-primary").text("Start").click(function(e) {
+		}).addClass("gb-button").addClass("gb-button-primary").text(translation.start[this.locale]).click(function(e) {
 			var params = that.getParameter();
-
+			
+			if(!params){
+				return;
+			}
+			
 			var deferredObj = $.ajax({
 				url : that.url.requestValidate + that.url.token,
 				type : "POST",
@@ -677,7 +749,7 @@ if (!gb.validation)
 			url : "option/retrievePresetByUidx.ajax",
 			method : "GET",
 			success : function(data, textStatus, jqXHR) {
-				var option = $("<option>").val("false").text("사용자 정의 옵션을 선택해주세요:");
+				var option = $("<option>").val("false").text(translation.selectUserOptionHint[locale]);
 				select.append(option);
 
 				option = $("<option>").attr("data-title", "nonset").attr("data-cat", 0).attr("data-prid", "nonset").val("nonset").text(

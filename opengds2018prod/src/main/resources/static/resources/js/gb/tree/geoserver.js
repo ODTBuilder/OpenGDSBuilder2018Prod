@@ -152,7 +152,7 @@ gb.tree.GeoServer = function(obj) {
 				"en" : "Error"
 			},
 			"geoserver" : {
-				"ko" : "지오서버",
+				"ko" : "GeoServer",
 				"en" : "GeoServer"
 			},
 			"addgeoserver" : {

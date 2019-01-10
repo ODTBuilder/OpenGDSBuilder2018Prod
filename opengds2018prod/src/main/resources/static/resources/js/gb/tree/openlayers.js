@@ -39,13 +39,85 @@ gb.tree.OpenLayers = function(obj) {
 	var url = options.url;
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
 	this.translation = {
+			"zoom" : {
+				"en" : "Zoom",
+				"ko" : "확대"
+			},
+			"snap" : {
+				"en" : "Snap",
+				"ko" : "스냅"
+			},
+			"style" : {
+				"en" : "Style",
+				"ko" : "스타일"
+			},
+			"navigator" : {
+				"en" : "Navigator",
+				"ko" : "객체추적"
+			},
 			"layerCode" : {
 				"en" : "Code",
 				"ko" : "코드"
 			},
+			"layerName" : {
+				"en" : "Name",
+				"ko" : "이름"
+			},
 			"layerType" : {
 				"en" : "Type",
 				"ko" : "유형"
+			},
+			"add" : {
+				"ko" : "추가",
+				"en" : "Add"
+			},
+			"close" : {
+				"ko" : "닫기",
+				"en" : "Close"
+			},
+			"cancel" : {
+				"ko" : "취소",
+				"en" : "Cancel"
+			},
+			"delete" : {
+				"ko" : "삭제",
+				"en" : "Delete"
+			},
+			"deleteLayer" : {
+				"ko" : "레이어 삭제",
+				"en" : "Delete Layer"
+			},
+			"deleteLayerHint" : {
+				"ko" : "선택한 레이어를 정말로 삭제하시겠습니까?",
+				"en" : "Are you sure to delete this layer?"
+			},
+			"deleteLayersHint" : {
+				"ko" : "선택한 레이어들을 정말로 삭제하시겠습니까?",
+				"en" : "Are you sure to delete these layers?"
+			},
+			"inputNameHint" : {
+				"ko" : "Layer 이름을 입력해주세요!",
+				"en" : "Please enter a layer name!"
+			},
+			"inputAttrHint" : {
+				"ko" : "속성값 이름을 입력해주세요!",
+				"en" : "Please enter a Attribute name!"
+			},
+			"uploadFile" : {
+				"ko" : "Zip 파일 올리기",
+				"en" : "Upload zip file"
+			},
+			"uploadImage" : {
+				"ko" : "이미지 올리기",
+				"en" : "Upload Image"
+			},
+			"attribute" : {
+				"en" : "Attribute",
+				"ko" : "속성"
+			},
+			"addAttribute" : {
+				"en" : "Add Attribute",
+				"ko" : "속성 추가"
 			},
 			"addLayer" : {
 				"en" : "Add layer",
@@ -278,7 +350,7 @@ gb.tree.OpenLayers = function(obj) {
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
-								"label" : "Zoom",
+								"label" : that.translation.zoom[that.locale],
 								/*
 								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
 								 * "icon" : "glyphicon glyphicon-leaf",
@@ -328,7 +400,7 @@ gb.tree.OpenLayers = function(obj) {
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
-								"label" : "Snap",
+								"label" : that.translation.snap[that.locale],
 								"action" : function(data) {
 									console.log(data);
 									var inst = $.jstreeol3
@@ -376,7 +448,7 @@ gb.tree.OpenLayers = function(obj) {
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
-								"label" : "Delete",
+								"label" : that.translation["delete"][that.locale],
 								"action" : function(data) {
 									var inst = $.jstreeol3
 									.reference(data.reference), obj = inst
@@ -504,7 +576,7 @@ gb.tree.OpenLayers = function(obj) {
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
-								"label" : "Style",
+								"label" : that.translation.style[that.locale],
 								"action" : function(data) {
 									var inst = $.jstreeol3
 									.reference(data.reference), obj = inst
@@ -526,7 +598,7 @@ gb.tree.OpenLayers = function(obj) {
 								"icon" : "fa fa-compass",
 								"separator_after" : false,
 								"_disabled" : false,
-								"label" : "Navigator",
+								"label" : that.translation.navigator[that.locale],
 								"action" : function(data) {
 									var inst = $.jstreeol3.reference(data.reference),
 									obj = inst.get_node(data.reference);
@@ -672,7 +744,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 		"margin-bottom" : "15px"
 	});
 
-	var col5 = $("<div>").addClass("col-md-2").text("Attribute");
+	var col5 = $("<div>").addClass("col-md-2").text(this.translation.attribute[this.locale]);
 	var col6 = gb.tree.OpenLayers.getAttrForm().addClass("col-md-10");
 	var row3 = $("<div>").addClass("row").append(col5).append(col6);
 
@@ -680,10 +752,10 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -753,7 +825,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			});
 			
 			if(!bool){
-				alert("속성값 이름을 입력해주세요!");
+				alert(that.translation.inputAttrHint[that.locale]);
 				return;
 			}
 			
@@ -766,7 +838,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			vectorLayer.set("git", gitLayer);
 			
 			if(!codeInput.val()){
-				alert("Layer 이름을 입력해주세요!");
+				alert(that.translation.inputNameHint[that.locale]);
 				return;
 			}
 			
@@ -779,11 +851,49 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 };
 
 gb.tree.OpenLayers.getAttrForm = function() {
+	var addBtn = 
+		$("<a href='#'>")
+			.addClass("gb-button gb-button-secondary")
+			.append($("<i>").addClass("fas fa-plus"))
+			.on("click", function() {
+				var key = $("<input>").addClass("form-control").attr({
+					"type" : "text"
+				});
+				var td1 = $("<td>").append(key);
+		
+				var opt1 = $("<option>").text("Integer");
+				var opt2 = $("<option>").text("Double");
+				var opt3 = $("<option>").text("String");
+				var opt4 = $("<option>").text("Date");
+				var opt5 = $("<option>").text("Boolean");
+				var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
+				var td2 = $("<td>").append(type);
+		
+				var nullable = $("<input>").attr({
+					"type" : "checkbox"
+				});
+				var td3 = $("<td>").append(nullable);
+		
+				var unique = $("<input>").attr({
+					"type" : "checkbox"
+				});
+				var td4 = $("<td>").append(unique);
+		
+				var trash = $("<a href='#'>").append($("<i>").addClass("far fa-trash-alt"));
+				trash.click(function() {
+					$(this).parent().parent().remove();
+				});
+				var td5 = $("<td>").append(trash);
+		
+				var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
+				$(".type-form-body").append(tr1);
+			});
+	
 	var htd1 = $("<td>").text("Name");
 	var htd2 = $("<td>").text("Type");
 	var htd3 = $("<td>").text("Not Null");
 	var htd4 = $("<td>").text("Unique");
-	var htd5 = $("<td>");
+	var htd5 = $("<td>").append(addBtn);
 	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
 
 	/*
@@ -808,44 +918,8 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var typeFormBody = $("<tbody>").addClass("type-form-body");
 
 	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
-	var addBtn = $("<input>").addClass("gitbuilder-createlayer-addattr").addClass("btn").addClass("btn-default").attr({
-		"type" : "button",
-		"value" : "Add Attribute"
-	}).on("click", function() {
-		var key = $("<input>").addClass("form-control").attr({
-			"type" : "text"
-		});
-		var td1 = $("<td>").append(key);
 
-		var opt1 = $("<option>").text("Integer");
-		var opt2 = $("<option>").text("Double");
-		var opt3 = $("<option>").text("String");
-		var opt4 = $("<option>").text("Date");
-		var opt5 = $("<option>").text("Boolean");
-		var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
-		var td2 = $("<td>").append(type);
-
-		var nullable = $("<input>").attr({
-			"type" : "checkbox"
-		});
-		var td3 = $("<td>").append(nullable);
-
-		var unique = $("<input>").attr({
-			"type" : "checkbox"
-		});
-		var td4 = $("<td>").append(unique);
-
-		var trash = $("<a href='#'>").append($("<i>").addClass("far fa-trash-alt"));
-		trash.click(function() {
-			$(this).parent().parent().remove();
-		});
-		var td5 = $("<td>").append(trash);
-
-		var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
-		$(".type-form-body").append(tr1);
-	});
-
-	return $("<div>").append(table).append(addBtn);
+	return $("<div>").append(table);
 };
 
 /**
@@ -868,20 +942,24 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		}
 	});
 
-	var uploadBtn = $("<button type='button'>").addClass("btn btn-primary btn-lg btn-block").text("Upload zip file").mouseenter(function() {
-		$(this).css({
-			"background-color" : "#00c4bc"
-		});
-	}).mouseleave(function() {
-		$(this).css({
-			"background-color" : "#00b5ad"
-		});
-	}).click(function() {
-		fileSelect.click();
-	}).css({
-		"background-color" : "#00b5ad",
-		"border-color" : "transparent"
-	});
+	var uploadBtn = 
+		$("<button type='button'>")
+			.addClass("btn btn-primary btn-lg btn-block")
+			.text(this.translation.uploadFile[this.locale])
+			.mouseenter(function() {
+				$(this).css({
+					"background-color" : "#00c4bc"
+				});
+			}).mouseleave(function() {
+				$(this).css({
+					"background-color" : "#00b5ad"
+				});
+			}).click(function() {
+				fileSelect.click();
+			}).css({
+				"background-color" : "#00b5ad",
+				"border-color" : "transparent"
+			});
 
 	var fileInfo = $("<div role='alert'>").addClass("alert alert-light").css({
 		"text-align" : "center"
@@ -908,10 +986,10 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -1024,10 +1102,14 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	// Iamge preview
 	var preview = $("<img id='imagePreview' height='218' width='518'>");
 
-	var uploadBtn = $("<button type='button'>").addClass("btn btn-primary btn-lg btn-block").text("Upload Image").mouseenter(function() {
-		$(this).css({
-			"background-color" : "#00c4bc"
-		});
+	var uploadBtn = 
+		$("<button type='button'>")
+			.addClass("btn btn-primary btn-lg btn-block")
+			.text(this.translation.uploadImage[this.locale])
+			.mouseenter(function() {
+			$(this).css({
+				"background-color" : "#00c4bc"
+			});
 	}).mouseleave(function() {
 		$(this).css({
 			"background-color" : "#00b5ad"
@@ -1045,10 +1127,10 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Close");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Add").click(function() {
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]).click(function() {
 		new gb.layer.ImageLayer({
 			map : that.map,
 			url : readerInfo.result,
@@ -1114,9 +1196,9 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 		"font-size" : "16px"
 	});
 	if (layer.length > 1) {
-		$(msg1).text("Are you sure to delete these layers?")
+		$(msg1).text(this.translation.deleteLayersHint[this.locale])
 	} else {
-		$(msg1).text("Are you sure to delete this layer?")
+		$(msg1).text(this.translation.deleteLayerHint[this.locale])
 	}
 	var msg2 = $("<div>").text(todel).css({
 		"text-align" : "center",
@@ -1126,13 +1208,13 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation["delete"][this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.Base({
-		"title" : "Delete Layer",
+		"title" : this.translation.deleteLayer[this.locale],
 		"width" : 310,
 		"height" : 200,
 		"autoOpen" : false,

@@ -18,6 +18,26 @@ gb.edit.FeatureRecord = function(obj) {
 	this.id = obj.id ? obj.id : false;
 	this.wfstURL = obj.wfstURL || '';
 	this.layerInfoURL = obj.layerInfoURL || '';
+	this.locale = obj.locale || "en";
+	
+	this.translation = {
+		"cancel" : {
+			"ko" : "취소",
+			"en" : "Cancel"
+		},
+		"save" : {
+			"ko" : "저장",
+			"en" : "Save"
+		},
+		"discard" : {
+			"ko" : "무시",
+			"en" : "Discard"
+		},
+		"saveHint" : {
+			"ko" : "변경사항을 저장하시겠습니까?",
+			"en" : "Do you want to save your changes?"
+		}
+	}
 	this.editTool = undefined;
 }
 /**
@@ -549,20 +569,20 @@ gb.edit.FeatureRecord.prototype.save = function(editTool){
 	var edit = editTool;
 	this.editTool = editTool;
 	
-	var row2 = $("<div>").addClass("row").append("변경사항을 저장하시겠습니까?")
+	var row2 = $("<div>").addClass("row").append(this.translation.saveHint[this.locale])
 
 	var well = $("<div>").addClass("well").append(row2);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Save");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.save[this.locale]);
 	var discardBtn = $("<button>").css({
 		"float" : "right",
 		"background": "#e0e1e2 none"
-	}).addClass("gb-button").addClass("gb-button-default").text("Discard");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.discard[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(discardBtn).append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -572,7 +592,7 @@ gb.edit.FeatureRecord.prototype.save = function(editTool){
 		"width" : "100%"
 	});
 	var openSaveModal = new gb.modal.Base({
-		"title" : "저장",
+		"title" : this.translation.save[this.locale],
 		"width" : 540,
 		"height" : 250,
 		"autoOpen" : true,

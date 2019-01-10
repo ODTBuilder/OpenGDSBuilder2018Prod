@@ -139,7 +139,7 @@ if (!gb.footer)
 			altEditor: true,
 			buttons: [{
 				extend: "selected",
-				text: "Edit",
+				text: "<i class='fas fa-edit fa-lg' style=color: #bfbfbf;'></i>",
 				name: "edit"
 			}]
 		});
@@ -389,6 +389,15 @@ if (!gb.footer)
 						data[format[i].getId()] = format[i];
 					}
 					
+					if(format.length === 0){
+						col.push("No Data");
+						data[0] = {
+							get: function(e){
+								return "No Data";
+							}
+						};
+					}
+					
 					list[treeid].col = col;
 					list[treeid].features = data;
 					
@@ -492,7 +501,7 @@ if (!gb.footer)
 			altEditor: true,
 			buttons: [{
 				extend: "selected",
-				text: "Edit",
+				text: "<i class='fas fa-edit fa-lg' style=color: #bfbfbf;'></i>",
 				name: "edit"
 			}
 			/*{

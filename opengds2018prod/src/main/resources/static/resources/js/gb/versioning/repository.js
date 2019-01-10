@@ -371,11 +371,11 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Checkout"
 			},
 			"pull" : {
-				"ko" : "풀",
+				"ko" : "Pull",
 				"en" : "Pull"
 			},
 			"push" : {
-				"ko" : "푸시",
+				"ko" : "Push",
 				"en" : "Push"
 			},
 			"merge" : {
@@ -487,7 +487,7 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Database user password"
 			},
 			"pullfrom" : {
-				"ko" : "원격 저장소로부터 풀 받기",
+				"ko" : "원격 저장소로부터 Pull 받기",
 				"en" : "Pull from remote repository"
 			},
 			"remoreponame" : {
@@ -654,10 +654,6 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "클릭",
 				"en" : "Click"
 			},
-			"confilcts" : {
-				"ko" : "충돌사항",
-				"en" : "Conflicts"
-			},
 			"value" : {
 				"ko" : "값",
 				"en" : "Value"
@@ -741,7 +737,59 @@ gb.versioning.Repository = function(obj) {
 			"repoinfo" : {
 				"ko" : "저장소 정보",
 				"en" : "Repository Information"
-			}
+			},
+			"beforeend" : {
+				"ko" : "현재 브랜치에서 수행할 작업을 선택하세요.",
+				"en" : "What would you like to do?"
+			},
+			"discard" : {
+				"ko" : "폐기",
+				"en" : "Discard"
+			},
+			"endtran" : {
+				"ko" : "트랜잭션 종료",
+				"en" : "End Transaction"
+			},
+			"noremote" : {
+				"ko" : "연결된 원격 저장소가 없습니다.",
+				"en" : "There is no remote branch."
+			},
+			"pullcompl" : {
+				"ko" : "Pull이 완료되었습니다.",
+				"en" : '"Pull" is complete.'
+			},
+			"pullfail" : {
+				"ko" : "Pull이 실패했습니다.",
+				"en" : "Pull failed."
+			},
+			"pushmsg1" : {
+				"ko" : "변경사항이 원격 브랜치에 반영되었습니다.",
+				"en" : 'The changes have been applied to remote branch.'
+			},
+			"pushmsg2" : {
+				"ko" : "변경사항이 없습니다.",
+				"en" : 'Nothing changed.'
+			},
+			"pushcompl" : {
+				"ko" : "Push가 완료되었습니다.",
+				"en" : '"Push" is complete.'
+			},
+			"pushfail" : {
+				"ko" : "Push에 실패했습니다.",
+				"en" : 'Push failed.'
+			},
+			"remote" : {
+				"ko" : "원격 저장소",
+				"en" : 'Remote Repository'
+			},
+			"local" : {
+				"ko" : "로컬 저장소",
+				"en" : 'Local Repository'
+			},
+			"nobranchlist" : {
+				"ko" : "브랜치 리스트를 받을 수 없습니다.",
+				"en" : "Couldn't get branch list."
+			},
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -2040,7 +2088,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : that.translation.confilcts[that.locale],
+						"title" : that.translation.conflicts[that.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -2218,25 +2266,25 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 				if (data.pull === null && data.merge !== null) {
 					var confl = parseInt(data.merge.conflicts);
 					console.log(confl);
-					var msg1 = $("<div>").text("There are conflicting features.").css({
+					var msg1 = $("<div>").text(that.translation.conflmsg1[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
-					var msg2 = $("<div>").text('Would you like to resolve conflicts?').css({
+					var msg2 = $("<div>").text(that.translation.conflmsg2[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1).append(msg2);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text("Resolve");
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Conflict",
+						"title" : that.translation.conflicts[that.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -2255,25 +2303,25 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 										data.merge.ours, data.merge.theirs, data.merge.features, commitModal);
 							});
 				} else {
-					var msg1 = $("<div>").text('"Pull" is complete.').css({
+					var msg1 = $("<div>").text(that.translation.pullcompl[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
-					var msg2 = $("<div>").text('Do you want to commit the changes to your branch?').css({
+					var msg2 = $("<div>").text(that.translation.mergecompl2[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 					var body = $("<div>").append(msg1).append(msg2);
 					var closeBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text("Later");
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.later[that.locale]);
 					var okBtn = $("<button>").css({
 						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 					var commitModal = new gb.modal.Base({
-						"title" : "Commit Changes",
+						"title" : that.translation.cmitchnges[that.locale],
 						"width" : 310,
 						"height" : 200,
 						"autoOpen" : true,
@@ -2293,8 +2341,8 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 					});
 				}
 			} else {
-				var title = "Error";
-				var msg = "Pull failed."
+				var title = that.translation.err[that.locale];
+				var msg = that.translation.pullfail[that.locale];
 				that.messageModal(title, msg);
 			}
 		},
@@ -2359,17 +2407,17 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 				modal.close();
 				var msg2 = "";
 				if (data.dataPushed === "true") {
-					msg2 = $("<div>").text('The changes have been applied to remote branch.').css({
+					msg2 = $("<div>").text(that.translation.pushmsg1[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 				} else {
-					msg2 = $("<div>").text('Nothing changed.').css({
+					msg2 = $("<div>").text(that.translation.pushmsg2[that.locale]).css({
 						"text-align" : "center",
 						"font-size" : "16px"
 					});
 				}
-				var msg1 = $("<div>").text('"Push" is complete.').css({
+				var msg1 = $("<div>").text(that.translation.pushcompl[that.locale]).css({
 					"text-align" : "center",
 					"font-size" : "16px"
 				});
@@ -2380,11 +2428,11 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 				// }).addClass("gb-button").addClass("gb-button-default").text("Later");
 				var okBtn = $("<button>").css({
 					"float" : "right"
-				}).addClass("gb-button").addClass("gb-button-primary").text("OK");
+				}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
 				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
 				var commitModal = new gb.modal.Base({
-					"title" : "Message",
+					"title" : that.translation.message[that.locale],
 					"width" : 310,
 					"height" : 190,
 					"autoOpen" : true,
@@ -2399,8 +2447,8 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 					commitModal.close();
 				});
 			} else {
-				var title = "Error";
-				var msg = "Push failed."
+				var title = that.translation.err[that.locale];
+				var msg = that.translation.pushfail[that.locale];
 				that.messageModal(title, msg);
 			}
 		},
@@ -2423,7 +2471,7 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
  */
 gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, tid) {
 	var that = this;
-	var reLabel = $("<div>").text("Remote").css({
+	var reLabel = $("<div>").text(this.translation.remote[this.locale]).css({
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
@@ -2437,7 +2485,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 		"float" : "left",
 		"width" : "45%"
 	}).append(reLabel).append(reRepo).append(reBranch);
-	var loLabel = $("<div>").text("Local").css({
+	var loLabel = $("<div>").text(this.translation.local[this.locale]).css({
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
@@ -2457,18 +2505,20 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 		"text-align" : "center"
 	}).append(arrow);
 
-	var wrap = $("<div>").append(local).append(arrowArea).append(remote);
+	var wrap = $("<div>").css({
+		"height" : "113px"
+	}).append(local).append(arrowArea).append(remote);
 	var body = $("<div>").append(wrap);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Pull");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.pull[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var commitModal = new gb.modal.Base({
-		"title" : "Pull",
+		"title" : this.translation.pull[this.locale],
 		"width" : 410,
 		"height" : 234,
 		"autoOpen" : false,
@@ -2516,8 +2566,8 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 				commitModal.open();
 			} else {
 				console.error("error - no remote branch");
-				var title = "Error";
-				var msg = "There is no remote branch."
+				var title = that.translation.err[that.locale];
+				var msg = that.translation.noremote[that.locale];
 				that.messageModal(title, msg);
 			}
 		} else {
@@ -2540,7 +2590,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
  */
 gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) {
 	var that = this;
-	var reLabel = $("<div>").text("Remote").css({
+	var reLabel = $("<div>").text(this.translation.remote[this.locale]).css({
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
@@ -2554,7 +2604,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 		"float" : "left",
 		"width" : "45%"
 	}).append(reLabel).append(reRepo).append(reBranch);
-	var loLabel = $("<div>").text("Local").css({
+	var loLabel = $("<div>").text(this.translation.local[this.locale]).css({
 		"text-align" : "center",
 		"margin-bottom" : "10px"
 	});
@@ -2574,18 +2624,20 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 		"text-align" : "center"
 	}).append(arrow);
 
-	var wrap = $("<div>").append(local).append(arrowArea).append(remote);
+	var wrap = $("<div>").css({
+		"height" : "113px"
+	}).append(local).append(arrowArea).append(remote);
 	var body = $("<div>").append(wrap);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Push");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.push[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var commitModal = new gb.modal.Base({
-		"title" : "Push",
+		"title" : this.translation.push[this.locale],
 		"width" : 410,
 		"height" : 234,
 		"autoOpen" : false,
@@ -2630,13 +2682,13 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 				commitModal.open();
 			} else {
 				console.error("error - no remote branch");
-				var title = "Error";
-				var msg = "There is no remote branch."
+				var title = this.translation.err[this.locale];
+				var msg = this.translation.noremote[this.locale];
 				that.messageModal(title, msg);
 			}
 		} else {
-			var title = "Error";
-			var msg = "Couldn't get branch list."
+			var title = this.translation.err[this.locale];
+			var msg = this.translation.nobranchlist[this.locale];
 			that.messageModal(title, msg);
 		}
 	};
@@ -2868,14 +2920,12 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 				$(this).find("i").removeClass("fa-caret-down");
 				$(this).find("i").addClass("fa-caret-up");
 			}
-			createRepoModal.setHeight(514);	
 			$(remoteInputArea).css("display", "block");
 		} else if ($(remoteInputArea).css("display") === "block") {
 			if ($(this).find("i").hasClass("fa-caret-up")) {
 				$(this).find("i").removeClass("fa-caret-up");
 				$(this).find("i").addClass("fa-caret-down");
 			}
-			createRepoModal.setHeight(425);				
 			$(remoteInputArea).css("display", "none");
 		}
 	});
@@ -3275,11 +3325,11 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg, height) {
  */
 gb.versioning.Repository.prototype.quitModal = function(server, repo, branch, tid) {
 	var that = this;
-	var msg1 = $("<div>").text("What would you like to do?").css({
+	var msg1 = $("<div>").text(this.translation.beforeend[this.locale]).css({
 		"text-align" : "center",
 		"font-size" : "16px"
 	});
-	var msg2 = $("<div>").text("Current Branch: " + branch.text).css({
+	var msg2 = $("<div>").text(this.translation.cub[this.locale]+": " + branch.text).css({
 		"text-align" : "center",
 		"font-size" : "24px",
 		"word-break" : "break-word"
@@ -3288,17 +3338,17 @@ gb.versioning.Repository.prototype.quitModal = function(server, repo, branch, ti
 	var body = $("<div>").append(msg1).append(msg2);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var discardBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Discard");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.discard[this.locale]);
 	var saveBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Commit");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.commit[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(saveBtn).append(discardBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
-		"title" : "End Transaction",
+		"title" : this.translation.endtran[this.locale],
 		"width" : 370,
 		"height" : 176,
 		"autoOpen" : true,
@@ -4931,7 +4981,9 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 
-	var body = $("<div>").append(left).append(right);
+	var body = $("<div>").css({
+		"height" : "158px"
+	}).append(left).append(right);
 
 	var params = {
 		"serverName" : server,
@@ -4962,10 +5014,10 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 			wsList = data;
 			if (Object.keys(data).length === 0) {
 				console.error("No result");
-				var msg1 = $("<div>").append(this.translation.nodatastoremsg1[this.locale]);
-				var msg2 = $("<div>").append(this.translation.nodatastoremsg2[this.locale]);
+				var msg1 = $("<div>").append(that.translation.nodatastoremsg1[that.locale]);
+				var msg2 = $("<div>").append(that.translation.nodatastoremsg2[that.locale]);
 				var group = $("<div>").append(msg1).append(msg2);
-				that.messageModal(this.translation.err[this.locale], group);
+				that.messageModal(that.translation.err[that.locale], group);
 			} else {
 				$(wsSelect).empty();
 				var wsKeys = Object.keys(wsList);
@@ -4995,8 +5047,8 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 					var rp = repo;
 					var br = branch;
 					if (!lyr) {
-						var msg1 = $("<div>").append(this.translation.chooselayer[this.locale]);
-						that.messageModal(this.translation.err[this.locale], msg1);
+						var msg1 = $("<div>").append(that.translation.chooselayer[that.locale]);
+						that.messageModal(that.translation.err[that.locale], msg1);
 					} else {
 						that.publishGeogigLayer(sv, ws, ds, lyr, rp, br, publishModal, function() {
 							that.getListGeoserverLayer(server, workspace, datastore, layerList);

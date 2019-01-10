@@ -1122,10 +1122,10 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 					setProp[key] = "";
 				}
 			} else {
-				if(layer.get("git") instanceof Object){
-					if(layer.get("git").attribute instanceof Array){
-						for(let i = 0; i < layer.get("git").attribute.length; i++){
-							prop = layer.get("git").attribute[i];
+				if(source.get("git") instanceof Object){
+					if(source.get("git").attribute instanceof Array){
+						for(let i = 0; i < source.get("git").attribute.length; i++){
+							prop = source.get("git").attribute[i];
 							setProp[prop.fieldName] = "";
 						}
 					}

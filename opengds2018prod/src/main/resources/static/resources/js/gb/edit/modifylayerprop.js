@@ -314,7 +314,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
 				select.change(function() {
 					var params = {};
-					params.select = $("#styleSelect");
+					params.selectTag = $("#styleSelect");
 					params.serverName = that.serverInfo.geoserver;
 
 					if ($(this).find("option:selected").val() === "workspace") {
@@ -336,13 +336,33 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				}
 				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
 
-				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["style"][this.locale]);
+				selectTitle = 
+					$("<div>")
+						.append($("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["style"][this.locale]))
+						.append($("<img id='styleLegend'>").css({"float": "right"}))
+						.css({
+							"width": "100%"
+						});
 				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				select.change(function() {
+					var params = {};
+					params.legendTag = $("#styleLegend");
+					params.serverName = that.serverInfo.geoserver;
+					params.layerName = that.serverInfo.layername;
+					
+					if ($("#styleWorkspaceSelect").find("option:selected").val() === "workspace") {
+						params.workspace = $("#styleWorkspaceSelect").find("option:selected").text();
+					}
+					
+					params.style = $(this).find("option:selected").val();
+
+					that.requestStyleLegend(params);
+				});
 				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
 				value.append(selectField);
 
 				this.requestStyleList({
-					select : select,
+					selectTag : select,
 					serverName : this.serverInfo.geoserver,
 					workspace : list.styleWorkspace,
 					style : list[i]
@@ -495,8 +515,8 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var select = undefined;
 	var style = options.style || "";
 
-	if (!!options.select) {
-		select = options.select;
+	if (!!options.selectTag) {
+		select = options.selectTag;
 	} else {
 		return;
 	}
@@ -527,6 +547,57 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 					tag.attr("selected", "selected");
 				}
 			}
+		}
+	});
+}
+
+gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
+	var params = {};
+	var options = options;
+	var legendTag = undefined;
+
+	if (!!options.select) {
+		legendTag = options.legendTag;
+	} else {
+		return;
+	}
+
+	if (!!options.serverName) {
+		params.serverName = options.serverName;
+	} else {
+		return;
+	}
+
+	if (!!options.workspace) {
+		params.workspace = options.workspace;
+	}
+	
+	if (!!options.layerName) {
+		params.layerName = options.layerName;
+	} else {
+		return;
+	}
+	
+	if (!!options.style) {
+		params.style = options.style;
+	} else {
+		return;
+	}
+	
+	params.version = "1.0.0";
+	params.format = "PNG8";
+	params.width = "15";
+	params.height = "15";
+
+	$.ajax({
+		url : "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token,
+		method : "GET",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : params,
+		success : function(data, textStatus, jqXHR) {
+			legendTag.attr("src", "");
+			console.log(data);
 		}
 	});
 }

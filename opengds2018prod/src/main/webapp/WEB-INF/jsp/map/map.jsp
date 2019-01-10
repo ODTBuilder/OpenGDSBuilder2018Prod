@@ -289,6 +289,7 @@ html {
 			getMapWMS : "geoserver/geoserverWMSGetMap.ajax",
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
+			getLegend : "geoserver/geoserverWMSGetLegendGraphic.ajax",
 			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
 			requestValidate : "web/validate.do",
 			geoserverFileUpload : "geoserver/upload.do"
@@ -394,7 +395,7 @@ html {
 			"frecord" : frecord,
 			"token" : urlList.token,
 			"url" : {
-				"getLegend" : "geoserver/geoserverWMSGetLegendGraphic.ajax?${_csrf.parameterName}=${_csrf.token}"
+				"getLegend" : urlList.getLegend + urlList.token
 			}
 		});
 

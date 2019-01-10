@@ -137,19 +137,19 @@ html {
 				<!-- <li><a href="#" title="QA Status" id="qastat">
 					<i class="fas fa-th-list fa-lg" style="color: #7f7f7f;"></i>
 					QA Status</a></li> -->
-				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-					aria-expanded="false" title="Generalization"> <i class="fas fa-object-group fa-lg" style="color: #00b0f0;"></i>
-						<spring:message code="lang.generalization" />
-				</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" title="Generalization Process" id="gen">Generalization</a></li>
-						<li><a href="#" title="Generalization Result" id="genstat">Result</a></li>
-					</ul></li>
+				<!-- 				<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" -->
+				<!-- 					aria-expanded="false" title="Generalization"> <i class="fas fa-object-group fa-lg" style="color: #00b0f0;"></i> -->
+				<%-- 						<spring:message code="lang.generalization" /> --%>
+				<!-- 				</a> -->
+				<!-- 					<ul class="dropdown-menu" role="menu"> -->
+				<!-- 						<li><a href="#" title="Generalization Process" id="gen">Generalization</a></li> -->
+				<!-- 						<li><a href="#" title="Generalization Result" id="genstat">Result</a></li> -->
+				<!-- 					</ul></li> -->
 				<li><a href="#" title="Version Control" id="vermodal"> <i class="fas fa-code-branch fa-lg"
 						style="color: #344762;"></i> <spring:message code="lang.versioning" />
 				</a></li>
-				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i>
-						<spring:message code="lang.info" />
+				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i
+						class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i> <spring:message code="lang.info" />
 				</a></li>
 			</ul>
 		</div>
@@ -165,115 +165,126 @@ html {
 		<!-- 		<span class="navbar-left gb-footer-span"><span class="gb-scale-line-area" style="margin-right: 118px;"></span></span> -->
 		<span class="navbar-left gb-footer-span"><i class="fas fa-globe"></i>&nbsp;<a href="#"
 			class="epsg-now btn-link"></a></span> <span id="feature-toggle-btn" class="navbar-left gb-footer-span"><i
-			class="fas fa-th"></i>&nbsp;<span class="btn-link"><spring:message code="lang.featureList" /></span></span> <span id="cmd-toggle-btn"
-			class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span class="btn-link"><spring:message code="lang.command" /></span></span>
-		<span class="navbar-left gb-footer-span"> <i class="fas fa-map-marked-alt"></i>&nbsp;<span>&nbsp;</span><span
-			class="mouse-position btn-link" style="display: inline-block;"></span></span> <span
-			class="text-muted navbar-right gb-footer-span">OpenGDS Builder/Validator</span>
+			class="fas fa-th"></i>&nbsp;<span class="btn-link"><spring:message code="lang.featureList" /></span></span> <span
+			id="cmd-toggle-btn" class="navbar-left gb-footer-span"><i class="fas fa-terminal"></i>&nbsp;<span
+			class="btn-link"><spring:message code="lang.command" /></span></span> <span class="navbar-left gb-footer-span"> <i
+			class="fas fa-map-marked-alt"></i>&nbsp;<span>&nbsp;</span><span class="mouse-position btn-link"
+			style="display: inline-block;"></span></span> <span class="text-muted navbar-right gb-footer-span"><span
+			class="help-message"></span></span>
 	</nav>
 	<div id="infoModal" tabindex="-1" role="dialog" class="modal fade" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 class="modal-title"><spring:message code="lang.info" /></h4>
+				<div class="modal-header">
+					<button type="button" data-dismiss="modal" aria-label="Close" class="close">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">
+						<spring:message code="lang.info" />
+					</h4>
 				</div>
 				<div class="modal-body" style="height: 550px; overflow-y: auto;">
-					<h4 class="gb-horizontal"><spring:message code="lang.buildInfo" /></h4>
+					<h4 class="gb-horizontal">
+						<spring:message code="lang.buildInfo" />
+					</h4>
 					<table style="width: 100%; margin-bottom: 50px;">
 						<tbody>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoDT Web <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoDT Web <spring:message
+										code="lang.version" /></td>
 								<td style="padding: 0.785714em;">1.0</td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message code="lang.gitAddress" /></td>
-								<td style="padding: 0.785714em;"><a href="https://github.com/ODTBuilder/OpenGDSBuilder2018Prod" title="Generalization Process">https://github.com/ODTBuilder/OpenGDSBuilder2018Prod</a></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message
+										code="lang.gitAddress" /></td>
+								<td style="padding: 0.785714em;"><a href="https://github.com/ODTBuilder/OpenGDSBuilder2018Prod"
+									title="Generalization Process">https://github.com/ODTBuilder/OpenGDSBuilder2018Prod</a></td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message code="lang.buildDate" /></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message
+										code="lang.buildDate" /></td>
 								<td style="padding: 0.785714em;">2019-01-08 18:00</td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Java <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Java <spring:message
+										code="lang.version" /></td>
 								<td style="padding: 0.785714em;">OpenJDK 1.8.0.111 64bit</td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">PostgreSQL <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">PostgreSQL <spring:message
+										code="lang.version" /></td>
 								<td style="padding: 0.785714em;">9.4</td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoTools <spring:message code="lang.version" /></td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoTools <spring:message
+										code="lang.version" /></td>
 								<td style="padding: 0.785714em;">16.5</td>
 							</tr>
 						</tbody>
 					</table>
-					<h4 class="gb-horizontal"><spring:message code="lang.license" /></h4>
+					<h4 class="gb-horizontal">
+						<spring:message code="lang.license" />
+					</h4>
 					<table style="width: 100%; margin-bottom: 50px;">
 						<tbody>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
-								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">
-									<spring:message code="lang.licenseLGPL" /> 3.0 (LGPL v3.0)
-								</td>
-								<td style="padding: 0.785714em;">
-									<a href="http://www.opensource.org/licenses/lgpl-3.0.html" class="gb-href-link">
-										GNU LESSER GENERAL PUBLIC LICENSE
-									</a><br>
-									<p>Version 3, 29 June 2007<p>
-									<p>Copyright (C) 2007 Free Software Foundation, Inc. <a href="http://fsf.org" class="gb-href-link">http://fsf.org</a></p>
-									<p>Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.<p>
-									<p>This version of the GNU Lesser General Public License incorporates the terms and conditions of version 3 of the GNU General Public License, supplemented by the additional permissions listed below.</p>
-								</td>
+								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;"><spring:message
+										code="lang.licenseLGPL" /> 3.0 (LGPL v3.0)</td>
+								<td style="padding: 0.785714em;"><a href="http://www.opensource.org/licenses/lgpl-3.0.html"
+									class="gb-href-link"> GNU LESSER GENERAL PUBLIC LICENSE </a><br>
+									<p>Version 3, 29 June 2007
+									<p>
+									<p>
+										Copyright (C) 2007 Free Software Foundation, Inc. <a href="http://fsf.org" class="gb-href-link">http://fsf.org</a>
+									</p>
+									<p>Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it
+										is not allowed.
+									<p>
+									<p>This version of the GNU Lesser General Public License incorporates the terms and conditions of version 3
+										of the GNU General Public License, supplemented by the additional permissions listed below.</p></td>
 							</tr>
 						</tbody>
 					</table>
-					<h4 class="gb-horizontal"><spring:message code="lang.useLibrary" /></h4>
+					<h4 class="gb-horizontal">
+						<spring:message code="lang.useLibrary" />
+					</h4>
 					<table style="width: 100%;">
 						<tbody>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
 								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">GeoTools</td>
-								<td style="padding: 0.785714em;">
-									<a href="http://www.gnu.org/licenses/lgpl-2.1.html" class="gb-href-link">
+								<td style="padding: 0.785714em;"><a href="http://www.gnu.org/licenses/lgpl-2.1.html" class="gb-href-link">
 										<spring:message code="lang.licenseLGPL" /> 2.1 (LGPL v2.1)
-									</a>
-								</td>
+								</a></td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
 								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">PostgreSQL</td>
-								<td style="padding: 0.785714em;">
-									<a href="https://www.postgresql.org/about/licence/" class="gb-href-link">
-										The PostgreSQL Licence (PostgreSQL)
-									</a>
-								</td>
+								<td style="padding: 0.785714em;"><a href="https://www.postgresql.org/about/licence/" class="gb-href-link">
+										The PostgreSQL Licence (PostgreSQL) </a></td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
 								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Geoserver</td>
-								<td style="padding: 0.785714em;">
-									<a href="https://opensource.org/licenses/gpl-2.0.php" class="gb-href-link">
+								<td style="padding: 0.785714em;"><a href="https://opensource.org/licenses/gpl-2.0.php" class="gb-href-link">
 										<spring:message code="lang.licenseGPL" /> (GPLv2)
-									</a>
-								</td>
+								</a></td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
 								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Geogig</td>
-								<td style="padding: 0.785714em;">
-									<a href="http://opensource.org/licenses/BSD-3-Clause" class="gb-href-link">
-										3-Clause BSD License (BSD-3-Clause)
-									</a>
-								</td>
+								<td style="padding: 0.785714em;"><a href="http://opensource.org/licenses/BSD-3-Clause" class="gb-href-link">
+										3-Clause BSD License (BSD-3-Clause) </a></td>
 							</tr>
 							<tr style="border-bottom: 1px solid rgba(0, 0, 0, 0.1);">
 								<td style="padding: 0.785714em; background: rgba(0, 0, 0, 0.03); font-weight: 700;">Apache</td>
-								<td style="padding: 0.785714em;">
-									<a href="http://www.apache.org/licenses/LICENSE-2.0" class="gb-href-link">
-										Apache License 2.0
-									</a>
-								</td>
+								<td style="padding: 0.785714em;"><a href="http://www.apache.org/licenses/LICENSE-2.0" class="gb-href-link">
+										Apache License 2.0 </a></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<span style="float: right;">
-						<button type="button" data-dismiss="modal" class="btn btn-default"><spring:message code="lang.close" /></button>
+						<button type="button" data-dismiss="modal" class="btn btn-default">
+							<spring:message code="lang.close" />
+						</button>
 					</span>
 				</div>
 			</div>

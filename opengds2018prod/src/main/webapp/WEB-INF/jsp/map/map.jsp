@@ -298,8 +298,9 @@ html {
 			"clientTree" : otree.getJSTree(),
 			"map" : gbMap.getUpperMap(),
 			"properties" : new gb.edit.ModifyLayerProperties({
-				token : urlList.token,
-				featureRecord : frecord
+				"token" : urlList.token,
+				"featureRecord" : frecord,
+				"locale" : locale !== "" ? locale : "en"
 			}),
 			"uploadSHP" : uploadSHP,
 			"url" : {

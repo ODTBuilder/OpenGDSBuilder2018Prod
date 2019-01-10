@@ -70,10 +70,93 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
 	this.refer = options.refer ? options.refer : undefined;
 	this.token = options.token || "";
-	
+
+	this.locale = options.locale ? options.locale : "en";
+	this.translation = {
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"layerprop" : {
+			"ko" : "레이어 속성 정보",
+			"en" : "Layer Properties"
+		},
+		"save" : {
+			"ko" : "저장",
+			"en" : "Save"
+		},
+		"geoserver" : {
+			"ko" : "GeoServer",
+			"en" : "GeoServer"
+		},
+		"workspace" : {
+			"ko" : "작업공간",
+			"en" : "Workspace"
+		},
+		"style" : {
+			"ko" : "스타일",
+			"en" : "Style"
+		},
+		"nativeName" : {
+			"ko" : "레이어 원본 이름",
+			"en" : "Native Layer Name"
+		},
+		"lName" : {
+			"ko" : "레이어 이름",
+			"en" : "Layer Name"
+		},
+		"title" : {
+			"ko" : "제목",
+			"en" : "Title"
+		},
+		"abstractContent" : {
+			"ko" : "개요",
+			"en" : "Summary"
+		},
+		"srs" : {
+			"ko" : "좌표계",
+			"en" : "SRS"
+		},
+		"llbBox" : {
+			"ko" : "위/경도 영역",
+			"en" : "Lat/Lon Boundary"
+		},
+		"nbBox" : {
+			"ko" : "원본 레이어 최소경계 영역",
+			"en" : "Layer Minimum Boundary"
+		},
+		"dsType" : {
+			"ko" : "저장소 형식",
+			"en" : "Datastore Type"
+		},
+		"geomType" : {
+			"ko" : "지오메트리 형식",
+			"en" : "Geometry Type"
+		},
+		"geomkey" : {
+			"ko" : "지오메트리 속성명",
+			"en" : "Geometry Key Name"
+		},
+		"styleWorkspace" : {
+			"ko" : "스타일의 작업공간",
+			"en" : "Style's Workspace"
+		},
+		"attInfo" : {
+			"ko" : "속성 정보",
+			"en" : "Attribute Info"
+		},
+		"sld" : {
+			"ko" : "SLD",
+			"en" : "SLD"
+		},
+		"myserver" : {
+			"ko" : "전체 스타일",
+			"en" : "All Styles"
+		}
+	};
 	this.validIconSpan = undefined;
 	this.searchBtn = undefined;
-	
+
 	var xSpan = $("<span>").attr({
 		"aria-hidden" : true
 	}).html("&times;");
@@ -85,7 +168,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	$(xButton).addClass("close");
 
 	this.htag = $("<h4>");
-	this.htag.text("Layer Properties");
+	this.htag.text(this.translation["layerprop"][this.locale]);
 	$(this.htag).addClass("modal-title");
 
 	var header = $("<div>").append(xButton).append(this.htag);
@@ -122,7 +205,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	});
 	$(closeBtn).addClass("btn");
 	$(closeBtn).addClass("btn-default");
-	$(closeBtn).text("Close");
+	$(closeBtn).text(this.translation["close"][this.locale]);
 
 	var okBtn = this.okBtn = $("<button>").attr({
 		"type" : "button",
@@ -136,7 +219,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	});
 	$(okBtn).addClass("btn");
 	$(okBtn).addClass("btn-primary");
-	$(okBtn).text("Save");
+	$(okBtn).text(this.translation["save"][this.locale]);
 
 	var pright = $("<span>").css("float", "right");
 	$(pright).append(closeBtn).append(okBtn);
@@ -204,7 +287,8 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	var that = this;
 	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search;
 	for ( let i in list) {
-		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
+		console.log(i);
+		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(that.translation[i][that.locale]).css("width", "20%");
 		if (list[i] instanceof Object) {
 			value = $("<td>").css(gb.edit.TDSTYLE);
 			for ( var j in list[i]) {
@@ -226,7 +310,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"readonly" : false
 				}).css(gb.edit.INPUTSTYLE));
 			} else if (i === "style") {
-				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Workspace");
+				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["workspace"][this.locale]);
 				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
 				select.change(function() {
 					var params = {};
@@ -241,7 +325,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				});
 				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
 
-				option = $("<option>").val("geoserver").text(this.serverInfo.geoserver);
+				option = $("<option>").val("geoserver").text(this.translation["myserver"][this.locale]);
 				select.append(option);
 				for (let w = 0; w < this.workspaceList.length; w++) {
 					option = $("<option>").val("workspace").text(this.workspaceList[w]);
@@ -252,7 +336,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				}
 				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
 
-				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text("Style");
+				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["style"][this.locale]);
 				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
 				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
 				value.append(selectField);
@@ -263,18 +347,14 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					workspace : list.styleWorkspace,
 					style : list[i]
 				});
-			} else if(i === "srs"){
-				search = 
-					$("<input>")
-					.addClass("layer-prop-input")
-					.attr({
-						"id" : "prop" + i,
-						"value" : list[i] ? list[i].replace(/[^0-9]/g, "") : "",
-						"type" : "text",
-						"readonly" : false
-					})
-					.css(gb.edit.INPUTSTYLE);
-				
+			} else if (i === "srs") {
+				search = $("<input>").addClass("layer-prop-input").attr({
+					"id" : "prop" + i,
+					"value" : list[i] ? list[i].replace(/[^0-9]/g, "") : "",
+					"type" : "text",
+					"readonly" : false
+				}).css(gb.edit.INPUTSTYLE);
+
 				var tout = false;
 				$(search).keyup(function() {
 					that.setValidEPSG(1);
@@ -286,18 +366,13 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 						that.searchEPSGCode(v);
 					}, 250);
 				});
-				
+
 				this.validIconSpan = $("<span>").css({
 					"margin-left" : "15px",
 					"margin-right" : "0"
 				});
-				
-				value = 
-					$("<td>")
-						.append($("<span>").text("EPSG: "))
-						.append(search)
-						.append(this.validIconSpan)
-						.css(gb.edit.TDSTYLE);
+
+				value = $("<td>").append($("<span>").text("EPSG: ")).append(search).append(this.validIconSpan).css(gb.edit.TDSTYLE);
 			} else {
 				if (i === "styleWorkspace") {
 					continue;

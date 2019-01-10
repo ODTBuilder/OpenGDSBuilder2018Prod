@@ -89,7 +89,7 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
 <!-- gb.modal -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/modal/modifylayerprop.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
 <!-- gb panel  base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>

@@ -556,7 +556,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var options = options;
 	var legendTag = undefined;
 
-	if (!!options.select) {
+	if (!!options.legendTag) {
 		legendTag = options.legendTag;
 	} else {
 		return;

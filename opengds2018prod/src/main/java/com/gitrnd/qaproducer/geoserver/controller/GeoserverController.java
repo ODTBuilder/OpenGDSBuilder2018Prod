@@ -340,8 +340,6 @@ public class GeoserverController extends AbstractController {
 		String workspace = request.getParameter("workspace");
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null) {
-			response.sendError(601, "workspace를 입력하지 않았습니다.");
 		} else {
 			proService.requestWMSGetLegendGraphic(dtGeoserverManager, workspace, request, response);
 		}

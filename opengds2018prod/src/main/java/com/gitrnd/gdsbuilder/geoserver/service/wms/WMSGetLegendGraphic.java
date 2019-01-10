@@ -144,6 +144,8 @@ public class WMSGetLegendGraphic {
 			if (!this.style.equals("")) {
 				urlBuffer.append("&");
 				urlBuffer.append("style=" + style);
+				urlBuffer.append("&");
+				urlBuffer.append("STRICT=false");
 			}
 			if (!this.sld.equals("")) {
 				urlBuffer.append("&");

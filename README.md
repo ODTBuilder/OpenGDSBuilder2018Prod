@@ -52,12 +52,65 @@ Getting Started
 ### 4. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 zip 파일 형태로 Project Import
-- eclipse와 톰캣 연동 후 해당 프로젝트 서버 생성
-- server.xml 파일의 Context path를 "/geodt"로 변경
 - src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
-<pre><code> url=http://[host]:[port]/geoserver<br>
- id=[admin]<br>
- pw=[geoserver]<br> </code></pre>
+<pre><code>
+spring:
+  rabbitmq:
+    host: 레빗엠큐 호스트 주소 EX)175.111.222.333
+    port: 레빗엠큐 포트번호 EX)5672
+    virtual-host: 레빗 엠큐 버추얼 호스트
+    username: 레빗엠큐 계정명
+    password: 레빗엠큐 비밀번호
+    template:
+      exchange: 레빗엠큐 익스체인지
+      routing-key: 레빗엠큐 라우팅키
+      routing-key-mobile: 레빗엠큐 모바일용 라우팅키
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://postgresql주소:포트번호/데이터베이스 이름?charSet=UTF-8&prepareThreshold=1
+    username: 데이터베이스 계정명
+    password: 데이터베이스 비밀번호
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 3
+      maximum-pool-size: 20
+      pool-name: gdoDBPool_Prod
+      auto-commit: false
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  http:
+    multipart:
+      max-file-size: 10485760KB
+      max-request-size: 10485760KB
+server:
+  port: 프로젝트 접속 포트번호
+  context-path: /geodt
+  servlet:
+    session:
+      timeout: 3600
+  jsp-servlet:
+    init-parameters:
+      development: true
+  error:
+    whitelabel:
+      enabled: false
+gitrnd:
+  serverhost: 프로젝트 접속 주소 EX)175.111.222.333
+  apache:
+    host: 아파치 서버 주소 EX) 127.0.0.1
+    port: 아파치 서버 포트 EX) 8888
+    basedir: 디렉토리 이름 EX) gdofiles
+    basedrive: 드라이브 명 EX) C
+mybatis:
+  config-location: classpath:config/mybatis.xml
+  mapper-location: classpath:sql/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    use-column-label: true
+</code></pre>
 - src\main\webapp\WEB-INF\spring\root-context.xml 파일에 생성한 Database 정보 입력
 <pre><code> property name="url" value="jdbc:postgresql://[host]:[port]/admin" <br>
  property name="username" value="[username]" <br>

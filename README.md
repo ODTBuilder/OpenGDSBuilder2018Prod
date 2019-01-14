@@ -49,7 +49,14 @@ Getting Started
 - 소스코드에서 gdo2018scheme 파일 다운로드
 - 생성한 Database에 gdo2018scheme 파일 restore
 
-### 4. 소스코드 설치 및 프로젝트 실행 ###
+### 4. RabbitMQ 설치 및 설정 ###
+- erlang 다운로드 및 설치 http://www.erlang.org/download.html
+- rabbitMQ windows 버전 다운로드 및 설치 http://www.rabbitmq.com/download.html 에서 installer 버전을 받아 설치
+- plugins 설치 명령 프롬프트에서 c:/Program Files/RabbitMQ Server/rabbitmq_server-x.x.x/sbin 으로 이동후
+  >   rabbitmq-plugins enable rabbitmq_management 커맨드 실행
+- RabbitMQ 서비스 재시작
+
+### 5. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 zip 파일 형태로 Project Import
 - 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
@@ -118,7 +125,7 @@ mybatis:
  pw : guest<br> </code></pre>
 - 편집도구 초기화면 접속 
 
-### 5. 지원 기능 ###
+### 6. 지원 기능 ###
 
 - ### Openlayers Layer 편집 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png" alt="alt text" width="75%">

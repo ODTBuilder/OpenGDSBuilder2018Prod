@@ -52,7 +52,7 @@ Getting Started
 ### 4. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 zip 파일 형태로 Project Import
-- src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
+- 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
 <pre><code>
 spring:
   rabbitmq:
@@ -111,10 +111,6 @@ mybatis:
     map-underscore-to-camel-case: true
     use-column-label: true
 </code></pre>
-- src\main\webapp\WEB-INF\spring\root-context.xml 파일에 생성한 Database 정보 입력
-<pre><code> property name="url" value="jdbc:postgresql://[host]:[port]/admin" <br>
- property name="username" value="[username]" <br>
- property name="password" value="[password]" <br></code></pre>
 - 서버 실행 후 메인 페이지 url 접속 
  <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
 - 테스트 계정으로 로그인

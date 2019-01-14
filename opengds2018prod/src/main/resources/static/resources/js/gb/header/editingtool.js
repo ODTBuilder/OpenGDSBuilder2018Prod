@@ -303,7 +303,7 @@ gb.header.EditingTool = function(obj) {
 	}
 	for(var i in eventList){
 		if(eventList[i].text()){
-			this.btn[match[eventList[i].text().toLowerCase()]] = eventList[i];
+			this.btn[match[eventList[i].data("content").toLowerCase()]] = eventList[i];
 		}
 	}
 
@@ -385,8 +385,8 @@ gb.header.EditingTool = function(obj) {
 		if(that.getActiveTool()){
 			if(that.map.getView().getZoom() > 11){
 				if(data.selected.length === 1){
-					that.select(that.updateSelected(data.selected[0]));
-					that.moveUpEditingLayer_();
+					that.select(that.updateSelected());
+					//that.moveUpEditingLayer_();
 				}
 			}
 		}
@@ -1635,10 +1635,22 @@ gb.header.EditingTool.prototype.remove = function(layer) {
  * @method updateSelected
  * @return {ol.layer.Base}
  */
-gb.header.EditingTool.prototype.updateSelected = function(treeId) {
+gb.header.EditingTool.prototype.updateSelected = function() {
 	var source = undefined;
 	var tree = this.otree.getJSTree();
+	
+	var selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
+	var treeId;
+	if (selectedLayer.length === 1) {
+		treeId = selectedLayer[0].get("treeid");
+	} else {
+		return;
+	}
+	
 	var layer = tree.get_LayerById(treeId);
+	
+	// 현재 편집중인 레이어의 zindex를 최상위로
+	this.moveUpEditingLayer_();
 	
 	if(layer instanceof ol.layer.Group || layer instanceof ol.layer.Image){
 		return this.selectedSource || source;
@@ -2284,7 +2296,20 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 		} else {
 			if(interaction.setSelectFeatures instanceof Function){
 				interaction.setSelectFeatures(that.selected);
+			} else {
+				var prevSelected = that.selectedSource;
+				var prevTreeid;
+				if(prevSelected !== undefined){
+					if(!!prevSelected.get("git")){
+						prevTreeid = prevSelected.get("git").treeID || "";
+					}
+				}
+				
+				if(that.otree.getJSTree().get_node(prevTreeid)){
+					that.otree.getJSTree().set_flag(that.otree.getJSTree().get_node(prevTreeid), "editing", false);
+				}
 			}
+			
 			interaction.setActive(true);
 			that.activeBtn_(content);
 		}
@@ -2445,7 +2470,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
 				if(selectedLayer.length === 1){
 					if(tileLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
-						this.updateSelected(selectedLayer[0].get("treeid"));
+						this.updateSelected();
 						this.select(vectorSource);
 					}
 				}
@@ -2517,7 +2542,7 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
 				if(selectedLayer.length === 1){
 					if(vecLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
-						this.updateSelected(selectedLayer[0].get("treeid"));
+						this.updateSelected();
 						this.select(vectorSource);
 					}
 				}
@@ -2853,13 +2878,7 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 		// 벡터벡터 레이어 보이기
 		this.setVisibleVectorVector(true);
 		// 선택 레이어 업데이트
-		var selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
-		if (selectedLayer.length ===1) {
-			var treeid = selectedLayer[0].get("treeid");
-			this.select(this.updateSelected(treeid));
-			// 현재 편집중인 레이어의 zindex를 최상위로
-			this.moveUpEditingLayer_();
-		}
+		this.select(this.updateSelected());
 	} else {
 		// 줌 레벨이 일정 이상이면 화면확대 요구 메세지창 생성
 		this.displayEditZoomHint(true);

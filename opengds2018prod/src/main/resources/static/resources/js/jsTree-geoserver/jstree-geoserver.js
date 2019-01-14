@@ -131,20 +131,55 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 *            outputformat - output 포맷 형식
 	 */
 	this.download_wms_layer = function(layer, outputformat) {
-		var data = layer;
-		var params = {
-			"serverName" : data.serverName,
-			"workspace" : data.workspace,
-			"version" : "1.1.0",
-			"format" : outputformat,
-			"srs" : data.srs,
-			"bbox" : [ data.nbBox.minx, data.nbBox.miny, data.nbBox.maxx, data.nbBox.maxy ],
-			"layers" : data.lName,
-			"width" : 1024,
-			"height" : 768
-		}
-
-		downloadWithCRS(this._data.geoserver.getMapWMS, params);
+		var that = this;
+		var a = layer;
+		var format = outputformat;
+		
+		$.ajax({
+			url : that._data.geoserver.getLayerInfo,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			cache : false,
+			data : JSON.stringify(a),
+			beforeSend : function() { // 호출전실행
+				// loadImageShow();
+			},
+			traditional : true,
+			success : function(data, textStatus, jqXHR) {
+				var params, form, keys;
+				
+				for (var i = 0; i < data.length; i++) {
+					params = {
+						"serverName" : a.serverName,
+						"workspace" : a.workspace,
+						"version" : "1.1.0",
+						"format" : format,
+						"srs": data[i].srs,
+						"bbox" : [ data[i].nbBox.minx, data[i].nbBox.miny, data[i].nbBox.maxx, data[i].nbBox.maxy ],
+						"layers" : data[i].lName,
+						"width" : 1024,
+						"height" : 768
+					};
+					
+					form = document.createElement("form");
+					form.setAttribute("method", "get");
+					form.setAttribute("action", that._data.geoserver.getMapWMS);
+					keys = Object.keys(params);
+					for (var j = 0; j < keys.length; j++) {
+						var hiddenField = document.createElement("input");
+						hiddenField.setAttribute("type", "hidden");
+						hiddenField.setAttribute("name", keys[j]);
+						hiddenField.setAttribute("value", params[keys[j]]);
+						form.appendChild(hiddenField);
+					}
+					form.target = "_blank";
+					document.body.appendChild(form);
+					form.submit();
+				}
+			}
+		}).fail(function(xhr, status, errorThrown) {
+			that.errorModal(xhr.responseJSON.status);
+		});
 	}
 
 	/**

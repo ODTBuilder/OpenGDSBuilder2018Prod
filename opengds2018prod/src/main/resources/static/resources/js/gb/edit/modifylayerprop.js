@@ -547,6 +547,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 					tag.attr("selected", "selected");
 				}
 			}
+			select.trigger("change");
 		}
 	});
 }
@@ -555,6 +556,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var params = {};
 	var options = options;
 	var legendTag = undefined;
+	var src = "";
 
 	if (!!options.legendTag) {
 		legendTag = options.legendTag;
@@ -585,21 +587,15 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	}
 	
 	params.version = "1.0.0";
-	params.format = "PNG8";
-	params.width = "15";
-	params.height = "15";
+	params.format = "image/png";
+	params.width = "20";
+	params.height = "20";
 
-	$.ajax({
-		url : "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token,
-		method : "GET",
-		contentType : "application/json; charset=UTF-8",
-		cache : false,
-		data : params,
-		success : function(data, textStatus, jqXHR) {
-			legendTag.attr("src", "");
-			console.log(data);
-		}
-	});
+	for(var i in params){
+		src += "&" + i + "=" + params[i];
+	}
+	
+	legendTag.attr("src", "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token + src);
 }
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {

@@ -1330,7 +1330,7 @@ gb.tree.GeoServer = function(obj) {
 											}
 											if (server.length > 0 || ws.length > 0 || ds.length > 0) {
 												isValid = false;
-												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
+												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
 											} else {
 												for (var i = 0; i < layers.length; i++) {
 													var layerNode = inst.get_node(layers[i]);
@@ -1363,7 +1363,7 @@ gb.tree.GeoServer = function(obj) {
 
 													that.openDeleteGeoServerLayer(sendServer.text, sendws.text, sendds.text, layerstxt);
 												} else {
-													that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
+													that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
 												}
 											}
 										}
@@ -2146,9 +2146,9 @@ gb.tree.GeoServer.prototype.getUploadSHP = function() {
  * @param {Number}
  *            height - 모달의 높이(px)
  */
-gb.tree.GeoServer.prototype.messageModal = function(title, msg, height) {
+gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
 	var that = this;
-	var msg1 = $("<div>").text(msg).css({
+	var msg1 = $("<div>").append(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
 		"margin-top" : "18px",
@@ -2164,7 +2164,6 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg, height) {
 	var modal = new gb.modal.Base({
 		"title" : title,
 		"width" : 310,
-		"height" : height,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -2295,7 +2294,7 @@ gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, topNode, aft
  */
 gb.tree.GeoServer.prototype.errorModal = function(code) {
 	var that = this;
-	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 182);
+	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale]);
 };
 
 /**

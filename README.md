@@ -53,7 +53,10 @@ Getting Started
   >   rabbitmq-plugins enable rabbitmq_management 커맨드 실행
 - RabbitMQ 서비스 재시작
 
-### 5. 소스코드 설치 및 프로젝트 실행 ###
+### 5. 검수 서버 설치 ###
+- https://github.com/ODTBuilder/OpenGDSBuilder2018Cons 접속후 검수 서버 설치 및 실행
+
+### 6. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 zip 파일 형태로 Project Import
 - 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
@@ -122,7 +125,7 @@ mybatis:
  pw : guest<br> </code></pre>
 - 편집도구 초기화면 접속 
 
-### 6. 지원 기능 ###
+### 7. 지원 기능 ###
 
 - ### Openlayers Layer 편집 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png" alt="alt text" width="75%">

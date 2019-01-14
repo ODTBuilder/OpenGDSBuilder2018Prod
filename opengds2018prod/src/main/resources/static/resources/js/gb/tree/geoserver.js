@@ -629,55 +629,6 @@ gb.tree.GeoServer = function(obj) {
 											console.log(that.getLoadingList());
 											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 										}
-										// var selectedNum = nodes.length;
-										// if (selectedNum === 1) {
-										// var node = inst.get_node(nodes[0]);
-										// var type = inst.get_type(node);
-										// if (type === "workspace") {
-										// inst.load_each_wms_layer(node,
-										// that.map.getLayers());
-										// } else if (type === "datastore") {
-										// inst.load_each_wms_layer(node,
-										// that.map.getLayers());
-										// } else if (type === "point" || type
-										// ===
-										// "multipoint" || type === "linestring"
-										// || type === "multilinestring" || type
-										// ===
-										// "polygon" || type === "multipolygon")
-										// {
-										// console.log(node);
-										// inst.load_each_wms_layer(node,
-										// that.map.getLayers());
-										// }
-										// } else if (selectedNum > 1) {
-										// var serverNum = 0;
-										// var workNum = 0;
-										// var storeNum = 0;
-										// var layerNum = 0;
-										// for (var i = 0; i < nodes.length;
-										// i++) {
-										// var node = inst.get_node(nodes[i]);
-										// var type = inst.get_type(node);
-										// if (type === "geoserver") {
-										// serverNum++;
-										// } else if (type === "workspace") {
-										// workNum++;
-										// } else if (type === "datastore") {
-										// storeNum++;
-										// } else if (type === "layer") {
-										// layerNum++;
-										// }
-										// }
-										// if (selectedNum !== serverNum &&
-										// selectedNum !== workNum &&
-										// selectedNum
-										// !== storeNum
-										// && selectedNum !== layerNum) {
-										// console.log("");
-										// }
-										// }
-
 									}
 							};
 							totalObj["import"] = importObj;

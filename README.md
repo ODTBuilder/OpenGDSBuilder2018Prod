@@ -1,3 +1,7 @@
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Korean](https://img.shields.io/badge/language-Korean-blue.svg)](#korean)
+
+
 <a name="korean"></a>
 OpenGDSBuilder2018Prod (웹 기반 공간 정보 검수 및 편집 솔루션) 
 =======

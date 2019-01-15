@@ -121,10 +121,8 @@ mybatis:
 </code></pre>
 - 서버 실행 후 메인 페이지 url 접속 
  <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
-- 테스트 계정으로 로그인
- <pre><code> id : guest<br>
- pw : guest<br> </code></pre>
-- 편집도구 초기화면 접속 
+- 가입 후 로그인
+- 편집도구 초기화면 접속
 
 ### 7. 지원 기능 ###
 

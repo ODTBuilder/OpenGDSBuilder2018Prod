@@ -32,6 +32,7 @@ Getting Started
 - eclipse neon 
 - PostgreSQL 9.4 
 - Geoserver 2.13.2
+- RabbitMQ 3.7.7
 
 ### 2. Geoserver 설치 및 설정 ###
 - http://geoserver.org/ 접속 후 Geoserver 2.13.2 Windows Installer 다운로드 <br> 

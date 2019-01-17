@@ -603,7 +603,13 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 				}
 			}
 			for (var i = 0; i < children.length; i++) {
-				showing.push(this.get_LayerById(children[i]).get("id"));
+				var myLayer = this.get_LayerById(children[i]);
+				var git = myLayer.get("git");
+				var work = git !== undefined ? (git["workspace"] + ":") : "";
+				var layerName = myLayer.get("name");
+				var str = work + layerName;
+				showing.push(str);
+				// showing.push(this.get_LayerById(children[i]).get("id"));
 			}
 			// console.log(showing);
 			var source = layer.getSource();

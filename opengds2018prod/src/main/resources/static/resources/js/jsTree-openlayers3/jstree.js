@@ -597,9 +597,11 @@
 						layer.setZIndex(zidx);
 						lastZidx++;
 						var layers = layer.getLayers();
-						for (var i = 0; i < layers.getLength(); i++) {
-							lastZidx = that.setUniqueLayerZIndex(
-									layers.item(i), lastZidx);
+						if (layers instanceof ol.Collection) {
+							for (var i = 0; i < layers.getLength(); i++) {
+								lastZidx = that.setUniqueLayerZIndex(
+										layers.item(i), lastZidx);
+							}							
 						}
 					} else if (layer instanceof ol.layer.Base) {
 						var git;
@@ -612,9 +614,11 @@
 									layer.setZIndex(lastZidx);
 									lastZidx++;
 									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										lastZidx = that.setUniqueLayerZIndex(
-												layers.item(i), lastZidx);
+									if (layers instanceof ol.Collection) {
+										for (var i = 0; i < layers.getLength(); i++) {
+											lastZidx = that.setUniqueLayerZIndex(
+													layers.item(i), lastZidx);
+										}										
 									}
 								} else if (git.fake === "child") {
 									layer.setZIndex(lastZidx);
@@ -670,11 +674,13 @@
 							if (layer.get("git").hasOwnProperty("fake")) {
 								if (git.fake === "parent") {
 									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										if (typeof layers.item(i).get("treeid") !== "string") {
-											that.setUniqueLayerId(layers
-													.item(i), that
-													._createLayerId());
+									if (layers instanceof ol.Collection) {
+										for (var i = 0; i < layers.getLength(); i++) {
+											if (typeof layers.item(i).get("treeid") !== "string") {
+												that.setUniqueLayerId(layers
+														.item(i), that
+														._createLayerId());
+											}
 										}
 									}
 								} else if (git.fake === "child") {
@@ -786,7 +792,7 @@
 								that.git.isContextmenu = false;
 							} else {
 								var json = that._createJSONFromLayer(addLayer);
-								// console.log(json);
+								 console.log(json);
 								for (var i = 0; i < json.length; i++) {
 									that.create_node(json[i].parent, json[i],
 											"first", false, false);
@@ -2158,8 +2164,10 @@
 					var layers = this._data.core.layers;
 
 					var isUnique = true;
-					for (var i = 0; i < layers.getLength(); i++) {
-						isUnique = this._tour_CheckId(layers.item(i), id);
+					if (layers instanceof ol.Collection) {
+						for (var i = 0; i < layers.getLength(); i++) {
+							isUnique = this._tour_CheckId(layers.item(i), id);
+						}	
 					}
 					return isUnique;
 				},
@@ -2204,11 +2212,13 @@
 										return isUnique;
 									} else {
 										var layers = layer.get("git").layers;
-										for (var i = 0; i < layers.getLength(); i++) {
-											isUnique = this._tour_CheckId(
-													layers.item(i), id);
-											if (!isUnique) {
-												break;
+										if (layers instanceof ol.Collection) {
+											for (var i = 0; i < layers.getLength(); i++) {
+												isUnique = this._tour_CheckId(
+														layers.item(i), id);
+												if (!isUnique) {
+													break;
+												}
 											}
 										}
 									}
@@ -2374,11 +2384,54 @@
 						} else {
 							obj.type = "Raster";
 						}
-						result.push(obj);
+// result.push(obj);
 					} else if (layer instanceof ol.layer.Tile) {
 						if (layer.get("git")) {
 							var git = layer.get("git");
-							if (git.hasOwnProperty("validation")) {
+							if (git.hasOwnProperty("fake")) {
+								if (git["fake"] === "parent") {
+									obj.type = "Group";
+// result.push(obj);
+									var layers = layer.get("git").layers;
+									for (var i = 0; i < layers.getLength(); i++) {
+										result = result.concat(that
+												._createJSONFromLayer(layers
+														.item(i), layer
+														.get("treeid")));
+									}
+								} else if (git["fake"] === "child") {
+									if (git.editable &&
+											git.hasOwnProperty("geometry")) {
+										switch (git.geometry) {
+										case "Point":
+											obj.type = git.geometry;
+											break;
+										case "MultiPoint":
+											obj.type = git.geometry;
+											break;
+										case "LineString":
+											obj.type = git.geometry;
+											break;
+										case "MultiLineString":
+											obj.type = git.geometry;
+											break;
+										case "Polygon":
+											obj.type = git.geometry;
+											break;
+										case "MultiPolygon":
+											obj.type = git.geometry;
+											break;
+										default:
+											obj.type = "ImageTile";
+										break;
+										}
+									} else {
+										obj.type = "ImageTile";
+									}
+// result.push(obj);
+								}
+
+							} else if (git.hasOwnProperty("validation")) {
 								switch (git.validation) {
 								case "Up":
 									obj.type = git.validation;
@@ -2437,7 +2490,7 @@
 						} else {
 							obj.type = "Raster";
 						}
-						result.push(obj);
+// result.push(obj);
 					} else if (layer instanceof ol.layer.Group) {
 						if (layer.get("git")) {
 							var git = layer.get("git");
@@ -2462,122 +2515,125 @@
 						} else {
 							obj.type = "Group";
 						}
-						result.push(obj);
+// result.push(obj);
 						var layers = layer.getLayers();
 						for (var i = 0; i < layers.getLength(); i++) {
 							result = result.concat(that._createJSONFromLayer(
 									layers.item(i), layer.get("treeid")));
 						}
-					} else if (layer instanceof ol.layer.Base) {
-						if (layer.get("git")) {
-							var git = layer.get("git");
-							if (git.hasOwnProperty("fake")) {
-								if (git["fake"] === "parent") {
-									obj.type = "Group";
-									result.push(obj);
-									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										result = result.concat(that
-												._createJSONFromLayer(layers
-														.item(i), layer
-														.get("treeid")));
-									}
-								} else if (git["fake"] === "child") {
-									// if (git.editable &&
-									// git.hasOwnProperty("geometry")) {
-									// switch (git.geometry) {
-									// case "Point":
-									// obj.type = git.geometry;
-									// break;
-									// case "MultiPoint":
-									// obj.type = git.geometry;
-									// break;
-									// case "LineString":
-									// obj.type = git.geometry;
-									// break;
-									// case "MultiLineString":
-									// obj.type = git.geometry;
-									// break;
-									// case "Polygon":
-									// obj.type = git.geometry;
-									// break;
-									// case "MultiPolygon":
-									// obj.type = git.geometry;
-									// break;
-									// default:
-									// obj.type = "ImageTile";
-									// break;
-									// }
-									// } else {
-									obj.type = "ImageTile";
-									// }
-									result.push(obj);
-								}
-							} else if (git.hasOwnProperty("validation")) {
-								switch (git.validation) {
-								case "Up":
-									obj.type = git.validation;
-									break;
-								case "Down":
-									obj.type = git.validation;
-									break;
-								case "Left":
-									obj.type = git.validation;
-									break;
-								case "Right":
-									obj.type = git.validation;
-									break;
-								case "CenterChild":
-									obj.type = git.validation;
-									break;
-								case "ErrorChild":
-									obj.type = git.validation;
-									break;
-								default:
-									obj.type = "ImageTile";
-									break;
-								}
-								result.push(obj);
-							} else if (git.hasOwnProperty("editable")) {
-								if (git.editable
-										&& git.hasOwnProperty("geometry")) {
-									switch (git.geometry) {
-									case "Point":
-										obj.type = git.geometry;
-										break;
-									case "MultiPoint":
-										obj.type = git.geometry;
-										break;
-									case "LineString":
-										obj.type = git.geometry;
-										break;
-									case "MultiLineString":
-										obj.type = git.geometry;
-										break;
-									case "Polygon":
-										obj.type = git.geometry;
-										break;
-									case "MultiPolygon":
-										obj.type = git.geometry;
-										break;
-									default:
-										obj.type = "ImageTile";
-										break;
-									}
-								} else {
-									obj.type = "ImageTile";
-								}
-								result.push(obj);
-							} else {
-								obj.type = "ImageTile";
-								result.push(obj);
-							}
-						} else {
-							obj.type = "ImageTile";
-							result.push(obj);
-						}
-
-					}
+					} 
+// else if (layer instanceof ol.layer.Base) {
+// if (layer.get("git")) {
+// var git = layer.get("git");
+// if (git.hasOwnProperty("fake")) {
+// if (git["fake"] === "parent") {
+// obj.type = "Group";
+// result.push(obj);
+// var layers = layer.get("git").layers;
+// for (var i = 0; i < layers.getLength(); i++) {
+// result = result.concat(that
+// ._createJSONFromLayer(layers
+// .item(i), layer
+// .get("treeid")));
+// }
+// } else if (git["fake"] === "child") {
+// // if (git.editable &&
+// // git.hasOwnProperty("geometry")) {
+// // switch (git.geometry) {
+// // case "Point":
+// // obj.type = git.geometry;
+// // break;
+// // case "MultiPoint":
+// // obj.type = git.geometry;
+// // break;
+// // case "LineString":
+// // obj.type = git.geometry;
+// // break;
+// // case "MultiLineString":
+// // obj.type = git.geometry;
+// // break;
+// // case "Polygon":
+// // obj.type = git.geometry;
+// // break;
+// // case "MultiPolygon":
+// // obj.type = git.geometry;
+// // break;
+// // default:
+// // obj.type = "ImageTile";
+// // break;
+// // }
+// // } else {
+// obj.type = "ImageTile";
+// // }
+// result.push(obj);
+// }
+// } else if (git.hasOwnProperty("validation")) {
+// switch (git.validation) {
+// case "Up":
+// obj.type = git.validation;
+// break;
+// case "Down":
+// obj.type = git.validation;
+// break;
+// case "Left":
+// obj.type = git.validation;
+// break;
+// case "Right":
+// obj.type = git.validation;
+// break;
+// case "CenterChild":
+// obj.type = git.validation;
+// break;
+// case "ErrorChild":
+// obj.type = git.validation;
+// break;
+// default:
+// obj.type = "ImageTile";
+// break;
+// }
+// result.push(obj);
+// } else if (git.hasOwnProperty("editable")) {
+// if (git.editable
+// && git.hasOwnProperty("geometry")) {
+// switch (git.geometry) {
+// case "Point":
+// obj.type = git.geometry;
+// break;
+// case "MultiPoint":
+// obj.type = git.geometry;
+// break;
+// case "LineString":
+// obj.type = git.geometry;
+// break;
+// case "MultiLineString":
+// obj.type = git.geometry;
+// break;
+// case "Polygon":
+// obj.type = git.geometry;
+// break;
+// case "MultiPolygon":
+// obj.type = git.geometry;
+// break;
+// default:
+// obj.type = "ImageTile";
+// break;
+// }
+// } else {
+// obj.type = "ImageTile";
+// }
+// result.push(obj);
+// } else {
+// obj.type = "ImageTile";
+// result.push(obj);
+// }
+// } else {
+// obj.type = "ImageTile";
+// result.push(obj);
+// }
+//
+// }
+					result.push(obj);
+					console.log(result);
 					return result;
 				},
 				/**
@@ -5728,13 +5784,15 @@
 								} else if (git.fake === "parent"
 										&& layer.get("treeid") !== id) {
 									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										var isExist = this.tour_Layer(layers
-												.item(i), id);
-										if (!!isExist) {
-											result = isExist;
-											break;
-										}
+									if (layers instanceof ol.Collection) {
+										for (var i = 0; i < layers.getLength(); i++) {
+											var isExist = this.tour_Layer(layers
+													.item(i), id);
+											if (!!isExist) {
+												result = isExist;
+												break;
+											}
+										}										
 									}
 								} else if (git.fake === "child"
 										&& layer.get("treeid") === id) {
@@ -5776,13 +5834,15 @@
 							result = layer;
 						} else {
 							var layers = layer.getLayers();
-							for (var i = 0; i < layers.getLength(); i++) {
-								var isExist = this.tour_Layer_Id(
-										layers.item(i), id);
-								if (!!isExist) {
-									result = isExist;
-									break;
-								}
+							if (layers instanceof ol.Collection) {
+								for (var i = 0; i < layers.getLength(); i++) {
+									var isExist = this.tour_Layer_Id(
+											layers.item(i), id);
+									if (!!isExist) {
+										result = isExist;
+										break;
+									}
+								}								
 							}
 						}
 					} else if (layer instanceof ol.layer.Base) {
@@ -5795,13 +5855,15 @@
 								} else if (git.fake === "parent"
 										&& layer.get("id") !== id) {
 									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										var isExist = this.tour_Layer_Id(layers
-												.item(i), id);
-										if (!!isExist) {
-											result = isExist;
-											break;
-										}
+									if (layers instanceof ol.Collection) {
+										for (var i = 0; i < layers.getLength(); i++) {
+											var isExist = this.tour_Layer_Id(layers
+													.item(i), id);
+											if (!!isExist) {
+												result = isExist;
+												break;
+											}
+										}										
 									}
 								} else if (git.fake === "child"
 										&& layer.get("id") === id) {
@@ -5853,9 +5915,11 @@
 								if (git.fake === "parent") {
 									num += 1;
 									var layers = layer.get("git").layers;
-									for (var i = 0; i < layers.getLength(); i++) {
-										num = this.sum_Layers(layers.item(i),
-												num);
+									if (layers instanceof ol.Collection) {
+										for (var i = 0; i < layers.getLength(); i++) {
+											num = this.sum_Layers(layers.item(i),
+													num);
+										}	
 									}
 								} else if (git.fake === "child") {
 									num += 1;
@@ -5897,12 +5961,14 @@
 					}
 					var layer;
 					if (typeof id === "string") {
-						for (var i = 0; i < layers.getLength(); i++) {
-							var isExist = this.tour_Layer(layers.item(i), id);
-							if (!!isExist) {
-								layer = isExist;
-								break;
-							}
+						if (layers instanceof ol.Collection) {
+							for (var i = 0; i < layers.getLength(); i++) {
+								var isExist = this.tour_Layer(layers.item(i), id);
+								if (!!isExist) {
+									layer = isExist;
+									break;
+								}
+							}							
 						}
 					}
 					return layer;
@@ -5932,12 +5998,14 @@
 					}
 					var layer;
 					if (typeof id === "string") {
-						for (var i = 0; i < layers.getLength(); i++) {
-							var isExist = this
-									.tour_Layer_Id(layers.item(i), id);
-							if (!!isExist) {
-								layer = isExist;
-								break;
+						if (layers instanceof ol.Collection) {
+							for (var i = 0; i < layers.getLength(); i++) {
+								var isExist = this
+										.tour_Layer_Id(layers.item(i), id);
+								if (!!isExist) {
+									layer = isExist;
+									break;
+								}
 							}
 						}
 					}
@@ -7106,7 +7174,11 @@
 										for (var i = 0; i < inner.length; i++) {
 											if (this.get_node(inner[i]
 													.get("treeid")).state.hiding === false) {
-												names.push(inner[i].get("id"));
+												var git = inner[i].get("git");
+												var work = git !== undefined ? (git["workspace"]+":") : "";
+												var layer = inner[i].get("name");
+												names.push(work+layer);
+// names.push(inner[i].get("id"));
 											}
 										}
 										// console.log(names.toString());

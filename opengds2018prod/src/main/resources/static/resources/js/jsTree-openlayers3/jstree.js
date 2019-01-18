@@ -6572,12 +6572,12 @@
 						return false;
 					}
 					par = this.get_node(obj.parent);
-					var hide_child_layer = function(parent, id) {
+					var hide_child_layer = function(parent, lname) {
 						if (parent instanceof ol.layer.Tile) {
 							var source = parent.getSource();
 							var params = source.getParams();
 							var layers = params["LAYERS"].split(",");
-							layers.splice(layers.indexOf(id), 1);
+							layers.splice(layers.indexOf(lname), 1);
 							params["LAYERS"] = layers.toString();
 							source.updateParams(params);
 							if (layers.length === 0) {
@@ -6612,7 +6612,13 @@
 									subVal = this.sum_Layers(layer, subVal);
 									group.remove(layer);
 									this.git.lastPointer -= subVal;
-									hide_child_layer(pLayer, layer.get("id"));
+									
+									var git = layer.get("git");
+									var work = git !== undefined ? (git["workspace"]+":") : "" ;
+									var name = layer.get("name");
+									var uname = work+name;
+									hide_child_layer(pLayer, uname);
+									
 								} else if (git.fake === "child") {
 									layer = this.get_LayerById(obj.id);
 									this._data.layerproperties.editingTool

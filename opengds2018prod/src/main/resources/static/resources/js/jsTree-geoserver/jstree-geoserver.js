@@ -733,6 +733,13 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					wms.set("id", node.id);
 					wms.set("name", node.text);
 					collection.push(wms);
+
+					var layers = wms.get("git").layers;
+					if (layers instanceof ol.Collection) {
+						var domnode = that._data.geoserver.clientTree.get_node(wms.get("treeid"), true);
+						$(domnode).addClass("jstreeol3-loading");
+						console.log(domnode);
+					}
 				}
 				$.ajax({
 					url : that._data.geoserver.getLayerInfo,
@@ -783,7 +790,6 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										serverType : "geoserver"
 									})
 								});
-
 								var gitChild = {
 									"fake" : "child",
 									"geoserver" : params["serverName"],
@@ -808,7 +814,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								} else {
 									console.error("no collection to push");
 								}
+								if (wms instanceof ol.layer.Tile) {
+									var git = wms.get("git");
+									if (git !== undefined) {
+										var fakeType = git.fake;
+										if (fakeType !== undefined) {
+											if (fakeType === "parent") {
+												var all = git["allChildren"];
+												var allInt = parseInt(all);
+												var load = git["loadedChildren"];
+												var loadInt = parseInt(load);
+												if (!isNaN(loadInt)) {
+													git["loadedChildren"] = loadInt + 1;
+												}
+												if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+													that._data.geoserver.clientTree.refresh();
 
+												}
+											}
+										}
+									}
+								}
 								if (i === (data.length - 1)) {
 									that._data.geoserver.clientTree.refresh();
 								}

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -54,6 +56,7 @@ import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
+import com.gitrnd.gdsbuilder.parse.impl.DataConvertorImpl;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -302,6 +305,110 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return puFlag;
 	}
+	
+	
+	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication){
+		int puFlag = 500;
+		if (dtGeoManager != null && workspace != null && datastore != null) {
+			dtReader = dtGeoManager.getReader();
+			dtPublisher = dtGeoManager.getPublisher();
+			
+			boolean wsFlag = false;
+			boolean dsFlag = false;
+
+			wsFlag = dtReader.existsWorkspace(workspace);
+			dsFlag = dtReader.existsDatastore(workspace, datastore);
+
+			if (wsFlag && dsFlag) {
+				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
+				String outputFolderPath = defaultTempPath;
+				
+				String uploadFilename = "";//업로드 파일명
+				
+				
+				if (!new File(defaultTempPath).exists()) {
+					new File(defaultTempPath).mkdirs();
+				}
+				
+				SimpleFeatureCollection simpleCollection = null;
+				
+				if(geojson!=null){
+					if(attJson!=null){
+						simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson);
+					}else{
+						simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson,attJson);
+					}
+					
+					
+					if(simpleCollection!=null){
+						//임시폴더 생성
+						Path tmpBasedir = Files.createTempDirectory(Paths.get(defaultTempPath), "upload_temp_");
+						String savaPath = tmpBasedir+File.separator+layerName+".shp";
+						createZipFile(tmpBasedir.toString(), tmpBasedir.toString(), layerName+".zip");
+						
+					}else{
+						
+					}
+					
+					
+					
+				}else{
+					//geojson 정보오류
+					return 614; 
+				}
+				
+				
+				
+				
+				
+				
+				Path tmpBasedir = Files.createTempDirectory(Paths.get(defaultTempPath), "upload_temp_");
+
+				
+				
+				if (dtReader.existsLayer(workspace, uploadFilename, true)) {
+					// 레이어 중복
+					deleteDirectory(tmp.toFile());
+					logger.warn("레이어중복");
+					return 609;
+				}
+				boolean availableFlag = dtReader.existsFeatureTypesAvailable(workspace, datastore, uploadFilename);
+				if(!ignorePublication){
+					if(availableFlag){
+						deleteDirectory(tmp.toFile());
+						logger.warn("데이터 존재->미발행 레이어");
+						return 613;
+					}
+				}
+				try {
+					// Geoserver에 레이어 발행
+					boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
+							new File(saveFilePath).toURI());
+					if (serverPFlag) {
+						puFlag = 200;
+					} else {
+						deleteDirectory(tmp.toFile());
+						puFlag = 500;
+						logger.warn("발행실패");
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					deleteDirectory(tmp.toFile());
+					puFlag = 500;
+					logger.warn("발행실패");
+				}
+				// 성공 or 실패시 파일삭제
+				deleteDirectory(tmp.toFile());
+			} else {
+				logger.warn("workspace 또는 datastore 존재 X");
+				puFlag = 607;
+			}
+		} else {
+			logger.warn("Geoserver 정보X");
+			puFlag = 604;
+		}
+	}
+	
 
 	private void deleteDirectory(File dir) {
 

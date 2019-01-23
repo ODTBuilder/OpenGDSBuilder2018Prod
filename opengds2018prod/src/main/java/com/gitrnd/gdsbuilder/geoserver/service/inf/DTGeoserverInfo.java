@@ -223,12 +223,12 @@ public class DTGeoserverInfo {
 			if (type == EnGeoserverInfo.SERVER) {
 				urlBuffer.append("/rest/about/version." + fileFormat);
 			} else if (type == EnGeoserverInfo.WORKSPACE) {
-				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName() + workspace + "." + fileFormat);
+				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName()+ "/" + workspace + "." + fileFormat);
 			} else if (type == EnGeoserverInfo.DATASTORE) {
-				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName() + workspace + "/"
+				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName()+ "/" + workspace + "/"
 						+ EnGeoserverInfo.DATASTORE.getTypeName() + "/" + datastore + "." + fileFormat);
 			} else if (type == EnGeoserverInfo.LAYER) {
-				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName() + workspace + "/"
+				urlBuffer.append("/rest/" + EnGeoserverInfo.WORKSPACE.getTypeName()+ "/" + workspace + "/"
 						+ EnGeoserverInfo.DATASTORE.getTypeName() + "/" + datastore + "/"
 						+ EnGeoserverInfo.LAYER.getTypeName() + "/" + layers + "." + fileFormat);
 			}

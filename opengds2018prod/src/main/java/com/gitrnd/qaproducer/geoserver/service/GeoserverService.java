@@ -102,6 +102,7 @@ public interface GeoserverService {
 	public int shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication);
 	
 	
+	
 	/**
 	 * @Description JSON파일 업로드
 	 * @author SG.Lee
@@ -110,12 +111,30 @@ public interface GeoserverService {
 	 * @param workspace     Geoserver Workspace명
 	 * @param datastore     Geoserver Datasource명
 	 * @param layerName     저장하고 싶은 layer명
-	 * @param geojson        Geojson
-	 * @param ignorePublication
+	 * @param epsg          좌표계
+	 * @param geojson       Geojson
+	 * @param attJson		속성구조정보
+	 * @param ignorePublication 미발행 레이어 무시여부
 	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
-	 *             607 : workspace 또는 datastore 존재 X 609 : 레이어 중복
+	 *             607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
 	 * */
 	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication);
+	
+	/**
+	 * @Description JSON파일 업로드
+	 * @author SG.Lee
+	 * @Date 2019. 1. 22. 오후 5:45:06
+	 * @param dtGeoManager  DTGeoserverManager Object
+	 * @param workspace     Geoserver Workspace명
+	 * @param datastore     Geoserver Datasource명
+	 * @param layerName     저장하고 싶은 layer명
+	 * @param epsg          좌표계
+	 * @param geojson       Geojson
+	 * @param ignorePublication 미발행 레이어 무시여부
+	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
+	 *             607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
+	 * */
+	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, boolean ignorePublication);
 
 	/**
 	 * @Description 에러 레이어 발행

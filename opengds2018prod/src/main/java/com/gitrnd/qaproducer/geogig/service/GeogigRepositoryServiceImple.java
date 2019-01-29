@@ -115,11 +115,22 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 						DeleteRepository delete = new DeleteRepository();
 						GeogigRepositoryDelete reposDelete = delete.executeGetCommand(url, user, pw, repoName);
 						delete.executeDeleteCommand(url, user, pw, repoName, reposDelete.getToken());
+
+						geogigReposInit = new GeogigRepositoryInit();
+						geogigReposInit.setError(e.getMessage());
+						geogigReposInit.setSuccess("false");
+
+						GeogigExceptionStatus geogigStatus = GeogigExceptionStatus
+								.getStatus(geogigReposInit.getError());
+						geogigReposInit.setError(geogigStatus.getStatus());
 					}
 				} else {
 					geogigReposInit = new GeogigRepositoryInit();
-					geogigReposInit.setError("no commits");
+					geogigReposInit.setError("No Commits Remote Repository");
 					geogigReposInit.setSuccess("false");
+
+					GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigReposInit.getError());
+					geogigReposInit.setError(geogigStatus.getStatus());
 				}
 			}
 		} catch (GeogigCommandException e) {
@@ -486,11 +497,11 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			PushRepository push = new PushRepository();
 			if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
 				geogigPush = push.executeCommand(url, user, pw, repoName, remoteName, branchName, remoteBranchName);
-			} else{
+			} else {
 				geogigPush = new GeogigPush();
 				geogigPush.setSuccess("false");
 				geogigPush.setError(GeogigExceptionStatus.REMOTE_CONNECTION_FAIL.getStatus());
-			}	
+			}
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
 				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigPush.class);
@@ -506,6 +517,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		}
 		return geogigPush;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

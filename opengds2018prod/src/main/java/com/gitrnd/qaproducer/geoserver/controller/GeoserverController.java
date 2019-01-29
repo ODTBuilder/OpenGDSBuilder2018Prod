@@ -608,16 +608,74 @@ public class GeoserverController extends AbstractController {
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		String workspace = (String) request.getParameter("workspace");
 		String datastore = (String) request.getParameter("datastore");
-//		String ignorePublication = (String) request.getParameter("ignorePublication");
-		boolean iPFlag = true;
+		String ignorePublication = (String) request.getParameter("ignorePublication");
+		
+		
+		boolean iPFlag = false;
+		
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null) {
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication ==null) {
 				response.sendError(601, "미입력 텍스트가 존재합니다.");
 		} else {
+			if(ignorePublication.toLowerCase().equals("true")){
+				iPFlag = true;
+			}else if(ignorePublication.toLowerCase().equals("false")){
+				iPFlag = false;
+			}else{
+				iPFlag = false;
+			}
 			geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
 		}
 	}
+	
+	
+	
+	@SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value = "/jsonUpload.ajax", method = RequestMethod.POST)
+	@ResponseBody
+	public int jsonUpload(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) throws IOException {
+		int flag = 500;
+
+		if (loginUser == null) {
+			response.sendError(600);
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		String serverName = (String) jsonObject.get("serverName");
+		String workspace = (String) jsonObject.get("workspace");
+		String datastore = (String) jsonObject.get("datastore");
+		String layerName = (String) jsonObject.get("layerName");
+		String epsg = (String) jsonObject.get("epsg");
+		Boolean ignorePublication = (Boolean) jsonObject.get("ignorePublication");
+		JSONObject geoJson = (JSONObject) jsonObject.get("geoJson");
+		JSONObject attJson = (JSONObject) jsonObject.get("attJson");
+
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if (dtGeoserverManager == null) {
+			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
+			return flag;
+		}
+
+		if (serverName == null || serverName.isEmpty() || workspace == null || workspace.isEmpty() || datastore == null
+				|| datastore.isEmpty() || layerName == null || layerName.isEmpty()|| epsg == null || epsg.isEmpty()|| ignorePublication == null || geoJson == null) {
+			response.sendError(601, "필수값을 입력하지 않았습니다.");
+			return flag;
+		} else {
+			if(attJson == null){
+				flag = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, layerName, epsg, geoJson, ignorePublication);
+			}else{
+				flag = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, layerName, epsg, geoJson, attJson, ignorePublication);
+			}
+		}
+
+		return flag;
+	}
+	
+	
+	
+	
+	
 
 	@RequestMapping(value = "/updateGeogigGsStore.do", method = RequestMethod.POST)
 	@ResponseBody

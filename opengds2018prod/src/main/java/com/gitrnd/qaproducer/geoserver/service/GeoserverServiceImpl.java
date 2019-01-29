@@ -17,14 +17,17 @@
 
 package com.gitrnd.qaproducer.geoserver.service;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -32,9 +35,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.feature.SchemaException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.opengis.referencing.FactoryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -42,6 +49,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gitrnd.gdsbuilder.fileread.shp.SHPFileWriter;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
@@ -54,6 +62,7 @@ import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
+import com.gitrnd.gdsbuilder.parse.impl.DataConvertorImpl;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -189,7 +198,6 @@ public class GeoserverServiceImpl implements GeoserverService {
 					if (index < 1) {
 						// 2.1 get next MultipartFile
 						mpf = request.getFile(itr.next());
-
 						try {
 							// 2.3 create new fileMeta
 							// FileStatus fileStatus = new FileStatus();
@@ -302,6 +310,236 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return puFlag;
 	}
+	
+	
+	/**
+	 * GeoJSON -> Geoserver 업로드
+	 * @since 2019. 1. 24.
+	 * @author SG.Lee
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#geojsonPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.json.simple.JSONObject, org.json.simple.JSONObject, boolean)
+	 */
+	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication){
+		int puFlag = 500;
+		if (dtGeoManager != null && workspace != null && datastore != null) {
+			dtReader = dtGeoManager.getReader();
+			dtPublisher = dtGeoManager.getPublisher();
+			
+			boolean wsFlag = false;
+			boolean dsFlag = false;
+
+			wsFlag = dtReader.existsWorkspace(workspace);
+			dsFlag = dtReader.existsDatastore(workspace, datastore);
+
+			if (wsFlag && dsFlag) {
+				if (dtReader.existsLayer(workspace, layerName, true)) {
+					// 레이어 중복
+					logger.warn("레이어중복");
+					return 609;
+				}
+				
+				if(!ignorePublication){
+					boolean availableFlag = dtReader.existsFeatureTypesAvailable(workspace, datastore, layerName);
+					if(availableFlag){
+						logger.warn("데이터 존재->미발행 레이어");
+						return 613;
+					}
+				}
+				//temp 경로 임시파일 생성
+				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
+				
+				if (!new File(defaultTempPath).exists()) {
+					new File(defaultTempPath).mkdirs();
+				}
+				
+				SimpleFeatureCollection simpleCollection = null;
+				
+				if(geojson!=null){
+					try {
+						if (attJson == null) {
+							simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson);
+						} else {
+							simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson,attJson);
+						}
+					} catch (SchemaException e) {
+						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+						return 614;
+					}
+					
+					if (simpleCollection != null) {
+						File tmpFile = null;
+						try {
+							// 임시폴더 생성
+							Path tmpBasedir = Files.createTempDirectory(Paths.get(defaultTempPath), "upload_temp_");
+							tmpFile = tmpBasedir.toFile();
+							String writerPath = tmpBasedir + File.separator + layerName + ".shp";
+							try {
+								SHPFileWriter.writeSHP(epsg, simpleCollection, writerPath);
+							} catch (SchemaException | FactoryException e) {
+								// TODO Auto-generated catch block
+								if(tmpFile!=null){
+									deleteDirectory(tmpFile);
+								}
+								logger.warn("shp파일 생성불가");
+								return 610;
+							}
+							createZipFile(tmpBasedir.toString(), tmpBasedir.toString(), layerName + ".zip");
+
+							String saveFilePath = tmpBasedir + File.separator + layerName + ".zip";
+
+							// Geoserver에 레이어 발행
+							boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
+									new File(saveFilePath).toURI());
+							if (serverPFlag) {
+								puFlag = 200;
+							} else {
+								deleteDirectory(tmpBasedir.toFile());
+								puFlag = 610;
+								logger.warn("발행실패");
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							if(tmpFile!=null){
+								deleteDirectory(tmpFile);
+							}
+							puFlag = 610;
+							logger.warn("발행실패");
+						}
+						// 성공 or 실패시 파일삭제
+						if(tmpFile!=null){
+							deleteDirectory(tmpFile);
+						}
+					} else {
+						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+						return 614;
+					}
+				}else{
+					logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+					return 614; 
+				}
+			} else {
+				logger.warn("workspace 또는 datastore 존재 X");
+				puFlag = 607;
+			}
+		} else {
+			logger.warn("Geoserver 정보X");
+			puFlag = 604;
+		}
+		return puFlag;
+	}
+	
+	
+	
+	/**
+	 * GeoJSON -> Geoserver 업로드
+	 * @since 2019. 1. 24.
+	 * @author SG.Lee
+	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#geojsonPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.json.simple.JSONObject, boolean)
+	 */
+	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, boolean ignorePublication){
+		int puFlag = 500;
+		if (dtGeoManager != null && workspace != null && datastore != null) {
+			dtReader = dtGeoManager.getReader();
+			dtPublisher = dtGeoManager.getPublisher();
+			
+			boolean wsFlag = false;
+			boolean dsFlag = false;
+
+			wsFlag = dtReader.existsWorkspace(workspace);
+			dsFlag = dtReader.existsDatastore(workspace, datastore);
+
+			if (wsFlag && dsFlag) {
+				if (dtReader.existsLayer(workspace, layerName, true)) {
+					// 레이어 중복
+					logger.warn("레이어중복");
+					return 609;
+				}
+				
+				if(!ignorePublication){
+					boolean availableFlag = dtReader.existsFeatureTypesAvailable(workspace, datastore, layerName);
+					if(availableFlag){
+						logger.warn("데이터 존재->미발행 레이어");
+						return 613;
+					}
+				}
+				//temp 경로 임시파일 생성
+				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
+				
+				if (!new File(defaultTempPath).exists()) {
+					new File(defaultTempPath).mkdirs();
+				}
+				
+				SimpleFeatureCollection simpleCollection = null;
+				
+				if(geojson!=null){
+					try {
+							simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson);
+					} catch (SchemaException e) {
+						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+						return 614;
+					}
+					
+					if (simpleCollection != null) {
+						File tmpFile = null;
+						try {
+							// 임시폴더 생성
+							Path tmpBasedir = Files.createTempDirectory(Paths.get(defaultTempPath), "upload_temp_");
+							tmpFile = tmpBasedir.toFile();
+							String writerPath = tmpBasedir + File.separator + layerName + ".shp";
+							try {
+								SHPFileWriter.writeSHP(epsg, simpleCollection, writerPath);
+							} catch (SchemaException | FactoryException e) {
+								// TODO Auto-generated catch block
+								if(tmpFile!=null){
+									deleteDirectory(tmpFile);
+								}
+								logger.warn("shp파일 생성불가");
+								return 610;
+							}
+							createZipFile(tmpBasedir.toString(), tmpBasedir.toString(), layerName + ".zip");
+
+							String saveFilePath = tmpBasedir + File.separator + layerName + ".zip";
+
+							// Geoserver에 레이어 발행
+							boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
+									new File(saveFilePath).toURI());
+							if (serverPFlag) {
+								puFlag = 200;
+							} else {
+								deleteDirectory(tmpBasedir.toFile());
+								puFlag = 610;
+								logger.warn("발행실패");
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							if(tmpFile!=null){
+								deleteDirectory(tmpFile);
+							}
+							puFlag = 610;
+							logger.warn("발행실패");
+						}
+						// 성공 or 실패시 파일삭제
+						if(tmpFile!=null){
+							deleteDirectory(tmpFile);
+						}
+					} else {
+						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+						return 614;
+					}
+				}else{
+					logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
+					return 614; 
+				}
+			} else {
+				logger.warn("workspace 또는 datastore 존재 X");
+				puFlag = 607;
+			}
+		} else {
+			logger.warn("Geoserver 정보X");
+			puFlag = 604;
+		}
+		return puFlag;
+	}
+	
 
 	private void deleteDirectory(File dir) {
 
@@ -781,6 +1019,74 @@ public class GeoserverServiceImpl implements GeoserverService {
 		}
 		return styles;
 	}
+	
+	
+	
+	/**
+     * 디렉토리 및 파일을 압축한다.
+     * @param path 압축할 디렉토리 및 파일
+     * @param toPath 압축파일을 생성할 경로
+     * @param fileName 압축파일의 이름
+     */
+    public static void createZipFile(String path, String toPath, String fileName) {
+ 
+        File dir = new File(path);
+        String[] list = dir.list();
+        String _path;
+ 
+        if (!dir.canRead() || !dir.canWrite())
+            return;
+ 
+        int len = list.length;
+ 
+        if (path.charAt(path.length() - 1) != '/')
+            _path = path + "/";
+        else
+            _path = path;
+ 
+        try {
+            ZipOutputStream zip_out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(toPath+"/"+fileName), 2048));
+ 
+            for (int i = 0; i < len; i++)
+                zip_folder("",new File(_path + list[i]), zip_out);
+ 
+            zip_out.close();
+ 
+        } catch (FileNotFoundException e) {
+//            Log.e("File not found", e.getMessage());
+ 
+        } catch (IOException e) {
+//            Log.e("IOException", e.getMessage());
+        } finally {
+ 
+ 
+        }
+    }
+ 
+    /**
+     * ZipOutputStream를 넘겨 받아서 하나의 압축파일로 만든다.
+     * @param parent 상위폴더명
+     * @param file 압축할 파일
+     * @param zout 압축전체스트림
+     * @throws IOException
+     */
+    private static void zip_folder(String parent, File file, ZipOutputStream zout) throws IOException {
+        byte[] data = new byte[2048];
+        int read;
+ 
+        if (file.isFile()) {
+            ZipEntry entry = new ZipEntry(parent + file.getName());
+            zout.putNextEntry(entry);
+            BufferedInputStream instream = new BufferedInputStream(new FileInputStream(file));
+ 
+            while ((read = instream.read(data, 0, 2048)) != -1)
+                zout.write(data, 0, read);
+ 
+            zout.flush();
+            zout.closeEntry();
+            instream.close();
+        }
+    }
 }
 
 /**

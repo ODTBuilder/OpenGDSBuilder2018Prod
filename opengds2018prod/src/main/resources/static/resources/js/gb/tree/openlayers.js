@@ -368,6 +368,11 @@ gb.tree.OpenLayers = function(obj) {
 							"valid_children" : [ "default", "Group", "Raster", "ImageTile", "Polygon", "MultiPolygon", "LineString",
 								"MultiLineString", "Point", "MultiPoint" ]
 						},
+						"FakeGroup" : {
+							"icon" : "fas fa-folder",
+							"valid_children" : [ "default", "Group", "Raster", "ImageTile", "Polygon", "MultiPolygon", "LineString",
+								"MultiLineString", "Point", "MultiPoint" ]
+						},
 						// 이외의 기본형
 						"default" : {
 							"icon" : "fas fa-file",

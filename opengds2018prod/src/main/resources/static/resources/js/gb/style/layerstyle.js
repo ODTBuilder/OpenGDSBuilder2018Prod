@@ -216,7 +216,7 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 			});
 
 	if (layer instanceof ol.layer.Vector) {
-		if(layer.get("git") === undefined || layer.get("git") === null){
+		if (layer.get("git") === undefined || layer.get("git") === null) {
 			return;
 		}
 		layer.setStyle(style);
@@ -233,9 +233,12 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 		}
 		this.close();
 	} else if (layer instanceof ol.layer.Tile) {
+		var git = layer.get("git");
+		if (git["fake"] === "parent") {
+			return;
+		}
 		var source = layer.getSource();
 		var sld = source.getParams()["SLD_BODY"];
-		var git = layer.get("git");
 		var vectorLayer = git.tempLayer;
 		var sldBody = "";
 
@@ -378,6 +381,10 @@ gb.style.LayerStyle.prototype.applyStyle = function() {
 
 		layer.setStyle(style);
 	} else if (layer instanceof ol.layer.Tile) {
+		var git = layer.get("git");
+		if (git["fake"] === "parent") {
+			return;
+		}
 		if (this.geom === "Point" || this.geom === "MultiPoint") {
 			var source = layer.getSource();
 			console.log(source.getParams());
@@ -1123,6 +1130,10 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			$(this.fillPicker).spectrum("set", "rgb(0,0,0)");
 		}
 	} else if (layer instanceof ol.layer.Tile) {
+		var git = layer.get("git");
+		if (git["fake"] === "parent") {
+			return;
+		}
 		var source = layer.getSource();
 		var params = source.getParams();
 		if (params.hasOwnProperty("SLD_BODY")) {

@@ -3283,9 +3283,9 @@ gb.versioning.Repository.prototype.removeRepository = function(server, repo, mod
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.messageModal = function(title, msg, height) {
+gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 	var that = this;
-	var msg1 = $("<div>").text(msg).css({
+	var msg1 = $("<div>").append(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
 		"margin-top" : "18px",
@@ -3300,7 +3300,6 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg, height) {
 	var modal = new gb.modal.Base({
 		"title" : title,
 		"width" : 310,
-		"height" : height,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -5653,8 +5652,8 @@ gb.versioning.Repository.prototype.changeNodeOnLoadingList = function(idx, nodeI
 gb.versioning.Repository.prototype.errorModal = function(code) {
 	var that = this;
 	if (parseInt(code) === 850) {
-		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 222);
+		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale]);
 	} else {
-		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 182);	
+		that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale]);	
 	}
 };

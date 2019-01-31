@@ -386,7 +386,7 @@ gb.header.EditingTool = function(obj) {
 			if(that.map.getView().getZoom() > 11){
 				if(data.selected.length === 1){
 					that.select(that.updateSelected());
-					//that.moveUpEditingLayer_();
+					// that.moveUpEditingLayer_();
 				}
 			}
 		}
@@ -1774,10 +1774,12 @@ gb.header.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
 				if (git["fake"] === "parent") {
 					// 가짜 그룹 레이어임
 					var layers = git["layers"];
-					for (var i = 0; i < layers.getLength(); i++) {
-						this.featureRecord.removeByLayer(layers.item(i).get("id"));
-						// that.tempVector.setMap(this.map);
-						this.removeFeatureFromUnmanaged(layers.item(i));
+					if (layers instanceof ol.Collection) {
+						for (var i = 0; i < layers.getLength(); i++) {
+							this.featureRecord.removeByLayer(layers.item(i).get("id"));
+							// that.tempVector.setMap(this.map);
+							this.removeFeatureFromUnmanaged(layers.item(i));
+						}						
 					}
 				} else if (git["fake"] === "child") {
 					var layerId = layer.get("id");

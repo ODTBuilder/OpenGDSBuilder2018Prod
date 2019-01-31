@@ -206,15 +206,24 @@ public class DTGeoLayer {
 				String nillable = attElement.getChildText("nillable");
 				int flag = nameAtt.indexOf("geom");
 				if (flag == -1) {
-					String bingding = attElement.getChildText("binding");
+					String binding = attElement.getChildText("binding");
 					JSONObject attContent = new JSONObject();
-					String type = bingding.substring(10);
-					if (type.equals("BigDecimal")) {
-						type = "Double";
+					int bindingSize = binding.length();
+					if(bindingSize>9){
+						String type = binding.substring(10);
+						if (type.equals("BigDecimal")) {
+							type = "Double";
+						}
+						attContent.put("type", type);
+						attContent.put("nillable", nillable);
+						object.put(nameAtt, attContent);
+					}else{
+						if(binding.endsWith("[B")){
+							attContent.put("type", "byte[]");
+							attContent.put("nillable", nillable);
+							object.put(nameAtt, attContent);
+						}
 					}
-					attContent.put("type", type);
-					attContent.put("nillable", nillable);
-					object.put(nameAtt, attContent);
 				} else {
 					this.geomkey = nameAtt;
 				}

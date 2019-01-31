@@ -11,6 +11,10 @@ gb.module.serviceVersion = {
 	TMS : "1.0.0",
 	WMSC : "1.1.1",
 	WMTS : "1.0.0",
+	loadPerformance:{
+		limit: 10,
+		active: true
+	},
 	getWMSCrs : function(){
 		if(this.WMS === "1.3.0"){
 			return "crs";
@@ -56,6 +60,18 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		"close" : {
 			"ko" : "닫기",
 			"en" : "Close"
+		},
+		"performance": {
+			"ko": "WMS 서비스 성능",
+			"en": "WMS Service Performance"
+		},
+		"active":{
+			"ko": "활성화",
+			"en": "Active"
+		},
+		"limit":{
+			"ko": "레이어 수 제한",
+			"en": "Limit the number of Layers"
 		}
 	}
 	var keyStyle = {
@@ -76,6 +92,14 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		"vertical-align" : "middle"	,
 		"padding": "0.785714em",
 		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
+	};
+	
+	var inputStyle = {
+		"width": "inherit",
+		"border": "1px solid rgba(34, 36, 38, 0.15)",
+		"border-radius": "0.285714rem",
+		"line-height": "1.21429em",
+		"padding": "0.678571em 1em"
 	};
 	
 	var contentList = [{
@@ -173,7 +197,7 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		
 		if(gb.module) {
 			if(gb.module.serviceVersion){
-				gb.module.serviceVersion.GEOCACHE = bool;
+				gb.module.serviceVersion.loadPerformance.active = bool;
 			}
 		}
 	});
@@ -189,8 +213,43 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		"width" : "100%"
 	}).append(cacheRow);
 	
+	key = $("<div>").css(keyStyle).text(translation.active[locale]);
+	
+	content = $("<div>").css(contentStyle).append(toggleDiv);
+	
+	row = $("<div>").css({
+		"display" : "table-row",
+		"width" : "50%"
+	}).append(key).append(content);
+	
+	var tb4 = $("<div>").css({
+		"display" : "table",
+		"width" : "100%"
+	}).append(row);
+	
+	key = $("<div>").css(keyStyle).text(translation.limit[locale]);
+	
+	var input = $("<input type='number'>").css(inputStyle).val(gb.module.serviceVersion.loadPerformance.limit);
+	
+	$(input).change(function() {
+		gb.module.serviceVersion.loadPerformance.limit = $(this).val();
+	});
+	
+	content = 
+		$("<div>")
+			.css(contentStyle)
+			.append(input);
+	
+	row = $("<div>").css({
+		"display" : "table-row",
+		"width" : "50%"
+	}).append(key).append(content);
+	
+	tb4.append(row);
+	
 	var serviceVerTitle = $("<h4>").addClass("gb-horizontal").text(translation.serviceVer[locale]);
 	var webCacheTitle = $("<h4>").addClass("gb-horizontal").text(translation.webCache[locale]);
+	var performanceTitle = $("<h4>").addClass("gb-horizontal").text(translation.performance[locale]);
 	
 	var body = 
 		$("<div>")
@@ -201,6 +260,8 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 					.append(tb1)
 					.append(tb2)
 			)
+			.append(performanceTitle)
+			.append(tb4)
 			/*.append(webCacheTitle)
 			.append(tb3);*/
 	

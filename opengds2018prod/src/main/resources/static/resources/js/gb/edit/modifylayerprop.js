@@ -77,9 +77,21 @@ gb.edit.ModifyLayerProperties = function(obj) {
 			"ko" : "닫기",
 			"en" : "Close"
 		},
+		"cancel" : {
+			"ko" : "취소",
+			"en" : "Cancel"
+		},
 		"layerprop" : {
 			"ko" : "레이어 속성 정보",
 			"en" : "Layer Properties"
+		},
+		"confirm" : {
+			"ko" : "확인",
+			"en" : "Confirm"
+		},
+		"save" : {
+			"ko" : "저장",
+			"en" : "Save"
 		},
 		"save" : {
 			"ko" : "저장",
@@ -152,6 +164,18 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		"myserver" : {
 			"ko" : "전체 스타일",
 			"en" : "All Styles"
+		},
+		"layerNameHint" : {
+			"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
+			"en" : "Special characters are not allowed in the name."
+		},
+		"layerTitleHint" : {
+			"ko" : "레이어 제목에 특수문자는 허용되지않습니다.",
+			"en" : "Special characters are not allowed in the title."
+		},
+		"layerChangeHint" : {
+			"ko" : "레이어 정보 변경시 다른 작업자들이 피해를 입을 수 있습니다. 계속하시겠습니까?",
+			"en" : "Changing layer information could harm others. Do you want to continue?"
 		}
 	};
 	this.validIconSpan = undefined;
@@ -606,39 +630,84 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var serverInfo = this.getServerInfo();
 
 	if (special_pattern.test($("#proplName").val()) === true) {
-		alert("레이어 이름에 특수문자는 허용되지않습니다.");
+		alert(this.translation.layerNameHint[this.locale]);
 		return false;
 	}
 	if (special_pattern.test($("#proptitle").val()) === true) {
-		alert("레이어 제목에 특수문자는 허용되지않습니다.");
+		alert(this.translation.layerTitleHint[this.locale]);
 		return false;
 	}
-	/*
-	 * if(!$.isNumeric($("#propsrs").val())){ alert("EPSG 코드는 숫자만 입력 가능합니다.");
-	 * return false; }
-	 */
+	
+	var closeBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-default")
+			.text(this.translation.cancel[this.locale]);
+	
+	var okBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-primary")
+			.text(this.translation.confirm[this.locale]);
 
-	var arr = {
-		"serverName" : serverInfo.geoserver,
-		"workspace" : serverInfo.workspace,
-		"datastore" : serverInfo.datastore,
-		"originalName" : serverInfo.layername,
-		"name" : $("#proplName").val(),
-		"title" : $("#proptitle").val(),
-		"srs" : "EPSG:" + $("#propsrs").val()
-	}
+	var buttonArea = 
+		$("<span>")
+			.addClass("gb-modal-buttons")
+			.append(okBtn)
+			.append(closeBtn);
+	
+	var modalFooter = $("<div>").append(buttonArea);
 
-	$.ajax({
-		url : "geoserver/updateLayer.ajax" + this.token,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		cache : false,
-		data : JSON.stringify(arr),
-		success : function(data, textStatus, jqXHR) {
-			console.log(data);
-		}
+	var body = 
+		$("<div>")
+			.append(this.translation.layerChangeHint[this.locale])
+			.css({
+				"max-height" : "300px",
+				"overflow-y" : "auto"
+			});
+	
+	var modal = new gb.modal.Base({
+		"title" : "",
+		"width" : 540,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : modalFooter
 	});
 
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	
+	$(okBtn).click(function(){
+		var arr = {
+			"serverName" : serverInfo.geoserver,
+			"workspace" : serverInfo.workspace,
+			"datastore" : serverInfo.datastore,
+			"originalName" : serverInfo.layername,
+			"name" : $("#proplName").val(),
+			"title" : $("#proptitle").val(),
+			"srs" : "EPSG:" + $("#propsrs").val()
+		}
+
+		$.ajax({
+			url : "geoserver/updateLayer.ajax" + that.token,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			cache : false,
+			data : JSON.stringify(arr),
+			success : function(data, textStatus, jqXHR) {
+				console.log(data);
+				modal.close();
+			}
+		});
+	});
+	
 	return true;
 }
 

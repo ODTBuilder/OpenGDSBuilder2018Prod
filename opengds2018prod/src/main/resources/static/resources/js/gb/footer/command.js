@@ -812,7 +812,7 @@ if (!gb.footer)
 	function getFeatureByServer(workId, layerId, featureId){
 		var params = {
 			"service" : "WFS",
-			"version" : "1.0.0",
+			"version" : gb.module.serviceVersion.WFS,
 			"request" : "GetFeature",
 			"typeName" : layerId,
 			"outputformat" : "text/javascript",

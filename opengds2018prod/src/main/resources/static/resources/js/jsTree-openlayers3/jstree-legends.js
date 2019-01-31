@@ -140,6 +140,7 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 														layerStyle.setLayer(layer);
 														layerStyle.setLegend(m[dpc[i]], g);
 														layerStyle.updateStyle();
+														this.set_flag(m[dpc[i]], "importing", true);
 													} else if (layer instanceof ol.layer.Vector) {
 														layerStyle.setLayer(layer);
 														layerStyle.setLegend(m[dpc[i]], g);

@@ -36,6 +36,8 @@ gb.tree.OpenLayers = function(obj) {
 	this.isEditing = options.isEditing || undefined;
 
 	this.createdLayer = {};
+	this.selectedLayer = undefined;
+	this.layerPropModal = undefined;
 	var url = options.url;
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
 	this.translation = {
@@ -46,6 +48,10 @@ gb.tree.OpenLayers = function(obj) {
 			"snap" : {
 				"en" : "Snap",
 				"ko" : "스냅"
+			},
+			"prop" : {
+				"ko" : "속성",
+				"en" : "Properties"
 			},
 			"style" : {
 				"en" : "Style",
@@ -87,6 +93,14 @@ gb.tree.OpenLayers = function(obj) {
 				"ko" : "레이어 삭제",
 				"en" : "Delete Layer"
 			},
+			"deleteAttr" : {
+				"ko" : "속성 삭제",
+				"en" : "Delete Attribute"
+			},
+			"deleteHint" : {
+				"ko" : "정말로 삭제하시겠습니까?",
+				"en" : "Are you sure to delete?"
+			},
 			"deleteLayerHint" : {
 				"ko" : "선택한 레이어를 정말로 삭제하시겠습니까?",
 				"en" : "Are you sure to delete this layer?"
@@ -126,6 +140,90 @@ gb.tree.OpenLayers = function(obj) {
 			"exLayerCodeField" : {
 				"en" : "Layer code ex) F0010000",
 				"ko" : "레이어 코드 예시) F0010000"
+			},
+			"geoserverURL" : {
+				"ko" : "GeoServer URL",
+				"en" : "GeoServer URL"
+			},
+			"geoserverID" : {
+				"ko" : "GeoServer ID",
+				"en" : "GeoServer ID"
+			},
+			"geoserver" : {
+				"ko" : "GeoServer",
+				"en" : "GeoServer"
+			},
+			"workspace" : {
+				"ko" : "작업공간",
+				"en" : "Workspace"
+			},
+			"datastore" : {
+				"ko" : "저장소",
+				"en" : "Datastore"
+			},
+			"style" : {
+				"ko" : "스타일",
+				"en" : "Style"
+			},
+			"nativeName" : {
+				"ko" : "레이어 원본 이름",
+				"en" : "Native Layer Name"
+			},
+			"lName" : {
+				"ko" : "레이어 이름",
+				"en" : "Layer Name"
+			},
+			"title" : {
+				"ko" : "제목",
+				"en" : "Title"
+			},
+			"abstractContent" : {
+				"ko" : "개요",
+				"en" : "Summary"
+			},
+			"srs" : {
+				"ko" : "좌표계",
+				"en" : "SRS"
+			},
+			"llbBox" : {
+				"ko" : "위/경도 영역",
+				"en" : "Lat/Lon Boundary"
+			},
+			"nbBox" : {
+				"ko" : "원본 레이어 최소경계 영역",
+				"en" : "Layer Minimum Boundary"
+			},
+			"dsType" : {
+				"ko" : "저장소 형식",
+				"en" : "Datastore Type"
+			},
+			"geomType" : {
+				"ko" : "지오메트리 형식",
+				"en" : "Geometry Type"
+			},
+			"geomkey" : {
+				"ko" : "지오메트리 속성명",
+				"en" : "Geometry Key Name"
+			},
+			"styleWorkspace" : {
+				"ko" : "스타일의 작업공간",
+				"en" : "Style's Workspace"
+			},
+			"attInfo" : {
+				"ko" : "속성 정보",
+				"en" : "Attribute Info"
+			},
+			"sld" : {
+				"ko" : "SLD",
+				"en" : "SLD"
+			},
+			"myserver" : {
+				"ko" : "전체 스타일",
+				"en" : "All Styles"
+			},
+			"duplicateKeyHint" : {
+				"ko" : "이 값은 중복되었습니다.",
+				"en" : "This value is a duplicate."
 			}
 	}
 	this.getLegend = url.getLegend ? url.getLegend : undefined;
@@ -311,88 +409,79 @@ gb.tree.OpenLayers = function(obj) {
 				},
 				"functionmarker" : {
 					"snapping" : "fas fa-magnet",
-					"editing" : "fas fa-pencil-alt"
+					"editing" : "fas fa-pencil-alt",
+					"importing" : "fas fa-globe"
 				},
 				"contextmenu" : {
 					items : function(o, cb) { // Could be an object
-						return {
-							/**
-							 * 다른 노드간 이동이 가능할때 그룹레이어 생성
-							 * 
-							 * @author 소이준
-							 */
+						var totalObj = {};
+						
+						totalObj["zoom"] = {
+							"separator_before" : false,
+							"icon" : "fa fa-crosshairs",
+							"separator_after" : false,
+							"_disabled" : false, // (this.check("rename_node",
+							// data.reference,
+							// this.get_parent(data.reference),
+							// "")),
+							"label" : that.translation.zoom[that.locale],
 							/*
-							 * "group" : { "separator_before" : false,
-							 * "separator_after" : true, "_disabled" : false, //
-							 * (this.check("create_node", // data.reference, {}, //
-							 * "last")), "label" : "Create group", "action" :
-							 * function(data) { var inst = $.jstreeol3
-							 * .reference(data.reference), obj = inst
-							 * .get_node(data.reference); inst.create_group(obj,
-							 * {}, "first", function( new_node) {
-							 * setTimeout(function() { inst.edit(new_node); },
-							 * 0); }); } }, "create" : { "separator_before" :
-							 * false, "separator_after" : true, "_disabled" :
-							 * false, // (this.check("create_node", //
-							 * data.reference, {}, // "last")), "label" :
-							 * "Create", "action" : function(data) { var inst =
-							 * $.jstreeol3 .reference(data.reference), obj =
-							 * inst .get_node(data.reference);
-							 * inst.create_node(obj, {}, "last", function(
-							 * new_node) { setTimeout(function() {
-							 * inst.edit(new_node); }, 0); }); } },
+							 * ! "shortcut" : 113, "shortcut_label" : 'F2',
+							 * "icon" : "glyphicon glyphicon-leaf",
 							 */
-							"zoom" : {
-								"separator_before" : false,
-								"icon" : "fa fa-crosshairs",
-								"separator_after" : false,
-								"_disabled" : false, // (this.check("rename_node",
-								// data.reference,
-								// this.get_parent(data.reference),
-								// "")),
-								"label" : that.translation.zoom[that.locale],
-								/*
-								 * ! "shortcut" : 113, "shortcut_label" : 'F2',
-								 * "icon" : "glyphicon glyphicon-leaf",
-								 */
-								"action" : function(data) {
-									var inst = $.jstreeol3
-									.reference(data.reference), obj = inst
-									.get_node(data.reference);
-									var layer = inst.get_LayerById(obj.id);
-									if(layer instanceof ol.layer.Image){
-										layer = layer.get("vectorLayer");
-									}
-									var extent = ol.extent.createEmpty();
-									// inst._data.layerproperties.editingTool.zoomToFit(layer);
-									// inst._data.layerproperties.editingTool.setWMSSource(layer,
-									var wholeExt = inst.zoom_to_fit(layer, extent);
-									var view = inst._data.core.map.getView();
-									view.fit(wholeExt, inst._data.core.map.getSize());
+							"action" : function(data) {
+								var inst = $.jstreeol3
+								.reference(data.reference), obj = inst
+								.get_node(data.reference);
+								var layer = inst.get_LayerById(obj.id);
+								if(layer instanceof ol.layer.Image){
+									layer = layer.get("vectorLayer");
 								}
-							},
-							// "rename" : {
-							// "separator_before" : false,
-							// "icon" : "fa fa-pencil",
-							// "separator_after" : false,
-							// "_disabled" : false, //
-							// (this.check("rename_node",
-							// // data.reference,
-							// // this.get_parent(data.reference),
-							// // "")),
-							// "label" : "Rename",
-							// /*
-							// * ! "shortcut" : 113, "shortcut_label" : 'F2',
-							// * "icon" : "glyphicon glyphicon-leaf",
-							// */
-							// "action" : function(data) {
-							// var inst = $.jstreeol3.reference(data.reference),
-							// obj
-							// = inst.get_node(data.reference);
-							// inst.edit(obj);
-							// }
-							// },
-							"snap" : {
+								var extent = ol.extent.createEmpty();
+								// inst._data.layerproperties.editingTool.zoomToFit(layer);
+								// inst._data.layerproperties.editingTool.setWMSSource(layer,
+								var wholeExt = inst.zoom_to_fit(layer, extent);
+								var view = inst._data.core.map.getView();
+								view.fit(wholeExt, inst._data.core.map.getSize());
+							}
+						};
+						
+						totalObj["remove"] = {
+							"separator_before" : false,
+							"icon" : "fa fa-trash",
+							"separator_after" : false,
+							"_disabled" : false, // (this.check("delete_node",
+							// data.reference,
+							// this.get_parent(data.reference),
+							// "")),
+							"label" : that.translation["delete"][that.locale],
+							"action" : function(data) {
+								var inst = $.jstreeol3
+								.reference(data.reference), obj = inst
+								.get_node(data.reference);
+								var layers = inst.get_selected();
+								var map = inst._data.core.map;
+								var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+								
+								if(isEdit instanceof Object){
+									if(isEdit.get()){
+										isEdit.alert();
+										return
+									}
+								}
+								var nodes = [];
+								for (var i = 0; i < layers.length; i++) {
+									var node = inst.get_node(layers[i]);
+									if (node !== undefined) {
+										nodes.push(node);
+									}
+								}
+								that.openDeleteLayer(nodes);
+							}
+						}
+						
+						if(o.type !== "Raster"){
+							totalObj["snap"] = {
 								"separator_before" : false,
 								"icon" : "fa fa-magnet",
 								"separator_after" : false,
@@ -439,78 +528,133 @@ gb.tree.OpenLayers = function(obj) {
 									inst._data.layerproperties.editingTool
 									.loadSnappingLayer(ext);
 								}
-							},
-							"remove" : {
+							};
+						}
+						
+						if(o.type !== "Group" && o.type !== "Raster"){
+							totalObj["style"] = {
 								"separator_before" : false,
-								"icon" : "fa fa-trash",
+								"icon" : "fa fa-paint-brush",
 								"separator_after" : false,
 								"_disabled" : false, // (this.check("delete_node",
 								// data.reference,
 								// this.get_parent(data.reference),
 								// "")),
-								"label" : that.translation["delete"][that.locale],
+								"label" : that.translation.style[that.locale],
 								"action" : function(data) {
 									var inst = $.jstreeol3
 									.reference(data.reference), obj = inst
 									.get_node(data.reference);
-									var layers = inst.get_selected();
-									var map = inst._data.core.map;
-									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-									
-									if(isEdit instanceof Object){
-										if(isEdit.get()){
-											isEdit.alert();
-											return
+									if (inst.is_selected(obj)) {
+										var layers = inst.get_selected();
+										for (var i = 0; i < layers.length; i++) {
+											inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
+											inst._data.layerproperties.style.setLegend(obj, inst.settings.legends.geoserver);
+											inst._data.layerproperties.style.open();
 										}
+									} else {
+										// inst.delete_node_layer(obj);
 									}
-									var nodes = [];
-									for (var i = 0; i < layers.length; i++) {
-										var node = inst.get_node(layers[i]);
-										if (node !== undefined) {
-											nodes.push(node);
-										}
-									}
-									that.openDeleteLayer(nodes);
-// var msg1 = $("<div>").text("Are you sure to delete these layers?").css({
-// "text-align" : "center",
-// "font-size" : "16px"
-// });
-// var body = $("<div>").append(msg1);
-// var closeBtn = $("<button>").css({
-// "float" : "right"
-// }).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-// var okBtn = $("<button>").css({
-// "float" : "right"
-// }).addClass("gb-button").addClass("gb-button-primary").text("Delete");
-// var buttonArea =
-// $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-// var deleteModal = new gb.modal.Base({
-// "title" : "Delete Layer",
-// "width" : 310,
-// "height" : 200,
-// "autoOpen" : false,
-// "body" : body,
-// "footer" : buttonArea
-// });
-//
-// $(closeBtn).click(function() {
-// deleteModal.close();
-// });
-//
-// $(okBtn).click(function() {
-// if (inst.is_selected(obj)) {
-// var layers = inst.get_selected();
-// for (var i = 0; i < layers.length; i++) {
-// map.removeLayer(inst.get_LayerById(layers[i]));
-// }
-// inst.delete_node(layers);
-// }
-// deleteModal.close();
-// });
-//
-// deleteModal.open();
 								}
-							},
+							};
+							
+							totalObj["navigator"] = {
+								"separator_before" : false,
+								"icon" : "fa fa-compass",
+								"separator_after" : false,
+								"_disabled" : false,
+								"label" : that.translation.navigator[that.locale],
+								"action" : function(data) {
+									var inst = $.jstreeol3.reference(data.reference),
+									obj = inst.get_node(data.reference);
+									if (inst.is_selected(obj)) {
+										var layer = inst.get_LayerById(obj.id);
+
+										inst._data.layerproperties.navigator
+										.setFeatures(layer);
+									} else {
+										// inst.delete_node_layer(obj);
+									}
+								}
+							};
+							
+							totalObj["properties"] = {
+								"separator_before" : false,
+								"icon" : "fa fa-info-circle",
+								"separator_after" : false,
+								"_disabled" : false,
+								"label" : that.translation.prop[that.locale],
+								"action" : function(data) {
+									var inst = $.jstreeol3
+									.reference(data.reference), obj = inst
+									.get_node(data.reference);
+									var layer = inst.get_LayerById(obj.id);
+									that.selectedLayer = layer;
+									
+									if(layer instanceof ol.layer.Vector){
+										that.vectorLayerInfo(layer);
+									} else if (layer instanceof ol.layer.Tile){
+										var layerId = layer.get("id");
+										var datastore = layerId.split(":")[2];
+										that.requestLayerInfo({
+											geoserver: layer.get("git").geoserver,
+											workspace: layer.get("git").workspace,
+											datastore: datastore,
+											layername: layer.get("git").native
+										});
+									}
+								}
+							};
+						}
+						
+						return totalObj;
+							/**
+							 * 다른 노드간 이동이 가능할때 그룹레이어 생성
+							 * 
+							 * @author 소이준
+							 */
+							/*
+							 * "group" : { "separator_before" : false,
+							 * "separator_after" : true, "_disabled" : false, //
+							 * (this.check("create_node", // data.reference, {}, //
+							 * "last")), "label" : "Create group", "action" :
+							 * function(data) { var inst = $.jstreeol3
+							 * .reference(data.reference), obj = inst
+							 * .get_node(data.reference); inst.create_group(obj,
+							 * {}, "first", function( new_node) {
+							 * setTimeout(function() { inst.edit(new_node); },
+							 * 0); }); } }, "create" : { "separator_before" :
+							 * false, "separator_after" : true, "_disabled" :
+							 * false, // (this.check("create_node", //
+							 * data.reference, {}, // "last")), "label" :
+							 * "Create", "action" : function(data) { var inst =
+							 * $.jstreeol3 .reference(data.reference), obj =
+							 * inst .get_node(data.reference);
+							 * inst.create_node(obj, {}, "last", function(
+							 * new_node) { setTimeout(function() {
+							 * inst.edit(new_node); }, 0); }); } },
+							 */
+							// "rename" : {
+							// "separator_before" : false,
+							// "icon" : "fa fa-pencil",
+							// "separator_after" : false,
+							// "_disabled" : false, //
+							// (this.check("rename_node",
+							// // data.reference,
+							// // this.get_parent(data.reference),
+							// // "")),
+							// "label" : "Rename",
+							// /*
+							// * ! "shortcut" : 113, "shortcut_label" : 'F2',
+							// * "icon" : "glyphicon glyphicon-leaf",
+							// */
+							// "action" : function(data) {
+							// var inst = $.jstreeol3.reference(data.reference),
+							// obj
+							// = inst.get_node(data.reference);
+							// inst.edit(obj);
+							// }
+							// },
 							// "ccp" : {
 							// "separator_before" : true,
 							// "icon" : false,
@@ -568,51 +712,6 @@ gb.tree.OpenLayers = function(obj) {
 							 * console.log(layer); } else { //
 							 * inst.delete_node_layer(obj); } } },
 							 */
-							"style" : {
-								"separator_before" : false,
-								"icon" : "fa fa-paint-brush",
-								"separator_after" : false,
-								"_disabled" : false, // (this.check("delete_node",
-								// data.reference,
-								// this.get_parent(data.reference),
-								// "")),
-								"label" : that.translation.style[that.locale],
-								"action" : function(data) {
-									var inst = $.jstreeol3
-									.reference(data.reference), obj = inst
-									.get_node(data.reference);
-									if (inst.is_selected(obj)) {
-										var layers = inst.get_selected();
-										for (var i = 0; i < layers.length; i++) {
-											inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
-											inst._data.layerproperties.style.setLegend(obj, inst.settings.legends.geoserver);
-											inst._data.layerproperties.style.open();
-										}
-									} else {
-										// inst.delete_node_layer(obj);
-									}
-								}
-							},
-							"navigator" : {
-								"separator_before" : false,
-								"icon" : "fa fa-compass",
-								"separator_after" : false,
-								"_disabled" : false,
-								"label" : that.translation.navigator[that.locale],
-								"action" : function(data) {
-									var inst = $.jstreeol3.reference(data.reference),
-									obj = inst.get_node(data.reference);
-									if (inst.is_selected(obj)) {
-										var layer = inst.get_LayerById(obj.id);
-
-										inst._data.layerproperties.navigator
-										.setFeatures(layer);
-									} else {
-										// inst.delete_node_layer(obj);
-									}
-								}
-							}
-						}
 					}
 				},
 				plugins : [ "contextmenu", "dnd", "search", "state", "sort", "visibility", "layerproperties", "legends", "functionmarker" ]
@@ -896,25 +995,6 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var htd5 = $("<td>").append(addBtn);
 	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
 
-	/*
-	 * var key = $("<input>").addClass("form-control").attr({ "type" : "text"
-	 * }); var td1 = $("<td>").append(key);
-	 * 
-	 * var opt1 = $("<option>").text("Integer"); var opt2 = $("<option>").text("Double");
-	 * var opt3 = $("<option>").text("String"); var opt4 = $("<option>").text("Date");
-	 * var opt5 = $("<option>").text("Boolean"); var type = $("<select>").addClass("form-control").append(opt1).append(opt2).append(opt3).append(opt4).append(opt5);
-	 * var td2 = $("<td>").append(type);
-	 * 
-	 * var nullable = $("<input>").attr({ "type" : "checkbox" }); var td3 = $("<td>").append(nullable);
-	 * 
-	 * var unique = $("<input>").attr({ "type" : "checkbox" }); var td4 = $("<td>").append(unique);
-	 * 
-	 * var trash = $("<a href='#'>").append($("<i>").addClass("far
-	 * fa-trash-alt")); trash.click(function() {
-	 * $(this).parent().parent().remove(); }); var td5 = $("<td>").append(trash);
-	 * 
-	 * var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
-	 */
 	var typeFormBody = $("<tbody>").addClass("type-form-body");
 
 	var table = $("<table>").addClass("table").addClass("text-center").append(thd).append(typeFormBody);
@@ -1249,3 +1329,520 @@ gb.tree.OpenLayers.prototype.deleteLayer = function(layers, callback){
 		callback();
 	}
 };
+
+gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
+	
+	var params = {};
+	var git = layer.get("git");
+	var attrs, geom;
+	if(git instanceof Object){
+		attrs = git.attribute;
+		geom = git.geometry;
+	}
+	
+	params.geoserverURL = "";
+	params.geoserverID = "";
+	params.geoserver = "";
+	params.workspace = "";
+	params.datastore = "";
+	
+	params.lName = layer.get("name");
+	params.geomType = geom;
+	params.attInfo = {};
+	
+	if(attrs instanceof Array){
+		for(let i = 0; i < attrs.length; i++){
+			if(attrs[i] instanceof gb.layer.Attribute){
+				params.attInfo[attrs[i].originFieldName] = {type: attrs[i].type};
+			}
+		}
+	}
+
+	var table = this.createPropTable(params, true);
+	
+	var body = 
+		$("<div>")
+			.append(table)
+			.css({
+				"height" : "550px",
+				"overflow-y" : "auto"
+			});;
+	
+	var closeBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-default")
+			.text(this.translation.close[this.locale]);
+	
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+	var modal = this.layerPropModal = new gb.modal.Base({
+		"title" : "Properties",
+		"width" : "700px",
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+}
+
+gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
+	var that = this;
+	var geoserver = obj.geoserver || false,
+		workspace = obj.workspace || false, 
+		datastore = obj.datastore || false, 
+		layername = obj.layername || false;
+
+	var geoserverURL, geoserverID;
+	
+	if (!geoserver || !workspace || !datastore || !layername) {
+		console.error("Missed Parameter");
+		return;
+	}
+
+	var params = {
+		"serverName" : geoserver,
+		"type" : "server",
+		"format" : "json",
+	}
+	
+	var tranURL = "geoserver/getDTGeoserverInfo.ajax" + this.token + "&" + jQuery.param(params);
+	
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		async: false,
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			if (data !== undefined) {
+				data = JSON.parse(data);
+				var info = data.info;
+				
+				geoserverURL = info.url;
+				geoserverID = info.id;
+			}
+		}
+	});
+	
+	var arr = {
+		"serverName" : geoserver,
+		"workspace" : workspace,
+		"geoLayerList" : [ layername ]
+	};
+	
+	$.ajax({
+		url : "geoserver/getGeoLayerInfoList.ajax" + this.token,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : JSON.stringify(arr),
+		beforeSend : function() { // 호출전실행
+			$("body").css("cursor", "wait");
+		},
+		complete : function() {
+			$("body").css("cursor", "default");
+		},
+		traditional : true,
+		success : function(data, textStatus, jqXHR) {
+			var table, body, closeBtn, buttonArea, modal;
+			if (Array.isArray(data)) {
+				if (data.length === 1) {
+
+					data[0].geoserverURL = geoserverURL;
+					data[0].geoserverID = geoserverID;
+					data[0].geoserver = geoserver;
+					data[0].workspace = workspace;
+					data[0].datastore = datastore;
+
+					table = that.createPropTable(data[0], false);
+					
+					body = 
+						$("<div>")
+							.append(table)
+							.css({
+								"height" : "550px",
+								"overflow-y" : "auto"
+							});
+					
+					closeBtn = 
+						$("<button>")
+							.css({
+								"float" : "right"
+							})
+							.addClass("gb-button")
+							.addClass("gb-button-default")
+							.text(that.translation.close[that.locale]);
+					
+					buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+					modal = new gb.modal.Base({
+						"title" : "Properties",
+						"width" : "700px",
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					
+					$(closeBtn).click(function() {
+						modal.close();
+					});
+				}
+				
+				$("body").css("cursor", "default");
+			}
+		}
+	});
+}
+
+gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
+	var that = this;
+	
+	var tdStyle = {
+		"padding" : ".78571429em .78571429em"
+	};
+
+	var tdKeyStyle = {
+		"padding" : ".78571429em .78571429em",
+		"background" : "rgba(0,0,0,.03)",
+		"font-weight" : "700"
+	};
+
+	var trStyle = {
+		"border-bottom" : "1px solid rgba(0,0,0,.1)"
+	};
+	
+	var labelStyle = {
+		"display" : "inline-block",
+		"position" : "relative",
+		"background" : "#e0e1e2 none",
+		"color" : "rgba(0,0,0,.6)",
+		"margin" : "0 .25em .25em 0",
+		"padding" : ".78571429em 1.5em .78571429em",
+		"font-weight" : "700",
+		"line-height" : "1em",
+		"border-radius" : ".28571429rem"
+	};
+	
+	var attrLabelStyle = {
+		"display" : "inline-block",
+		"position" : "relative",
+		"background" : "#e0e1e2 none",
+		"color" : "rgba(0,0,0,.6)",
+		"margin" : "0 .25em .25em 0",
+		"padding" : ".785714em 2.0em .785714em .785714em",
+		"font-weight" : "700",
+		"line-height" : "1em",
+		"border-radius" : ".28571429rem"
+	};
+
+	var fieldStyle = {
+		"width" : "50%",
+		"padding-left" : ".5em",
+		"padding-right" : ".5em"
+	};
+	
+	var selectTitleStyle = {
+		"font-weight" : "700"
+	};
+	
+	var iconStyle = {
+		"left" : "auto",
+		"right" : "0",
+		"position" : "absolute",
+		"text-align": "center",
+		"width": "30px",
+		"color": "#db2828",
+		"cursor": "pointer"
+	};
+
+	var list = obj || false;
+	if (!list) {
+		return;
+	}
+	
+	var tbody = $("<tbody>");
+	var tableTag = $("<table>").append(tbody);
+	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search, removeAttr;
+	for ( let i in list) {
+		
+		if(i === "sld"){
+			continue;
+		}
+		
+		if(!this.translation[i]){
+			key = $("<td>").css(tdKeyStyle).text(i).css("width", "20%");
+		} else {
+			if(i === "attInfo" && isVector){
+				var addLabel = 
+					$("<label>")
+						.text(this.translation[i][that.locale]);
+				
+				var addIcon = 
+					$("<a href='#'>")
+						.append($("<i>").addClass("fas fa-plus-square fa-lg"))
+						.css({"float": "right"});
+				
+				addIcon.click(function() {
+					that.addPropModal();
+				});
+				
+				var addDiv = 
+					$("<div>")
+						.append(addLabel)
+						.append(addIcon)
+						.css({"width": "100%"});
+				
+				key = $("<td>").css(tdKeyStyle).append(addDiv).css("width", "20%");
+			} else {
+				key = $("<td>").css(tdKeyStyle).text(this.translation[i][that.locale]).css("width", "20%");
+			}
+		}
+		
+		if (list[i] instanceof Object) {
+			value = $("<td>").css(tdStyle);
+			for ( var j in list[i]) {
+				labelKey = $("<span>").addClass("layer-attr-key").text(j);
+				if (list[i][j] instanceof Object) {
+					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
+				} else {
+					labelValue = $("<span>").text(list[i][j]);
+				}
+				
+				label = $("<div>").css(labelStyle).append(labelKey).append(labelValue);
+				if (isVector) {
+					removeAttr = 
+						$("<i>")
+							.addClass("far fa-trash-alt")
+							.css(iconStyle);
+					
+					removeAttr.click(function(){
+						var attrKey = $(this).parent().find(".layer-attr-key").text();
+						
+						var msg1 = 
+							$("<div>")
+								.css({
+									"text-align" : "center",
+									"font-size" : "16px"
+								})
+								.text(that.translation.deleteHint[that.locale]);
+						
+						var msg2 = 
+							$("<div>")
+								.text(attrKey)
+								.css({
+									"text-align" : "center",
+									"font-size" : "24px",
+									"word-break" : "break-word"
+								});
+						
+						var body = $("<div>").append(msg1).append(msg2);
+						
+						var closeBtn = $("<button>").css({
+							"float" : "right"
+						}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
+						
+						var okBtn = $("<button>").css({
+							"float" : "right"
+						}).addClass("gb-button").addClass("gb-button-primary").text(that.translation["delete"][that.locale]);
+						
+						var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+						
+						var modal = new gb.modal.Base({
+							"title" : that.translation.deleteAttr[that.locale],
+							"width" : 310,
+							"height" : 200,
+							"autoOpen" : false,
+							"body" : body,
+							"footer" : buttonArea
+						});
+						
+						$(closeBtn).click(function() {
+							modal.close();
+						});
+						
+						$(okBtn).click(function() {
+							var layer = that.selectedLayer;
+							var attrs = layer.get("git").attribute;
+							var features = layer.getSource().getFeatures();
+							
+							for(var i = attrs.length - 1; i >= 0 ; i--){
+								if(attrKey === attrs[i].originFieldName){
+									attrs.splice(i, 1);
+								}
+							}
+							
+							for(var i = 0; i < features.length; i++){
+								features[i].unset(attrKey);
+							}
+							
+							modal.close();
+							that.layerPropModal.close();
+							that.vectorLayerInfo(layer);
+						});
+						
+						modal.open();
+					});
+					label.append(removeAttr).css(attrLabelStyle);
+				}
+				value.append(label);
+			}
+		} else {
+			if (i === "style") {
+				selectTitle = $("<label>").css(selectTitleStyle).text(this.translation["workspace"][this.locale]);
+				select = $("<div>").text(list.styleWorkspace || this.translation["myserver"][this.locale]);
+				selectField = $("<div>").css(fieldStyle).append(selectTitle).append(select);
+
+				value = $("<td>").css(tdStyle).css("display", "flex").append(selectField);
+
+				selectTitle = 
+					$("<div>")
+						.append($("<label>").css(selectTitleStyle).text(this.translation["style"][this.locale]));
+				select = $("<div>").text(list[i]);
+				selectField = $("<div>").css(fieldStyle).append(selectTitle).append(select);
+				value.append(selectField);
+			} else {
+				if (i === "styleWorkspace") {
+					continue;
+				}
+				value = $("<td>").css(tdStyle).text(list[i]);
+			}
+		}
+
+		tr = $("<tr>").css(trStyle).append(key).append(value);
+		if(i === "geoserver" || i === "workspace" || i === "datastore" || i === "geoserverURL" || i === "geoserverID"){
+			tbody.prepend(tr);
+		} else {
+			tbody.append(tr);
+		}
+		
+	}
+	
+	return tableTag;
+}
+
+gb.tree.OpenLayers.prototype.addPropModal = function(obj) {
+	var that = this;
+	var attrTable = gb.tree.OpenLayers.getAttrForm();
+	
+	var closeBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-default")
+			.text(this.translation.close[this.locale]);
+	
+	var okBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-primary")
+			.text(this.translation.add[this.locale]);
+
+	var buttonArea = 
+		$("<span>")
+			.addClass("gb-modal-buttons")
+			.append(okBtn)
+			.append(closeBtn);
+	
+	var modalFooter = $("<div>").append(buttonArea);
+
+	var body = 
+		$("<div>")
+			.append(attrTable)
+			.css({
+				"max-height" : "300px",
+				"overflow-y" : "auto"
+			});
+	
+	var addPropModal = new gb.modal.Base({
+		"title" : this.translation.addAttribute[this.locale],
+		"width" : 540,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : modalFooter
+	});
+
+	$(closeBtn).click(function() {
+		addPropModal.close();
+	});
+	
+	$(okBtn).click(function(){
+		var layer = that.selectedLayer;
+		var attrs = layer.get("git").attribute;
+		var features = layer.getSource().getFeatures();
+		var bool = true;
+		var git, attribute;
+		
+		if(layer instanceof ol.layer.Vector){
+			git = layer.get("git");
+			
+			if(!(git instanceof Object)){
+				addPropModal.close();
+				return;
+			}
+			
+			if(git.attribute instanceof Array){
+				attrTable.find("tbody").children().each(function(){
+					if(!$(this).children().eq(0).find("input:text").val()){
+						bool = false;
+					}
+					
+					var name = $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, '');
+					
+					for(var i = 0; i < attrs.length ; i++){
+						if(name === attrs[i].originFieldName){
+							alert(that.translation.duplicateKeyHint[that.locale] + ' "' + name + '"');
+							return;
+						}
+					}
+					
+					attribute = new gb.layer.Attribute({
+						originFieldName : name,
+						fieldName : name,
+						type : $(this).children().eq(1).find("select").val(),
+						decimal : $(this).children().eq(1).find("select").val() === "Double" ? 30 : null,
+						size : 256,
+						isUnique : $(this).children().eq(3).find("input:checkbox").prop("checked") ? true : false,
+						nullable : $(this).children().eq(2).find("input:checkbox").prop("checked") ? false : true,
+						isNew : true
+					});
+					git.attribute.push(attribute);
+					
+					for(var i = 0; i < features.length; i++){
+						if(features[i].get(name) === undefined){
+							features[i].set(name, "");
+						}
+					}
+				});
+				
+				if(!bool){
+					alert(that.translation.inputAttrHint[that.locale]);
+					return;
+				}
+			}
+			addPropModal.close();
+			that.layerPropModal.close();
+			that.vectorLayerInfo(layer);
+		} else {
+			addPropModal.close();
+		}
+	});
+	
+	attrTable.find("a").click();
+}

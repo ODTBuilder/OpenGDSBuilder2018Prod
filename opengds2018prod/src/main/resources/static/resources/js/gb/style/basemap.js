@@ -158,12 +158,12 @@ gb.style.BaseMap = function(obj) {
 		},
 		black : {
 			name : "Black",
-			thumb : "gb-base-thumbnail-none",
+			thumb : "gb-base-thumbnail-black",
 			layer : undefined
 		},
 		white : {
 			name : "White",
-			thumb : "gb-base-thumbnail-none",
+			thumb : "gb-base-thumbnail-white",
 			layer : undefined
 		}
 	};

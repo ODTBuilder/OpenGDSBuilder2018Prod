@@ -1754,7 +1754,7 @@ gb.panel.EditingTool.prototype.loadSnappingLayer = function(extent) {
 		if (that.snapWMS.length > 0) {
 			var params = {
 				"service" : "WFS",
-				"version" : "1.0.0",
+				"version" : gb.module.serviceVersion.WFS,
 				"request" : "GetFeature",
 				"typeName" : this.snapWMS.toString(),
 				"outputformat" : "text/javascript",

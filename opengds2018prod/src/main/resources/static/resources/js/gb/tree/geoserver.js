@@ -510,12 +510,6 @@ gb.tree.GeoServer = function(obj) {
 									 */
 									"action" : function(data) {
 										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-// if(isEdit instanceof Object){
-// if(isEdit.get()){
-// isEdit.alert();
-// return
-// }
-// }
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var server = obj.text;
 										console.log(server);
@@ -524,34 +518,29 @@ gb.tree.GeoServer = function(obj) {
 							}
 							totalObj["info"] = infoObj;
 							
-							var setObj = {
-									"separator_before" : false,
-									"icon" : "fas fa-cog",
-									"separator_after" : false,
-									"_disabled" : function() {
-										console.log(o);
-										console.log(cb);
-										var result = true;
-										if (o.type === "geoserver") {
-											result = false;
-										}
-										return result;
-									},
-									"label" : that.translation.setting[that.locale],
-									/*
-									 * ! "shortcut" : 113, "shortcut_label" :
-									 * 'F2', "icon" : "glyphicon
-									 * glyphicon-leaf",
-									 */
-									"action" : function(data) {
-										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-										var server = obj.text;
-										
-										that.geoserverSettingModal();
+							/*var setObj = {
+								"separator_before" : false,
+								"icon" : "fas fa-cog",
+								"separator_after" : false,
+								"_disabled" : function() {
+									console.log(o);
+									console.log(cb);
+									var result = true;
+									if (o.type === "geoserver") {
+										result = false;
 									}
+									return result;
+								},
+								"label" : that.translation.setting[that.locale],
+								"action" : function(data) {
+									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+									var server = obj.text;
+									
+									that.geoserverSettingModal();
+								}
 							}
-							totalObj["set"] = setObj;
+							totalObj["set"] = setObj;*/
 						}
 						// 지오긱 저장소이면 브랜치 서브메뉴 객체를 만듬
 						var repoObj = {};
@@ -1465,10 +1454,16 @@ gb.tree.GeoServer = function(obj) {
 									"action" : function(data) {
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var arr, workspace = [];
-										/*
-										 * if (obj.type === "geoserver") {
-										 * that.openDeleteGeoServer(obj.id); }
-										 */
+										
+										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+										// Edit Tool 활성화 상태시 실행 중지
+										if(isEdit instanceof Object){
+											if(isEdit.get()){
+												isEdit.alert();
+												return
+											}
+										}
+										
 										if (inst.is_selected(obj)) {
 											arr = inst.get_node(obj.parents[obj.parents.length - 2]).children;
 											for (var i = 0; i < arr.length; i++) {
@@ -2525,110 +2520,6 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	}).fail(function(xhr, status, errorThrown) {
 		that.errorModal(xhr.responseJSON.status);
 	});
-
-	var removeModal = new gb.modal.Base({
-		"title" : this.translation.serverinfo[this.locale],
-		"width" : 574,
-		"autoOpen" : true,
-		"body" : body,
-		"footer" : buttonArea
-	});
-	$(closeBtn).click(function() {
-		removeModal.close();
-	});
-};
-
-/**
- * 레파지토리 정보 확인창을 생성한다.
- * 
- * @method gb.tree.Geoserver#geoserverSettingModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
- */
-gb.tree.GeoServer.prototype.geoserverSettingModal = function() {
-	var that = this;
-
-	var keyStyle = {
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	};
-	
-	var contentStyle = {
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	};
-	
-	var wcsKey = $("<div>").css(keyStyle).text("WCS");
-	var wcsSelect = $("<select>").addClass("gb-form");
-	var wcsContent = $("<div>").css(contentStyle).append(wcsSelect);
-	
-	var row1 = $("<div>").css({
-		"display" : "table-row"
-	}).append(wcsKey).append(wcsContent);
-
-	var wfsKey = $("<div>").css(keyStyle).text("WFS");
-	var wfsSelect = $("<select>").addClass("gb-form");
-	var wfsContent = $("<div>").css(contentStyle).append(wfsSelect);
-	
-	var row2 = $("<div>").css({
-		"display" : "table-row"
-	}).append(wfsKey).append(wfsContent);
-
-	var wmsKey = $("<div>").css(keyStyle).text("WMS");
-	var wmsSelect = $("<select>").addClass("gb-form");
-	var wmsContent = $("<div>").css(contentStyle).append(wmsSelect);
-	
-	var row3 = $("<div>").css({
-		"display" : "table-row"
-	}).append(wmsKey).append(wmsContent);
-
-	var tmsKey = $("<div>").css(keyStyle).text("TMS");
-	var tmsSelect = $("<select>").addClass("gb-form");
-	var tmsContent = $("<div>").css(contentStyle).append(tmsSelect);
-	
-	var row4 = $("<div>").css({
-		"display" : "table-row"
-	}).append(tmsKey).append(tmsContent);
-
-	var wmscKey = $("<div>").css(keyStyle).text("WMS-C");
-	var wmscSelect = $("<select>").addClass("gb-form");
-	var wmscContent = $("<div>").css(contentStyle).append(wmscSelect);
-	
-	var row5 = $("<div>").css({
-		"display" : "table-row"
-	}).append(wmscKey).append(wmscContent);
-	
-	var wmtsKey = $("<div>").css(keyStyle).text("WMTS");
-	var wmtsSelect = $("<select>").addClass("gb-form");
-	var wmtsContent = $("<div>").css(contentStyle).append(wmtsSelect);
-	
-	var row6 = $("<div>").css({
-		"display" : "table-row"
-	}).append(wmtsKey).append(wmtsContent);
-
-	var tb = $("<div>").css({
-		"display" : "table",
-		"width" : "100%"
-	}).append(row1).append(row2).append(row3).append(row4).append(row5).append(row6);
-	var body = $("<div>").append(tb);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
 	var removeModal = new gb.modal.Base({
 		"title" : this.translation.serverinfo[this.locale],

@@ -194,6 +194,9 @@ gb.layer.Navigator.prototype.close = function(){
 }
 
 gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
+	if(!feature){
+		return;
+	}
 	var fid = feature.getId();
 	$(this.td2).text(fid);
 	var prop = feature.getProperties();

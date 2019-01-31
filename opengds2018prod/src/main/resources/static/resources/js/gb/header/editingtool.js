@@ -1112,7 +1112,16 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 			var item = arr[0];
 			var prop, setProp = {};
 			
-			if(item instanceof ol.Feature){
+			if(source.get("git") instanceof Object){
+				if(source.get("git").attribute instanceof Array){
+					for(let i = 0; i < source.get("git").attribute.length; i++){
+						prop = source.get("git").attribute[i];
+						setProp[prop.fieldName] = "";
+					}
+				}
+			}
+			
+			/*if(item instanceof ol.Feature){
 				prop = item.getProperties();
 				for(let key in prop){
 					if(prop[key] instanceof Object){
@@ -1130,7 +1139,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 						}
 					}
 				}
-			}
+			}*/
 			
 			if (!!source) {
 				var feature = evt.feature;
@@ -2708,12 +2717,12 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 			loader: function(extent, resolution, projection){
 
 				params = {
-						"serverName": git.geoserver,
-						"workspace": git.workspace,
-						"version" : "1.0.0",
-						"typeName" : layername,
-						"bbox" : extent.join(","),
-						"outputformat" : "application/json"
+					"serverName": git.geoserver,
+					"workspace": git.workspace,
+					"version" : gb.module.serviceVersion.WFS,
+					"typeName" : layername,
+					"bbox" : extent.join(","),
+					"outputformat" : "application/json"
 				};
 
 				$.ajax({

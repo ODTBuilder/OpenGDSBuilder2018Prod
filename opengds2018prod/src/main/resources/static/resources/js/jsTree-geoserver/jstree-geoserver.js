@@ -58,7 +58,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var params = {
 			"serverName" : layer.id.split(":")[0],
 			"workspace" : layer.id.split(":")[1],
-			"version" : "1.0.0",
+			"version" : gb.module.serviceVersion.WFS,
 			"outputformat" : out,
 			"typeName" : layer.id.split(":")[3]
 		}
@@ -134,7 +134,6 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var that = this;
 		var a = layer;
 		var format = outputformat;
-		
 		$.ajax({
 			url : that._data.geoserver.getLayerInfo,
 			method : "POST",
@@ -152,14 +151,15 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					params = {
 						"serverName" : a.serverName,
 						"workspace" : a.workspace,
-						"version" : "1.1.0",
+						"version" : gb.module.serviceVersion.WMS,
 						"format" : format,
-						"srs": data[i].srs,
 						"bbox" : [ data[i].nbBox.minx, data[i].nbBox.miny, data[i].nbBox.maxx, data[i].nbBox.maxy ],
 						"layers" : data[i].lName,
 						"width" : 1024,
 						"height" : 768
 					};
+					
+					params[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
 					
 					form = document.createElement("form");
 					form.setAttribute("method", "get");
@@ -245,28 +245,49 @@ $.jstree.plugins.geoserver = function(options, parent) {
 						console.log(data);
 						if (Array.isArray(data)) {
 							for (var i = 0; i < data.length; i++) {
+								var obj = {
+									"serverName" : params["serverName"],
+									"workspace" : params["workspace"],
+									"LAYERS" : params["workspace"] + ":" + data[i].lName,
+									// "STYLES" : undefined,
+									"VERSION" : gb.module.serviceVersion.WMS,
+									"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+									"TILED" : true,
+									"FORMAT" : 'image/png8',
+									"SLD_BODY" : data[i].sld
+								};
+								obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+								
 								var wms = new ol.layer.Tile({
 									extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 											data[i].nbBox.maxy.toString() ],
 									source : new ol.source.TileWMS({
 										url : that._data.geoserver.getMapWMS,
-										params : {
-											"serverName" : params["serverName"],
-											"workspace" : params["workspace"],
-											"LAYERS" : params["workspace"] + ":" + data[i].lName,
-											// "STYLES" : undefined,
-											"VERSION" : "1.1.0",
-											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-											"TILED" : true,
-											"FORMAT" : 'image/png8',
-											"CRS" : data[i].srs,
-											"SLD_BODY" : data[i].sld
-										},
+										params : obj,
 										serverType : "geoserver"
 									})
 								});
 
+								var attributes = [];
+								if(data[i].attInfo instanceof Object){
+									var attribute
+									for(var j in data[i].attInfo){
+										attribute = new gb.layer.Attribute({
+											originFieldName : j.replace(/(\s*)/g, ''),
+											fieldName : j.replace(/(\s*)/g, ''),
+											type : data[i].attInfo[j].type,
+											decimal : data[i].attInfo[j].type === "Double" ? 30 : null,
+											size : 256,
+											isUnique : false,
+											nullable : data[i].attInfo[j].nillable === "true" ? true : false,
+											isNew : true
+										});
+										
+										attributes.push(attribute);
+									}
+								}
+								
 								var git = {
 									"geoserver" : params["serverName"],
 									"workspace" : params["workspace"],
@@ -274,7 +295,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 									"geometry" : data[i].geomType,
 									"editable" : true,
 									"sld" : data[i].sld,
-									"native" : data[i].nativeName
+									"native" : data[i].nativeName,
+									"attribute" : attributes
 								};
 								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 									git["geogigRepo"] = geogig["repo"];
@@ -485,28 +507,49 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					console.log(data);
 					if (Array.isArray(data)) {
 						for (var i = 0; i < data.length; i++) {
+							var obj = {
+								"serverName" : server.text,
+								"workspace" : workspace.text,
+								"LAYERS" : params["workspace"] + ":" + node.text,
+								// "STYLES" : data[i].style,
+								"VERSION" : gb.module.serviceVersion.WMS,
+								"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+										+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+								"TILED" : true,
+								"FORMAT" : 'image/png8',
+								"SLD_BODY" : data[i].sld
+							};
+							obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+							
 							var wms = new ol.layer.Tile({
 								extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
-									params : {
-										"serverName" : server.text,
-										"workspace" : workspace.text,
-										"LAYERS" : params["workspace"] + ":" + node.text,
-										// "STYLES" : data[i].style,
-										"VERSION" : "1.1.0",
-										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-										"TILED" : true,
-										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs,
-										"SLD_BODY" : data[i].sld
-									},
+									params : obj,
 									serverType : "geoserver"
 								})
 							});
-
+							
+							var attributes = [];
+							if(data[i].attInfo instanceof Object){
+								var attribute
+								for(var j in data[i].attInfo){
+									attribute = new gb.layer.Attribute({
+										originFieldName : j.replace(/(\s*)/g, ''),
+										fieldName : j.replace(/(\s*)/g, ''),
+										type : data[i].attInfo[j].type,
+										decimal : data[i].attInfo[j].type === "Double" ? 30 : null,
+										size : 256,
+										isUnique : false,
+										nullable : data[i].attInfo[j].nillable === "true" ? true : false,
+										isNew : true
+									});
+									
+									attributes.push(attribute);
+								}
+							}
+							
 							var git = {
 								"geoserver" : server.text,
 								"workspace" : workspace.text,
@@ -514,7 +557,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								"geometry" : data[i].geomType,
 								"editable" : true,
 								"sld" : data[i].sld,
-								"native" : data[i].nativeName
+								"native" : data[i].nativeName,
+								"attribute" : attributes
 							};
 							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 								git["geogigRepo"] = geogig["repo"];

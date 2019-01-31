@@ -986,7 +986,7 @@ gitbuilder.ui.QAEdit = $.widget("gitbuilder.qaedit",
 				var that = this;
 				var params = {
 					"service" : "WFS",
-					"version" : "1.0.0",
+					"version" : gb.module.serviceVersion.WFS,
 					"request" : "GetFeature",
 					"typeName" : layer,
 					"outputformat" : "text/javascript",

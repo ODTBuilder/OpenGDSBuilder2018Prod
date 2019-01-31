@@ -151,6 +151,9 @@ html {
 				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i
 						class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i> <spring:message code="lang.info" />
 				</a></li>
+				<li><a href="#" title="setting" id="editSetting">
+				<i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i><spring:message code="lang.setting" />
+				</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -326,6 +329,10 @@ html {
 
 		$("#changeBase").click(function() {
 			gbBaseMap.open();
+		});
+		
+		$("#editSetting").click(function() {
+			gb.module.serviceVersion.geoserverSettingModal(locale);
 		});
 
 		var vrepo = new gb.versioning.Repository({

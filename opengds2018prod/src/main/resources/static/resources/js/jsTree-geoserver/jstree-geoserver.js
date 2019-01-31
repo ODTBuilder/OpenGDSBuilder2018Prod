@@ -700,6 +700,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 						layerString.push(layer);
 					}
 
+					//var mysld = '<?xml version="1.0" encoding="ISO-8859-1"?><StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> <!-- a Named Layer is the basic building block of an SLD document --> <NamedLayer>   <Name>N3P_B0010000</Name>   <UserStyle>   <!-- Styles can have names, titles and abstracts -->     <Title>Default Polygon</Title>     <Abstract>A sample style that draws a polygon</Abstract>     <!-- FeatureTypeStyles describe how to render different features -->     <!-- A FeatureTypeStyle for rendering polygons -->     <FeatureTypeStyle>       <Rule>         <Name>rule1</Name>         <Title>Gray Polygon with Black Outline</Title>         <Abstract>A polygon with a gray fill and a 1 pixel black outline</Abstract>         <PolygonSymbolizer>           <Fill>             <CssParameter name="fill">#AAAAAA</CssParameter>             <CssParameter name="fill-opacity">0.4</CssParameter>           </Fill>           <Stroke>             <CssParameter name="stroke">#000000</CssParameter>             <CssParameter name="stroke-width">1</CssParameter>           </Stroke>         </PolygonSymbolizer>       </Rule>     </FeatureTypeStyle>   </UserStyle> </NamedLayer></StyledLayerDescriptor>';
+					
 					wms = new ol.layer.Tile({
 						extent : undefined,
 						source : new ol.source.TileWMS({
@@ -711,11 +713,12 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								"VERSION" : "1.1.0",
 								"TILED" : true,
 								"FORMAT" : 'image/png8'
+//								"SLD_BODY" : mysld
 							},
 							serverType : "geoserver"
 						})
 					});
-
+					
 					var git = {
 						"fake" : "parent",
 						"geoserver" : params["serverName"],

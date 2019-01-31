@@ -2390,7 +2390,7 @@
 							var git = layer.get("git");
 							if (git.hasOwnProperty("fake")) {
 								if (git["fake"] === "parent") {
-									obj.type = "Group";
+									obj.type = "FakeGroup";
 // result.push(obj);
 									var layers = layer.get("git").layers;
 									for (var i = 0; i < layers.getLength(); i++) {

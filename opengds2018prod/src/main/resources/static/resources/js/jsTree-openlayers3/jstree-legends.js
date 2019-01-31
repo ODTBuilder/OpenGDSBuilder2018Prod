@@ -130,6 +130,10 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 														if (fake === "parent") {
 
 														} else if (fake === "child") {
+															var csld = git["sld"];
+															if (csld !== undefined) {
+																console.log(csld);
+															}
 															var source = layer.getSource();
 															if (source instanceof ol.source.TileWMS) {
 																/*
@@ -158,25 +162,40 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 															layerStyle.setLegend(m[dpc[i]], g);
 															layerStyle.updateStyle();
 
-															var cnode = this.get_node(m[dpc[i]].id);
-															var pnode = this.get_node(cnode.parent);
-															console.log(pnode);
-															var player = this.get_LayerById(pnode.id);
-															if (player instanceof ol.layer.Tile) {
-																var git = player.get("git");
-																var allc = git.allChildren;
-																var loadc = git.loadedChildren;
-																if (allc === loadc) {
-																	var psource = player.getSource();
-																	if (psource instanceof ol.source.TileWMS) {
-																		var psld = psource.getParams()["SLD_BODY"];
-																		console.log(psld);
-																		if (psld !== undefined) {
-																			this.merge_layer_style();
-																		}
-																	}
-																}
-															}
+															// var cnode =
+															// this.get_node(m[dpc[i]].id);
+															// var pnode =
+															// this.get_node(cnode.parent);
+															// console.log(pnode);
+															// var player =
+															// this.get_LayerById(pnode.id);
+															// if (player
+															// instanceof
+															// ol.layer.Tile) {
+															// var git =
+															// player.get("git");
+															// var allc =
+															// git.allChildren;
+															// var loadc =
+															// git.loadedChildren;
+															// if (allc ===
+															// loadc) {
+															// var psource =
+															// player.getSource();
+															// if (psource
+															// instanceof
+															// ol.source.TileWMS)
+															// {
+															// var psld =
+															// psource.getParams()["SLD_BODY"];
+															// console.log(psld);
+															// if (psld !==
+															// undefined) {
+															// this.merge_layer_style();
+															// }
+															// }
+															// }
+															// }
 														} else {
 															var source = layer.getSource();
 															if (source instanceof ol.source.TileWMS) {

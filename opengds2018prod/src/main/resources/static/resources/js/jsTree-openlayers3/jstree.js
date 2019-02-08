@@ -2345,7 +2345,7 @@
 								}
 							}
 						}
-						result.push(obj);
+//						result.push(obj);
 					} else if (layer instanceof ol.layer.Image) {
 						if (layer.get("git")) {
 							var git = layer.get("git");

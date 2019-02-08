@@ -291,7 +291,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								var git = {
 									"geoserver" : params["serverName"],
 									"workspace" : params["workspace"],
-									'layers' : data[i].lName,
+									"layers" : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
 									"sld" : data[i].sld,
@@ -507,24 +507,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					console.log(data);
 					if (Array.isArray(data)) {
 						for (var i = 0; i < data.length; i++) {
+							var obj = {
+								"serverName" : server.text,
+								"workspace" : workspace.text,
+								"LAYERS" : params["workspace"] + ":" + node.text,
+								// "STYLES" : data[i].style,
+								"VERSION" : gb.module.serviceVersion.WMS,
+								"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+										+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+								"TILED" : true,
+								"FORMAT" : 'image/png8',
+								"SLD_BODY" : data[i].sld
+							};
+							
+							obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+							
 							var wms = new ol.layer.Tile({
 								extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
-									params : {
-										"serverName" : server.text,
-										"workspace" : workspace.text,
-										"LAYERS" : params["workspace"] + ":" + node.text,
-										// "STYLES" : data[i].style,
-										"VERSION" : "1.1.0",
-										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-										"TILED" : true,
-										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs,
-										"SLD_BODY" : data[i].sld
-									},
+									params : obj,
 									serverType : "geoserver"
 								})
 							});

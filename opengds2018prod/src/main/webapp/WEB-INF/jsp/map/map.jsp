@@ -152,7 +152,7 @@ html {
 						class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i> <spring:message code="lang.info" />
 				</a></li>
 				<li><a href="#" title="setting" id="editSetting">
-				<i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i><spring:message code="lang.setting" />
+				<i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i> <spring:message code="lang.setting" />
 				</a></li>
 			</ul>
 		</div>

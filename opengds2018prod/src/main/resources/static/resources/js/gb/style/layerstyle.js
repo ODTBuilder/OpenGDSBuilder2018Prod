@@ -571,9 +571,10 @@ gb.style.LayerStyle.prototype.parseSymbolizer = function(sld) {
 			fillOpacity = fill.substring(fill.indexOf('<CssParameter name="fill-opacity">') + 34, fill.indexOf("</CssParameter>"));
 		}
 		console.log(fillOpacity);
-		if (fillRGBColorCode !== undefined && fillOpacity !== undefined) {
-			obj["fillRGBA"] = "rgba(" + fillRGBColorCode + "," + fillOpacity + ")";
-		}
+		
+		obj["fillRGBA"] = "rgba(" + (!fillRGBColorCode ? "120,120,120" : fillRGBColorCode) +
+			"," + (!fillOpacity ? "1" : fillOpacity) + ")";
+		
 		symbol = symbol.substring(symbol.indexOf("</Fill>") + 7);
 	} else if (sld.indexOf("<LineSymbolizer>") !== -1) {
 		symbol = sld.substring(sld.indexOf("<LineSymbolizer>") + 16, sld.indexOf("</LineSymbolizer>"));
@@ -610,9 +611,9 @@ gb.style.LayerStyle.prototype.parseSymbolizer = function(sld) {
 		if (fill.indexOf('<CssParameter name="fill-opacity">') !== -1) {
 			fillOpacity = fill.substring(fill.indexOf('<CssParameter name="fill-opacity">') + 34, fill.indexOf("</CssParameter>"));
 		}
-		if (fillRGBColorCode !== undefined && fillOpacity !== undefined) {
-			obj["fillRGBA"] = "rgba(" + fillRGBColorCode + "," + fillOpacity + ")";
-		}
+		
+		obj["fillRGBA"] = "rgba(" + (!fillRGBColorCode ? "120,120,120" : fillRGBColorCode) + "," + (!fillOpacity ? "1" : fillOpacity) + ")";
+		
 		mark = mark.substring(mark.indexOf("</Fill>") + 7);
 	}
 
@@ -636,9 +637,8 @@ gb.style.LayerStyle.prototype.parseSymbolizer = function(sld) {
 		if (!!strokeOpacity) {
 			stroke = stroke.substring(stroke.indexOf("</CssParameter>") + 15);
 		}
-		if (strokeRGBColorCode !== undefined) {
-			obj["strokeRGBA"] = "rgba(" + strokeRGBColorCode + "," + (!strokeOpacity ? "1" : strokeOpacity) + ")";
-		}
+		obj["strokeRGBA"] = "rgba(" + (!strokeRGBColorCode ? "120,120,120" : strokeRGBColorCode) + "," + (!strokeOpacity ? "1" : strokeOpacity) + ")";
+		
 		var strokeWidth;
 		if (stroke.indexOf('<CssParameter name="stroke-width">') !== -1) {
 			strokeWidth = stroke.substring(stroke.indexOf('<CssParameter name="stroke-width">') + 34, stroke.indexOf("</CssParameter>"));

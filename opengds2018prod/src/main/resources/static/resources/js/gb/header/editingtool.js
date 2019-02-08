@@ -4,6 +4,7 @@ if (!gb)
 if (!gb.header)
 	gb.header = {};
 
+gb.header.ZOOMLEVEL = 14;
 /**
  * 레이어 편집 기능을 정의한다. 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
  * 
@@ -367,23 +368,25 @@ gb.header.EditingTool = function(obj) {
 		var zoom = view.getZoom();
 
 		if(that.getActiveTool()){
-			if(zoom > 11 && !preventReload){
+			if(zoom > gb.header.ZOOMLEVEL && !preventReload){
 				that.loadWFS_();
 				that.loadVector_();
 				that.displayEditZoomHint(false);
 				preventReload = true;
-			} else if(zoom <= 11 && preventReload) {
+			} else if(zoom <= gb.header.ZOOMLEVEL && preventReload) {
 				that.setVisibleWFS(false);
 				that.setVisibleImageVector(false);
 				that.displayEditZoomHint(true);
 				preventReload = false;
 			}
+		} else {
+			preventReload = false;
 		}
 	});
 
 	this.treeElement.on("changed.jstreeol3", function(e, data){
 		if(that.getActiveTool()){
-			if(that.map.getView().getZoom() > 11){
+			if(that.map.getView().getZoom() > gb.header.ZOOMLEVEL){
 				if(data.selected.length === 1){
 					that.select(that.updateSelected());
 					// that.moveUpEditingLayer_();
@@ -2395,28 +2398,74 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 	var tileLayers = [];
 	var wmsLayers;
-
-	map.getLayers().forEach(function(layer){
+	
+	// wms 성능 고도화 시작
+	map.getLayers().forEach(function(e){
+		var layer, git, layers, temp;
+		
+		layer = e;
+		git = layer.get("git");
+		
 		if(layer instanceof ol.layer.Tile){
-			tileLayers.push(layer);
-		}
-		if(layer instanceof ol.layer.Group){
-			tileLayers.push(layer);
-			layer.getLayers().forEach(function(tile){
-				if(tile instanceof ol.layer.Tile){
-					tileLayers.push(tile);
-				}
-				if(tile instanceof ol.layer.Group){
-					tileLayers.push(tile);
-					tile.getLayers().forEach(function(node){
-						if(node instanceof ol.layer.Tile){
-							tileLayers.push(node);
+			if(git instanceof Object){
+				if(git.fake === "parent"){
+					if(git.layers instanceof ol.Collection){
+						layers = git.layers.getArray();
+						for(let i = 0; i < layers.length; i++){
+							tileLayers.push(layers[i]);
 						}
-					});
+					}
+				} else if(git.fake === "child"){
+					tileLayers.push(layer);
 				}
-			});
+			}
+		} else if(layer instanceof ol.layer.Group){
+			if(git.allChildren){
+				temp = layer.getLayersArray();
+				for(let i = 0; i < temp.length; i++){
+					git = temp[i].get("git");
+					
+					if(git instanceof Object){
+						if(git.fake === "parent"){
+							if(git.layers instanceof ol.Collection){
+								layers = git.layers.getArray();
+								for(let i = 0; i < layers.length; i++){
+									tileLayers.push(layers[i]);
+								}
+							}
+						} else if(git.fake === "child"){
+							tileLayers.push(layer);
+						}
+					}
+				}
+			}
 		}
 	});
+	// wms 성능 고도화 끝
+	
+	// 이전 코드 시작
+//	map.getLayers().forEach(function(layer){
+//		if(layer instanceof ol.layer.Tile){
+//			tileLayers.push(layer);
+//		}
+//		if(layer instanceof ol.layer.Group){
+//			tileLayers.push(layer);
+//			layer.getLayers().forEach(function(tile){
+//				if(tile instanceof ol.layer.Tile){
+//					tileLayers.push(tile);
+//				}
+//				if(tile instanceof ol.layer.Group){
+//					tileLayers.push(tile);
+//					tile.getLayers().forEach(function(node){
+//						if(node instanceof ol.layer.Tile){
+//							tileLayers.push(node);
+//						}
+//					});
+//				}
+//			});
+//		}
+//	});
+	// 이전 코드 끝
 
 	return tileLayers;
 }
@@ -2469,7 +2518,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	var tree = this.otree.getJSTree();
 	var selectedLayer;
 	var vectorSource;
-
+	
 	for(var i in tileLayers){
 		if(typeof tileLayers[i].get("git") === "object"){
 			if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid"))){
@@ -2628,26 +2677,78 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 
 // hochul
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
-	var tileLayers = this.getTileLayersInMap(this.map);
+//	var tileLayers = this.getTileLayersInMap(this.map);
 	var tree = this.otree.getJSTree();
+//	
+//	for(var i = 0; i < tileLayers.length; i++){
+//		if(!!tree.get_node(tileLayers[i].get("treeid"))){
+//			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+//				zidx = tileLayers[i].getZIndex();
+//				var git = tileLayers[i].get("git");
+//				if (git !== undefined) {
+//					var tlayer = git.tempLayer;
+//					if (tlayer !== undefined) {
+//						tlayer.setZIndex(zidx);
+//					}
+//				}
+//				tileLayers[i].setVisible(bool);
+//			} else {
+//				tileLayers[i].setVisible(false);
+//			}
+//		}
+//	}
 	
-	for(var i = 0; i < tileLayers.length; i++){
-		if(!!tree.get_node(tileLayers[i].get("treeid"))){
-			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
-				zidx = tileLayers[i].getZIndex();
-				var git = tileLayers[i].get("git");
-				if (git !== undefined) {
-					var tlayer = git.tempLayer;
-					if (tlayer !== undefined) {
-						tlayer.setZIndex(zidx);
+	// wms 성능 고도화 시작
+	this.map.getLayers().forEach(function(e){
+		var layer, git, temp, zidx, tlayer;
+		
+		layer = e;
+		git = layer.get("git");
+		
+		if(layer instanceof ol.layer.Tile){
+			if(git instanceof Object){
+				if(git.fake === "parent"){
+					if(!!tree.get_node(layer.get("treeid"))){
+						if(!tree.get_node(layer.get("treeid")).state.hiding){
+							zidx = layer.getZIndex();
+							tlayer = git.tempLayer;
+							if (tlayer !== undefined) {
+								tlayer.setZIndex(zidx);
+							}
+							layer.setVisible(bool);
+						} else {
+							layer.setVisible(false);
+						}
 					}
 				}
-				tileLayers[i].setVisible(bool);
-			} else {
-				tileLayers[i].setVisible(false);
+			}
+		} else if(layer instanceof ol.layer.Group){
+			if(git.allChildren){
+				temp = layer.getLayersArray();
+				for(let i = 0; i < temp.length; i++){
+					git = temp[i].get("git");
+					
+					if(git instanceof Object){
+						if(git.fake === "parent"){
+							if(!!tree.get_node(layer.get("treeid"))){
+								if(!tree.get_node(layer.get("treeid")).state.hiding){
+									zidx = layer.getZIndex();
+									tlayer = git.tempLayer;
+									if (tlayer !== undefined) {
+										tlayer.setZIndex(zidx);
+									}
+									layer.setVisible(bool);
+								} else {
+									layer.setVisible(false);
+								}
+							}
+						}
+					}
+				}
 			}
 		}
-	}
+	});
+	// wms 성능 고도화 끝
 }
 
 // yijun
@@ -2879,7 +2980,7 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	this.setVisibleImageVector(false);
 	
 	// 줌 레벨에 따른 실행 함수 결정
-	if(this.map.getView().getZoom() > 11){
+	if(this.map.getView().getZoom() > gb.header.ZOOMLEVEL){
 		// 화면확대 요구 메세지창 숨김
 		this.displayEditZoomHint(false);
 		// WFS 레이어 로드
@@ -2998,7 +3099,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 				"color": "#fff"
 			}).append(span).click(function(){
 				var view = that.map.getView();
-				view.setZoom(12);
+				view.setZoom(gb.header.ZOOMLEVEL + 1);
 			});
 			
 			var notice = $("<div id='zoomNotice' class='notice'>").css({

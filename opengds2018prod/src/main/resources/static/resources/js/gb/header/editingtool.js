@@ -4,7 +4,7 @@ if (!gb)
 if (!gb.header)
 	gb.header = {};
 
-gb.header.ZOOMLEVEL = 14;
+gb.header.ZOOMLEVEL = 11;
 /**
  * 레이어 편집 기능을 정의한다. 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
  * 
@@ -1668,6 +1668,12 @@ gb.header.EditingTool.prototype.updateSelected = function() {
 		return this.selectedSource || source;
 	}
 	
+	if(layer instanceof ol.layer.Tile){
+		if(layer.get("git").fake === "parent"){
+			return this.electedSource || source;
+		}
+	}
+	
 	var prevSelected = this.selectedSource;
 	var prevTreeid;
 	if(prevSelected !== undefined){
@@ -2072,12 +2078,23 @@ gb.header.EditingTool.prototype.isDate = function(va) {
  */
 gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 	var success = false;
-	if (layer instanceof ol.layer.Group) {
-		var layers = layer.getLayers();
-		for (var i = 0; i < layers.getLength(); i++) {
-			this.addSnappingLayer(layers.item(i));
+	var array = undefined;
+	var git = undefined;
+	var jstree = this.otree ? this.otree.getJSTree() : undefined;
+	
+	if(layer instanceof ol.layer.Base){
+		if(layer.get("git") instanceof Object){
+			git = layer.get("git");
 		}
-		success = true;
+	}
+	
+	if (layer instanceof ol.layer.Group) {
+		array = layer.getLayers();
+		for (var i = 0; i < array.getLength(); i++) {
+			success = this.addSnappingLayer(array.item(i));
+			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", success);
+		}
+		return success;
 	} else if (layer instanceof ol.layer.Vector) {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
 			if (this.snapVector.item(i).get("id") === layer.get("id")) {
@@ -2090,26 +2107,41 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 			success = true;
 		}
 	} else if (layer instanceof ol.layer.Tile) {
-
 		var treeid = layer.get("treeid");
+		
+		if(git !== undefined){
+			if(git.fake === "parent"){
+				array = git.layers.getArray();
+				for(var i = 0; i < array.length; i++){
+					success = this.addSnappingLayer(array[i]);
+					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", success);
+				}
+				return success;
+			}
+		}
+		
 		if(!!this.vectorSourcesOfServer_[treeid]){
-			this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
+			if(!jstree.get_node(treeid).state.snapping){
+				this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
+			}
 			success = true;
 		}
 
-	} else if (layer instanceof ol.layer.Layer) {
-		var git = layer.get("git");
-		if (git) {
-			if (git.hasOwnProperty("fake")) {
-				if (git.fake === "child") {
-					if (this.snapWMS.indexOf(layer.get("id")) === -1) {
-						this.snapWMS.push(layer.get("id"));
-						success = true;
-					}
-				}
-			}
-		}
 	}
+	
+//	else if (layer instanceof ol.layer.Layer) {
+//		var git = layer.get("git");
+//		if (git) {
+//			if (git.hasOwnProperty("fake")) {
+//				if (git.fake === "child") {
+//					if (this.snapWMS.indexOf(layer.get("id")) === -1) {
+//						this.snapWMS.push(layer.get("id"));
+//						success = true;
+//					}
+//				}
+//			}
+//		}
+//	}
 	return success;
 }
 /**
@@ -2121,12 +2153,24 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	var that = this;
 	var success = false;
-	if (layer instanceof ol.layer.Group) {
-		var layers = layer.getLayers();
-		for (var i = 0; i < layers.getLength(); i++) {
-			this.removeSnappingLayer(layers.item(i));
+	
+	var array = undefined;
+	var git = undefined;
+	var jstree = this.otree ? this.otree.getJSTree() : undefined;
+	
+	if(layer instanceof ol.layer.Base){
+		if(layer.get("git") instanceof Object){
+			git = layer.get("git");
 		}
-		success = true;
+	}
+	
+	if (layer instanceof ol.layer.Group) {
+		array = layer.getLayers();
+		for (var i = 0; i < array.getLength(); i++) {
+			success = this.removeSnappingLayer(array.item(i));
+			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", !success);
+		}
+		return success;
 	} else if (layer instanceof ol.layer.Vector) {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
 			if (this.snapVector.item(i).get("id") === layer.get("id")) {
@@ -2138,37 +2182,50 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	} else if (layer instanceof ol.layer.Tile) {
 
 		var treeid = layer.get("treeid");
+		
+		if(git !== undefined){
+			if(git.fake === "parent"){
+				array = git.layers.getArray();
+				for(var i = 0; i < array.length; i++){
+					success = this.removeSnappingLayer(array[i]);
+					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", !success);
+				}
+				return success;
+			}
+		}
+		
 		if(!!this.vectorSourcesOfServer_[treeid]){
-			this.snapVector.pop(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
+			this.snapVector.remove(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
 		}
-
-	} else if (layer instanceof ol.layer.Layer) {
-		var git;
-		if (layer) {
-			git = layer.get("git");
-		}
-		if (!!git) {
-			if (git.hasOwnProperty("fake")) {
-				if (git.fake === "child") {
-					if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-						this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-						success = true;
-					}
-				}
-			} else {
-				if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-					this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-					success = true;
-				}
-			}
-		} else {
-			if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-				this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-				success = true;
-			}
-		}
 	}
+	
+//	else if (layer instanceof ol.layer.Layer) {
+//		var git;
+//		if (layer) {
+//			git = layer.get("git");
+//		}
+//		if (!!git) {
+//			if (git.hasOwnProperty("fake")) {
+//				if (git.fake === "child") {
+//					if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+//						this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+//						success = true;
+//					}
+//				}
+//			} else {
+//				if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+//					this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+//					success = true;
+//				}
+//			}
+//		} else {
+//			if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+//				this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+//				success = true;
+//			}
+//		}
+//	}
 	return success;
 }
 /**
@@ -2420,21 +2477,23 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 				}
 			}
 		} else if(layer instanceof ol.layer.Group){
-			if(git.allChildren){
-				temp = layer.getLayersArray();
-				for(let i = 0; i < temp.length; i++){
-					git = temp[i].get("git");
-					
-					if(git instanceof Object){
-						if(git.fake === "parent"){
-							if(git.layers instanceof ol.Collection){
-								layers = git.layers.getArray();
-								for(let i = 0; i < layers.length; i++){
-									tileLayers.push(layers[i]);
+			if(git instanceof Object){
+				if(git.allChildren){
+					temp = layer.getLayersArray();
+					for(let i = 0; i < temp.length; i++){
+						git = temp[i].get("git");
+						
+						if(git instanceof Object){
+							if(git.fake === "parent"){
+								if(git.layers instanceof ol.Collection){
+									layers = git.layers.getArray();
+									for(let i = 0; i < layers.length; i++){
+										tileLayers.push(layers[i]);
+									}
 								}
+							} else if(git.fake === "child"){
+								tileLayers.push(layer);
 							}
-						} else if(git.fake === "child"){
-							tileLayers.push(layer);
 						}
 					}
 				}
@@ -2723,23 +2782,25 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 				}
 			}
 		} else if(layer instanceof ol.layer.Group){
-			if(git.allChildren){
-				temp = layer.getLayersArray();
-				for(let i = 0; i < temp.length; i++){
-					git = temp[i].get("git");
-					
-					if(git instanceof Object){
-						if(git.fake === "parent"){
-							if(!!tree.get_node(layer.get("treeid"))){
-								if(!tree.get_node(layer.get("treeid")).state.hiding){
-									zidx = layer.getZIndex();
-									tlayer = git.tempLayer;
-									if (tlayer !== undefined) {
-										tlayer.setZIndex(zidx);
+			if(git instanceof Object){
+				if(git.allChildren){
+					temp = layer.getLayersArray();
+					for(let i = 0; i < temp.length; i++){
+						git = temp[i].get("git");
+						
+						if(git instanceof Object){
+							if(git.fake === "parent"){
+								if(!!tree.get_node(layer.get("treeid"))){
+									if(!tree.get_node(layer.get("treeid")).state.hiding){
+										zidx = layer.getZIndex();
+										tlayer = git.tempLayer;
+										if (tlayer !== undefined) {
+											tlayer.setZIndex(zidx);
+										}
+										layer.setVisible(bool);
+									} else {
+										layer.setVisible(false);
 									}
-									layer.setVisible(bool);
-								} else {
-									layer.setVisible(false);
 								}
 							}
 						}

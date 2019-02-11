@@ -536,32 +536,36 @@ gb.tree.OpenLayers = function(obj) {
 							};
 						}
 						
-						if(o.type !== "Group" && o.type !== "Raster"){
-							totalObj["style"] = {
-								"separator_before" : false,
-								"icon" : "fa fa-paint-brush",
-								"separator_after" : false,
-								"_disabled" : false, // (this.check("delete_node",
-								// data.reference,
-								// this.get_parent(data.reference),
-								// "")),
-								"label" : that.translation.style[that.locale],
-								"action" : function(data) {
-									var inst = $.jstreeol3
-									.reference(data.reference), obj = inst
-									.get_node(data.reference);
-									if (inst.is_selected(obj)) {
-										var layers = inst.get_selected();
-										for (var i = 0; i < layers.length; i++) {
-											inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
-											inst._data.layerproperties.style.setLegend(obj, inst.settings.legends.geoserver);
-											inst._data.layerproperties.style.open();
+						if(o.type !== "Group" && o.type !== "Raster" && o.type !== "FakeGroup"){
+							if(this.get_node(o.parent) instanceof Object){
+								if(this.get_node(o.parent).type !== "FakeGroup"){
+									totalObj["style"] = {
+										"separator_before" : false,
+										"icon" : "fa fa-paint-brush",
+										"separator_after" : false,
+										"_disabled" : false, // (this.check("delete_node",
+										// data.reference,
+										// this.get_parent(data.reference),
+										// "")),
+										"label" : that.translation.style[that.locale],
+										"action" : function(data) {
+											var inst = $.jstreeol3
+											.reference(data.reference), obj = inst
+											.get_node(data.reference);
+											if (inst.is_selected(obj)) {
+												var layers = inst.get_selected();
+												for (var i = 0; i < layers.length; i++) {
+													inst._data.layerproperties.style.setLayer(inst.get_LayerById(layers[i]));
+													inst._data.layerproperties.style.setLegend(obj, inst.settings.legends.geoserver);
+													inst._data.layerproperties.style.open();
+												}
+											} else {
+												// inst.delete_node_layer(obj);
+											}
 										}
-									} else {
-										// inst.delete_node_layer(obj);
-									}
+									};
 								}
-							};
+							}
 							
 							totalObj["navigator"] = {
 								"separator_before" : false,
@@ -605,7 +609,7 @@ gb.tree.OpenLayers = function(obj) {
 											geoserver: layer.get("git").geoserver,
 											workspace: layer.get("git").workspace,
 											datastore: datastore,
-											layername: layer.get("git").native
+											layername: layer.get("git").layers
 										});
 									}
 								}

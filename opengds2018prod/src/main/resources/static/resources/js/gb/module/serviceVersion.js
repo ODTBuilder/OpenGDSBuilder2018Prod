@@ -260,8 +260,8 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 					.append(tb1)
 					.append(tb2)
 			)
-//			.append(performanceTitle)
-//			.append(tb4)
+			.append(performanceTitle)
+			.append(tb4)
 //			.append(webCacheTitle)
 //			.append(tb3)
 	

@@ -492,7 +492,7 @@ if (!gb.footer)
 			info: false,
 			searching: false,
 			paging: false,
-			scrollX: true,
+			scrollX: "100%",
 			scrollY: "100%",
 			scrollCollapse: true,
 			dom: "Bfrtip",

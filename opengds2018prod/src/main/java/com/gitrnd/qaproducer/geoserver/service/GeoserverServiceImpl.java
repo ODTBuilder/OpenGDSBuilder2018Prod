@@ -49,6 +49,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gitrnd.gdsbuilder.fileread.UnZipFile;
 import com.gitrnd.gdsbuilder.fileread.shp.SHPFileWriter;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
@@ -150,11 +151,16 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 *      java.lang.String, java.lang.String,
 	 *      org.springframework.web.multipart.MultipartHttpServletRequest)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public int shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication) {
-		int puFlag = 500;
-		if (dtGeoManager != null && workspace != null && datastore != null) {
-			dtReader = dtGeoManager.getReader();
+	public JSONObject shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication) {
+		JSONObject resultJson = new JSONObject();
+		JSONArray layers = new JSONArray();
+		resultJson.put("status_Code", 200);
+		resultJson.put("layers", layers);
+		
+		
+		dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
 			
 			boolean wsFlag = false;
@@ -204,6 +210,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 							String trimFileName = mpf.getOriginalFilename().replaceAll(" ", "");
 							int trimPos = trimFileName.lastIndexOf( "." );
 		                	String trimExt = trimFileName.substring( trimPos + 1 );
+		                	String trimOName = trimFileName.substring(0, trimPos);
 							if(trimExt.endsWith("zip")){
 								// String encodeFileName = URLEncoder.encode(trimFileName,
 								// "UTF-8");
@@ -216,44 +223,92 @@ public class GeoserverServiceImpl implements GeoserverService {
 								// D:/temp/files" exists)
 								FileCopyUtils.copy(mpf.getBytes(), stream);
 								
-								ZipFile zipFile = new ZipFile(saveFilePath);
+								//zip파일 복사까지 완료된 상태
 								
-					            Enumeration<? extends ZipEntry> entries = zipFile.entries();
-					            
-					            int shpIndex = 0;
-					            while(entries.hasMoreElements()){
-					                ZipEntry entry = entries.nextElement();
-					                if(entry.isDirectory()){
-					                	//파일구조 이상
+								
+								UnZipFile unZipFile = new UnZipFile(new File(saveFilePath));
+								try {
+									unZipFile.decompress();
+									
+									//압축파일 삭제
+									File delFile = unZipFile.getZipFile();
+									deleteDirectory(new File(tmp.toFile()+File.separator +trimOName));
+									delFile.delete();
+								} catch (Throwable e) {
+									// TODO Auto-generated catch block
+									deleteDirectory(tmp.toFile());
+									logger.warn("압축파일 풀기 실패");
+									resultJson.put("status_Code",608);
+									return resultJson;
+								}
+								
+								//다중파일업로드 추가
+								File targetDir = tmp.toFile();
+								String unzipPath = targetDir.getPath();
+								if (targetDir.exists() == false) {
+									logger.warn("폴더경로가 존재하지 않습니다");
+									resultJson.put("status_Code",608);
+									deleteDirectory(tmp.toFile());
+									return resultJson; 
+								}
+								
+								File[] fileList = targetDir.listFiles();
+								
+								//Zip파일내에 폴더가 있을시
+								for(int i = 0; i < fileList.length; i++){
+									if (fileList[i].isDirectory()) {
+										//파일구조 이상
+					                	logger.warn("압축파일내에 폴더가 있습니다.");
+					                	resultJson.put("status_Code",608);
 					                	deleteDirectory(tmp.toFile());
-					                	logger.warn("압축파일내에 폴더있음");
-					                	return 608;
-					                } else {
-					                	String fullFileName = entry.getName();
-					                	int pos = fullFileName.lastIndexOf( "." );
-					                	String ext = fullFileName.substring( pos + 1 );
+					                	return resultJson;
+									}
+								}
+								
+								for (int i = 0; i < fileList.length; i++) {
+									if (!fileList[i].isDirectory()) {
+										String filePath = fileList[i].getPath();
+										String fFullName = fileList[i].getName();
+										int Idx = fFullName.lastIndexOf(".");
+										String _fileName = fFullName.substring(0, Idx);
+										String ext = fFullName.substring(Idx + 1);
+										/*
+										 * if (_fileName.equals(unzipName)) { equalFlag = true; }
+										 */
 
-					                	if(ext.endsWith("shp")){
-					                		uploadFilename = fullFileName.substring(0, pos);
-					                		shpIndex++;
-					                	}
-					                }
-					            }
-					            zipFile.close();
-					            if(shpIndex==0){
-					            	deleteDirectory(tmp.toFile());
-					            	logger.warn("shp파일이 없음");
-					            	return 608;
-					            }else if(shpIndex>1){
-					            	deleteDirectory(tmp.toFile());
-					            	logger.warn("shp파일이 1개이상");
-					            	return 608;
-					            }
-								index++;
+										if (_fileName.contains(".")) {
+											moveDirectory(_fileName.substring(0, _fileName.lastIndexOf(".")), _fileName + "." + ext,
+													filePath, unzipPath);
+										} else {
+											moveDirectory(_fileName, _fileName + "." + ext, filePath, unzipPath);
+										}
+									}
+								}
+								
+								fileList = targetDir.listFiles();
+								
+								String filePath = "";
+								String fileName = "";
+								
+								for(File targetFile : fileList){
+									filePath = targetFile.toString();
+									fileName = targetFile.getName() + ".zip";
+									
+									createZipFile(filePath, filePath, fileName);
+									
+									String fileZipPath = filePath + File.separator + fileName;
+									int result = this.singleFileUpload(new File(fileZipPath), dtGeoManager, workspace, datastore, ignorePublication);
+									JSONArray tempArray = (JSONArray) resultJson.get("layers");
+									
+									JSONObject lResultJson = new JSONObject();
+									lResultJson.put(targetFile.getName(), result);
+									tempArray.add(lResultJson);
+								}
 							}else{
 								deleteDirectory(tmp.toFile());
 								logger.warn("zip파일이 아님");
-				            	return 608;
+								resultJson.put("status_Code",608);
+								return resultJson;
 							}
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
@@ -262,21 +317,96 @@ public class GeoserverServiceImpl implements GeoserverService {
 					} else {
 						deleteDirectory(tmp.toFile());
 						logger.warn("파일이 2개이상");
-						puFlag = 608;
-						return puFlag;
+						resultJson.put("status_Code",608);
+						return resultJson;
 					}
 				}
+				// 성공 or 실패시 파일삭제
+				deleteDirectory(tmp.toFile());
+			} else {
+				logger.warn("workspace 또는 datastore 존재 X");
+				resultJson.put("status_Code",607);
+				return resultJson;
+			}
+		return resultJson;
+	}
+	
+	private int singleFileUpload(File uploadFile, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication){
+		int puFlag = 500;
+		if (dtGeoManager != null && workspace != null && datastore != null) {
+			dtReader = dtGeoManager.getReader();
+			dtPublisher = dtGeoManager.getPublisher();
+			
+			boolean wsFlag = false;
+			boolean dsFlag = false;
+
+			wsFlag = dtReader.existsWorkspace(workspace);
+			dsFlag = dtReader.existsDatastore(workspace, datastore);
+
+			if (wsFlag && dsFlag) {
 				
+				String uploadFilename = "";//업로드 파일명
+				
+				
+				String saveFilePath = "";
+
+				//파일구조 검사
+				// 2. get each file
+					// 2.1 get next MultipartFile
+					try {
+						if(uploadFile.getName().endsWith("zip")){
+							// String encodeFileName = URLEncoder.encode(trimFileName,
+							// "UTF-8");
+							
+							saveFilePath = uploadFile.getPath();
+							
+							ZipFile zipFile = new ZipFile(saveFilePath);
+							
+				            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+				            
+				            int shpIndex = 0;
+				            while(entries.hasMoreElements()){
+				                ZipEntry entry = entries.nextElement();
+				                if(entry.isDirectory()){
+				                	//파일구조 이상
+				                	logger.warn("압축파일내에 폴더있음");
+				                	return 608;
+				                } else {
+				                	String fullFileName = entry.getName();
+				                	int pos = fullFileName.lastIndexOf( "." );
+				                	String ext = fullFileName.substring( pos + 1 );
+
+				                	if(ext.endsWith("shp")){
+				                		uploadFilename = fullFileName.substring(0, pos);
+				                		shpIndex++;
+				                	}
+				                }
+				            }
+				            zipFile.close();
+				            if(shpIndex==0){
+				            	logger.warn("shp파일이 없음");
+				            	return 608;
+				            }else if(shpIndex>1){
+				            	logger.warn("shp파일이 1개이상");
+				            	return 608;
+				            }
+						}else{
+							logger.warn("zip파일이 아님");
+			            	return 608;
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			
 				if (dtReader.existsLayer(workspace, uploadFilename, true)) {
 					// 레이어 중복
-					deleteDirectory(tmp.toFile());
 					logger.warn("레이어중복");
 					return 609;
 				}
 				boolean availableFlag = dtReader.existsFeatureTypesAvailable(workspace, datastore, uploadFilename);
 				if(!ignorePublication){
 					if(availableFlag){
-						deleteDirectory(tmp.toFile());
 						logger.warn("데이터 존재->미발행 레이어");
 						return 613;
 					}
@@ -288,18 +418,15 @@ public class GeoserverServiceImpl implements GeoserverService {
 					if (serverPFlag) {
 						puFlag = 200;
 					} else {
-						deleteDirectory(tmp.toFile());
 						puFlag = 500;
 						logger.warn("발행실패");
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					deleteDirectory(tmp.toFile());
 					puFlag = 500;
 					logger.warn("발행실패");
 				}
 				// 성공 or 실패시 파일삭제
-				deleteDirectory(tmp.toFile());
 			} else {
 				logger.warn("workspace 또는 datastore 존재 X");
 				puFlag = 607;
@@ -1087,6 +1214,54 @@ public class GeoserverServiceImpl implements GeoserverService {
             instream.close();
         }
     }
+    
+    /**
+   	 * 파일이동
+   	 * 
+   	 * @author SG.Lee
+   	 * @Date 2018. 4. 18. 오전 9:46:27
+   	 * @param folderName
+   	 * @param fileName
+   	 * @param beforeFilePath
+   	 * @param afterFilePath
+   	 * @return String
+   	 */
+   	private static String moveDirectory(String folderName, String fileName, String beforeFilePath, String afterFilePath) {
+   		String path = afterFilePath + "/" + folderName;
+   		String filePath = path + "/" + fileName;
+
+   		File dir = new File(path);
+
+   		if (!dir.exists()) { // 폴더 없으면 폴더 생성
+   			dir.mkdirs();
+   		}
+
+   		try {
+   			File file = new File(beforeFilePath);
+
+   			if (file.renameTo(new File(filePath))) { // 파일 이동
+   				return filePath; // 성공시 성공 파일 경로 return
+   			} else {
+   				return null;
+   			}
+   		} catch (Exception e) {
+   			e.getMessage();
+   			return null;
+   		}
+   	}
+
+   	/**
+   	 * 파일복사
+   	 * 
+   	 * @author SG.Lee
+   	 * @Date 2018. 4. 18. 오전 9:45:55
+   	 * @param source
+   	 * @param dest
+   	 * @throws IOException void
+   	 */
+   	private static void FileNio2Copy(String source, String dest) throws IOException {
+   		Files.copy(new File(source).toPath(), new File(dest).toPath());
+   	}
 }
 
 /**

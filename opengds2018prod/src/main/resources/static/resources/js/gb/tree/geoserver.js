@@ -643,7 +643,8 @@ gb.tree.GeoServer = function(obj) {
 
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var nodes = inst.get_selected();
-//										원래 코드										
+
+//											원래 코드
 //										console.log(obj);
 //										console.log(nodes);
 //										var loadOrder = [];
@@ -660,8 +661,8 @@ gb.tree.GeoServer = function(obj) {
 //											console.log(that.getLoadingList());
 //											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 //										}
-//										여기까지
-//										새로운 코드
+//											여기까지
+//											새로운 코드
 										console.log(obj);
 										console.log(nodes);
 										var loadOrder = [];
@@ -678,7 +679,7 @@ gb.tree.GeoServer = function(obj) {
 											console.log(that.getLoadingList());
 											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 										}
-//										여기까지
+//											여기까지
 									}
 							};
 							totalObj["import"] = importObj;

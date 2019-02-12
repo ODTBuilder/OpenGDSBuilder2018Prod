@@ -13,7 +13,7 @@ gb.module.serviceVersion = {
 	WMTS : "1.0.0",
 	loadPerformance:{
 		limit: 10,
-		active: true
+		active: false
 	},
 	getWMSCrs : function(){
 		if(this.WMS === "1.3.0"){
@@ -184,6 +184,11 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	var toggleInput = $("<input type='checkbox' tabindex='0'>");
 	var toggleLabel = $("<label>");
 	var toggleDiv = $("<div>").addClass("gb-toggle gb-checkbox").append(toggleInput).append(toggleLabel);
+	
+	if(gb.module.serviceVersion.loadPerformance.active){
+		toggleInput.prop("checked", true);
+		toggleDiv.addClass("checked");
+	}
 	
 	toggleInput.change(function(){
 		var bool = true;

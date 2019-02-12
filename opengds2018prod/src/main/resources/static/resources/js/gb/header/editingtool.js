@@ -2472,7 +2472,7 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 							tileLayers.push(layers[i]);
 						}
 					}
-				} else if(git.fake === "child"){
+				} else {
 					tileLayers.push(layer);
 				}
 			}
@@ -2491,8 +2491,8 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 										tileLayers.push(layers[i]);
 									}
 								}
-							} else if(git.fake === "child"){
-								tileLayers.push(layer);
+							} else {
+								tileLayers.push(temp[i]);
 							}
 						}
 					}
@@ -2766,7 +2766,7 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 		
 		if(layer instanceof ol.layer.Tile){
 			if(git instanceof Object){
-				if(git.fake === "parent"){
+				if(git.fake !== "child"){
 					if(!!tree.get_node(layer.get("treeid"))){
 						if(!tree.get_node(layer.get("treeid")).state.hiding){
 							zidx = layer.getZIndex();
@@ -2789,7 +2789,7 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 						git = temp[i].get("git");
 						
 						if(git instanceof Object){
-							if(git.fake === "parent"){
+							if(git.fake !== "child"){
 								if(!!tree.get_node(layer.get("treeid"))){
 									if(!tree.get_node(layer.get("treeid")).state.hiding){
 										zidx = layer.getZIndex();

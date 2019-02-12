@@ -34,6 +34,7 @@ public class UnZipFile {
 	
 	private File zipFile;
 	
+
 	/**
 	 * 압축해제 경로
 	 */
@@ -55,6 +56,14 @@ public class UnZipFile {
 	public UnZipFile(File zipFile){
 		this.zipFile = zipFile;
 		this.OUTPUT_DIR = zipFile.getParent();
+	}
+	
+	public File getZipFile() {
+		return zipFile;
+	}
+
+	public void setZipFile(File zipFile) {
+		this.zipFile = zipFile;
 	}
 	
 	/**
@@ -114,9 +123,9 @@ public class UnZipFile {
 	 *                 
 	 * @throws Throwable long
 	 * */
-	public long decompress() throws Throwable {
+	public int decompress() throws Throwable {
 
-		long flagNum = 200;
+		int flagNum = 200;
 		
 		FileInputStream fis = null;
 		ZipInputStream zis = null;

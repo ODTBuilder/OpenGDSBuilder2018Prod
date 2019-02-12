@@ -643,32 +643,15 @@ gb.tree.GeoServer = function(obj) {
 
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var nodes = inst.get_selected();
-//										원래 코드										
-										console.log(obj);
-										console.log(nodes);
-										var loadOrder = [];
-										var callback = function(id) {
-											console.log(that.getLoadingList());
-											var pnode = inst.get_node(id);
-											inst.load_each_wms_layer(pnode, that.map.getLayers());
-										};
-										that.initLoadingList();
-										that.initLoadingNumber();
-										for (var i = 0; i < nodes.length; i++) {
-											var pnodeid = nodes[i];
-											console.log("선택한 노드:", pnodeid);
-											console.log(that.getLoadingList());
-											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
-										}
-//										여기까지
-//										새로운 코드
+
+//											원래 코드
 //										console.log(obj);
 //										console.log(nodes);
 //										var loadOrder = [];
 //										var callback = function(id) {
 //											console.log(that.getLoadingList());
 //											var pnode = inst.get_node(id);
-//											inst.recursive_node_load(pnode, that.map.getLayers());
+//											inst.load_each_wms_layer(pnode, that.map.getLayers());
 //										};
 //										that.initLoadingList();
 //										that.initLoadingNumber();
@@ -678,7 +661,25 @@ gb.tree.GeoServer = function(obj) {
 //											console.log(that.getLoadingList());
 //											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 //										}
-//										여기까지
+//											여기까지
+//											새로운 코드
+										console.log(obj);
+										console.log(nodes);
+										var loadOrder = [];
+										var callback = function(id) {
+											console.log(that.getLoadingList());
+											var pnode = inst.get_node(id);
+											inst.recursive_node_load(pnode, that.map.getLayers());
+										};
+										that.initLoadingList();
+										that.initLoadingNumber();
+										for (var i = 0; i < nodes.length; i++) {
+											var pnodeid = nodes[i];
+											console.log("선택한 노드:", pnodeid);
+											console.log(that.getLoadingList());
+											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
+										}
+//											여기까지
 									}
 							};
 							totalObj["import"] = importObj;

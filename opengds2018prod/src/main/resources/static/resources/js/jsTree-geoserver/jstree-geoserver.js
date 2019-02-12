@@ -291,7 +291,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								var git = {
 									"geoserver" : params["serverName"],
 									"workspace" : params["workspace"],
-									'layers' : data[i].lName,
+									"layers" : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
 									"sld" : data[i].sld,
@@ -507,24 +507,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					console.log(data);
 					if (Array.isArray(data)) {
 						for (var i = 0; i < data.length; i++) {
+							var obj = {
+								"serverName" : server.text,
+								"workspace" : workspace.text,
+								"LAYERS" : params["workspace"] + ":" + node.text,
+								// "STYLES" : data[i].style,
+								"VERSION" : gb.module.serviceVersion.WMS,
+								"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+										+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+								"TILED" : true,
+								"FORMAT" : 'image/png8',
+								"SLD_BODY" : data[i].sld
+							};
+							
+							obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+							
 							var wms = new ol.layer.Tile({
 								extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
-									params : {
-										"serverName" : server.text,
-										"workspace" : workspace.text,
-										"LAYERS" : params["workspace"] + ":" + node.text,
-										// "STYLES" : data[i].style,
-										"VERSION" : "1.1.0",
-										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-										"TILED" : true,
-										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs,
-										"SLD_BODY" : data[i].sld
-									},
+									params : obj,
 									serverType : "geoserver"
 								})
 							});
@@ -701,176 +704,210 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			// "failedChildren" : 0
 			// };
 
-			if (collection instanceof ol.Collection) {
-				var params = {
-					"serverName" : undefined,
-					"workspace" : undefined,
-					"geoLayerList" : []
-				};
-				var layerString = [];
-				var wms;
-				if (children.length > 0) {
-					var child = that.get_node(children[0]);
-					var server = that.get_node(child.parents[2]);
-					var workspace = that.get_node(child.parents[1]);
-					params["serverName"] = server.text;
-					params["workspace"] = workspace.text;
-					for (var a = 0; a < children.length; a++) {
-						var item = that.get_node(children[a]);
-						params["geoLayerList"].push(item.text);
-						var layer = workspace.text + ":" + item.text;
-						layerString.push(layer);
-					}
-
-					//var mysld = '<?xml version="1.0" encoding="ISO-8859-1"?><StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> <!-- a Named Layer is the basic building block of an SLD document --> <NamedLayer>   <Name>N3P_B0010000</Name>   <UserStyle>   <!-- Styles can have names, titles and abstracts -->     <Title>Default Polygon</Title>     <Abstract>A sample style that draws a polygon</Abstract>     <!-- FeatureTypeStyles describe how to render different features -->     <!-- A FeatureTypeStyle for rendering polygons -->     <FeatureTypeStyle>       <Rule>         <Name>rule1</Name>         <Title>Gray Polygon with Black Outline</Title>         <Abstract>A polygon with a gray fill and a 1 pixel black outline</Abstract>         <PolygonSymbolizer>           <Fill>             <CssParameter name="fill">#AAAAAA</CssParameter>             <CssParameter name="fill-opacity">0.4</CssParameter>           </Fill>           <Stroke>             <CssParameter name="stroke">#000000</CssParameter>             <CssParameter name="stroke-width">1</CssParameter>           </Stroke>         </PolygonSymbolizer>       </Rule>     </FeatureTypeStyle>   </UserStyle> </NamedLayer></StyledLayerDescriptor>';
-					
-					wms = new ol.layer.Tile({
-						extent : undefined,
-						source : new ol.source.TileWMS({
-							url : that._data.geoserver.getMapWMS,
-							params : {
-								"serverName" : params["serverName"],
-								"workspace" : params["workspace"],
-								"LAYERS" : layerString.toString(),
-								"VERSION" : "1.1.0",
-								"TILED" : true,
-								"FORMAT" : 'image/png8'
-//								"SLD_BODY" : mysld
-							},
-							serverType : "geoserver"
-						})
-					});
-					
-					var git = {
-						"fake" : "parent",
-						"geoserver" : params["serverName"],
-						"workspace" : params["workspace"],
-						"layers" : new ol.Collection(),
-						"geometry" : false,
-						"editable" : false,
-						"sld" : false,
-						"native" : false,
-						"allChildren" : childrenLength,
-						"loadedChildren" : 0,
-						"failedChildren" : 0
+			if(gb.module.serviceVersion.loadPerformance.active && 
+					childrenLength >= gb.module.serviceVersion.loadPerformance.limit){
+				if (collection instanceof ol.Collection) {
+					var params = {
+						"serverName" : undefined,
+						"workspace" : undefined,
+						"geoLayerList" : []
 					};
-					wms.set("git", git);
-					wms.set("id", node.id);
-					wms.set("name", node.text);
-					collection.push(wms);
+					var layerString = [];
+					var wms;
+					if (children.length > 0) {
+						var child = that.get_node(children[0]);
+						var server = that.get_node(child.parents[2]);
+						var workspace = that.get_node(child.parents[1]);
+						params["serverName"] = server.text;
+						params["workspace"] = workspace.text;
+						for (var a = 0; a < children.length; a++) {
+							var item = that.get_node(children[a]);
+							params["geoLayerList"].push(item.text);
+							var layer = workspace.text + ":" + item.text;
+							layerString.push(layer);
+						}
 
-					var layers = wms.get("git").layers;
-					if (layers instanceof ol.Collection) {
-						var domnode = that._data.geoserver.clientTree.get_node(wms.get("treeid"), true);
-						$(domnode).addClass("jstreeol3-loading");
-						console.log(domnode);
-					}
-				}
-				$.ajax({
-					url : that._data.geoserver.getLayerInfo,
-					method : "POST",
-					contentType : "application/json; charset=UTF-8",
-					data : JSON.stringify(params),
-					beforeSend : function() {
-						// $("body").css("cursor", "wait");
-					},
-					complete : function() {
-						// $("body").css("cursor", "default");
-					},
-					success : function(data, textStatus, jqXHR) {
-						console.log(data);
-						if (Array.isArray(data)) {
-							for (var i = 0; i < data.length; i++) {
-								var ext = [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
-										data[i].nbBox.maxy.toString() ];
-								var psource = wms.getSource();
-								var pext = psource.getParams()["BBOX"];
-								if (pext === undefined) {
-									// wms.setExtent(ext);
-									psource.getParams()["BBOX"] = ext.toString();
-								} else {
-									var arrpext = pext.split(",");
-									var newext = ol.extent.extend(arrpext, ext);
-									psource.getParams()["BBOX"] = newext.toString();
-									// wms.setExtent(newext);
-								}
-								var wmsChild = new ol.layer.Tile({
-									extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
-											data[i].nbBox.maxy.toString() ],
-									source : new ol.source.TileWMS({
-										url : that._data.geoserver.getMapWMS,
-										params : {
-											"serverName" : params["serverName"],
-											"workspace" : params["workspace"],
-											"LAYERS" : params["workspace"] + ":" + data[i].lName,
-											// "STYLES" : undefined,
-											"VERSION" : "1.1.0",
-											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-											"TILED" : true,
-											"FORMAT" : 'image/png8',
-											"CRS" : data[i].srs,
-											"SLD_BODY" : data[i].sld
-										},
-										serverType : "geoserver"
-									})
-								});
-								var gitChild = {
-									"fake" : "child",
-									"geoserver" : params["serverName"],
+						//var mysld = '<?xml version="1.0" encoding="ISO-8859-1"?><StyledLayerDescriptor version="1.0.0" xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" xmlns="http://www.opengis.net/sld" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> <!-- a Named Layer is the basic building block of an SLD document --> <NamedLayer>   <Name>N3P_B0010000</Name>   <UserStyle>   <!-- Styles can have names, titles and abstracts -->     <Title>Default Polygon</Title>     <Abstract>A sample style that draws a polygon</Abstract>     <!-- FeatureTypeStyles describe how to render different features -->     <!-- A FeatureTypeStyle for rendering polygons -->     <FeatureTypeStyle>       <Rule>         <Name>rule1</Name>         <Title>Gray Polygon with Black Outline</Title>         <Abstract>A polygon with a gray fill and a 1 pixel black outline</Abstract>         <PolygonSymbolizer>           <Fill>             <CssParameter name="fill">#AAAAAA</CssParameter>             <CssParameter name="fill-opacity">0.4</CssParameter>           </Fill>           <Stroke>             <CssParameter name="stroke">#000000</CssParameter>             <CssParameter name="stroke-width">1</CssParameter>           </Stroke>         </PolygonSymbolizer>       </Rule>     </FeatureTypeStyle>   </UserStyle> </NamedLayer></StyledLayerDescriptor>';
+						
+						wms = new ol.layer.Tile({
+							extent : undefined,
+							source : new ol.source.TileWMS({
+								url : that._data.geoserver.getMapWMS,
+								params : {
+									"serverName" : params["serverName"],
 									"workspace" : params["workspace"],
-									'layers' : data[i].lName,
-									"geometry" : data[i].geomType,
-									"editable" : true,
-									"sld" : data[i].sld,
-									"native" : data[i].nativeName
-								};
-								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
-									gitChild["geogigRepo"] = geogig["repo"];
-									gitChild["geogigBranch"] = geogig["branch"];
-								}
-								wmsChild.set("git", gitChild);
-								wmsChild.set("id", node.id + ":" + data[i].lName);
-								wmsChild.set("name", data[i].lName);
-								var layers = wms.get("git").layers;
-								if (layers instanceof ol.Collection) {
-									layers.push(wmsChild);
-									that._data.geoserver.clientTree.initTreeId();
-								} else {
-									console.error("no collection to push");
-								}
-								if (wms instanceof ol.layer.Tile) {
-									var git = wms.get("git");
-									if (git !== undefined) {
-										var fakeType = git.fake;
-										if (fakeType !== undefined) {
-											if (fakeType === "parent") {
-												var all = git["allChildren"];
-												var allInt = parseInt(all);
-												var load = git["loadedChildren"];
-												var loadInt = parseInt(load);
-												if (!isNaN(loadInt)) {
-													git["loadedChildren"] = loadInt + 1;
-												}
-												if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
-													that._data.geoserver.clientTree.refresh();
+									"LAYERS" : layerString.toString(),
+									"VERSION" : "1.1.0",
+									"TILED" : true,
+									"FORMAT" : 'image/png8'
+//									"SLD_BODY" : mysld
+								},
+								serverType : "geoserver"
+							})
+						});
+						
+						var git = {
+							"fake" : "parent",
+							"geoserver" : params["serverName"],
+							"workspace" : params["workspace"],
+							"layers" : new ol.Collection(),
+							"geometry" : false,
+							"editable" : false,
+							"sld" : false,
+							"native" : false,
+							"allChildren" : childrenLength,
+							"loadedChildren" : 0,
+							"failedChildren" : 0
+						};
+						wms.set("git", git);
+						wms.set("id", node.id);
+						wms.set("name", node.text);
+						collection.push(wms);
 
+						var layers = wms.get("git").layers;
+						if (layers instanceof ol.Collection) {
+							var domnode = that._data.geoserver.clientTree.get_node(wms.get("treeid"), true);
+							$(domnode).addClass("jstreeol3-loading");
+							console.log(domnode);
+						}
+					}
+					$.ajax({
+						url : that._data.geoserver.getLayerInfo,
+						method : "POST",
+						contentType : "application/json; charset=UTF-8",
+						data : JSON.stringify(params),
+						beforeSend : function() {
+							// $("body").css("cursor", "wait");
+						},
+						complete : function() {
+							// $("body").css("cursor", "default");
+						},
+						success : function(data, textStatus, jqXHR) {
+							console.log(data);
+							if (Array.isArray(data)) {
+								for (var i = 0; i < data.length; i++) {
+									var ext = [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
+											data[i].nbBox.maxy.toString() ];
+									var psource = wms.getSource();
+									var pext = psource.getParams()["BBOX"];
+									if (pext === undefined) {
+										// wms.setExtent(ext);
+										psource.getParams()["BBOX"] = ext.toString();
+									} else {
+										var arrpext = pext.split(",");
+										var newext = ol.extent.extend(arrpext, ext);
+										psource.getParams()["BBOX"] = newext.toString();
+										// wms.setExtent(newext);
+									}
+									var wmsChild = new ol.layer.Tile({
+										extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
+												data[i].nbBox.maxy.toString() ],
+										source : new ol.source.TileWMS({
+											url : that._data.geoserver.getMapWMS,
+											params : {
+												"serverName" : params["serverName"],
+												"workspace" : params["workspace"],
+												"LAYERS" : params["workspace"] + ":" + data[i].lName,
+												// "STYLES" : undefined,
+												"VERSION" : "1.1.0",
+												"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+														+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+												"TILED" : true,
+												"FORMAT" : 'image/png8',
+												"CRS" : data[i].srs,
+												"SLD_BODY" : data[i].sld
+											},
+											serverType : "geoserver"
+										})
+									});
+									var gitChild = {
+										"fake" : "child",
+										"geoserver" : params["serverName"],
+										"workspace" : params["workspace"],
+										'layers' : data[i].lName,
+										"geometry" : data[i].geomType,
+										"editable" : true,
+										"sld" : data[i].sld,
+										"native" : data[i].nativeName
+									};
+									if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
+										gitChild["geogigRepo"] = geogig["repo"];
+										gitChild["geogigBranch"] = geogig["branch"];
+									}
+									wmsChild.set("git", gitChild);
+									wmsChild.set("id", node.id + ":" + data[i].lName);
+									wmsChild.set("name", data[i].lName);
+									var layers = wms.get("git").layers;
+									if (layers instanceof ol.Collection) {
+										layers.push(wmsChild);
+										that._data.geoserver.clientTree.initTreeId();
+									} else {
+										console.error("no collection to push");
+									}
+									if (wms instanceof ol.layer.Tile) {
+										var git = wms.get("git");
+										if (git !== undefined) {
+											var fakeType = git.fake;
+											if (fakeType !== undefined) {
+												if (fakeType === "parent") {
+													var all = git["allChildren"];
+													var allInt = parseInt(all);
+													var load = git["loadedChildren"];
+													var loadInt = parseInt(load);
+													if (!isNaN(loadInt)) {
+														git["loadedChildren"] = loadInt + 1;
+													}
+													if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+														that._data.geoserver.clientTree.refresh();
+
+													}
 												}
 											}
 										}
 									}
-								}
-								if (i === (data.length - 1)) {
-									that._data.geoserver.clientTree.refresh();
+									if (i === (data.length - 1)) {
+										that._data.geoserver.clientTree.refresh();
+									}
 								}
 							}
 						}
-					}
-				});
+					});
+				} else {
+					console.error("no collection to push");
+				}
 			} else {
-				console.error("no collection to push");
-			}
+				var git = {
+					"allChildren" : childrenLength,
+					"loadedChildren" : 0,
+					"failedChildren" : 0
+				};
 
+				var datastore = new ol.layer.Group({});
+				datastore.set("id", node.id);
+				datastore.set("name", node.text);
+				datastore.set("git", git);
+
+				if (collection instanceof ol.Collection) {
+					collection.push(datastore);
+					var domnode = that._data.geoserver.clientTree.get_node(datastore.get("treeid"), true);
+					$(domnode).addClass("jstreeol3-loading");
+					console.log(domnode);
+
+				} else {
+					console.error("no collection to push");
+				}
+
+				var objNodes = [];
+				if (children.length === 0) {
+					that._data.geoserver.clientTree.refresh();
+				}
+				for (var i = 0; i < children.length; i++) {
+					var layer = this.get_node(children[i]);
+					this.recursive_node_load(layer, datastore.getLayers());
+					// objNodes.push(layer);
+				}
+			}
+			
 			// var children = node.children;
 			// var objNodes = [];
 			// if (children.length === 0) {

@@ -62,7 +62,12 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	var options = obj;
 	this.window;
 	this.layer = undefined;
-	this.serverInfo = undefined;
+	this.serverInfo = {
+		geoserver: undefined,
+		workspace: undefined,
+		datastore: undefined,
+		layername: undefined
+	};
 	this.layerName = undefined;
 	this.srs = undefined;
 	this.workspaceList = [];
@@ -238,7 +243,6 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		// var opt = that.getDefinitionForm();
 		if (!!that.saveLayerProperties()) {
 			that.close();
-			that.refresh();
 		}
 	});
 	$(okBtn).addClass("btn");
@@ -474,7 +478,16 @@ gb.edit.ModifyLayerProperties.prototype.setServerInfo = function(info) {
 gb.edit.ModifyLayerProperties.prototype.getServerInfo = function() {
 	return this.serverInfo;
 };
-
+gb.edit.ModifyLayerProperties.prototype.getLayerId = function() {
+	var id = "";
+	
+	id += this.serverInfo.geoserver || "";
+	id += this.serverInfo.workspace ? (":" + this.serverInfo.workspace) : "";
+	id += this.serverInfo.datastore ? (":" + this.serverInfo.datastore) : "";
+	id += this.serverInfo.layername ? (":" + this.serverInfo.layername) : "";
+	
+	return id;
+};
 gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
 	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
 	this.requestStyleList("geoserver32");
@@ -489,7 +502,7 @@ gb.edit.ModifyLayerProperties.prototype.setWorkSpaceList = function(list) {
 gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	var that = this;
 	var geoserver = info.geoserver || false, workspace = info.workspace || false, datastore = info.datastore || false, layername = info.layername || false;
-
+	
 	if (!geoserver || !workspace || !datastore || !layername) {
 		console.error("Missed Parameter");
 		return;
@@ -692,7 +705,8 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 			"originalName" : serverInfo.layername,
 			"name" : $("#proplName").val(),
 			"title" : $("#proptitle").val(),
-			"srs" : "EPSG:" + $("#propsrs").val()
+			"srs" : "EPSG:" + $("#propsrs").val(),
+			"style": $("#styleSelect").find("option:selected").val()
 		}
 
 		$.ajax({
@@ -703,12 +717,81 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 			data : JSON.stringify(arr),
 			success : function(data, textStatus, jqXHR) {
 				console.log(data);
+				that.refer.refresh();
+				that.checkOtreeLayer();
 				modal.close();
 			}
 		});
 	});
 	
 	return true;
+}
+
+gb.edit.ModifyLayerProperties.prototype.checkOtreeLayer = function() {
+	var otree = this.refer.settings.geoserver.clientTree;
+	var root = otree.get_node("#");
+	var list = root.children_d;
+	var id = this.getLayerId();
+	var layername = $("#proplName").val();
+	var info = this.serverInfo;
+	var node, layer, source, params, git;
+	
+	for(let i = 0; i < list.length; i++){
+		node = otree.get_node(list[i]);
+		layer = otree.get_LayerById(list[i]);
+		
+		if(layer instanceof ol.layer.Tile){
+			if(layer.get("id") === id){
+				source = layer.getSource();
+				params = source.getParams();
+				git = layer.get("git");
+				
+				layer.set("id", info.geoserver + ":" + info.workspace + ":" + info.datastore + ":" + layername);
+				layer.set("name", layername);
+				node.text = layername;
+				git.layers = layername;
+				git.native = layername;
+				source.updateParams({
+					'LAYERS' : info.workspace + ":" + layername
+				});
+				
+				otree.refresh();
+				
+				var arr = {
+					"serverName" : info.geoserver,
+					"workspace" : info.workspace,
+					"geoLayerList" : [ layername ]
+				}
+				
+				$.ajax({
+					url : "geoserver/getGeoLayerInfoList.ajax" + this.token,
+					method : "POST",
+					contentType : "application/json; charset=UTF-8",
+					cache : false,
+					data : JSON.stringify(arr),
+					beforeSend : function() { // 호출전실행
+						$("body").css("cursor", "wait");
+					},
+					complete : function() {
+						$("body").css("cursor", "default");
+					},
+					traditional : true,
+					success : function(data, textStatus, jqXHR) {
+						if (Array.isArray(data)) {
+							if (data.length === 1) {
+								source.updateParams({
+									'SLD_BODY' : data[0].sld
+								});
+								
+								otree.refresh();
+							}
+							$("body").css("cursor", "default");
+						}
+					}
+				});
+			}
+		}
+	}
 }
 
 /**

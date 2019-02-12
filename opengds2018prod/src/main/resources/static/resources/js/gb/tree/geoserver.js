@@ -274,18 +274,6 @@ gb.tree.GeoServer = function(obj) {
 			"version" : {
 				"ko" : "버전",
 				"en" : "Version"
-			},
-			"setting" : {
-				"ko" : "설정",
-				"en" : "Setting"
-			},
-			"wfs" : {
-				"ko" : "WFS",
-				"en" : "WFS"
-			},
-			"wms" : {
-				"ko" : "WMS",
-				"en" : "WMS"
 			}
 	};
 	this.panelTitle = $("<p>").text("GeoServer").css({
@@ -510,6 +498,12 @@ gb.tree.GeoServer = function(obj) {
 									 */
 									"action" : function(data) {
 										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+// if(isEdit instanceof Object){
+// if(isEdit.get()){
+// isEdit.alert();
+// return
+// }
+// }
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var server = obj.text;
 										console.log(server);
@@ -517,30 +511,6 @@ gb.tree.GeoServer = function(obj) {
 									}
 							}
 							totalObj["info"] = infoObj;
-							
-							/*var setObj = {
-								"separator_before" : false,
-								"icon" : "fas fa-cog",
-								"separator_after" : false,
-								"_disabled" : function() {
-									console.log(o);
-									console.log(cb);
-									var result = true;
-									if (o.type === "geoserver") {
-										result = false;
-									}
-									return result;
-								},
-								"label" : that.translation.setting[that.locale],
-								"action" : function(data) {
-									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									var server = obj.text;
-									
-									that.geoserverSettingModal();
-								}
-							}
-							totalObj["set"] = setObj;*/
 						}
 						// 지오긱 저장소이면 브랜치 서브메뉴 객체를 만듬
 						var repoObj = {};
@@ -643,33 +613,13 @@ gb.tree.GeoServer = function(obj) {
 
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var nodes = inst.get_selected();
-
-//											원래 코드
-//										console.log(obj);
-//										console.log(nodes);
-//										var loadOrder = [];
-//										var callback = function(id) {
-//											console.log(that.getLoadingList());
-//											var pnode = inst.get_node(id);
-//											inst.load_each_wms_layer(pnode, that.map.getLayers());
-//										};
-//										that.initLoadingList();
-//										that.initLoadingNumber();
-//										for (var i = 0; i < nodes.length; i++) {
-//											var pnodeid = nodes[i];
-//											console.log("선택한 노드:", pnodeid);
-//											console.log(that.getLoadingList());
-//											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
-//										}
-//											여기까지
-//											새로운 코드
 										console.log(obj);
 										console.log(nodes);
 										var loadOrder = [];
 										var callback = function(id) {
 											console.log(that.getLoadingList());
 											var pnode = inst.get_node(id);
-											inst.recursive_node_load(pnode, that.map.getLayers());
+											inst.load_each_wms_layer(pnode, that.map.getLayers());
 										};
 										that.initLoadingList();
 										that.initLoadingNumber();
@@ -679,7 +629,55 @@ gb.tree.GeoServer = function(obj) {
 											console.log(that.getLoadingList());
 											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 										}
-//											여기까지
+										// var selectedNum = nodes.length;
+										// if (selectedNum === 1) {
+										// var node = inst.get_node(nodes[0]);
+										// var type = inst.get_type(node);
+										// if (type === "workspace") {
+										// inst.load_each_wms_layer(node,
+										// that.map.getLayers());
+										// } else if (type === "datastore") {
+										// inst.load_each_wms_layer(node,
+										// that.map.getLayers());
+										// } else if (type === "point" || type
+										// ===
+										// "multipoint" || type === "linestring"
+										// || type === "multilinestring" || type
+										// ===
+										// "polygon" || type === "multipolygon")
+										// {
+										// console.log(node);
+										// inst.load_each_wms_layer(node,
+										// that.map.getLayers());
+										// }
+										// } else if (selectedNum > 1) {
+										// var serverNum = 0;
+										// var workNum = 0;
+										// var storeNum = 0;
+										// var layerNum = 0;
+										// for (var i = 0; i < nodes.length;
+										// i++) {
+										// var node = inst.get_node(nodes[i]);
+										// var type = inst.get_type(node);
+										// if (type === "geoserver") {
+										// serverNum++;
+										// } else if (type === "workspace") {
+										// workNum++;
+										// } else if (type === "datastore") {
+										// storeNum++;
+										// } else if (type === "layer") {
+										// layerNum++;
+										// }
+										// }
+										// if (selectedNum !== serverNum &&
+										// selectedNum !== workNum &&
+										// selectedNum
+										// !== storeNum
+										// && selectedNum !== layerNum) {
+										// console.log("");
+										// }
+										// }
+
 									}
 							};
 							totalObj["import"] = importObj;
@@ -691,533 +689,165 @@ gb.tree.GeoServer = function(obj) {
 									"separator_before" : true,
 									"icon" : "fas fa-file-export",
 									"separator_after" : true,
-									"label" : that.translation["export"][that.locale],
+									"label" : that.translation.export[that.locale],
 									"action" : false,
 									"submenu" : {
-										"wfs": {
-											"separator_befor": true,
-											"icon": "",
-											"separator_after": true,
-											"label": that.translation["wfs"][that.locale],
-											"action": false,
-											"submenu": {
-												"shp" : {
-													"separator_before" : true,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "SHP",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "shape-zip");
-														}
+										"shp" : {
+											"separator_before" : true,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "SHP",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
 													}
-												},
-												"gml2" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GML2",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
+												}
 
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "gml2");
-														}
-													}
-												},
-												"gml3" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GML3",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "gml3");
-														}
-													}
-												},
-												"json" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "JSON",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "application/json");
-														}
-													}
-												},
-												"jsonp" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "JSONP",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "text/javascript");
-														}
-													}
-												},
-												"csv" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "CSV",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "csv");
-														}
-													}
+												for (var i = 0; i < selectedObj.length; i++) {
+													inst.download_wfs_layer(selectedObj[i], "shape-zip");
 												}
 											}
 										},
-										"wms": {
-											"separator_befor": true,
-											"icon": "",
-											"separator_after": true,
-											"label": that.translation["wms"][that.locale],
-											"action": false,
-											"submenu": {
-												"png" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "PNG",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
+										"gml2" : {
+											"separator_before" : false,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "GML2",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
+													}
+												}
+
+												for (var i = 0; i < selectedObj.length; i++) {
+													inst.download_wfs_layer(selectedObj[i], "gml2");
+												}
+											}
+										},
+										"gml3" : {
+											"separator_before" : false,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "GML3",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
+													}
+												}
+
+												for (var i = 0; i < selectedObj.length; i++) {
+													inst.download_wfs_layer(selectedObj[i], "gml3");
+												}
+											}
+										},
+										"json" : {
+											"separator_before" : false,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "JSON",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
+													}
+												}
+
+												for (var i = 0; i < selectedObj.length; i++) {
+													inst.download_wfs_layer(selectedObj[i], "application/json");
+												}
+											}
+										},
+										"csv" : {
+											"separator_before" : false,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "CSV",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
+													}
+												}
+
+												for (var i = 0; i < selectedObj.length; i++) {
+													inst.download_wfs_layer(selectedObj[i], "csv");
+												}
+											}
+										},
+										"png" : {
+											"separator_before" : false,
+											"icon" : "fa fa-file-excel-o",
+											"separator_after" : false,
+											"label" : "PNG",
+											"action" : function(data) {
+												var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
+												var selected = inst.get_selected();
+												var selectedObj = inst.get_selected(true);
+												for (var i = 0; i < selectedObj.length; i++) {
+													if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
+														|| selectedObj[i].type === "geoserver") {
+														console.error("not support");
+														return;
+													}
+												}
+												var a = {
+														serverName : undefined,
+														workspace : undefined,
+														geoLayerList : undefined
+												};
+												for (var i = 0; i < selectedObj.length; i++) {
+													a.serverName = selectedObj[i].id.split(":")[0];
+													a.workspace = selectedObj[i].id.split(":")[1];
+													a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
+													$.ajax({
+														url : inst._data.geoserver.getLayerInfo,
+														method : "POST",
+														contentType : "application/json; charset=UTF-8",
+														cache : false,
+														data : JSON.stringify(a),
+														beforeSend : function() { // 호출전실행
+															// loadImageShow();
+														},
+														traditional : true,
+														success : function(data, textStatus, jqXHR) {
+															var path = inst._data.geoserver.getMapWMS;
+															for (var i = 0; i < data.length; i++) {
+																data[i].serverName = a.serverName;
+																data[i].workspace = a.workspace;
+																inst.download_wms_layer(data[i], "image/png");
 															}
 														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/png");
-														}
-													}
-												},
-												"png8" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "PNG8",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/png8");
-														}
-													}
-												},
-												"jpeg" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "JPEG",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/jpeg");
-														}
-													}
-												},
-												"gif" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GIF",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/gif");
-														}
-													}
-												},
-												"tiff" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "TIFF",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/tiff");
-														}
-													}
-												},
-												"tiff8" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "TIFF8",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/tiff8");
-														}
-													}
-												},
-												"geotiff" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GeoTIFF",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/geotiff");
-														}
-													}
-												},
-												"geotiff8" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GeoTIFF8",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/geotiff8");
-														}
-													}
-												},
-												"svg" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "SVG",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "image/svg");
-														}
-													}
-												},
-												"pdf" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "PDF",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "application/pdf");
-														}
-													}
-												},
-												"rss" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "GEORSS",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "rss");
-														}
-													}
-												},
-												"kml" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "KML",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "kml");
-														}
-													}
-												},
-												"kmz" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "KMZ",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-														var a = {
-																serverName : undefined,
-																workspace : undefined,
-																geoLayerList : undefined
-														};
-														for (var i = 0; i < selectedObj.length; i++) {
-															a.serverName = selectedObj[i].id.split(":")[0];
-															a.workspace = selectedObj[i].id.split(":")[1];
-															a.geoLayerList = [ selectedObj[i].id.split(":")[3] ];
-															inst.download_wms_layer(a, "kmz");
-														}
-													}
+													}).fail(function(xhr, status, errorThrown) {
+														that.errorModal(xhr.responseJSON.status);
+													});
 												}
 											}
 										}
@@ -1340,7 +970,7 @@ gb.tree.GeoServer = function(obj) {
 											}
 											if (server.length > 0 || ws.length > 0 || ds.length > 0) {
 												isValid = false;
-												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
+												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
 											} else {
 												for (var i = 0; i < layers.length; i++) {
 													var layerNode = inst.get_node(layers[i]);
@@ -1373,7 +1003,7 @@ gb.tree.GeoServer = function(obj) {
 
 													that.openDeleteGeoServerLayer(sendServer.text, sendws.text, sendds.text, layerstxt);
 												} else {
-													that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
+													that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.", 206);
 												}
 											}
 										}
@@ -1426,16 +1056,10 @@ gb.tree.GeoServer = function(obj) {
 									"action" : function(data) {
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var arr, workspace = [];
-										
-										var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-										// Edit Tool 활성화 상태시 실행 중지
-										if(isEdit instanceof Object){
-											if(isEdit.get()){
-												isEdit.alert();
-												return
-											}
-										}
-										
+										/*
+										 * if (obj.type === "geoserver") {
+										 * that.openDeleteGeoServer(obj.id); }
+										 */
 										if (inst.is_selected(obj)) {
 											arr = inst.get_node(obj.parents[obj.parents.length - 2]).children;
 											for (var i = 0; i < arr.length; i++) {
@@ -1732,11 +1356,6 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	var gPassArea = $("<div>").append(gPass).append(gPassInputDiv).css({
 		"display" : "table-row"
 	});
-
-    $(gNameInput).val("geo32");
-    $(gURLInput).val("http://175.116.181.32:9999/geoserver");
-    $(gIDInput).val("admin");
-    $(gPassInput).val("geoserver");
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -2162,9 +1781,9 @@ gb.tree.GeoServer.prototype.getUploadSHP = function() {
  * @param {Number}
  *            height - 모달의 높이(px)
  */
-gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
+gb.tree.GeoServer.prototype.messageModal = function(title, msg, height) {
 	var that = this;
-	var msg1 = $("<div>").append(msg).css({
+	var msg1 = $("<div>").text(msg).css({
 		"text-align" : "center",
 		"font-size" : "16px",
 		"margin-top" : "18px",
@@ -2180,6 +1799,7 @@ gb.tree.GeoServer.prototype.messageModal = function(title, msg) {
 	var modal = new gb.modal.Base({
 		"title" : title,
 		"width" : 310,
+		"height" : height,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -2310,7 +1930,7 @@ gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, topNode, aft
  */
 gb.tree.GeoServer.prototype.errorModal = function(code) {
 	var that = this;
-	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale]);
+	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale], 182);
 };
 
 /**
@@ -2502,4 +2122,5 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	$(closeBtn).click(function() {
 		removeModal.close();
 	});
+
 };

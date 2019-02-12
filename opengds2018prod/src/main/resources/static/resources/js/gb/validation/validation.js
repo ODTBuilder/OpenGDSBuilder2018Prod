@@ -78,14 +78,6 @@ if (!gb.validation)
 		"selectNodesHint" : {
 			"ko" : "는(은) workspace를 여러개 선택할 수 있습니다",
 			"en" : "can select multiple workspace"
-		},
-		"nonePresetHint" : {
-			"ko" : "Preset ID가 없습니다.",
-			"en" : "Preset ID is missing."
-		},
-		"noneCategoryHint" : {
-			"ko" : "Category ID가 없습니다.",
-			"en" : "Category ID is missing."
 		}
 	};
 	
@@ -299,7 +291,7 @@ if (!gb.validation)
 		}
 
 		if (!preset.data("prid")) {
-			this.messageContent.html(translation.nonePresetHint[this.locale]);
+			this.messageContent.html("Preset ID가 없습니다.");
 			return false;
 		} else {
 			params.prid = preset.data("prid").toString();
@@ -316,7 +308,7 @@ if (!gb.validation)
 			}
 		} else {
 			if (!preset.data("cat")) {
-				this.messageContent.html(translation.noneCategoryHint[this.locale]);
+				this.messageContent.html("Category ID가 없습니다.");
 				return false;
 			} else {
 				params.cat = preset.data("cat");

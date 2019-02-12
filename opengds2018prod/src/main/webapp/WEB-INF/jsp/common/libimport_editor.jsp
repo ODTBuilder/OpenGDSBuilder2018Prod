@@ -85,7 +85,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
 <!-- gb module -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/module/isEditing.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/module/serviceVersion.js"></script>
 <!-- gb map -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
 <!-- gb.modal -->

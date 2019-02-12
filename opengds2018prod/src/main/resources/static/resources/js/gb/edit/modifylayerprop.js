@@ -62,12 +62,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	var options = obj;
 	this.window;
 	this.layer = undefined;
-	this.serverInfo = {
-		geoserver: undefined,
-		workspace: undefined,
-		datastore: undefined,
-		layername: undefined
-	};
+	this.serverInfo = undefined;
 	this.layerName = undefined;
 	this.srs = undefined;
 	this.workspaceList = [];
@@ -82,21 +77,9 @@ gb.edit.ModifyLayerProperties = function(obj) {
 			"ko" : "닫기",
 			"en" : "Close"
 		},
-		"cancel" : {
-			"ko" : "취소",
-			"en" : "Cancel"
-		},
 		"layerprop" : {
 			"ko" : "레이어 속성 정보",
 			"en" : "Layer Properties"
-		},
-		"confirm" : {
-			"ko" : "확인",
-			"en" : "Confirm"
-		},
-		"save" : {
-			"ko" : "저장",
-			"en" : "Save"
 		},
 		"save" : {
 			"ko" : "저장",
@@ -169,18 +152,6 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		"myserver" : {
 			"ko" : "전체 스타일",
 			"en" : "All Styles"
-		},
-		"layerNameHint" : {
-			"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
-			"en" : "Special characters are not allowed in the name."
-		},
-		"layerTitleHint" : {
-			"ko" : "레이어 제목에 특수문자는 허용되지않습니다.",
-			"en" : "Special characters are not allowed in the title."
-		},
-		"layerChangeHint" : {
-			"ko" : "레이어 정보 변경시 다른 작업자들이 피해를 입을 수 있습니다. 계속하시겠습니까?",
-			"en" : "Changing layer information could harm others. Do you want to continue?"
 		}
 	};
 	this.validIconSpan = undefined;
@@ -243,6 +214,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		// var opt = that.getDefinitionForm();
 		if (!!that.saveLayerProperties()) {
 			that.close();
+			that.refresh();
 		}
 	});
 	$(okBtn).addClass("btn");
@@ -478,16 +450,7 @@ gb.edit.ModifyLayerProperties.prototype.setServerInfo = function(info) {
 gb.edit.ModifyLayerProperties.prototype.getServerInfo = function() {
 	return this.serverInfo;
 };
-gb.edit.ModifyLayerProperties.prototype.getLayerId = function() {
-	var id = "";
-	
-	id += this.serverInfo.geoserver || "";
-	id += this.serverInfo.workspace ? (":" + this.serverInfo.workspace) : "";
-	id += this.serverInfo.datastore ? (":" + this.serverInfo.datastore) : "";
-	id += this.serverInfo.layername ? (":" + this.serverInfo.layername) : "";
-	
-	return id;
-};
+
 gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
 	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
 	this.requestStyleList("geoserver32");
@@ -502,7 +465,7 @@ gb.edit.ModifyLayerProperties.prototype.setWorkSpaceList = function(list) {
 gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	var that = this;
 	var geoserver = info.geoserver || false, workspace = info.workspace || false, datastore = info.datastore || false, layername = info.layername || false;
-	
+
 	if (!geoserver || !workspace || !datastore || !layername) {
 		console.error("Missed Parameter");
 		return;
@@ -584,7 +547,6 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 					tag.attr("selected", "selected");
 				}
 			}
-			select.trigger("change");
 		}
 	});
 }
@@ -593,7 +555,6 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var params = {};
 	var options = options;
 	var legendTag = undefined;
-	var src = "";
 
 	if (!!options.legendTag) {
 		legendTag = options.legendTag;
@@ -624,15 +585,21 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	}
 	
 	params.version = "1.0.0";
-	params.format = "image/png";
-	params.width = "20";
-	params.height = "20";
+	params.format = "PNG8";
+	params.width = "15";
+	params.height = "15";
 
-	for(var i in params){
-		src += "&" + i + "=" + params[i];
-	}
-	
-	legendTag.attr("src", "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token + src);
+	$.ajax({
+		url : "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token,
+		method : "GET",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : params,
+		success : function(data, textStatus, jqXHR) {
+			legendTag.attr("src", "");
+			console.log(data);
+		}
+	});
 }
 
 gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
@@ -643,155 +610,40 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var serverInfo = this.getServerInfo();
 
 	if (special_pattern.test($("#proplName").val()) === true) {
-		alert(this.translation.layerNameHint[this.locale]);
+		alert("레이어 이름에 특수문자는 허용되지않습니다.");
 		return false;
 	}
 	if (special_pattern.test($("#proptitle").val()) === true) {
-		alert(this.translation.layerTitleHint[this.locale]);
+		alert("레이어 제목에 특수문자는 허용되지않습니다.");
 		return false;
 	}
-	
-	var closeBtn = 
-		$("<button>")
-			.css({
-				"float" : "right"
-			})
-			.addClass("gb-button")
-			.addClass("gb-button-default")
-			.text(this.translation.cancel[this.locale]);
-	
-	var okBtn = 
-		$("<button>")
-			.css({
-				"float" : "right"
-			})
-			.addClass("gb-button")
-			.addClass("gb-button-primary")
-			.text(this.translation.confirm[this.locale]);
+	/*
+	 * if(!$.isNumeric($("#propsrs").val())){ alert("EPSG 코드는 숫자만 입력 가능합니다.");
+	 * return false; }
+	 */
 
-	var buttonArea = 
-		$("<span>")
-			.addClass("gb-modal-buttons")
-			.append(okBtn)
-			.append(closeBtn);
-	
-	var modalFooter = $("<div>").append(buttonArea);
-
-	var body = 
-		$("<div>")
-			.append(this.translation.layerChangeHint[this.locale])
-			.css({
-				"max-height" : "300px",
-				"overflow-y" : "auto"
-			});
-	
-	var modal = new gb.modal.Base({
-		"title" : "",
-		"width" : 540,
-		"autoOpen" : true,
-		"body" : body,
-		"footer" : modalFooter
-	});
-
-	$(closeBtn).click(function() {
-		modal.close();
-	});
-	
-	$(okBtn).click(function(){
-		var arr = {
-			"serverName" : serverInfo.geoserver,
-			"workspace" : serverInfo.workspace,
-			"datastore" : serverInfo.datastore,
-			"originalName" : serverInfo.layername,
-			"name" : $("#proplName").val(),
-			"title" : $("#proptitle").val(),
-			"srs" : "EPSG:" + $("#propsrs").val(),
-			"style": $("#styleSelect").find("option:selected").val()
-		}
-
-		$.ajax({
-			url : "geoserver/updateLayer.ajax" + that.token,
-			method : "POST",
-			contentType : "application/json; charset=UTF-8",
-			cache : false,
-			data : JSON.stringify(arr),
-			success : function(data, textStatus, jqXHR) {
-				console.log(data);
-				that.refer.refresh();
-				that.checkOtreeLayer();
-				modal.close();
-			}
-		});
-	});
-	
-	return true;
-}
-
-gb.edit.ModifyLayerProperties.prototype.checkOtreeLayer = function() {
-	var otree = this.refer.settings.geoserver.clientTree;
-	var root = otree.get_node("#");
-	var list = root.children_d;
-	var id = this.getLayerId();
-	var layername = $("#proplName").val();
-	var info = this.serverInfo;
-	var node, layer, source, params, git;
-	
-	for(let i = 0; i < list.length; i++){
-		node = otree.get_node(list[i]);
-		layer = otree.get_LayerById(list[i]);
-		
-		if(layer instanceof ol.layer.Tile){
-			if(layer.get("id") === id){
-				source = layer.getSource();
-				params = source.getParams();
-				git = layer.get("git");
-				
-				layer.set("id", info.geoserver + ":" + info.workspace + ":" + info.datastore + ":" + layername);
-				layer.set("name", layername);
-				node.text = layername;
-				git.layers = layername;
-				git.native = layername;
-				source.updateParams({
-					'LAYERS' : info.workspace + ":" + layername
-				});
-				
-				otree.refresh();
-				
-				var arr = {
-					"serverName" : info.geoserver,
-					"workspace" : info.workspace,
-					"geoLayerList" : [ layername ]
-				}
-				
-				$.ajax({
-					url : "geoserver/getGeoLayerInfoList.ajax" + this.token,
-					method : "POST",
-					contentType : "application/json; charset=UTF-8",
-					cache : false,
-					data : JSON.stringify(arr),
-					beforeSend : function() { // 호출전실행
-						$("body").css("cursor", "wait");
-					},
-					complete : function() {
-						$("body").css("cursor", "default");
-					},
-					traditional : true,
-					success : function(data, textStatus, jqXHR) {
-						if (Array.isArray(data)) {
-							if (data.length === 1) {
-								source.updateParams({
-									'SLD_BODY' : data[0].sld
-								});
-								
-								otree.refresh();
-							}
-							$("body").css("cursor", "default");
-						}
-					}
-				});
-			}
-		}
+	var arr = {
+		"serverName" : serverInfo.geoserver,
+		"workspace" : serverInfo.workspace,
+		"datastore" : serverInfo.datastore,
+		"originalName" : serverInfo.layername,
+		"name" : $("#proplName").val(),
+		"title" : $("#proptitle").val(),
+		"srs" : "EPSG:" + $("#propsrs").val()
 	}
+
+	$.ajax({
+		url : "geoserver/updateLayer.ajax" + this.token,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		cache : false,
+		data : JSON.stringify(arr),
+		success : function(data, textStatus, jqXHR) {
+			console.log(data);
+		}
+	});
+
+	return true;
 }
 
 /**

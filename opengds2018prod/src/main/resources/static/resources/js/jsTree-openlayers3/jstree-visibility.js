@@ -581,7 +581,7 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 			// layers = layer.getLayersArray();
 			layers = nnode.children;
 			for (let i = 0; i < layers.length; i++) {
-				this._displayTileLayer(layers[i], bool);
+				this._displayTileLayer(this.get_node(layers[i]), bool);
 
 				// if(layers[i].get("git") instanceof Object){
 				// if(layers[i].get("git").tempLayer instanceof

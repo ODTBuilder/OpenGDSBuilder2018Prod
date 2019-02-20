@@ -58,10 +58,6 @@ gb.geoserver.UploadSHP = function(obj) {
 		"browse" : {
 			"ko" : "찾아보기",
 			"en" : "Browse"
-		},
-		"alert" : {
-			"ko" : "대용량 파일(100MB 이상)은 Geoserver에 직접 업로드하는 것을 권장합니다.",
-			"en" : "Recommend uploading large file(100MB or more) directly to Geoserver."
 		}
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({

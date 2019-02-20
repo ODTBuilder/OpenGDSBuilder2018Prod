@@ -18,6 +18,7 @@
 package com.gitrnd.qaproducer.geoserver.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -507,6 +508,8 @@ public class GeoserverController extends AbstractController {
 			int nFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, datastore, layerList);
 			if(nFlag!=200){
 				response.sendError(nFlag);
+			}else{
+				resultFlag = true;
 			}
 		}
 		return resultFlag;
@@ -600,6 +603,10 @@ public class GeoserverController extends AbstractController {
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
 	public void uploadProcess(MultipartHttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+		
+		
+		PrintWriter out = response.getWriter();
+		JSONObject returnJson = new JSONObject();
 		if (loginUser == null) {
 			response.sendError(600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -615,17 +622,22 @@ public class GeoserverController extends AbstractController {
 		
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null) {
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication ==null) {
 				response.sendError(601, "미입력 텍스트가 존재합니다.");
 		} else {
-			/*if(ignorePublication.toLowerCase().equals("true")){
+			if(ignorePublication.toLowerCase().equals("true")){
 				iPFlag = true;
 			}else if(ignorePublication.toLowerCase().equals("false")){
 				iPFlag = false;
 			}else{
 				iPFlag = false;
-			}*/
-			geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
+			}
+			
+			returnJson = geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			out.print(returnJson);
+			out.flush();
 		}
 	}
 	

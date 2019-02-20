@@ -4,6 +4,12 @@ if (!gb)
 if (!gb.geoserver)
 	gb.geoserver = {};
 
+gb.geoserver.CHECKBOXINPUT = {
+	"vertical-align": "text-bottom",
+	"width": "17px",
+	"height": "17px"
+};
+
 /**
  * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
  * 
@@ -29,6 +35,9 @@ gb.geoserver.UploadSHP = function(obj) {
 	this.locale = options.locale ? options.locale : "en";
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
 
+	// 미발행 레이어 이름 중복 무시 여부 변수
+	this.ignorePublic = false;
+	
 	this.translation = {
 		"uploadshp" : {
 			"ko" : "SHP 레이어 업로드",
@@ -178,7 +187,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var messageContent = $("<p>").css({
 		"margin" : "0 10px"
 	}).html(this.translation.inzip[this.locale]);
-	var message2 = $("<div>").addClass("gb-info-message").append(icon).append(messageContent);
+	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
 
 	var file;
 	var fileSelect = $("<input accept='.zip'>").attr({
@@ -208,17 +217,27 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 				"border-color" : "transparent",
 			});
 
+	var checkboxInput = 
+		$("<input type='checkbox' tabindex='0'>")
+			.css(gb.geoserver.CHECKBOXINPUT)
+			.change(function(){
+				that.ignorePublic = this.checked;
+			});
+	
+	var checkboxLabel = $("<label>").text("미발행 레이어 이름 중복 무시하기");
+	var checkboxDiv = $("<div>").append(checkboxInput).append(checkboxLabel);
+	
 	var fileInfo = $("<div role='alert'>").css({
 		"text-align" : "center"
 	});
-	
+
 	icon = $("<div>").addClass("fas fa-exclamation-circle fa-2x");
 	messageContent = $("<p>").css({
 		"margin" : "0 10px"
 	}).html(this.translation.alert[this.locale]);
 	var message3 = $("<div>").addClass("gb-alert-message").append(icon).append(messageContent);
 
-	var bodyArea = $("<div>").append(message2).append(message3).append(fileArea).append(fileInfo);
+	var bodyArea = $("<div>").append(message2).append(message3).append(fileArea).append(checkboxDiv).append(fileInfo);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -244,6 +263,17 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		that.uploadFile(file, uploadModal);
 	});
 };
+
+/**
+ * 파일 업로드 요청 결과 테이블을 생성한다.
+ * 
+ * @method gb.geoserver.UploadSHP#resultTable
+ * @param {String}
+ *            geoserver - 설정할 지오서버의 이름
+ */
+gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
+	
+}
 
 /**
  * callback 함수를 설정한다.
@@ -343,6 +373,7 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 		"serverName" : this.getGeoServer(),
 		"workspace" : this.getWorkspace(),
 		"datastore" : this.getDatastore(),
+		"ignorePublication" : this.ignorePublic
 	};
 
 	var url = this.getUploadURL();

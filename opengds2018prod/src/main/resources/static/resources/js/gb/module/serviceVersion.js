@@ -13,7 +13,7 @@ gb.module.serviceVersion = {
 	WMTS : "1.0.0",
 	loadPerformance:{
 		limit: 10,
-		active: false
+		active: true
 	},
 	getWMSCrs : function(){
 		if(this.WMS === "1.3.0"){

@@ -127,16 +127,7 @@ public enum GeogigExceptionStatus {
 
 	MALFORMED_URL_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "856", "java.net.MalformedURLException"),
 
-	UNRESOLVE_CONFLICTS(HttpStatus.INTERNAL_SERVER_ERROR, "857", "You need to resolve your index first."),
-
-	// host에 숫자가 아닌 값
-	ILLEGALCHARACTERINHOSTNAME(HttpStatus.INTERNAL_SERVER_ERROR, "858", "Illegal character in hostname"),
-
-	// 커밋이력이 없는 remote repos
-	NOCOMMITS(HttpStatus.INTERNAL_SERVER_ERROR, "859", "No Commits Remote Repository"),
-
-	// 잘못된 정보 입력
-	COULDNOTREADJSON(HttpStatus.INTERNAL_SERVER_ERROR, "860", "Could not read JSON");
+	UNRESOLVE_CONFLICTS(HttpStatus.INTERNAL_SERVER_ERROR, "857", "You need to resolve your index first.");
 
 	private HttpStatus httpStatus;
 	private String status;

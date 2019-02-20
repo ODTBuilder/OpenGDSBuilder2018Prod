@@ -109,7 +109,7 @@ gb.interaction.SelectWMS.prototype.setExtent = function(extent) {
 	if (that.layer instanceof ol.layer.Tile) {
 		params = {
 			"service" : "WFS",
-			"version" : gb.module.serviceVersion.WFS,
+			"version" : "1.0.0",
 			"request" : "GetFeature",
 			"typeName" : that.layer.getSource().getParams().LAYERS,
 			"outputformat" : "text/javascript",
@@ -119,7 +119,7 @@ gb.interaction.SelectWMS.prototype.setExtent = function(extent) {
 	} else if (that.layer instanceof ol.layer.Base && that.layer.get("git").hasOwnProperty("fake")) {
 		params = {
 			"service" : "WFS",
-			"version" : gb.module.serviceVersion.WFS,
+			"version" : "1.0.0",
 			"request" : "GetFeature",
 			"typeName" : that.layer.get("id"),
 			"outputformat" : "text/javascript",
@@ -188,7 +188,7 @@ gb.interaction.SelectWMS.prototype.setFeatureId = function(fid) {
 	if (that.layer instanceof ol.layer.Tile) {
 		params = {
 			"service" : "WFS",
-			"version" : gb.module.serviceVersion.WFS,
+			"version" : "1.0.0",
 			"request" : "GetFeature",
 			"typeName" : this.layer.get("id"),
 			"outputformat" : "text/javascript",
@@ -198,7 +198,7 @@ gb.interaction.SelectWMS.prototype.setFeatureId = function(fid) {
 	} else if (that.layer instanceof ol.layer.Base && that.layer.get("git").hasOwnProperty("fake")) {
 		params = {
 			"service" : "WFS",
-			"version" : gb.module.serviceVersion.WFS,
+			"version" : "1.0.0",
 			"request" : "GetFeature",
 			"typeName" : this.layer.get("id"),
 			"outputformat" : "text/javascript",

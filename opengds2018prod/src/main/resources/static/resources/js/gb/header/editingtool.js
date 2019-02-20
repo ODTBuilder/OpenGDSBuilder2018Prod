@@ -4,7 +4,6 @@ if (!gb)
 if (!gb.header)
 	gb.header = {};
 
-gb.header.ZOOMLEVEL = 11;
 /**
  * 레이어 편집 기능을 정의한다. 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
  * 
@@ -304,7 +303,7 @@ gb.header.EditingTool = function(obj) {
 	}
 	for(var i in eventList){
 		if(eventList[i].text()){
-			this.btn[match[eventList[i].data("content").toLowerCase()]] = eventList[i];
+			this.btn[match[eventList[i].text().toLowerCase()]] = eventList[i];
 		}
 	}
 
@@ -368,28 +367,26 @@ gb.header.EditingTool = function(obj) {
 		var zoom = view.getZoom();
 
 		if(that.getActiveTool()){
-			if(zoom > gb.header.ZOOMLEVEL && !preventReload){
+			if(zoom > 11 && !preventReload){
 				that.loadWFS_();
 				that.loadVector_();
 				that.displayEditZoomHint(false);
 				preventReload = true;
-			} else if(zoom <= gb.header.ZOOMLEVEL && preventReload) {
+			} else if(zoom <= 11 && preventReload) {
 				that.setVisibleWFS(false);
 				that.setVisibleImageVector(false);
 				that.displayEditZoomHint(true);
 				preventReload = false;
 			}
-		} else {
-			preventReload = false;
 		}
 	});
 
 	this.treeElement.on("changed.jstreeol3", function(e, data){
 		if(that.getActiveTool()){
-			if(that.map.getView().getZoom() > gb.header.ZOOMLEVEL){
+			if(that.map.getView().getZoom() > 11){
 				if(data.selected.length === 1){
-					that.select(that.updateSelected());
-					// that.moveUpEditingLayer_();
+					that.select(that.updateSelected(data.selected[0]));
+					that.moveUpEditingLayer_();
 				}
 			}
 		}
@@ -1115,16 +1112,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 			var item = arr[0];
 			var prop, setProp = {};
 			
-			if(source.get("git") instanceof Object){
-				if(source.get("git").attribute instanceof Array){
-					for(let i = 0; i < source.get("git").attribute.length; i++){
-						prop = source.get("git").attribute[i];
-						setProp[prop.fieldName] = "";
-					}
-				}
-			}
-			
-			/*if(item instanceof ol.Feature){
+			if(item instanceof ol.Feature){
 				prop = item.getProperties();
 				for(let key in prop){
 					if(prop[key] instanceof Object){
@@ -1142,7 +1130,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 						}
 					}
 				}
-			}*/
+			}
 			
 			if (!!source) {
 				var feature = evt.feature;
@@ -1647,31 +1635,13 @@ gb.header.EditingTool.prototype.remove = function(layer) {
  * @method updateSelected
  * @return {ol.layer.Base}
  */
-gb.header.EditingTool.prototype.updateSelected = function() {
+gb.header.EditingTool.prototype.updateSelected = function(treeId) {
 	var source = undefined;
 	var tree = this.otree.getJSTree();
-	
-	var selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
-	var treeId;
-	if (selectedLayer.length === 1) {
-		treeId = selectedLayer[0].get("treeid");
-	} else {
-		return;
-	}
-	
 	var layer = tree.get_LayerById(treeId);
-	
-	// 현재 편집중인 레이어의 zindex를 최상위로
-	this.moveUpEditingLayer_();
 	
 	if(layer instanceof ol.layer.Group || layer instanceof ol.layer.Image){
 		return this.selectedSource || source;
-	}
-	
-	if(layer instanceof ol.layer.Tile){
-		if(layer.get("git").fake === "parent"){
-			return this.electedSource || source;
-		}
 	}
 	
 	var prevSelected = this.selectedSource;
@@ -1783,12 +1753,10 @@ gb.header.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
 				if (git["fake"] === "parent") {
 					// 가짜 그룹 레이어임
 					var layers = git["layers"];
-					if (layers instanceof ol.Collection) {
-						for (var i = 0; i < layers.getLength(); i++) {
-							this.featureRecord.removeByLayer(layers.item(i).get("id"));
-							// that.tempVector.setMap(this.map);
-							this.removeFeatureFromUnmanaged(layers.item(i));
-						}						
+					for (var i = 0; i < layers.getLength(); i++) {
+						this.featureRecord.removeByLayer(layers.item(i).get("id"));
+						// that.tempVector.setMap(this.map);
+						this.removeFeatureFromUnmanaged(layers.item(i));
 					}
 				} else if (git["fake"] === "child") {
 					var layerId = layer.get("id");
@@ -2078,23 +2046,12 @@ gb.header.EditingTool.prototype.isDate = function(va) {
  */
 gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 	var success = false;
-	var array = undefined;
-	var git = undefined;
-	var jstree = this.otree ? this.otree.getJSTree() : undefined;
-	
-	if(layer instanceof ol.layer.Base){
-		if(layer.get("git") instanceof Object){
-			git = layer.get("git");
-		}
-	}
-	
 	if (layer instanceof ol.layer.Group) {
-		array = layer.getLayers();
-		for (var i = 0; i < array.getLength(); i++) {
-			success = this.addSnappingLayer(array.item(i));
-			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", success);
+		var layers = layer.getLayers();
+		for (var i = 0; i < layers.getLength(); i++) {
+			this.addSnappingLayer(layers.item(i));
 		}
-		return success;
+		success = true;
 	} else if (layer instanceof ol.layer.Vector) {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
 			if (this.snapVector.item(i).get("id") === layer.get("id")) {
@@ -2107,41 +2064,26 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 			success = true;
 		}
 	} else if (layer instanceof ol.layer.Tile) {
+
 		var treeid = layer.get("treeid");
-		
-		if(git !== undefined){
-			if(git.fake === "parent"){
-				array = git.layers.getArray();
-				for(var i = 0; i < array.length; i++){
-					success = this.addSnappingLayer(array[i]);
-					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", success);
-				}
-				return success;
-			}
-		}
-		
 		if(!!this.vectorSourcesOfServer_[treeid]){
-			if(!jstree.get_node(treeid).state.snapping){
-				this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
-			}
+			this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
 		}
 
+	} else if (layer instanceof ol.layer.Layer) {
+		var git = layer.get("git");
+		if (git) {
+			if (git.hasOwnProperty("fake")) {
+				if (git.fake === "child") {
+					if (this.snapWMS.indexOf(layer.get("id")) === -1) {
+						this.snapWMS.push(layer.get("id"));
+						success = true;
+					}
+				}
+			}
+		}
 	}
-	
-//	else if (layer instanceof ol.layer.Layer) {
-//		var git = layer.get("git");
-//		if (git) {
-//			if (git.hasOwnProperty("fake")) {
-//				if (git.fake === "child") {
-//					if (this.snapWMS.indexOf(layer.get("id")) === -1) {
-//						this.snapWMS.push(layer.get("id"));
-//						success = true;
-//					}
-//				}
-//			}
-//		}
-//	}
 	return success;
 }
 /**
@@ -2153,24 +2095,12 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	var that = this;
 	var success = false;
-	
-	var array = undefined;
-	var git = undefined;
-	var jstree = this.otree ? this.otree.getJSTree() : undefined;
-	
-	if(layer instanceof ol.layer.Base){
-		if(layer.get("git") instanceof Object){
-			git = layer.get("git");
-		}
-	}
-	
 	if (layer instanceof ol.layer.Group) {
-		array = layer.getLayers();
-		for (var i = 0; i < array.getLength(); i++) {
-			success = this.removeSnappingLayer(array.item(i));
-			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", !success);
+		var layers = layer.getLayers();
+		for (var i = 0; i < layers.getLength(); i++) {
+			this.removeSnappingLayer(layers.item(i));
 		}
-		return success;
+		success = true;
 	} else if (layer instanceof ol.layer.Vector) {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
 			if (this.snapVector.item(i).get("id") === layer.get("id")) {
@@ -2182,50 +2112,37 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	} else if (layer instanceof ol.layer.Tile) {
 
 		var treeid = layer.get("treeid");
-		
-		if(git !== undefined){
-			if(git.fake === "parent"){
-				array = git.layers.getArray();
-				for(var i = 0; i < array.length; i++){
-					success = this.removeSnappingLayer(array[i]);
-					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", !success);
-				}
-				return success;
-			}
-		}
-		
 		if(!!this.vectorSourcesOfServer_[treeid]){
-			this.snapVector.remove(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
+			this.snapVector.pop(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
 		}
+
+	} else if (layer instanceof ol.layer.Layer) {
+		var git;
+		if (layer) {
+			git = layer.get("git");
+		}
+		if (!!git) {
+			if (git.hasOwnProperty("fake")) {
+				if (git.fake === "child") {
+					if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+						this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+						success = true;
+					}
+				}
+			} else {
+				if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+					this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+					success = true;
+				}
+			}
+		} else {
+			if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
+				this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
+				success = true;
+			}
+		}
 	}
-	
-//	else if (layer instanceof ol.layer.Layer) {
-//		var git;
-//		if (layer) {
-//			git = layer.get("git");
-//		}
-//		if (!!git) {
-//			if (git.hasOwnProperty("fake")) {
-//				if (git.fake === "child") {
-//					if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//						this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//						success = true;
-//					}
-//				}
-//			} else {
-//				if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//					this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//					success = true;
-//				}
-//			}
-//		} else {
-//			if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//				this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//				success = true;
-//			}
-//		}
-//	}
 	return success;
 }
 /**
@@ -2367,20 +2284,7 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 		} else {
 			if(interaction.setSelectFeatures instanceof Function){
 				interaction.setSelectFeatures(that.selected);
-			} else {
-				var prevSelected = that.selectedSource;
-				var prevTreeid;
-				if(prevSelected !== undefined){
-					if(!!prevSelected.get("git")){
-						prevTreeid = prevSelected.get("git").treeID || "";
-					}
-				}
-				
-				if(that.otree.getJSTree().get_node(prevTreeid)){
-					that.otree.getJSTree().set_flag(that.otree.getJSTree().get_node(prevTreeid), "editing", false);
-				}
 			}
-			
 			interaction.setActive(true);
 			that.activeBtn_(content);
 		}
@@ -2455,76 +2359,28 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 	var tileLayers = [];
 	var wmsLayers;
-	
-	// wms 성능 고도화 시작
-	map.getLayers().forEach(function(e){
-		var layer, git, layers, temp;
-		
-		layer = e;
-		git = layer.get("git");
-		
+
+	map.getLayers().forEach(function(layer){
 		if(layer instanceof ol.layer.Tile){
-			if(git instanceof Object){
-				if(git.fake === "parent"){
-					if(git.layers instanceof ol.Collection){
-						layers = git.layers.getArray();
-						for(let i = 0; i < layers.length; i++){
-							tileLayers.push(layers[i]);
-						}
-					}
-				} else {
-					tileLayers.push(layer);
+			tileLayers.push(layer);
+		}
+		if(layer instanceof ol.layer.Group){
+			tileLayers.push(layer);
+			layer.getLayers().forEach(function(tile){
+				if(tile instanceof ol.layer.Tile){
+					tileLayers.push(tile);
 				}
-			}
-		} else if(layer instanceof ol.layer.Group){
-			if(git instanceof Object){
-				if(git.allChildren){
-					temp = layer.getLayersArray();
-					for(let i = 0; i < temp.length; i++){
-						git = temp[i].get("git");
-						
-						if(git instanceof Object){
-							if(git.fake === "parent"){
-								if(git.layers instanceof ol.Collection){
-									layers = git.layers.getArray();
-									for(let i = 0; i < layers.length; i++){
-										tileLayers.push(layers[i]);
-									}
-								}
-							} else {
-								tileLayers.push(temp[i]);
-							}
+				if(tile instanceof ol.layer.Group){
+					tileLayers.push(tile);
+					tile.getLayers().forEach(function(node){
+						if(node instanceof ol.layer.Tile){
+							tileLayers.push(node);
 						}
-					}
+					});
 				}
-			}
+			});
 		}
 	});
-	// wms 성능 고도화 끝
-	
-	// 이전 코드 시작
-//	map.getLayers().forEach(function(layer){
-//		if(layer instanceof ol.layer.Tile){
-//			tileLayers.push(layer);
-//		}
-//		if(layer instanceof ol.layer.Group){
-//			tileLayers.push(layer);
-//			layer.getLayers().forEach(function(tile){
-//				if(tile instanceof ol.layer.Tile){
-//					tileLayers.push(tile);
-//				}
-//				if(tile instanceof ol.layer.Group){
-//					tileLayers.push(tile);
-//					tile.getLayers().forEach(function(node){
-//						if(node instanceof ol.layer.Tile){
-//							tileLayers.push(node);
-//						}
-//					});
-//				}
-//			});
-//		}
-//	});
-	// 이전 코드 끝
 
 	return tileLayers;
 }
@@ -2577,7 +2433,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	var tree = this.otree.getJSTree();
 	var selectedLayer;
 	var vectorSource;
-	
+
 	for(var i in tileLayers){
 		if(typeof tileLayers[i].get("git") === "object"){
 			if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid"))){
@@ -2589,7 +2445,7 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
 				if(selectedLayer.length === 1){
 					if(tileLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
-						this.updateSelected();
+						this.updateSelected(selectedLayer[0].get("treeid"));
 						this.select(vectorSource);
 					}
 				}
@@ -2661,7 +2517,7 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
 				if(selectedLayer.length === 1){
 					if(vecLayers[i].get("treeid") === selectedLayer[0].get("treeid")){
-						this.updateSelected();
+						this.updateSelected(selectedLayer[0].get("treeid"));
 						this.select(vectorSource);
 					}
 				}
@@ -2736,80 +2592,26 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 
 // hochul
 gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
-//	var tileLayers = this.getTileLayersInMap(this.map);
+	var tileLayers = this.getTileLayersInMap(this.map);
 	var tree = this.otree.getJSTree();
-//	
-//	for(var i = 0; i < tileLayers.length; i++){
-//		if(!!tree.get_node(tileLayers[i].get("treeid"))){
-//			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
-//				zidx = tileLayers[i].getZIndex();
-//				var git = tileLayers[i].get("git");
-//				if (git !== undefined) {
-//					var tlayer = git.tempLayer;
-//					if (tlayer !== undefined) {
-//						tlayer.setZIndex(zidx);
-//					}
-//				}
-//				tileLayers[i].setVisible(bool);
-//			} else {
-//				tileLayers[i].setVisible(false);
-//			}
-//		}
-//	}
 	
-	// wms 성능 고도화 시작
-	this.map.getLayers().forEach(function(e){
-		var layer, git, temp, zidx, tlayer;
-		
-		layer = e;
-		git = layer.get("git");
-		
-		if(layer instanceof ol.layer.Tile){
-			if(git instanceof Object){
-				if(git.fake !== "child"){
-					if(!!tree.get_node(layer.get("treeid"))){
-						if(!tree.get_node(layer.get("treeid")).state.hiding){
-							zidx = layer.getZIndex();
-							tlayer = git.tempLayer;
-							if (tlayer !== undefined) {
-								tlayer.setZIndex(zidx);
-							}
-							layer.setVisible(bool);
-						} else {
-							layer.setVisible(false);
-						}
+	for(var i = 0; i < tileLayers.length; i++){
+		if(!!tree.get_node(tileLayers[i].get("treeid"))){
+			if(!tree.get_node(tileLayers[i].get("treeid")).state.hiding){
+				zidx = tileLayers[i].getZIndex();
+				var git = tileLayers[i].get("git");
+				if (git !== undefined) {
+					var tlayer = git.tempLayer;
+					if (tlayer !== undefined) {
+						tlayer.setZIndex(zidx);
 					}
 				}
-			}
-		} else if(layer instanceof ol.layer.Group){
-			if(git instanceof Object){
-				if(git.allChildren){
-					temp = layer.getLayersArray();
-					for(let i = 0; i < temp.length; i++){
-						git = temp[i].get("git");
-						
-						if(git instanceof Object){
-							if(git.fake !== "child"){
-								if(!!tree.get_node(layer.get("treeid"))){
-									if(!tree.get_node(layer.get("treeid")).state.hiding){
-										zidx = layer.getZIndex();
-										tlayer = git.tempLayer;
-										if (tlayer !== undefined) {
-											tlayer.setZIndex(zidx);
-										}
-										layer.setVisible(bool);
-									} else {
-										layer.setVisible(false);
-									}
-								}
-							}
-						}
-					}
-				}
+				tileLayers[i].setVisible(bool);
+			} else {
+				tileLayers[i].setVisible(false);
 			}
 		}
-	});
-	// wms 성능 고도화 끝
+	}
 }
 
 // yijun
@@ -2881,12 +2683,12 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 			loader: function(extent, resolution, projection){
 
 				params = {
-					"serverName": git.geoserver,
-					"workspace": git.workspace,
-					"version" : gb.module.serviceVersion.WFS,
-					"typeName" : layername,
-					"bbox" : extent.join(","),
-					"outputformat" : "application/json"
+						"serverName": git.geoserver,
+						"workspace": git.workspace,
+						"version" : "1.0.0",
+						"typeName" : layername,
+						"bbox" : extent.join(","),
+						"outputformat" : "application/json"
 				};
 
 				$.ajax({
@@ -3041,7 +2843,7 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	this.setVisibleImageVector(false);
 	
 	// 줌 레벨에 따른 실행 함수 결정
-	if(this.map.getView().getZoom() > gb.header.ZOOMLEVEL){
+	if(this.map.getView().getZoom() > 11){
 		// 화면확대 요구 메세지창 숨김
 		this.displayEditZoomHint(false);
 		// WFS 레이어 로드
@@ -3051,7 +2853,13 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 		// 벡터벡터 레이어 보이기
 		this.setVisibleVectorVector(true);
 		// 선택 레이어 업데이트
-		this.select(this.updateSelected());
+		var selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
+		if (selectedLayer.length ===1) {
+			var treeid = selectedLayer[0].get("treeid");
+			this.select(this.updateSelected(treeid));
+			// 현재 편집중인 레이어의 zindex를 최상위로
+			this.moveUpEditingLayer_();
+		}
 	} else {
 		// 줌 레벨이 일정 이상이면 화면확대 요구 메세지창 생성
 		this.displayEditZoomHint(true);
@@ -3160,7 +2968,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 				"color": "#fff"
 			}).append(span).click(function(){
 				var view = that.map.getView();
-				view.setZoom(gb.header.ZOOMLEVEL + 1);
+				view.setZoom(12);
 			});
 			
 			var notice = $("<div id='zoomNotice' class='notice'>").css({

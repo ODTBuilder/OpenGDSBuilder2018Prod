@@ -5487,9 +5487,13 @@
 					 * @comment 레이어 업데이트 부분추가
 					 * @author 소이준
 					 */
+					var lastZidx = 0;
 					for (var j = 0; j < this._data.core.layers.getLength(); j++) {
 						this.setUniqueLayerId(this._data.core.layers.item(j),
 								this._createLayerId());
+						
+						lastZidx = this.setUniqueLayerZIndex(
+								this._data.core.layers.item(j), lastZidx);
 					}
 
 					var layerData = [];
@@ -7041,6 +7045,7 @@
 								this._data.core.last_error);
 						return false;
 					}
+					
 					if (obj.parent === new_par.id) {
 						dpc = new_par.children.concat();
 						tmp = $.inArray(obj.id, dpc);
@@ -7131,6 +7136,8 @@
 						 * @author 소이준
 						 */
 						var movingLayers;
+
+						// 노드를 제거시킬 부모 노드 설정
 						var oldLayer;
 						var isUnderRootBefore = false;
 						if (old_par.id === "#" || old_par === "#") {
@@ -7142,7 +7149,41 @@
 								oldLayer = this.get_LayerById(old_par.id);
 							}
 						}
+						
+						// 부모가 fake 레이어일 시 노드 이동 작업 중단
+						if(oldLayer instanceof ol.layer.Base){
+							if(oldLayer.get("git") instanceof Object){
+								if(oldLayer.get("git").fake !== undefined){
+									return;
+								}
+							}
+						}
 
+						// 노드를 이동시킬 부모 노드 설정
+						var newLayer;
+						var isUnderRoot = false;
+						if (new_par.id === "#") {
+							isUnderRoot = true;
+						} else {
+							if (typeof new_par === "string") {
+								newLayer = this.get_LayerById(new_par);
+							} else {
+								newLayer = this.get_LayerById(new_par.id);
+							}
+							if (!newLayer instanceof ol.layer.Group) {
+								console.error("not a group layer");
+							}
+						}
+
+						// 부모가 fake 레이어일 시 노드 이동 작업 중단
+						if(newLayer instanceof ol.layer.Base){
+							if(newLayer.get("git") instanceof Object){
+								if(newLayer.get("git").fake !== undefined){
+									return;
+								}
+							}
+						}
+						
 						// clean old parent and up
 						tmp = obj.children_d.concat();
 						tmp.push(obj.id);
@@ -7194,21 +7235,6 @@
 						 * @comment 이동된 레이어를 부모노드에 포함시킨다.
 						 * @author 소이준
 						 */
-						var newLayer;
-						var isUnderRoot = false;
-						if (new_par.id === "#") {
-							isUnderRoot = true;
-						} else {
-							if (typeof new_par === "string") {
-								newLayer = this.get_LayerById(new_par);
-							} else {
-								newLayer = this.get_LayerById(new_par.id);
-							}
-							if (!newLayer instanceof ol.layer.Group) {
-								console.error("not a group layer");
-							}
-						}
-
 						if (isUnderRoot) {
 							this.git.isContextmenu = true;
 							this._data.core.map.addLayer(movingLayers);

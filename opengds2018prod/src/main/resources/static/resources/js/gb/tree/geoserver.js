@@ -43,6 +43,7 @@ gb.tree.GeoServer = function(obj) {
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
+	this.deleteGeoServerLayerURL = url.deleteGeoServerLayer ? url.deleteGeoServerLayer : undefined;
 	this.geoserverInfoURL = url.geoserverInfo ? url.geoserverInfo : undefined;
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
@@ -1602,7 +1603,7 @@ gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, sto
 	};
 
 	$.ajax({
-		url : this.getDeleteGeoServerLayerURL(),
+		url : this.deleteGeoServerLayerURL,
 		method : "POST",
 		contentType : "application/json; charset=UTF-8",
 		data : JSON.stringify(params),
@@ -1612,7 +1613,7 @@ gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, sto
 		complete : function() {
 			$("body").css("cursor", "default");
 		},
-		success : function(data) {
+		success : function(data, status, xhr) {
 			console.log(data);
 			callback.close();
 			if (data === true) {

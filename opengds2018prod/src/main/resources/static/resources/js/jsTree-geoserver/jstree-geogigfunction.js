@@ -382,8 +382,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowServer(server);
 							that._data.geogigfunction.repository.setNowRepository(repo);
 							that._data.geogigfunction.repository.setNowBranch(branch);
-							// that._data.geogigfunction.repository.mergeModal(server.text,
-							// repo.text, branch.text);
+							that._data.geogigfunction.repository.layerHistoryModal();
 						});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
 								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale]).css({
@@ -398,7 +397,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 							that._data.geogigfunction.repository.setNowBranch(branch);
 							that._data.geogigfunction.repository.removeLayerModal(layer.text);
 						});
-						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
+						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn).append(historyBtn);
 
 						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
 								|| states.indexOf("unstaged") !== -1) {
@@ -448,6 +447,14 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					}).append(fetchNum);
 					$(obj.childNodes[1]).append(fetchCircle);
 				}
+			} else if (nobj.type === "default") {
+				console.log(nobj);
+				var ntxt = this._data.geogigfunction.repository.translation[nobj.text][this._data.geogigfunction.repository.locale];
+				// var o = nobj["original"];
+				// if (o.text !== undefined) {
+				// o.text = ntxt;
+				// }
+				this.rename_node(obj, ntxt);
 			}
 			var fnmks = Object.keys(this._data.geogigfunction.status);
 			for (var i = 0; i < fnmks.length; i++) {

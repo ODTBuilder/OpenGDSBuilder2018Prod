@@ -365,6 +365,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 				            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 				            
 				            int shpIndex = 0;
+				            int prjIndex = 0;
 				            while(entries.hasMoreElements()){
 				                ZipEntry entry = entries.nextElement();
 				                if(entry.isDirectory()){
@@ -380,6 +381,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 				                		uploadFilename = fullFileName.substring(0, pos);
 				                		shpIndex++;
 				                	}
+				                	
+				                	if(ext.endsWith("prj")){
+				                		prjIndex++;
+				                	}
 				                }
 				            }
 				            zipFile.close();
@@ -389,6 +394,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 				            }else if(shpIndex>1){
 				            	logger.warn("shp파일이 1개이상");
 				            	return 608;
+				            }
+				            
+				            if(prjIndex==0){
+				            	logger.warn("prj파일이 없음");
+				            	return 615;
 				            }
 						}else{
 							logger.warn("zip파일이 아님");

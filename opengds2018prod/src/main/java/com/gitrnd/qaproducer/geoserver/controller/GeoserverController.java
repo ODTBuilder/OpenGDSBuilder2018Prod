@@ -622,7 +622,7 @@ public class GeoserverController extends AbstractController {
 		
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication ==null) {
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null) {
 				response.sendError(601, "미입력 텍스트가 존재합니다.");
 		} else {
 			if(ignorePublication.toLowerCase().equals("true")){
@@ -632,12 +632,11 @@ public class GeoserverController extends AbstractController {
 			}else{
 				iPFlag = false;
 			}
-			
-			returnJson = geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			out.print(returnJson);
-			out.flush();
+            returnJson = geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            out.print(returnJson);
+            out.flush();   
 		}
 	}
 	

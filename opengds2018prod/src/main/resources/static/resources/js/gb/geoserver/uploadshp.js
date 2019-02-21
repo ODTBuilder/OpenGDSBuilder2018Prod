@@ -58,6 +58,10 @@ gb.geoserver.UploadSHP = function(obj) {
 		"browse" : {
 			"ko" : "찾아보기",
 			"en" : "Browse"
+		},
+		"alert" : {
+			"ko" : "대용량 파일(100MB 이상)은 Geoserver에 직접 업로드하는 것을 권장합니다.",
+			"en" : "Recommend uploading large file(100MB or more) directly to Geoserver."
 		}
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
@@ -183,7 +187,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var messageContent = $("<p>").css({
 		"margin" : "0 10px"
 	}).html(this.translation.inzip[this.locale]);
-	var message2 = $("<div>").addClass("validation-message").append(icon).append(messageContent);
+	var message2 = $("<div>").addClass("gb-info-message").append(icon).append(messageContent);
 
 	var file;
 	var fileSelect = $("<input accept='.zip'>").attr({
@@ -226,6 +230,12 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var fileInfo = $("<div role='alert'>").css({
 		"text-align" : "center"
 	});
+	
+	icon = $("<div>").addClass("fas fa-exclamation-circle fa-2x");
+	messageContent = $("<p>").css({
+		"margin" : "0 10px"
+	}).html(this.translation.alert[this.locale]);
+	var message3 = $("<div>").addClass("gb-alert-message").append(icon).append(messageContent);
 
 	var bodyArea = $("<div>").append(message2).append(message3).append(fileArea).append(checkboxDiv).append(fileInfo);
 

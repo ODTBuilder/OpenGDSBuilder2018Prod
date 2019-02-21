@@ -492,7 +492,7 @@ if (!gb.footer)
 			info: false,
 			searching: false,
 			paging: false,
-			scrollX: true,
+			scrollX: "100%",
 			scrollY: "100%",
 			scrollCollapse: true,
 			dom: "Bfrtip",
@@ -624,7 +624,7 @@ if (!gb.footer)
 		this.parameters = {
 			"serverName": geoserver,
 			"workspace": workspace,
-			"version" : "1.0.0",
+			"version" : gb.module.serviceVersion.WFS,
 			"typeName" : layerName,
 			"outputformat" : "application/json",
 			"maxFeatures": this.maxFeatures,
@@ -756,7 +756,7 @@ if (!gb.footer)
 				"featureNS": featureInfo[treeid].workspace,
 				"featurePrefix": featureInfo[treeid].workspace,
 				"featureType": featureInfo[treeid].layerName,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			
 			param = {

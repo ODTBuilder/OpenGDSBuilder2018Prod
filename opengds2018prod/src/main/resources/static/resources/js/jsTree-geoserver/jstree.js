@@ -7617,7 +7617,7 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wfs",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WFS,
 														"outputformat" : "SHAPE-ZIP",
 														"typeName" : data[i].lName
 													}
@@ -7671,7 +7671,7 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wfs",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WFS,
 														"outputformat" : "gml2",
 														"typeName" : data[i].lName
 													}
@@ -7725,7 +7725,7 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wfs",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WFS,
 														"outputformat" : "gml3",
 														"typeName" : data[i].lName
 													}
@@ -7779,7 +7779,7 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wfs",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WFS,
 														"outputformat" : "json",
 														"typeName" : data[i].lName
 													}
@@ -7834,7 +7834,7 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wfs",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WFS,
 														"outputformat" : "csv",
 														"typeName" : data[i].lName
 													}
@@ -7890,15 +7890,15 @@
 												for (var i = 0; i < data.length; i++) {
 													var params = {
 														"serviceType" : "wms",
-														"version" : "1.1.0",
+														"version" : gb.module.serviceVersion.WMS,
 														"format" : "image/png",
-														"crs" : data[i].srs,
 														"bbox" : [ data[i].nbBox.minx, data[i].nbBox.miny, data[i].nbBox.maxx,
 																data[i].nbBox.maxy ],
 														"layers" : data[i].lName,
 														"width" : 1024,
 														"height" : 768
 													}
+													params[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
 													var form = document.createElement("form");
 													form.setAttribute("method", "post");
 													form.setAttribute("action", path);

@@ -256,7 +256,7 @@ gb.header.Base.prototype.createContent = function(list){
 	for(var i in list){
 		iTag = $("<i>").addClass(list[i].icon).attr("aria-hidden", "true");
 		
-		aTag = $("<a>").attr("href", "#");
+		aTag = $("<a>").attr("href", "#").attr("data-content", list[i].content);
 		
 		aTag.hover(function(){
 			if(!$(this).hasClass("active")){

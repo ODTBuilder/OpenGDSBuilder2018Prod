@@ -767,7 +767,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 				"featureNS": workspace,
 				"featurePrefix": workspace,
 				"featureType": layername,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			break;
 		case "modified":
@@ -783,7 +783,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 				"featureNS": workspace,
 				"featurePrefix": workspace,
 				"featureType": layername,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			break;
 		default:
@@ -844,7 +844,7 @@ gb.edit.FeatureRecord.prototype.wfstCallback = function(array, type, options){
 				"featureNS": opt.workspace,
 				"featurePrefix": opt.workspace,
 				"featureType": opt.layername,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			break;
 		case "modified":
@@ -852,7 +852,7 @@ gb.edit.FeatureRecord.prototype.wfstCallback = function(array, type, options){
 				"featureNS": opt.workspace,
 				"featurePrefix": opt.workspace,
 				"featureType": opt.layername,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			break;
 		case "removed":
@@ -860,7 +860,7 @@ gb.edit.FeatureRecord.prototype.wfstCallback = function(array, type, options){
 				"featureNS": opt.workspace,
 				"featurePrefix": opt.workspace,
 				"featureType": opt.layername,
-				"version": "1.0.0"
+				"version": gb.module.serviceVersion.WFS
 			});
 			break;
 		default:

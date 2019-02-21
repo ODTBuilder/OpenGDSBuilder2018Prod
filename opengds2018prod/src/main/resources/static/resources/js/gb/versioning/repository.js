@@ -5715,32 +5715,28 @@ gb.versioning.Repository.prototype.errorModal = function(code) {
 gb.versioning.Repository.prototype.layerHistoryModal = function() {
 	var that = this;
 
-	var user = $("<div>").css({
-		"display" : "table-cell",
+	var user = $("<td>").css({
 		"width" : "15%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.user[that.locale]);
-	var day = $("<div>").css({
-		"display" : "table-cell",
+	var day = $("<td>").css({
 		"width" : "20%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.date[that.locale]);
-	var cmsg = $("<div>").css({
-		"display" : "table-cell",
+	var cmsg = $("<td>").css({
 		"width" : "35%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.commitmsg[that.locale]);
-	var detail = $("<div>").css({
-		"display" : "table-cell",
+	var detail = $("<td>").css({
 		"width" : "10%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
@@ -5748,8 +5744,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
 		"text-align" : "center"
 	}).text(that.translation.detail[that.locale]);
-	var revert = $("<div>").css({
-		"display" : "table-cell",
+	var revert = $("<td>").css({
 		"width" : "10%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
@@ -5758,50 +5753,84 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		"text-align" : "center"
 	}).text(that.translation.revert[that.locale]);
 
-	var row = $("<div>").addClass("tr gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
-	var rowgroup1 = $("<div>").addClass("thead gb-versioning-feature-trg").append(row);
-	var rowgroup2 = $("<div>").addClass("gb-versioning-feature-trg");
-	var tb = $("<div>").css({
-		"display" : "table",
+// var row = $("<div>").addClass("tr
+// gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
+	var row = $("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert);
+	var rowgroup1 = $("<thead>").append(row);
+	var rowgroup2 = $("<tbody>");
+	var tb = $("<table>").css({
 		"width" : "100%"
 	}).append(rowgroup1).append(rowgroup2);
 
 	for (var i = 0; i < 10; i++) {
-		var user = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "10%",
+		var user = $("<td>").css({
+			"width" : "15%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("admin");
-		var day = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "20%",
+		var day = $("<td>").css({
+			 "width" : "20%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("2019-02-19 12:10:01");
-		var cmsg = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "30%",
+		var cmsg = $("<td>").css({
+			 "width" : "35%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("feature23 수정");
 		var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 		var detailBtn = $("<button>").addClass("gb-button-clear").append(detailIcon).click(function(){
-			alert("detail");
+			console.log($(this).parents().eq(1));
+			$(".gb-repository-history-detail-row").remove();
+			var ul = $("<ul>");
+			var div = $("<div>").css({
+				"padding" : "5px 11px"
+			}).append(ul);
+			
+			for (var i = 0; i < 3; i++) {
+				var type = $("<span>").css({
+// "float" : "left",
+					"margin" : "5px"
+				}).text("modified");
+				var fid = $("<span>").css({
+// "float" : "left",
+					"margin" : "5px"
+				}).text("23");
+				var icon = $("<i>").addClass("fas").addClass("fa-search");
+				var deBtn = $("<button>").css({
+// "float" : "right",
+					"margin" : "5px"
+				}).append(icon).addClass("gb-button-clear").click(function(){
+					alert("비교");
+				});
+				var de1 = $("<div>").css({
+// "height": "32px",
+// "width": "180px",
+// "float" : "right"
+				}).append(type).append(fid).append(deBtn);
+				var li = $("<li>").append(de1);
+				$(ul).append(li);
+			}
+			
+			var td1 = $("<td>").attr({
+				"colspan" : "5"
+			}).append(div);
+			var tr1 = $("<tr>").addClass("gb-repository-history-detail-row").append(td1);
+			
+			$(this).parents().eq(1).after(tr1);
 		});
-		var detail = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "15%",
+		var detail = $("<td>").css({
+			 "width" : "10%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 			"text-align" : "center"
 		}).append(detailBtn);
 
@@ -5809,18 +5838,17 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		var revertBtn = $("<button>").addClass("gb-button-clear").append(revertIcon).click(function(){
 			alert("revert");
 		});
-		var revert = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "15%",
+		var revert = $("<td>").css({
+			 "width" : "10%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 			"text-align" : "center"
 		}).append(revertBtn);
 
-		var row = $("<div>").addClass("tr gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
-		$(rowgroup2).append(row);
+		var row1 = $("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert);
+		$(rowgroup2).append(row1);
 	}
 	
 	var readIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
@@ -5830,7 +5858,8 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 	var td3 = $("<div>").css({
 		"width" : "100%",
 	    "text-align": "center",
-	    "padding-top": "5px"
+	    "padding-top": "5px",
+	    "border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 	}).append(readBtn);
 	var row3 = $("<div>").addClass("tr gb-versioning-feature-tr").append(td3);
 	var rowgroup3 = $("<div>").addClass("gb-versioning-feature-trg").append(row3);

@@ -806,6 +806,18 @@ gb.versioning.Repository = function(obj) {
 			"ko" : "더 보기",
 			"en" : "Read more"
 		},
+		"added" : {
+			"ko" : "추가됨",
+			"en" : "Added"
+		},
+		"modified" : {
+			"ko" : "변경됨",
+			"en" : "Modified"
+		},
+		"removed" : {
+			"ko" : "삭제됨",
+			"en" : "Removed"
+		},
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -5787,43 +5799,54 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 		var detailBtn = $("<button>").addClass("gb-button-clear").append(detailIcon).click(function(){
 			console.log($(this).parents().eq(1));
+			var nowrow = $(this).parents().eq(1);
+			var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
 			$(".gb-repository-history-detail-row").remove();
-			var ul = $("<ul>");
-			var div = $("<div>").css({
-				"padding" : "5px 11px"
-			}).append(ul);
-			
-			for (var i = 0; i < 3; i++) {
-				var type = $("<span>").css({
-// "float" : "left",
-					"margin" : "5px"
-				}).text("modified");
-				var fid = $("<span>").css({
-// "float" : "left",
-					"margin" : "5px"
-				}).text("23");
-				var icon = $("<i>").addClass("fas").addClass("fa-search");
-				var deBtn = $("<button>").css({
-// "float" : "right",
-					"margin" : "5px"
-				}).append(icon).addClass("gb-button-clear").click(function(){
-					alert("비교");
+			if (!flag) {
+				var ul = $("<ul>").css({
+					"padding-left"	: "22px"
 				});
-				var de1 = $("<div>").css({
-// "height": "32px",
-// "width": "180px",
-// "float" : "right"
-				}).append(type).append(fid).append(deBtn);
-				var li = $("<li>").append(de1);
-				$(ul).append(li);
+				var div = $("<div>").css({
+					"padding" : "5px 11px"
+				}).append(ul);
+				
+				for (var i = 0; i < 3; i++) {
+					var type = $("<span>").css({
+	// "float" : "left",
+						"margin" : "5px"
+					}).text(that.translation.modified[that.locale]);
+					var fid = $("<span>").css({
+	// "float" : "left",
+						"margin" : "5px"
+					}).text("abcdef23");
+					var icon = $("<i>").addClass("fas").addClass("fa-search");
+					var deBtn = $("<button>").css({
+	// "float" : "right",
+						"margin" : "5px"
+					}).append(icon).addClass("gb-button-clear").click(function(){
+						alert("비교");
+					});
+					var de1 = $("<div>").css({
+	// "height": "32px",
+	// "width": "180px",
+	// "float" : "right"
+					}).append(type).append(fid).append(deBtn);
+					var li = $("<li>").append(de1);
+					$(ul).append(li);
+				}
+				
+				var td1 = $("<td>").attr({
+					"colspan" : "2"
+				});
+				var td2 = $("<td>").append(div);
+				var td3 = $("<td>").attr({
+					"colspan" : "2"
+				});
+				var tr1 = $("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
+				
+				$(this).parents().eq(1).after(tr1);
 			}
 			
-			var td1 = $("<td>").attr({
-				"colspan" : "5"
-			}).append(div);
-			var tr1 = $("<tr>").addClass("gb-repository-history-detail-row").append(td1);
-			
-			$(this).parents().eq(1).after(tr1);
 		});
 		var detail = $("<td>").css({
 			 "width" : "10%",

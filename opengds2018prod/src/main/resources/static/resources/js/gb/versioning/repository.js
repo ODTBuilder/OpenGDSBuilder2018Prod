@@ -3112,8 +3112,8 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 					"background-color" : "#fff"
 				});
 			}
-			var title = this.translation.err[this.locale];
-			var msg = this.translation.emptyfield[this.locale];
+			var title = that.translation.err[that.locale];
+			var msg = that.translation.emptyfield[that.locale];
 			that.messageModal(title, msg);
 		} else {
 			$(rNameInput).css({

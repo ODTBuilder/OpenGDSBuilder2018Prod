@@ -815,12 +815,20 @@ gb.versioning.Repository = function(obj) {
 			"en" : "Added"
 		},
 		"modified" : {
-			"ko" : "변경됨",
+			"ko" : "수정됨",
 			"en" : "Modified"
 		},
 		"removed" : {
 			"ko" : "삭제됨",
 			"en" : "Removed"
+		},
+		"revertmsg1" : {
+			"ko" : "해당 커밋 시점으로 레이어를 되돌립니다.",
+			"en" : "Revert the layer to the point in time when it was committed."
+		},
+		"revertmsg2" : {
+			"ko" : "진행하시겠습니까?",
+			"en" : 'Do you want to proceed?'
 		},
 	};
 	var options = obj ? obj : {};
@@ -3339,7 +3347,7 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 
 	var modal = new gb.modal.Base({
 		"title" : title,
-		"width" : 310,
+		"width" : 390,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -5712,11 +5720,7 @@ gb.versioning.Repository.prototype.changeNodeOnLoadingList = function(idx, nodeI
  */
 gb.versioning.Repository.prototype.errorModal = function(code) {
 	var that = this;
-	if (parseInt(code) === 850) {
-		that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
-	} else {
-		that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
-	}
+	that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
 };
 
 /**
@@ -5865,7 +5869,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 
 		var revertIcon = $("<i>").addClass("fas").addClass("fa-undo");
 		var revertBtn = $("<button>").addClass("gb-button-clear").append(revertIcon).click(function(){
-			alert("revert");
+			that.openRevertModal();
 		});
 		var revert = $("<td>").css({
 			 "width" : "10%",
@@ -6417,4 +6421,158 @@ gb.versioning.Repository.prototype.beforeAfterDetailModal = function(server, cre
 			that.errorModal(xhr.responseJSON.status);
 		});
 	}
+};
+
+/**
+ * 피처 revert 요청 모달을 연다.
+ * 
+ * @method gb.versioning.Repository#openRevertModal
+ */
+gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path, oc, nc) {
+	var that = this;
+	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text(that.translation.revertmsg2[that.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var inputMsg = $("<input>").attr({
+		"type" : "text"
+	}).addClass("gb-form");
+	var msg3 = $("<div>").append(inputMsg);
+
+	var body = $("<div>").append(msg1).append(msg2).append(msg3);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var commitModal = new gb.modal.Base({
+		"title" : that.translation.revert[that.locale],
+		"width" : 494,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		commitModal.close();
+	});
+	$(okBtn).click(function() {
+		var message = inputMsg.val();
+		that.revert(server, repo, path, oc, nc, message, message, commitModal);
+	});
+};
+
+/**
+ * 피처 revert 요청한다.
+ * 
+ * @method gb.versioning.Repository#revert
+ */
+gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"oldCommitId" : oc,
+		"newCommitId" : nc,
+		"commitMessage" : cm,
+		"mergeMessage" : mm
+	}
+	console.log(params);
+
+	var tranURL = that.getFeatureRevertURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.merge.conflicts === null) {
+					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : that.translation.revert[that.locale],
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+						that.runAfterSaveCallback();
+					});
+					rmodal.close();
+				} else if (Array.isArray(data.merge.conflicts)) {
+					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text(that.translation.conflictmsg1[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : that.translation.revert[that.locale],
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								that.endTransaction(server, repo, tid, commitModal);
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+								that.openConflictDetailModal();
+							});
+				}
+			}
+		}
+	});
 };

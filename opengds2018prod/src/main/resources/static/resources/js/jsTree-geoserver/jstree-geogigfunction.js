@@ -450,11 +450,16 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 			} else if (nobj.type === "default") {
 				console.log(nobj);
 				var ntxt = this._data.geogigfunction.repository.translation[nobj.text][this._data.geogigfunction.repository.locale];
-				// var o = nobj["original"];
-				// if (o.text !== undefined) {
-				// o.text = ntxt;
-				// }
-				this.rename_node(obj, ntxt);
+				var o = nobj["original"];
+				if (o.text !== undefined) {
+					o.text = ntxt;
+				}
+				this.rename_node(nobj, ntxt);
+				var icon = $(obj).find("a").find("i");
+				$(obj).find("a").empty();
+				$(obj).find("a").append(icon).append(ntxt);
+				
+				console.log(nobj);
 			}
 			var fnmks = Object.keys(this._data.geogigfunction.status);
 			for (var i = 0; i < fnmks.length; i++) {

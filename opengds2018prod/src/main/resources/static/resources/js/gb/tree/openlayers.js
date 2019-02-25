@@ -224,7 +224,11 @@ gb.tree.OpenLayers = function(obj) {
 			"duplicateKeyHint" : {
 				"ko" : "이 값은 중복되었습니다.",
 				"en" : "This value is a duplicate."
-			}
+			},
+			"upload" : {
+				"ko" : "서버에 업로드",
+				"en" : "Upload to Server"
+			},
 	}
 	this.getLegend = url.getLegend ? url.getLegend : undefined;
 	this.panelTitle = $("<p>").text("Now editing").css({
@@ -536,6 +540,59 @@ gb.tree.OpenLayers = function(obj) {
 							};
 						}
 						
+						if(o.type === "Point" || o.type === "MultiPoint" || o.type === "LineString" || o.type === "MultiLineString" || o.type === "Polygon" || o.type === "MultiPolygon"){
+							var inst = that.getJSTree();
+							var layers = inst.get_selected();
+							var flag = true;
+							var nodes = [];
+							for (var i = 0; i < layers.length; i++) {
+								var node = inst.get_node(layers[i]);
+								if (node !== undefined) {
+									if (node.type === "Point" || node.type === "MultiPoint" || node.type === "LineString" || node.type === "MultiLineString" || node.type === "Polygon" || node.type === "MultiPolygon") {
+										nodes.push(node);	
+									} else {
+										flag = false;
+									}
+
+								}
+							}
+							if (flag) {
+								totalObj["upload"] = {
+										"separator_before" : false,
+										"icon" : "fas fa-upload",
+										"separator_after" : false,
+										"_disabled" : false, // (this.check("delete_node",
+										// data.reference,
+										// this.get_parent(data.reference),
+										// "")),
+										"label" : that.translation["upload"][that.locale],
+										"action" : function(data) {
+											var inst = $.jstreeol3
+											.reference(data.reference), obj = inst
+											.get_node(data.reference);
+											var layers = inst.get_selected();
+											var map = inst._data.core.map;
+											var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+
+											if(isEdit instanceof Object){
+												if(isEdit.get()){
+													isEdit.alert();
+													return
+												}
+											}
+											var nodes = [];
+											for (var i = 0; i < layers.length; i++) {
+												var node = inst.get_node(layers[i]);
+												if (node !== undefined) {
+													nodes.push(node);
+												}
+											}
+											that.openUploadJSONLayer(nodes);
+										}
+								}
+							}
+						}
+
 						if(o.type !== "Group" && o.type !== "Raster" && o.type !== "FakeGroup"){
 							if(this.get_node(o.parent) instanceof Object){
 								if(this.get_node(o.parent).type !== "FakeGroup"){

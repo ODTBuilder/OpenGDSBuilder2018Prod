@@ -824,7 +824,7 @@ gb.versioning.Repository = function(obj) {
 		},
 		"revertmsg1" : {
 			"ko" : "해당 커밋 시점으로 레이어를 되돌립니다.",
-			"en" : "Revert the layer to the point in time when it was committed."
+			"en" : "Revert the layer to the point of time when it was committed."
 		},
 		"revertmsg2" : {
 			"ko" : "진행하시겠습니까?",

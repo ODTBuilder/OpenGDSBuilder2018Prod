@@ -72,6 +72,10 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 			"ko" : "선택한 레이어",
 			"en" : "Selected Layer"
 		},
+		"ignore" : {
+			"ko" : "중복되는 미발행 레이어 덮어쓰기",
+			"en" : "Overwrite duplicate unpublished layers"
+		},
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
@@ -209,10 +213,6 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 	var root = jstree.get_node("#");
 	console.log(root);
 	var servers = root.children;
-	var epsgVal = $("<span>").text(epsg);
-	var epsgArea = $("<div>").addClass("gb-form").append(epsgVal).css({
-		"margin-bottom" : "5px"
-	});
 	var serverLabel = $("<div>").text("GeoServer");
 	var serversel = $("<select>").addClass("gb-form").css({
 		"margin-bottom" : "5px"
@@ -335,18 +335,33 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 	var storesel = $("<select>").addClass("gb-form").css({
 		"margin-bottom" : "5px"
 	}).append(nostore);
-	var crsLabel = $("<div>").text(this.translation.crs[this.locale]);
+
+	var ignoredup = $("<input>").attr({
+		"type" : "checkbox"
+	}).css({
+		"vertical-align" : "top",
+		"margin-right" : "6px"
+	});
+	var ignoreLabel = $("<label>").append(ignoredup).append(this.translation.ignore[this.locale]);
+	var ignoreArea = $("<div>").append(ignoreLabel).css({
+		"margin-top" : "10px"
+	});
 	var left = $("<div>").css({
 		"width" : "160px",
 		"float" : "left",
 		"margin" : "5px"
-	}).append(serverLabel).append(serversel).append(workLabel).append(worksel).append(storeLabel).append(storesel).append(crsLabel).append(
-			epsgArea);
+	}).append(serverLabel).append(serversel).append(workLabel).append(worksel).append(storeLabel).append(storesel).append(ignoreArea);
 
+	var crsLabel = $("<div>").text(this.translation.crs[this.locale]);
+	var epsgVal = $("<span>").text(epsg);
+	var epsgArea = $("<div>").addClass("gb-form").append(epsgVal).css({
+		"margin-bottom" : "5px"
+	});
 	var layerLabel = $("<div>").text(this.translation.slayer[this.locale]);
 	var list = $("<div>").addClass("gb-form").css({
 		"margin-bottom" : "5px",
-		"height" : "211px"
+		"height" : "154px",
+		"overflow" : "auto"
 	});
 	if (Array.isArray(layers)) {
 		var ul = $("<ul>").css({
@@ -364,7 +379,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		"width" : "238px",
 		"float" : "left",
 		"margin" : "5px"
-	}).append(layerLabel).append(list);
+	}).append(crsLabel).append(epsgArea).append(layerLabel).append(list);
 	var bodyArea = $("<div>").css({
 		"height" : "245px"
 	}).append(left).append(right);

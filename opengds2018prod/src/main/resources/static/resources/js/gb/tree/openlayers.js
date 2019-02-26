@@ -31,7 +31,7 @@ gb.tree.OpenLayers = function(obj) {
 	this.editingTool = options.editingTool || undefined;
 	this.token = options.token || "";
 	this.locale = options.locale || "en";
-
+	this.uploadjson = options.uploadJSON !== undefined ? options.uploadJSON : undefined;
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
 
@@ -545,15 +545,23 @@ gb.tree.OpenLayers = function(obj) {
 							var layers = inst.get_selected();
 							var flag = true;
 							var nodes = [];
+							var layerObjs = [];
 							for (var i = 0; i < layers.length; i++) {
 								var node = inst.get_node(layers[i]);
+								var layer = inst.get_LayerById(layers[i]);
+								var git = layer.get("git");
+								
 								if (node !== undefined) {
 									if (node.type === "Point" || node.type === "MultiPoint" || node.type === "LineString" || node.type === "MultiLineString" || node.type === "Polygon" || node.type === "MultiPolygon") {
-										nodes.push(node);	
+										if (git.geoserver !== undefined && git.workspace !== undefined) {
+											flag = false;	
+										} else {
+											nodes.push(node);	
+											layerObjs.push(layer);
+										}
 									} else {
 										flag = false;
 									}
-
 								}
 							}
 							if (flag) {
@@ -580,14 +588,9 @@ gb.tree.OpenLayers = function(obj) {
 													return
 												}
 											}
-											var nodes = [];
-											for (var i = 0; i < layers.length; i++) {
-												var node = inst.get_node(layers[i]);
-												if (node !== undefined) {
-													nodes.push(node);
-												}
-											}
-											that.openUploadJSONLayer(nodes);
+											console.log(nodes);
+											var epsg = inst._data.core.map.getView().getProjection().getCode();
+											that.getUploadJSON().open(epsg, layerObjs);
 										}
 								}
 							}
@@ -874,6 +877,24 @@ gb.tree.OpenLayers.prototype.closeSearchBar = function() {
 	$(this.searchArea).css({
 		"display" : "none"
 	});
+};
+
+/**
+ * uploadjson 객체를 반환한다.
+ * 
+ * @method gb.tree.OpenLayers#getUploadJSON
+ */
+gb.tree.OpenLayers.prototype.getUploadJSON = function() {
+	return this.uploadjson;
+};
+
+/**
+ * uploadjson 객체를 설정한다.
+ * 
+ * @method gb.tree.OpenLayers#setUploadJSON
+ */
+gb.tree.OpenLayers.prototype.setUploadJSON = function(obj) {
+	this.uploadjson = obj;
 };
 
 /**

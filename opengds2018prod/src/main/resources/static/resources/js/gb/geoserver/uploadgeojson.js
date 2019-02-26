@@ -14,7 +14,7 @@ if (!gb.geoserver)
  * 
  * @version 0.01
  * @author SOYIJUN
- * @date 2017. 07.26
+ * @date 2019. 02. 26
  */
 gb.geoserver.UploadGeoJSON = function(obj) {
 	var that = this;
@@ -22,6 +22,7 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 	this.url = typeof options.url === "string" ? options.url : undefined;
 	this.epsginit = (typeof options.epsg === "number" || typeof options.epsg === "string" || typeof options.epsg === "function") ? options.epsg
 			: undefined;
+	this.geoserverTree = typeof options.geoserverTree === "function" ? options.geoserverTree : undefined;
 	this.geoserver;
 	this.workspace;
 	this.datastore;
@@ -38,6 +39,38 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 		"uploadgeojson" : {
 			"ko" : "GeoJSON 레이어 업로드",
 			"en" : "Upload GeoJSON Layer"
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"upload" : {
+			"ko" : "업로드",
+			"en" : "Upload"
+		},
+		"noset" : {
+			"ko" : "선택 없음",
+			"en" : "Not selected"
+		},
+		"noserver" : {
+			"ko" : "지오서버 없음",
+			"en" : "No GeoServer"
+		},
+		"workspace" : {
+			"ko" : "작업공간",
+			"en" : "Workspace"
+		},
+		"datastore" : {
+			"ko" : "데이터저장소",
+			"en" : "Datastore"
+		},
+		"crs" : {
+			"ko" : "좌표계",
+			"en" : "CRS"
+		},
+		"slayer" : {
+			"ko" : "선택한 레이어",
+			"en" : "Selected Layer"
 		},
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
@@ -58,6 +91,27 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 };
 gb.geoserver.UploadGeoJSON.prototype = Object.create(gb.geoserver.UploadGeoJSON.prototype);
 gb.geoserver.UploadGeoJSON.prototype.constructor = gb.geoserver.UploadGeoJSON;
+
+/**
+ * 지오서버 트리를 반환한다.
+ * 
+ * @method gb.geoserver.UploadGeoJSON#getGeoserverTree
+ * @return {String} 지오서버 트리 객체
+ */
+gb.geoserver.UploadGeoJSON.prototype.getGeoserverTree = function() {
+	return this.geoserverTree();
+};
+
+/**
+ * 지오서버 트리를 반환한다.
+ * 
+ * @method gb.geoserver.UploadGeoJSON#setGeoserverTree
+ * @param {String}
+ *            지오서버 트리 객체를 반환하는 함수
+ */
+gb.geoserver.UploadGeoJSON.prototype.setGeoserverTree = function(fnc) {
+	this.geoserverTree = fnc;
+};
 
 /**
  * 현재 검색한 좌표계의 EPSG 코드를 반환한다.
@@ -145,90 +199,195 @@ gb.geoserver.UploadGeoJSON.prototype.getUploadURL = function() {
  * @method gb.geoserver.UploadGeoJSON#open
  * @override
  */
-gb.geoserver.UploadGeoJSON.prototype.open = function(geoserver, workspace, datastrore) {
+gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 	var that = this;
-
-	// EPSG 입력 창 생성
-	/*
-	 * var message1 = $("<div>").text("1. Select your coordinate
-	 * system(EPSG)."); var label = $("<span>").addClass("gb-geoserver-uploadshp-epsg-label").text("EPSG:");
-	 * 
-	 * this.setValidEPSG(false);
-	 * 
-	 * var inputDiv = $("<div>").css({ "margin" : "10px"
-	 * }).append(label).append(this.epsgInput).append(this.validIconSpan);
-	 */
-
-	var icon = $("<div>").addClass("fas fa-info-circle fa-2x");
-	var messageContent = $("<p>").css({
-		"margin" : "0 10px"
-	}).html(this.translation.inzip[this.locale]);
-	var message2 = $("<div>").addClass("gb-info-message").append(icon).append(messageContent);
-
-	var file;
-	var fileSelect = $("<input accept='.zip'>").attr({
-		"type" : "file"
+	var tree = typeof this.getGeoserverTree === "function" ? this.getGeoserverTree() : undefined;
+	if (tree === undefined) {
+		return;
+	}
+	var jstree = tree.getJSTree();
+	var root = jstree.get_node("#");
+	console.log(root);
+	var servers = root.children;
+	var epsgVal = $("<span>").text(epsg);
+	var epsgArea = $("<div>").addClass("gb-form").append(epsgVal).css({
+		"margin-bottom" : "5px"
+	});
+	var serverLabel = $("<div>").text("GeoServer");
+	var serversel = $("<select>").addClass("gb-form").css({
+		"margin-bottom" : "5px"
 	}).change(function() {
-		if (!!this.files) {
-			file = this.files[0];
-			if (file.size > 0) {
-				fileInfo.text(file.name + ' , ' + file.size + ' kb');
+		console.log("server change");
+
+		var wnode = jstree.get_node($(serversel).find("option:selected").attr("nodeid"));
+		var works = wnode.children;
+		if (works.length === 0 && wnode.state.loaded === false) {
+			var rootNode = jstree.get_node("#");
+			var nodes = root.children;
+			var callback = function() {
+				$(worksel).empty();
+				var wnode2 = jstree.get_node($(serversel).find("option:selected").attr("nodeid"));
+				var works2 = wnode2.children;
+				if (wnode2.state.loaded === true && works2.length > 0) {
+					console.log(works);
+					for (var i = 0; i < works2.length; i++) {
+						var node = jstree.get_node(works2[i]);
+						var opt = $("<option>").attr({
+							"value" : node.text,
+							"nodeid" : node.id
+						}).text(node.text);
+						$(worksel).append(opt);
+					}
+					$(worksel).trigger("change");
+				}
+			};
+			tree.initLoadingList();
+			tree.initLoadingNumber();
+			for (var i = 0; i < nodes.length; i++) {
+				var pnodeid = nodes[i];
+				console.log("선택한 노드:", pnodeid);
+				console.log(tree.getLoadingList());
+				tree.openNodeRecursive(i, jstree.get_node(nodes[i]), pnodeid, callback, true);
+			}
+		} else {
+			$(worksel).empty();
+			for (var i = 0; i < works.length; i++) {
+				var node = jstree.get_node(works[i]);
+				var opt = $("<option>").attr({
+					"value" : node.text,
+					"nodeid" : node.id
+				}).text(node.text);
+				$(worksel).append(opt);
+			}
+			$(worksel).trigger("change");
+		}
+
+	});
+	if (servers.length === 0) {
+		var opt = $("<option>").attr({
+			"value" : "noset"
+		}).text(this.translation.noserver[this.locale]);
+		$(serversel).append(opt);
+	} else {
+		for (var i = 0; i < servers.length; i++) {
+			var node = jstree.get_node(servers[i]);
+			var opt = $("<option>").attr({
+				"value" : node.text,
+				"nodeid" : node.id
+			}).text(node.text);
+			$(serversel).append(opt);
+		}
+	}
+	var nowork = $("<option>").attr({
+		"value" : "noset"
+	}).text(this.translation.noset[this.locale]);
+	var workLabel = $("<div>").text(this.translation.workspace[this.locale]);
+	var worksel = $("<select>").addClass("gb-form").css({
+		"margin-bottom" : "5px"
+	}).append(nowork).change(function() {
+		console.log("work change");
+
+		var snode = jstree.get_node($(worksel).find("option:selected").attr("nodeid"));
+		var stores = snode.children;
+		if (stores.length === 0 && snode.state.loaded === false) {
+			var rootNode = jstree.get_node("#");
+			var nodes = root.children;
+			var callback = function() {
+				$(storesel).empty();
+				var snode2 = jstree.get_node($(worksel).find("option:selected").attr("nodeid"));
+				var stores2 = snode2.children;
+				if (snode2.state.loaded === true && stores2.length > 0) {
+					console.log(stores);
+					for (var i = 0; i < stores2.length; i++) {
+						var node = jstree.get_node(stores2[i]);
+						var opt = $("<option>").attr({
+							"value" : node.text,
+							"nodeid" : node.id
+						}).text(node.text);
+						$(storesel).append(opt);
+					}
+				}
+			};
+			tree.initLoadingList();
+			tree.initLoadingNumber();
+			for (var i = 0; i < nodes.length; i++) {
+				var pnodeid = nodes[i];
+				console.log("선택한 노드:", pnodeid);
+				console.log(tree.getLoadingList());
+				tree.openNodeRecursive(i, jstree.get_node(nodes[i]), pnodeid, callback, true);
+			}
+		} else {
+			$(storesel).empty();
+			for (var i = 0; i < stores.length; i++) {
+				var node = jstree.get_node(stores[i]);
+				var opt = $("<option>").attr({
+					"value" : node.text,
+					"nodeid" : node.id
+				}).text(node.text);
+				$(storesel).append(opt);
 			}
 		}
 	});
+	var nostore = $("<option>").attr({
+		"value" : "noset"
+	}).text(this.translation.noset[this.locale]);
+	var storeLabel = $("<div>").text(this.translation.datastore[this.locale]);
+	var storesel = $("<select>").addClass("gb-form").css({
+		"margin-bottom" : "5px"
+	}).append(nostore);
+	var crsLabel = $("<div>").text(this.translation.crs[this.locale]);
+	var left = $("<div>").css({
+		"width" : "160px",
+		"float" : "left",
+		"margin" : "5px"
+	}).append(serverLabel).append(serversel).append(workLabel).append(worksel).append(storeLabel).append(storesel).append(crsLabel).append(
+			epsgArea);
 
-	var fileArea = $("<button type='button'>").addClass("btn btn-primary btn-lg btn-block").text(this.translation.browse[this.locale])
-			.mouseenter(function() {
-				$(this).css({
-					"background-color" : "#00c4bc"
-				});
-			}).mouseleave(function() {
-				$(this).css({
-					"background-color" : "#00b5ad"
-				});
-			}).click(function() {
-				fileSelect.click();
-			}).css({
-				"background-color" : "#00b5ad",
-				"border-color" : "transparent",
-			});
-
-	var checkboxInput = $("<input type='checkbox' tabindex='0'>").css(gb.geoserver.CHECKBOXINPUT).change(function() {
-		that.ignorePublic = this.checked;
+	var layerLabel = $("<div>").text(this.translation.slayer[this.locale]);
+	var list = $("<div>").addClass("gb-form").css({
+		"margin-bottom" : "5px",
+		"height" : "211px"
 	});
-
-	var checkboxLabel = $("<label>").text("미발행 레이어 이름 중복 무시하기");
-	var checkboxDiv = $("<div>").append(checkboxInput).append(checkboxLabel);
-
-	var fileInfo = $("<div role='alert'>").css({
-		"text-align" : "center"
-	});
-
-	icon = $("<div>").addClass("fas fa-exclamation-circle fa-2x");
-	messageContent = $("<p>").css({
-		"margin" : "0 10px"
-	}).html(this.translation.alert[this.locale]);
-	var message3 = $("<div>").addClass("gb-alert-message").append(icon).append(messageContent);
-
-	var bodyArea = $("<div>").append(message2).append(message3).append(fileArea).append(checkboxDiv).append(fileInfo);
+	if (Array.isArray(layers)) {
+		var ul = $("<ul>").css({
+			"padding-left" : "15px"
+		});
+		for (var i = 0; i < layers.length; i++) {
+			if (layers[i] instanceof ol.layer.Base) {
+				var li = $("<li>").text(layers[i].get("name"));
+				$(ul).append(li);
+			}
+		}
+		$(list).append(ul);
+	}
+	var right = $("<div>").css({
+		"width" : "238px",
+		"float" : "left",
+		"margin" : "5px"
+	}).append(layerLabel).append(list);
+	var bodyArea = $("<div>").css({
+		"height" : "245px"
+	}).append(left).append(right);
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.upload[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 	var uploadModal = new gb.modal.Base({
-		"title" : this.translation.UploadGeoJSON[this.locale],
-		"width" : 355,
-		"height" : 286,
+		"title" : this.translation.uploadgeojson[this.locale],
+		"width" : 440,
 		"autoOpen" : true,
 		"body" : bodyArea,
 		"footer" : modalFooter
 	});
+
+	$(serversel).trigger("change");
+
 	$(closeBtn).click(function() {
 		uploadModal.close();
 	});

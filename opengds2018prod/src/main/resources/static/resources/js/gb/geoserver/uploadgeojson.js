@@ -26,7 +26,6 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 	this.geoserver;
 	this.workspace;
 	this.datastore;
-	this.callback;
 	this.validEPSG = false;
 	this.epsg = undefined;
 	this.locale = options.locale ? options.locale : "en";
@@ -36,6 +35,94 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 	this.ignorePublic = false;
 
 	this.translation = {
+		"400" : {
+			"ko" : "요청값 잘못입력",
+			"en" : "Bad request"
+		},
+		"404" : {
+			"ko" : "페이지 없음",
+			"en" : "Not found"
+		},
+		"405" : {
+			"ko" : "요청 타입 에러",
+			"en" : "Method not allowed"
+		},
+		"406" : {
+			"ko" : "요청 형식 에러",
+			"en" : "Not acceptable"
+		},
+		"407" : {
+			"ko" : "프록시 에러",
+			"en" : "Proxy authentication required"
+		},
+		"408" : {
+			"ko" : "요청시간 초과",
+			"en" : "Request timeout"
+		},
+		"415" : {
+			"ko" : "지원하지 않는 타입 요청",
+			"en" : "Unsupported media type"
+		},
+		"500" : {
+			"ko" : "서버 내부 오류",
+			"en" : "Internal server error"
+		},
+		"600" : {
+			"ko" : "로그인을 해주세요",
+			"en" : "Please log in"
+		},
+		"600" : {
+			"ko" : "로그인을 해주세요",
+			"en" : "Please log in"
+		},
+		"601" : {
+			"ko" : "미 입력 값이 존재합니다",
+			"en" : "You have not entered any required parameters"
+		},
+		"602" : {
+			"ko" : "서버 이름 또는 URL이 중복됩니다",
+			"en" : "Server name or URL are duplicated"
+		},
+		"603" : {
+			"ko" : "다시 로그인을 해주세요",
+			"en" : "Please log in again"
+		},
+		"604" : {
+			"ko" : "잘못 입력한 정보가 있습니다",
+			"en" : "You have entered wrong information"
+		},
+		"605" : {
+			"ko" : "해당 서버가 존재하지 않습니다",
+			"en" : "The server does not exist"
+		},
+		"606" : {
+			"ko" : "일부 성공 또는 실패하였습니다.",
+			"en" : "Some have succeed or failed"
+		},
+		"607" : {
+			"ko" : "해당 작업공간, 저장소가 존재하지 않습니다",
+			"en" : "Workspace or datastore does not exist"
+		},
+		"608" : {
+			"ko" : "올바른 파일을 넣어 주세요",
+			"en" : "Please input the correct file"
+		},
+		"609" : {
+			"ko" : "레이어가 중복됩니다",
+			"en" : "Duplicate layers"
+		},
+		"610" : {
+			"ko" : "레이어 발행이 실패하였습니다",
+			"en" : "Publishing layer failed"
+		},
+		"611" : {
+			"ko" : "Geoserver와 연결이 안정적이지 않습니다",
+			"en" : "The connection with geoserver is not stable"
+		},
+		"612" : {
+			"ko" : "작업공간에 레이어가 존재하지 않습니다",
+			"en" : "The is no layer in the workspace"
+		},
 		"uploadgeojson" : {
 			"ko" : "GeoJSON 레이어 업로드",
 			"en" : "Upload GeoJSON Layer"
@@ -43,6 +130,14 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 		"close" : {
 			"ko" : "닫기",
 			"en" : "Close"
+		},
+		"ok" : {
+			"ko" : "확인",
+			"en" : "OK"
+		},
+		"err" : {
+			"ko" : "오류",
+			"en" : "Error"
 		},
 		"upload" : {
 			"ko" : "업로드",
@@ -75,6 +170,22 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 		"ignore" : {
 			"ko" : "중복되는 미발행 레이어 덮어쓰기",
 			"en" : "Overwrite duplicate unpublished layers"
+		},
+		"noserver" : {
+			"ko" : "GeoServer가 설정되지 않았습니다.",
+			"en" : "GeoServer is not set up."
+		},
+		"nowork" : {
+			"ko" : "작업공간이 설정되지 않았습니다.",
+			"en" : "Workspace is not set up."
+		},
+		"nostore" : {
+			"ko" : "데이터저장소가 설정되지 않았습니다.",
+			"en" : "Datastore is not set up."
+		},
+		"nocrs" : {
+			"ko" : "좌표계가 설정되지 않았습니다.",
+			"en" : "Coordinate reference system  is not set up."
 		},
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
@@ -136,55 +247,6 @@ gb.geoserver.UploadGeoJSON.prototype.getEPSGCode = function() {
  */
 gb.geoserver.UploadGeoJSON.prototype.setEPSGCode = function(code) {
 	this.epsg = code;
-};
-
-/**
- * epsg 코드의 유효성을 설정한다.
- * 
- * @method gb.geoserver.UploadGeoJSON#setValidEPSG
- * @param {Boolean}
- *            flag - EPSG 코드 유효성
- */
-gb.geoserver.UploadGeoJSON.prototype.setValidEPSG = function(flag) {
-	this.validEPSG = flag;
-
-	$(this.validIconSpan).empty();
-
-	if (flag) {
-		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
-		$(this.validIconSpan).append(validIcon);
-
-		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
-			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		} else {
-			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
-				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-			}
-			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-valid-icon");
-		}
-	} else {
-		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
-		$(this.validIconSpan).append(validIcon);
-
-		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
-			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		} else {
-			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
-				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
-			}
-			$(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		}
-	}
-};
-
-/**
- * epsg 코드의 유효성을 반환한다.
- * 
- * @method gb.geoserver.UploadGeoJSON#getValidEPSG
- * @return {Boolean} EPSG 코드 유효성
- */
-gb.geoserver.UploadGeoJSON.prototype.getValidEPSG = function() {
-	return this.validEPSG;
 };
 
 /**
@@ -407,41 +469,62 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
-		that.uploadFile(file, uploadModal);
+		var sendObj = {};
+		var server = $(serversel).val();
+		if (server === "noset" || server === "" || server === undefined) {
+			that.messageModal(that.translation.err[that.locale], that.translation.noserver[that.locale]);
+			return;
+		}
+		sendObj["serverName"] = server;
+		var work = $(worksel).val();
+		if (work === "noset" || work === "" || work === undefined) {
+			that.messageModal(that.translation.err[that.locale], that.translation.nowork[that.locale]);
+			return;
+		}
+		sendObj["workspace"] = work;
+		var store = $(storesel).val();
+		if (store === "noset" || store === "" || store === undefined) {
+			that.messageModal(that.translation.err[that.locale], that.translation.nostore[that.locale]);
+			return;
+		}
+		sendObj["datastore"] = store;
+		var epsg = $(epsgVal).text();
+		var epsgid = epsg.substring((epsg.indexOf("EPSG:") + 5));
+		if (epsgid === "" || epsgid === undefined) {
+			that.messageModal(that.translation.err[that.locale], that.translation.nocrs[that.locale]);
+			return;
+		}
+		sendObj["epsg"] = epsgid;
+		var ignore = $(ignoredup).is(":checked");
+		sendObj["ignorePublication"] = !!ignore;
+		var uploadJson = [];
+		for (var i = 0; i < layers.length; i++) {
+			var layer = layers[i];
+			var obj = {};
+			obj["layername"] = layer.get("name");
+			var source = layer.getSource();
+			if (source instanceof ol.source.Vector) {
+				var geojson = new ol.format.GeoJSON();
+				var geoobj = geojson.writeFeaturesObject(source.getFeatures());
+				obj["geojson"] = geoobj;
+			}
+			var attJson = {};
+			var git = layer.get("git");
+			var attributes = git.attribute;
+			if (attributes !== undefined && Array.isArray(attributes)) {
+				for (var j = 0; j < attributes.length; j++) {
+					var attr = attributes[j];
+					attJson[attr.getOriginFieldName()] = attr.getType();
+				}
+				obj["attJson"] = attJson;
+			}
+			uploadJson.push(obj);
+		}
+		sendObj["uploadJson"] = uploadJson;
+		console.log(sendObj);
+		that.sendJSON(sendObj, uploadModal);
 	});
 };
-
-/**
- * 파일 업로드 요청 결과 테이블을 생성한다.
- * 
- * @method gb.geoserver.UploadGeoJSON#resultTable
- * @param {String}
- *            geoserver - 설정할 지오서버의 이름
- */
-gb.geoserver.UploadGeoJSON.prototype.resultTable = function(result) {
-
-}
-
-/**
- * callback 함수를 설정한다.
- * 
- * @method gb.geoserver.UploadGeoJSON#setCallback
- * @param {String}
- *            geoserver - 설정할 지오서버의 이름
- */
-gb.geoserver.UploadGeoJSON.prototype.setCallback = function(callback) {
-	this.callback = callback;
-}
-
-/**
- * callback 함수를 반환한다.
- * 
- * @method gb.geoserver.UploadGeoJSON#getCallback
- * @return {String} 설정한 지오서버의 이름
- */
-gb.geoserver.UploadGeoJSON.prototype.getCallback = function() {
-	return this.callback;
-}
 
 /**
  * 지오서버를 설정한다.
@@ -507,125 +590,113 @@ gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
 }
 
 /**
- * 선택한 파일을 업로드한다.
+ * JSON 객체를 전송한다.
  * 
- * @method gb.geoserver.UploadGeoJSON#uploadFile
- * @param {Element}
+ * @method gb.geoserver.UploadGeoJSON#sendJSON
+ * @param {String}
+ *            server
  */
-gb.geoserver.UploadGeoJSON.prototype.uploadFile = function(input, modal) {
+gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
 	var that = this;
-	var modal = modal;
-
 	var params = {
-		"serverName" : this.getGeoServer(),
-		"workspace" : this.getWorkspace(),
-		"datastore" : this.getDatastore(),
-		"ignorePublication" : this.ignorePublic
-	};
 
-	var url = this.getUploadURL();
-	var withoutParamURL = url.substring(0, url.indexOf("?") !== -1 ? url.indexOf("?") : undefined);
-	var queryString = url.indexOf("?") !== -1 ? url.substring(url.indexOf("?") + 1) : undefined;
-	var queryParams = {};
-
-	/*
-	 * if (queryString) { queryParams = JSON.parse('{"' +
-	 * queryString.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
-	 * function(key, value) { return key === "" ? value :
-	 * decodeURIComponent(value); }); } console.log(queryParams);
-	 */
-	var finalParams = {};
-	$.extend(finalParams, params, {});
-
-	var form = $("<form>");
-	var formData = new FormData(form[0]);
-	formData.append("file", input);
-	var keys = Object.keys(finalParams);
-	for (var i = 0; i < keys.length; i++) {
-		formData.append(keys[i], finalParams[keys[i]]);
 	}
 
+	var toJSON = function(str) {
+		return (str).replace(/(^\?)/, '').split("&").map(function(n) {
+			return n = n.split("="), this[n[0]] = n[1], this
+		}.bind({}))[0];
+	}
+	var url = this.getUploadURL();
+	if (url.indexOf("?") !== -1) {
+		var paramstr = url.substring(url.indexOf("?") + 1);
+		console.log(paramstr);
+		var queryJson = toJSON(paramstr);
+		console.log(queryJson);
+		if (queryJson.hasOwnProperty("_csrf")) {
+
+		}
+	}
+
+	var tranURL = this.getUploadURL();
+	// if (tranURL.indexOf("?") !== -1) {
+	// tranURL += "&";
+	// tranURL += jQuery.param(params);
+	// } else {
+	// tranURL += "?";
+	// tranURL += jQuery.param(params);
+	// }
+	console.log();
 	$.ajax({
-		// url : withoutParamURL,
-		url : this.url,
+		url : tranURL,
 		method : "POST",
-		enctype : 'multipart/form-data',
-		contentType : false,
-		data : formData,
-		processData : false,
+		contentType : "application/json; charset=UTF-8",
+		data : JSON.stringify(obj),
+		dataType : 'json',
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
-			modal.modal.append($("<div id='shp-upload-loading'>").css({
-				"z-index" : "10",
-				"position" : "absolute",
-				"left" : "0",
-				"top" : "0",
-				"width" : "100%",
-				"height" : "100%",
-				"text-align" : "center",
-				"background-color" : "rgba(0, 0, 0, 0.4)"
-			}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-				"position" : "relative",
-				"top" : "50%",
-				"margin-top" : "-5em"
-			})));
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
-			$("#shp-upload-loading").remove();
 		},
 		success : function(data) {
 			console.log(data);
-			that.callback();
-			modal.close();
+			if (data.success === "true") {
+				modal.close();
+			} else {
+				that.errorModal(data.error);
+			}
 		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
 	});
 }
 
 /**
- * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
+ * GeoGig 저장소의 타겟 브랜치를 변경한다.
  * 
- * @method gb.geoserver.UploadGeoJSON#searchEPSGCode
+ * @method gb.geoserver.UploadGeoJSON#switchBranch
  * @param {String}
- *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ *            code - 오류 코드
  */
-gb.geoserver.UploadGeoJSON.prototype.searchEPSGCode = function(code) {
-	console.log(code);
+gb.geoserver.UploadGeoJSON.prototype.errorModal = function(code) {
 	var that = this;
-	fetch('https://epsg.io/?format=json&q=' + code).then(function(response) {
-		return response.json();
-	}).then(function(json) {
-		if (json.number_result !== 1) {
-			that.setValidEPSG(false);
-			console.error("no crs");
-			return;
-		} else if (json.number_result < 1) {
-			that.setValidEPSG(false);
-			console.error("no crs");
-			return;
-		}
-		var results = json['results'];
-		if (results && results.length > 0) {
-			for (var i = 0, ii = results.length; i < ii; i++) {
-				var result = results[i];
-				if (result) {
-					var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
-					if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
-						console.log(code);
-						console.log(codes);
-						if (code === codes) {
-							that.setEPSGCode(code);
-							that.setValidEPSG(true);
-						}
-						return;
-					} else {
-						console.error("no crs");
-						that.setValidEPSG(false);
-						return;
-					}
-				}
-			}
-		}
-		return;
+	that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
+};
+
+/**
+ * 오류 메시지 창을 생성한다.
+ * 
+ * @method gb.geoserver.UploadGeoJSON#messageModal
+ * @param {Object}
+ *            server - 작업 중인 서버 노드
+ * @param {Object}
+ *            repo - 작업 중인 리포지토리 노드
+ * @param {Object}
+ *            branch - 작업 중인 브랜치 노드
+ */
+gb.geoserver.UploadGeoJSON.prototype.messageModal = function(title, msg) {
+	var that = this;
+	var msg1 = $("<div>").append(msg).css({
+		"text-align" : "center",
+		"font-size" : "16px",
+		"margin-top" : "18px",
+		"margin-bottom" : "18px"
+	});
+	var body = $("<div>").append(msg1);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : title,
+		"width" : 390,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(okBtn).click(function() {
+		modal.close();
 	});
 };

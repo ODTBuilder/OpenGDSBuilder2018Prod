@@ -407,7 +407,7 @@ html {
 		});
 
 		var uploadjson = new gb.geoserver.UploadGeoJSON({
-			"url" : undefined,
+			"url" : "geoserver/jsonUpload.ajax?${_csrf.parameterName}=${_csrf.token}",
 			"epsg" : function() {
 				return crs.getEPSGCode();
 			},

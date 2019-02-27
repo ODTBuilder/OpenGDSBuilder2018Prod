@@ -187,6 +187,10 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 			"ko" : "좌표계가 설정되지 않았습니다.",
 			"en" : "Coordinate reference system  is not set up."
 		},
+		"dupname" : {
+			"ko" : "같은 이름의 레이어들을 올릴 수 없습니다.",
+			"en" : "You can not upload layers with the same name."
+		},
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
@@ -429,13 +433,23 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		var ul = $("<ul>").css({
 			"padding-left" : "15px"
 		});
+		var checkObj = {};
+		var duplicateFlag = false;
 		for (var i = 0; i < layers.length; i++) {
-			if (layers[i] instanceof ol.layer.Base) {
-				var li = $("<li>").text(layers[i].get("name"));
-				$(ul).append(li);
+			var name = layers[i].get("name");
+			if (!checkObj.hasOwnProperty(name)) {
+				checkObj[name] = true;
+			} else {
+				duplicateFlag = true;
 			}
+			var li = $("<li>").text(layers[i].get("name"));
+			$(ul).append(li);
 		}
 		$(list).append(ul);
+		if (duplicateFlag) {
+			that.messageModal(that.translation.err[that.locale], that.translation.dupname[that.locale]);
+			return;
+		}
 	}
 	var right = $("<div>").css({
 		"width" : "238px",
@@ -626,7 +640,6 @@ gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
 	// tranURL += "?";
 	// tranURL += jQuery.param(params);
 	// }
-	console.log();
 	$.ajax({
 		url : tranURL,
 		method : "POST",

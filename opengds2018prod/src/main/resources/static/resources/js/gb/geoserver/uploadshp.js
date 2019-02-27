@@ -26,12 +26,13 @@ gb.geoserver.UploadSHP = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.url = typeof options.url === "string" ? options.url : undefined;
-	this.geoserver;
-	this.workspace;
-	this.datastore;
-	this.callback;
+	this.geoserver = undefined;
+	this.workspace = undefined;
+	this.datastore = undefined;
+	this.callback = undefined;
 	this.validEPSG = false;
 	this.epsg = undefined;
+	this.bodyArea = undefined;
 	this.locale = options.locale ? options.locale : "en";
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
 
@@ -62,6 +63,46 @@ gb.geoserver.UploadSHP = function(obj) {
 		"alert" : {
 			"ko" : "대용량 파일(100MB 이상)은 Geoserver에 직접 업로드하는 것을 권장합니다.",
 			"en" : "Recommend uploading large file(100MB or more) directly to Geoserver."
+		},
+		"ignorePublic" : {
+			"ko" : "미발행 레이어 이름 중복 무시하기",
+			"en" : "Ignore duplicate name of unpulished layer"
+		},
+		"200" : {
+			"ko" : "정상처리",
+			"en" : "Success Request"
+		},
+		"500" : {
+			"ko" : "서버 내부오류",
+			"en" : "Internal Server Error"
+		},
+		"600" : {
+			"ko" : "로그인을 해주세요",
+			"en" : "Please log in"
+		},
+		"603" : {
+			"ko" : "다시 로그인을 해주세요",
+			"en" : "Please log in again"
+		},
+		"604" : {
+			"ko" : "잘못 입력한 정보가 있습니다",
+			"en" : "You have entered wrong information"
+		},
+		"607" : {
+			"ko" : "해당 작업공간, 저장소가 존재하지 않습니다",
+			"en" : "Workspace or datastore does not exist"
+		},
+		"608" : {
+			"ko" : "올바른 파일을 넣어 주세요",
+			"en" : "Please input the correct file"
+		},
+		"609" : {
+			"ko" : "레이어가 중복됩니다",
+			"en" : "Duplicate layers"
+		},
+		"613" : {
+			"ko" : "미발행 레이어와 중복됩니다.",
+			"en" : "Duplicate Unpulished layer"
 		}
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
@@ -224,7 +265,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 				that.ignorePublic = this.checked;
 			});
 	
-	var checkboxLabel = $("<label>").text("미발행 레이어 이름 중복 무시하기");
+	var checkboxLabel = $("<label>").text(this.translation.ignorePublic[this.locale]);
 	var checkboxDiv = $("<div>").append(checkboxInput).append(checkboxLabel);
 	
 	var fileInfo = $("<div role='alert'>").css({
@@ -237,7 +278,14 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	}).html(this.translation.alert[this.locale]);
 	var message3 = $("<div>").addClass("gb-alert-message").append(icon).append(messageContent);
 
-	var bodyArea = $("<div>").append(message2).append(message3).append(fileArea).append(checkboxDiv).append(fileInfo);
+	var bodyArea = this.bodyArea = 
+		$("<div>")
+			.append(message2)
+			.append(message3)
+			.append(fileArea)
+			.append(checkboxDiv)
+			.append(fileInfo)
+			.css({"max-height": "400px", "overflow": "auto"});
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -250,8 +298,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 	var modalFooter = $("<div>").append(buttonArea);
 	var uploadModal = new gb.modal.Base({
 		"title" : this.translation.uploadshp[this.locale],
-		"width" : 355,
-		"height" : 286,
+		"width" : 450,
 		"autoOpen" : true,
 		"body" : bodyArea,
 		"footer" : modalFooter
@@ -272,7 +319,48 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
  *            geoserver - 설정할 지오서버의 이름
  */
 gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
+	if(!(result instanceof Array)){
+		return null;
+	}
 	
+	var list = result;
+	var th, tr, key, value, detail, keys;
+	var thead = $("<thead>");
+	var tbody = $("<tbody>");
+	var table = $("<table>").css("width", "100%").append(thead).append(tbody);
+	
+	tr = $("<tr>").css(gb.edit.TRSTYLE);
+	th = $("<th>");
+	tr.append(th);
+	th = $("<th>").css(gb.edit.THSTYLE).text("성공여부");
+	tr.append(th);
+	th = $("<th>").css(gb.edit.THSTYLE).text("비고");
+	tr.append(th);
+	thead.append(tr);
+	
+	for(let i = 0; i < list.length; i++){
+		if(list[i] instanceof Object){
+			keys = Object.keys(list[i]);
+			for(let j = 0; j < keys.length; j++){
+				key = $("<td>").css(gb.edit.TDKEYSTYLE).text(keys[j]);
+				value = $("<td>").css(gb.edit.TDSTYLE).css("text-align", "center");
+				if(list[i][keys[j]] == "200"){
+					value.append($("<i>").addClass("fas fa-check").css("color", "#2c662d"));
+					value.css("background", "#fcfff5");
+				} else {
+					value.append($("<i>").addClass("fas fa-times").css("color", "#9f3a38"));
+					value.css("background", "#fff6f6");
+				}
+				detail = $("<td>").css(gb.edit.TDSTYLE).text(this.translation[list[i][keys[j]]][this.locale]);
+				
+				tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value).append(detail);
+				tbody.append(tr);
+			}
+		}
+	}
+	
+	this.bodyArea.find("table").remove();
+	this.bodyArea.append(table);
 }
 
 /**
@@ -429,8 +517,10 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 		},
 		success : function(data) {
 			console.log(data);
-			that.callback();
 			modal.close();
+			that.open();
+			that.resultTable(data.layers);
+			that.callback();
 		}
 	});
 }

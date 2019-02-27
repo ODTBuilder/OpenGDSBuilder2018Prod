@@ -32,10 +32,10 @@ gb.panel.Base = function(obj) {
 	this.y = options.positionY ? options.positionY : 0;
 	this.autoOpen = options.autoOpen ? true : false;
 	var span = $("<span>").html("&times;");
-	var btn = $("<button>").append(span).click(function() {
+	this.closeBtn = $("<button>").append(span).click(function() {
 		that.close();
 	});
-	this.panelHead = $("<div>").addClass("gb-panel-head").append(btn);
+	this.panelHead = $("<div>").addClass("gb-panel-head").append(this.closeBtn);
 	var body = typeof options.body === "function" ? options.body() : options.body;
 	this.panelBody = $("<div>").addClass("gb-panel-body");
 	if (body) {

@@ -37,7 +37,7 @@ gb.header.EditingTool = function(obj) {
 	this.isEditing = options.isEditing instanceof Object ? options.isEditing : undefined;
 	this.vectorSourcesOfServer_ = {};
 	this.vectorSourcesOfVector_ = {};
-	this.customVector_ = {};
+//	this.customVector_ = {};
 	this.copyPaste_ = undefined;
 	this.wfsURL = options.wfsURL;
 	this.otree.setEditingTool(this);
@@ -358,7 +358,8 @@ gb.header.EditingTool = function(obj) {
 		});
 	});
 
-	var preventReload = false;
+	var preventReload = true;
+	var firstLoad = true;
 	this.map.on('moveend', function(evt){
 		that.loadSnappingLayer(this.getView().calculateExtent(this.getSize()));
 
@@ -368,6 +369,14 @@ gb.header.EditingTool = function(obj) {
 		var zoom = view.getZoom();
 
 		if(that.getActiveTool()){
+			if(zoom > gb.header.ZOOMLEVEL && firstLoad){
+				preventReload = false;
+				firstLoad = false;
+			} else if(zoom <= gb.header.ZOOMLEVEL && firstLoad){
+				preventReload = true;
+				firstLoad = false;
+			}
+			
 			if(zoom > gb.header.ZOOMLEVEL && !preventReload){
 				that.loadWFS_();
 				that.loadVector_();
@@ -375,7 +384,7 @@ gb.header.EditingTool = function(obj) {
 				preventReload = true;
 			} else if(zoom <= gb.header.ZOOMLEVEL && preventReload) {
 				that.setVisibleWFS(false);
-				that.setVisibleImageVector(false);
+				that.setVisibleVectorVector(false);
 				that.displayEditZoomHint(true);
 				preventReload = false;
 			}
@@ -403,10 +412,17 @@ gb.header.EditingTool = function(obj) {
 			source.clear();
 			delete that.vectorSourcesOfServer_[id];
 		}
-		if(that.customVector_[id]){
-			that.customVector_[id].get("git").tempLayer.setVisible(false);
-			delete that.customVector_[id];
+		
+		source = that.getVectorSourceOfVector(id);
+		if(!!source){
+			source.get("git").tempLayer.setMap(null);
+			source.clear();
+			delete that.vectorSourcesOfVector_[id];
 		}
+//		if(that.customVector_[id]){
+//			that.customVector_[id].get("git").tempLayer.setVisible(false);
+//			delete that.customVector_[id];
+//		}
 		that.refreshTileLayer();
 	});
 
@@ -1664,10 +1680,12 @@ gb.header.EditingTool.prototype.updateSelected = function() {
 	// 현재 편집중인 레이어의 zindex를 최상위로
 	this.moveUpEditingLayer_();
 	
+	// 선택한 노드가 그룹레이어 또는 이미지 레이어일 때 작업 중단
 	if(layer instanceof ol.layer.Group || layer instanceof ol.layer.Image){
 		return this.selectedSource || source;
 	}
 	
+	// 선택한 노드가 묶음 타일 레이어일 때 작업 중단
 	if(layer instanceof ol.layer.Tile){
 		if(layer.get("git").fake === "parent"){
 			return this.electedSource || source;
@@ -1694,25 +1712,28 @@ gb.header.EditingTool.prototype.updateSelected = function() {
 	
 	if(this.getVectorSourceOfServer(treeId)){
 		source = this.getVectorSourceOfServer(treeId);
+	} else if(this.getVectorSourceOfVector(treeId)){
+		source = this.getVectorSourceOfVector(treeId);
 	} else {
-		if(layer instanceof ol.layer.Vector){
-			source = layer.getSource();
-			if(!layer.get("id")){
-				layer.set("id", layer.get("treeid"));
-			}
-			if(typeof source.get("git") !== "object"){
-				source.set("git", {
-					layerID: layer.get("id"),
-					treeID: layer.get("treeid"),
-					tempLayer: layer,
-					editable: layer.get("git").editable,
-					geometry: layer.get("git").geometry
-				});
-			}
-			if(!this.customVector_[layer.get("treeid")]){
-				this.customVector_[layer.get("treeid")] = source;
-			}
-		}
+//		if(layer instanceof ol.layer.Vector){
+//			source = layer.getSource();
+//			if(!layer.get("id")){
+//				layer.set("id", layer.get("treeid"));
+//			}
+//			if(typeof source.get("git") !== "object"){
+//				source.set("git", {
+//					layerID: layer.get("id"),
+//					treeID: layer.get("treeid"),
+//					tempLayer: layer,
+//					editable: layer.get("git").editable,
+//					geometry: layer.get("git").geometry
+//				});
+//			}
+//			
+//			if(!this.customVector_[layer.get("treeid")]){
+//				this.customVector_[layer.get("treeid")] = source;
+//			}
+//		}
 	}
 	
 	this.selectedSource = source;
@@ -2532,12 +2553,15 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 // yijun
 gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection, dish){
 	var that = this;
+	var source = undefined;
+	var temp = undefined;
 	collection.forEach(function(layer){
 		if (layer instanceof ol.layer.Vector) {
-			if (layer.get("renderMode").toLowerCase() !== "image") {
-				console.log(layer);
-				if (Array.isArray(dish)) {
-					dish.push(layer);
+			if (layer.get("renderMode").toLowerCase() === "image") {
+				source = layer.getSource();
+				temp = source.get("git") instanceof Object ? source.get("git").tempLayer : undefined;
+				if (Array.isArray(dish) && temp instanceof ol.layer.Vector) {
+					dish.push(temp);
 				} else {
 					console.error(this.translation.returnMustArray[this.locale]);
 				}
@@ -2617,10 +2641,10 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 			}
 		}
 	}
-
-	for(var i in this.customVector_){
-		this.customVector_[i].get("git").tempLayer.setVisible(true);
-	}
+	
+//	for(var i in this.customVector_){
+//		this.customVector_[i].get("git").tempLayer.setVisible(true);
+//	}
 }
 
 // yijun
@@ -2692,10 +2716,10 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 			}
 		}
 	}
-
-	for(var i in this.customVector_){
-		this.customVector_[i].get("git").tempLayer.setVisible(true);
-	}
+	
+//	for(var i in this.customVector_){
+//		this.customVector_[i].get("git").tempLayer.setVisible(true);
+//	}
 }
 
 // hochul
@@ -2729,9 +2753,9 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 		}
 	}
 
-	for(var i in this.customVector_){
-		this.customVector_[i].get("git").tempLayer.setVisible(set);
-	}
+//	for(var i in this.customVector_){
+//		this.customVector_[i].get("git").tempLayer.setVisible(set);
+//	}
 }
 
 // hochul
@@ -2816,15 +2840,26 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 gb.header.EditingTool.prototype.setVisibleVectorVector = function(bool){
 	var rootLayers = this.map.getLayers();
 	var dish = [];
+	var source = undefined;
 	var vecLayers = this.getVectorVectorLayersInMap(rootLayers, dish);
 	var tree = this.otree.getJSTree();
+	var set;
+	if(bool){
+		set = this.map;
+	} else {
+		set = null;
+	}
 	
 	for(var i = 0; i < vecLayers.length; i++){
-		if(!!tree.get_node(vecLayers[i].get("treeid"))){
-			if(!tree.get_node(vecLayers[i].get("treeid")).state.hiding){
-				vecLayers[i].setVisible(bool);
+		source = vecLayers[i].getSource();
+		if(!source){
+			continue;
+		}
+		if(!!tree.get_node(source.get("git").treeID)){
+			if(!tree.get_node(source.get("git").treeID).state.hiding){
+				vecLayers[i].setMap(set);
 			} else {
-				vecLayers[i].setVisible(false);
+				vecLayers[i].setMap(set);
 			}
 		}
 	}
@@ -3117,6 +3152,8 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 	
 	this.selectSources.clear();
 	this.selectedSource = undefined;
+	this.vectorSourcesOfServer_ = {};
+	this.vectorSourcesOfVector_ = {};
 }
 
 // hochul
@@ -3151,7 +3188,10 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 			var span = $("<span class='label'>").append(icon).append(this.translation.editToolHint[this.locale]);
 			
 			var btn = $("<button class='zoom-in'>").css({
+				"position": "absolute",
 				"margin": "auto",
+				"left": "0",
+				"right": "0",
 				"width": "300px",
 				"height": "70px",
 				"font-size": "150%",

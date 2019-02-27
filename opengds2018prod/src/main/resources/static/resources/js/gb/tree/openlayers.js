@@ -235,6 +235,12 @@ gb.tree.OpenLayers = function(obj) {
 	this.addBtn = $("<button>").addClass("gb-button-clear").append(addIcon).css({
 		"float" : "right"
 	}).click(function() {
+		if (gb.module.isEditing) {
+			if (gb.module.isEditing.get()) {
+				gb.module.isEditing.alert();
+				return
+			}
+		}
 		that.openAddLayer();
 	});
 	var createGroupIcon = $("<i>").addClass("fas").addClass("fa-folder-open");
@@ -260,6 +266,12 @@ gb.tree.OpenLayers = function(obj) {
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
 	}).click(function() {
+		if (gb.module.isEditing) {
+			if (gb.module.isEditing.get()) {
+				gb.module.isEditing.alert();
+				return
+			}
+		}
 		that.refreshList();
 	});
 	var searchIcon = $("<i>").addClass("fas").addClass("fa-search");
@@ -767,6 +779,15 @@ gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
 };
 
 /**
+ * EditingTool 객체를 반환한다.
+ * 
+ * @method gb.tree.OpenLayers#getEditingTool
+ */
+gb.tree.OpenLayers.prototype.getEditingTool = function() {
+	return this.jstree._data.layerproperties.editingTool;
+};
+
+/**
  * Tree에 Group Node를 생성한다.
  * 
  * @method gb.tree.OpenLayers#createGroupNode
@@ -954,6 +975,9 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			that.map.addLayer(vectorLayer);
 			that.refreshList();
 			addGeoServerModal.close();
+			if(gb.module.isEditing.get()){
+				that.getEditingTool().loadVector_();
+			}
 		}
 	);
 };

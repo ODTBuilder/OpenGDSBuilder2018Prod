@@ -139,3 +139,4 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/attributeinfo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/imageLayer.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/label.js"></script>

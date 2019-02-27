@@ -11,8 +11,17 @@ if (!gb)
 if (!gb.edit)
 	gb.edit = {};
 
+gb.edit.THSTYLE = {
+	"padding" : ".78571429em .78571429em",
+	"background" : "rgba(0,0,0,.03)",
+	"font-weight" : "700",
+	"border-left": "1px solid rgba(34,36,38,.1)",
+	"text-align": "center"
+}
+
 gb.edit.TDSTYLE = {
-	"padding" : ".78571429em .78571429em"
+	"padding" : ".78571429em .78571429em",
+	"border-left": "1px solid rgba(34,36,38,.1)"
 }
 
 gb.edit.TDKEYSTYLE = {

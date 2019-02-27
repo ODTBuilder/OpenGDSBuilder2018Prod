@@ -31,7 +31,7 @@ gb.tree.OpenLayers = function(obj) {
 	this.editingTool = options.editingTool || undefined;
 	this.token = options.token || "";
 	this.locale = options.locale || "en";
-
+	this.uploadjson = options.uploadJSON !== undefined ? options.uploadJSON : undefined;
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
 
@@ -224,7 +224,11 @@ gb.tree.OpenLayers = function(obj) {
 			"duplicateKeyHint" : {
 				"ko" : "이 값은 중복되었습니다.",
 				"en" : "This value is a duplicate."
-			}
+			},
+			"upload" : {
+				"ko" : "서버에 업로드",
+				"en" : "Upload to Server"
+			},
 	}
 	this.getLegend = url.getLegend ? url.getLegend : undefined;
 	this.panelTitle = $("<p>").text("Now editing").css({
@@ -548,6 +552,62 @@ gb.tree.OpenLayers = function(obj) {
 							};
 						}
 						
+						if(o.type === "Point" || o.type === "MultiPoint" || o.type === "LineString" || o.type === "MultiLineString" || o.type === "Polygon" || o.type === "MultiPolygon"){
+							var inst = that.getJSTree();
+							var layers = inst.get_selected();
+							var flag = true;
+							var nodes = [];
+							var layerObjs = [];
+							for (var i = 0; i < layers.length; i++) {
+								var node = inst.get_node(layers[i]);
+								var layer = inst.get_LayerById(layers[i]);
+								var git = layer.get("git");
+								
+								if (node !== undefined) {
+									if (node.type === "Point" || node.type === "MultiPoint" || node.type === "LineString" || node.type === "MultiLineString" || node.type === "Polygon" || node.type === "MultiPolygon") {
+										if (git.geoserver !== undefined && git.workspace !== undefined) {
+											flag = false;	
+										} else {
+											nodes.push(node);	
+											layerObjs.push(layer);
+										}
+									} else {
+										flag = false;
+									}
+								}
+							}
+							if (flag) {
+								totalObj["upload"] = {
+										"separator_before" : false,
+										"icon" : "fas fa-upload",
+										"separator_after" : false,
+										"_disabled" : false, // (this.check("delete_node",
+										// data.reference,
+										// this.get_parent(data.reference),
+										// "")),
+										"label" : that.translation["upload"][that.locale],
+										"action" : function(data) {
+											var inst = $.jstreeol3
+											.reference(data.reference), obj = inst
+											.get_node(data.reference);
+											var layers = inst.get_selected();
+											var map = inst._data.core.map;
+											var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
+
+											if(isEdit instanceof Object){
+												if(isEdit.get()){
+													isEdit.alert();
+													return
+												}
+											}
+											console.log(nodes);
+											var epsg = inst._data.core.map.getView().getProjection().getCode();
+											that.getUploadJSON().open(epsg, layerObjs);
+										}
+								}
+							}
+						}
+
 						if(o.type !== "Group" && o.type !== "Raster" && o.type !== "FakeGroup"){
 							if(this.get_node(o.parent) instanceof Object){
 								if(this.get_node(o.parent).type !== "FakeGroup"){
@@ -838,6 +898,24 @@ gb.tree.OpenLayers.prototype.closeSearchBar = function() {
 	$(this.searchArea).css({
 		"display" : "none"
 	});
+};
+
+/**
+ * uploadjson 객체를 반환한다.
+ * 
+ * @method gb.tree.OpenLayers#getUploadJSON
+ */
+gb.tree.OpenLayers.prototype.getUploadJSON = function() {
+	return this.uploadjson;
+};
+
+/**
+ * uploadjson 객체를 설정한다.
+ * 
+ * @method gb.tree.OpenLayers#setUploadJSON
+ */
+gb.tree.OpenLayers.prototype.setUploadJSON = function(obj) {
+	this.uploadjson = obj;
 };
 
 /**

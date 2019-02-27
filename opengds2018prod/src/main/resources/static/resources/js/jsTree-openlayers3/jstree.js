@@ -2345,7 +2345,7 @@
 								}
 							}
 						}
-//						result.push(obj);
+// result.push(obj);
 					} else if (layer instanceof ol.layer.Image) {
 						if (layer.get("git")) {
 							var git = layer.get("git");
@@ -7875,26 +7875,48 @@
 														ext, extent);
 										});
 					} else if(layer instanceof ol.layer.Base) {
-							 if (layer.getSource() instanceof ol.source.TileWMS) {
-									var param = layer.getSource()
-											.getParams();
-									var keys = Object.keys(param);
-									var bbx = "bbox";
-									for (var i = 0; i < keys.length; i++) {
-										if (keys[i].toLowerCase() === bbx
-												.toLowerCase()) {
-											var bbox = param[keys[i]]
-													.split(",");
-											ol.extent.extend(
-													ext, bbox);
-											break;
+						if (layer.getSource() instanceof ol.source.TileWMS) {
+							var psource = layer.getSource();
+							var git = layer.get("git");
+							var fake = git.fake;
+							if (fake === "parent") {
+								var layers = git.layers;
+								if (layers instanceof ol.Collection) {
+									var pext;
+									for (var i = 0; i < layers.getLength(); i++) {
+										if (layers.item(i) instanceof ol.layer.Tile) {
+											var csource = layers.item(i).getSource();
+											var bbox = csource.getParams()["BBOX"];
+											if (pext === undefined) {
+												pext = csource.getParams()["BBOX"];	
+											}
+											var arrext = bbox.split(",");
+											var arrpext = pext.split(",");
+											var newext = ol.extent.extend(arrpext, arrext);
+											psource.getParams()["BBOX"] = newext.toString();
 										}
 									}
-								} else if (layer.getSource() instanceof ol.source.Vector) {
-									ol.extent.extend(ext, layer
-											.getSource()
-											.getExtent());
 								}
+							}
+							var param = layer.getSource()
+							.getParams();
+							var keys = Object.keys(param);
+							var bbx = "bbox";
+							for (var i = 0; i < keys.length; i++) {
+								if (keys[i].toLowerCase() === bbx
+										.toLowerCase()) {
+									var bbox = param[keys[i]]
+									.split(",");
+									ol.extent.extend(
+											ext, bbox);
+									break;
+								}
+							}
+						} else if (layer.getSource() instanceof ol.source.Vector) {
+							ol.extent.extend(ext, layer
+									.getSource()
+									.getExtent());
+						}
 					}
 					return ext;
 				},

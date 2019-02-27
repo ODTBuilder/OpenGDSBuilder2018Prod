@@ -662,6 +662,10 @@ gb.versioning.Repository = function(obj) {
 			"ko" : "충돌 객체 비교",
 			"en" : "Compare Conflicts"
 		},
+		"comparebeaf" : {
+			"ko" : "변경 전후 객체 비교",
+			"en" : "Compare Features"
+		},
 		"workspace" : {
 			"ko" : "워크스페이스",
 			"en" : "Workspace"
@@ -805,6 +809,26 @@ gb.versioning.Repository = function(obj) {
 		"readmore" : {
 			"ko" : "더 보기",
 			"en" : "Read more"
+		},
+		"added" : {
+			"ko" : "추가됨",
+			"en" : "Added"
+		},
+		"modified" : {
+			"ko" : "수정됨",
+			"en" : "Modified"
+		},
+		"removed" : {
+			"ko" : "삭제됨",
+			"en" : "Removed"
+		},
+		"revertmsg1" : {
+			"ko" : "해당 커밋 시점으로 레이어를 되돌립니다.",
+			"en" : "Revert the layer to the point of time when it was committed."
+		},
+		"revertmsg2" : {
+			"ko" : "진행하시겠습니까?",
+			"en" : 'Do you want to proceed?'
 		},
 	};
 	var options = obj ? obj : {};
@@ -3088,8 +3112,8 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 					"background-color" : "#fff"
 				});
 			}
-			var title = this.translation.err[this.locale];
-			var msg = this.translation.emptyfield[this.locale];
+			var title = that.translation.err[that.locale];
+			var msg = that.translation.emptyfield[that.locale];
 			that.messageModal(title, msg);
 		} else {
 			$(rNameInput).css({
@@ -3323,7 +3347,7 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 
 	var modal = new gb.modal.Base({
 		"title" : title,
-		"width" : 310,
+		"width" : 390,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -3878,7 +3902,8 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 					url = "http://" + url;
 				}
 			}
-			that.addRemoteRepository(server.text, repo.text, name, url, modal);
+			$(this).prop("disabled", true);
+			that.addRemoteRepository(server.text, repo.text, name, url, modal, $(this)[0]);
 		}
 	});
 };
@@ -3894,7 +3919,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
  * @param {Object}
  *            branch - 작업 중인 브랜치 노드
  */
-gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, remote, url, modal) {
+gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, remote, url, modal, callbackBtn) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -3924,6 +3949,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			$(callbackBtn).prop("disabled", false);
 		},
 		success : function(data) {
 			console.log(data);
@@ -5694,11 +5720,7 @@ gb.versioning.Repository.prototype.changeNodeOnLoadingList = function(idx, nodeI
  */
 gb.versioning.Repository.prototype.errorModal = function(code) {
 	var that = this;
-	if (parseInt(code) === 850) {
-		that.messageModal(that.translation.err[that.locale], that.translation[code + "err"][that.locale]);
-	} else {
-		that.messageModal(that.translation.err[that.locale], that.translation[code + "err"][that.locale]);
-	}
+	that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
 };
 
 /**
@@ -5715,32 +5737,28 @@ gb.versioning.Repository.prototype.errorModal = function(code) {
 gb.versioning.Repository.prototype.layerHistoryModal = function() {
 	var that = this;
 
-	var user = $("<div>").css({
-		"display" : "table-cell",
+	var user = $("<td>").css({
 		"width" : "15%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.user[that.locale]);
-	var day = $("<div>").css({
-		"display" : "table-cell",
+	var day = $("<td>").css({
 		"width" : "20%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.date[that.locale]);
-	var cmsg = $("<div>").css({
-		"display" : "table-cell",
+	var cmsg = $("<td>").css({
 		"width" : "35%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
 	}).text(that.translation.commitmsg[that.locale]);
-	var detail = $("<div>").css({
-		"display" : "table-cell",
+	var detail = $("<td>").css({
 		"width" : "10%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
@@ -5748,8 +5766,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
 		"text-align" : "center"
 	}).text(that.translation.detail[that.locale]);
-	var revert = $("<div>").css({
-		"display" : "table-cell",
+	var revert = $("<td>").css({
 		"width" : "10%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
@@ -5758,69 +5775,113 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 		"text-align" : "center"
 	}).text(that.translation.revert[that.locale]);
 
-	var row = $("<div>").addClass("tr gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
-	var rowgroup1 = $("<div>").addClass("thead gb-versioning-feature-trg").append(row);
-	var rowgroup2 = $("<div>").addClass("gb-versioning-feature-trg");
-	var tb = $("<div>").css({
-		"display" : "table",
+// var row = $("<div>").addClass("tr
+// gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
+	var row = $("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert);
+	var rowgroup1 = $("<thead>").append(row);
+	var rowgroup2 = $("<tbody>");
+	var tb = $("<table>").css({
 		"width" : "100%"
 	}).append(rowgroup1).append(rowgroup2);
 
 	for (var i = 0; i < 10; i++) {
-		var user = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "10%",
+		var user = $("<td>").css({
+			"width" : "15%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("admin");
-		var day = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "20%",
+		var day = $("<td>").css({
+			 "width" : "20%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("2019-02-19 12:10:01");
-		var cmsg = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "30%",
+		var cmsg = $("<td>").css({
+			 "width" : "35%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 		}).text("feature23 수정");
 		var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 		var detailBtn = $("<button>").addClass("gb-button-clear").append(detailIcon).click(function(){
-			alert("detail");
+			console.log($(this).parents().eq(1));
+			var nowrow = $(this).parents().eq(1);
+			var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
+			$(".gb-repository-history-detail-row").remove();
+			if (!flag) {
+				var ul = $("<ul>").css({
+					"padding-left"	: "22px"
+				});
+				var div = $("<div>").css({
+					"padding" : "5px 11px"
+				}).append(ul);
+				
+				for (var i = 0; i < 3; i++) {
+					var type = $("<span>").css({
+	// "float" : "left",
+						"margin" : "5px"
+					}).text(that.translation.modified[that.locale]);
+					var fid = $("<span>").css({
+	// "float" : "left",
+						"margin" : "5px"
+					}).text("abcdef23");
+					var icon = $("<i>").addClass("fas").addClass("fa-search");
+					var deBtn = $("<button>").css({
+	// "float" : "right",
+						"margin" : "5px"
+					}).append(icon).addClass("gb-button-clear").click(function(){
+						that.beforeAfterDetailModal();
+					});
+					var de1 = $("<div>").css({
+	// "height": "32px",
+	// "width": "180px",
+	// "float" : "right"
+					}).append(type).append(fid).append(deBtn);
+					var li = $("<li>").append(de1);
+					$(ul).append(li);
+				}
+				
+				var td1 = $("<td>").attr({
+					"colspan" : "2"
+				});
+				var td2 = $("<td>").append(div);
+				var td3 = $("<td>").attr({
+					"colspan" : "2"
+				});
+				var tr1 = $("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
+				
+				$(this).parents().eq(1).after(tr1);
+			}
+			
 		});
-		var detail = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "15%",
+		var detail = $("<td>").css({
+			 "width" : "10%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 			"text-align" : "center"
 		}).append(detailBtn);
 
 		var revertIcon = $("<i>").addClass("fas").addClass("fa-undo");
 		var revertBtn = $("<button>").addClass("gb-button-clear").append(revertIcon).click(function(){
-			alert("revert");
+			that.openRevertModal();
 		});
-		var revert = $("<div>").css({
-			"display" : "table-cell",
-			// "width" : "15%",
+		var revert = $("<td>").css({
+			 "width" : "10%",
 			"word-break" : " break-word",
 			"vertical-align" : "middle",
 			"padding" : "0.785714em",
-			"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+			"border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 			"text-align" : "center"
 		}).append(revertBtn);
 
-		var row = $("<div>").addClass("tr gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
-		$(rowgroup2).append(row);
+		var row1 = $("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert);
+		$(rowgroup2).append(row1);
 	}
 	
 	var readIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
@@ -5830,7 +5891,8 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 	var td3 = $("<div>").css({
 		"width" : "100%",
 	    "text-align": "center",
-	    "padding-top": "5px"
+	    "padding-top": "5px",
+	    "border-top" : "1px solid rgba(0, 0, 0, 0.1)",
 	}).append(readBtn);
 	var row3 = $("<div>").addClass("tr gb-versioning-feature-tr").append(td3);
 	var rowgroup3 = $("<div>").addClass("gb-versioning-feature-trg").append(row3);
@@ -5899,5 +5961,618 @@ gb.versioning.Repository.prototype.layerHistoryModal = function() {
 	});
 	$(closeBtn).click(function() {
 		modal.close();
+	});
+};
+
+/**
+ * 변경 피처 비교 창을 생성한다.
+ * 
+ * @method gb.versioning.Repository#beforeAfterDetailModal
+ * @param {String}
+ *            server - 작업 중인 서버
+ * @param {String}
+ *            repo - 작업 중인 리포지토리
+ * @param {String}
+ *            cub - 체크아웃 중인 브랜치
+ * @param {String}
+ *            tab - 대상 브랜치
+ * @param {Object[]}
+ *            features - 오버라이드할 객체 정보
+ * @param {gb.modal.Base}
+ *            cmodal - 완료후 닫을 모달 객체
+ */
+gb.versioning.Repository.prototype.beforeAfterDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
+	var that = this;
+
+	var crepo = $("<div>").append(crepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var cbranch = $("<div>").append(cub).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
+	// var cfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
+	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
+	var cattrthead = $("<thead>").append(cheadth);
+	var cattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
+	var cattribute = $("<div>").append(cattrtable).css({
+		"height" : "370px",
+		"width" : "100%",
+		"overflow" : "hidden"
+	});
+	var carea = $("<div>").append(crepo).append(cbranch).append(this.cfeature).append(cattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	// this.conflictView = new ol.View({
+	// "center" : [ 0, 0 ],
+	// "zoom" : 1
+	// });
+	// this.cmap = new ol.Map({
+	// "target" : $(cfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
+
+	var trepo = $("<div>").append(trepos).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+	var tbranch = $("<div>").append(tab).addClass("gb-form").css({
+		"margin-top" : "8px",
+		"margin-bottom" : "8px",
+		"text-align" : "center"
+	});
+	// var tfeature = $("<div>").css({
+	// "width" : "100%",
+	// "height" : "200px",
+	// "background-color" : "#dbdbdb"
+	// });
+	var theadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var theadtd2 = $("<th>").text(that.translation.value[that.locale]);
+	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
+	var tattrthead = $("<thead>").append(theadth);
+	var tattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
+	var tattribute = $("<div>").append(tattrtable).css({
+		"height" : "370px",
+		"width" : "100%",
+		"overflow" : "hidden"
+	});
+
+	$(cattrtbody).on("scroll", function() {
+		$(tattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	});
+
+	// $(tattribute).on("scroll", function() {
+	// $(cattribute).prop("scrollTop", this.scrollTop).prop("scrollLeft",
+	// this.scrollLeft);
+	// });
+
+	var tarea = $("<div>").append(trepo).append(tbranch).append(this.tfeature).append(tattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+	// this.tmap = new ol.Map({
+	// "target" : $(tfeature)[0],
+	// "view" : this.conflictView,
+	// "layers" : []
+	// });
+
+	var ctarea = $("<div>").css({
+		"height" : "653px"
+	}).append(carea).append(tarea);
+
+// var cubOpt = $("<option>").text(crepos + " - " + cub).attr({
+// "value" : "ours"
+// });
+// var tabOpt = $("<option>").text(trepos + " - " + tab).attr({
+// "value" : "theirs"
+// });
+// var branchSelect =
+// $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
+// $(branchSelect).val(val);
+// var sarea = $("<div>").append(branchSelect).css({
+// "padding" : "10px"
+// });
+
+	var body = $("<div>").append(ctarea);
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : that.translation.comparebeaf[that.locale],
+		"width" : 770,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+// $(okBtn).click(function() {
+// console.log(idx);
+// $(branchSelect).val();
+// console.log($(branchSelect).val());
+// var select =
+// $(that.conflictFeatureTbody).find("tr").eq(idx).find(".gb-repository-instead-branch");
+// $(select).filter("option:selected").text();
+// console.log($(select).find("option").filter(":selected").val());
+// $(select).val($(branchSelect).val());
+// $(select).trigger("change");
+// modal.close();
+// });
+
+	var cparams1 = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"commitId" : this.getCommitId().ours,
+		"featureId" : fid1
+	}
+
+	var cparams2 = {
+		"serverName" : server,
+		"repoName" : crepos,
+		"path" : path,
+		"commitId" : this.getCommitId().theirs,
+		"featureId" : fid2
+	}
+
+	var wkt1;
+	var wkt2;
+	if (fid1 !== "0000000000000000000000000000000000000000") {
+		var fobjectURL1 = this.getCatConflictFeatureObjectURL();
+		if (fobjectURL1.indexOf("?") !== -1) {
+			fobjectURL1 += "&";
+			fobjectURL1 += jQuery.param(cparams1);
+		} else {
+			fobjectURL1 += "?";
+			fobjectURL1 += jQuery.param(cparams1);
+		}
+
+		$.ajax(
+				{
+					url : fobjectURL1,
+					method : "POST",
+					contentType : "application/json; charset=UTF-8",
+					// data : cparams1,
+					// dataType : 'jsonp',
+					// jsonpCallback : 'getJson',
+					beforeSend : function() {
+						// $("body").css("cursor", "wait");
+					},
+					complete : function() {
+						// $("body").css("cursor", "default");
+					},
+					success : function(data) {
+						console.log(data);
+						if (data.success === "true") {
+							var attrs = data.attributes;
+							for (var i = 0; i < attrs.length; i++) {
+								if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING" || attrs[i].type === "POLYGON"
+										|| attrs[i].type === "MULTIPOINT" || attrs[i].type === "MULTILINESTRING"
+										|| attrs[i].type === "MULTIPOLYGON") {
+									var wkt = attrs[i].value;
+									wkt1 = wkt;
+									console.log(wkt1);
+									var format = new ol.format.WKT();
+									var geom = format.readGeometry(wkt);
+									var feature = new ol.Feature({
+										"geometry" : geom
+									});
+									feature.setId(data.featureId);
+									console.log(feature);
+									console.log(feature.getId());
+									var style = new ol.style.Style({
+										image : new ol.style.Circle({
+											radius : 5,
+											fill : new ol.style.Fill({
+												color : 'orange'
+											})
+										}),
+										stroke : new ol.style.Stroke({
+											width : 1,
+											color : 'orange'
+										}),
+										fill : new ol.style.Fill({
+											color : 'orange'
+										})
+									});
+
+									var vlayer = new ol.layer.Vector({
+										"style" : style,
+										"source" : new ol.source.Vector({
+											"features" : [ feature ]
+										}),
+										"zIndex" : 2
+									});
+
+									var osm = new ol.layer.Tile({
+										"source" : new ol.source.OSM(),
+										"zIndex" : 1
+									});
+
+									var epsg = attrs[i].crs.toLowerCase();
+									var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+									var intcode = parseInt(code);
+									console.log(code);
+
+									var ccrs = new gb.crs.BaseCRS({
+										"title" : "Base CRS",
+										"width" : 300,
+										"height" : 200,
+										"autoOpen" : false,
+										"message" : undefined,
+										"map" : that.getCurrentMap(),
+										"epsg" : Number.isInteger(intcode) ? code : "4326"
+									});
+
+									that.getCurrentMap().updateSize();
+									that.getCurrentMap().getLayers().clear();
+									that.getCurrentMap().addLayer(osm);
+									that.getCurrentMap().addLayer(vlayer);
+									that.getCurrentMap().getView().fit(geom);
+
+								} else {
+									var name = attrs[i].name;
+									var value = attrs[i].value;
+									var td1 = $("<td>").text(name);
+									var td2 = $("<td>").text(value).css({
+										"word-break" : "break-word",
+										"overflow-wrap" : "break-word"
+									});
+									var tr = $("<tr>").append(td1).append(td2);
+									$(cattrtbody).append(tr);
+								}
+
+							}
+
+							if (fid2 !== "0000000000000000000000000000000000000000") {
+								var fobjectURL2 = that.getCatConflictFeatureObjectURL();
+								if (fobjectURL2.indexOf("?") !== -1) {
+									fobjectURL2 += "&";
+									fobjectURL2 += jQuery.param(cparams2);
+								} else {
+									fobjectURL2 += "?";
+									fobjectURL2 += jQuery.param(cparams2);
+								}
+
+								$
+										.ajax(
+												{
+													url : fobjectURL2,
+													method : "POST",
+													contentType : "application/json; charset=UTF-8",
+													// data : cparams2,
+													// dataType : 'jsonp',
+													// jsonpCallback :
+													// 'getJson',
+													beforeSend : function() {
+														// $("body").css("cursor",
+														// "wait");
+													},
+													complete : function() {
+														// $("body").css("cursor",
+														// "default");
+													},
+													success : function(data) {
+														console.log(data);
+														if (data.success === "true") {
+															var attrs = data.attributes;
+															for (var i = 0; i < attrs.length; i++) {
+																if (attrs[i].type === "POINT" || attrs[i].type === "LINESTRING"
+																		|| attrs[i].type === "POLYGON" || attrs[i].type === "MULTIPOINT"
+																		|| attrs[i].type === "MULTILINESTRING"
+																		|| attrs[i].type === "MULTIPOLYGON") {
+																	var wkt = attrs[i].value;
+																	wkt2 = wkt;
+																	if (wkt1 !== wkt2) {
+																		$(that.cfeature).css({
+																			"border" : "3px solid #ffc523"
+																		});
+																		$(that.tfeature).css({
+																			"border" : "3px solid #ffc523"
+																		});
+																	} else {
+																		$(that.cfeature).css({
+																			"border" : "1px solid #ccc"
+																		});
+																		$(that.tfeature).css({
+																			"border" : "1px solid #ccc"
+																		});
+																	}
+																	console.log(wkt2);
+																	var format = new ol.format.WKT();
+																	var geom = format.readGeometry(wkt);
+																	var feature = new ol.Feature({
+																		"geometry" : geom
+																	});
+																	feature.setId(data.featureId);
+																	console.log(feature);
+																	console.log(feature.getId());
+																	var style = new ol.style.Style({
+																		image : new ol.style.Circle({
+																			radius : 5,
+																			fill : new ol.style.Fill({
+																				color : 'orange'
+																			})
+																		}),
+																		stroke : new ol.style.Stroke({
+																			width : 1,
+																			color : 'orange'
+																		}),
+																		fill : new ol.style.Fill({
+																			color : 'orange'
+																		})
+																	});
+
+																	var vlayer = new ol.layer.Vector({
+																		"style" : style,
+																		"source" : new ol.source.Vector({
+																			"features" : [ feature ]
+																		}),
+																		"zIndex" : 2
+																	});
+
+																	var osm = new ol.layer.Tile({
+																		"source" : new ol.source.OSM(),
+																		"zIndex" : 1
+																	});
+
+																	var epsg = attrs[i].crs.toLowerCase();
+																	var code = epsg.substring(epsg.indexOf("epsg:") + 5);
+																	var intcode = parseInt(code);
+																	console.log(code);
+
+																	var ccrs = new gb.crs.BaseCRS({
+																		"title" : "Base CRS",
+																		"width" : 300,
+																		"height" : 200,
+																		"autoOpen" : false,
+																		"message" : undefined,
+																		"map" : that.getTargetMap(),
+																		"epsg" : Number.isInteger(intcode) ? code : "4326"
+																	});
+
+																	that.getTargetMap().updateSize();
+																	that.getTargetMap().getLayers().clear();
+																	that.getTargetMap().addLayer(osm);
+																	that.getTargetMap().addLayer(vlayer);
+																	var geom = feature.getGeometry();
+
+																	that.getTargetMap().getView().fit(geom);
+
+																} else {
+																	var name = attrs[i].name;
+																	var value = attrs[i].value;
+																	var td1 = $("<td>").text(name);
+																	var td2 = $("<td>").text(value).css({
+																		"word-break" : "break-word",
+																		"overflow-wrap" : "break-word"
+																	});
+																	var tr = $("<tr>").append(td1).append(td2);
+																	$(tattrtbody).append(tr);
+																}
+
+															}
+															if ($(cattrtbody).find("tr").length === $(tattrtbody).find("tr").length) {
+																var trs = $(cattrtbody).find("tr");
+																var ttrs = $(tattrtbody).find("tr");
+																for (var j = 0; j < trs.length; j++) {
+																	if ($(trs[j]).find("td").eq(0).text() === $(ttrs[j]).find("td").eq(0)
+																			.text()) {
+
+																		if ($(trs[j]).find("td").eq(1).text() !== $(ttrs[j]).find("td").eq(
+																				1).text()) {
+																			$(trs[j]).css({
+																				"background-color" : "#ffc523"
+																			});
+																			$(ttrs[j]).css({
+																				"background-color" : "#ffc523"
+																			});
+																		}
+																	}
+																}
+															}
+														} else {
+															that.errorModal(data.error);
+														}
+													}
+												}).fail(function(xhr, status, errorThrown) {
+											that.errorModal(xhr.responseJSON.status);
+										});
+							} else {
+								that.getTargetMap().updateSize();
+								var td1 = $("<td>").text("Removed");
+								var td2 = $("<td>").text("Removed");
+								var tr = $("<tr>").append(td1).append(td2);
+								$(tattrtbody).append(tr);
+							}
+						} else {
+							that.errorModal(data.error);
+						}
+					}
+				}).fail(function(xhr, status, errorThrown) {
+			that.errorModal(xhr.responseJSON.status);
+		});
+	}
+};
+
+/**
+ * 피처 revert 요청 모달을 연다.
+ * 
+ * @method gb.versioning.Repository#openRevertModal
+ */
+gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path, oc, nc) {
+	var that = this;
+	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var msg2 = $("<div>").text(that.translation.revertmsg2[that.locale]).css({
+		"text-align" : "center",
+		"font-size" : "16px"
+	});
+	var inputMsg = $("<input>").attr({
+		"type" : "text"
+	}).addClass("gb-form");
+	var msg3 = $("<div>").append(inputMsg);
+
+	var body = $("<div>").append(msg1).append(msg2).append(msg3);
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+	var commitModal = new gb.modal.Base({
+		"title" : that.translation.revert[that.locale],
+		"width" : 494,
+		"height" : 200,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+	$(closeBtn).click(function() {
+		commitModal.close();
+	});
+	$(okBtn).click(function() {
+		var message = inputMsg.val();
+		that.revert(server, repo, path, oc, nc, message, message, commitModal);
+	});
+};
+
+/**
+ * 피처 revert 요청한다.
+ * 
+ * @method gb.versioning.Repository#revert
+ */
+gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
+	var that = this;
+
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"oldCommitId" : oc,
+		"newCommitId" : nc,
+		"commitMessage" : cm,
+		"mergeMessage" : mm
+	}
+	console.log(params);
+
+	var tranURL = that.getFeatureRevertURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.merge.conflicts === null) {
+					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : that.translation.revert[that.locale],
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+						that.runAfterSaveCallback();
+					});
+					rmodal.close();
+				} else if (Array.isArray(data.merge.conflicts)) {
+					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var msg2 = $("<div>").text(that.translation.conflictmsg1[that.locale]).css({
+						"text-align" : "center",
+						"font-size" : "16px"
+					});
+					var body = $("<div>").append(msg1).append(msg2);
+					var closeBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
+					var okBtn = $("<button>").css({
+						"float" : "right"
+					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
+					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
+
+					var commitModal = new gb.modal.Base({
+						"title" : that.translation.revert[that.locale],
+						"width" : 350,
+						"height" : 200,
+						"autoOpen" : true,
+						"body" : body,
+						"footer" : buttonArea
+					});
+					$(closeBtn).click(function() {
+						commitModal.close();
+					});
+					$(okBtn).click(
+							function() {
+								mModal.close();
+								that.endTransaction(server, repo, tid, commitModal);
+								that.resolveConflictModal(server, repo, repo, that.getNowBranch().text, branch, data.merge.ours,
+										data.merge.theirs, data.merge.features, commitModal);
+								that.openConflictDetailModal();
+							});
+				}
+			}
+		}
 	});
 };

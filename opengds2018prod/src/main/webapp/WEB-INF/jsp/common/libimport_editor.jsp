@@ -135,6 +135,8 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
+<!-- gb.geoserver.uploadjson-->
+<script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadgeojson.js"></script>
 <!-- gb.layer-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/attributeinfo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>

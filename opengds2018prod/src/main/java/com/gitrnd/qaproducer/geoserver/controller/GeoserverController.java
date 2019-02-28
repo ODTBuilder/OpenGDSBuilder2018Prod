@@ -29,6 +29,8 @@ import javax.xml.bind.JAXBException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,6 +62,9 @@ import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 @RequestMapping("/geoserver")
 public class GeoserverController extends AbstractController {
 
+	
+	static final JSONParser jsonP = new JSONParser();
+	
 	@Autowired
 	@Qualifier("geoService")
 	private GeoserverService geoserverService;
@@ -655,12 +660,22 @@ public class GeoserverController extends AbstractController {
 			returnJson.put("status Code", 600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
+		
+		 
+		try {
+			jsonObject = (JSONObject) jsonP.parse(jsonObject.toJSONString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		String serverName = (String) jsonObject.get("serverName");
 		String workspace = (String) jsonObject.get("workspace");
 		String datastore = (String) jsonObject.get("datastore");
-		String epsg = (String) jsonObject.get("epsg");
-		String ignorePublication = (String) jsonObject.get("ignorePublication");
-		List<JSONObject> uploadJson = (List<JSONObject>) jsonObject.get("uploadJson");
+		String epsg = "EPSG:" + (String) jsonObject.get("epsg");
+		boolean ignorePublication = (boolean) jsonObject.get("ignorePublication");
+		JSONArray uploadJson = (JSONArray) jsonObject.get("uploadJson");
 
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		if (dtGeoserverManager == null) {
@@ -669,21 +684,11 @@ public class GeoserverController extends AbstractController {
 			return returnJson;
 		}
 
-		boolean iPFlag = false;
-		
 		if (serverName == null || serverName.isEmpty() || workspace == null || workspace.isEmpty() || datastore == null
-				|| datastore.isEmpty() || epsg == null || epsg.isEmpty()|| ignorePublication.equals("") || ignorePublication ==null || uploadJson == null) {
+				|| datastore.isEmpty() || epsg == null || epsg.isEmpty()|| uploadJson == null) {
 			returnJson.put("status Code", 601);
-//			response.sendError(601, "필수값을 입력하지 않았습니다.");
 		} else {
-			if(ignorePublication.toLowerCase().equals("true")){
-				iPFlag = true;
-			}else if(ignorePublication.toLowerCase().equals("false")){
-				iPFlag = false;
-			}else{
-				iPFlag = false;
-			}
-				returnJson = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, epsg, uploadJson, iPFlag);
+				returnJson = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, epsg, uploadJson, ignorePublication);
 		}
 		return returnJson;
 	}

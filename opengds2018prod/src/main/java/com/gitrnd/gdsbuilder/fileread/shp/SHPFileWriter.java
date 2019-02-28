@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.geotools.data.DefaultTransaction;
-import org.geotools.data.FileDataStoreFactorySpi;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
@@ -25,18 +24,19 @@ public class SHPFileWriter {
 	public static void writeSHP(String epsg, SimpleFeatureCollection simpleFeatureCollection, String filePath)
 			throws IOException, SchemaException, NoSuchAuthorityCodeException, FactoryException {
 
-		FileDataStoreFactorySpi factory = new ShapefileDataStoreFactory();
-
+		ShapefileDataStoreFactory factory = new ShapefileDataStoreFactory();
 		File file = new File(filePath);
 		Map map = Collections.singletonMap("url", file.toURI().toURL());
 		ShapefileDataStore myData = (ShapefileDataStore) factory.createNewDataStore(map);
-		SimpleFeatureType featureType = simpleFeatureCollection.getSchema();
-		myData.forceSchemaCRS(CRS.decode(epsg));
 		myData.setCharset(Charset.forName("EUC-KR"));
+		SimpleFeatureType featureType = simpleFeatureCollection.getSchema();
 		myData.createSchema(featureType);
 		Transaction transaction = new DefaultTransaction("create");
 		String typeName = myData.getTypeNames()[0];
+		myData.forceSchemaCRS(CRS.decode(epsg));
+
 		SimpleFeatureSource featureSource = myData.getFeatureSource(typeName);
+
 		if (featureSource instanceof SimpleFeatureStore) {
 			SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
 			featureStore.setTransaction(transaction);

@@ -494,7 +494,9 @@ public class GeoserverServiceImpl implements GeoserverService {
 					new File(defaultTempPath).mkdirs();
 				}
 						
-				for(JSONObject uploadJson : uploadJsons){
+				
+				for(int i=0; i<uploadJsons.size();i++){
+					JSONObject uploadJson = (JSONObject)uploadJsons.get(i);
 					String layerName = (String) uploadJson.get("layername");
 					JSONObject geoJson = (JSONObject) uploadJson.get("geojson");
 					JSONObject attJson = (JSONObject) uploadJson.get("attjson");
@@ -507,6 +509,20 @@ public class GeoserverServiceImpl implements GeoserverService {
 					lResultJson.put(layerName, puFlag);
 					tempArray.add(lResultJson);
 				}
+				
+			/*	for(JSONObject uploadJson : uploadJsons){
+					String layerName = (String) uploadJson.get("layername");
+					JSONObject geoJson = (JSONObject) uploadJson.get("geojson");
+					JSONObject attJson = (JSONObject) uploadJson.get("attjson");
+					
+					puFlag = this.singleGeojsonPublishGeoserver(dtGeoManager, defaultTempPath, workspace, datastore, layerName, epsg, geoJson, attJson, ignorePublication);
+					
+					JSONArray tempArray = (JSONArray) resultJson.get("layers");
+					
+					JSONObject lResultJson = new JSONObject();
+					lResultJson.put(layerName, puFlag);
+					tempArray.add(lResultJson);
+				}*/
 			} else {
 				logger.warn("workspace 또는 datastore 존재 X");
 				resultJson.put("status_Code",607);
@@ -570,6 +586,11 @@ public class GeoserverServiceImpl implements GeoserverService {
 					}
 					
 					if (simpleCollection != null) {
+						int size = simpleCollection.size();
+						if(size==0){
+							logger.warn("features Size 0");
+							return 610;
+						}
 						File tmpFile = null;
 						try {
 							// 임시폴더 생성

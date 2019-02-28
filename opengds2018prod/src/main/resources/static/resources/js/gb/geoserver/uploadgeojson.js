@@ -429,10 +429,10 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		"height" : "154px",
 		"overflow" : "auto"
 	});
+	var ul = $("<ul>").css({
+		"padding-left" : "15px"
+	});
 	if (Array.isArray(layers)) {
-		var ul = $("<ul>").css({
-			"padding-left" : "15px"
-		});
 		var checkObj = {};
 		var duplicateFlag = false;
 		for (var i = 0; i < layers.length; i++) {
@@ -442,7 +442,9 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 			} else {
 				duplicateFlag = true;
 			}
-			var li = $("<li>").text(layers[i].get("name"));
+			var span1 = $("<span>").addClass("gb-uploadgeojson-layer").text(layers[i].get("name"));
+			var span2 = $("<span>").addClass("gb-uploadgeojson-icon");
+			var li = $("<li>").append(span1).append(span2);
 			$(ul).append(li);
 		}
 		$(list).append(ul);
@@ -536,7 +538,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		}
 		sendObj["uploadJson"] = uploadJson;
 		console.log(sendObj);
-		that.sendJSON(sendObj, uploadModal);
+		that.sendJSON(sendObj, uploadModal, ul, tree);
 	});
 };
 
@@ -610,7 +612,7 @@ gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
  * @param {String}
  *            server
  */
-gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
+gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal, ul, tree) {
 	var that = this;
 	var params = {
 
@@ -654,10 +656,30 @@ gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
 		},
 		success : function(data) {
 			console.log(data);
-			if (data.success === "true") {
-				modal.close();
+			if (data.status_Code === 200) {
+				tree.refreshList();
+				var layers = data.layers;
+				var lilayers = $(ul).children("li");
+				if (Array.isArray(layers)) {
+					for (var i = 0; i < layers.length; i++) {
+						for (var j = 0; j < lilayers.length; j++) {
+							var litext = $(lilayers[j]).find(".gb-uploadgeojson-layer").text();
+							console.log(litext);
+							if (layers[i][litext] !== undefined) {
+								var iconSpan = $(lilayers[j]).find(".gb-uploadgeojson-icon");
+								$(iconSpan).empty();
+								if (layers[i][litext] === 200) {
+									$(iconSpan).text(" [ OK ]");
+								} else {
+									$(iconSpan).text(" [ Fail ]");
+								}
+							}
+						}
+					}
+				}
+				// modal.close();
 			} else {
-				that.errorModal(data.error);
+				that.errorModal(data.status_Code);
 			}
 		}
 	}).fail(function(xhr, status, errorThrown) {

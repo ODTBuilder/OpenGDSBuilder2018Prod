@@ -1,7 +1,6 @@
 
 package com.gitrnd.gdsbuilder.geoserver;
 
-import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -224,4 +223,6 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		updated = reload();
 		return updated;
 	}
+	
+	
 }

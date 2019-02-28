@@ -95,47 +95,43 @@ public interface GeoserverService {
 	 * @param dtGeoManager
 	 * @param workspace    작업공간
 	 * @param datastore    저장소
-	 * @param request      MultipartHttpServletRequest(
+	 * @param request      MultipartHttpServletRequest
 	 * @return JSONObject {file1 : 200, file2 : 500....} 
 	 * 			 		  200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류 
-	 *         		      607 : workspace 또는 datastore 존재 X 608 : 파일구조 이상 609 : 레이어 중복
+	 *         		      607 : workspace 또는 datastore 존재 X 608 : 파일구조 이상 609 : 레이어 중복 613 : 데이터 존재 -> 미발행레이어 615 : prj파일 없음
 	 */
 	public JSONObject shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication);
 	
 	
-	
+
 	/**
 	 * @Description JSON파일 업로드
 	 * @author SG.Lee
-	 * @Date 2019. 1. 22. 오후 5:45:06
+	 * @Date 2019. 2. 27. 오후 6:06:28
 	 * @param dtGeoManager  DTGeoserverManager Object
 	 * @param workspace     Geoserver Workspace명
 	 * @param datastore     Geoserver Datasource명
 	 * @param layerName     저장하고 싶은 layer명
 	 * @param epsg          좌표계
-	 * @param geojson       Geojson
-	 * @param attJson		속성구조정보
+	 * @param uploadJsons {
+							   "serverName" : "테스트서버",
+							   "workspace" : "작업공간",
+							   "datastore" : "저장소",
+							   "epsg" : "4326",
+							   "ignorePublication" : "false",
+							   "uploadJson" : [{"layername":"layer1","geojson":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[[[[126.5011195,37.2537839],[126.5011442,37.2538722]...]]]},
+							   					"properties":{"osm_id":"550217018","code":1020,"fclass":"island","population":0,"name":"빌딩"},"id":"d21dd1922902"}]},
+							  					"attJson" : {"osm_id":"String","code":"Integer","fclass":"String","population":"Integer","name":"String"}},
+												{"layername":"layer2","geojson":{}}]
+							}
 	 * @param ignorePublication 미발행 레이어 무시여부
-	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
-	 *             607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
+	 * @return JSONObject {file1 : 200, file2 : 500....} 
+	 * 					  200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
+	 *                    607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
 	 * */
-	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication);
+	public JSONObject geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String epsg, List<JSONObject> uploadJsons, boolean ignorePublication);
 	
-	/**
-	 * @Description JSON파일 업로드
-	 * @author SG.Lee
-	 * @Date 2019. 1. 22. 오후 5:45:06
-	 * @param dtGeoManager  DTGeoserverManager Object
-	 * @param workspace     Geoserver Workspace명
-	 * @param datastore     Geoserver Datasource명
-	 * @param layerName     저장하고 싶은 layer명
-	 * @param epsg          좌표계
-	 * @param geojson       Geojson
-	 * @param ignorePublication 미발행 레이어 무시여부
-	 * @return int 200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
-	 *             607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
-	 * */
-	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, boolean ignorePublication);
+	
 
 	/**
 	 * @Description 에러 레이어 발행

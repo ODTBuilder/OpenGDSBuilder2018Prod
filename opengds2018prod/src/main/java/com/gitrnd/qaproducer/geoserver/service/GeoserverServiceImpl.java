@@ -455,9 +455,81 @@ public class GeoserverServiceImpl implements GeoserverService {
 	 * @author SG.Lee
 	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#geojsonPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.json.simple.JSONObject, org.json.simple.JSONObject, boolean)
 	 */
-	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication){
+	@SuppressWarnings("unchecked")
+	public JSONObject geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String epsg, List<JSONObject> uploadJsons, boolean ignorePublication){
+		JSONObject resultJson = new JSONObject();
+		JSONArray layers = new JSONArray();
+		resultJson.put("status_Code", 200);
+		resultJson.put("layers", layers);
+		
 		int puFlag = 500;
 		if (dtGeoManager != null && workspace != null && datastore != null) {
+			if(uploadJsons==null){
+				logger.warn("uploadJSON Null");
+				resultJson.put("status_Code",614);
+				return resultJson;
+			}else{
+				if(uploadJsons.size()==0){
+					logger.warn("uploadJSON Size 0");
+					resultJson.put("status_Code",614);
+					return resultJson;
+				}
+			}
+			
+			
+			dtReader = dtGeoManager.getReader();
+			dtPublisher = dtGeoManager.getPublisher();
+			
+			boolean wsFlag = false;
+			boolean dsFlag = false;
+
+			wsFlag = dtReader.existsWorkspace(workspace);
+			dsFlag = dtReader.existsDatastore(workspace, datastore);
+
+			if (wsFlag && dsFlag) {
+				//temp 경로 임시파일 생성
+				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
+				
+				if (!new File(defaultTempPath).exists()) {
+					new File(defaultTempPath).mkdirs();
+				}
+						
+				for(JSONObject uploadJson : uploadJsons){
+					String layerName = (String) uploadJson.get("layername");
+					JSONObject geoJson = (JSONObject) uploadJson.get("geojson");
+					JSONObject attJson = (JSONObject) uploadJson.get("attjson");
+					
+					puFlag = this.singleGeojsonPublishGeoserver(dtGeoManager, defaultTempPath, workspace, datastore, layerName, epsg, geoJson, attJson, ignorePublication);
+					
+					JSONArray tempArray = (JSONArray) resultJson.get("layers");
+					
+					JSONObject lResultJson = new JSONObject();
+					lResultJson.put(layerName, puFlag);
+					tempArray.add(lResultJson);
+				}
+			} else {
+				logger.warn("workspace 또는 datastore 존재 X");
+				resultJson.put("status_Code",607);
+				return resultJson;
+			}
+		} else {
+			logger.warn("Geoserver 정보X");
+			resultJson.put("status_Code",604);
+			return resultJson;
+		}
+		return resultJson;
+	}
+	
+	public int singleGeojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String defaultTempPath, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, JSONObject attJson, boolean ignorePublication){
+		int puFlag = 500;
+		if (dtGeoManager != null && workspace != null && datastore != null) {
+			
+			if(layerName == null){
+				logger.warn("레이어명 null");
+				return 610;
+			}
+			
+			
 			dtReader = dtGeoManager.getReader();
 			dtPublisher = dtGeoManager.getPublisher();
 			
@@ -481,12 +553,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 						return 613;
 					}
 				}
-				//temp 경로 임시파일 생성
-				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
-				
-				if (!new File(defaultTempPath).exists()) {
-					new File(defaultTempPath).mkdirs();
-				}
+			
 				
 				SimpleFeatureCollection simpleCollection = null;
 				
@@ -566,116 +633,8 @@ public class GeoserverServiceImpl implements GeoserverService {
 	
 	
 	
-	/**
-	 * GeoJSON -> Geoserver 업로드
-	 * @since 2019. 1. 24.
-	 * @author SG.Lee
-	 * @see com.gitrnd.qaproducer.geoserver.service.GeoserverService#geojsonPublishGeoserver(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.json.simple.JSONObject, boolean)
-	 */
-	public int geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String layerName, String epsg, JSONObject geojson, boolean ignorePublication){
-		int puFlag = 500;
-		if (dtGeoManager != null && workspace != null && datastore != null) {
-			dtReader = dtGeoManager.getReader();
-			dtPublisher = dtGeoManager.getPublisher();
-			
-			boolean wsFlag = false;
-			boolean dsFlag = false;
-
-			wsFlag = dtReader.existsWorkspace(workspace);
-			dsFlag = dtReader.existsDatastore(workspace, datastore);
-
-			if (wsFlag && dsFlag) {
-				if (dtReader.existsLayer(workspace, layerName, true)) {
-					// 레이어 중복
-					logger.warn("레이어중복");
-					return 609;
-				}
-				
-				if(!ignorePublication){
-					boolean availableFlag = dtReader.existsFeatureTypesAvailable(workspace, datastore, layerName);
-					if(availableFlag){
-						logger.warn("데이터 존재->미발행 레이어");
-						return 613;
-					}
-				}
-				//temp 경로 임시파일 생성
-				String defaultTempPath = System.getProperty("java.io.tmpdir") + "GeoDT_Upload";
-				
-				if (!new File(defaultTempPath).exists()) {
-					new File(defaultTempPath).mkdirs();
-				}
-				
-				SimpleFeatureCollection simpleCollection = null;
-				
-				if(geojson!=null){
-					try {
-							simpleCollection = new DataConvertorImpl().geoJsonToSimpleFeatureCollecion(geojson);
-					} catch (SchemaException e) {
-						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
-						return 614;
-					}
-					
-					if (simpleCollection != null) {
-						File tmpFile = null;
-						try {
-							// 임시폴더 생성
-							Path tmpBasedir = Files.createTempDirectory(Paths.get(defaultTempPath), "upload_temp_");
-							tmpFile = tmpBasedir.toFile();
-							String writerPath = tmpBasedir + File.separator + layerName + ".shp";
-							try {
-								SHPFileWriter.writeSHP(epsg, simpleCollection, writerPath);
-							} catch (SchemaException | FactoryException e) {
-								// TODO Auto-generated catch block
-								if(tmpFile!=null){
-									deleteDirectory(tmpFile);
-								}
-								logger.warn("shp파일 생성불가");
-								return 610;
-							}
-							createZipFile(tmpBasedir.toString(), tmpBasedir.toString(), layerName + ".zip");
-
-							String saveFilePath = tmpBasedir + File.separator + layerName + ".zip";
-
-							// Geoserver에 레이어 발행
-							boolean serverPFlag = dtPublisher.publishShpCollection(workspace, datastore,
-									new File(saveFilePath).toURI());
-							if (serverPFlag) {
-								puFlag = 200;
-							} else {
-								deleteDirectory(tmpBasedir.toFile());
-								puFlag = 610;
-								logger.warn("발행실패");
-							}
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							if(tmpFile!=null){
-								deleteDirectory(tmpFile);
-							}
-							puFlag = 610;
-							logger.warn("발행실패");
-						}
-						// 성공 or 실패시 파일삭제
-						if(tmpFile!=null){
-							deleteDirectory(tmpFile);
-						}
-					} else {
-						logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
-						return 614;
-					}
-				}else{
-					logger.warn("geojson 오류로 인한 SimpleFeatureCollection 생성불가");
-					return 614; 
-				}
-			} else {
-				logger.warn("workspace 또는 datastore 존재 X");
-				puFlag = 607;
-			}
-		} else {
-			logger.warn("Geoserver 정보X");
-			puFlag = 604;
-		}
-		return puFlag;
-	}
+	
+	
 	
 
 	private void deleteDirectory(File dir) {

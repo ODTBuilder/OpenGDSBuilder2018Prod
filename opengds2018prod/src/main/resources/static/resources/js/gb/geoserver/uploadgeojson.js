@@ -530,7 +530,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 					var attr = attributes[j];
 					attJson[attr.getOriginFieldName()] = attr.getType();
 				}
-				obj["attJson"] = attJson;
+				obj["attjson"] = attJson;
 			}
 			uploadJson.push(obj);
 		}

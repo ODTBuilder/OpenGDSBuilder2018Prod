@@ -60,91 +60,91 @@ gb.tree.GeoServer = function(obj) {
 	this.loadingNumber = [];
 
 	this.translation = {
-			"400err" : {
+			"400" : {
 				"ko" : "요청값 잘못입력",
 				"en" : "Bad request"
 			},
-			"404err" : {
+			"404" : {
 				"ko" : "페이지 없음",
 				"en" : "Not found"
 			},
-			"405err" : {
+			"405" : {
 				"ko" : "요청 타입 에러",
 				"en" : "Method not allowed"
 			},
-			"406err" : {
+			"406" : {
 				"ko" : "요청 형식 에러",
 				"en" : "Not acceptable"
 			},
-			"407err" : {
+			"407" : {
 				"ko" : "프록시 에러",
 				"en" : "Proxy authentication required"
 			},
-			"408err" : {
+			"408" : {
 				"ko" : "요청시간 초과",
 				"en" : "Request timeout"
 			},
-			"415err" : {
+			"415" : {
 				"ko" : "지원하지 않는 타입 요청",
 				"en" : "Unsupported media type"
 			},
-			"500err" : {
+			"500" : {
 				"ko" : "서버 내부 오류",
 				"en" : "Internal server error"
 			},
-			"600err" : {
+			"600" : {
 				"ko" : "로그인을 해주세요",
 				"en" : "Please log in"
 			},
-			"600err" : {
+			"600" : {
 				"ko" : "로그인을 해주세요",
 				"en" : "Please log in"
 			},
-			"601err" : {
+			"601" : {
 				"ko" : "미 입력 값이 존재합니다",
 				"en" : "You have not entered any required parameters"
 			},
-			"602err" : {
+			"602" : {
 				"ko" : "서버 이름 또는 URL이 중복됩니다",
 				"en" : "Server name or URL are duplicated"
 			},
-			"603err" : {
+			"603" : {
 				"ko" : "다시 로그인을 해주세요",
 				"en" : "Please log in again"
 			},
-			"604err" : {
+			"604" : {
 				"ko" : "잘못 입력한 정보가 있습니다",
 				"en" : "You have entered wrong information"
 			},
-			"605err" : {
+			"605" : {
 				"ko" : "해당 서버가 존재하지 않습니다",
 				"en" : "The server does not exist"
 			},
-			"606err" : {
+			"606" : {
 				"ko" : "일부 성공 또는 실패하였습니다.",
 				"en" : "Some have succeed or failed"
 			},
-			"607err" : {
+			"607" : {
 				"ko" : "해당 작업공간, 저장소가 존재하지 않습니다",
 				"en" : "Workspace or datastore does not exist"
 			},
-			"608err" : {
+			"608" : {
 				"ko" : "올바른 파일을 넣어 주세요",
 				"en" : "Please input the correct file"
 			},
-			"609err" : {
+			"609" : {
 				"ko" : "레이어가 중복됩니다",
 				"en" : "Duplicate layers"
 			},
-			"610err" : {
+			"610" : {
 				"ko" : "레이어 발행이 실패하였습니다",
 				"en" : "Publishing layer failed"
 			},
-			"611err" : {
+			"611" : {
 				"ko" : "Geoserver와 연결이 안정적이지 않습니다",
 				"en" : "The connection with geoserver is not stable"
 			},
-			"612err" : {
+			"612" : {
 				"ko" : "작업공간에 레이어가 존재하지 않습니다",
 				"en" : "The is no layer in the workspace"
 			},
@@ -2311,7 +2311,7 @@ gb.tree.GeoServer.prototype.openNodeRecursive = function(idx, node, topNode, aft
  */
 gb.tree.GeoServer.prototype.errorModal = function(code) {
 	var that = this;
-	that.messageModal(that.translation.err[that.locale], that.translation[code+"err"][that.locale]);
+	that.messageModal(that.translation.err[that.locale], that.translation[code][that.locale]);
 };
 
 /**

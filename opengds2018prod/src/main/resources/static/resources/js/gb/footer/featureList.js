@@ -229,9 +229,7 @@ if (!gb.footer)
 		var that = this;
 		var num = ++this.countId;
 		
-		var table = $("<table>").attr("id", this.tableId + num).css({
-			width: "100%"
-		});
+		var table = $("<table>").attr("id", this.tableId + num).css("width", "100%");
 		
 		table.on("click", "tr", function(){
 			var data = that.dataTable.row(this).data();
@@ -492,12 +490,12 @@ if (!gb.footer)
 			info: false,
 			searching: false,
 			paging: false,
-			scrollX: "100%",
+			scrollX: true,
 			scrollY: "100%",
 			scrollCollapse: true,
 			dom: "Bfrtip",
 			select: "single",
-			responsive: true,
+			responsive: false,
 			altEditor: true,
 			buttons: [{
 				extend: "selected",
@@ -524,7 +522,7 @@ if (!gb.footer)
 					that.nextFeatureList();
 				}
 			}
-		})
+		});
 		
 		$("#altEditor-modal").on("edited", function(e, data){
 			var feature, keys;

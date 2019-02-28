@@ -259,10 +259,7 @@ if (!gb.validation)
 		if (this.isEditing instanceof Object) {
 			if (this.isEditing.get()) {
 				this.isEditing.alert();
-				return
-				
-
-			}
+				return			}
 		}
 		this.geoserverTree.refresh();
 		gb.modal.Base.prototype.open.call(this);

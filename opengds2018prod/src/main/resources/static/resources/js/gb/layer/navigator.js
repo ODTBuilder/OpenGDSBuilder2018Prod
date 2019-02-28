@@ -213,7 +213,6 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	}
 	var geom = feature.getGeometry();
 	this.map.getView().fit(geom.getExtent(), this.map.getSize());
-	this.map.getView().setZoom(16);
 }
 
 gb.layer.Navigator.prototype.prev = function(){

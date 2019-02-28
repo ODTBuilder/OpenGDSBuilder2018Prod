@@ -151,8 +151,8 @@ html {
 				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i
 						class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i> <spring:message code="lang.info" />
 				</a></li>
-				<li><a href="#" title="setting" id="editSetting">
-				<i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i> <spring:message code="lang.setting" />
+				<li><a href="#" title="setting" id="editSetting"> <i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i>
+						<spring:message code="lang.setting" />
 				</a></li>
 			</ul>
 		</div>
@@ -330,7 +330,7 @@ html {
 		$("#changeBase").click(function() {
 			gbBaseMap.open();
 		});
-		
+
 		$("#editSetting").click(function() {
 			gb.module.serviceVersion.geoserverSettingModal(locale);
 		});
@@ -406,11 +406,23 @@ html {
 			layerInfoURL : urlList.getLayerInfo + urlList.token
 		});
 
+		var uploadjson = new gb.geoserver.UploadGeoJSON({
+			"url" : "geoserver/jsonUpload.ajax?${_csrf.parameterName}=${_csrf.token}",
+			"epsg" : function() {
+				return crs.getEPSGCode();
+			},
+			"geoserverTree" : function() {
+				return gtree;
+			},
+			"locale" : locale !== "" ? locale : "en"
+		});
+
 		var otree = new gb.tree.OpenLayers({
 			"locale" : locale || "en",
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"frecord" : frecord,
+			"uploadJSON" : uploadjson,
 			"token" : urlList.token,
 			"url" : {
 				"getLegend" : urlList.getLegend + urlList.token

@@ -6576,3 +6576,32 @@ gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc,
 		}
 	});
 };
+
+/**
+ * 스피너를 보여준다.
+ * 
+ * @method gb.versioning.Repository#showSpinner
+ * @param {Boolean}
+ *            show - 스피너 표시 유무
+ */
+gb.versioning.Repository.prototype.showSpinner = function(show, modal) {
+	if (show) {
+		var spinnerArea = $("<div>").addClass("gb-spinner-wrap").css({
+			"z-index" : "10",
+			"position" : "absolute",
+			"left" : "0",
+			"top" : "0",
+			"width" : "100%",
+			"height" : "100%",
+			"text-align" : "center",
+			"background-color" : "rgba(0, 0, 0, 0.4)"
+		}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+			"position" : "relative",
+			"top" : "50%",
+			"margin-top" : "-5em"
+		}));
+		$(modal.modal).append(spinnerArea);
+	} else {
+		$(modal.modal).find(".gb-spinner-wrap").remove();
+	}
+};

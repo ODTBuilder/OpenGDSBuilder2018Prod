@@ -287,6 +287,14 @@ gb.tree.GeoServer = function(obj) {
 			"wms" : {
 				"ko" : "WMS",
 				"en" : "WMS"
+			},
+			"nodelsamestore" : {
+				"ko" : "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.",
+				"en" : "You can delete multiple layers included in the same datastore."
+			},
+			"noimpsamestore" : {
+				"ko" : "이미 불러온 레이어는 제외됩니다.",
+				"en" : "Except for layers that have already been imported."
 			}
 	};
 	this.panelTitle = $("<p>").text("GeoServer").css({
@@ -480,6 +488,7 @@ gb.tree.GeoServer = function(obj) {
 							"getMapWMS" : this.getMapWMS,
 							"getLayerInfo" : this.getLayerInfo,
 							"clientTree" : this.clientTree,
+							"serverTree" : that,
 							"getWFSFeature" : this.getWFSFeature
 				},
 				"search" : {
@@ -519,29 +528,23 @@ gb.tree.GeoServer = function(obj) {
 							}
 							totalObj["info"] = infoObj;
 							
-							/*var setObj = {
-								"separator_before" : false,
-								"icon" : "fas fa-cog",
-								"separator_after" : false,
-								"_disabled" : function() {
-									console.log(o);
-									console.log(cb);
-									var result = true;
-									if (o.type === "geoserver") {
-										result = false;
-									}
-									return result;
-								},
-								"label" : that.translation.setting[that.locale],
-								"action" : function(data) {
-									var isEdit = gb? (gb.module ? gb.module.isEditing : undefined) : undefined;
-									var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-									var server = obj.text;
-									
-									that.geoserverSettingModal();
-								}
-							}
-							totalObj["set"] = setObj;*/
+							/*
+							 * var setObj = { "separator_before" : false, "icon" :
+							 * "fas fa-cog", "separator_after" : false,
+							 * "_disabled" : function() { console.log(o);
+							 * console.log(cb); var result = true; if (o.type
+							 * === "geoserver") { result = false; } return
+							 * result; }, "label" :
+							 * that.translation.setting[that.locale], "action" :
+							 * function(data) { var isEdit = gb? (gb.module ?
+							 * gb.module.isEditing : undefined) : undefined; var
+							 * inst = $.jstree.reference(data.reference), obj =
+							 * inst.get_node(data.reference); var server =
+							 * obj.text;
+							 * 
+							 * that.geoserverSettingModal(); } } totalObj["set"] =
+							 * setObj;
+							 */
 						}
 						// 지오긱 저장소이면 브랜치 서브메뉴 객체를 만듬
 						var repoObj = {};
@@ -645,25 +648,25 @@ gb.tree.GeoServer = function(obj) {
 										var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
 										var nodes = inst.get_selected();
 
-//											원래 코드
-//										console.log(obj);
-//										console.log(nodes);
-//										var loadOrder = [];
-//										var callback = function(id) {
-//											console.log(that.getLoadingList());
-//											var pnode = inst.get_node(id);
-//											inst.load_each_wms_layer(pnode, that.map.getLayers());
-//										};
-//										that.initLoadingList();
-//										that.initLoadingNumber();
-//										for (var i = 0; i < nodes.length; i++) {
-//											var pnodeid = nodes[i];
-//											console.log("선택한 노드:", pnodeid);
-//											console.log(that.getLoadingList());
-//											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
-//										}
-//											여기까지
-//											새로운 코드
+// 원래 코드
+// console.log(obj);
+// console.log(nodes);
+// var loadOrder = [];
+// var callback = function(id) {
+// console.log(that.getLoadingList());
+// var pnode = inst.get_node(id);
+// inst.load_each_wms_layer(pnode, that.map.getLayers());
+// };
+// that.initLoadingList();
+// that.initLoadingNumber();
+// for (var i = 0; i < nodes.length; i++) {
+// var pnodeid = nodes[i];
+// console.log("선택한 노드:", pnodeid);
+// console.log(that.getLoadingList());
+// that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
+// }
+// 여기까지
+// 새로운 코드
 										console.log(obj);
 										console.log(nodes);
 										var loadOrder = [];
@@ -680,7 +683,7 @@ gb.tree.GeoServer = function(obj) {
 											console.log(that.getLoadingList());
 											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
 										}
-//											여기까지
+// 여기까지
 									}
 							};
 							totalObj["import"] = importObj;
@@ -1341,7 +1344,7 @@ gb.tree.GeoServer = function(obj) {
 											}
 											if (server.length > 0 || ws.length > 0 || ds.length > 0) {
 												isValid = false;
-												that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
+												that.messageModal(that.translation.err[that.locale], that.translation.nodelsamestore[that.locale]);
 											} else {
 												for (var i = 0; i < layers.length; i++) {
 													var layerNode = inst.get_node(layers[i]);
@@ -1374,7 +1377,7 @@ gb.tree.GeoServer = function(obj) {
 
 													that.openDeleteGeoServerLayer(sendServer.text, sendws.text, sendds.text, layerstxt);
 												} else {
-													that.messageModal("Error", "동일 데이터스토어에 포함된 레이어만 복수 삭제할 수 있습니다.");
+													that.messageModal(that.translation.err[that.locale], that.translation.nodelsamestore[that.locale]);
 												}
 											}
 										}
@@ -1784,9 +1787,9 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
  * @param {String}
  *            password - 지오서버 접속을 위한 비밀번호
  * @param {gb.modal.Base}
- *            callback - 완료 후 창을 닫을 모달 객체
+ *            modal - 완료 후 창을 닫을 모달 객체
  */
-gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, callback) {
+gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, modal) {
 	var that = this;
 	console.log("add geoserver");
 	console.log(name);
@@ -1806,13 +1809,15 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 		// data : params,
 		beforeSend : function() {
 			$("body").css("cursor", "wait");
+			that.showSpinner(true, modal);
 		},
 		complete : function() {
 			$("body").css("cursor", "default");
+			that.showSpinner(false, modal);
 		},
 		success : function(data,textStatus,jqXHR) {
 			console.log(data);
-			callback.close();
+			modal.close();
 			if (data === true) {
 				that.refreshList();
 			}
@@ -2503,4 +2508,33 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	$(closeBtn).click(function() {
 		removeModal.close();
 	});
+};
+
+/**
+ * 스피너를 보여준다.
+ * 
+ * @method gb.tree.GeoServer#showSpinner
+ * @param {Boolean}
+ *            show - 스피너 표시 유무
+ */
+gb.tree.GeoServer.prototype.showSpinner = function(show, modal) {
+	if (show) {
+		var spinnerArea = $("<div>").addClass("gb-spinner-wrap").css({
+			"z-index" : "10",
+			"position" : "absolute",
+			"left" : "0",
+			"top" : "0",
+			"width" : "100%",
+			"height" : "100%",
+			"text-align" : "center",
+			"background-color" : "rgba(0, 0, 0, 0.4)"
+		}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+			"position" : "relative",
+			"top" : "50%",
+			"margin-top" : "-5em"
+		}));
+		$(modal.modal).append(spinnerArea);
+	} else {
+		$(modal.modal).find(".gb-spinner-wrap").remove();
+	}
 };

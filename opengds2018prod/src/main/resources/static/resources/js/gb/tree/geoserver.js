@@ -669,19 +669,59 @@ gb.tree.GeoServer = function(obj) {
 // 새로운 코드
 										console.log(obj);
 										console.log(nodes);
+										var work = [];
+										var store = [];
+										var layer = [];
+										for (var i = 0; i < nodes.length; i++) {
+											var node = inst.get_node(nodes[i]);
+											if (node.type === "workspace") {
+												work.push(node.id);
+											} else if (node.type === "datastore") {
+												store.push(node.id);
+											} else if (node.type === "point" || node.type === "multipoint"
+												|| node.type === "linestring" || node.type === "multilinestring" || node.type === "polygon"
+													|| node.type === "multipolygon") {
+												layer.push(node.id);
+											}
+										}
+
+										for (var i = 0; i < layer.length; i++) {
+											var layerObj =  inst.get_node(layer[i]);
+											var parent = layerObj.parent;
+											if (store.indexOf(parent) !== -1) {
+												layer.splice(i, 1);
+												i--;
+											}
+										}
+										console.log(layer);
+										
+										for (var i = 0; i < store.length; i++) {
+											var storeObj =  inst.get_node(store[i]);
+											var parent = storeObj.parent;
+											if (work.indexOf(parent) !== -1) {
+												store.splice(i, 1);
+												i--;
+											}
+										}
+										console.log(store);
+										
+										var sortNodes = work.concat(store).concat(layer);
+										console.log(sortNodes);
 										var loadOrder = [];
 										var callback = function(id) {
 											console.log(that.getLoadingList());
 											var pnode = inst.get_node(id);
-											inst.recursive_node_load(pnode, that.map.getLayers());
+											var duplication = false;
+											var isLast = false;
+											inst.recursive_node_load(pnode, that.map.getLayers(), duplication, isLast);
 										};
 										that.initLoadingList();
 										that.initLoadingNumber();
-										for (var i = 0; i < nodes.length; i++) {
-											var pnodeid = nodes[i];
+										for (var i = 0; i < sortNodes.length; i++) {
+											var pnodeid = sortNodes[i];
 											console.log("선택한 노드:", pnodeid);
 											console.log(that.getLoadingList());
-											that.openNodeRecursive(i, inst.get_node(nodes[i]), pnodeid, callback, false);
+											that.openNodeRecursive(i, inst.get_node(sortNodes[i]), pnodeid, callback, false);
 										}
 // 여기까지
 									}

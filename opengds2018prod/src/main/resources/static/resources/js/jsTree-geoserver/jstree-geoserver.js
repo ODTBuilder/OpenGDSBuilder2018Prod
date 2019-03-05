@@ -326,7 +326,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.");
+				var serverTree = that._data.geoserver.serverTree;
+				that.messageModal(serverTree.translation.err[serverTree.locale], serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
 				return;
 			}
@@ -368,7 +369,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.");
+				var serverTree = that._data.geoserver.serverTree;
+				that.messageModal(serverTree.translation.err[serverTree.locale], serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
 
 				var parent = that._data.geoserver.clientTree.get_LayerByOLId(workspaceNode.id);
@@ -618,13 +620,16 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @param {ol.Collection}
 	 *            collection - 레이어를 주입할 콜렉션
 	 */
-	this.recursive_node_load = function(node, collection) {
+	this.recursive_node_load = function(node, collection, duplication, isLast) {
 		var that = this;
 		if (node.type === "workspace") {
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.");
+				var serverTree = that._data.geoserver.serverTree;
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
+				duplication = true;
 				return;
 			}
 
@@ -656,7 +661,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			}
 			for (var i = 0; i < children.length; i++) {
 				var store = this.get_node(children[i]);
-				this.recursive_node_load(store, workspace.getLayers());
+				var isLast = false;
+				if (i == (children.length - 1)) {
+					isLast = true;
+				}
+				this.recursive_node_load(store, workspace.getLayers(), duplication, isLast);
 			}
 		} else if (node.type === "datastore") {
 			var workspaceNode = this.get_node(node.parents[0]);
@@ -672,7 +681,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.");
+				var serverTree = that._data.geoserver.serverTree;
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
+				duplication = true;
 				console.error("layer duplicated");
 
 				var parent = that._data.geoserver.clientTree.get_LayerByOLId(workspaceNode.id);
@@ -714,6 +726,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					};
 					var layerString = [];
 					var wms;
+					var except = [];
 					if (children.length > 0) {
 						var child = that.get_node(children[0]);
 						var server = that.get_node(child.parents[2]);
@@ -722,39 +735,20 @@ $.jstree.plugins.geoserver = function(options, parent) {
 						params["workspace"] = workspace.text;
 						for (var a = 0; a < children.length; a++) {
 							var item = that.get_node(children[a]);
-							params["geoLayerList"].push(item.text);
-							var layer = workspace.text + ":" + item.text;
-							layerString.push(layer);
-						}
 
-						// var mysld = '<?xml version="1.0"
-						// encoding="ISO-8859-1"?><StyledLayerDescriptor
-						// version="1.0.0"
-						// xsi:schemaLocation="http://www.opengis.net/sld
-						// StyledLayerDescriptor.xsd"
-						// xmlns="http://www.opengis.net/sld"
-						// xmlns:ogc="http://www.opengis.net/ogc"
-						// xmlns:xlink="http://www.w3.org/1999/xlink"
-						// xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-						// <!-- a Named Layer is the basic building block of an
-						// SLD document --> <NamedLayer>
-						// <Name>N3P_B0010000</Name> <UserStyle> <!-- Styles can
-						// have names, titles and abstracts --> <Title>Default
-						// Polygon</Title> <Abstract>A sample style that draws a
-						// polygon</Abstract> <!-- FeatureTypeStyles describe
-						// how to render different features --> <!-- A
-						// FeatureTypeStyle for rendering polygons -->
-						// <FeatureTypeStyle> <Rule> <Name>rule1</Name>
-						// <Title>Gray Polygon with Black Outline</Title>
-						// <Abstract>A polygon with a gray fill and a 1 pixel
-						// black outline</Abstract> <PolygonSymbolizer> <Fill>
-						// <CssParameter name="fill">#AAAAAA</CssParameter>
-						// <CssParameter name="fill-opacity">0.4</CssParameter>
-						// </Fill> <Stroke> <CssParameter
-						// name="stroke">#000000</CssParameter> <CssParameter
-						// name="stroke-width">1</CssParameter> </Stroke>
-						// </PolygonSymbolizer> </Rule> </FeatureTypeStyle>
-						// </UserStyle> </NamedLayer></StyledLayerDescriptor>';
+							var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(item.id);
+							if (dupLayer !== undefined) {
+								var serverTree = that._data.geoserver.serverTree;
+								// that.messageModal(serverTree.translation.err[serverTree.locale],
+								// serverTree.translation.noimpsamestore[serverTree.locale]);
+								duplication = true;
+								except.push(item);
+							} else {
+								params["geoLayerList"].push(item.text);
+								var layer = workspace.text + ":" + item.text;
+								layerString.push(layer);
+							}
+						}
 
 						wms = new ol.layer.Tile({
 							extent : undefined,
@@ -903,6 +897,15 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					console.error("no collection to push");
 				}
 			} else {
+				
+				var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+				if (dupLayer !== undefined) {
+					var serverTree = that._data.geoserver.serverTree;
+					// that.messageModal(serverTree.translation.err[serverTree.locale],
+					// serverTree.translation.noimpsamestore[serverTree.locale]);
+					duplication = true;
+				}
+				
 				var git = {
 					"allChildren" : childrenLength,
 					"loadedChildren" : 0,
@@ -930,7 +933,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				}
 				for (var i = 0; i < children.length; i++) {
 					var layer = this.get_node(children[i]);
-					this.recursive_node_load(layer, datastore.getLayers());
+					var isLast = false;
+					if (i == (children.length - 1)) {
+						isLast = true;
+					}
+					this.recursive_node_load(layer, datastore.getLayers(), duplication, isLast);
 					// objNodes.push(layer);
 				}
 			}
@@ -962,8 +969,10 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
 				var serverTree = that._data.geoserver.serverTree;
-				that.messageModal(serverTree.translation.err[serverTree.locale], serverTree.translation.noimpsamestore[serverTree.locale]);
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
+				duplication = true;
 				var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
 				var parent = that._data.geoserver.clientTree.get_LayerByOLId(datastore.id);
 				console.log(parent);
@@ -1092,6 +1101,17 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							wms.set("git", git);
 							wms.set("id", node.id);
 							wms.set("name", node.text);
+							// ====================
+							var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+							if (dupLayer !== undefined) {
+								var serverTree = that._data.geoserver.serverTree;
+								// that.messageModal(serverTree.translation.err[serverTree.locale],
+								// serverTree.translation.noimpsamestore[serverTree.locale]);
+								console.error("layer duplicated");
+								duplication = true;
+								continue;
+							}
+							// ====================
 
 							if (collection instanceof ol.Collection) {
 								collection.push(wms);
@@ -1112,7 +1132,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											console.log("done");
 											that._data.geoserver.clientTree.refresh();
 											if (git["failedChildren"] > 0) {
-												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
 											}
 											var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
 											console.log(parent);
@@ -1149,6 +1169,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					}
 				}
 			});
+		}
+		if (isLast && duplication) {
+			var serverTree = that._data.geoserver.serverTree;
+			that.messageModal(serverTree.translation.err[serverTree.locale],
+					serverTree.translation.noimpsamestore[serverTree.locale]);
 		}
 	};
 

@@ -361,7 +361,8 @@ html {
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"logLayer" : "geogig/logLayer.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});

@@ -879,6 +879,7 @@ gb.versioning.Repository = function(obj) {
 	this.removeGeogigLayerURL = url.removeGeogigLayer ? url.removeGeogigLayer : undefined;
 	this.infoRepositoryURL = url.infoRepository ? url.infoRepository : undefined;
 	this.logLayerURL = url.logLayer ? url.logLayer : undefined;
+	this.diffLayerURL = url.diffLayer ? url.diffLayer : undefined;
 
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
@@ -1811,6 +1812,16 @@ gb.versioning.Repository.prototype.getInfoRepositoryURL = function() {
  */
 gb.versioning.Repository.prototype.getLogLayerURL = function() {
 	return this.logLayerURL;
+};
+
+/**
+ * diffLayer 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getDiffLayerURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getDiffLayerURL = function() {
+	return this.diffLayerURL;
 };
 
 /**
@@ -6548,7 +6559,7 @@ gb.versioning.Repository.prototype.showSpinner = function(show, modal) {
 /**
  * 레이어 편집이력을 요청한다.
  * 
- * @method gb.versioning.Repository#beginTransaction
+ * @method gb.versioning.Repository#loadLayerHistory
  * @param {String}
  *            serverName - 지오서버 이름
  * @param {String}
@@ -6639,55 +6650,64 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 						var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 						var detailBtn =
 							$("<button>").addClass("gb-button-clear").append(detailIcon).click(function(){
-								console.log($(this).parents().eq(1));
-								var nowrow = $(this).parents().eq(1);
-								var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
-								$(".gb-repository-history-detail-row").remove();
-								if (!flag) {
-									var ul = $("<ul>").css({
-										"padding-left" : "22px"
-									});
-									var div = $("<div>").css({
-										"padding" : "5px 11px"
-									}).append(ul);
-
-									for (var i = 0; i < 3; i++) {
-										var type = $("<span>").css({
-											// "float" : "left",
-											"margin" : "5px"
-										}).text(that.translation.modified[that.locale]);
-										var fid = $("<span>").css({
-											// "float" : "left",
-											"margin" : "5px"
-										}).text("abcdef23");
-										var icon = $("<i>").addClass("fas").addClass("fa-search");
-										var deBtn = $("<button>").css({
-											// "float" : "right",
-											"margin" : "5px"
-										}).append(icon).addClass("gb-button-clear").click(function(){
-											that.beforeAfterDetailModal();
-										});
-										var de1 = $("<div>").css({
-											// "height": "32px",
-											// "width": "180px",
-											// "float" : "right"
-										}).append(type).append(fid).append(deBtn);
-										var li = $("<li>").append(de1);
-										$(ul).append(li);
-									}
-
-									var td1 = $("<td>").attr({
-										"colspan" : "2"
-									});
-									var td2 = $("<td>").append(div);
-									var td3 = $("<td>").attr({
-										"colspan" : "2"
-									});
-									var tr1 =
-										$("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
-
-									$(this).parents().eq(1).after(tr1);
-								}
+								
+								var server = params["serverName"];
+								var repo = params["repoName"];
+								var path  = params["path"];
+								console.log($(this).parents().eq(1).index());
+								var newidx = $(this).parents().eq(1).index();
+								var oldidx = $(this).parents().eq(1).index()+1;
+								that.loadCommitDetail(server, repo, path, newidx, oldidx);
+								
+// console.log($(this).parents().eq(1));
+// var nowrow = $(this).parents().eq(1);
+// var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
+// $(".gb-repository-history-detail-row").remove();
+// if (!flag) {
+// var ul = $("<ul>").css({
+// "padding-left" : "22px"
+// });
+// var div = $("<div>").css({
+// "padding" : "5px 11px"
+// }).append(ul);
+//
+// for (var i = 0; i < 3; i++) {
+// var type = $("<span>").css({
+// // "float" : "left",
+// "margin" : "5px"
+// }).text(that.translation.modified[that.locale]);
+// var fid = $("<span>").css({
+// // "float" : "left",
+// "margin" : "5px"
+// }).text("abcdef23");
+// var icon = $("<i>").addClass("fas").addClass("fa-search");
+// var deBtn = $("<button>").css({
+// // "float" : "right",
+// "margin" : "5px"
+// }).append(icon).addClass("gb-button-clear").click(function(){
+// that.beforeAfterDetailModal();
+// });
+// var de1 = $("<div>").css({
+// // "height": "32px",
+// // "width": "180px",
+// // "float" : "right"
+// }).append(type).append(fid).append(deBtn);
+// var li = $("<li>").append(de1);
+// $(ul).append(li);
+// }
+//
+// var td1 = $("<td>").attr({
+// "colspan" : "2"
+// });
+// var td2 = $("<td>").append(div);
+// var td3 = $("<td>").attr({
+// "colspan" : "2"
+// });
+// var tr1 =
+// $("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
+//
+// $(this).parents().eq(1).after(tr1);
+// }
 
 							});
 						var detail = $("<td>").css({
@@ -6720,6 +6740,61 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 						$(tbody).append(row1);
 					}
 				}
+			} else {
+				that.errorModal(data.error);
+			}
+		}
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
+	});
+};
+
+/**
+ * 커밋의 상세 편집이력을 요청한다.
+ * 
+ * @method gb.versioning.Repository#beginTransaction
+ * @param {String}
+ *            serverName - 지오서버 이름
+ * @param {String}
+ *            repoName - 레파지토리 이름
+ * @return {Object} 트랜잭션 아이디 객체
+ */
+gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx) {
+	var that = this;
+	var params = {
+			"serverName" : server,
+			"repoName" : repo,
+			"layerName": layer,
+			"newIndex" : newidx,
+			"oldIndex" : oldidx
+	}
+	// + "&" + jQuery.param(params),
+	var tranURL = this.getDiffLayerURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		// data : params,
+		// dataType : 'jsonp',
+		// jsonpCallback : 'getJson',
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				
 			} else {
 				that.errorModal(data.error);
 			}

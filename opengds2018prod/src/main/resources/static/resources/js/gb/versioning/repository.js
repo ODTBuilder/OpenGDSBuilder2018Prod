@@ -799,8 +799,8 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Date"
 			},
 			"commitmsg" : {
-				"ko" : "커밋 메세지",
-				"en" : "Commit Message"
+				"ko" : "설명",
+				"en" : "Description"
 			},
 			"revert" : {
 				"ko" : "되돌리기",
@@ -849,6 +849,10 @@ gb.versioning.Repository = function(obj) {
 			"unknown" : {
 				"ko" : "알 수 없음",
 				"en" : "Unknown"
+			},
+			"nochange" : {
+				"ko" : "변경사항을 조회할 수 없었습니다.",
+				"en" : "Changes could not be retrieved."
 			}
 	};
 	var options = obj ? obj : {};
@@ -5790,7 +5794,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"text-align" : "center"
 	}).text(that.translation.author[that.locale]);
 	var day = $("<td>").css({
-		"width" : "20%",
+		"width" : "15%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
@@ -5800,7 +5804,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"text-align" : "center"
 	}).text(that.translation.date[that.locale]);
 	var cmsg = $("<td>").css({
-		"width" : "35%",
+		"width" : "40%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
@@ -5871,51 +5875,6 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"height" : "498px",
 		"overflow-y" : "auto"
 	}).append(reftd).append(tb).append(td3);
-
-	// var params = {
-	// "serverName" : server,
-	// "repoName" : repo,
-	// "transactionId" : tid,
-	// "path" : path,
-	// "recursive" : true
-	// };
-	//
-	// var checkURL = this.getRemoveGeogigLayerURL();
-	// if (checkURL.indexOf("?") !== -1) {
-	// checkURL += "&";
-	// checkURL += jQuery.param(params);
-	// } else {
-	// checkURL += "?";
-	// checkURL += jQuery.param(params);
-	// }
-	// $.ajax({
-	// url : checkURL,
-	// method : "POST",
-	// contentType : "application/json; charset=UTF-8",
-	// beforeSend : function() {
-	// $("body").css("cursor", "wait");
-	// },
-	// complete : function() {
-	// $("body").css("cursor", "default");
-	// },
-	// success : function(data) {
-	// console.log(data);
-	// if (data.success === "true") {
-	// if (data.error === null) {
-	// var group = $("<div>").append(that.translation.layerdel[that.locale]);
-	// that.messageModal(that.translation.message[that.locale], group);
-	// modal.close();
-	// if (typeof callback === "function") {
-	// callback();
-	// }
-	// }
-	// } else {
-	// that.errorModal(data.error);
-	// }
-	// }
-	// }).fail(function(xhr, status, errorThrown) {
-	// that.errorModal(xhr.responseJSON.status);
-	// });
 
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -6654,14 +6613,14 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 							"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 						}).text(commits[i].authorName);
 						var day = $("<td>").css({
-							"width" : "20%",
+							"width" : "15%",
 							"word-break" : " break-word",
 							"vertical-align" : "middle",
 							"padding" : "0.785714em",
 							"border-top" : "1px solid rgba(0, 0, 0, 0.1)"
 						}).text(commits[i].date);
 						var cmsg = $("<td>").css({
-							"width" : "35%",
+							"width" : "40%",
 							"word-break" : " break-word",
 							"vertical-align" : "middle",
 							"padding" : "0.785714em",
@@ -6779,64 +6738,64 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 				var diffs = data.diffs;
 				if (Array.isArray(diffs)) {
 					console.log($(btn).parents().eq(1));
-// var nowrow = $(btn).parents().eq(1);
-// var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
-// if (!flag) {
-						var ul = $("<ul>").css({
-							"padding-left" : "22px"
+
+					var ul = $("<ul>").css({
+						"padding-left" : "22px"
+					});
+					var div = $("<div>").css({
+						"padding" : "5px 11px"
+					}).append(ul);
+
+					for (var i = 0; i < diffs.length; i++) {
+						var typeLabel = typeof diffs[i].changeType === "string" ? diffs[i].changeType.toLowerCase() : "unknown";  
+						var type = $("<span>").css({
+							// "float" : "left",
+							"margin" : "5px"
+						}).text(that.translation[typeLabel][that.locale]);
+						var fid = $("<span>").css({
+							// "float" : "left",
+							"margin" : "5px"
+						}).text(diffs[i].path);
+						var icon = $("<i>").addClass("fas").addClass("fa-search");
+						var deBtn = $("<button>").css({
+							// "float" : "right",
+							"margin" : "5px"
+						}).attr({
+							"newObjectId" : diffs[i].newObjectId,
+							"oldObjectId" : diffs[i].oldObjectId
+						}).append(icon).addClass("gb-button-clear").click(function(){
+							that.beforeAfterDetailModal();
 						});
-						var div = $("<div>").css({
-							"padding" : "5px 11px"
-						}).append(ul);
+						var de1 = $("<div>").css({
+							// "height": "32px",
+							// "width": "180px",
+							// "float" : "right"
+						}).append(type).append(fid).append(deBtn);
+						var li = $("<li>").append(de1);
+						$(ul).append(li);
 
-						for (var i = 0; i < diffs.length; i++) {
-							var typeLabel = typeof diffs[i].changeType === "string" ? diffs[i].changeType.toLowerCase() : "unknown";  
-							var type = $("<span>").css({
-								// "float" : "left",
-								"margin" : "5px"
-							}).text(that.translation[typeLabel][that.locale]);
-							var fid = $("<span>").css({
-								// "float" : "left",
-								"margin" : "5px"
-							}).text(diffs[i].path);
-							var icon = $("<i>").addClass("fas").addClass("fa-search");
-							var deBtn = $("<button>").css({
-								// "float" : "right",
-								"margin" : "5px"
-							}).attr({
-								"newObjectId" : diffs[i].newObjectId,
-								"oldObjectId" : diffs[i].oldObjectId
-							}).append(icon).addClass("gb-button-clear").click(function(){
-								that.beforeAfterDetailModal();
-							});
-							var de1 = $("<div>").css({
-								// "height": "32px",
-								// "width": "180px",
-								// "float" : "right"
-							}).append(type).append(fid).append(deBtn);
-							var li = $("<li>").append(de1);
-							$(ul).append(li);
-// }
-// }
+						var td1 = $("<td>").attr({
+							"colspan" : "2"
+						});
+						var td2 = $("<td>").append(div);
+						var td3 = $("<td>").attr({
+							"colspan" : "2"
+						});
+						var tr1 =
+							$("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
 
-					var td1 = $("<td>").attr({
-						"colspan" : "2"
-					});
-					var td2 = $("<td>").append(div);
-					var td3 = $("<td>").attr({
-						"colspan" : "2"
-					});
-					var tr1 =
-						$("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
-
-					$(btn).parents().eq(1).after(tr1);
+						$(btn).parents().eq(1).after(tr1);
+					}
+				} else {
+					var title = that.translation.err[that.locale];
+					var msg = that.translation.nochange[that.locale];
+					that.messageModal(title, msg);
 				}
+			} else {
+				that.errorModal(data.error);
 			}
-		} else {
-			that.errorModal(data.error);
 		}
-	}
-}).fail(function(xhr, status, errorThrown) {
-	that.errorModal(xhr.responseJSON.status);
-});
+	}).fail(function(xhr, status, errorThrown) {
+		that.errorModal(xhr.responseJSON.status);
+	});
 };

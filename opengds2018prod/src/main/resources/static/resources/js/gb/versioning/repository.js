@@ -841,6 +841,14 @@ gb.versioning.Repository = function(obj) {
 			"nocommit" : {
 				"ko" : "불러올 이력이 없습니다.",
 				"en" : "No commits to load"
+			},
+			"nodetailretr" : {
+				"ko" : "조회 가능한 개수를 초과하였습니다.",
+				"en" : "You have exceeded the viewable number."
+			},
+			"unknown" : {
+				"ko" : "알 수 없음",
+				"en" : "Unknown"
 			}
 	};
 	var options = obj ? obj : {};
@@ -5776,21 +5784,30 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
-		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+		"border-right" : "1px solid rgba(0, 0, 0, 0.1)",
+		"background": "rgba(0, 0, 0, 0.03)",
+		"text-align" : "center"
 	}).text(that.translation.author[that.locale]);
 	var day = $("<td>").css({
 		"width" : "20%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
-		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+		"border-right" : "1px solid rgba(0, 0, 0, 0.1)",
+		"background": "rgba(0, 0, 0, 0.03)",
+		"text-align" : "center"
 	}).text(that.translation.date[that.locale]);
 	var cmsg = $("<td>").css({
 		"width" : "35%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
-		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)"
+		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+		"border-right" : "1px solid rgba(0, 0, 0, 0.1)",
+		"background": "rgba(0, 0, 0, 0.03)",
+		"text-align" : "center"
 	}).text(that.translation.commitmsg[that.locale]);
 	var detail = $("<td>").css({
 		"width" : "10%",
@@ -5798,6 +5815,8 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+		"border-right" : "1px solid rgba(0, 0, 0, 0.1)",
+		"background": "rgba(0, 0, 0, 0.03)",
 		"text-align" : "center"
 	}).text(that.translation.detail[that.locale]);
 	var revert = $("<td>").css({
@@ -5806,6 +5825,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
 		"border-bottom" : "1px solid rgba(0, 0, 0, 0.1)",
+		"background": "rgba(0, 0, 0, 0.03)",
 		"text-align" : "center"
 	}).text(that.translation.revert[that.locale]);
 
@@ -5904,7 +5924,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 
 	var modal = new gb.modal.Base({
 		"title" : this.translation.history[this.locale],
-		"width" : 800,
+		"width" : 1000,
 		"autoOpen" : true,
 		"body" : body,
 		"footer" : buttonArea
@@ -6650,65 +6670,26 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 						var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 						var detailBtn =
 							$("<button>").addClass("gb-button-clear").append(detailIcon).click(function(){
-								
+								var tr = $(this).parents().eq(1);
+								var changes = parseInt($(tr).attr("changes"));
+								if (changes >= 10) {
+									var title = that.translation.err[that.locale];
+									var msg = that.translation.nodetailretr[that.locale];
+									that.messageModal(title, msg);
+									return;
+								}
 								var server = params["serverName"];
 								var repo = params["repoName"];
 								var path  = params["path"];
 								console.log($(this).parents().eq(1).index());
-								var newidx = $(this).parents().eq(1).index();
-								var oldidx = $(this).parents().eq(1).index()+1;
-								that.loadCommitDetail(server, repo, path, newidx, oldidx);
-								
-// console.log($(this).parents().eq(1));
-// var nowrow = $(this).parents().eq(1);
-// var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
-// $(".gb-repository-history-detail-row").remove();
-// if (!flag) {
-// var ul = $("<ul>").css({
-// "padding-left" : "22px"
-// });
-// var div = $("<div>").css({
-// "padding" : "5px 11px"
-// }).append(ul);
-//
-// for (var i = 0; i < 3; i++) {
-// var type = $("<span>").css({
-// // "float" : "left",
-// "margin" : "5px"
-// }).text(that.translation.modified[that.locale]);
-// var fid = $("<span>").css({
-// // "float" : "left",
-// "margin" : "5px"
-// }).text("abcdef23");
-// var icon = $("<i>").addClass("fas").addClass("fa-search");
-// var deBtn = $("<button>").css({
-// // "float" : "right",
-// "margin" : "5px"
-// }).append(icon).addClass("gb-button-clear").click(function(){
-// that.beforeAfterDetailModal();
-// });
-// var de1 = $("<div>").css({
-// // "height": "32px",
-// // "width": "180px",
-// // "float" : "right"
-// }).append(type).append(fid).append(deBtn);
-// var li = $("<li>").append(de1);
-// $(ul).append(li);
-// }
-//
-// var td1 = $("<td>").attr({
-// "colspan" : "2"
-// });
-// var td2 = $("<td>").append(div);
-// var td3 = $("<td>").attr({
-// "colspan" : "2"
-// });
-// var tr1 =
-// $("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
-//
-// $(this).parents().eq(1).after(tr1);
-// }
 
+								var flag = $(tr).next().hasClass("gb-repository-history-detail-row");
+								$(".gb-repository-history-detail-row").remove();
+								var newidx = $(tr).index();
+								var oldidx = $(tr).index()+1;
+								if (!flag) {
+									that.loadCommitDetail(server, repo, path, newidx, oldidx, $(this)[0]);									
+								}
 							});
 						var detail = $("<td>").css({
 							"width" : "10%",
@@ -6735,7 +6716,8 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 
 						var row1 =
 							$("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert).attr({
-								"commitId" : commits[i].commitId
+								"commitId" : commits[i].commitId,
+								"changes" : (commits[i].adds + commits[i].modifies + commits[i].removes)
 							});
 						$(tbody).append(row1);
 					}
@@ -6759,7 +6741,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
  *            repoName - 레파지토리 이름
  * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx) {
+gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx, btn) {
 	var that = this;
 	var params = {
 			"serverName" : server,
@@ -6794,12 +6776,67 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
-				
-			} else {
-				that.errorModal(data.error);
+				var diffs = data.diffs;
+				if (Array.isArray(diffs)) {
+					console.log($(btn).parents().eq(1));
+// var nowrow = $(btn).parents().eq(1);
+// var flag = $(nowrow).next().hasClass("gb-repository-history-detail-row");
+// if (!flag) {
+						var ul = $("<ul>").css({
+							"padding-left" : "22px"
+						});
+						var div = $("<div>").css({
+							"padding" : "5px 11px"
+						}).append(ul);
+
+						for (var i = 0; i < diffs.length; i++) {
+							var typeLabel = typeof diffs[i].changeType === "string" ? diffs[i].changeType.toLowerCase() : "unknown";  
+							var type = $("<span>").css({
+								// "float" : "left",
+								"margin" : "5px"
+							}).text(that.translation[typeLabel][that.locale]);
+							var fid = $("<span>").css({
+								// "float" : "left",
+								"margin" : "5px"
+							}).text(diffs[i].path);
+							var icon = $("<i>").addClass("fas").addClass("fa-search");
+							var deBtn = $("<button>").css({
+								// "float" : "right",
+								"margin" : "5px"
+							}).attr({
+								"newObjectId" : diffs[i].newObjectId,
+								"oldObjectId" : diffs[i].oldObjectId
+							}).append(icon).addClass("gb-button-clear").click(function(){
+								that.beforeAfterDetailModal();
+							});
+							var de1 = $("<div>").css({
+								// "height": "32px",
+								// "width": "180px",
+								// "float" : "right"
+							}).append(type).append(fid).append(deBtn);
+							var li = $("<li>").append(de1);
+							$(ul).append(li);
+// }
+// }
+
+					var td1 = $("<td>").attr({
+						"colspan" : "2"
+					});
+					var td2 = $("<td>").append(div);
+					var td3 = $("<td>").attr({
+						"colspan" : "2"
+					});
+					var tr1 =
+						$("<tr>").addClass("gb-repository-history-detail-row").append(td1).append(td2).append(td3);
+
+					$(btn).parents().eq(1).after(tr1);
+				}
 			}
+		} else {
+			that.errorModal(data.error);
 		}
-	}).fail(function(xhr, status, errorThrown) {
-		that.errorModal(xhr.responseJSON.status);
-	});
+	}
+}).fail(function(xhr, status, errorThrown) {
+	that.errorModal(xhr.responseJSON.status);
+});
 };

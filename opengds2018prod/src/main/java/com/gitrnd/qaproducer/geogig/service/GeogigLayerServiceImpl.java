@@ -29,7 +29,6 @@ import com.gitrnd.gdsbuilder.geogig.type.GeogigLayerSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemove;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit.ChangeType;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 
 /**
@@ -85,18 +84,17 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 				DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String dateStr = dateformat.format(date);
 
-				ChangeType changeType = ChangeType.ADDED;
 				int addedCount = Integer.parseInt(newCommit.getAdds());
 				if (addedCount > 0) {
-					changeType = ChangeType.ADDED;
+					simpleCommit.setAdds(addedCount);
 				}
 				int removedCount = Integer.parseInt(newCommit.getRemoves());
 				if (removedCount > 0) {
-					changeType = ChangeType.REMOVED;
+					simpleCommit.setRemoves(removedCount);
 				}
 				int modifiedCount = Integer.parseInt(newCommit.getModifies());
 				if (modifiedCount > 0) {
-					changeType = ChangeType.MODIFIED;
+					simpleCommit.setModifies(modifiedCount);
 				}
 				simpleCommit.setDate(dateStr);
 				simpleCommits.add(simpleCommit);

@@ -52,6 +52,19 @@ public class GeogigLayerSimpleLog {
 
 		private String message;
 
+		/**
+		 * 생성된 feature 개수
+		 */
+		private int adds;
+		/**
+		 * 변경된 feature 개수
+		 */
+		private int modifies;
+		/**
+		 * 삭제된 feature 개수
+		 */
+		private int removes;
+
 		public String getCommitId() {
 			return commitId;
 		}
@@ -82,6 +95,30 @@ public class GeogigLayerSimpleLog {
 
 		public void setMessage(String message) {
 			this.message = message;
+		}
+
+		public int getAdds() {
+			return adds;
+		}
+
+		public void setAdds(int adds) {
+			this.adds = adds;
+		}
+
+		public int getModifies() {
+			return modifies;
+		}
+
+		public void setModifies(int modifies) {
+			this.modifies = modifies;
+		}
+
+		public int getRemoves() {
+			return removes;
+		}
+
+		public void setRemoves(int removes) {
+			this.removes = removes;
 		}
 	}
 }

@@ -363,7 +363,8 @@ html {
 				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}",
 				"logLayer" : "geogig/logLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"diffLayer" : "geogig/diffLayer.do?${_csrf.parameterName}=${_csrf.token}"
+				"diffLayer" : "geogig/diffLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});

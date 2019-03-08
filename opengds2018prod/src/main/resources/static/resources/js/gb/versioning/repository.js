@@ -853,6 +853,14 @@ gb.versioning.Repository = function(obj) {
 			"nochange" : {
 				"ko" : "변경사항을 조회할 수 없었습니다.",
 				"en" : "Changes could not be retrieved."
+			},
+			"beforeft" : {
+				"ko" : "변경 전",
+				"en" : "Before"
+			},
+			"afterft" : {
+				"ko" : "변경 후",
+				"en" : "After"
 			}
 	};
 	var options = obj ? obj : {};
@@ -892,6 +900,7 @@ gb.versioning.Repository = function(obj) {
 	this.infoRepositoryURL = url.infoRepository ? url.infoRepository : undefined;
 	this.logLayerURL = url.logLayer ? url.logLayer : undefined;
 	this.diffLayerURL = url.diffLayer ? url.diffLayer : undefined;
+	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
 
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
@@ -1212,7 +1221,15 @@ gb.versioning.Repository = function(obj) {
 		"center" : [ 0, 0 ],
 		"zoom" : 1
 	});
-
+	
+	this.ofeature = $("<div>").css({
+		"width" : "100%",
+		"height" : "200px",
+		"background-color" : "#dbdbdb",
+		"border" : "1px solid #ccc",
+		"border-radius" : "4px"
+	});
+	
 	this.cfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -1229,6 +1246,11 @@ gb.versioning.Repository = function(obj) {
 		"border-radius" : "4px"
 	});
 
+	this.omap = new ol.Map({
+		"target" : $(this.ofeature)[0],
+		"layers" : []
+	});
+	
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		// "view" : this.conflictView1,
@@ -1834,6 +1856,16 @@ gb.versioning.Repository.prototype.getLogLayerURL = function() {
  */
 gb.versioning.Repository.prototype.getDiffLayerURL = function() {
 	return this.diffLayerURL;
+};
+
+/**
+ * featureDiff 요청 컨트롤러 주소를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFeatureDiffURL
+ * @return {String} 컨트롤러 주소 URL
+ */
+gb.versioning.Repository.prototype.getFeatureDiffURL = function() {
+	return this.featureDiffURL;
 };
 
 /**
@@ -6764,7 +6796,7 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 							"newObjectId" : diffs[i].newObjectId,
 							"oldObjectId" : diffs[i].oldObjectId
 						}).append(icon).addClass("gb-button-clear").click(function(){
-							that.beforeAfterDetailModal();
+							that.openDetailChanges();
 						});
 						var de1 = $("<div>").css({
 							// "height": "32px",
@@ -6798,4 +6830,574 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 	}).fail(function(xhr, status, errorThrown) {
 		that.errorModal(xhr.responseJSON.status);
 	});
+};
+
+/**
+ * 피처 디테일 창을 연다.
+ * 
+ * @method gb.versioning.Repository#openDetailChanges
+ * @param {String}
+ *            server - 서버 이름
+ * @param {String}
+ *            repo - 레파지토리 이름
+ * @param {String}
+ *            path - 피처 패스
+ * @param {Number}
+ *            nidx - 최신 커밋 인덱스
+ * @param {Number}
+ *            oidx - 타겟 커밋 인덱스
+ */
+gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
+	var that = this;
+
+	var olabel = $("<div>").append(that.translation.beforeft[that.locale]).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+
+	var oheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var oheadtd2 = $("<th>").text(that.translation.value[that.locale]);
+	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
+	var oattrthead = $("<thead>").append(oheadth);
+	this.oattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
+	var oattribute = $("<div>").append(oattrtable).css({
+		"height" : "240px",
+		"width" : "100%",
+		"overflow" : "auto"
+	});
+	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+
+	var clabel = $("<div>").append(that.translation.afterft[that.locale]).addClass("gb-form").css({
+		"text-align" : "center"
+	});
+
+	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
+	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
+	var cattrthead = $("<thead>").append(cheadth);
+	this.cattrtbody = $("<tbody>").css({
+		"overflow-y" : "auto",
+		"height" : "340px",
+		"width" : "354px"
+	});
+	var cattrtable = $("<table>").append(cattrthead).append(this.cattrtbody).addClass("gb-table").css({
+		"width" : "100%",
+		"table-layout" : "fixed"
+	});
+	var cattribute = $("<div>").append(cattrtable).css({
+		"height" : "240px",
+		"width" : "100%",
+		"overflow" : "auto"
+	});
+
+	$(this.oattrtbody).on("scroll", function() {
+		$(that.cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
+	});
+
+	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).css({
+		"float" : "left",
+		"width" : "50%",
+		"padding" : "10px"
+	});
+
+	var ocarea = $("<div>").css({
+		"height" : "496px"
+	}).append(oarea).append(carea);
+
+	var body = $("<div>").append(ocarea);
+
+	var closeBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
+	var okBtn = $("<button>").css({
+		"float" : "right"
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+
+	var modal = new gb.modal.Base({
+		"title" : that.translation.comparebeaf[that.locale],
+		"width" : 770,
+		"height" : 840,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : buttonArea
+	});
+
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+
+	var that = this;
+	var params = {
+		"serverName" : server,
+		"repoName" : repo,
+		"path" : path,
+		"newCommitId" : nidx,
+		"oldCommitId" : oidx
+	}
+
+	var tranURL = this.getFeatureDiffURL();
+	if (tranURL.indexOf("?") !== -1) {
+		tranURL += "&";
+		tranURL += jQuery.param(params);
+	} else {
+		tranURL += "?";
+		tranURL += jQuery.param(params);
+	}
+
+	$.ajax({
+		url : tranURL,
+		method : "POST",
+		contentType : "application/json; charset=UTF-8",
+		beforeSend : function() {
+			// $("body").css("cursor", "wait");
+		},
+		complete : function() {
+			// $("body").css("cursor", "default");
+		},
+		success : function(data) {
+			console.log(data);
+			if (data.success === "true") {
+				if (data.hasOwnProperty("diffs")) {
+					var diffs = data.diffs
+					if (Array.isArray(diffs)) {
+						if (diffs.length === 1) {
+							var elem = diffs[0];
+
+							var oldParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.path,
+								"commitId" : elem.oldObjectId
+							}
+							console.log(oldParams);
+
+							var oldURL = that.getCatFeatureObjectURL();
+							if (oldURL.indexOf("?") !== -1) {
+								oldURL += "&";
+								oldURL += jQuery.param(oldParams);
+							} else {
+								oldURL += "?";
+								oldURL += jQuery.param(oldParams);
+							}
+
+							$.ajax({
+								url : oldURL,
+								method : "POST",
+								contentType : "application/json; charset=UTF-8",
+								beforeSend : function() {
+									// $("body").css("cursor", "wait");
+								},
+								complete : function() {
+									// $("body").css("cursor", "default");
+								},
+								success : function(data_old) {
+									console.log(data_old);
+									if (data_old.success === "true" && data_old.error === null) {
+										var attr = data_old.attributes;
+										for (var i = 0; i < attr.length; i++) {
+											if (attr[i].crs !== null
+													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+												var oldwkt = attr[i].value;
+												if (oldwkt !== undefined && oldwkt !== null) {
+													var format = new ol.format.WKT();
+													var geom = format.readGeometry(oldwkt);
+													var feature = new ol.Feature({
+														"geometry" : geom
+													});
+
+													var style = new ol.style.Style({
+														image : new ol.style.Circle({
+															radius : 5,
+															fill : new ol.style.Fill({
+																color : 'orange'
+															})
+														}),
+														stroke : new ol.style.Stroke({
+															width : 1,
+															color : 'orange'
+														}),
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													});
+
+													var vlayer = new ol.layer.Vector({
+														"style" : style,
+														"source" : new ol.source.Vector({
+															"features" : [ feature ]
+														}),
+														"zIndex" : 2
+													});
+
+													var osm = new ol.layer.Tile({
+														"source" : new ol.source.OSM(),
+														"zIndex" : 1
+													});
+
+													that.getLeftMap().updateSize();
+													that.getLeftMap().getLayers().clear();
+													that.getLeftMap().addLayer(osm);
+													that.getLeftMap().addLayer(vlayer);
+													// that.getLeftMap().getView().fit(geom);
+
+													// this.leftcrs = new
+													// gb.crs.BaseCRS({
+													// "autoOpen" : false,
+													// "title" : "Base CRS",
+													// "message" :
+													// $(".epsg-now"),
+													// "maps" : [
+													// that.getLeftMap() ],
+													// "epsg" : crs,
+													// "callback" : function() {
+													// that.getLeftMap().getView().fit(geom);
+													// }
+													// });
+												}
+											} else {
+												var otd1 = $("<td>").text(attr[i].name);
+												var otd2 = $("<td>").text(attr[i].value);
+												var otr1 = $("<tr>").append(otd1).append(otd2);
+												$(that.getLeftTBody()).append(otr1);
+											}
+										}
+									}
+								}
+							});
+
+							var newParams = {
+								"serverName" : server,
+								"repoName" : repo,
+								"path" : elem.newPath,
+								"commitId" : elem.newObjectId
+							}
+							console.log(newParams);
+
+							var newURL = that.getCatFeatureObjectURL();
+							if (newURL.indexOf("?") !== -1) {
+								newURL += "&";
+								newURL += jQuery.param(newParams);
+							} else {
+								newURL += "?";
+								newURL += jQuery.param(newParams);
+							}
+
+							$.ajax({
+								url : newURL,
+								method : "POST",
+								contentType : "application/json; charset=UTF-8",
+								beforeSend : function() {
+									// $("body").css("cursor", "wait");
+								},
+								complete : function() {
+									// $("body").css("cursor", "default");
+								},
+								success : function(data_new) {
+									console.log(data_new);
+									if (data_new.success === "true" && data_new.error === null) {
+										var attr = data_new.attributes;
+										for (var i = 0; i < attr.length; i++) {
+											if (attr[i].crs !== null
+													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+												var newwkt = attr[i].value;
+												if (newwkt !== undefined && newwkt !== null) {
+													var format = new ol.format.WKT();
+													var geom = format.readGeometry(newwkt);
+													var feature = new ol.Feature({
+														"geometry" : geom
+													});
+
+													var style = new ol.style.Style({
+														image : new ol.style.Circle({
+															radius : 5,
+															fill : new ol.style.Fill({
+																color : 'orange'
+															})
+														}),
+														stroke : new ol.style.Stroke({
+															width : 1,
+															color : 'orange'
+														}),
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													});
+
+													var vlayer = new ol.layer.Vector({
+														"style" : style,
+														"source" : new ol.source.Vector({
+															"features" : [ feature ]
+														}),
+														"zIndex" : 2
+													});
+
+													var osm = new ol.layer.Tile({
+														"source" : new ol.source.OSM(),
+														"zIndex" : 1
+													});
+
+													that.getRightMap().updateSize();
+													that.getRightMap().getLayers().clear();
+													that.getRightMap().addLayer(osm);
+													that.getRightMap().addLayer(vlayer);
+													// that.getLeftMap().getView().fit(geom);
+
+													this.crs = new gb.crs.BaseCRS({
+														"autoOpen" : false,
+														"title" : "Base CRS",
+														"message" : $(".epsg-now"),
+														"maps" : [ that.getLeftMap(), that.getRightMap() ],
+														"epsg" : crs,
+														"callback" : function() {
+															that.getRightMap().getView().fit(geom);
+														}
+													});
+												}
+											} else {
+												var ctd1 = $("<td>").text(attr[i].name);
+												var ctd2 = $("<td>").text(attr[i].value);
+												var ctr1 = $("<tr>").append(ctd1).append(ctd2);
+												$(that.getRightTBody()).append(ctr1);
+											}
+										}
+									}
+								}
+							});
+						}
+					} else {
+
+						var oldParams = {
+							"serverName" : server,
+							"repoName" : repo,
+							"path" : path,
+							"commitId" : oidx
+						}
+						console.log(oldParams);
+
+						var oldURL = that.getFeatureAttributeURL();
+						if (oldURL.indexOf("?") !== -1) {
+							oldURL += "&";
+							oldURL += jQuery.param(oldParams);
+						} else {
+							oldURL += "?";
+							oldURL += jQuery.param(oldParams);
+						}
+
+						$.ajax({
+							url : oldURL,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data_old) {
+								console.log(data_old);
+								if (data_old.success === "true" && data_old.error === null) {
+									var attr = data_old.attributes;
+									for (var i = 0; i < attr.length; i++) {
+										if (attr[i].crs !== null
+												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+											var oldwkt = attr[i].value;
+											if (oldwkt !== undefined && oldwkt !== null) {
+												var format = new ol.format.WKT();
+												var geom = format.readGeometry(oldwkt);
+												var feature = new ol.Feature({
+													"geometry" : geom
+												});
+
+												var style = new ol.style.Style({
+													image : new ol.style.Circle({
+														radius : 5,
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													}),
+													stroke : new ol.style.Stroke({
+														width : 1,
+														color : 'orange'
+													}),
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												});
+
+												var vlayer = new ol.layer.Vector({
+													"style" : style,
+													"source" : new ol.source.Vector({
+														"features" : [ feature ]
+													}),
+													"zIndex" : 2
+												});
+
+												var osm = new ol.layer.Tile({
+													"source" : new ol.source.OSM(),
+													"zIndex" : 1
+												});
+
+												that.getLeftMap().updateSize();
+												that.getLeftMap().getLayers().clear();
+												that.getLeftMap().addLayer(osm);
+												that.getLeftMap().addLayer(vlayer);
+												// that.getLeftMap().getView().fit(geom);
+
+												// this.leftcrs = new
+												// gb.crs.BaseCRS({
+												// "autoOpen" : false,
+												// "title" : "Base CRS",
+												// "message" :
+												// $(".epsg-now"),
+												// "maps" : [
+												// that.getLeftMap() ],
+												// "epsg" : crs,
+												// "callback" : function() {
+												// that.getLeftMap().getView().fit(geom);
+												// }
+												// });
+											}
+										} else {
+											var otd1 = $("<td>").text(attr[i].name);
+											var otd2 = $("<td>").text(attr[i].value);
+											var otr1 = $("<tr>").append(otd1).append(otd2);
+											$(that.getLeftTBody()).append(otr1);
+										}
+									}
+								}
+							}
+						});
+
+						var newParams = {
+							"serverName" : server,
+							"repoName" : repo,
+							"path" : path,
+							"commitId" : nidx
+						}
+						console.log(newParams);
+
+						var newURL = that.getFeatureAttributeURL();
+						if (newURL.indexOf("?") !== -1) {
+							newURL += "&";
+							newURL += jQuery.param(newParams);
+						} else {
+							newURL += "?";
+							newURL += jQuery.param(newParams);
+						}
+
+						$.ajax({
+							url : newURL,
+							method : "POST",
+							contentType : "application/json; charset=UTF-8",
+							beforeSend : function() {
+								// $("body").css("cursor", "wait");
+							},
+							complete : function() {
+								// $("body").css("cursor", "default");
+							},
+							success : function(data_new) {
+								console.log(data_new);
+								if (data_new.success === "true" && data_new.error === null) {
+									var attr = data_new.attributes;
+									for (var i = 0; i < attr.length; i++) {
+										if (attr[i].crs !== null
+												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
+														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
+														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
+											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
+
+											var newwkt = attr[i].value;
+											if (newwkt !== undefined && newwkt !== null) {
+												var format = new ol.format.WKT();
+												var geom = format.readGeometry(newwkt);
+												var feature = new ol.Feature({
+													"geometry" : geom
+												});
+
+												var style = new ol.style.Style({
+													image : new ol.style.Circle({
+														radius : 5,
+														fill : new ol.style.Fill({
+															color : 'orange'
+														})
+													}),
+													stroke : new ol.style.Stroke({
+														width : 1,
+														color : 'orange'
+													}),
+													fill : new ol.style.Fill({
+														color : 'orange'
+													})
+												});
+
+												var vlayer = new ol.layer.Vector({
+													"style" : style,
+													"source" : new ol.source.Vector({
+														"features" : [ feature ]
+													}),
+													"zIndex" : 2
+												});
+
+												var osm = new ol.layer.Tile({
+													"source" : new ol.source.OSM(),
+													"zIndex" : 1
+												});
+
+												that.getRightMap().updateSize();
+												that.getRightMap().getLayers().clear();
+												that.getRightMap().addLayer(osm);
+												that.getRightMap().addLayer(vlayer);
+												// that.getLeftMap().getView().fit(geom);
+
+												this.crs = new gb.crs.BaseCRS({
+													"autoOpen" : false,
+													"title" : "Base CRS",
+													"message" : $(".epsg-now"),
+													"maps" : [ that.getLeftMap(), that.getRightMap() ],
+													"epsg" : crs,
+													"callback" : function() {
+														that.getRightMap().getView().fit(geom);
+													}
+												});
+											}
+										} else {
+											var ctd1 = $("<td>").text(attr[i].name);
+											var ctd2 = $("<td>").text(attr[i].value);
+											var ctr1 = $("<tr>").append(ctd1).append(ctd2);
+											$(that.getRightTBody()).append(ctr1);
+										}
+									}
+								}
+							}
+						});
+					}
+				}
+			}
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+
+		}
+	});
+
 };

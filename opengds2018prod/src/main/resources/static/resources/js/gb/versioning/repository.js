@@ -865,6 +865,10 @@ gb.versioning.Repository = function(obj) {
 			"afterft" : {
 				"ko" : "변경 후",
 				"en" : "After"
+			},
+			"firstcommit" : {
+				"ko" : "가장 처음의 커밋입니다.",
+				"en" : "This is the very first commit."
 			}
 	};
 	var options = obj ? obj : {};
@@ -5865,11 +5869,11 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"width" : "100%"
 	}).append(rowgroup1).append(rowgroup2);
 
-	this.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true);
+	this.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true, undefined);
 
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" " + that.translation.refresh[that.locale]).click(function(){
-		that.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true);
+		that.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true, undefined);
 	});
 	var reftd = $("<div>").css({
 		"width" : "100%",
@@ -5883,7 +5887,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		var ltr = $(rowgroup2).find("tr").last();
 		var until = $(ltr).attr("commitid");
 		console.log($(ltr).attr("commitid"));
-		that.loadLayerHistory(server, repo, path, 10, until, $(rowgroup2)[0], false);
+		that.loadLayerHistory(server, repo, path, 10, until, $(rowgroup2)[0], false, undefined);
 	});
 	var td3 = $("<div>").css({
 		"width" : "100%",
@@ -6109,7 +6113,7 @@ gb.versioning.Repository.prototype.showSpinner = function(show, modal) {
  *            repoName - 레파지토리 이름
  * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, path, limit, until, tbody, refresh) {
+gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, path, limit, until, tbody, refresh, callback) {
 	var that = this;
 	var params = {
 			"serverName" : server.text,
@@ -6148,6 +6152,12 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 			if (data.success === "true") {
 				if (refresh) {
 					$(tbody).empty();
+				}
+				if (typeof callback === "function") {
+					callback(data);
+				}
+				if (tbody === undefined) {
+					return;
 				}
 				var ltr = $(tbody).find("tr").last();
 				var trelem = $(ltr)[0];
@@ -6201,21 +6211,40 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 									that.messageModal(title, msg);
 									return;
 								}
-								var server = params["serverName"];
-								var repo = params["repoName"];
-								var path  = params["path"];
+								var serverp = params["serverName"];
+								var repop = params["repoName"];
+								var pathp  = params["path"];
 								console.log($(this).parents().eq(1).index());
 
 								var flag = $(tr).next().hasClass("gb-repository-history-detail-row");
 								$(".gb-repository-history-detail-row").remove();
-								var newtr = $(tr);
-								var newid = $(newtr).attr("commitid");
+								var newtr = $(tr)[0] !== undefined ? $(tr)[0] : undefined;
+								var newid = newtr !== undefined ? $(newtr).attr("commitid") : undefined;
 								var oldtr = $(newtr).next()[0] !== undefined ? $(newtr).next() : undefined;
 								var oldid = oldtr !== undefined ? $(oldtr).attr("commitid") : undefined;
 								var newidx = $(tr).index();
 								var oldidx = $(tr).index()+1;
-								if (!flag) {
-									that.loadCommitDetail(server, repo, path, newidx, oldidx, newid, oldid, $(this)[0]);									
+								if (!flag && typeof newid === "string" && typeof oldid === "string") {
+									that.loadCommitDetail(serverp, repop, pathp, newidx, oldidx, newid, oldid, $(this)[0]);									
+								} else if (!flag && typeof newid === "string" && oldid === undefined) {
+									var buttonObj = $(this)[0];
+									var callback = function(data){
+										console.log("callback working");
+										if (data.success === "true") {
+											var commits = data.simpleCommits;
+											if (Array.isArray(commits)) {
+												if (commits.length === 2) {
+													var loadedOldid = commits[1].commitId;
+													that.loadCommitDetail(serverp, repop, pathp, newidx, oldidx, newid, loadedOldid, buttonObj);
+												} else if (commits.length < 2) {
+													var title = that.translation.err[that.locale];
+													var msg = that.translation.firstcommit[that.locale];
+													that.messageModal(title, msg);
+												}
+											}
+										}
+									}
+									that.loadLayerHistory(server, repo, path, 2, newid, undefined, false, callback);
 								}
 							});
 						var detail = $("<td>").css({

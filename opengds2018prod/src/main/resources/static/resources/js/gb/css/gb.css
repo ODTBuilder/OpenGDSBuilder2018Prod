@@ -444,8 +444,8 @@ input[type="radio"][disabled], input[type="checkbox"][disabled], input[type="rad
 	background-color: transparent;
 }
 
-.gb-button-link[disabled]:hover, fieldset[disabled] .gb-button-link:hover, .gb-button-link[disabled]:focus, fieldset[disabled] .gb-button-link:focus
-	{
+.gb-button-clear[disabled], .gb-button-clear[disabled]:hover, .gb-button-link[disabled]:hover, fieldset[disabled] .gb-button-link:hover,
+	.gb-button-link[disabled]:focus, fieldset[disabled] .gb-button-link:focus {
 	color: #777;
 	text-decoration: none;
 }

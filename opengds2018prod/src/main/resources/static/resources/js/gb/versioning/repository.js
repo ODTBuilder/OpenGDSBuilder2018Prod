@@ -434,6 +434,10 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "이름",
 				"en" : "Name"
 			},
+			"attr" : {
+				"ko" : "속성",
+				"en" : "Attribute"
+			},
 			"namemsg" : {
 				"ko" : "저장소 이름",
 				"en" : "Repository name"
@@ -4528,7 +4532,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "height" : "200px",
 	// "background-color" : "#dbdbdb"
 	// });
-	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd1 = $("<th>").text(that.translation.attr[that.locale]);
 	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
@@ -4571,7 +4575,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	// "height" : "200px",
 	// "background-color" : "#dbdbdb"
 	// });
-	var theadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var theadtd1 = $("<th>").text(that.translation.attr[that.locale]);
 	var theadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
@@ -6393,7 +6397,7 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 		"text-align" : "center"
 	});
 
-	var oheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var oheadtd1 = $("<th>").text(that.translation.attr[that.locale]);
 	var oheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
 	var oattrthead = $("<thead>").append(oheadth);
@@ -6418,7 +6422,7 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 		"text-align" : "center"
 	});
 
-	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
+	var cheadtd1 = $("<th>").text(that.translation.attr[that.locale]);
 	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);

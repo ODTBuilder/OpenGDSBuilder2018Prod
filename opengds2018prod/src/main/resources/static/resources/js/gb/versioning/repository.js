@@ -5884,7 +5884,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 
 	var readIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
 	var readBtn = $("<button>").addClass("gb-button-clear").append(readIcon).append(" " + that.translation.readmore[that.locale]).click(function(){
-		var ltr = $(rowgroup2).find("tr").last();
+		var ltr = $(rowgroup2).find("tr.gb-repository-history-commit").last();//클래스 확인
 		var until = $(ltr).attr("commitid");
 		console.log($(ltr).attr("commitid"));
 		that.loadLayerHistory(server, repo, path, 10, until, $(rowgroup2)[0], false, undefined);
@@ -6274,7 +6274,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 							$("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert).attr({
 								"commitId" : commits[i].commitId,
 								"changes" : (commits[i].adds + commits[i].modifies + commits[i].removes)
-							});
+							}).addClass("gb-repository-history-commit");
 						$(tbody).append(row1);
 					}
 				}

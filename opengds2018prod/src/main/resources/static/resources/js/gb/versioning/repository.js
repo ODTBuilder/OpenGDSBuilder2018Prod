@@ -1221,15 +1221,7 @@ gb.versioning.Repository = function(obj) {
 		"center" : [ 0, 0 ],
 		"zoom" : 1
 	});
-	
-	this.ofeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb",
-		"border" : "1px solid #ccc",
-		"border-radius" : "4px"
-	});
-	
+
 	this.cfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -1246,11 +1238,6 @@ gb.versioning.Repository = function(obj) {
 		"border-radius" : "4px"
 	});
 
-	this.omap = new ol.Map({
-		"target" : $(this.ofeature)[0],
-		"layers" : []
-	});
-	
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		// "view" : this.conflictView1,
@@ -6217,10 +6204,14 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 
 								var flag = $(tr).next().hasClass("gb-repository-history-detail-row");
 								$(".gb-repository-history-detail-row").remove();
+								var newtr = $(tr);
+								var newid = $(newtr).attr("commitid");
+								var oldtr = $(newtr).next()[0] !== undefined ? $(newtr).next() : undefined;
+								var oldid = oldtr !== undefined ? $(oldtr).attr("commitid") : undefined;
 								var newidx = $(tr).index();
 								var oldidx = $(tr).index()+1;
 								if (!flag) {
-									that.loadCommitDetail(server, repo, path, newidx, oldidx, $(this)[0]);									
+									that.loadCommitDetail(server, repo, path, newidx, oldidx, newid, oldid, $(this)[0]);									
 								}
 							});
 						var detail = $("<td>").css({
@@ -6273,7 +6264,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
  *            repoName - 레파지토리 이름
  * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx, btn) {
+gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx, newid, oldid, btn) {
 	var that = this;
 	var params = {
 			"serverName" : server,
@@ -6325,10 +6316,11 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 							// "float" : "left",
 							"margin" : "5px"
 						}).text(that.translation[typeLabel][that.locale]);
+						var selectedPath = diffs[i].changeType.toUpperCase() === "ADDED" || diffs[i].changeType.toUpperCase() === "MODIFIED" ? diffs[i].newPath : diffs[i].path;   
 						var fid = $("<span>").css({
 							// "float" : "left",
 							"margin" : "5px"
-						}).text(diffs[i].path);
+						}).text(selectedPath);
 						var icon = $("<i>").addClass("fas").addClass("fa-search");
 						var deBtn = $("<button>").css({
 							// "float" : "right",
@@ -6336,11 +6328,13 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
 						}).attr({
 							"newObjectId" : diffs[i].newObjectId,
 							"oldObjectId" : diffs[i].oldObjectId,
-							"newPath" : diffs[i].newPath
+							"path" : selectedPath
 						}).append(icon).addClass("gb-button-clear").click(function(){
-							var nid = $(this).attr("newObjectId");
-							var oid = $(this).attr("oldObjectId");
-							var path = $(this).attr("newPath");
+// var nid = $(this).attr("newObjectId");
+							var nid = newid;
+// var oid = $(this).attr("oldObjectId");
+							var oid = oldid;
+							var path = $(this).attr("path");
 							that.openDetailChanges(server, repo, path, nid, oid);
 						});
 						var de1 = $("<div>").css({
@@ -6403,18 +6397,18 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 	var oheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
 	var oattrthead = $("<thead>").append(oheadth);
-	this.oattrtbody = $("<tbody>").css({
+	this.tattrtbody = $("<tbody>").css({
 		"overflow-y" : "auto",
 		"height" : "340px",
 		"width" : "354px"
 	});
-	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
+	var oattrtable = $("<table>").append(oattrthead).append(this.tattrtbody).addClass("gb-table");
 	var oattribute = $("<div>").append(oattrtable).css({
 		"height" : "240px",
 		"width" : "100%",
 		"overflow" : "auto"
 	});
-	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).css({
+	var oarea = $("<div>").append(olabel).append(this.tfeature).append(oattribute).css({
 		"float" : "left",
 		"width" : "50%",
 		"padding" : "10px"
@@ -6443,7 +6437,7 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 		"overflow" : "auto"
 	});
 
-	$(this.oattrtbody).on("scroll", function() {
+	$(this.tattrtbody).on("scroll", function() {
 		$(that.cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
@@ -6482,11 +6476,11 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 
 	var that = this;
 	var params = {
-		"serverName" : server,
-		"repoName" : repo,
-		"path" : path,
-		"newCommitId" : nidx,
-		"oldCommitId" : oidx
+			"serverName" : server,
+			"repoName" : repo,
+			"path" : path,
+			"newCommitId" : nidx,
+			"oldCommitId" : oidx
 	}
 
 	var tranURL = this.getFeatureDiffURL();
@@ -6514,428 +6508,165 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 				if (data.hasOwnProperty("diffs")) {
 					var diffs = data.diffs
 					if (Array.isArray(diffs)) {
-						if (diffs.length === 1) {
-							var elem = diffs[0];
+						for (var i = 0; i < diffs.length; i++) {
+							if (diffs[i].geometry === "true") {
+								var crs;
+								if (diffs[i].crs !== undefined && diffs[i].crs !== null) {
+									crs = diffs[i].crs.substring(diffs[i].crs.indexOf(":") + 1);
+								}
+								var leftGeom, rightGeom;
+								var osm = new ol.layer.Tile({
+									"source" : new ol.source.OSM(),
+									"zIndex" : 1
+								});
 
-							var oldParams = {
-								"serverName" : server,
-								"repoName" : repo,
-								"path" : elem.path,
-								"commitId" : elem.oldObjectId
-							}
-							console.log(oldParams);
+								that.getTargetMap().updateSize();
+								that.getTargetMap().getLayers().clear();
+								that.getTargetMap().addLayer(osm);
+								
+								var oldwkt = diffs[i].oldvalue;
+								if (oldwkt !== undefined && oldwkt !== null) {
+									var format = new ol.format.WKT();
+									var geom = format.readGeometry(oldwkt);
+									leftGeom = geom;
+									var feature = new ol.Feature({
+										"geometry" : geom
+									});
 
-							var oldURL = that.getCatFeatureObjectURL();
-							if (oldURL.indexOf("?") !== -1) {
-								oldURL += "&";
-								oldURL += jQuery.param(oldParams);
+									var style = new ol.style.Style({
+										image : new ol.style.Circle({
+											radius : 5,
+											fill : new ol.style.Fill({
+												color : 'orange'
+											})
+										}),
+										stroke : new ol.style.Stroke({
+											width : 1,
+											color : 'orange'
+										}),
+										fill : new ol.style.Fill({
+											color : 'orange'
+										})
+									});
+
+									var vlayer = new ol.layer.Vector({
+										"style" : style,
+										"source" : new ol.source.Vector({
+											"features" : [ feature ]
+										}),
+										"zIndex" : 2
+									});
+									that.getTargetMap().addLayer(vlayer);
+								}
+
+								that.getCurrentMap().updateSize();
+								that.getCurrentMap().getLayers().clear();
+								that.getCurrentMap().addLayer(osm);
+								
+								var newwkt;
+								if (diffs[i].changetype.toUpperCase() === "NO_CHANGE") {
+									newwkt = diffs[i].oldvalue;
+
+									$(that.cfeature).css({
+										"border" : "1px solid #ccc"
+									});
+									$(that.tfeature).css({
+										"border" : "1px solid #ccc"
+									});
+								} else if(diffs[i].changetype.toUpperCase() === "MODIFIED" || diffs[i].changetype.toUpperCase() === "ADDED"){
+									newwkt = diffs[i].newvalue;
+
+									$(that.cfeature).css({
+										"border" : "3px solid #ffc523"
+									});
+									$(that.tfeature).css({
+										"border" : "3px solid #ffc523"
+									});
+								}
+
+								if (newwkt !== undefined && newwkt !== null) {
+									var format = new ol.format.WKT();
+									var geom = format.readGeometry(newwkt);
+									rightGeom = geom;
+									var feature = new ol.Feature({
+										"geometry" : geom
+									});
+
+									var style = new ol.style.Style({
+										image : new ol.style.Circle({
+											radius : 5,
+											fill : new ol.style.Fill({
+												color : 'orange'
+											})
+										}),
+										stroke : new ol.style.Stroke({
+											width : 1,
+											color : 'orange'
+										}),
+										fill : new ol.style.Fill({
+											color : 'orange'
+										})
+									});
+
+									var vlayer = new ol.layer.Vector({
+										"style" : style,
+										"source" : new ol.source.Vector({
+											"features" : [ feature ]
+										}),
+										"zIndex" : 2
+									});
+
+									that.getCurrentMap().addLayer(vlayer);
+									// that.getLeftMap().getView().fit(geom);
+								}
+								var tempCallback;
+								if (diffs[i].changetype.toUpperCase() === "MODIFIED" || diffs[i].changetype.toUpperCase() === "ADDED") {
+									tempCallback = function() {
+										that.getCurrentMap().getView().fit(rightGeom);
+									}
+								} else if (diffs[i].changetype.toUpperCase() === "REMOVED" || diffs[i].changetype.toUpperCase() === "NO_CHANGE") {
+									tempCallback = function() {
+										that.getTargetMap().getView().fit(leftGeom);
+									}
+								}
+								this.crs = new gb.crs.BaseCRS({
+									"autoOpen" : false,
+									"title" : "Base CRS",
+									"message" : $(".epsg-now"),
+									"maps" : [ that.getTargetMap(), that.getCurrentMap() ],
+									"epsg" : crs,
+									"callback" : tempCallback
+								});
+
 							} else {
-								oldURL += "?";
-								oldURL += jQuery.param(oldParams);
-							}
+								var otd1 = $("<td>").text(diffs[i].attributename);
+								var otd2 = $("<td>").text(diffs[i].oldvalue);
+								var otr1 = $("<tr>").append(otd1).append(otd2);
+								$(that.getLeftTBody()).append(otr1);
 
-							$.ajax({
-								url : oldURL,
-								method : "POST",
-								contentType : "application/json; charset=UTF-8",
-								beforeSend : function() {
-									// $("body").css("cursor", "wait");
-								},
-								complete : function() {
-									// $("body").css("cursor", "default");
-								},
-								success : function(data_old) {
-									console.log(data_old);
-									if (data_old.success === "true" && data_old.error === null) {
-										var attr = data_old.attributes;
-										for (var i = 0; i < attr.length; i++) {
-											if (attr[i].crs !== null
-													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
-															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
-															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
-												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
 
-												var oldwkt = attr[i].value;
-												if (oldwkt !== undefined && oldwkt !== null) {
-													var format = new ol.format.WKT();
-													var geom = format.readGeometry(oldwkt);
-													var feature = new ol.Feature({
-														"geometry" : geom
-													});
-
-													var style = new ol.style.Style({
-														image : new ol.style.Circle({
-															radius : 5,
-															fill : new ol.style.Fill({
-																color : 'orange'
-															})
-														}),
-														stroke : new ol.style.Stroke({
-															width : 1,
-															color : 'orange'
-														}),
-														fill : new ol.style.Fill({
-															color : 'orange'
-														})
-													});
-
-													var vlayer = new ol.layer.Vector({
-														"style" : style,
-														"source" : new ol.source.Vector({
-															"features" : [ feature ]
-														}),
-														"zIndex" : 2
-													});
-
-													var osm = new ol.layer.Tile({
-														"source" : new ol.source.OSM(),
-														"zIndex" : 1
-													});
-
-													that.getLeftMap().updateSize();
-													that.getLeftMap().getLayers().clear();
-													that.getLeftMap().addLayer(osm);
-													that.getLeftMap().addLayer(vlayer);
-													// that.getLeftMap().getView().fit(geom);
-
-													// this.leftcrs = new
-													// gb.crs.BaseCRS({
-													// "autoOpen" : false,
-													// "title" : "Base CRS",
-													// "message" :
-													// $(".epsg-now"),
-													// "maps" : [
-													// that.getLeftMap() ],
-													// "epsg" : crs,
-													// "callback" : function() {
-													// that.getLeftMap().getView().fit(geom);
-													// }
-													// });
-												}
-											} else {
-												var otd1 = $("<td>").text(attr[i].name);
-												var otd2 = $("<td>").text(attr[i].value);
-												var otr1 = $("<tr>").append(otd1).append(otd2);
-												$(that.getLeftTBody()).append(otr1);
-											}
-										}
-									}
+								var ctd1 = $("<td>").text(diffs[i].attributename);
+								var newval;
+								if (diffs[i].changetype.toUpperCase() === "NO_CHANGE") {
+									newval = diffs[i].oldvalue;
+								} else {
+									newval = diffs[i].newvalue;
 								}
-							});
+								var ctd2 = $("<td>").text(newval);
+								var ctr1 = $("<tr>").append(ctd1).append(ctd2);
 
-							var newParams = {
-								"serverName" : server,
-								"repoName" : repo,
-								"path" : elem.newPath,
-								"commitId" : elem.newObjectId
-							}
-							console.log(newParams);
-
-							var newURL = that.getCatFeatureObjectURL();
-							if (newURL.indexOf("?") !== -1) {
-								newURL += "&";
-								newURL += jQuery.param(newParams);
-							} else {
-								newURL += "?";
-								newURL += jQuery.param(newParams);
-							}
-
-							$.ajax({
-								url : newURL,
-								method : "POST",
-								contentType : "application/json; charset=UTF-8",
-								beforeSend : function() {
-									// $("body").css("cursor", "wait");
-								},
-								complete : function() {
-									// $("body").css("cursor", "default");
-								},
-								success : function(data_new) {
-									console.log(data_new);
-									if (data_new.success === "true" && data_new.error === null) {
-										var attr = data_new.attributes;
-										for (var i = 0; i < attr.length; i++) {
-											if (attr[i].crs !== null
-													&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
-															|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
-															|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
-												var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
-
-												var newwkt = attr[i].value;
-												if (newwkt !== undefined && newwkt !== null) {
-													var format = new ol.format.WKT();
-													var geom = format.readGeometry(newwkt);
-													var feature = new ol.Feature({
-														"geometry" : geom
-													});
-
-													var style = new ol.style.Style({
-														image : new ol.style.Circle({
-															radius : 5,
-															fill : new ol.style.Fill({
-																color : 'orange'
-															})
-														}),
-														stroke : new ol.style.Stroke({
-															width : 1,
-															color : 'orange'
-														}),
-														fill : new ol.style.Fill({
-															color : 'orange'
-														})
-													});
-
-													var vlayer = new ol.layer.Vector({
-														"style" : style,
-														"source" : new ol.source.Vector({
-															"features" : [ feature ]
-														}),
-														"zIndex" : 2
-													});
-
-													var osm = new ol.layer.Tile({
-														"source" : new ol.source.OSM(),
-														"zIndex" : 1
-													});
-
-													that.getRightMap().updateSize();
-													that.getRightMap().getLayers().clear();
-													that.getRightMap().addLayer(osm);
-													that.getRightMap().addLayer(vlayer);
-													// that.getLeftMap().getView().fit(geom);
-
-													this.crs = new gb.crs.BaseCRS({
-														"autoOpen" : false,
-														"title" : "Base CRS",
-														"message" : $(".epsg-now"),
-														"maps" : [ that.getLeftMap(), that.getRightMap() ],
-														"epsg" : crs,
-														"callback" : function() {
-															that.getRightMap().getView().fit(geom);
-														}
-													});
-												}
-											} else {
-												var ctd1 = $("<td>").text(attr[i].name);
-												var ctd2 = $("<td>").text(attr[i].value);
-												var ctr1 = $("<tr>").append(ctd1).append(ctd2);
-												$(that.getRightTBody()).append(ctr1);
-											}
-										}
-									}
+								if (diffs[i].changetype.toUpperCase() !== "NO_CHANGE") {
+									$(otr1).css({
+										"background-color" : "#ffc523"
+									});
+									$(ctr1).css({
+										"background-color" : "#ffc523"
+									});
 								}
-							});
-						}
-					} else {
 
-						var oldParams = {
-							"serverName" : server,
-							"repoName" : repo,
-							"path" : path,
-							"commitId" : oidx
-						}
-						console.log(oldParams);
-
-						var oldURL = that.getFeatureAttributeURL();
-						if (oldURL.indexOf("?") !== -1) {
-							oldURL += "&";
-							oldURL += jQuery.param(oldParams);
-						} else {
-							oldURL += "?";
-							oldURL += jQuery.param(oldParams);
-						}
-
-						$.ajax({
-							url : oldURL,
-							method : "POST",
-							contentType : "application/json; charset=UTF-8",
-							beforeSend : function() {
-								// $("body").css("cursor", "wait");
-							},
-							complete : function() {
-								// $("body").css("cursor", "default");
-							},
-							success : function(data_old) {
-								console.log(data_old);
-								if (data_old.success === "true" && data_old.error === null) {
-									var attr = data_old.attributes;
-									for (var i = 0; i < attr.length; i++) {
-										if (attr[i].crs !== null
-												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
-														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
-														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
-											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
-
-											var oldwkt = attr[i].value;
-											if (oldwkt !== undefined && oldwkt !== null) {
-												var format = new ol.format.WKT();
-												var geom = format.readGeometry(oldwkt);
-												var feature = new ol.Feature({
-													"geometry" : geom
-												});
-
-												var style = new ol.style.Style({
-													image : new ol.style.Circle({
-														radius : 5,
-														fill : new ol.style.Fill({
-															color : 'orange'
-														})
-													}),
-													stroke : new ol.style.Stroke({
-														width : 1,
-														color : 'orange'
-													}),
-													fill : new ol.style.Fill({
-														color : 'orange'
-													})
-												});
-
-												var vlayer = new ol.layer.Vector({
-													"style" : style,
-													"source" : new ol.source.Vector({
-														"features" : [ feature ]
-													}),
-													"zIndex" : 2
-												});
-
-												var osm = new ol.layer.Tile({
-													"source" : new ol.source.OSM(),
-													"zIndex" : 1
-												});
-
-												that.getLeftMap().updateSize();
-												that.getLeftMap().getLayers().clear();
-												that.getLeftMap().addLayer(osm);
-												that.getLeftMap().addLayer(vlayer);
-												// that.getLeftMap().getView().fit(geom);
-
-												// this.leftcrs = new
-												// gb.crs.BaseCRS({
-												// "autoOpen" : false,
-												// "title" : "Base CRS",
-												// "message" :
-												// $(".epsg-now"),
-												// "maps" : [
-												// that.getLeftMap() ],
-												// "epsg" : crs,
-												// "callback" : function() {
-												// that.getLeftMap().getView().fit(geom);
-												// }
-												// });
-											}
-										} else {
-											var otd1 = $("<td>").text(attr[i].name);
-											var otd2 = $("<td>").text(attr[i].value);
-											var otr1 = $("<tr>").append(otd1).append(otd2);
-											$(that.getLeftTBody()).append(otr1);
-										}
-									}
-								}
+								$(that.getRightTBody()).append(ctr1);
 							}
-						});
-
-						var newParams = {
-							"serverName" : server,
-							"repoName" : repo,
-							"path" : path,
-							"commitId" : nidx
 						}
-						console.log(newParams);
-
-						var newURL = that.getFeatureAttributeURL();
-						if (newURL.indexOf("?") !== -1) {
-							newURL += "&";
-							newURL += jQuery.param(newParams);
-						} else {
-							newURL += "?";
-							newURL += jQuery.param(newParams);
-						}
-
-						$.ajax({
-							url : newURL,
-							method : "POST",
-							contentType : "application/json; charset=UTF-8",
-							beforeSend : function() {
-								// $("body").css("cursor", "wait");
-							},
-							complete : function() {
-								// $("body").css("cursor", "default");
-							},
-							success : function(data_new) {
-								console.log(data_new);
-								if (data_new.success === "true" && data_new.error === null) {
-									var attr = data_new.attributes;
-									for (var i = 0; i < attr.length; i++) {
-										if (attr[i].crs !== null
-												&& (attr[i].type === "MULTIPOLYGON" || attr[i].type === "MULTILINESTRING"
-														|| attr[i].type === "MULTIPOINT" || attr[i].type === "POLYGON"
-														|| attr[i].type === "LINESTRING" || attr[i].type === "POINT")) {
-											var crs = attr[i].crs.substring(attr[i].crs.indexOf(":") + 1);
-
-											var newwkt = attr[i].value;
-											if (newwkt !== undefined && newwkt !== null) {
-												var format = new ol.format.WKT();
-												var geom = format.readGeometry(newwkt);
-												var feature = new ol.Feature({
-													"geometry" : geom
-												});
-
-												var style = new ol.style.Style({
-													image : new ol.style.Circle({
-														radius : 5,
-														fill : new ol.style.Fill({
-															color : 'orange'
-														})
-													}),
-													stroke : new ol.style.Stroke({
-														width : 1,
-														color : 'orange'
-													}),
-													fill : new ol.style.Fill({
-														color : 'orange'
-													})
-												});
-
-												var vlayer = new ol.layer.Vector({
-													"style" : style,
-													"source" : new ol.source.Vector({
-														"features" : [ feature ]
-													}),
-													"zIndex" : 2
-												});
-
-												var osm = new ol.layer.Tile({
-													"source" : new ol.source.OSM(),
-													"zIndex" : 1
-												});
-
-												that.getRightMap().updateSize();
-												that.getRightMap().getLayers().clear();
-												that.getRightMap().addLayer(osm);
-												that.getRightMap().addLayer(vlayer);
-												// that.getLeftMap().getView().fit(geom);
-
-												this.crs = new gb.crs.BaseCRS({
-													"autoOpen" : false,
-													"title" : "Base CRS",
-													"message" : $(".epsg-now"),
-													"maps" : [ that.getLeftMap(), that.getRightMap() ],
-													"epsg" : crs,
-													"callback" : function() {
-														that.getRightMap().getView().fit(geom);
-													}
-												});
-											}
-										} else {
-											var ctd1 = $("<td>").text(attr[i].name);
-											var ctd2 = $("<td>").text(attr[i].value);
-											var ctr1 = $("<tr>").append(ctd1).append(ctd2);
-											$(that.getRightTBody()).append(ctr1);
-										}
-									}
-								}
-							}
-						});
 					}
 				}
 			}
@@ -6946,3 +6677,25 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 	});
 
 };
+
+/**
+ * 왼쪽 피처 tbody를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getLeftTBody
+ * @return {element}
+ * 
+ */
+gb.versioning.Repository.prototype.getLeftTBody = function() {
+	return this.tattrtbody;
+}
+
+/**
+ * 오른쪽 피처 tbody를 반환한다.
+ * 
+ * @method gb.versioning.Repository#getRightTBody
+ * @return {element}
+ * 
+ */
+gb.versioning.Repository.prototype.getRightTBody = function() {
+	return this.cattrtbody;
+}

@@ -465,7 +465,7 @@ html {
 			"locale" : locale !== "" ? locale : "en",
 			"url" : {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"diff" : "geogig/diff.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureAttribute" : "geogig/featureAttribute.do?${_csrf.parameterName}=${_csrf.token}",
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"

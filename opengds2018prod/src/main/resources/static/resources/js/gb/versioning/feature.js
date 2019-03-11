@@ -21,7 +21,7 @@ gb.versioning.Feature = function(obj) {
 	this.editingTool = options.editingTool ? options.editingTool : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
+	this.diffURL = url.diff ? url.diff : undefined;
 	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
 	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
@@ -516,7 +516,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"oldCommitId" : oidx
 	}
 
-	var tranURL = this.getFeatureDiffURL();
+	var tranURL = this.getDiffURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
 		tranURL += jQuery.param(params);
@@ -1581,10 +1581,10 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 /**
  * 피처 비교 객체 요청 URL을 반환한다.
  * 
- * @method gb.versioning.Feature#getFeatureDiffURL
+ * @method gb.versioning.Feature#getDiffURL
  */
-gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
-	return this.featureDiffURL;
+gb.versioning.Feature.prototype.getDiffURL = function() {
+	return this.diffURL;
 };
 
 /**

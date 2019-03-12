@@ -44,6 +44,18 @@ public interface GeogigLayerService {
 	/**
 	 * @param geoserverManager
 	 * @param repoName
+	 * @param oldIndex
+	 * @param newIndex
+	 * @param layerName
+	 * @return GeogigDiff
+	 * @throws JAXBException
+	 */
+	GeogigDiff diffLayerById(DTGeoserverManager geoserverManager, String repoName, String oldId, String newId,
+			String layerName) throws JAXBException;
+	
+	/**
+	 * @param geoserverManager
+	 * @param repoName
 	 * @param transactionId
 	 * @param path
 	 * @param recursive

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!-- 폴리필 -->
+<script src="//cdn.polyfill.io/v1/polyfill.min.js" async defer></script>
 <!-- 제이쿼리 -->
 <script src="${pageContext.request.contextPath}/resources/js/jquery/jquery-2.2.2.min.js"></script>
 <!-- 부트스트랩 -->

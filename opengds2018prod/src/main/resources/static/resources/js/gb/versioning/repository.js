@@ -869,7 +869,19 @@ gb.versioning.Repository = function(obj) {
 			"firstcommit" : {
 				"ko" : "가장 처음의 커밋입니다.",
 				"en" : "This is the very first commit."
-			}
+			},
+			"revertsucc" : {
+				"ko" : "객체가 성공적으로 되돌려졌습니다.",
+				"en" : "Feature reverted successfully."
+			},
+			"revertfail" : {
+				"ko" : "되돌리기 실패했습니다.",
+				"en" : "Revert failed."
+			},
+			"conflictmsg1" : {
+				"ko" : "충돌 객체가 있습니다. 해결하시겠습니까?",
+				"en" : 'There are conflicting features. Do you want to resolve?'
+			},
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -909,7 +921,8 @@ gb.versioning.Repository = function(obj) {
 	this.logLayerURL = url.logLayer ? url.logLayer : undefined;
 	this.diffLayerURL = url.diffLayer ? url.diffLayer : undefined;
 	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
-
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
+	
 	// edit tool 활성화 여부 객체
 	this.isEditing = options.isEditing || undefined;
 
@@ -922,6 +935,8 @@ gb.versioning.Repository = function(obj) {
 	this.loadingList = [];
 	this.loadingNumber = [];
 
+	this.layerHistoryArea;
+	
 	this.reRepoSelect = $("<select>").addClass("gb-form").css({
 		"width" : "100%"
 	});
@@ -5831,7 +5846,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 		"text-align" : "center"
 	}).text(that.translation.date[that.locale]);
 	var cmsg = $("<td>").css({
-		"width" : "40%",
+		"width" : "50%",
 		"word-break" : " break-word",
 		"vertical-align" : "middle",
 		"padding" : "0.785714em",
@@ -5862,18 +5877,18 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 
 // var row = $("<div>").addClass("tr
 // gb-versioning-feature-tr").append(user).append(day).append(cmsg).append(detail).append(revert);
-	var row = $("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert);
+	var row = $("<tr>").append(user).append(day).append(cmsg).append(detail);
 	var rowgroup1 = $("<thead>").append(row);
-	var rowgroup2 = $("<tbody>");
+	this.setLayerHistoryArea($("<tbody>")[0]);
 	var tb = $("<table>").css({
 		"width" : "100%"
-	}).append(rowgroup1).append(rowgroup2);
+	}).append(rowgroup1).append(this.getLayerHistoryArea());
 
-	this.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true, undefined);
+	this.loadLayerHistory(server, repo, path, 10, null, true, true, undefined);
 
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" " + that.translation.refresh[that.locale]).click(function(){
-		that.loadLayerHistory(server, repo, path, 10, null, $(rowgroup2)[0], true, undefined);
+		that.loadLayerHistory(server, repo, path, 10, null, true, true, undefined);
 	});
 	var reftd = $("<div>").css({
 		"width" : "100%",
@@ -5884,10 +5899,10 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 
 	var readIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
 	var readBtn = $("<button>").addClass("gb-button-clear").append(readIcon).append(" " + that.translation.readmore[that.locale]).click(function(){
-		var ltr = $(rowgroup2).find("tr.gb-repository-history-commit").last();//클래스 확인
+		var ltr = $(that.getLayerHistoryArea()).find("tr.gb-repository-history-commit").last();
 		var until = $(ltr).attr("commitid");
 		console.log($(ltr).attr("commitid"));
-		that.loadLayerHistory(server, repo, path, 10, until, $(rowgroup2)[0], false, undefined);
+		that.loadLayerHistory(server, repo, path, 10, until, true, false, undefined);
 	});
 	var td3 = $("<div>").css({
 		"width" : "100%",
@@ -5925,7 +5940,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
  * 
  * @method gb.versioning.Repository#openRevertModal
  */
-gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path, oc, nc) {
+gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path, oc, nc, compmodal) {
 	var that = this;
 	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
 		"text-align" : "center",
@@ -5962,7 +5977,7 @@ gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path
 	});
 	$(okBtn).click(function() {
 		var message = inputMsg.val();
-		that.revert(server, repo, path, oc, nc, message, message, commitModal);
+		that.revert(server, repo, path, oc, nc, message, message, commitModal, compmodal);
 	});
 };
 
@@ -5971,7 +5986,7 @@ gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path
  * 
  * @method gb.versioning.Repository#revert
  */
-gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
+gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal, cmodal) {
 	var that = this;
 
 	var params = {
@@ -6028,9 +6043,19 @@ gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc,
 					});
 					$(closeBtn).click(function() {
 						commitModal.close();
-						that.runAfterSaveCallback();
 					});
 					rmodal.close();
+					cmodal.close();
+					var serverFake = {
+							"text" : server
+					};
+					var repoFake = {
+							"text" : repo
+					};
+					var pathFake = {
+							"text" : path
+					};
+					that.loadLayerHistory(serverFake, repoFake, pathFake, 10, null, true, true, undefined);
 				} else if (Array.isArray(data.merge.conflicts)) {
 					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).css({
 						"text-align" : "center",
@@ -6113,7 +6138,7 @@ gb.versioning.Repository.prototype.showSpinner = function(show, modal) {
  *            repoName - 레파지토리 이름
  * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, path, limit, until, tbody, refresh, callback) {
+gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, path, limit, until, paste, refresh, callback) {
 	var that = this;
 	var params = {
 			"serverName" : server.text,
@@ -6151,15 +6176,15 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 			console.log(data);
 			if (data.success === "true") {
 				if (refresh) {
-					$(tbody).empty();
+					$(that.getLayerHistoryArea()).empty();
 				}
 				if (typeof callback === "function") {
 					callback(data);
 				}
-				if (tbody === undefined) {
+				if (paste === false) {
 					return;
 				}
-				var ltr = $(tbody).find("tr").last();
+				var ltr = $(that.getLayerHistoryArea()).find("tr").last();
 				var trelem = $(ltr)[0];
 				var until;
 				if (trelem !== undefined && trelem !== null) {
@@ -6225,7 +6250,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 								var newidx = $(tr).index();
 								var oldidx = $(tr).index()+1;
 								if (!flag && typeof newid === "string" && typeof oldid === "string") {
-									that.loadCommitDetail(serverp, repop, pathp, newidx, oldidx, newid, oldid, $(this)[0]);									
+									that.loadCommitDetail(serverp, repop, pathp, newid, oldid, $(this)[0]);									
 								} else if (!flag && typeof newid === "string" && oldid === undefined) {
 									var buttonObj = $(this)[0];
 									var callback = function(data){
@@ -6235,7 +6260,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 											if (Array.isArray(commits)) {
 												if (commits.length === 2) {
 													var loadedOldid = commits[1].commitId;
-													that.loadCommitDetail(serverp, repop, pathp, newidx, oldidx, newid, loadedOldid, buttonObj);
+													that.loadCommitDetail(serverp, repop, pathp, newid, loadedOldid, buttonObj);
 												} else if (commits.length < 2) {
 													var title = that.translation.err[that.locale];
 													var msg = that.translation.firstcommit[that.locale];
@@ -6258,9 +6283,7 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 
 						var revertIcon = $("<i>").addClass("fas").addClass("fa-undo");
 						var revertBtn =
-							$("<button>").addClass("gb-button-clear").append(revertIcon).click(function(){
-								that.openRevertModal();
-							});
+							$("<button>").addClass("gb-button-clear").append(revertIcon);
 						var revert = $("<td>").css({
 							"width" : "10%",
 							"word-break" : " break-word",
@@ -6271,11 +6294,11 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
 						}).append(revertBtn);
 
 						var row1 =
-							$("<tr>").append(user).append(day).append(cmsg).append(detail).append(revert).attr({
+							$("<tr>").append(user).append(day).append(cmsg).append(detail).attr({
 								"commitId" : commits[i].commitId,
 								"changes" : (commits[i].adds + commits[i].modifies + commits[i].removes)
 							}).addClass("gb-repository-history-commit");
-						$(tbody).append(row1);
+						$(that.getLayerHistoryArea()).append(row1);
 					}
 				}
 			} else {
@@ -6297,14 +6320,14 @@ gb.versioning.Repository.prototype.loadLayerHistory = function(server, repo, pat
  *            repoName - 레파지토리 이름
  * @return {Object} 트랜잭션 아이디 객체
  */
-gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newidx, oldidx, newid, oldid, btn) {
+gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, layer, newid, oldid, btn) {
 	var that = this;
 	var params = {
 			"serverName" : server,
 			"repoName" : repo,
 			"layerName": layer,
-			"newIndex" : newidx,
-			"oldIndex" : oldidx
+			"new" : newid,
+			"old" : oldid
 	}
 	// + "&" + jQuery.param(params),
 	var tranURL = this.getDiffLayerURL();
@@ -6415,11 +6438,11 @@ gb.versioning.Repository.prototype.loadCommitDetail = function(server, repo, lay
  * @param {String}
  *            path - 피처 패스
  * @param {Number}
- *            nidx - 최신 커밋 인덱스
+ *            nid - 현재 커밋 아이디
  * @param {Number}
- *            oidx - 타겟 커밋 인덱스
+ *            oid - 이전 커밋 아이디
  */
-gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
+gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, path, nid, oid) {
 	var that = this;
 
 	var olabel = $("<div>").append(that.translation.beforeft[that.locale]).addClass("gb-form").css({
@@ -6490,9 +6513,9 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
 	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+		"float" : "left"
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
 		"title" : that.translation.comparebeaf[that.locale],
@@ -6512,8 +6535,8 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 			"serverName" : server,
 			"repoName" : repo,
 			"path" : path,
-			"newCommitId" : nidx,
-			"oldCommitId" : oidx
+			"newCommitId" : nid,
+			"oldCommitId" : oid
 	}
 
 	var tranURL = this.getFeatureDiffURL();
@@ -6700,6 +6723,9 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 								$(that.getRightTBody()).append(ctr1);
 							}
 						}
+						$(okBtn).click(function(){
+							that.openRevertModal(server, repo, path, oid, nid, modal);
+						});
 					}
 				}
 			}
@@ -6732,3 +6758,30 @@ gb.versioning.Repository.prototype.getLeftTBody = function() {
 gb.versioning.Repository.prototype.getRightTBody = function() {
 	return this.cattrtbody;
 }
+
+/**
+ * 피처 되돌리기 요청 URL을 반환한다.
+ * 
+ * @method gb.versioning.Repository#getFeatureRevertURL
+ */
+gb.versioning.Repository.prototype.getFeatureRevertURL = function() {
+	return this.featureRevertURL;
+};
+
+/**
+ * 레이어 이력 영억 설정
+ * 
+ * @method gb.versioning.Repository#setLayerHistoryArea
+ */
+gb.versioning.Repository.prototype.setLayerHistoryArea = function(tbody) {
+	this.layerHistoryArea = tbody;
+};
+
+/**
+ * 레이어 이력 영역 반환
+ * 
+ * @method gb.versioning.Repository#getLayerHistoryArea
+ */
+gb.versioning.Repository.prototype.getLayerHistoryArea = function() {
+	return this.layerHistoryArea;
+};

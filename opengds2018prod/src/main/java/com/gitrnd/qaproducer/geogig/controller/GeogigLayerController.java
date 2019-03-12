@@ -78,6 +78,19 @@ public class GeogigLayerController extends AbstractController {
 		return layerService.diffLayer(geoserverManager, repoName, newIndex, oldIndex, layerName);
 	}
 
+	@RequestMapping(value = "/diffLayerById.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigDiff diffLayerById(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "new", required = false) String newId,
+			@RequestParam(value = "old", required = false) String oldId,
+			@RequestParam(value = "layerName", required = false) String layerName) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return layerService.diffLayerById(geoserverManager, repoName, newId, oldId, layerName);
+	}
+
 	@RequestMapping(value = "/removeLayer.do", method = RequestMethod.POST)
 	@ResponseBody
 	public GeogigRemove removeLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,

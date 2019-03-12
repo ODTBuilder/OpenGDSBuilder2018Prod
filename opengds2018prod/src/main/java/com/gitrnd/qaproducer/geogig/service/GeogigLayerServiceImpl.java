@@ -167,6 +167,47 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 	}
 
 	@Override
+	public GeogigDiff diffLayerById(DTGeoserverManager geoserverManager, String repoName, String oldId, String newId,
+			String layerName) throws JAXBException {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		DiffRepository diffRepos = new DiffRepository();
+		GeogigDiff diff = null;
+		try {
+			diff = diffRepos.executeCommand(url, user, pw, repoName, oldId, newId, layerName, null);
+			String nextPage = diff.getNextPage();
+			if (nextPage != null) {
+				Integer page = 1;
+				List<Diff> diffs = new ArrayList<>();
+				diffs.addAll(diff.getDiffs());
+				while (nextPage != null) {
+					GeogigDiff nextDiff = diffRepos.executeCommand(url, user, pw, repoName, oldId, newId, layerName,
+							page);
+					diffs.addAll(nextDiff.getDiffs());
+					nextPage = nextDiff.getNextPage();
+				}
+				diff.setDiffs(diffs);
+			}
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				diff = (GeogigDiff) unmarshaller.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				diff = new GeogigDiff();
+				diff.setError(e.getMessage());
+				diff.setSuccess("false");
+			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(diff.getError());
+			diff.setError(geogigStatus.getStatus());
+		}
+		return diff;
+	}
+
+	@Override
 	public GeogigRemove removeLayer(DTGeoserverManager geoserverManager, String repoName, String transactionId,
 			String path, boolean recursive) throws JAXBException {
 

@@ -1,7 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:choose>
+	<c:when test="${browser == 'MSIE'}">
+		<!-- 		스윗얼럿 익스플로러 지원을 위한 코어js -->
+		<!-- 		<script src='https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.5/core.min.js'></script> -->
+	</c:when>
+</c:choose>
+<!-- 바벨 폴리필 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>
 <!-- 폴리필 -->
-<script src="//cdn.polyfill.io/v1/polyfill.min.js" async defer></script>
+<!-- <script src="//cdn.polyfill.io/v1/polyfill.min.js"></script> -->
+<!-- 바벨 -->
+<!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+
 <!-- 제이쿼리 -->
 <script src="${pageContext.request.contextPath}/resources/js/jquery/jquery-2.2.2.min.js"></script>
 <!-- 부트스트랩 -->
@@ -11,13 +22,6 @@
 <%-- <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/fontawesome/css/fontawesome-all.min.css" /> --%>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-
-<c:choose>
-	<c:when test="${browser == 'MSIE'}">
-		<!-- 스윗얼럿 익스플로러 지원을 위한 코어js -->
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.5/core.min.js'></script>
-	</c:when>
-</c:choose>
 <!-- 스윗얼럿(알림) -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/sweetalert2/sweetalert2.css">
 <script src="${pageContext.request.contextPath}/resources/js/sweetalert2/sweetalert2.js"></script>

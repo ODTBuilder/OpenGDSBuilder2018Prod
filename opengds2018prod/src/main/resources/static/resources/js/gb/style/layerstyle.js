@@ -212,12 +212,12 @@ gb.style.LayerStyle.prototype.createLabelPanel = function(bool) {
 	var temp;
 	if(this.layer instanceof ol.layer.Tile){
 		temp = git instanceof Object ? git.attribute : [];
-		for(let i = 0; i < temp.length; i++){
+		for(var i = 0; i < temp.length; i++){
 			attrs.push(temp[i].fieldName);
 		}
 	} else if(this.layer instanceof ol.layer.Vector){
 		temp = git instanceof Object ? git.attribute : [];
-		for(let i = 0; i < temp.length; i++){
+		for(var i = 0; i < temp.length; i++){
 			attrs.push(temp[i].fieldName);
 		}
 	}

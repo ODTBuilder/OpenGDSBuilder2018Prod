@@ -651,24 +651,24 @@ gb.edit.FeatureRecord.prototype.closeEditTool = function(editTool){
 	var count = 0;
 	var edit = editTool;
 	
-	for(let i in this.created){
-		for(let j in this.created[i]){
+	for(var i in this.created){
+		for(var j in this.created[i]){
 			if(j !== "geomKey"){
 				count++;
 			}
 		}
 	}
 	
-	for(let i in this.modified){
-		for(let j in this.modified[i]){
+	for(var i in this.modified){
+		for(var j in this.modified[i]){
 			if(j !== "geomKey"){
 				count++;
 			}
 		}
 	}
 	
-	for(let i in this.removed){
-		for(let j in this.removed[i]){
+	for(var i in this.removed){
+		for(var j in this.removed[i]){
 			if(j !== "geomKey"){
 				count++;
 			}
@@ -696,7 +696,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 	if(Object.keys(this.modified).length !== 0){
 		layerid = Object.keys(this.modified)[0];
 		type = "modified";
-		for(let feature in this.modified[layerid]){
+		for(var feature in this.modified[layerid]){
 			if(feature === "geomKey"){
 				continue;
 			}
@@ -712,7 +712,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 		if(Object.keys(this.removed).length !== 0){
 			layerid = Object.keys(this.removed)[0];
 			type = "removed";
-			for(let feature in this.removed[layerid]){
+			for(var feature in this.removed[layerid]){
 				if(feature === "geomKey"){
 					continue;
 				}
@@ -728,7 +728,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 			if(Object.keys(this.created).length !== 0){
 				layerid = Object.keys(this.created)[0];
 				type = "created";
-				for(let feature in this.created[layerid]){
+				for(var feature in this.created[layerid]){
 					if(feature === "geomKey"){
 						continue;
 					}
@@ -753,7 +753,7 @@ gb.edit.FeatureRecord.prototype.sendWFSTTransaction = function(editTool){
 	repo = layerid.split(":")[2];
 	layername = "";
 	
-	for(let i in split){
+	for(var i in split){
 		if(i > 2){
 			layername += "_" + split[i];
 		}

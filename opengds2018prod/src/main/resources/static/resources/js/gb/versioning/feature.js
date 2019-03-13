@@ -241,9 +241,9 @@ gb.versioning.Feature = function(obj) {
 				var geoserver = that.getServer();
 				var repo = that.getRepo();
 				var path = that.getPath();
-				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
-				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
-				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
+				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").val();
+				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").attr("idx");
+				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button-clear").val();
 				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
 			});
 	var btnarea = $("<div>").css({
@@ -340,7 +340,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 
 				for (var i = 0; i < data.simpleCommits.length; i++) {
 					if ((until !== undefined || head !== undefined) && (i === 0)) {
-						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").val();
 						if (data.simpleCommits[i].commitId === early) {
 							if (data.simpleCommits.length === 1) {
 								var title = that.translation.message[that.locale];

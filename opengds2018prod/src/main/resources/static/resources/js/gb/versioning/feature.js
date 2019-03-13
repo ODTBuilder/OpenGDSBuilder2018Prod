@@ -154,6 +154,10 @@ gb.versioning.Feature = function(obj) {
 		"run" : {
 			"ko" : "수행",
 			"en" : "Run"
+		},
+		"commitdesc" : {
+			"ko" : "이 작업에 대한 설명을 입력해 주세요.",
+			"en" : 'Please provide a description of this action.'
 		}
 	};
 	this.ofeature = $("<div>").css({
@@ -991,7 +995,8 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 		"font-size" : "16px"
 	});
 	var inputMsg = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : that.translation.commitdesc[that.locale]
 	}).addClass("gb-form");
 	var msg3 = $("<div>").append(inputMsg);
 

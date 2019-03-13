@@ -827,8 +827,8 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Removed"
 			},
 			"revertmsg1" : {
-				"ko" : "해당 커밋 시점으로 레이어를 되돌립니다.",
-				"en" : "Revert the layer to the point of time when it was committed."
+				"ko" : "해당 커밋 시점으로 피쳐를 되돌립니다.",
+				"en" : "Revert the feature to the point of time when it was committed."
 			},
 			"revertmsg2" : {
 				"ko" : "진행하시겠습니까?",
@@ -882,6 +882,10 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "충돌 객체가 있습니다. 해결하시겠습니까?",
 				"en" : 'There are conflicting features. Do you want to resolve?'
 			},
+			"commitdesc" : {
+				"ko" : "이 작업에 대한 설명을 입력해 주세요.",
+				"en" : 'Please provide a description of this action.'
+			}
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -3286,10 +3290,10 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
-			// $("body").css("cursor", "wait");
+			 that.showSpinner(true, modal);
 		},
 		complete : function() {
-			// $("body").css("cursor", "default");
+			 that.showSpinner(false, modal);
 			if (typeof callback === "function") {
 				callback();
 			}
@@ -4034,9 +4038,11 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			that.showSpinner(true, modal);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			that.showSpinner(false, modal);
 			$(callbackBtn).prop("disabled", false);
 		},
 		success : function(data) {
@@ -4462,9 +4468,11 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			that.showSpinner(true, modal);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			that.showSpinner(false, modal);
 		},
 		success : function(data) {
 			console.log(data);
@@ -5951,7 +5959,8 @@ gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path
 		"font-size" : "16px"
 	});
 	var inputMsg = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : that.translation.commitdesc[that.locale]
 	}).addClass("gb-form");
 	var msg3 = $("<div>").append(inputMsg);
 

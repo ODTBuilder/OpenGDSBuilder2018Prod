@@ -322,7 +322,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	this.tbody.empty();
 
 	var that = this;
-	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search;
+	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search;
 	for ( let i in list) {
 		console.log(i);
 		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(that.translation[i][that.locale]).css("width", "20%");
@@ -331,7 +331,11 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 			for ( var j in list[i]) {
 				labelKey = $("<span>").text(j);
 				if (list[i][j] instanceof Object) {
-					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
+					labelText = "[type:" + list[i][j].type + "]";
+					if(list[i][j].nillable === false){
+						labelText += "[NotNull]";
+					}
+					labelValue = $("<span>").text(labelText);
 				} else {
 					labelValue = $("<span>").text(list[i][j]);
 				}
@@ -346,6 +350,11 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"type" : "text",
 					"readonly" : false
 				}).css(gb.edit.INPUTSTYLE));
+			} else if (i === "abstractContent") {
+				value = $("<td>").css(gb.edit.TDSTYLE).append($("<textarea>").addClass("layer-prop-textarea").attr({
+					"id" : "prop" + i,
+					"readonly" : false
+				}).val(list[i]).css(gb.edit.INPUTSTYLE).css("width", "250px"));
 			} else if (i === "style") {
 				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["workspace"][this.locale]);
 				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
@@ -714,6 +723,7 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 			"originalName" : serverInfo.layername,
 			"name" : $("#proplName").val(),
 			"title" : $("#proptitle").val(),
+			"abstractContent" : $("#propabstractContent").val(),
 			"srs" : "EPSG:" + $("#propsrs").val(),
 			"style": $("#styleSelect").find("option:selected").val()
 		}

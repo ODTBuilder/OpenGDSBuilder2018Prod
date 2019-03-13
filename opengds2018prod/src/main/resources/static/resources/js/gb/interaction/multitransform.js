@@ -586,7 +586,10 @@ gb.interaction.MultiTransform.prototype.flipAlgorithm_ = function(feature, direc
 	var extentIndex = null;
 	var geometry = feature.getGeometry();
 	var extent = feature.getGeometry().getExtent();
-	var coordi = feature.getGeometry().getFlatCoordinates();
+	var fcoordi = feature.getGeometry().getFlatCoordinates();
+	var coordi = feature.getGeometry().getCoordinates();
+	var newMultiCoordis = [];
+	var newCoordis = [];
 	var newCoordi = [];
 	var newGeometry = null;
 
@@ -602,27 +605,73 @@ gb.interaction.MultiTransform.prototype.flipAlgorithm_ = function(feature, direc
 		console.error('direction error');
 		return;
 	}
-
-	for (var i = 0; i < coordi.length / 2; i++) {
-		if (extentIndex === 1 || extentIndex === 3) {
-			if (coordi[2 * i + 1] !== extent[extentIndex]) {
-				newCoordi.push([ coordi[2 * i], 2 * extent[extentIndex] - coordi[2 * i + 1] ]);
+	
+	if (geometry instanceof ol.geom.LineString || geometry instanceof ol.geom.MultiLineString) {
+		for (var i = 0; i < fcoordi.length / 2; i++) {
+			if (extentIndex === 1 || extentIndex === 3) {
+				if (fcoordi[2 * i + 1] !== extent[extentIndex]) {
+					newCoordi.push([ fcoordi[2 * i], 2 * extent[extentIndex] - fcoordi[2 * i + 1] ]);
+				} else {
+					newCoordi.push([ fcoordi[2 * i], fcoordi[2 * i + 1] ]);
+				}
 			} else {
-				newCoordi.push([ coordi[2 * i], coordi[2 * i + 1] ]);
+				if (fcoordi[2 * i] !== extent[extentIndex]) {
+					newCoordi.push([ 2 * extent[extentIndex] - fcoordi[2 * i], fcoordi[2 * i + 1] ]);
+				} else {
+					newCoordi.push([ fcoordi[2 * i], fcoordi[2 * i + 1] ]);
+				}
 			}
-		} else {
-			if (coordi[2 * i] !== extent[extentIndex]) {
-				newCoordi.push([ 2 * extent[extentIndex] - coordi[2 * i], coordi[2 * i + 1] ]);
-			} else {
-				newCoordi.push([ coordi[2 * i], coordi[2 * i + 1] ]);
+		}
+	} else if (geometry instanceof ol.geom.Polygon) {
+		for (var i = 0; i < coordi.length; i++) {
+			newCoordi = [];
+			for (var j = 0; j < coordi[i].length; j++){
+				if (extentIndex === 1 || extentIndex === 3) {
+					if (coordi[i][j][1] !== extent[extentIndex]) {
+						newCoordi.push([ coordi[i][j][0], 2 * extent[extentIndex] - coordi[i][j][1] ]);
+					} else {
+						newCoordi.push([ coordi[i][j][0], coordi[i][j][1] ]);
+					}
+				} else {
+					if (coordi[i][j][0] !== extent[extentIndex]) {
+						newCoordi.push([ 2 * extent[extentIndex] - coordi[i][j][0], coordi[i][j][1] ]);
+					} else {
+						newCoordi.push([ coordi[i][j][0], coordi[i][j][1] ]);
+					}
+				}
 			}
+			newCoordis.push(newCoordi);
+		}
+	} else if (geometry instanceof ol.geom.MultiPolygon) {
+		for (var i = 0; i < coordi.length; i++) {
+			newCoordis = [];
+			for (var j = 0; j < coordi[i].length; j++){
+				newCoordi = [];
+				for (var k = 0; k < coordi[i][j].length; k++){
+					if (extentIndex === 1 || extentIndex === 3) {
+						if (coordi[i][j][k][1] !== extent[extentIndex]) {
+							newCoordi.push([ coordi[i][j][k][0], 2 * extent[extentIndex] - coordi[i][j][k][1] ]);
+						} else {
+							newCoordi.push([ coordi[i][j][k][0], coordi[i][j][k][1] ]);
+						}
+					} else {
+						if (coordi[i][j][k][0] !== extent[extentIndex]) {
+							newCoordi.push([ 2 * extent[extentIndex] - coordi[i][j][k][0], coordi[i][j][k][1] ]);
+						} else {
+							newCoordi.push([ coordi[i][j][k][0], coordi[i][j][k][1] ]);
+						}
+					}
+				}
+				newCoordis.push(newCoordi);
+			}
+			newMultiCoordis.push(newCoordis);
 		}
 	}
 
 	if (geometry instanceof ol.geom.MultiPolygon) {
-		newGeometry = new ol.geom.MultiPolygon([ [ newCoordi ] ]);
+		newGeometry = new ol.geom.MultiPolygon(newMultiCoordis);
 	} else if (geometry instanceof ol.geom.Polygon) {
-		newGeometry = new ol.geom.Polygon([ newCoordi ]);
+		newGeometry = new ol.geom.Polygon(newCoordis);
 	} else if (geometry instanceof ol.geom.MultiLineString) {
 		newGeometry = new ol.geom.MultiLineString([ newCoordi ]);
 	} else if (geometry instanceof ol.geom.LineString) {

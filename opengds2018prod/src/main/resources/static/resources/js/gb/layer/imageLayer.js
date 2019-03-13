@@ -134,6 +134,7 @@ if (!gb.layer)
 		
 		this.vector.setMap(this.map);
 		
+		// R키 입력한 상태로 객체그리기를 종료할 시 이미지 비율에 맞게 Geometry가 생성됨
 		var toggleKey = false;
 		$(window).bind("keypress.imageDraw", function(e){
 			if(e.keyCode === 114 || e.which === 114){
@@ -170,6 +171,7 @@ if (!gb.layer)
 			source: source
 		});
 		
+		var listener;
 		var startEvent = this.on("drawstart", function(evt){
 			that.vector.setMap(that.getMap());
 		});
@@ -211,6 +213,7 @@ if (!gb.layer)
 				console.log(e);
 			});
 			
+			ol.Observable.unByKey(listener);
 			$(window).unbind("keypress.imageDraw");
 		});
 		this.listener_.push(endEvent);
@@ -233,7 +236,8 @@ if (!gb.layer)
 	
 	gb.layer.ImageLayer.prototype.createMenuBar = function(target){
 		if($.find("#imageLayerMenu").length !== 0){
-			$("#imageLayerMenu").remove();
+			this.removeMenuBar();
+			return;
 		}
 		
 		var that = this;

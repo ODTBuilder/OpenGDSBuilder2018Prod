@@ -726,6 +726,26 @@ if (!gb.validation)
 				contentType : "application/json; charset=UTF-8",
 				dataType : "json",
 				cache : false,
+				beforeSend : function() {
+					that.modal.append($("<div id='validate-request-loading'>").css({
+						"z-index" : "10",
+						"position" : "absolute",
+						"left" : "0",
+						"top" : "0",
+						"width" : "100%",
+						"height" : "100%",
+						"text-align" : "center",
+						"background-color" : "rgba(0, 0, 0, 0.4)"
+					}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+						"position" : "relative",
+						"top" : "50%",
+						"margin-top" : "-5em"
+					})));
+				},
+				complete : function() {
+					// $("body").css("cursor", "default");
+					$("#validate-request-loading").remove();
+				},
 				data : JSON.stringify(params),
 				traditional : true
 			});

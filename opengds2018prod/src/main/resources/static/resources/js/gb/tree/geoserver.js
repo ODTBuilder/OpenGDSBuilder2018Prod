@@ -790,7 +790,7 @@ gb.tree.GeoServer = function(obj) {
 														}
 													}
 												},
-												"jsonp" : {
+												/*"jsonp" : {
 													"separator_before" : false,
 													"icon" : "fa fa-file-excel-o",
 													"separator_after" : false,
@@ -811,7 +811,7 @@ gb.tree.GeoServer = function(obj) {
 															inst.download_wfs_layer(selectedObj[i], "text/javascript");
 														}
 													}
-												},
+												},*/
 												"csv" : {
 													"separator_before" : false,
 													"icon" : "fa fa-file-excel-o",
@@ -1806,9 +1806,24 @@ gb.tree.GeoServer.prototype.addGeoServer = function(name, url, id, password, cal
 		// data : params,
 		beforeSend : function() {
 			$("body").css("cursor", "wait");
+			callback.modal.append($("<div id='add-geoserver-loading'>").css({
+				"z-index" : "10",
+				"position" : "absolute",
+				"left" : "0",
+				"top" : "0",
+				"width" : "100%",
+				"height" : "100%",
+				"text-align" : "center",
+				"background-color" : "rgba(0, 0, 0, 0.4)"
+			}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+				"position" : "relative",
+				"top" : "50%",
+				"margin-top" : "-5em"
+			})));
 		},
 		complete : function() {
 			$("body").css("cursor", "default");
+			$("#add-geoserver-loading").remove();
 		},
 		success : function(data,textStatus,jqXHR) {
 			console.log(data);

@@ -229,6 +229,38 @@ gb.tree.OpenLayers = function(obj) {
 				"ko" : "서버에 업로드",
 				"en" : "Upload to Server"
 			},
+			"uploadShpAlert" : {
+				"ko" : "zip파일 형식만 업로드가능합니다.",
+				"en" : "Only zip file types can be uploaded."
+			},
+			"layerNameHint" : {
+				"ko" : "레이어 이름은 문자로 시작해야하며 영어 대소문자, 숫자, 언더스코어(_), 하이픈(-) 만 입력이 가능합니다.",
+				"en" : "Layer names must begin with a letter and can only contain letters in English, capital letters, numbers, hyphens(-) and underscores(_)."
+			},
+			"layerSpecialChar" : {
+				"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
+				"en" : "Special characters are not allowed in the layer name."
+			},
+			"columnNameHint" : {
+				"ko" : "컬럼명은 다음과 같은 규칙을 가지고있습니다.\n1.첫 단어는 문자이여야만 한다.\n2.단어 수는 1-30자까지이다.\n3.영단어 대소문자, 숫자, _, #, $ 만 입력할 수 있다.\n4.공백을 허용하지 않는다.",
+				"en" : "A column name has the following rules:\n1.The first word must be a letter.\n2.The word count can be from 1 to 30 characters.\n3.Only English letters, numbers, _, #, and $ can be entered.\n4.Do not allow spaces."
+			},
+			"imageUploadHint" : {
+				"ko" : "업로드할 이미지 파일을 선택해주세요.",
+				"en" : "Please select an image file to upload."
+			},
+			"imageFileHint" : {
+				"ko" : "이미지 형식의 파일만 업로드 가능합니다.",
+				"en" : "Only image format can be uploaded."
+			},
+			"and" : {
+				"ko" : "외",
+				"en" : "and"
+			},
+			"more" : {
+				"ko" : "개",
+				"en" : "more"
+			}
 	}
 	this.getLegend = url.getLegend ? url.getLegend : undefined;
 	this.panelTitle = $("<p>").text("Now editing").css({
@@ -608,7 +640,7 @@ gb.tree.OpenLayers = function(obj) {
 							}
 						}
 
-						if(o.type !== "Group" && o.type !== "Raster" && o.type !== "FakeGroup"){
+						if(o.type !== "Group" && o.type !== "FakeGroup"){
 							if(this.get_node(o.parent) instanceof Object){
 								if(this.get_node(o.parent).type !== "FakeGroup"){
 									totalObj["style"] = {
@@ -638,54 +670,55 @@ gb.tree.OpenLayers = function(obj) {
 									};
 								}
 							}
-							
-							totalObj["navigator"] = {
-								"separator_before" : false,
-								"icon" : "fa fa-compass",
-								"separator_after" : false,
-								"_disabled" : false,
-								"label" : that.translation.navigator[that.locale],
-								"action" : function(data) {
-									var inst = $.jstreeol3.reference(data.reference),
-									obj = inst.get_node(data.reference);
-									if (inst.is_selected(obj)) {
-										var layer = inst.get_LayerById(obj.id);
+							if(o.type !== "Raster"){
+								totalObj["navigator"] = {
+									"separator_before" : false,
+									"icon" : "fa fa-compass",
+									"separator_after" : false,
+									"_disabled" : false,
+									"label" : that.translation.navigator[that.locale],
+									"action" : function(data) {
+										var inst = $.jstreeol3.reference(data.reference),
+										obj = inst.get_node(data.reference);
+										if (inst.is_selected(obj)) {
+											var layer = inst.get_LayerById(obj.id);
 
-										inst._data.layerproperties.navigator
-										.setFeatures(layer);
-									} else {
-										// inst.delete_node_layer(obj);
+											inst._data.layerproperties.navigator
+											.setFeatures(layer);
+										} else {
+											// inst.delete_node_layer(obj);
+										}
 									}
-								}
-							};
-							
-							totalObj["properties"] = {
-								"separator_before" : false,
-								"icon" : "fa fa-info-circle",
-								"separator_after" : false,
-								"_disabled" : false,
-								"label" : that.translation.prop[that.locale],
-								"action" : function(data) {
-									var inst = $.jstreeol3
-									.reference(data.reference), obj = inst
-									.get_node(data.reference);
-									var layer = inst.get_LayerById(obj.id);
-									that.selectedLayer = layer;
-									
-									if(layer instanceof ol.layer.Vector){
-										that.vectorLayerInfo(layer);
-									} else if (layer instanceof ol.layer.Tile){
-										var layerId = layer.get("id");
-										var datastore = layerId.split(":")[2];
-										that.requestLayerInfo({
-											geoserver: layer.get("git").geoserver,
-											workspace: layer.get("git").workspace,
-											datastore: datastore,
-											layername: layer.get("git").layers
-										});
+								};
+								
+								totalObj["properties"] = {
+									"separator_before" : false,
+									"icon" : "fa fa-info-circle",
+									"separator_after" : false,
+									"_disabled" : false,
+									"label" : that.translation.prop[that.locale],
+									"action" : function(data) {
+										var inst = $.jstreeol3
+										.reference(data.reference), obj = inst
+										.get_node(data.reference);
+										var layer = inst.get_LayerById(obj.id);
+										that.selectedLayer = layer;
+										
+										if(layer instanceof ol.layer.Vector){
+											that.vectorLayerInfo(layer);
+										} else if (layer instanceof ol.layer.Tile){
+											var layerId = layer.get("id");
+											var datastore = layerId.split(":")[2];
+											that.requestLayerInfo({
+												geoserver: layer.get("git").geoserver,
+												workspace: layer.get("git").workspace,
+												datastore: datastore,
+												layername: layer.get("git").layers
+											});
+										}
 									}
-								}
-							};
+								};
+							}
 						}
 						
 						return totalObj;
@@ -994,6 +1027,9 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	
 	$(okBtn).click(
 		function() {
+			var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+			var layername_pattern = /^([A-Za-z])([A-Za-z0-9_-]+)$/;
+			var column_pattern = /^([A-Za-z])([A-Za-z0-9_$#]{0,29})$/;
 			var geoType = { 
 				"point": "Point", 
 				"linestring": "LineString", 
@@ -1012,12 +1048,19 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			
 			var attributes = [],
 				bool = true,
+				columnBool = true,
 				attribute;
 			
 			$(".type-form-body").children().each(function(){
 				if(!$(this).children().eq(0).find("input:text").val()){
 					bool = false;
 				}
+				var fieldName = $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, '');
+				
+				if (column_pattern.test(fieldName) === false) {
+					columnBool = false;
+				}
+				
 				attribute = new gb.layer.Attribute({
 					originFieldName : $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, ''),
 					fieldName : $(this).children().eq(0).find("input:text").val().replace(/(\s*)/g, ''),
@@ -1036,6 +1079,11 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 				return;
 			}
 			
+			if(!columnBool){
+				alert(that.translation.columnNameHint[that.locale]);
+				return;
+			}
+			
 			var gitLayer = {
 				"editable" : true,
 				"geometry" : geoType[type],
@@ -1046,6 +1094,16 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 			
 			if(!codeInput.val()){
 				alert(that.translation.inputNameHint[that.locale]);
+				return;
+			}
+			
+			if (special_pattern.test(codeInput.val()) === true) {
+				alert(that.translation.layerSpecialChar[that.locale]);
+				return;
+			}
+			
+			if (layername_pattern.test(codeInput.val()) === false) {
+				alert(that.translation.layerNameHint[that.locale]);
 				return;
 			}
 			
@@ -1060,7 +1118,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	);
 };
 
-gb.tree.OpenLayers.getAttrForm = function() {
+gb.tree.OpenLayers.getAttrForm = function(bool) {
 	var addBtn = 
 		$("<a href='#'>")
 			.addClass("gb-button gb-button-secondary")
@@ -1095,7 +1153,12 @@ gb.tree.OpenLayers.getAttrForm = function() {
 				});
 				var td5 = $("<td>").append(trash);
 		
-				var tr1 = $("<tr>").append(td1).append(td2).append(td3).append(td4).append(td5);
+				var tr1 = $("<tr>");
+				if(bool === true){
+					tr1.append(td1).append(td2).append(td5);
+				} else {
+					tr1.append(td1).append(td2).append(td3).append(td5);
+				}
 				$(".type-form-body").append(tr1);
 			});
 	
@@ -1104,7 +1167,12 @@ gb.tree.OpenLayers.getAttrForm = function() {
 	var htd3 = $("<td>").text("Not Null");
 	var htd4 = $("<td>").text("Unique");
 	var htd5 = $("<td>").append(addBtn);
-	var thd = $("<thead>").append(htd1).append(htd2).append(htd3).append(htd4).append(htd5);
+	var thd = $("<thead>")
+	if(bool === true){
+		thd.append(htd1).append(htd2).append(htd5);
+	} else {
+		thd.append(htd1).append(htd2).append(htd3).append(htd5);
+	}
 
 	var typeFormBody = $("<tbody>").addClass("type-form-body");
 
@@ -1121,12 +1189,17 @@ gb.tree.OpenLayers.getAttrForm = function() {
 gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	var that = this;
 
-	var file;
+	var file = undefined;
 
 	// 파일 선택 input
 	var fileSelect = $("<input type='file' id='layer_shp_file' accept='.zip'>").change(function() {
 		if (!!this.files) {
 			file = this.files[0];
+			if(file.type !== "application/x-zip-compressed"){
+				alert(that.translation.uploadShpAlert[that.locale]);
+				file = undefined;
+				return;
+			}
 			if (file.size > 0) {
 				fileInfo.text(file.name + ' , ' + file.size + ' kb');
 			}
@@ -1202,9 +1275,30 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		addGeoServerModal.close();
 	});
 	$(okBtn).click(function() {
+		if(file === undefined){
+			return;
+		}
+		
+		$("body").append($("<div id='shp-upload-loading'>").css({
+			"z-index" : "10",
+			"position" : "absolute",
+			"left" : "0",
+			"top" : "0",
+			"width" : "100%",
+			"height" : "100%",
+			"text-align" : "center",
+			"background-color" : "rgba(0, 0, 0, 0.4)"
+		}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
+			"position" : "relative",
+			"top" : "50%",
+			"margin-top" : "-5em"
+		})));
+		
 		var callback = function(){
+			$("#shp-upload-loading").remove();
 			that.refreshList();
 		};
+		
 		that.loadShpZip(encodeInput.val(), file, that.map, callback);
 		addGeoServerModal.close();
 	});
@@ -1214,46 +1308,44 @@ gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) 
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
 	var fileL = file;
-	if (fileL.name.split(".")[1] === "zip") {
-
-		loadshp({
-			url : fileL,
-			encoding : encode
-		}, function(geojson) {
-			console.log(geojson);
-			var features = (new ol.format.GeoJSON()).readFeatures(geojson);
-			
-			if (!!features.length) {
-				var lname = fileL.name.split(".")[0];
-				for (var i = 0; i < features.length; i++) {
-					features[i].setId(lname+"."+i);
-				}
-				console.log(features);
-				var vectorLayer = new ol.layer.Vector({
-					renderMode: 'image',
-					source : new ol.source.Vector({
-						features : features
-					})
-				});
-				var ftype;
-				if (features.length > 0) {
-					 ftype = features[0].getGeometry().getType();
-				}
-				var gitLayer = {
-						"editable" : true,
-						"geometry" : ftype,
-						"validation" : false
-				};
-				vectorLayer.set("git", gitLayer);
-				vectorLayer.set("name", fileL.name);
-				vectorLayer.set("id", "shp:"+fileL.name);
-				
-				map.addLayer(vectorLayer);
-				map.getView().fit(geojson.bbox, map.getSize());
-				callback();
+	
+	loadshp({
+		url : fileL,
+		encoding : encode
+	}, function(geojson) {
+		console.log(geojson);
+		var features = (new ol.format.GeoJSON()).readFeatures(geojson);
+		
+		if (!!features.length) {
+			var lname = fileL.name.split(".")[0];
+			for (var i = 0; i < features.length; i++) {
+				features[i].setId(lname+"."+i);
 			}
-		});
-	}
+			console.log(features);
+			var vectorLayer = new ol.layer.Vector({
+				renderMode: 'image',
+				source : new ol.source.Vector({
+					features : features
+				})
+			});
+			var ftype;
+			if (features.length > 0) {
+				 ftype = features[0].getGeometry().getType();
+			}
+			var gitLayer = {
+					"editable" : true,
+					"geometry" : ftype,
+					"validation" : false
+			};
+			vectorLayer.set("git", gitLayer);
+			vectorLayer.set("name", fileL.name);
+			vectorLayer.set("id", "shp:"+fileL.name);
+			
+			map.addLayer(vectorLayer);
+			map.getView().fit(geojson.bbox, map.getSize());
+			callback();
+		}
+	});
 }
 
 /**
@@ -1270,6 +1362,13 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var fileSelect = $("<input type='file' accept='image/*'>").change(function() {
 		if (!!this.files) {
 			file = this.files[0];
+			if(!file){
+				return;
+			}
+			if (file.type.match(/image/g) === null){
+				alert(that.translation.imageFileHint[that.locale]);
+				return;
+			}
 			if (file.size > 0) {
 				fileInfo.text(file.name + ' , ' + file.size + ' kb');
 				var reader = new FileReader();
@@ -1322,6 +1421,11 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var okBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]).click(function() {
+		if (!readerInfo) {
+			alert(that.translation.imageUploadHint[that.locale]);
+			return;
+		}
+		
 		new gb.layer.ImageLayer({
 			map : that.map,
 			url : readerInfo.result,
@@ -1330,6 +1434,8 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 			title : file.name,
 			jstree: that.jstree
 		});
+		
+		addGeoServerModal.close();
 	});
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
@@ -1350,10 +1456,6 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	});
 
 	$(closeBtn).click(function() {
-		addGeoServerModal.close();
-	});
-
-	$(okBtn).click(function() {
 		addGeoServerModal.close();
 	});
 };
@@ -1377,7 +1479,8 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 	var todel;
 	if (Array.isArray(names)) {
 		if (names.length > 1) {
-			todel = '"' + names[0] + '" ' + "and " + (names.length - 1) + " more";
+			todel = '"' + names[0] + '" ' + this.translation.and[this.locale] + ' '
+			+ (names.length - 1) + this.translation.more[this.locale];
 		} else {
 			todel = '"' + names[0] + '" ';
 		}
@@ -1464,7 +1567,14 @@ gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
 	if(attrs instanceof Array){
 		for(let i = 0; i < attrs.length; i++){
 			if(attrs[i] instanceof gb.layer.Attribute){
-				params.attInfo[attrs[i].originFieldName] = {type: attrs[i].type};
+				params.attInfo[attrs[i].originFieldName] = {};
+				params.attInfo[attrs[i].originFieldName].type = attrs[i].type;
+				if(attrs[i].nullable === false){
+					params.attInfo[attrs[i].originFieldName].nillable = false;
+				}
+				if(attrs[i].isUnique === true){
+					params.attInfo[attrs[i].originFieldName].isUnique = true;
+				}
 			}
 		}
 	}
@@ -1685,7 +1795,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	
 	var tbody = $("<tbody>");
 	var tableTag = $("<table>").append(tbody);
-	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search, removeAttr;
+	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search, removeAttr;
 	for ( let i in list) {
 		
 		if(i === "sld"){
@@ -1706,7 +1816,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 						.css({"float": "right"});
 				
 				addIcon.click(function() {
-					that.addPropModal();
+					that.addPropModal(true);
 				});
 				
 				var addDiv = 
@@ -1726,7 +1836,14 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 			for ( var j in list[i]) {
 				labelKey = $("<span>").addClass("layer-attr-key").text(j);
 				if (list[i][j] instanceof Object) {
-					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
+					labelText = "[type:" + list[i][j].type + "]";
+					if(list[i][j].nillable === false){
+						labelText += "[NotNull]";
+					}
+					if(list[i][j].isUnique === true){
+						labelText += "[Unique]";
+					}
+					labelValue = $("<span>").text(labelText);
 				} else {
 					labelValue = $("<span>").text(list[i][j]);
 				}
@@ -1845,7 +1962,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 
 gb.tree.OpenLayers.prototype.addPropModal = function(obj) {
 	var that = this;
-	var attrTable = gb.tree.OpenLayers.getAttrForm();
+	var attrTable = gb.tree.OpenLayers.getAttrForm(obj);
 	
 	var closeBtn = 
 		$("<button>")

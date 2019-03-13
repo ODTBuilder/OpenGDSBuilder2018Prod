@@ -130,7 +130,7 @@ gb.style.LayerStyle = function(obj) {
 		$("<input type='checkbox' tabindex='0'>")
 			.css(gb.geoserver.CHECKBOXINPUT)
 			.change(function(){
-				var bool = that.createLabelPanel(this.checked);
+				var bool = that.createWFSLabelPanel(this.checked);
 				if(!bool){
 					this.checked = false;
 				}
@@ -190,11 +190,11 @@ gb.style.LayerStyle.prototype = Object.create(gb.panel.Base.prototype);
 gb.style.LayerStyle.prototype.constructor = gb.style.LayerStyle;
 
 /**
- * 선택한 스타일을 레이어에 적용 시킨다.
+ * WFS 라벨 설정 페널을 생성한다.
  * 
  * @method gb.style.LayerStyle#labelPanel
  */
-gb.style.LayerStyle.prototype.createLabelPanel = function(bool) {
+gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 	var that = this;
 	if(!bool){
 		if(this.labelPanel){
@@ -204,20 +204,21 @@ gb.style.LayerStyle.prototype.createLabelPanel = function(bool) {
 	}
 	
 	var git = this.layer.get("git");
-	if (git["fake"] === "parent" || !git.tempLayer) {
+	if (git["fake"] === "parent") {
 		return false;
 	}
 	
+	var labelOptions = git.labelOptions || {};
 	var attrs = [];
 	var temp;
 	if(this.layer instanceof ol.layer.Tile){
 		temp = git instanceof Object ? git.attribute : [];
-		for(let i = 0; i < temp.length; i++){
+		for(var i = 0; i < temp.length; i++){
 			attrs.push(temp[i].fieldName);
 		}
 	} else if(this.layer instanceof ol.layer.Vector){
 		temp = git instanceof Object ? git.attribute : [];
-		for(let i = 0; i < temp.length; i++){
+		for(var i = 0; i < temp.length; i++){
 			attrs.push(temp[i].fieldName);
 		}
 	}
@@ -232,13 +233,12 @@ gb.style.LayerStyle.prototype.createLabelPanel = function(bool) {
 		"Weight": ["normal", "bold"],
 		"Placement": ["point", "line"],
 		"MaxAngle": ["0.7853981633974483", "2.0943951023931953", "6.283185307179586"],
-		"ExceedLength": ["true", "false"],
 		"Size": "12px",
 		"OffsetX": "0",
 		"OffsetY": "0",
-		"Color": "blue",
-		"OutColor": "#ffffff",
-		"OutWidth": "3"
+		"FillColor": "blue",
+		"OutlineColor": "#ffffff",
+		"OutlineWidth": "3"
 	}
 	
 	var tr, key, value, select, option;
@@ -269,12 +269,15 @@ gb.style.LayerStyle.prototype.createLabelPanel = function(bool) {
 			for(var j = 0; j < options[i].length; j++){
 				option = $("<option>").val(options[i][j]).text(options[i][j]);
 				select.append(option);
+				if (options[i][j] === labelOptions[i.charAt(0).toLowerCase() + i.slice(1)]) {
+					option.attr("selected", "selected");
+				}
 			}
 			value = $("<td>").css(gb.edit.TDSTYLE).append(select);
 		} else {
 			value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
 				"id" : "label" + i,
-				"value" : options[i],
+				"value" : labelOptions[i.charAt(0).toLowerCase() + i.slice(1)] || options[i],
 				"type" : "text",
 				"readonly" : false
 			}).css(gb.edit.INPUTSTYLE));
@@ -329,7 +332,27 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 					})
 				}) : undefined
 			});
-
+	var labelOptions = {};;
+	if(this.checkboxInput.prop("checked")){
+		labelOptions.attribute = $("#labelAttribute").find("option:selected").val();
+		labelOptions.align = $("#labelAlign").find("option:selected").val();
+		labelOptions.baseline = $("#labelBaseline").find("option:selected").val();
+		labelOptions.size = $("#labelSize").val();
+		labelOptions.offsetX = parseInt($("#labelOffsetX").val(), 10);
+		labelOptions.offsetY = parseInt($("#labelOffsetY").val(), 10);
+		labelOptions.weight = $("#labelWeight").find("option:selected").val();
+		labelOptions.placement = $("#labelPlacement").find("option:selected").val();
+		labelOptions.maxAngle = parseFloat($("#labelMaxAngle").find("option:selected").val());
+		labelOptions.overflow = false;
+		labelOptions.rotation = parseFloat($("#labelRotation").find("option:selected").val());
+		labelOptions.font = $("#labelFont").find("option:selected").val();
+		labelOptions.fillColor = $("#labelFillColor").val();
+		labelOptions.outlineColor = $("#labelOutlineColor").val();
+		labelOptions.outlineWidth = parseInt($("#labelOutlineWidth").val(), 10);
+		labelOptions.maxResolution = $("#labelMaxResolution").find("option:selected").val();
+	}
+	var opacity = parseFloat($(this.opaPicker).val());
+	
 	if (layer instanceof ol.layer.Vector) {
 		if (layer.get("git") === undefined || layer.get("git") === null) {
 			return;
@@ -338,8 +361,14 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 		layer.setStyle(style);
 		if(gb.layer.Label !== undefined && this.checkboxInput.prop("checked")){
 			layer.setStyle(new gb.layer.Label({
-				layer: layer
+				layer: layer,
+				labelOptions: labelOptions
 			}));
+			
+			layer.get("git").labelOptions = labelOptions;
+			layer.get("git").labelActive = true;
+		} else {
+			layer.get("git").labelActive = false;
 		}
 		
 		var lsource = layer.getSource();
@@ -353,13 +382,19 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 				vectorLayer.setStyle(style);
 				if(gb.layer.Label !== undefined && this.checkboxInput.prop("checked")){
 					vectorLayer.setStyle(new gb.layer.Label({
-						layer: vectorLayer
+						layer: vectorLayer,
+						labelOptions: labelOptions
 					}));
+					
+					git.labelOptions = labelOptions;
+					git.labelActive = true;
+				} else {
+					git.labelActive = false;
 				}
 			}
 		}
 		this.close();
-		this.createLabelPanel(false);
+		this.createWFSLabelPanel(false);
 	} else if (layer instanceof ol.layer.Tile) {
 		var git = layer.get("git");
 		if (git["fake"] === "parent") {
@@ -374,7 +409,8 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 			vectorLayer.setStyle(style);
 			if(gb.layer.Label !== undefined && this.checkboxInput.prop("checked")){
 				vectorLayer.setStyle(new gb.layer.Label({
-					layer: vectorLayer
+					layer: vectorLayer,
+					labelOptions: labelOptions
 				}));
 			}
 		}
@@ -460,17 +496,46 @@ gb.style.LayerStyle.prototype.updateStyle = function() {
 				sldBody += '</Graphic>' + '</PointSymbolizer>'
 			}
 
+			if(this.checkboxInput.prop("checked")){
+				sldBody += '<TextSymbolizer>';
+				sldBody += '<Geometry>';
+				sldBody += '<ogc:Function name="centroid">';
+				sldBody += '<ogc:PropertyName>the_geom</ogc:PropertyName>';
+				sldBody += '</ogc:Function>';
+				sldBody += '</Geometry>';
+				sldBody += '<Label>';
+				sldBody += '<ogc:PropertyName>' + labelOptions.attribute + '</ogc:PropertyName>';
+				sldBody += '</Label>';
+				sldBody += '<Font>';
+				sldBody += '<CssParameter name="font-family">' + labelOptions.font + '</CssParameter>';
+				sldBody += '<CssParameter name="font-size">' + labelOptions.size + '</CssParameter>';
+				sldBody += '<CssParameter name="font-style">normal</CssParameter>';
+				sldBody += '<CssParameter name="font-weight">' + labelOptions.weight + '</CssParameter>';
+				sldBody += '</Font>';
+				sldBody += '<Fill>';
+				sldBody += '<CssParameter name="fill">#990099</CssParameter>';
+				sldBody += '</Fill>';
+				sldBody += '</TextSymbolizer>';
+				
+				git.labelOptions = labelOptions;
+				git.labelActive = true;
+			} else {
+				git.labelActive = false;
+			}
+			
 			sldBody += '</Rule></FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>';
-
+			
 			source.updateParams({
 				'SLD_BODY' : sldBody
 			});
-
-			var opacity = parseFloat($(this.opaPicker).val());
+			
 			layer.setOpacity(opacity);
 			this.close();
-			this.createLabelPanel(false);
+			this.createWFSLabelPanel(false);
 		}
+	} else if (layer instanceof ol.layer.Image) {
+		layer.setOpacity(opacity);
+		this.close();
 	}
 	this.updateLegend();
 }
@@ -630,7 +695,7 @@ gb.style.LayerStyle.prototype.applyStyle = function() {
 	var opacity = parseFloat($(this.opaPicker).val());
 	layer.setOpacity(opacity);
 	this.close();
-	this.createLabelPanel(false);
+	this.createWFSLabelPanel(false);
 };
 /**
  * RGB 색상코드를 16진수 색상코드로 변환한다.
@@ -1103,6 +1168,10 @@ gb.style.LayerStyle.prototype.updateLegend = function(sld) {
 	var layer = this.layer;
 	var git = layer.get("git");
 
+	if(layer instanceof ol.layer.Image){
+		return;
+	}
+	
 	var fill = 'rgba(' + $(this.fillPicker).spectrum("get").toRgb().r + ', ' + $(this.fillPicker).spectrum("get").toRgb().g + ', '
 			+ $(this.fillPicker).spectrum("get").toRgb().b + ', '
 			+ (typeof $(this.fillPicker).spectrum("get").toRgb().a === "number" ? $(this.fillPicker).spectrum("get").toRgb().a : 1) + ')';
@@ -1331,7 +1400,7 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 			}
 		}
 	}
-
+	
 	if (this.geom === "LineString" || this.geom === "MultiLineString") {
 		$(this.fillArea).hide();
 	} else {
@@ -1344,8 +1413,20 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 		$(this.radArea).hide();
 	}
 	
-	if(style instanceof ol.style.Style){
-		if(style.getText() instanceof ol.style.Text){
+	if (layer instanceof ol.layer.Image) {
+		$(this.fillArea).hide();
+		$(this.radArea).hide();
+		$(this.outlineArea).hide();
+		$(this.widthArea).hide();
+		$(this.lineArea).hide();
+	} else {
+		$(this.outlineArea).show();
+		$(this.widthArea).show();
+		$(this.lineArea).show();
+	}
+	
+	if(git instanceof Object){
+		if(git.labelActive){
 			this.checkboxInput.prop("checked", true);
 		} else {
 			this.checkboxInput.prop("checked", false);
@@ -1353,11 +1434,11 @@ gb.style.LayerStyle.prototype.setLayer = function(layer) {
 		this.checkboxInput.trigger("change");
 	}
 	
-	if(gb.module.isEditing.get()){
+	/*if(gb.module.isEditing.get()){
 		this.checkboxDiv.css("display", "block");
 	} else {
 		this.checkboxDiv.css("display", "none");
-	}
+	}*/
 };
 /**
  * 패널에 레이어 이름을 표시한다.

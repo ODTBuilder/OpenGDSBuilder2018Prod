@@ -60,6 +60,22 @@ gb.geoserver.UploadSHP = function(obj) {
 			"ko" : "찾아보기",
 			"en" : "Browse"
 		},
+		"remarks" : {
+			"ko" : "비고",
+			"en" : "Remarks"
+		},
+		"success" : {
+			"ko" : "성공",
+			"en" : "Success"
+		},
+		"fileUploadHint" : {
+			"ko" : "업로드할 파일을 선택해주세요.",
+			"en" : "Please select a file to upload."
+		},
+		"uploadShpAlert" : {
+			"ko" : "zip파일 형식만 업로드가능합니다.",
+			"en" : "Only zip file types can be uploaded."
+		},
 		"alert" : {
 			"ko" : "대용량 파일(100MB 이상)은 Geoserver에 직접 업로드하는 것을 권장합니다.",
 			"en" : "Recommend uploading large file(100MB or more) directly to Geoserver."
@@ -103,6 +119,22 @@ gb.geoserver.UploadSHP = function(obj) {
 		"613" : {
 			"ko" : "미발행 레이어와 중복됩니다.",
 			"en" : "Duplicate Unpulished layer"
+		},
+		"615" : {
+			"ko" : "prj파일이 없어서 레이어 발행에 실패하였습니다.",
+			"en" : "There is no prj file. So it failed to publish."
+		},
+		"616" : {
+			"ko" : "shp파일이 없어서 레이어 발행에 실패하였습니다.",
+			"en" : "There is no shp file. So it failed to publish."
+		},
+		"617" : {
+			"ko" : "shp파일이 1개 이상이여서 레이어 발행에 실패하였습니다.",
+			"en" : "The layer failed to publish because there is more than one shp file."
+		},
+		"618" : {
+			"ko" : "압축파일내에 폴더가 포함되어있어 발행에 실패하였습니다.",
+			"en" : "The publication failed because the compressed file contains a folder."
 		}
 	};
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
@@ -307,6 +339,15 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 		uploadModal.close();
 	});
 	$(okBtn).click(function() {
+		if(!file){
+			alert(that.translation.fileUploadHint[that.locale]);
+			return;
+		}
+		
+		if(file.type !== "application/x-zip-compressed"){
+			alert(that.translation.uploadShpAlert[that.locale]);
+			return;
+		}
 		that.uploadFile(file, uploadModal);
 	});
 };
@@ -332,9 +373,9 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 	tr = $("<tr>").css(gb.edit.TRSTYLE);
 	th = $("<th>");
 	tr.append(th);
-	th = $("<th>").css(gb.edit.THSTYLE).text("성공여부");
+	th = $("<th>").css(gb.edit.THSTYLE).text(this.translation.success[this.locale]);
 	tr.append(th);
-	th = $("<th>").css(gb.edit.THSTYLE).text("비고");
+	th = $("<th>").css(gb.edit.THSTYLE).text(this.translation.remarks[this.locale]);
 	tr.append(th);
 	thead.append(tr);
 	

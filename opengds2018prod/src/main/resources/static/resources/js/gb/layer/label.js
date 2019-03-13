@@ -21,28 +21,33 @@ if (!gb.layer)
 			return;
 		}
 		
+		var labelOptions = obj.labelOptions;
+		
+		var git = layer.get("git");
+		
 		this.style = layer.getStyle();
 		
 		if(this.style instanceof Function){
 			this.style = this.style();
 		}
 		
-		this.attribute = $("#labelAttribute").find("option:selected").val() || "errName";
-		this.align = $("#labelAlign").find("option:selected").val() || "center";
-		this.baseline = $("#labelBaseline").find("option:selected").val() || "middle";
-		this.size = $("#labelSize").val() || "12px";
-		this.offsetX = parseInt(($("#labelOffsetX").val() || "0"), 10);
-		this.offsetY = parseInt(($("#labelOffsetY").val() || "0"), 10);
-		this.weight = $("#labelWeight").find("option:selected").val() || "normal";
-		this.placement = $("#labelPlacement").find("option:selected").val() || "point";
-		this.maxAngle = parseFloat($("#labelMaxAngle").find("option:selected").val() || "0.7853981633974483");
-		this.overflow = false;
-		this.rotation = parseFloat($("#labelRotation").find("option:selected").val() || "0");
-		this.font = this.weight + " " + this.size + " " + ($("#labelFont").find("option:selected").val() || "Arial");
-		this.fillColor = $("#labelColor").val() || "blue";
-		this.outlineColor = $("#labelOutColor").val() || "#ffffff";
-		this.outlineWidth = parseInt(($("#labelOutWidth").val() || "3"), 10);
-		this.maxResolution = $("#labelMaxResolution").find("option:selected").val() || 1200;
+		this.labelOptions = {};
+		this.labelOptions.attribute = labelOptions.attribute || "errName";
+		this.labelOptions.align = labelOptions.align || "center";
+		this.labelOptions.baseline = labelOptions.baseline || "middle";
+		this.labelOptions.size = labelOptions.size || "12px";
+		this.labelOptions.offsetX = parseInt((labelOptions.offsetX || "0"), 10);
+		this.labelOptions.offsetY = parseInt((labelOptions.offsetY || "0"), 10);
+		this.labelOptions.weight = labelOptions.weight || "normal";
+		this.labelOptions.placement = labelOptions.placement || "point";
+		this.labelOptions.maxAngle = parseFloat(labelOptions.maxAngle || "0.7853981633974483");
+		this.labelOptions.overflow = labelOptions.overflow || true;
+		this.labelOptions.rotation = parseFloat(labelOptions.rotation || "0");
+		this.labelOptions.font = this.labelOptions.weight + " " + this.labelOptions.size + " " + (labelOptions.font || "Arial");
+		this.labelOptions.fillColor = labelOptions.fillColor || "blue";
+		this.labelOptions.outlineColor = labelOptions.outlineColor || "#ffffff";
+		this.labelOptions.outlineWidth = parseInt((labelOptions.outlineWidth || "3"), 10);
+		this.labelOptions.maxResolution = labelOptions.maxResolution || 1200;
 		
 		var func = function(feature, resolution){
 			that.style.setText(that.createTextStyle(feature, resolution));
@@ -58,12 +63,12 @@ if (!gb.layer)
 		var text;
 		
 		if(props instanceof Object){
-			text = props[this.attribute];
+			text = props[this.labelOptions.attribute] + "";
 		} else {
 			text = '';
 		}
 		
-		if(resolution > this.maxResolution){
+		if(resolution > this.labelOptions.maxResolution){
 			text = '';
 		}
 		
@@ -75,18 +80,18 @@ if (!gb.layer)
 
 	gb.layer.Label.prototype.createTextStyle = function (feature, resolution) {
 		return new ol.style.Text({
-			textAlign: this.align == '' ? undefined : this.align,
-			textBaseline: this.baseline,
-			font: this.font,
+			textAlign: this.labelOptions.align == '' ? undefined : this.labelOptions.align,
+			textBaseline: this.labelOptions.baseline,
+			font: this.labelOptions.font,
 			text: this.getText(feature, resolution),
-			fill: new ol.style.Fill({color: this.fillColor}),
-			stroke: new ol.style.Stroke({color: this.outlineColor, width: this.outlineWidth}),
-			offsetX: this.offsetX,
-			offsetY: this.offsetY,
-			placement: this.placement,
-			maxAngle: this.maxAngle,
-			overflow: this.overflow,
-			rotation: this.rotation
+			fill: new ol.style.Fill({color: this.labelOptions.fillColor}),
+			stroke: new ol.style.Stroke({color: this.labelOptions.outlineColor, width: this.labelOptions.outlineWidth}),
+			offsetX: this.labelOptions.offsetX,
+			offsetY: this.labelOptions.offsetY,
+			placement: this.labelOptions.placement,
+			maxAngle: this.labelOptions.maxAngle,
+			overflow: this.labelOptions.overflow,
+			rotation: this.labelOptions.rotation
 		});
 	};
 

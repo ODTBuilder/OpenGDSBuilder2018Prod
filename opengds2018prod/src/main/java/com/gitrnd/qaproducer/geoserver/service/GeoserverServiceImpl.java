@@ -371,7 +371,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 				                if(entry.isDirectory()){
 				                	//파일구조 이상
 				                	logger.warn("압축파일내에 폴더있음");
-				                	return 608;
+				                	return 618;
 				                } else {
 				                	String fullFileName = entry.getName();
 				                	int pos = fullFileName.lastIndexOf( "." );
@@ -390,10 +390,10 @@ public class GeoserverServiceImpl implements GeoserverService {
 				            zipFile.close();
 				            if(shpIndex==0){
 				            	logger.warn("shp파일이 없음");
-				            	return 608;
+				            	return 616;
 				            }else if(shpIndex>1){
 				            	logger.warn("shp파일이 1개이상");
-				            	return 608;
+				            	return 617;
 				            }
 				            
 				            if(prjIndex==0){

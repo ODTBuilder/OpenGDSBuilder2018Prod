@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigLayerSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemove;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
@@ -34,19 +35,35 @@ public class GeogigLayerController extends AbstractController {
 	@Qualifier("layerService")
 	GeogigLayerService layerService;
 
-//	@RequestMapping(value = "/logLayer.do", method = RequestMethod.POST)
-//	@ResponseBody
-//	public GeogigRepositoryLog logLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-//			@RequestParam(value = "serverName", required = false) String serverName,
-//			@RequestParam(value = "repoName", required = false) String repoName,
-//			@RequestParam(value = "path", required = false) String path,
-//			@RequestParam(value = "until", required = false) String limit,
-//			@RequestParam(value = "limit", required = false) String until,
-//			@RequestParam(value = "head", required = false) String head) throws JAXBException {
-//
-//		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-//		return layerService.logLayer(geoserverManager, repoName, path, until, limit, head);
-//	}
+	// @RequestMapping(value = "/logLayer.do", method = RequestMethod.POST)
+	// @ResponseBody
+	// public GeogigRepositoryLog logLayer(HttpServletRequest request,
+	// @AuthenticationPrincipal LoginUser loginUser,
+	// @RequestParam(value = "serverName", required = false) String serverName,
+	// @RequestParam(value = "repoName", required = false) String repoName,
+	// @RequestParam(value = "path", required = false) String path,
+	// @RequestParam(value = "until", required = false) String limit,
+	// @RequestParam(value = "limit", required = false) String until,
+	// @RequestParam(value = "head", required = false) String head) throws
+	// JAXBException {
+	//
+	// DTGeoserverManager geoserverManager =
+	// super.getGeoserverManagerToSession(request, loginUser, serverName);
+	// return layerService.logLayer(geoserverManager, repoName, path, until,
+	// limit, head);
+	// }
+	@RequestMapping(value = "/logLayer.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigLayerSimpleLog logLayer(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "limit", required = false) String limit,
+			@RequestParam(value = "until", required = false) String until) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return layerService.logLayer(geoserverManager, repoName, path, limit, until);
+	}
 
 	@RequestMapping(value = "/diffLayer.do", method = RequestMethod.POST)
 	@ResponseBody
@@ -59,6 +76,19 @@ public class GeogigLayerController extends AbstractController {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return layerService.diffLayer(geoserverManager, repoName, newIndex, oldIndex, layerName);
+	}
+
+	@RequestMapping(value = "/diffLayerById.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigDiff diffLayerById(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "new", required = false) String newId,
+			@RequestParam(value = "old", required = false) String oldId,
+			@RequestParam(value = "layerName", required = false) String layerName) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return layerService.diffLayerById(geoserverManager, repoName, newId, oldId, layerName);
 	}
 
 	@RequestMapping(value = "/removeLayer.do", method = RequestMethod.POST)

@@ -1565,7 +1565,7 @@ gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
 	params.attInfo = {};
 	
 	if(attrs instanceof Array){
-		for(let i = 0; i < attrs.length; i++){
+		for(var i = 0; i < attrs.length; i++){
 			if(attrs[i] instanceof gb.layer.Attribute){
 				params.attInfo[attrs[i].originFieldName] = {};
 				params.attInfo[attrs[i].originFieldName].type = attrs[i].type;
@@ -1796,7 +1796,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	var tbody = $("<tbody>");
 	var tableTag = $("<table>").append(tbody);
 	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search, removeAttr;
-	for ( let i in list) {
+	for ( var i in list) {
 		
 		if(i === "sld"){
 			continue;

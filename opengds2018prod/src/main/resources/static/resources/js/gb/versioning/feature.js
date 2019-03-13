@@ -21,7 +21,7 @@ gb.versioning.Feature = function(obj) {
 	this.editingTool = options.editingTool ? options.editingTool : undefined;
 	var url = options.url ? options.url : {};
 	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
+	this.diffURL = url.diff ? url.diff : undefined;
 	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
 	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
 	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
@@ -351,37 +351,38 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					});
 					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
 					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
-					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-detail-btn").text(that.translation.detail[that.locale]).attr({
-						"title" : data.simpleCommits[i].message,
-						"value" : data.simpleCommits[i].commitId,
-						"idx" : data.simpleCommits[i].cIdx
-					}).click(function() {
-						var geoserver = that.getServer();
-						var repo = that.getRepo();
-						var path = that.getPath();
-						// var nidx = parseInt($(this).attr("idx"));
-						// var nidx = 0;
-						// var oidx = parseInt($(this).attr("idx"));
-						var oidx = $(this).val();
-						var nidx = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-						// var oidx =
-						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
-						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
-					});
+					var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
+					var button = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-detail-btn").append(detailIcon)
+							.attr({
+								"title" : data.simpleCommits[i].message,
+								"value" : data.simpleCommits[i].commitId,
+								"idx" : data.simpleCommits[i].cIdx
+							}).click(function() {
+								var geoserver = that.getServer();
+								var repo = that.getRepo();
+								var path = that.getPath();
+								// var nidx = parseInt($(this).attr("idx"));
+								// var nidx = 0;
+								// var oidx = parseInt($(this).attr("idx"));
+								var oidx = $(this).val();
+								var nidx = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button-clear").val();
+								// var oidx =
+								// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
+								that.openDetailChanges(geoserver, repo, path, nidx, oidx);
+							});
 					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
 					}).append(button);
-
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-revert-btn").text(that.translation.run[that.locale]).click(function() {
-						var geoserver = that.getServer();
-						var repo = that.getRepo();
-						var path = that.getPath();
-						var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
-						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
-						that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
-					});
+					var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+					var rvButton = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-revert-btn").append(refIcon)
+							.click(function() {
+								var geoserver = that.getServer();
+								var repo = that.getRepo();
+								var path = that.getPath();
+								var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
+								var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+								that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
+							});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
 						"text-align" : "center"
 					}).append(rvButton);
@@ -516,7 +517,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"oldCommitId" : oidx
 	}
 
-	var tranURL = this.getFeatureDiffURL();
+	var tranURL = this.getDiffURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
 		tranURL += jQuery.param(params);
@@ -1581,10 +1582,10 @@ gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 /**
  * 피처 비교 객체 요청 URL을 반환한다.
  * 
- * @method gb.versioning.Feature#getFeatureDiffURL
+ * @method gb.versioning.Feature#getDiffURL
  */
-gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
-	return this.featureDiffURL;
+gb.versioning.Feature.prototype.getDiffURL = function() {
+	return this.diffURL;
 };
 
 /**

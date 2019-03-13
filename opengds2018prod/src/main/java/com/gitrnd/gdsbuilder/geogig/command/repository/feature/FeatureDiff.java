@@ -32,7 +32,7 @@ public class FeatureDiff {
 	private static final String param_all = "all="; // optional
 
 	public GeogigFeatureDiff executeCommand(String baseURL, String username, String password, String repository,
-			String path, String oldTreeish, String newTreeish) {
+			String path, String newTreeish, String oldTreeish) {
 
 		// restTemplate
 		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();

@@ -14,11 +14,11 @@ if (!gb.validation)
 
 (function($) {
 
-	let presetIndex_ = 0;
+	var presetIndex_ = 0;
 
 	var locale = locale || "en";
 	
-	const translation = {
+	var translation = {
 		"add" : {
 			"ko" : "추가",
 			"en" : "Add"
@@ -89,7 +89,7 @@ if (!gb.validation)
 		}
 	};
 	
-	const INDEXLIST = {
+	var INDEXLIST = {
 		"Digital Map 1.0" : 1,
 		"Digital Map 2.0" : 1,
 		"Underground Map 1.0" : 2,
@@ -98,7 +98,7 @@ if (!gb.validation)
 		"nonset" : 3
 	};
 
-	const QATYPE = {
+	var QATYPE = {
 		"1" : {
 			"ver" : "qa1",
 			"type" : "nm5"
@@ -121,7 +121,7 @@ if (!gb.validation)
 		},
 	};
 
-	let BUTTONSTYLE = {
+	var BUTTONSTYLE = {
 		"width" : "33.3333%",
 		"border" : "none",
 		"background" : "#e0e1e2 none",
@@ -306,7 +306,7 @@ if (!gb.validation)
 			params.qaVer = "qa2";
 			params.qaType = $(".version-btn.active").attr("id");
 
-			for ( let i in QATYPE) {
+			for ( var i in QATYPE) {
 				if (QATYPE[i].ver === params.qaVer && QATYPE[i].type === params.qaType) {
 					params.cat = i;
 				}

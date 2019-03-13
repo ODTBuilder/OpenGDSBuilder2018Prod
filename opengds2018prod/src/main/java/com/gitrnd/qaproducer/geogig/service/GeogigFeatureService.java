@@ -4,6 +4,7 @@ import javax.xml.bind.JAXBException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -20,7 +21,19 @@ public interface GeogigFeatureService {
 	 * @return
 	 * @throws JAXBException
 	 */
-	GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
+	GeogigDiff diff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
+			String oldCommitId) throws JAXBException;
+
+	/**
+	 * @param geoserverManager
+	 * @param repoName
+	 * @param path
+	 * @param newCommitId
+	 * @param oldCommitId
+	 * @return
+	 * @throws JAXBException
+	 */
+	GeogigFeatureDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
 			String oldCommitId) throws JAXBException;
 
 	/**

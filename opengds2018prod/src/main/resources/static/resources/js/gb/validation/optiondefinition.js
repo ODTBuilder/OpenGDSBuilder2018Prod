@@ -371,6 +371,10 @@ gb.validation.OptionDefinition = function(obj) {
 			"ko" : "알림",
 			"en" : "Notice"
 		},
+		"askReset" : {
+			"ko" : "해당 조건의 설정을 모두 삭제 하시겠습니까?",
+			"en" : "Are you sure you want to delete all of these settings on this item?"
+		},
 		"askDelCode" : {
 			"ko" : "레이어 코드를 삭제 하시겠습니까?",
 			"en" : "Are you sure you want to delete the layer code?"
@@ -390,6 +394,10 @@ gb.validation.OptionDefinition = function(obj) {
 		"delOptModalTitle" : {
 			"en" : "Delete Option",
 			"ko" : "옵션 삭제"
+		},
+		"resetOptTitle" : {
+			"en" : "Clear Settings",
+			"ko" : "설정 모두 삭제"
 		},
 		"nodataoutput" : {
 			"en" : "No settings to export.",
@@ -472,8 +480,16 @@ gb.validation.OptionDefinition = function(obj) {
 			"ko" : "파일을 읽을 수 없습니다."
 		},
 		"clearsetting" : {
-			"en" : "Clear Setting",
-			"ko" : "설정 초기화"
+			"en" : "Clear Settings",
+			"ko" : "설정 모두 삭제"
+		},
+		"cancel" : {
+			"en" : "Cancel",
+			"ko" : "취소"
+		},
+		"delete" : {
+			"en" : "Delete",
+			"ko" : "삭제"
 		}
 	}
 
@@ -786,7 +802,7 @@ gb.validation.OptionDefinition = function(obj) {
 		},
 		"DRefEntityNone" : {
 			"title" : this.translation.dRefEntityNone[this.locale],
-			"alias" : "RefEntityNone",
+			"alias" : "DRefEntityNone",
 			"category" : [ "numetrical" ],
 			"version" : [ "qa1", "qa2" ],
 			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
@@ -3023,17 +3039,26 @@ gb.validation.OptionDefinition = function(obj) {
 
 	// 필터 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting", function() {
-		that.clearSetting("filter");
+		var callback = function() {
+			that.clearSetting("filter");
+		};
+		that.deleteConfirmModal("reset", callback);
 	});
 
 	// 피규어 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiguresetting", function() {
-		that.clearSetting("figure");
+		var callback = function() {
+			that.clearSetting("figure");
+		};
+		that.deleteConfirmModal("reset", callback);
 	});
 
 	// 톨러런스 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-cleartolerancesetting", function() {
-		that.clearSetting("tolerance");
+		var callback = function() {
+			that.clearSetting("tolerance");
+		};
+		that.deleteConfirmModal("reset", callback);
 	});
 
 	// 속성 검수 레이어 코드 추가 버튼 클릭
@@ -4946,7 +4971,7 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								// 허용값이 입력되어있다면 값 변경
-								if (attrValues !== undefined && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
 										"code" : layerCode,
 										"attribute" : [ {
@@ -5372,7 +5397,7 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								// 허용값이 입력되어있다면 값 변경
-								if (attrValues !== undefined && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
 										"code" : layerCode,
 										"attribute" : [ {
@@ -5798,7 +5823,7 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								// 허용값이 입력되어있다면 값 변경
-								if (attrValues !== undefined && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
 										"code" : layerCode,
 										"attribute" : [ {
@@ -6223,7 +6248,7 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								// 허용값이 입력되어있다면 값 변경
-								if (attrValues !== undefined && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
 										"code" : layerCode,
 										"attribute" : [ {
@@ -6814,7 +6839,7 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								// 허용값이 입력되어있다면 값 변경
-								if (attrValues !== undefined && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
 										"code" : layerCode,
 										"attribute" : [ {
@@ -8308,19 +8333,19 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 						if (type === "filter") {
 							$(btn).attr({
 								"value" : "filter"
-							}).text("Filter");
+							}).text(that.translation.filterValidation[that.locale]);
 						} else if (type === "figure") {
 							$(btn).attr({
 								"value" : "figure"
-							}).text("Figure");
+							}).text(that.translation.attrValidation[that.locale]);
 						} else if (type === "tolerance") {
 							$(btn).attr({
 								"value" : "tolerance"
-							}).text("Tolerance");
+							}).text(that.translation.condValidation[that.locale]);
 						} else if (type === "relation") {
 							$(btn).attr({
 								"value" : "relation"
-							}).text("Relation");
+							}).text(that.translation.layerRelation[that.locale]);
 						}
 						that.printDetailForm(btn, false);
 					}
@@ -10888,19 +10913,21 @@ gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, cal
 	} else if (type === "attr") {
 		$(msg1).text(this.translation.askDelAttr[this.locale]);
 		title = this.translation.delOptModalTitle[this.locale];
+	} else if (type === "reset") {
+		$(msg1).text(this.translation.askReset[this.locale]);
+		title = this.translation.resetOptTitle[this.locale];
 	}
 	var body = $("<div>").append(msg1);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
 	var okBtn = $("<button>").css({
 		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.delete[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.Base({
 		"title" : title,
 		"width" : 310,
-		"height" : 172,
 		"autoOpen" : false,
 		"body" : body,
 		"footer" : buttonArea

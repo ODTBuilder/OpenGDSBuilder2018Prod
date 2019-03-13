@@ -29,6 +29,8 @@ import javax.xml.bind.JAXBException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,6 +62,9 @@ import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 @RequestMapping("/geoserver")
 public class GeoserverController extends AbstractController {
 
+	
+	static final JSONParser jsonP = new JSONParser();
+	
 	@Autowired
 	@Qualifier("geoService")
 	private GeoserverService geoserverService;
@@ -645,42 +650,47 @@ public class GeoserverController extends AbstractController {
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@RequestMapping(value = "/jsonUpload.ajax", method = RequestMethod.POST)
 	@ResponseBody
-	public int jsonUpload(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject jsonUpload(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) throws IOException {
-		int flag = 500;
-
+		JSONObject returnJson = new JSONObject();
+		JSONArray layers = new JSONArray();
+		returnJson.put("status Code", 500);
+		returnJson.put("layers", layers);
 		if (loginUser == null) {
-			response.sendError(600);
+			returnJson.put("status Code", 600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
 		}
+		
+		 
+		try {
+			jsonObject = (JSONObject) jsonP.parse(jsonObject.toJSONString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		String serverName = (String) jsonObject.get("serverName");
 		String workspace = (String) jsonObject.get("workspace");
 		String datastore = (String) jsonObject.get("datastore");
-		String layerName = (String) jsonObject.get("layerName");
-		String epsg = (String) jsonObject.get("epsg");
-		Boolean ignorePublication = (Boolean) jsonObject.get("ignorePublication");
-		JSONObject geoJson = (JSONObject) jsonObject.get("geoJson");
-		JSONObject attJson = (JSONObject) jsonObject.get("attJson");
+		String epsg = "EPSG:" + (String) jsonObject.get("epsg");
+		boolean ignorePublication = (boolean) jsonObject.get("ignorePublication");
+		JSONArray uploadJson = (JSONArray) jsonObject.get("uploadJson");
 
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		if (dtGeoserverManager == null) {
-			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-			return flag;
+//			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
+			returnJson.put("status Code", 603);
+			return returnJson;
 		}
 
 		if (serverName == null || serverName.isEmpty() || workspace == null || workspace.isEmpty() || datastore == null
-				|| datastore.isEmpty() || layerName == null || layerName.isEmpty()|| epsg == null || epsg.isEmpty()|| ignorePublication == null || geoJson == null) {
-			response.sendError(601, "필수값을 입력하지 않았습니다.");
-			return flag;
+				|| datastore.isEmpty() || epsg == null || epsg.isEmpty()|| uploadJson == null) {
+			returnJson.put("status Code", 601);
 		} else {
-			if(attJson == null){
-				flag = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, layerName, epsg, geoJson, ignorePublication);
-			}else{
-				flag = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, layerName, epsg, geoJson, attJson, ignorePublication);
-			}
+				returnJson = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, epsg, uploadJson, ignorePublication);
 		}
-
-		return flag;
+		return returnJson;
 	}
 	
 	

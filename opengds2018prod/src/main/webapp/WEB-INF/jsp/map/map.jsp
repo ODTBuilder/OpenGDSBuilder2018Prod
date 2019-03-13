@@ -361,7 +361,11 @@ html {
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"logLayer" : "geogig/logLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"diffLayer" : "geogig/diffLayerById.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});
@@ -462,7 +466,7 @@ html {
 			"locale" : locale !== "" ? locale : "en",
 			"url" : {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"diff" : "geogig/diff.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureAttribute" : "geogig/featureAttribute.do?${_csrf.parameterName}=${_csrf.token}",
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"

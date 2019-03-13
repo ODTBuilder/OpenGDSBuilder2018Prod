@@ -135,12 +135,12 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	
 	var key, select, content, row, option;
 	var rows = [];
-	for(let i = 0; i < contentList.length; i++){
+	for(var i = 0; i < contentList.length; i++){
 		key = $("<div>").css(keyStyle).text(contentList[i].text);
 		
 		select = $("<select>").attr("data-id", contentList[i].id).addClass("gb-form");
 		
-		for(let j = 0; j < contentList[i].options.length; j++){
+		for(var j = 0; j < contentList[i].options.length; j++){
 			option = $("<option>").val(contentList[i].options[j]).text(contentList[i].options[j]);
 			select.append(option);
 			if(gb.module) {

@@ -39,6 +39,8 @@ public class LogRepository {
 	private static final String param_limit = "limit="; // optional
 	private static final String param_until = "until="; // optional
 	private static final String param_countChanges = "countChanges="; // optional
+	private static final String param_show = "show="; // optional
+	private static final String param_page = "page="; // optional
 
 	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository,
 			String path, String limit, String until, boolean countChanges) {
@@ -80,6 +82,69 @@ public class LogRepository {
 				url += "&" + param_until + until;
 			} else {
 				url += "?" + param_until + until;
+			}
+		}
+		if (countChanges == true) {
+			if (url.contains("?")) {
+				url += "&" + param_countChanges + countChanges;
+			} else {
+				url += "?" + param_countChanges + countChanges;
+			}
+		}
+
+		// request
+		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
+		ResponseEntity<GeogigRepositoryLog> responseEntity = null;
+		try {
+			responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, GeogigRepositoryLog.class);
+		} catch (RestClientResponseException e) {
+			throw new GeogigCommandException(e.getMessage(), e.getResponseBodyAsString(), e.getRawStatusCode());
+		} catch (ResourceAccessException e) {
+			throw new GeogigCommandException(e.getMessage());
+		}
+		return responseEntity.getBody();
+	}
+
+	public GeogigRepositoryLog executeCommand(String baseURL, String username, String password, String repository,
+			String path, int page, int show, boolean countChanges) {
+
+		// restTemplate
+		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+		factory.setReadTimeout(5000);
+		factory.setConnectTimeout(3000);
+		CloseableHttpClient httpClient = HttpClientBuilder.create().setMaxConnTotal(100).setMaxConnPerRoute(5).build();
+		factory.setHttpClient(httpClient);
+		RestTemplate restTemplate = new RestTemplate(factory);
+
+		// header
+		HttpHeaders headers = new HttpHeaders();
+		String user = username + ":" + password;
+		String encodedAuth = "Basic " + Base64.getEncoder().encodeToString(user.getBytes());
+		headers.setContentType(MediaType.APPLICATION_XML);
+		headers.add("Authorization", encodedAuth);
+
+		// url
+		String url = baseURL + "/" + geogig + "/repos/" + repository + "/" + command;
+
+		if (path != null) {
+			if (url.contains("?")) {
+				url += "&" + param_path + path;
+			} else {
+				url += "?" + param_path + path;
+			}
+		}
+		if (page != 0) {
+			if (url.contains("?")) {
+				url += "&" + param_page + page;
+			} else {
+				url += "?" + param_page + page;
+			}
+		}
+		if (show != 0) {
+			if (url.contains("?")) {
+				url += "&" + param_show + show;
+			} else {
+				url += "?" + param_show + show;
 			}
 		}
 		if (countChanges == true) {

@@ -429,10 +429,10 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		"height" : "154px",
 		"overflow" : "auto"
 	});
+	var ul = $("<ul>").css({
+		"padding-left" : "15px"
+	});
 	if (Array.isArray(layers)) {
-		var ul = $("<ul>").css({
-			"padding-left" : "15px"
-		});
 		var checkObj = {};
 		var duplicateFlag = false;
 		for (var i = 0; i < layers.length; i++) {
@@ -442,7 +442,9 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 			} else {
 				duplicateFlag = true;
 			}
-			var li = $("<li>").text(layers[i].get("name"));
+			var span1 = $("<span>").addClass("gb-uploadgeojson-layer").text(layers[i].get("name"));
+			var span2 = $("<span>").addClass("gb-uploadgeojson-icon");
+			var li = $("<li>").addClass("gb-uploadgeojson-li").append(span1).append(span2);
 			$(ul).append(li);
 		}
 		$(list).append(ul);
@@ -530,13 +532,13 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 					var attr = attributes[j];
 					attJson[attr.getOriginFieldName()] = attr.getType();
 				}
-				obj["attJson"] = attJson;
+				obj["attjson"] = attJson;
 			}
 			uploadJson.push(obj);
 		}
 		sendObj["uploadJson"] = uploadJson;
 		console.log(sendObj);
-		that.sendJSON(sendObj, uploadModal);
+		that.sendJSON(sendObj, uploadModal, ul, tree);
 	});
 };
 
@@ -610,7 +612,7 @@ gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
  * @param {String}
  *            server
  */
-gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
+gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal, ul, tree) {
 	var that = this;
 	var params = {
 
@@ -640,27 +642,56 @@ gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal) {
 	// tranURL += "?";
 	// tranURL += jQuery.param(params);
 	// }
-	$.ajax({
-		url : tranURL,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		data : JSON.stringify(obj),
-		dataType : 'json',
-		beforeSend : function() {
-			// $("body").css("cursor", "wait");
-		},
-		complete : function() {
-			// $("body").css("cursor", "default");
-		},
-		success : function(data) {
-			console.log(data);
-			if (data.success === "true") {
-				modal.close();
-			} else {
-				that.errorModal(data.error);
-			}
-		}
-	}).fail(function(xhr, status, errorThrown) {
+	$.ajax(
+			{
+				url : tranURL,
+				method : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(obj),
+				dataType : 'json',
+				beforeSend : function() {
+					// $("body").css("cursor", "wait");
+				},
+				complete : function() {
+					// $("body").css("cursor", "default");
+				},
+				success : function(data) {
+					console.log(data);
+					if (data.status_Code === 200) {
+						tree.refreshList();
+						var layers = data.layers;
+						var lilayers = $(ul).children("li");
+						if (Array.isArray(layers)) {
+							for (var i = 0; i < layers.length; i++) {
+								for (var j = 0; j < lilayers.length; j++) {
+									var litext = $(lilayers[j]).find(".gb-uploadgeojson-layer").text();
+									console.log(litext);
+									if (layers[i][litext] !== undefined) {
+										var iconSpan = $(lilayers[j]).find(".gb-uploadgeojson-icon");
+										$(iconSpan).empty();
+										if (layers[i][litext] === 200) {
+											var icon = $("<i>").addClass("fas").addClass("fa-check").addClass(
+													"gb-geoserver-uploadjson-valid-icon");
+											$(iconSpan).append(icon);
+										} else {
+											var icon = $("<i>").addClass("fas").addClass("fa-times").addClass(
+													"gb-geoserver-uploadjson-invalid-icon");
+											var msg = $("<span>").text(that.translation[layers[i][litext]][that.locale]);
+											$(iconSpan).append(icon);
+											$(lilayers[j]).attr({
+												"title" : that.translation[layers[i][litext]][that.locale]
+											});
+										}
+									}
+								}
+							}
+						}
+						// modal.close();
+					} else {
+						that.errorModal(data.status_Code);
+					}
+				}
+			}).fail(function(xhr, status, errorThrown) {
 		that.errorModal(xhr.responseJSON.status);
 	});
 }

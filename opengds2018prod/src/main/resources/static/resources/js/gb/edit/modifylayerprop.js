@@ -323,7 +323,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 	var that = this;
 	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search;
-	for ( let i in list) {
+	for ( var i in list) {
 		console.log(i);
 		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(that.translation[i][that.locale]).css("width", "20%");
 		if (list[i] instanceof Object) {
@@ -373,7 +373,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 				option = $("<option>").val("geoserver").text(this.translation["myserver"][this.locale]);
 				select.append(option);
-				for (let w = 0; w < this.workspaceList.length; w++) {
+				for (var w = 0; w < this.workspaceList.length; w++) {
 					option = $("<option>").val("workspace").text(this.workspaceList[w]);
 					select.append(option);
 					if (list.styleWorkspace === this.workspaceList[w]) {
@@ -755,7 +755,7 @@ gb.edit.ModifyLayerProperties.prototype.checkOtreeLayer = function() {
 	var info = this.serverInfo;
 	var node, layer, source, params, git;
 	
-	for(let i = 0; i < list.length; i++){
+	for(var i = 0; i < list.length; i++){
 		node = otree.get_node(list[i]);
 		layer = otree.get_LayerById(list[i]);
 		

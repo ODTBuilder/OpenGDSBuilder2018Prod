@@ -319,8 +319,24 @@ gb.versioning.Repository = function(obj) {
 				"en" : "java.net.MalformedURLException"
 			},
 			"857" : {
-				"ko" : "충돌을 해결하세요",
+				"ko" : "충돌을 해결하세요.",
 				"en" : "You need to resolve your index first."
+			},
+			"858" : {
+				"ko" : "호스트에 숫자가 아닌 값을 입력했습니다.",
+				"en" : "You have entered a non-numeric value for the host."
+			},
+			"859" : {
+				"ko" : "커밋 이력이 없는 저장소 입니다.",
+				"en" : "A repository that has no commit history."
+			},
+			"860" : {
+				"ko" : "잘못된 구조의 정보를 입력했습니다.",
+				"en" : "You have entered incorrect structured information."
+			},
+			"861" : {
+				"ko" : "저장소 정보를 읽을 수 없습니다.",
+				"en" : "Could not read repository information."
 			},
 			"err" : {
 				"ko" : "오류",

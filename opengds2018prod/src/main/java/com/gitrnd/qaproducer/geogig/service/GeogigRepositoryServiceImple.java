@@ -56,9 +56,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#initRepository(
-	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * initRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
 	 * com.gitrnd.qaproducer.common.security.LoginUser, java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
 	 * java.lang.String, java.lang.String)
@@ -92,7 +91,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 				String transactionId = transaction.getTransaction().getId();
 
 				LogRepository logRepos = new LogRepository();
-				GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, remoteName, null, null, null,
+				GeogigRepositoryLog geogigLog = logRepos.executeCommand(url, user, pw, remoteName, null, "1", null,
 						false);
 				if (geogigLog.getCommits() != null) {
 					try {
@@ -115,10 +114,6 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 						DeleteRepository delete = new DeleteRepository();
 						GeogigRepositoryDelete reposDelete = delete.executeGetCommand(url, user, pw, repoName);
 						delete.executeDeleteCommand(url, user, pw, repoName, reposDelete.getToken());
-
-						geogigReposInit = new GeogigRepositoryInit();
-						geogigReposInit.setError(e.getMessage());
-						geogigReposInit.setSuccess("false");
 
 						GeogigExceptionStatus geogigStatus = GeogigExceptionStatus
 								.getStatus(geogigReposInit.getError());
@@ -191,10 +186,9 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#addRepository(
-	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
-	 * java.lang.String)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * addRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public GeogigAdd addRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId)
@@ -227,10 +221,9 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#commitRepository
-	 * (com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
-	 * java.lang.String, java.lang.String,
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * commitRepository (com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String, java.lang.String,
 	 * com.gitrnd.qaproducer.common.security.LoginUser)
 	 */
 	@Override
@@ -358,8 +351,9 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
-	 * removeRemoteRepository(com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
-	 * java.lang.String, java.lang.Boolean, java.lang.String)
+	 * removeRemoteRepository(com.gitrnd.gdsbuilder.geoserver.
+	 * DTGeoserverManager, java.lang.String, java.lang.Boolean,
+	 * java.lang.String)
 	 */
 	@Override
 	public GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
@@ -428,11 +422,10 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#pullRepository(
-	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * pullRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String)
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public GeogigPull pullRepository(DTGeoserverManager geoserverManager, String repoName, String transactionId,
@@ -477,10 +470,9 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#pushRepository(
-	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * pushRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
@@ -521,27 +513,28 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#fetchRepository(
-	 * com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager, java.lang.String)
+	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
+	 * fetchRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
+	 * java.lang.String)
 	 */
 	@Override
 	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException {
 
-//		String url = geoserverManager.getRestURL();
-//		String user = geoserverManager.getUsername();
-//		String pw = geoserverManager.getPassword();
-//
-//		FetchRepository fetch = new FetchRepository();
-//		GeogigFetch geogigFetch = null;
-//		try {
-//			geogigFetch = fetch.executeCommand(url, user, pw, repoName);
-//		} catch (GeogigCommandException e) {
-//			JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
-//			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-//			geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new StringReader(e.getMessage()));
-//		}
-//		return geogigFetch;
+		// String url = geoserverManager.getRestURL();
+		// String user = geoserverManager.getUsername();
+		// String pw = geoserverManager.getPassword();
+		//
+		// FetchRepository fetch = new FetchRepository();
+		// GeogigFetch geogigFetch = null;
+		// try {
+		// geogigFetch = fetch.executeCommand(url, user, pw, repoName);
+		// } catch (GeogigCommandException e) {
+		// JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
+		// Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		// geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new
+		// StringReader(e.getMessage()));
+		// }
+		// return geogigFetch;
 
 		return null;
 	}

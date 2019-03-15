@@ -522,19 +522,22 @@ if (!gb.footer)
 				});
 			} else {
 				if(opt[col[i]].type === "Integer" || opt[col[i]].type === "Number" || opt[col[i]].type === "Long"){
+					errorMsg = this.translation.intValueHint[this.locale];
 					if(opt[col[i]].nullable){
 						pattern = "^-?[0-9]*$";
 					} else {
 						pattern = "^-?[0-9]+$";
+						errorMsg += "\n" + this.translation.notNullHint[this.locale];
 					}
-					errorMsg = this.translation.intValueHint[this.locale];
+					
 				} else if(opt[col[i]].type === "Double"){
+					errorMsg = this.translation.doubleValueHint[this.locale];
 					if(opt[col[i]].nullable){
 						pattern = "^([-+]?[0-9]*\.?[0-9]+)*$";
 					} else {
 						pattern = "^([-+]?[0-9]*\.?[0-9]+)+$";
+						errorMsg += "\n" + this.translation.notNullHint[this.locale];
 					}
-					errorMsg = this.translation.doubleValueHint[this.locale];
 				} else if(opt[col[i]].type === "Boolean"){
 					if(opt[col[i]].nullable){
 						pattern = "^true|false$";
@@ -558,6 +561,13 @@ if (!gb.footer)
 				
 				select.append($("<option>").val(col[i]).text(col[i]));
 			}
+		}
+		
+		if(col.length === 0){
+			column.push({
+				title: "No Data"
+			});
+			data.push(["No Data"]);
 		}
 		
 		for(var id in features){
@@ -608,7 +618,14 @@ if (!gb.footer)
 						keys = rowdata[i].getKeys();
 						continue;
 					}
-					feature.set(keys[i], rowdata[i]);
+					
+					if(feature instanceof ol.Feature){
+						feature.set(keys[i], rowdata[i]);
+					}
+				}
+				
+				if(!(feature instanceof ol.Feature)){
+					return;
 				}
 				
 				var layerInfo = that.attrList[that.selectedTreeId];

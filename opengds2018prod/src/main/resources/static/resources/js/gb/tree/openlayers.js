@@ -49,6 +49,10 @@ gb.tree.OpenLayers = function(obj) {
 				"en" : "Snap",
 				"ko" : "스냅"
 			},
+			"countOfFeature" : {
+				"en" : "Count",
+				"ko" : "객체개수"
+			},
 			"prop" : {
 				"ko" : "속성",
 				"en" : "Properties"
@@ -531,7 +535,28 @@ gb.tree.OpenLayers = function(obj) {
 								}
 								that.openDeleteLayer(nodes);
 							}
-						}
+						};
+						
+						/*totalObj["count"] = {
+							"separator_before" : false,
+							"icon" : "fa fa-eye",
+							"separator_after" : false,
+							"_disabled" : false, // (this.check("delete_node",
+							// data.reference,
+							// this.get_parent(data.reference),
+							// "")),
+							"label" : that.translation.countOfFeature[that.locale],
+							"action" : function(data) {
+								console.log(data);
+								var inst = $.jstreeol3.reference(data.reference),
+									obj = inst.get_node(data.reference);
+								var layers = inst.get_selected();
+								for (var i = 0; i < layers.length; i++) {
+									var node = inst.get_node(layers[i]);
+									var layer = inst.get_LayerById(layers[i]);
+								}
+							}
+						};*/
 						
 						if(o.type !== "Raster"){
 							totalObj["snap"] = {

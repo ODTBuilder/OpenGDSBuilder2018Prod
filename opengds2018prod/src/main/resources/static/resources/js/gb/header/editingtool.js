@@ -1411,39 +1411,19 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 				}
 			}
 			
-			/*if(item instanceof ol.Feature){
-				prop = item.getProperties();
-				for(var key in prop){
-					if(prop[key] instanceof Object){
-						continue;
-					}
-					
-					setProp[key] = "";
-				}
-			} else {
-				if(source.get("git") instanceof Object){
-					if(source.get("git").attribute instanceof Array){
-						for(var i = 0; i < source.get("git").attribute.length; i++){
-							prop = source.get("git").attribute[i];
-							setProp[prop.fieldName] = "";
-						}
-					}
-				}
-			}*/
-			
 			if (!!source) {
-				var l = source.getFeatureById(source.get("git").layerID + ".new0")
+				var l = source.getFeatureById(source.get("git").treeID + ".new0")
 				
 				if (!l) {
-					var fid = source.get("git").layerID + ".new0";
+					var fid = source.get("git").treeID + ".new0";
 					feature.setId(fid);
 					that.featureRecord.create(layer, feature);
 				} else {
 					var count = 1;
-					while(source.getFeatureById(source.get("git").layerID + ".new" + count) !== null){
+					while(source.getFeatureById(source.get("git").treeID + ".new" + count) !== null){
 						count++;
 					}
-					var fid = source.get("git").layerID + ".new" + count;
+					var fid = source.get("git").treeID + ".new" + count;
 					feature.setId(fid);
 					that.featureRecord.create(layer, feature);
 				}
@@ -2429,12 +2409,12 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 		array = layer.getLayers();
 		for (var i = 0; i < array.getLength(); i++) {
 			success = this.addSnappingLayer(array.item(i));
-			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", success);
+			jstree.set_flag(jstree.get_node(layer.get("treeid")), "snapping", true);
 		}
 		return success;
-	} else if (layer instanceof ol.layer.Vector) {
+	} else if (layer instanceof ol.layer.Vector && layer.getType() === "VECTOR") {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
-			if (this.snapVector.item(i).get("id") === layer.get("id")) {
+			if (this.snapVector.item(i) === layer) {
 				success = true;
 				break;
 			}
@@ -2442,6 +2422,7 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 		if (!success) {
 			this.snapVector.push(layer);
 			success = true;
+			jstree.set_flag(jstree.get_node(layer.get("treeid")), "snapping", true);
 		}
 	} else if (layer instanceof ol.layer.Tile) {
 		var treeid = layer.get("treeid");
@@ -2451,7 +2432,6 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 				array = git.layers.getArray();
 				for(var i = 0; i < array.length; i++){
 					success = this.addSnappingLayer(array[i]);
-					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", success);
 				}
 				return success;
 			}
@@ -2460,24 +2440,11 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 		if(!!this.vectorSourcesOfServer_[treeid]){
 			if(!jstree.get_node(treeid).state.snapping){
 				this.snapVector.push(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
+				success = true;
+				jstree.set_flag(jstree.get_node(treeid), "snapping", true);
 			}
 		}
-		success = true;
 	}
-	
-//	else if (layer instanceof ol.layer.Layer) {
-//		var git = layer.get("git");
-//		if (git) {
-//			if (git.hasOwnProperty("fake")) {
-//				if (git.fake === "child") {
-//					if (this.snapWMS.indexOf(layer.get("id")) === -1) {
-//						this.snapWMS.push(layer.get("id"));
-//						success = true;
-//					}
-//				}
-//			}
-//		}
-//	}
 	return success;
 }
 /**
@@ -2508,14 +2475,14 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 		array = layer.getLayers();
 		for (var i = 0; i < array.getLength(); i++) {
 			success = this.removeSnappingLayer(array.item(i));
-			jstree.set_flag(jstree.get_node(array.item(i).get("treeid")), "snapping", !success);
 		}
 		return success;
 	} else if (layer instanceof ol.layer.Vector) {
 		for (var i = 0; i < this.snapVector.getLength(); i++) {
-			if (this.snapVector.item(i).get("id") === layer.get("id")) {
+			if (this.snapVector.item(i) === layer) {
 				this.snapVector.removeAt(i);
 				success = true;
+				jstree.set_flag(jstree.get_node(layer.get("treeid")), "snapping", false);
 				break;
 			}
 		}
@@ -2525,7 +2492,6 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 				array = git.layers.getArray();
 				for(var i = 0; i < array.length; i++){
 					success = this.removeSnappingLayer(array[i]);
-					jstree.set_flag(jstree.get_node(array[i].get("treeid")), "snapping", !success);
 				}
 				return success;
 			}
@@ -2534,6 +2500,7 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 		if(!!this.vectorSourcesOfServer_[treeid]){
 			this.snapVector.remove(this.vectorSourcesOfServer_[treeid].get("git").tempLayer);
 			success = true;
+			jstree.set_flag(jstree.get_node(treeid), "snapping", false);
 		}
 	}
 	
@@ -2548,32 +2515,7 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 			}
 		}
 	}
-//	else if (layer instanceof ol.layer.Layer) {
-//		var git;
-//		if (layer) {
-//			git = layer.get("git");
-//		}
-//		if (!!git) {
-//			if (git.hasOwnProperty("fake")) {
-//				if (git.fake === "child") {
-//					if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//						this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//						success = true;
-//					}
-//				}
-//			} else {
-//				if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//					this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//					success = true;
-//				}
-//			}
-//		} else {
-//			if (this.snapWMS.indexOf(layer.get("id")) !== -1) {
-//				this.snapWMS.splice(this.snapWMS.indexOf(layer.get("id")), 1);
-//				success = true;
-//			}
-//		}
-//	}
+	
 	return success;
 }
 /**

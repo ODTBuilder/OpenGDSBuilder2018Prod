@@ -573,6 +573,7 @@ html {
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
 			wfstURL : urlList.wfst + urlList.token,
+			locale : locale || "en",
 			layerInfoURL : urlList.getLayerInfo + urlList.token,
 			getFeatureURL : urlList.getWFSFeature + urlList.token,
 			isDisplay : false

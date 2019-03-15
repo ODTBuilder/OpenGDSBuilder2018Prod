@@ -144,7 +144,8 @@
 					"title" : "Status"
 				}, {
 					"data" : "download",
-					"title" : "Download"
+					"title" : "Download",
+					"className" : "gb-download-btn"
 				}, {
 					"data" : "comment",
 					"title" : "Notes"

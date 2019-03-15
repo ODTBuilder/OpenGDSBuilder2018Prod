@@ -158,6 +158,10 @@ gb.versioning.Feature = function(obj) {
 		"commitdesc" : {
 			"ko" : "이 작업에 대한 설명을 입력해 주세요.",
 			"en" : 'Please provide a description of this action.'
+		},
+		"detail" : {
+			"ko" : "세부정보",
+			"en" : "Detail"
 		}
 	};
 	this.ofeature = $("<div>").css({
@@ -222,9 +226,9 @@ gb.versioning.Feature = function(obj) {
 	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.author[that.locale]);
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.time[that.locale]);
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.type[that.locale]);
-	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.changes[that.locale]);
+	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.detail[that.locale]);
 	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.revert[that.locale]);
-	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4).append(th5);
+	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
 	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
 		"text-align" : "center"
 	});
@@ -244,7 +248,7 @@ gb.versioning.Feature = function(obj) {
 				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").val();
 				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").attr("idx");
 				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button-clear").val();
-				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
+				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head, false);
 			});
 	var btnarea = $("<div>").css({
 		"text-align" : "center"
@@ -288,7 +292,7 @@ gb.versioning.Feature.prototype.open = function() {
  * 
  * @method gb.versioning.Feature#loadFeatureHistory
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head) {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head, refresh) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -333,6 +337,9 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 			console.log(data);
 
 			if (data.success === "true") {
+				if (refresh) {
+					that.clearChangesTbody();
+				}
 				that.setIDString(server + "/" + repo + "/" + path);
 				if (Array.isArray(data.simpleCommits)) {
 					that.setCommitsByInfo(server, repo, path);
@@ -353,8 +360,12 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
 						"text-align" : "center"
 					});
-					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
-					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
+					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date).css({
+						"width" : "150px"
+					});
+					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType).css({
+						"width" : "100px"
+					});
 					var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
 					var button = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-detail-btn").append(detailIcon)
 							.attr({
@@ -388,7 +399,8 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 								that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
 							});
 					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-						"text-align" : "center"
+						"text-align" : "center",
+						"width" : "100px"
 					}).append(rvButton);
 
 					if (i === 0) {
@@ -398,7 +410,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 
 					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);
 					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
-							.append(td3).append(td4).append(td5);
+							.append(td3).append(td4);
 					$(that.tbody).append(tr);
 				}
 			}
@@ -424,7 +436,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
  * @param {Number}
  *            oidx - 타겟 커밋 인덱스
  */
-gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
+gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nid, oid) {
 	var that = this;
 
 	var olabel = $("<div>").append(that.translation.cmft[that.locale]).addClass("gb-form").css({
@@ -495,9 +507,9 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
 	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+		"float" : "left"
+	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
 	var modal = new gb.modal.Base({
 		"title" : that.translation.contrastchg[that.locale],
@@ -507,7 +519,9 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"body" : body,
 		"footer" : buttonArea
 	});
-
+	$(okBtn).click(function() {
+		that.openRevertModal(server, repo, path, oid, nid, modal);
+	});
 	$(closeBtn).click(function() {
 		modal.close();
 	});
@@ -517,8 +531,8 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"serverName" : server,
 		"repoName" : repo,
 		"path" : path,
-		"newCommitId" : nidx,
-		"oldCommitId" : oidx
+		"newCommitId" : nid,
+		"oldCommitId" : oid
 	}
 
 	var tranURL = this.getDiffURL();
@@ -764,7 +778,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 							"serverName" : server,
 							"repoName" : repo,
 							"path" : path,
-							"commitId" : oidx
+							"commitId" : oid
 						}
 						console.log(oldParams);
 
@@ -870,7 +884,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 							"serverName" : server,
 							"repoName" : repo,
 							"path" : path,
-							"commitId" : nidx
+							"commitId" : nid
 						}
 						console.log(newParams);
 
@@ -984,7 +998,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
  * 
  * @method gb.versioning.Feature#openRevertModal
  */
-gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc) {
+gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc, cmpmodal) {
 	var that = this;
 	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
 		"text-align" : "center",
@@ -1022,7 +1036,7 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 	});
 	$(okBtn).click(function() {
 		var message = inputMsg.val();
-		that.revert(server, repo, path, oc, nc, message, message, commitModal);
+		that.revert(server, repo, path, oc, nc, message, message, commitModal, cmpmodal);
 	});
 };
 
@@ -1031,7 +1045,7 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
  * 
  * @method gb.versioning.Feature#revert
  */
-gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
+gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal, cmpmodal) {
 	var that = this;
 
 	var params = {
@@ -1067,6 +1081,8 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
+				cmpmodal.close();
+				that.refresh();
 				if (data.merge.conflicts === null) {
 					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).css({
 						"text-align" : "center",
@@ -1765,11 +1781,10 @@ gb.versioning.Feature.prototype.getPanel = function() {
  */
 gb.versioning.Feature.prototype.refresh = function() {
 	if ($(this.getPanel().getPanel()).css("display") !== "none") {
-		this.clearChangesTbody();
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 10, 0);
+		this.loadFeatureHistory(geoserver, repo, path, 10, 0, undefined, undefined, true);
 	}
 };
 

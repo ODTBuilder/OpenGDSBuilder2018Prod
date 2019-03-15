@@ -379,10 +379,10 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 	tr.append(th);
 	thead.append(tr);
 	
-	for(let i = 0; i < list.length; i++){
+	for(var i = 0; i < list.length; i++){
 		if(list[i] instanceof Object){
 			keys = Object.keys(list[i]);
-			for(let j = 0; j < keys.length; j++){
+			for(var j = 0; j < keys.length; j++){
 				key = $("<td>").css(gb.edit.TDKEYSTYLE).text(keys[j]);
 				value = $("<td>").css(gb.edit.TDSTYLE).css("text-align", "center");
 				if(list[i][keys[j]] == "200"){

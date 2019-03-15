@@ -30,6 +30,26 @@ if (!gb.footer)
 		
 		this.getFeatureURL = options.getFeatureURL || '';
 		
+		this.locale = options.locale || "en";
+		this.translation = {
+			"notNullHint" : {
+				"ko" : "빈 값이 허용되지않습니다.",
+				"en" : "null values ​​are not allowed."
+			},
+			"intValueHint" : {
+				"ko" : "정수 타입의 값을 입력해야합니다.",
+				"en" : "You must enter a value for Integer type."
+			},
+			"doubleValueHint" : {
+				"ko" : "실수 타입의 값을 입력해야합니다.",
+				"en" : "You must enter a value for double type."
+			},
+			"boolValueHint" : {
+				"ko" : "Boolean 타입의 값을 입력해야합니다.",
+				"en" : "You must enter a value for boolean type."
+			}
+		}
+		
 		/**
 		 * 현재 선택된 레이어의 JSTree ID
 		 */
@@ -39,6 +59,11 @@ if (!gb.footer)
 		 * 현재 선택된 레이어
 		 */
 		this.selectedLayer = undefined;
+		
+		/**
+		 * 현재 선택된 객체
+		 */
+		this.selectedFeature = undefined;
 		
 		/**
 		 * feature 요청 parameter
@@ -270,8 +295,6 @@ if (!gb.footer)
 		$(document).off("click", "#addRowBtn");
 		$(document).off("click", "#editRowBtn");
 		$(document).off("click", "#deleteRowBtn");
-		$("#altEditor-modal").off("edited");
-		$("#altEditor-modal").remove();
 	}
 	
 	/**
@@ -370,7 +393,7 @@ if (!gb.footer)
 			if(val === ""){
 				list[treeid].searchResults = undefined;
 			} else {
-				for(let i in features){
+				for(var i in features){
 					if(features[i].get(col).includes(val)){
 						vectorData[i] = features[i]
 					}
@@ -440,6 +463,18 @@ if (!gb.footer)
 		var that = this;
 		this.selectedTreeId = treeid;
 		
+		var layer = that.selectedLayer;
+		var git = layer.get("git") || {};
+		var attribute = git.attribute;
+		var opt = {};
+		
+		for(var i = 0; i < attribute.length; i++){
+			opt[attribute[i].fieldName] = {};
+			opt[attribute[i].fieldName].unique = attribute[i].isUnique || false;
+			opt[attribute[i].fieldName].nullable = attribute[i].nullable || false;
+			opt[attribute[i].fieldName].type = attribute[i].type || "String";
+		}
+		
 		var col = this.attrList[treeid].col;
 		var features;
 		if(!this.attrList[treeid].searchResults){
@@ -477,15 +512,48 @@ if (!gb.footer)
 			}
 		});
 		
+		var pattern, errorMsg;
 		for(var i = 0; i < col.length; i++){
 			if(col[i] === "geometry"){
 				column.push({
 					title: col[i],
-					visible: false
+					visible: false,
+					type: "hidden"
 				});
 			} else {
+				if(opt[col[i]].type === "Integer" || opt[col[i]].type === "Number" || opt[col[i]].type === "Long"){
+					if(opt[col[i]].nullable){
+						pattern = "^-?[0-9]*$";
+					} else {
+						pattern = "^-?[0-9]+$";
+					}
+					errorMsg = this.translation.intValueHint[this.locale];
+				} else if(opt[col[i]].type === "Double"){
+					if(opt[col[i]].nullable){
+						pattern = "^([-+]?[0-9]*\.?[0-9]+)*$";
+					} else {
+						pattern = "^([-+]?[0-9]*\.?[0-9]+)+$";
+					}
+					errorMsg = this.translation.doubleValueHint[this.locale];
+				} else if(opt[col[i]].type === "Boolean"){
+					if(opt[col[i]].nullable){
+						pattern = "^true|false$";
+					} else {
+						pattern = "^(true|false)*$";
+					}
+					errorMsg = this.translation.boolValueHint[this.locale];
+				} else {
+					if(opt[col[i]].nullable){
+						pattern = ".*";
+					} else {
+						pattern = ".+";
+						errorMsg = this.translation.notNullHint[this.locale];
+					}
+				}
 				column.push({
-					title: col[i]
+					title: col[i],
+					pattern: pattern,
+					errorMsg: errorMsg
 				});
 				
 				select.append($("<option>").val(col[i]).text(col[i]));
@@ -531,7 +599,39 @@ if (!gb.footer)
 				extend: "selected",
 				text: "Delete",
 				name: "delete"
-			}*/]
+			}*/],
+			onEditRow: function(datatable, rowdata, success, error){
+				var feature, keys;
+				for(var i in rowdata){
+					if(rowdata[i] instanceof ol.Feature){
+						feature = rowdata[i];
+						keys = rowdata[i].getKeys();
+						continue;
+					}
+					feature.set(keys[i], rowdata[i]);
+				}
+				
+				var layerInfo = that.attrList[that.selectedTreeId];
+				var geomKey = that.attrList[that.selectedTreeId].geomKey;
+				
+				if(!!geomKey){
+					feature.setGeometryName(geomKey);
+					feature.set(geomKey, feature.get("geometry"));
+				}
+				
+				if(layerInfo.serverName){
+					if(!that.editedFeature[that.selectedTreeId]){
+						that.editedFeature[that.selectedTreeId] = {};
+						that.editedFeature[that.selectedTreeId].serverName = layerInfo.serverName;
+						that.editedFeature[that.selectedTreeId].workspace = layerInfo.workspace;
+						that.editedFeature[that.selectedTreeId].layerName = layerInfo.layerName;
+					}
+					
+					that.editedFeature[that.selectedTreeId].feature = feature;
+				}
+				
+				success(rowdata);
+			}
 		});
 		
 		this.footerTag.find(".dt-buttons").css({"z-index": "3"});
@@ -547,41 +647,6 @@ if (!gb.footer)
 					that.nextFeatureList();
 				}
 			}
-		});
-		
-		$("#altEditor-modal").on("edited", function(e, data){
-			var feature, keys;
-			var layer = that.attrList[that.selectedTreeId];
-			var geomKey = that.attrList[that.selectedTreeId].geomKey;
-				
-			for(let i = 0; i < data.length; i++){
-				if(data[i] instanceof ol.Feature){
-					feature = data[i];
-					keys = data[i].getKeys();
-				}
-			}
-			
-			for(let i = 0; i < keys.length; i++){
-				if(keys[i] === "geometry"){
-					continue;
-				}
-				feature.set(keys[i], data[i]);
-			}
-			
-			if(!that.editedFeature[that.selectedTreeId]){
-				that.editedFeature[that.selectedTreeId] = {};
-				that.editedFeature[that.selectedTreeId].serverName = layer.serverName;
-				that.editedFeature[that.selectedTreeId].workspace = layer.workspace;
-				that.editedFeature[that.selectedTreeId].layerName = layer.layerName;
-			}
-			
-			if(!!geomKey){
-				feature.setGeometryName(geomKey);
-				feature.set(geomKey, feature.get("geometry"));
-				feature.unset("geometry");
-			}
-			
-			that.editedFeature[that.selectedTreeId].feature = feature;
 		});
 		
 		this.tableElement.find("tbody > tr").css("background-color", "transparent");

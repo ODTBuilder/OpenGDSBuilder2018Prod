@@ -449,7 +449,7 @@ gb.interaction.MultiTransform.prototype.getFeatures = function() {
  */
 gb.interaction.MultiTransform.prototype.selectTask_ = function(map, feature, cursor) {
 
-	const AREA = 6;
+	var AREA = 6;
 
 	var extent = feature.getGeometry().getExtent();
 	var scale = [];

@@ -1244,7 +1244,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 			if(source.get("git") instanceof Object){
 				if(source.get("git").attribute instanceof Array){
 					var typeFormBody = $("<tbody>");
-					for(let i = 0; i < source.get("git").attribute.length; i++){
+					for(var i = 0; i < source.get("git").attribute.length; i++){
 						prop = source.get("git").attribute[i];
 						notNull[prop.fieldName] = prop.nullable;
 						
@@ -1412,7 +1412,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 			
 			/*if(item instanceof ol.Feature){
 				prop = item.getProperties();
-				for(let key in prop){
+				for(var key in prop){
 					if(prop[key] instanceof Object){
 						continue;
 					}
@@ -1422,7 +1422,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 			} else {
 				if(source.get("git") instanceof Object){
 					if(source.get("git").attribute instanceof Array){
-						for(let i = 0; i < source.get("git").attribute.length; i++){
+						for(var i = 0; i < source.get("git").attribute.length; i++){
 							prop = source.get("git").attribute[i];
 							setProp[prop.fieldName] = "";
 						}
@@ -2368,7 +2368,7 @@ gb.header.EditingTool.prototype.isInteger = function(va) {
  * @return {Boolean} is Double?
  */
 gb.header.EditingTool.prototype.isDouble = function(va) {
-	var num = /^[-+]?[0-9]+\.?[0-9]+$/;
+	var num = /^[-+]?[0-9]*\.?[0-9]+$/;
 	if (typeof va === "string") {
 		return num.test(va);
 	}
@@ -2818,7 +2818,7 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 				if(git.fake === "parent"){
 					if(git.layers instanceof ol.Collection){
 						layers = git.layers.getArray();
-						for(let i = 0; i < layers.length; i++){
+						for(var i = 0; i < layers.length; i++){
 							tileLayers.push(layers[i]);
 						}
 					}
@@ -2830,14 +2830,14 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 			if(git instanceof Object){
 				if(git.allChildren){
 					temp = layer.getLayersArray();
-					for(let i = 0; i < temp.length; i++){
+					for(var i = 0; i < temp.length; i++){
 						git = temp[i].get("git");
 						
 						if(git instanceof Object){
 							if(git.fake === "parent"){
 								if(git.layers instanceof ol.Collection){
 									layers = git.layers.getArray();
-									for(let i = 0; i < layers.length; i++){
+									for(var i = 0; i < layers.length; i++){
 										tileLayers.push(layers[i]);
 									}
 								}
@@ -3152,7 +3152,7 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 			if(git instanceof Object){
 				if(git.allChildren){
 					temp = layer.getLayersArray();
-					for(let i = 0; i < temp.length; i++){
+					for(var i = 0; i < temp.length; i++){
 						git = temp[i].get("git");
 						
 						if(git instanceof Object){

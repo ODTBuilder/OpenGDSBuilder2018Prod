@@ -584,7 +584,7 @@ if (!gb.footer)
 	 */
 	gb.footer.CommandLine.prototype.downHistory = function(){
 		var text = "";
-		for(let i in this.workHistory_){
+		for(var i in this.workHistory_){
 			text += this.workHistory_[i].toString();
 			text += "\n";
 		}
@@ -613,7 +613,7 @@ if (!gb.footer)
 				}
 			}
 			
-			for(let i = 0; i < files.length; i++){
+			for(var i = 0; i < files.length; i++){
 				r.readAsText(files[i]);
 			}
 		}
@@ -624,10 +624,10 @@ if (!gb.footer)
 		
 		if(typeof text === "string"){
 			lines = text.split("\n").slice();
-			for(let i = 0; i < lines.length; i++){
+			for(var i = 0; i < lines.length; i++){
 				if(!!lines[i].trim()){
 					cmds = lines[i].split(",");
-					for(let j = 0; j < cmds.length; j++){
+					for(var j = 0; j < cmds.length; j++){
 						this.executeCommand(cmds[j].trim());
 					}
 				}

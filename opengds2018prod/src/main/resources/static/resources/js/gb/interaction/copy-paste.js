@@ -99,7 +99,7 @@ gb.interaction.Copypaste.prototype.paste = function(){
 	var vectorSource = this.sources_.item(0);
 	var arr = this.clipboard_.getArray();
 	var feature;
-	for(let i in arr){
+	for(var i in arr){
 		if(arr[i] instanceof ol.Feature &&
 				vectorSource instanceof ol.source.Vector){
 			if(this.record_ instanceof gb.edit.FeatureRecord){

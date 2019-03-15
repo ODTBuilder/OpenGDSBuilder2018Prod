@@ -301,7 +301,7 @@ if (!gb.layer)
 	
 	gb.layer.ImageLayer.prototype.removeMenuBar = function(){
 		var features = this.vector.getSource().getFeatures();
-		for(let i = 0; i < features.length; i++){
+		for(var i = 0; i < features.length; i++){
 			features[i].setStyle([ new ol.style.Style({
 				fill: new ol.style.Fill({
 					color: 'rgba(255, 255, 255, 0)'
@@ -344,7 +344,7 @@ if (!gb.layer)
 		var features = this.vector.getSource().getFeatures();
 		var collection = new ol.Collection();
 		
-		for(let i = 0; i < features.length; i++){
+		for(var i = 0; i < features.length; i++){
 			features[i].setStyle([ new ol.style.Style({
 				fill: new ol.style.Fill({
 					color: 'rgba(255, 255, 255, 0.2)'
@@ -397,7 +397,7 @@ if (!gb.layer)
 		var features = this.vector.getSource().getFeatures();
 		var collection = new ol.Collection();
 		
-		for(let i = 0; i < features.length; i++){
+		for(var i = 0; i < features.length; i++){
 			features[i].setStyle([ new ol.style.Style({
 				fill: new ol.style.Fill({
 					color: 'rgba(255, 255, 255, 0.2)'
@@ -750,7 +750,7 @@ if (!gb.layer)
 	 */
 	gb.layer.Pointer.prototype.selectTask_ = function(map, feature, cursor) {
 
-		const AREA = 6;
+		var AREA = 6;
 
 		var extent = feature.getGeometry().getExtent();
 		var scale = [];

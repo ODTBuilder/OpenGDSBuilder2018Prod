@@ -47,6 +47,10 @@ if (!gb.footer)
 			"boolValueHint" : {
 				"ko" : "Boolean 타입의 값을 입력해야합니다.",
 				"en" : "You must enter a value for boolean type."
+			},
+			"totalFeature" : {
+				"en" : "Total number of Feature",
+				"ko" : "총 객체 개수"
 			}
 		}
 		
@@ -441,6 +445,7 @@ if (!gb.footer)
 					
 					list[treeid].col = col;
 					list[treeid].features = data;
+					list[treeid].total = errorData.totalFeatures;
 					
 					that.requestLayerInfo(list[treeid].serverName, list[treeid].workspace, list[treeid].layerName, treeid);
 					that.updateTable(treeid);
@@ -650,12 +655,25 @@ if (!gb.footer)
 				success(rowdata);
 			}
 		});
-		
+		var statisticVal = $("<div>").html(this.attrList[treeid].total).css({
+			"color": "#fff",
+			"text-align": "center",
+			"font-size": "25px"
+		});
+		var statisticLabel = $("<div>").html(this.translation.totalFeature[this.locale]).css({
+			"color": "#fff",
+			"text-align": "center",
+			"margin": "0 .75em 0 0"
+		});
+		var statistic = $("<div>").append(statisticLabel).append(statisticVal).css({
+			"display": "inline-flex",
+			"float": "right",
+			"margin": "0 1.5em 1em",
+			"align-items": "center"
+		});
 		this.footerTag.find(".dt-buttons").css({"z-index": "3"});
 		this.footerTag.find(".footer-header").empty();
-		this.footerTag.find(".footer-header").append(button);
-		this.footerTag.find(".footer-header").append(input);
-		this.footerTag.find(".footer-header").append(select);
+		this.footerTag.find(".footer-header").append(button).append(input).append(select).append(statistic);
 		
 		$("#" + this.tableId + this.countId).parent().scroll(function(){
 			if($(this).scrollTop() + $(this)[0].clientHeight == $(this).children(":first").height()){
@@ -722,6 +740,7 @@ if (!gb.footer)
 			list[treeid].col = col;
 			list[treeid].features = paging;
 			list[treeid].all = data;
+			list[treeid].total = data.length;
 			this.updateTable(treeid);
 			$("#feature-list-loading").remove();
 			return;
@@ -787,6 +806,7 @@ if (!gb.footer)
 				list[treeid].layerName = layerName;
 				list[treeid].col = col;
 				list[treeid].features = data;
+				list[treeid].total = errorData.totalFeatures;
 				
 				that.requestLayerInfo(geoserver, workspace, layerName, treeid);
 				that.updateTable(treeid);

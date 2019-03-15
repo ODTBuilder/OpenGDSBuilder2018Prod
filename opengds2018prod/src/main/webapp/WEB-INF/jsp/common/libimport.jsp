@@ -43,7 +43,7 @@
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/gb_namespace.js"></script>
 <!-- gb.modal -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
 <!-- gb 임베드 베이스 -->
@@ -52,5 +52,3 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/layerdefinition.js"></script>
 <!-- gb 옵션 정의 -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/optiondefinition.js"></script>
-<!-- gb 검수 파일 정보 -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/modal/detailinformation.js"></script>

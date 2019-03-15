@@ -88,21 +88,22 @@
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/gb_namespace.js"></script>
 <!-- gb module -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/module/isEditing.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/module/serviceVersion.js"></script>
 <!-- gb map -->
+<!-- gb.map.Map -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
+<!-- gb.map.MousePosition -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>
 <!-- gb.modal -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
 <!-- gb panel  base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
-<!-- gb basemap -->
+<!-- gb.style -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
-<!-- gb layerstyle -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/layerstyle.js"></script>
 <!-- gb layerstyle -->
 <script src="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.js"></script>
@@ -120,6 +121,7 @@
 <!-- gb.edit -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/edithistory.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/undo.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
 <!-- gb.footer -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/footer/base.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/footer/featureList.js"></script>
@@ -136,8 +138,6 @@
 <!-- gb.geocoder -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/ol-geocoder.css">
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
-<!-- gb.map.MousePosition -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>

@@ -883,28 +883,7 @@ gb.header.EditingTool.prototype.select = function(source) {
 			})
 		}
 	});
-	this.interaction.select.on("select", function(evt) {
-		console.log("select-interact");
-		var features = that.interaction.select.getFeatures();
-		var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
-		var slayer;
-		if (slayers.length === 1) {
-			slayer = slayers[0];
-		}
-		var git;
-		if (slayer !== undefined) {
-			git = slayer.get("git");	
-		}
-		
-		if (that.getVersioningFeature() instanceof gb.versioning.Feature && features.getLength() === 1 && git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch")) {
-			console.log($(that.treeElement).jstreeol3("get_selected_layer"));
-			var feature = features.item(0);
-			that.updateFeatureHistoryModal(feature);
-		} else {
-			var vfeature = that.getVersioningFeature();
-			vfeature.close();
-		}
-	});
+
 	this.interaction.select.getFeatures().on("change:length", function(evt) {
 		var vfeature = that.getVersioningFeature();
 		that.features = that.interaction.select.getFeatures();
@@ -993,6 +972,28 @@ gb.header.EditingTool.prototype.select = function(source) {
 			});
 			that.attrPop.close();
 		} else if (that.features.getLength() === 1) {
+			//피처 버저닝 이력 시작
+			var features = that.interaction.select.getFeatures();
+			var slayers = $(that.treeElement).jstreeol3("get_selected_layer");
+			var slayer;
+			if (slayers.length === 1) {
+				slayer = slayers[0];
+			}
+			var git;
+			if (slayer !== undefined) {
+				git = slayer.get("git");	
+			}
+			
+			if (that.getVersioningFeature() instanceof gb.versioning.Feature && features.getLength() === 1 && git.hasOwnProperty("geogigRepo") && git.hasOwnProperty("geogigBranch")) {
+				console.log($(that.treeElement).jstreeol3("get_selected_layer"));
+				var feature = features.item(0);
+				that.updateFeatureHistoryModal(feature);
+			} else {
+				var vfeature = that.getVersioningFeature();
+				vfeature.close();
+			}
+			//피처 버저닝 이력 끝
+			
 			that.featurePop.close();
 			$(that.attrTB).empty();
 			that.feature = that.features.item(0);

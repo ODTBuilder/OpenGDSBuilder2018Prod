@@ -136,7 +136,9 @@ public enum GeogigExceptionStatus {
 	NOCOMMITS(HttpStatus.INTERNAL_SERVER_ERROR, "859", "No Commits Remote Repository"),
 
 	// 잘못된 정보 입력
-	COULDNOTREADJSON(HttpStatus.INTERNAL_SERVER_ERROR, "860", "Could not read JSON");
+	COULDNOTREADJSON(HttpStatus.INTERNAL_SERVER_ERROR, "860", "Could not read JSON"),
+	
+	PREMATURE_EOF(HttpStatus.INTERNAL_SERVER_ERROR, "861", "Premature EOF");
 
 	private HttpStatus httpStatus;
 	private String status;

@@ -319,8 +319,24 @@ gb.versioning.Repository = function(obj) {
 				"en" : "java.net.MalformedURLException"
 			},
 			"857" : {
-				"ko" : "충돌을 해결하세요",
+				"ko" : "충돌을 해결하세요.",
 				"en" : "You need to resolve your index first."
+			},
+			"858" : {
+				"ko" : "호스트에 숫자가 아닌 값을 입력했습니다.",
+				"en" : "You have entered a non-numeric value for the host."
+			},
+			"859" : {
+				"ko" : "커밋 이력이 없는 저장소 입니다.",
+				"en" : "A repository that has no commit history."
+			},
+			"860" : {
+				"ko" : "잘못된 구조의 정보를 입력했습니다.",
+				"en" : "You have entered incorrect structured information."
+			},
+			"861" : {
+				"ko" : "저장소 정보를 읽을 수 없습니다.",
+				"en" : "Could not read repository information."
 			},
 			"err" : {
 				"ko" : "오류",
@@ -827,8 +843,8 @@ gb.versioning.Repository = function(obj) {
 				"en" : "Removed"
 			},
 			"revertmsg1" : {
-				"ko" : "해당 커밋 시점으로 레이어를 되돌립니다.",
-				"en" : "Revert the layer to the point of time when it was committed."
+				"ko" : "해당 커밋 시점으로 피쳐를 되돌립니다.",
+				"en" : "Revert the feature to the point of time when it was committed."
 			},
 			"revertmsg2" : {
 				"ko" : "진행하시겠습니까?",
@@ -882,6 +898,10 @@ gb.versioning.Repository = function(obj) {
 				"ko" : "충돌 객체가 있습니다. 해결하시겠습니까?",
 				"en" : 'There are conflicting features. Do you want to resolve?'
 			},
+			"commitdesc" : {
+				"ko" : "이 작업에 대한 설명을 입력해 주세요.",
+				"en" : 'Please provide a description of this action.'
+			}
 	};
 	var options = obj ? obj : {};
 	this.locale = options.locale ? options.locale : "en";
@@ -3286,10 +3306,10 @@ gb.versioning.Repository.prototype.initRepository = function(server, repo, host,
 		// dataType : 'jsonp',
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
-			// $("body").css("cursor", "wait");
+			 that.showSpinner(true, modal);
 		},
 		complete : function() {
-			// $("body").css("cursor", "default");
+			 that.showSpinner(false, modal);
 			if (typeof callback === "function") {
 				callback();
 			}
@@ -4034,9 +4054,11 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
 		// jsonpCallback : 'getJson',
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			that.showSpinner(true, modal);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			that.showSpinner(false, modal);
 			$(callbackBtn).prop("disabled", false);
 		},
 		success : function(data) {
@@ -4462,9 +4484,11 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
+			that.showSpinner(true, modal);
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");
+			that.showSpinner(false, modal);
 		},
 		success : function(data) {
 			console.log(data);
@@ -5951,7 +5975,8 @@ gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path
 		"font-size" : "16px"
 	});
 	var inputMsg = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : that.translation.commitdesc[that.locale]
 	}).addClass("gb-form");
 	var msg3 = $("<div>").append(inputMsg);
 

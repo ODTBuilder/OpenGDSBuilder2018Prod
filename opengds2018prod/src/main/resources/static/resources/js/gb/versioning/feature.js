@@ -226,12 +226,12 @@ gb.versioning.Feature = function(obj) {
 	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.author[that.locale]);
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.time[that.locale]);
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.type[that.locale]);
-	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.detail[that.locale]);
-	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.revert[that.locale]);
-	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
-	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
+	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.detail[that.locale]).css({
 		"text-align" : "center"
 	});
+	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.revert[that.locale]);
+	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
+	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr);
 
 	var table = $("<div>").addClass("gb-table").css({
 		"display" : "table",
@@ -357,9 +357,7 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 							continue;
 						}
 					}
-					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
-						"text-align" : "center"
-					});
+					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName);
 					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date).css({
 						"width" : "150px"
 					});
@@ -385,27 +383,27 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 								// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
 								that.openDetailChanges(geoserver, repo, path, nidx, oidx);
 							});
-					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(button).css({
 						"text-align" : "center"
-					}).append(button);
-					var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
-					var rvButton = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-revert-btn").append(refIcon)
-							.click(function() {
-								var geoserver = that.getServer();
-								var repo = that.getRepo();
-								var path = that.getPath();
-								var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
-								var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
-								that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
-							});
-					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-						"text-align" : "center",
-						"width" : "100px"
-					}).append(rvButton);
+					});
+					/*
+					 * var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+					 * var rvButton = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-revert-btn").append(refIcon)
+					 * .click(function() { var geoserver = that.getServer(); var
+					 * repo = that.getRepo(); var path = that.getPath(); var
+					 * ocommit =
+					 * $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
+					 * var ncommit =
+					 * $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+					 * that.openRevertModal(geoserver, repo, path, ocommit,
+					 * ncommit); }); var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+					 * "text-align" : "center", "width" : "100px"
+					 * }).append(rvButton);
+					 */
 
 					if (i === 0) {
 						$(button).prop("disabled", true);
-						$(rvButton).prop("disabled", true);
+						// $(rvButton).prop("disabled", true);
 					}
 
 					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);

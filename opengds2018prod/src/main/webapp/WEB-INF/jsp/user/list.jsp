@@ -13,15 +13,6 @@
 </head>
 <body>
 	<script>
-		var detail = new gb.modal.DetailInformation({
-			"target" : ".gb-detailinformation-btn"
-		});
-
-		$(document).on("click", ".gb-detailinformation-btn", function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-		});
-
 		$(document).on("click", ".gb-download-btn", function(e) {
 			e.stopPropagation();
 		});

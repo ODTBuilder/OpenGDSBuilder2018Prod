@@ -79,7 +79,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 
 		try {
 			geogigReposInit = initRepos.executeCommand(url, user, pw, repoName, dbHost, dbPort, dbName, dbSchema,
-					dbUser, dbPassword, authorName, authorEmail);
+					dbUser, dbPassword, user, authorEmail);
 			if (remoteName != null && remoteURL != null) {
 				String initReposName = geogigReposInit.getRepo().getName();
 				// add remote
@@ -97,7 +97,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 					try {
 						PullRepository pull = new PullRepository();
 						pull.executeCommand(url, user, pw, initReposName, transactionId, remoteName, "master", "master",
-								authorName, authorEmail);
+								user, authorEmail);
 						EndTransaction endTransaction = new EndTransaction();
 						endTransaction.executeCommand(url, user, pw, initReposName, transactionId);
 					} catch (GeogigCommandException e) {
@@ -241,7 +241,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 		GeogigCommit geogigCommit = null;
 
 		try {
-			geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message, authorName,
+			geogigCommit = commitRepos.executeCommand(url, user, pw, repoName, transactionId, message, user,
 					authorEmail);
 		} catch (GeogigCommandException e) {
 			if (e.isXml()) {
@@ -322,7 +322,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			// master pull
 			PullRepository pull = new PullRepository();
 			GeogigPull geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, "master",
-					"master", authorName, authorEmail);
+					"master", user, authorEmail);
 			if (geogigPull.getPull() != null) {
 				EndTransaction end = new EndTransaction();
 				end.executeCommand(url, user, pw, repoName, transactionId);
@@ -445,7 +445,7 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			GeogigRemoteRepository geogigRemote = pingRepos.executeCommand(url, user, pw, repoName, remoteName);
 			if (geogigRemote.getPing().getSuccess().equalsIgnoreCase("true")) {
 				geogigPull = pull.executeCommand(url, user, pw, repoName, transactionId, remoteName, branchName,
-						remoteBranchName, authorName, authorEmail);
+						remoteBranchName, user, authorEmail);
 			} else {
 				geogigPull = new GeogigPull();
 				geogigPull.setSuccess("false");

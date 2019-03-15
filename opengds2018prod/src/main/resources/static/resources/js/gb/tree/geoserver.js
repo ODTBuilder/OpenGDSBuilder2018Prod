@@ -833,28 +833,6 @@ gb.tree.GeoServer = function(obj) {
 														}
 													}
 												},
-												/*"jsonp" : {
-													"separator_before" : false,
-													"icon" : "fa fa-file-excel-o",
-													"separator_after" : false,
-													"label" : "JSONP",
-													"action" : function(data) {
-														var inst = $.jstree.reference(data.reference), obj = inst.get_node(data.reference);
-														var selected = inst.get_selected();
-														var selectedObj = inst.get_selected(true);
-														for (var i = 0; i < selectedObj.length; i++) {
-															if (selectedObj[i].type === "datastore" || selectedObj[i].type === "workspace"
-																|| selectedObj[i].type === "geoserver") {
-																console.error("not support");
-																return;
-															}
-														}
-
-														for (var i = 0; i < selectedObj.length; i++) {
-															inst.download_wfs_layer(selectedObj[i], "text/javascript");
-														}
-													}
-												},*/
 												"csv" : {
 													"separator_before" : false,
 													"icon" : "fa fa-file-excel-o",

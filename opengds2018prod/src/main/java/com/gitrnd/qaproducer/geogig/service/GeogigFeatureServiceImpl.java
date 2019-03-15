@@ -267,7 +267,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, repoName);
 			String transactionId = transaction.getTransaction().getId();
 			geogigFeatureRevert = revertFeature.executeCommand(url, user, pw, repoName, transactionId, oldCommitId,
-					newCommitId, path, commitMessage, mergeMessage, authorName, authorEmail);
+					newCommitId, path, commitMessage, mergeMessage, user, authorEmail);
 			if (geogigFeatureRevert.getMerge().getConflicts() != null) {
 				geogigFeatureRevert.setTransactionId(transactionId);
 			} else {

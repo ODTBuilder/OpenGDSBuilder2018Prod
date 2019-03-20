@@ -11,7 +11,7 @@
 <!-- 폴리필 -->
 <!-- <script src="//cdn.polyfill.io/v1/polyfill.min.js"></script> -->
 <!-- 바벨 -->
-<!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <!-- 제이쿼리 -->
 <script src="${pageContext.request.contextPath}/resources/js/jquery/jquery-2.2.2.min.js"></script>
@@ -137,7 +137,6 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/interaction/holedraw.js"></script>
 <!-- gb.geocoder -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/ol-geocoder.css">
-<script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>

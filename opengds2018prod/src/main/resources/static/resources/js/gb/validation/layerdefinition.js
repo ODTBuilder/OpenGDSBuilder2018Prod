@@ -15,157 +15,158 @@ if (!gb.validation)
 	gb.validation = {};
 gb.validation.LayerDefinition = function(obj) {
 	var that = this;
-	this.structure = [];
+	this.translation = {
+			"layerCode" : {
+				"en" : "Code",
+				"ko" : "코드"
+			},
+			"layerType" : {
+				"en" : "Type",
+				"ko" : "유형"
+			},
+			"deleteLayer" : {
+				"en" : "Delete layer",
+				"ko" : "레이어 삭제"
+			},
+			"addLayer" : {
+				"en" : "Add layer",
+				"ko" : "레이어 추가"
+			},
+			"exLayerCodeField" : {
+				"en" : "Layer code ex) F0010000",
+				"ko" : "레이어 코드 예시) F0010000"
+			},
+			"notice" : {
+				"en" : "Notice",
+				"ko" : "알림"
+			},
+			"notSet" : {
+				"en" : "Not set",
+				"ko" : "미설정"
+			},
+			"deleteCategory" : {
+				"en" : "Delete category",
+				"ko" : "분류 삭제"
+			},
+			"exCategoryField" : {
+				"en" : "Category Name ex) Contour, F001 etc",
+				"ko" : "분류명 예시) 등고선, F001 등"
+			},
+			"attrName" : {
+				"en" : "Attribute name",
+				"ko" : "속성명"
+			},
+			"attrType" : {
+				"en" : "Attribute type",
+				"ko" : "속성 유형"
+			},
+			"fixedAttr" : {
+				"en" : "Fixed Attribute",
+				"ko" : "고정 속성"
+			},
+			"addFixedAttr" : {
+				"en" : "Add fixed attribute",
+				"ko" : "고정 속성 추가"
+			},
+			"deleteFixedAttr" : {
+				"en" : "Delete fixed attribute",
+				"ko" : "고정 속성 삭제"
+			},
+			"exFixedAttrNameField" : {
+				"en" : "",
+				"ko" : "고정 값을 가질 속성명 예시) 구분"
+			},
+			"length" : {
+				"en" : "Length",
+				"ko" : "길이"
+			},
+			"nullAllow" : {
+				"en" : "Null value allowed?",
+				"ko" : "널 허용"
+			},
+			"allowValue" : {
+				"en" : "Allowed value",
+				"ko" : "허용값"
+			},
+			"exAllowValueField" : {
+				"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
+				"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
+			},
+			"success" : {
+				"en" : "Success",
+				"ko" : "성공"
+			},
+			"danger" : {
+				"en" : "Danger",
+				"ko" : "위험"
+			},
+			"noticeOptionStructError" : {
+				"en" : "The top-level structure of options is an array.",
+				"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
+			},
+			"noticeLayerDefUpdate" : {
+				"en" : "[Layer definition] has been changed.",
+				"ko" : "[레이어 정의]가 변경 되었습니다"
+			},
+			"noticeNotExistLayer" : {
+				"en" : " category has no layers.",
+				"ko" : "번째 분류에 포함된 레이어가 없습니다"
+			},
+			"noticeInvalidKey" : {
+				"en" : "is not a valid key name",
+				"ko" : "은/는 유효한 키 이름이 아닙니다"
+			},
+			"noticeCategoryNameEnter" : {
+				"en" : "th category. You must enter a category name.",
+				"ko" : "번째 분류의 분류명을 입력해야 합니다"
+			},
+			"keyName" : {
+				"en" : "Key name:",
+				"ko" : "키 이름:"
+			},
+			"askDelCat" : {
+				"en" : "Are you sure you want to delete the selected layer category?",
+				"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
+			},
+			"askDelLayer" : {
+				"en" : "Are you sure you want to delete the selected layer?",
+				"ko" : "선택한 레이어를 삭제하시겠습니까?"
+			},
+			"askDelFixed" : {
+				"en" : "Are you sure you want to delete this fixed attribute?",
+				"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
+			},
+			"delCatModalTitle" : {
+				"en" : "Delete Category",
+				"ko" : "분류 삭제"
+			},
+			"delLayerModalTitle" : {
+				"en" : "Delete Layer",
+				"ko" : "레이어 삭제"
+			},
+			"delAttrModalTitle" : {
+				"en" : "Delete Fixed Attribute",
+				"ko" : "고정 속성 삭제"
+			},
+			"nodataoutput" : {
+				"en" : "No settings to export.",
+				"ko" : "내보낼 설정이 없습니다."
+			},
+			"readfail" : {
+				"en" : "Unable to read file.",
+				"ko" : "파일을 읽을 수 없습니다."
+			},
+			"emptyobj" : {
+				"en" : "There are no defined layers.",
+				"ko" : "정의된 레이어가 없습니다."
+			}
+		}
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
 	this.dataType = [ "DATE", "DATETIME", "INTEGER", "NUMBER", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
 	var options = obj ? obj : {};
+	this.structure = [];
 	this.locale = options.locale ? options.locale : "en";
-	this.translation = {
-		"layerCode" : {
-			"en" : "Code",
-			"ko" : "코드"
-		},
-		"layerType" : {
-			"en" : "Type",
-			"ko" : "유형"
-		},
-		"deleteLayer" : {
-			"en" : "Delete layer",
-			"ko" : "레이어 삭제"
-		},
-		"addLayer" : {
-			"en" : "Add layer",
-			"ko" : "레이어 추가"
-		},
-		"exLayerCodeField" : {
-			"en" : "Layer code ex) F0010000",
-			"ko" : "레이어 코드 예시) F0010000"
-		},
-		"notice" : {
-			"en" : "Notice",
-			"ko" : "알림"
-		},
-		"notSet" : {
-			"en" : "Not set",
-			"ko" : "미설정"
-		},
-		"deleteCategory" : {
-			"en" : "Delete category",
-			"ko" : "분류 삭제"
-		},
-		"exCategoryField" : {
-			"en" : "Category Name ex) Contour, F001 etc",
-			"ko" : "분류명 예시) 등고선, F001 등"
-		},
-		"attrName" : {
-			"en" : "Attribute name",
-			"ko" : "속성명"
-		},
-		"attrType" : {
-			"en" : "Attribute type",
-			"ko" : "속성 유형"
-		},
-		"fixedAttr" : {
-			"en" : "Fixed Attribute",
-			"ko" : "고정 속성"
-		},
-		"addFixedAttr" : {
-			"en" : "Add fixed attribute",
-			"ko" : "고정 속성 추가"
-		},
-		"deleteFixedAttr" : {
-			"en" : "Delete fixed attribute",
-			"ko" : "고정 속성 삭제"
-		},
-		"exFixedAttrNameField" : {
-			"en" : "",
-			"ko" : "고정 값을 가질 속성명 예시) 구분"
-		},
-		"length" : {
-			"en" : "Length",
-			"ko" : "길이"
-		},
-		"nullAllow" : {
-			"en" : "Null value allowed?",
-			"ko" : "널 허용"
-		},
-		"allowValue" : {
-			"en" : "Allowed value",
-			"ko" : "허용값"
-		},
-		"exAllowValueField" : {
-			"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
-			"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
-		},
-		"success" : {
-			"en" : "Success",
-			"ko" : "성공"
-		},
-		"danger" : {
-			"en" : "Danger",
-			"ko" : "위험"
-		},
-		"noticeOptionStructError" : {
-			"en" : "The top-level structure of options is an array.",
-			"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
-		},
-		"noticeLayerDefUpdate" : {
-			"en" : "[Layer definition] has been changed.",
-			"ko" : "[레이어 정의]가 변경 되었습니다"
-		},
-		"noticeNotExistLayer" : {
-			"en" : " category has no layers.",
-			"ko" : "번째 분류에 포함된 레이어가 없습니다"
-		},
-		"noticeInvalidKey" : {
-			"en" : "is not a valid key name",
-			"ko" : "은/는 유효한 키 이름이 아닙니다"
-		},
-		"noticeCategoryNameEnter" : {
-			"en" : "th category. You must enter a category name.",
-			"ko" : "번째 분류의 분류명을 입력해야 합니다"
-		},
-		"keyName" : {
-			"en" : "Key name:",
-			"ko" : "키 이름:"
-		},
-		"askDelCat" : {
-			"en" : "Are you sure you want to delete the selected layer category?",
-			"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
-		},
-		"askDelLayer" : {
-			"en" : "Are you sure you want to delete the selected layer?",
-			"ko" : "선택한 레이어를 삭제하시겠습니까?"
-		},
-		"askDelFixed" : {
-			"en" : "Are you sure you want to delete this fixed attribute?",
-			"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
-		},
-		"delCatModalTitle" : {
-			"en" : "Delete Category",
-			"ko" : "분류 삭제"
-		},
-		"delLayerModalTitle" : {
-			"en" : "Delete Layer",
-			"ko" : "레이어 삭제"
-		},
-		"delAttrModalTitle" : {
-			"en" : "Delete Fixed Attribute",
-			"ko" : "고정 속성 삭제"
-		},
-		"nodataoutput" : {
-			"en" : "No settings to export.",
-			"ko" : "내보낼 설정이 없습니다."
-		},
-		"readfail" : {
-			"en" : "Unable to read file.",
-			"ko" : "파일을 읽을 수 없습니다."
-		},
-		"emptyobj" : {
-			"en" : "There are no defined layers.",
-			"ko" : "정의된 레이어가 없습니다."
-		}
-	}
+	
 	// this.panelBody = $("<div>").addClass("panel-body");
 	this.panelBody = $("<div>").addClass("gb-layerdefinition-body");
 	// this.panel =

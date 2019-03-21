@@ -5,21 +5,19 @@
  * @memberof gb.panel
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
- * @param {Number}
+ * @param {(number|string)}
  *            obj.width - 패널의 너비 (픽셀)
- * @param {Number}
+ * @param {(number|string)}
  *            obj.height - 패널의 높이 (픽셀)
- * @param {Number}
+ * @param {(number|string)}
  *            obj.positionX - 패널의 페이지 왼편 또는 오른편으로 부터의 거리 (픽셀)
- * @param {Boolean}
+ * @param {boolean}
  *            obj.right - positionX를 오른쪽 기준으로 적용할것인지 (false일땐 왼쪽)
- * @param {Number}
+ * @param {(number|string)}
  *            obj.positionY - 패널의 페이지 상단으로 부터의 거리 (픽셀)
- * @param {Boolean}
+ * @param {boolean}
  *            obj.autoOpen - 패널을 선언과 동시에 표출 할 것인지 선택
- * @version 0.01
- * @author yijun.so
- * @date 2017. 07.26
+ * @author SOYIJUN
  */
 gb.panel.Base = function(obj) {
 
@@ -32,15 +30,31 @@ gb.panel.Base = function(obj) {
 	this.y = options.positionY ? options.positionY : 0;
 	this.autoOpen = options.autoOpen ? true : false;
 	var span = $("<span>").html("&times;");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.closeBtn = $("<button>").append(span).click(function() {
 		that.close();
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panelHead = $("<div>").addClass("gb-panel-head").append(this.closeBtn);
 	var body = typeof options.body === "function" ? options.body() : options.body;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panelBody = $("<div>").addClass("gb-panel-body");
 	if (body) {
 		$(this.panelBody).append(body);
 	}
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panel = $("<div>").addClass("gb-panel").css({
 		"width" : !isNaN(parseInt(this.width)) ? this.width + "px" : "auto",
 		"height" : !isNaN(parseInt(this.height)) ? this.height + "px" : "auto",
@@ -77,7 +91,7 @@ gb.panel.Base = function(obj) {
  * 
  * @method gb.panel.Base#setPanelBody
  * @function
- * @param {(DOM|function)}
+ * @param {(HTMLElement|function)}
  *            body - 패널에 표시될 내용
  */
 gb.panel.Base.prototype.setPanelBody = function(body) {
@@ -88,10 +102,10 @@ gb.panel.Base.prototype.setPanelBody = function(body) {
 	}
 };
 /**
- * 패널을 DOM 형태로 반환한다.
+ * 패널을 HTMLElement 형태로 반환한다.
  * 
  * @method gb.panel.Base#getPanel
- * @return {DOM} DOM 형태의 패널
+ * @return {HTMLElement} HTMLElement 형태의 패널
  */
 gb.panel.Base.prototype.getPanel = function() {
 	return this.panel;
@@ -116,7 +130,7 @@ gb.panel.Base.prototype.close = function() {
  * 패널의 너비를 설정한다.
  * 
  * @method gb.panel.Base#setWidth
- * @param {Number}
+ * @param {(number|string)}
  *            width - 패널의 너비 (픽셀)
  */
 gb.panel.Base.prototype.setWidth = function(width) {
@@ -127,7 +141,7 @@ gb.panel.Base.prototype.setWidth = function(width) {
  * 너비를 반환한다.
  * 
  * @method gb.panel.Base#getWidth
- * @return {Number} 패널의 너비 (픽셀)
+ * @return {(number|string)} 패널의 너비 (픽셀)
  */
 gb.panel.Base.prototype.getWidth = function() {
 	return this.width;
@@ -136,7 +150,7 @@ gb.panel.Base.prototype.getWidth = function() {
  * 높이를 설정한다.
  * 
  * @method gb.panel.Base#setHeight
- * @param {Number}
+ * @param {(number|string)}
  *            height - 패널의 높이 (픽셀)
  */
 gb.panel.Base.prototype.setHeight = function(height) {
@@ -148,7 +162,7 @@ gb.panel.Base.prototype.setHeight = function(height) {
  * 높이를 반환한다.
  * 
  * @method gb.panel.Base#getHeight
- * @return {Number} 패널의 높이 (픽셀)
+ * @return {(number|string)} 패널의 높이 (픽셀)
  */
 gb.panel.Base.prototype.getHeight = function() {
 	return this.height;
@@ -157,8 +171,8 @@ gb.panel.Base.prototype.getHeight = function() {
  * 패널의 수평 위치를 설정한다.
  * 
  * @method gb.panel.Base#setPositionX
- * @param {Number}
- *            x - body 왼편으로 부터의 거리 (픽셀)
+ * @param {(number|string)}
+ *            x - 페이지의 왼편으로 부터의 거리 (픽셀)
  */
 gb.panel.Base.prototype.setPositionX = function(x) {
 	this.positionX = x;
@@ -169,7 +183,7 @@ gb.panel.Base.prototype.setPositionX = function(x) {
  * 패널의 수평 위치를 반환한다.
  * 
  * @method gb.panel.Base#getPositionX
- * @return {Number} body 왼편으로 부터의 거리 (픽셀)
+ * @return {(number|string)} 페이지의 왼편으로 부터의 거리 (픽셀)
  */
 gb.panel.Base.prototype.getPositionX = function() {
 	return this.positionX;
@@ -178,8 +192,8 @@ gb.panel.Base.prototype.getPositionX = function() {
  * 패널의 수직 위치를 설정한다.
  * 
  * @method gb.panel.Base#setPositionY
- * @param {Number}
- *            y - body 상단으로 부터의 거리 (픽셀)
+ * @param {(number|string)}
+ *            y - 페이지의 상단으로 부터의 거리 (픽셀)
  */
 gb.panel.Base.prototype.setPositionY = function(y) {
 	this.positionY = y;
@@ -190,7 +204,7 @@ gb.panel.Base.prototype.setPositionY = function(y) {
  * 패널의 수직 위치를 반환한다.
  * 
  * @method gb.panel.Base#getPositionY
- * @return {Number} body 상단으로 부터의 거리 (픽셀)
+ * @return {(number|string)} 페이지의 상단으로 부터의 거리 (픽셀)
  */
 gb.panel.Base.prototype.getPositionY = function() {
 	return this.positionY;

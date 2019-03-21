@@ -402,7 +402,9 @@ gb.tree.OpenLayers = function(obj) {
 					}),
 					"layerRecord" : undefined,
 					"featureRecord" : options.frecord,
-					"style" : new gb.style.LayerStyle({}),
+					"style" : new gb.style.LayerStyle({
+						"locale" : this.locale
+					}),
 					"editingTool" : this.editingTool
 				},
 				"search" : {
@@ -537,26 +539,21 @@ gb.tree.OpenLayers = function(obj) {
 							}
 						};
 						
-						/*totalObj["count"] = {
-							"separator_before" : false,
-							"icon" : "fa fa-eye",
-							"separator_after" : false,
-							"_disabled" : false, // (this.check("delete_node",
-							// data.reference,
-							// this.get_parent(data.reference),
-							// "")),
-							"label" : that.translation.countOfFeature[that.locale],
-							"action" : function(data) {
-								console.log(data);
-								var inst = $.jstreeol3.reference(data.reference),
-									obj = inst.get_node(data.reference);
-								var layers = inst.get_selected();
-								for (var i = 0; i < layers.length; i++) {
-									var node = inst.get_node(layers[i]);
-									var layer = inst.get_LayerById(layers[i]);
-								}
-							}
-						};*/
+						/*
+						 * totalObj["count"] = { "separator_before" : false,
+						 * "icon" : "fa fa-eye", "separator_after" : false,
+						 * "_disabled" : false, // (this.check("delete_node", //
+						 * data.reference, // this.get_parent(data.reference), //
+						 * "")), "label" :
+						 * that.translation.countOfFeature[that.locale],
+						 * "action" : function(data) { console.log(data); var
+						 * inst = $.jstreeol3.reference(data.reference), obj =
+						 * inst.get_node(data.reference); var layers =
+						 * inst.get_selected(); for (var i = 0; i <
+						 * layers.length; i++) { var node =
+						 * inst.get_node(layers[i]); var layer =
+						 * inst.get_LayerById(layers[i]); } } };
+						 */
 						
 						if(o.type !== "Raster"){
 							totalObj["snap"] = {

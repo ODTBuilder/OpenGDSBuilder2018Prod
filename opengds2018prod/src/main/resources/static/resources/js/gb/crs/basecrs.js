@@ -1,10 +1,4 @@
 /**
- * @namespace {Object} gb.crs
- * @memberof gb
- */
-if (!gb.crs)
-	gb.crs = {};
-/**
  * 베이스 좌표계 변경 모달 객체를 정의한다.
  * 
  * @class gb.crs.BaseCRS
@@ -12,16 +6,14 @@ if (!gb.crs)
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
  * @param {string}
- *            obj.locale - 현재 선택 언어 ko || en
+ *            obj.locale - 사용할 언어 ko | en
  * @param {HTMLElement}
  *            obj.message - 현재 좌표계를 출력할 HTMLElement
  * @param {Array.
  *            <ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
  * @param {string}
  *            obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
- * @version 0.01
  * @author SOYIJUN
- * @date 2017. 07.26
  */
 gb.crs.BaseCRS = function(obj) {
 	var that = this;
@@ -222,7 +214,7 @@ gb.crs.BaseCRS.prototype.setMaps = function(maps) {
  * 현재 좌표계를 표시할 HTMLElement 객체를 반환한다.
  * 
  * @method gb.crs.BaseCRS#getMessage
- * @return HTMLElement
+ * @return {HTMLElement} 좌표계가 표시되는 HTMLElement
  */
 gb.crs.BaseCRS.prototype.getMessage = function() {
 	return this.message;

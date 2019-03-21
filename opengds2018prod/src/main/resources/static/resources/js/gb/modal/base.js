@@ -5,31 +5,26 @@
  * @memberof gb.modal
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
- * @param {String}
+ * @param {string}
  *            obj.title - 모달의 제목
- * @param {Number}
+ * @param {number}
  *            obj.width - 모달의 너비 (픽셀)
- * @param {Number}
- *            obj.height - 모달의 높이 (픽셀)
- * @param {Boolean}
+ * @param {boolean}
  *            obj.autoOpen - 선언과 동시에 표출 할 것인지 선택
- * @param {Boolean}
+ * @param {boolean}
  *            obj.keep - 모달 element를 생성시 미리 body에 append한다. true시 append된
  *            element를 css를 통해 보이거나 감춤, false시 open때마다 새롭게 body에 append한다.
- * @param {Function |
- *            String | DOM} obj.body - Modal 본문에 삽입될 내용
- * @param {Function |
- *            String | DOM} obj.footer- Modal 푸터에 삽입될 내용
- * @version 0.01
+ * @param {function |
+ *            string | HTMLElement} obj.body - Modal 본문에 삽입될 내용
+ * @param {function |
+ *            string | HTMLElement} obj.footer- Modal 푸터에 삽입될 내용
  * @author SOYIJUN
- * @date 2017. 07.26
  */
 gb.modal.Base = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.title = options.title ? options.title : "";
 	this.width = options.width ? options.width : "auto";
-	//this.height = options.height ? options.height : "auto";
 	this.height = "auto";
 	this.keep = options.keep || false;
 	this.autoOpen = options.autoOpen ? true : false;
@@ -37,26 +32,48 @@ gb.modal.Base = function(obj) {
 	var btn = $("<button>").append(span).click(function() {
 		that.close();
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.titleArea = $("<span>").addClass("gb-modal-title").text(this.title);
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.modalHead = $("<div>").addClass("gb-modal-head").append(this.titleArea).append(btn);
 	var body = typeof options.body === "function" ? options.body() : options.body;
 	var footer = typeof options.footer === "function" ? options.footer() : options.footer;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.modalBody = $("<div>").addClass("gb-modal-body");
 	if (body) {
 		$(this.modalBody).append(body);
 	}
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.modalFooter = $("<div>").addClass("gb-modal-footer");
 	if (footer) {
 		$(this.modalFooter).append(footer);
 	}
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.modal = $("<div>").addClass("gb-modal").css({
 		"width" : typeof this.width === "number" ? this.width+"px" : this.width,
 				"height" : typeof this.height === "number" ? this.height+"px" : this.height,
 						"position" : "absolute",
 						"z-Index" : "999"
 	}).append(this.modalHead).append(this.modalBody).append(this.modalFooter);
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.background = $("<div>").addClass("gb-modal-background");
 	if (this.keep) {
 		$("body").append(this.modal);
@@ -70,7 +87,7 @@ gb.modal.Base = function(obj) {
  * 모달 바디를 반환한다.
  * 
  * @method gb.modal.Base#getModalBody
- * @return {DOM} 모달 본문에 해당하는 DOM
+ * @return {HTMLElement} 모달 본문에 해당하는 HTMLElement
  */
 gb.modal.Base.prototype.getModalBody = function() {
 	return this.modalBody;
@@ -79,7 +96,7 @@ gb.modal.Base.prototype.getModalBody = function() {
  * 모달 바디를 설정한다.
  * 
  * @method gb.modal.Base#setModalBody
- * @param {DOM |
+ * @param {HTMLElement |
  *            function} body - 모달 본문으로 삽입될 내용
  */
 gb.modal.Base.prototype.setModalBody = function(body) {
@@ -95,7 +112,7 @@ gb.modal.Base.prototype.setModalBody = function(body) {
  * 모달 푸터를 반환한다.
  * 
  * @method gb.modal.Base#getModalFooter
- * @return {DOM} 모달 푸터에 해당하는 DOM
+ * @return {HTMLElement} 모달 푸터에 해당하는 HTMLElement
  */
 gb.modal.Base.prototype.getModalFooter= function() {
 	return this.modalFooter;
@@ -104,7 +121,7 @@ gb.modal.Base.prototype.getModalFooter= function() {
  * 모달 푸터를 설정한다.
  * 
  * @method gb.modal.Base#setModalFooter
- * @param {DOM |
+ * @param {HTMLElement |
  *            function} footer - 모달 푸터로 삽입될 내용
  */
 gb.modal.Base.prototype.setModalFooter = function(footer) {
@@ -118,7 +135,7 @@ gb.modal.Base.prototype.setModalFooter = function(footer) {
  * 모달을 반환한다.
  * 
  * @method gb.modal.Base#getModal
- * @return {DOM} 모달의 DOM
+ * @return {HTMLElement} 모달의 HTMLElement
  */
 gb.modal.Base.prototype.getModal = function() {
 	return this.modal;
@@ -174,7 +191,7 @@ gb.modal.Base.prototype.refreshPosition = function() {
  * 너비를 설정한다.
  * 
  * @method gb.modal.Base#setWidth
- * @param {Number}
+ * @param {number}
  *            width - 모달의 너비(픽셀)
  */
 gb.modal.Base.prototype.setWidth = function(width) {
@@ -196,7 +213,7 @@ gb.modal.Base.prototype.setWidth = function(width) {
  * 너비를 반환한다.
  * 
  * @method gb.modal.Base#getWidth
- * @return {Number} 모달의 너비(픽셀)
+ * @return {number} 모달의 너비(픽셀)
  */
 gb.modal.Base.prototype.getWidth = function() {
 	return $(this.modal).outerWidth();
@@ -205,7 +222,7 @@ gb.modal.Base.prototype.getWidth = function() {
  * 높이를 설정한다.
  * 
  * @method gb.modal.Base#setHeight
- * @param {Number}
+ * @param {number}
  *            height - 모달의 높이(픽셀)
  */
 gb.modal.Base.prototype.setHeight = function(height) {
@@ -228,17 +245,17 @@ gb.modal.Base.prototype.setHeight = function(height) {
  * 높이를 반환한다.
  * 
  * @method gb.modal.Base#getHeight
- * @return {Number} 모달의 높이(픽셀)
+ * @return {number} 모달의 높이(픽셀)
  */
 gb.modal.Base.prototype.getHeight = function() {
 	return $(this.modal).outerHeight();
 };
 
 /**
- * 제일 높은 z index 값을 반환한다.
+ * 모달의 최고 z-index 값을 반환한다.
  * 
  * @method gb.modal.Base#getMaxZIndex
- * @return {Number} 모달의 높이(픽셀)
+ * @return {number} 최고 z-index
  */
 gb.modal.Base.prototype.getMaxZIndex = function() {
 	var maxZ = Math.max.apply(null,$.map($('body > div.gb-modal'), function(e,n){

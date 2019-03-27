@@ -10925,7 +10925,7 @@ gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, cal
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.delete[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 310,
 		"autoOpen" : false,

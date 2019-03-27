@@ -358,7 +358,7 @@ gb.header.EditingTool = function(obj) {
 	this.featureTB = $("<tbody>");
 	var ftb = $("<table>").addClass("gb-table").append(fhd).append(this.featureTB);
 
-	this.featurePop = new gb.panel.Base({
+	this.featurePop = new gb.panel.PanelBase({
 		"width" : "240px",
 		"positionX" : 384,
 		"positionY" : 150,
@@ -378,7 +378,7 @@ gb.header.EditingTool = function(obj) {
 	var ahd = $("<thead>").append(atr);
 	this.attrTB = $("<tbody>");
 	var atb = $("<table>").addClass("gb-table").append(ahd).append(this.attrTB);
-	this.attrPop = new gb.panel.Base({
+	this.attrPop = new gb.panel.PanelBase({
 		"width" : "300px",
 		"positionX" : 384,
 		"positionY" : 150,

@@ -1,7 +1,7 @@
 /**
  * 모달 객체를 정의한다.
  * 
- * @class gb.modal.Base
+ * @class gb.modal.ModalBase
  * @memberof gb.modal
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
@@ -20,7 +20,7 @@
  *            string | HTMLElement} obj.footer- Modal 푸터에 삽입될 내용
  * @author SOYIJUN
  */
-gb.modal.Base = function(obj) {
+gb.modal.ModalBase = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	this.title = options.title ? options.title : "";
@@ -86,20 +86,20 @@ gb.modal.Base = function(obj) {
 /**
  * 모달 바디를 반환한다.
  * 
- * @method gb.modal.Base#getModalBody
+ * @method gb.modal.ModalBase#getModalBody
  * @return {HTMLElement} 모달 본문에 해당하는 HTMLElement
  */
-gb.modal.Base.prototype.getModalBody = function() {
+gb.modal.ModalBase.prototype.getModalBody = function() {
 	return this.modalBody;
 };
 /**
  * 모달 바디를 설정한다.
  * 
- * @method gb.modal.Base#setModalBody
+ * @method gb.modal.ModalBase#setModalBody
  * @param {HTMLElement |
  *            function} body - 모달 본문으로 삽입될 내용
  */
-gb.modal.Base.prototype.setModalBody = function(body) {
+gb.modal.ModalBase.prototype.setModalBody = function(body) {
 	if (typeof body === "function") {
 		var inner = body();
 		$(this.modalBody).append(inner);
@@ -111,20 +111,20 @@ gb.modal.Base.prototype.setModalBody = function(body) {
 /**
  * 모달 푸터를 반환한다.
  * 
- * @method gb.modal.Base#getModalFooter
+ * @method gb.modal.ModalBase#getModalFooter
  * @return {HTMLElement} 모달 푸터에 해당하는 HTMLElement
  */
-gb.modal.Base.prototype.getModalFooter= function() {
+gb.modal.ModalBase.prototype.getModalFooter= function() {
 	return this.modalFooter;
 };
 /**
  * 모달 푸터를 설정한다.
  * 
- * @method gb.modal.Base#setModalFooter
+ * @method gb.modal.ModalBase#setModalFooter
  * @param {HTMLElement |
  *            function} footer - 모달 푸터로 삽입될 내용
  */
-gb.modal.Base.prototype.setModalFooter = function(footer) {
+gb.modal.ModalBase.prototype.setModalFooter = function(footer) {
 	if (typeof footer === "function") {
 		$(this.modalFooter).append(footer());
 	} else {
@@ -134,18 +134,18 @@ gb.modal.Base.prototype.setModalFooter = function(footer) {
 /**
  * 모달을 반환한다.
  * 
- * @method gb.modal.Base#getModal
+ * @method gb.modal.ModalBase#getModal
  * @return {HTMLElement} 모달의 HTMLElement
  */
-gb.modal.Base.prototype.getModal = function() {
+gb.modal.ModalBase.prototype.getModal = function() {
 	return this.modal;
 };
 /**
  * 모달을 나타낸다.
  * 
- * @method gb.modal.Base#open
+ * @method gb.modal.ModalBase#open
  */
-gb.modal.Base.prototype.open = function() {
+gb.modal.ModalBase.prototype.open = function() {
 	if(!this.keep){
 		$("body").append(this.background);
 		$("body").append(this.modal);
@@ -165,9 +165,9 @@ gb.modal.Base.prototype.open = function() {
 /**
  * 모달을 숨긴다.
  * 
- * @method gb.modal.Base#close
+ * @method gb.modal.ModalBase#close
  */
-gb.modal.Base.prototype.close = function() {
+gb.modal.ModalBase.prototype.close = function() {
 	if(this.keep){
 		this.background.css("display", "none");
 		this.modal.css("display", "none");
@@ -179,9 +179,9 @@ gb.modal.Base.prototype.close = function() {
 /**
  * 모달위치를 최신화한다.
  * 
- * @method gb.modal.Base#refreshPosition
+ * @method gb.modal.ModalBase#refreshPosition
  */
-gb.modal.Base.prototype.refreshPosition = function() {
+gb.modal.ModalBase.prototype.refreshPosition = function() {
 	$(this.modal).css({
 		"top" : ($(window).innerHeight() / 2) - (this.getHeight()/2+50) + "px",
 		"left" : ($(window).innerWidth() / 2) - (this.getWidth()/2) + "px"
@@ -190,11 +190,11 @@ gb.modal.Base.prototype.refreshPosition = function() {
 /**
  * 너비를 설정한다.
  * 
- * @method gb.modal.Base#setWidth
+ * @method gb.modal.ModalBase#setWidth
  * @param {number}
  *            width - 모달의 너비(픽셀)
  */
-gb.modal.Base.prototype.setWidth = function(width) {
+gb.modal.ModalBase.prototype.setWidth = function(width) {
 	this.width = width;
 	var value;
 	if (typeof width === "number") {
@@ -212,20 +212,20 @@ gb.modal.Base.prototype.setWidth = function(width) {
 /**
  * 너비를 반환한다.
  * 
- * @method gb.modal.Base#getWidth
+ * @method gb.modal.ModalBase#getWidth
  * @return {number} 모달의 너비(픽셀)
  */
-gb.modal.Base.prototype.getWidth = function() {
+gb.modal.ModalBase.prototype.getWidth = function() {
 	return $(this.modal).outerWidth();
 };
 /**
  * 높이를 설정한다.
  * 
- * @method gb.modal.Base#setHeight
+ * @method gb.modal.ModalBase#setHeight
  * @param {number}
  *            height - 모달의 높이(픽셀)
  */
-gb.modal.Base.prototype.setHeight = function(height) {
+gb.modal.ModalBase.prototype.setHeight = function(height) {
 	this.height = height;
 	var value;
 	if (typeof height === "number") {
@@ -244,20 +244,20 @@ gb.modal.Base.prototype.setHeight = function(height) {
 /**
  * 높이를 반환한다.
  * 
- * @method gb.modal.Base#getHeight
+ * @method gb.modal.ModalBase#getHeight
  * @return {number} 모달의 높이(픽셀)
  */
-gb.modal.Base.prototype.getHeight = function() {
+gb.modal.ModalBase.prototype.getHeight = function() {
 	return $(this.modal).outerHeight();
 };
 
 /**
  * 모달의 최고 z-index 값을 반환한다.
  * 
- * @method gb.modal.Base#getMaxZIndex
+ * @method gb.modal.ModalBase#getMaxZIndex
  * @return {number} 최고 z-index
  */
-gb.modal.Base.prototype.getMaxZIndex = function() {
+gb.modal.ModalBase.prototype.getMaxZIndex = function() {
 	var maxZ = Math.max.apply(null,$.map($('body > div.gb-modal'), function(e,n){
 		if($(e).css('position')=='absolute'){
 			return parseInt($(e).css('z-index'))||1 ;

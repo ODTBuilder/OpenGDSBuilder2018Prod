@@ -1106,7 +1106,7 @@ gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	// var modalFooter =
 	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delCatModalTitle[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -1148,7 +1148,7 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	// var modalFooter =
 	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delLayerModalTitle[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -1183,7 +1183,7 @@ gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delAttrModalTitle[this.locale],
 		"width" : 310,
 		"height" : 172,

@@ -57,7 +57,7 @@ gb.style.BaseMap = function(obj) {
 	obj.autoOpen = false;
 	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
-	gb.modal.Base.call(this, obj);
+	gb.modal.ModalBase.call(this, obj);
 
 	this.map = options.map ? options.map : undefined;
 	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
@@ -273,7 +273,7 @@ gb.style.BaseMap = function(obj) {
 	// $("body").append(this.modal);
 	// $("body").append(this.background);
 };
-gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
+gb.style.BaseMap.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;
 
 /**

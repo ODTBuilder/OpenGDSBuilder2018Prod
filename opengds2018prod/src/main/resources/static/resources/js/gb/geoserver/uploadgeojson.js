@@ -529,7 +529,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
-	var uploadModal = new gb.modal.Base({
+	var uploadModal = new gb.modal.ModalBase({
 		"title" : this.translation.uploadgeojson[this.locale],
 		"width" : 440,
 		"autoOpen" : true,
@@ -670,7 +670,7 @@ gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
  * @method gb.geoserver.UploadGeoJSON#sendJSON
  * @param {Object}
  *            obj - 서버에 업로드할 레이어 정보
- * @param {gb.modal.Base}
+ * @param {gb.modal.ModalBase}
  *            modal - 업로드 후 닫을 모달 객체
  * @param {HTMLElement}
  *            ul - 레이어 이름이 표시될 UL 태그 영역
@@ -787,7 +787,7 @@ gb.geoserver.UploadGeoJSON.prototype.messageModal = function(title, msg) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 390,
 		"autoOpen" : true,

@@ -139,7 +139,7 @@ if (!gb.validation)
 
 	gb.validation.Validation = function(obj) {
 		obj.keep = true;
-		gb.modal.Base.call(this, obj);
+		gb.modal.ModalBase.call(this, obj);
 		var that = this;
 
 		var options = obj || {};
@@ -252,7 +252,7 @@ if (!gb.validation)
 	}
 
 	// gb.footer.Base 상속
-	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
+	gb.validation.Validation.prototype = Object.create(gb.modal.ModalBase.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 
 	gb.validation.Validation.prototype.open = function() {
@@ -262,7 +262,7 @@ if (!gb.validation)
 				return			}
 		}
 		this.geoserverTree.refresh();
-		gb.modal.Base.prototype.open.call(this);
+		gb.modal.ModalBase.prototype.open.call(this);
 	}
 	gb.validation.Validation.prototype.getParameter = function() {
 		var params = {};

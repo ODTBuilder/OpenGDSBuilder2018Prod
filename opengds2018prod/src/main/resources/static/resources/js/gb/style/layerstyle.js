@@ -22,14 +22,14 @@ gb.style.LayerStyle = function(obj) {
 	obj.height = 420;
 	obj.positionX = 380;
 	obj.positionY = 535;
-	gb.panel.Base.call(this, obj);
+	gb.panel.PanelBase.call(this, obj);
 	var options = obj ? obj : {};
 	this.layer = options.layer instanceof ol.layer.Base ? options.layer : undefined;
 	this.locale = options.locale ? options.locale : "en";
 	this.geom = undefined;
 	/**
 	 * @private
-	 * @type {gb.panel.Base}
+	 * @type {gb.panel.PanelBase}
 	 */
 	this.labelPanel = undefined;
 	/**
@@ -368,7 +368,7 @@ gb.style.LayerStyle = function(obj) {
 		this.setLayer(temp);
 	}
 };
-gb.style.LayerStyle.prototype = Object.create(gb.panel.Base.prototype);
+gb.style.LayerStyle.prototype = Object.create(gb.panel.PanelBase.prototype);
 gb.style.LayerStyle.prototype.constructor = gb.style.LayerStyle;
 
 /**
@@ -431,7 +431,7 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 	var table = $("<table>").css("width", "100%").append(tbody);
 
 	if (!this.labelPanel) {
-		this.labelPanel = new gb.panel.Base({
+		this.labelPanel = new gb.panel.PanelBase({
 			"width" : "auto",
 			"height" : "420",
 			"positionX" : "572",

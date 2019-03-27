@@ -205,7 +205,7 @@ gb.versioning.Feature = function(obj) {
 	});
 
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
-	this.panel = new gb.panel.Base({
+	this.panel = new gb.panel.PanelBase({
 		"width" : 500,
 		"height" : 550,
 		"positionX" : 4,
@@ -509,7 +509,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.contrastchg[that.locale],
 		"width" : 770,
 		"height" : 840,
@@ -1021,7 +1021,7 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : that.translation.revert[that.locale],
 		"width" : 494,
 		"height" : 200,
@@ -1092,7 +1092,7 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1123,7 +1123,7 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1262,7 +1262,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.override[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.compaconfl[that.locale],
 		"width" : 770,
 		"autoOpen" : true,
@@ -1835,7 +1835,7 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 310,
 		"height" : 200,

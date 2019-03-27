@@ -50,7 +50,7 @@ gb.crs.BaseCRS = function(obj) {
 	obj.width = 435;
 	obj.height = 180;
 	obj.keep = true;
-	gb.modal.Base.call(this, obj);
+	gb.modal.ModalBase.call(this, obj);
 
 	/**
 	 * @private
@@ -175,7 +175,7 @@ gb.crs.BaseCRS = function(obj) {
 	$("body").append(this.background);
 	this.searchEPSGCode(this.epsg, true, this.callback);
 };
-gb.crs.BaseCRS.prototype = Object.create(gb.modal.Base.prototype);
+gb.crs.BaseCRS.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
 
 /**
@@ -520,7 +520,7 @@ gb.crs.BaseCRS.prototype.getValidEPSG = function() {
  * @override
  */
 gb.crs.BaseCRS.prototype.open = function() {
-	gb.modal.Base.prototype.open.call(this);
+	gb.modal.ModalBase.prototype.open.call(this);
 	$(this.searchBar).val(this.getEPSGCode());
 	if (this.getValidEPSG()) {
 		$(this.searchBtn).prop("disabled", false);

@@ -1,7 +1,7 @@
 /**
  * 임베드 객체를 정의한다.
  * 
- * @class gb.embed.Base
+ * @class gb.embed.EmbedBase
  * @memberof gb.embed
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
@@ -12,7 +12,7 @@
  * @author SOYIJUN
  * 
  */
-gb.embed.Base = function(obj) {
+gb.embed.EmbedBase = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	var body = typeof options.body === "function" ? options.body() : options.body;
@@ -36,11 +36,11 @@ gb.embed.Base = function(obj) {
 /**
  * 객체 본문을 설정한다.
  * 
- * @method gb.embed.Base#setEmbedBody
+ * @method gb.embed.EmbedBase#setEmbedBody
  * @param {(function|HTMLElement)}
  *            body - 객체 본문에 포함될 내용
  */
-gb.embed.Base.prototype.setEmbedBody = function(body) {
+gb.embed.EmbedBase.prototype.setEmbedBody = function(body) {
 	if (typeof body === "function") {
 		$(this.panelBody).append(body());
 	} else {
@@ -50,34 +50,34 @@ gb.embed.Base.prototype.setEmbedBody = function(body) {
 /**
  * 객체 본문을 반환한다.
  * 
- * @method gb.embed.Base#getEmbedBody
+ * @method gb.embed.EmbedBase#getEmbedBody
  * @return {HTMLElement} 객체 본문
  */
-gb.embed.Base.prototype.getEmbedBody = function() {
+gb.embed.EmbedBase.prototype.getEmbedBody = function() {
 	return this.panelBody;
 };
 /**
  * 패널을 반환한다.
  * 
- * @method gb.embed.Base#getEmbed
+ * @method gb.embed.EmbedBase#getEmbed
  * @return {HTMLElement} 본문을 감싸고 있는 객체 경계
  */
-gb.embed.Base.prototype.getEmbed = function() {
+gb.embed.EmbedBase.prototype.getEmbed = function() {
 	return this.panel;
 };
 /**
  * 패널을 나타낸다.
  * 
- * @method gb.embed.Base#open
+ * @method gb.embed.EmbedBase#open
  */
-gb.embed.Base.prototype.open = function() {
+gb.embed.EmbedBase.prototype.open = function() {
 	this.panel.css("display", "block");
 };
 /**
  * 패널을 숨긴다.
  * 
- * @method gb.embed.Base#close
+ * @method gb.embed.EmbedBase#close
  */
-gb.embed.Base.prototype.close = function() {
+gb.embed.EmbedBase.prototype.close = function() {
 	this.panel.css("display", "none");
 };

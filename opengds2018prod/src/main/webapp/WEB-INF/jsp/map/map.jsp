@@ -374,9 +374,8 @@ html {
 		});
 
 		var crs = new gb.crs.BaseCRS({
-			"autoOpen" : false,
 			"locale" : locale !== "" ? locale : "en",
-			"message" : $(".epsg-now"),
+			"message" : $(".epsg-now")[0],
 			"maps" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
 			"epsg" : "4326"
 		});

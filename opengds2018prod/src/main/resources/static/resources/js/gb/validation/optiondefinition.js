@@ -1,12 +1,21 @@
 /**
  * 사용자 설정 레이어 검수 옵션 정의 객체
  * 
- * @author yijun.so
- * @date 2017. 07.26
- * @version 0.01
  * @class gb.validation.OptionDefinition
- * @constructor
- * 
+ * @memberof gb.validation
+ * @param {Object}
+ *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
+ * @param {HTMLElement}
+ *            obj.append - 검수 항목 정의 영역을 포함할 부모 HTMLElement
+ * @param {HTMLElement}
+ *            obj.fileClass - 검수 항목 정의 파일을 업로드할 input file 객체
+ * @param {HTMLElement}
+ *            obj.msgClass - 알림 영역을 포함을 부모 HTMLElement
+ * @param {gb.validation.LayerDefinition}
+ *            obj.layerDefinition - 검수 항목을 적용할 레이어 정의 객체
+ * @author SOYIJUN
  */
 var gb;
 if (!gb)
@@ -16,7 +25,15 @@ if (!gb.validation)
 gb.validation.OptionDefinition = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.locale = options.locale ? options.locale : "en";
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"validItemChgMsg" : {
 			"ko" : "[검수 항목 정의]가 변경 되었습니다.",
@@ -492,7 +509,10 @@ gb.validation.OptionDefinition = function(obj) {
 			"ko" : "삭제"
 		}
 	}
-
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.optItem = {
 		"BorderLayer" : {
 			"title" : this.translation.borderLayer[this.locale],
@@ -2906,59 +2926,117 @@ gb.validation.OptionDefinition = function(obj) {
 	this.qaVer = undefined;
 
 	this.layerDef = options.layerDefinition ? options.layerDefinition : undefined;
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.navi = $("<ol>").addClass("breadcrumb").addClass("gb-optiondefinition-navigation");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.message = $("<div>").addClass("alert").addClass("alert-info").attr("role", "alert");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.optionArea = $("<div>").addClass("well");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panelBody = $("<div>").addClass("gb-optiondefinition-body").append(this.navi).append(this.message).append(this.optionArea);
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panel = $("<div>").append(this.panelBody);
 	if (typeof options.append === "string") {
 		$(options.append).append(this.panel);
 	}
-	// 현재 분류 등고선
+	/**
+	 * 현재 분류
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.nowCategory = undefined;
-	// 현재 검수 항목 단독 존재 오류
+	/**
+	 * 현재 검수 항목 단독 존재 오류
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.nowOption = undefined;
-	// 현재 세부 옵션 종류 필터 피규어 톨러런스 릴레이션
+	/**
+	 * 현재 세부 옵션 종류 필터 피규어 톨러런스 릴레이션
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.nowDetailCategory = undefined;
-	// 세부 옵션이 릴레이션일때 릴레이션 분류
+	/**
+	 * 세부 옵션이 릴레이션일때 릴레이션 분류
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.nowRelationCategory = undefined;
-	// 세부 옵션이 릴레이션을때 릴레이션 세부 옵션 종류
+	/**
+	 * 세부 옵션이 릴레이션을때 릴레이션 세부 옵션 종류
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.nowRelationDetailCategory = undefined;
-
-	this.msg = typeof options.msgClass === "string" ? options.msgClass : undefined;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.msg = options.msgClass;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.fileParent = undefined;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.fileClass = undefined;
-	this.file = undefined;
-	if (typeof options.fileClass === "string") {
-		this.file = $("." + options.fileClass)[0];
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.file = $(options.fileClass)[0];	
+	if (this.file !== undefined) {
 		this.fileClass = $(this.file).attr("class");
-		var jclass = "." + this.fileClass;
-		this.fileParent = $(jclass).parent();
-		$(this.fileParent).on("change", jclass, function(event) {
-			var fileList = that.file.files;
-			var reader = new FileReader();
-			if (fileList.length === 0) {
+	}
+	var jclass = "." + this.fileClass;
+	this.fileParent = $(jclass).parent();
+	$(this.fileParent).on("change", jclass, function(event) {
+		var fileList = that.file.files;
+		var reader = new FileReader();
+		if (fileList.length === 0) {
+			return;
+		}
+		reader.readAsText(fileList[0]);
+		$(reader).on("load", function(event) {
+			try {
+				var obj = JSON.parse(reader.result);
+			} catch (e) {
+				that.setMessagePopup("danger", " " + that.translation.readfail[that.locale]);
 				return;
 			}
-			reader.readAsText(fileList[0]);
-			$(reader).on("load", function(event) {
-				try {
-					var obj = JSON.parse(reader.result);
-				} catch (e) {
-					that.setMessagePopup("danger", " " + that.translation.readfail[that.locale]);
-					return;
-				}
-				that.setStructure(obj);
-				that.updateStructure();
-			});
-			$(that.file).remove();
-			that.file = $("<input>").attr({
-				"type" : "file"
-			}).css("display", "none").addClass(that.fileClass)[0];
-			$(that.fileParent).append(that.file);
+			that.setStructure(obj);
+			that.updateStructure();
 		});
-	}
+		$(that.file).remove();
+		that.file = $("<input>").attr({
+			"type" : "file"
+		}).css("display", "none").addClass(that.fileClass)[0];
+		$(that.fileParent).append(that.file);
+	});
 
 	// 노 파라미터 모든 분류 체크 박스
 	$(this.panelBody).on("change", ".gb-optiondefinition-check-noparamoption-all", function() {
@@ -3213,17 +3291,36 @@ gb.validation.OptionDefinition = function(obj) {
 		that.deleteConfirmModal("code", callback);
 		console.log(that.getStructure());
 	});
-
+	// 설정 화면 초기화
 	this.init();
 };
 gb.validation.OptionDefinition.prototype = Object.create(gb.validation.OptionDefinition.prototype);
 gb.validation.OptionDefinition.prototype.constructor = gb.validation.OptionDefinition;
 
+/**
+ * 설정화면을 초기화한다.
+ * 
+ * @method gb.validation.OptionDefinition#init
+ */
 gb.validation.OptionDefinition.prototype.init = function() {
 	this.printCategory();
 };
 
+/**
+ * 지정된 영역에 메세지를 표시한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#setMessagePopup
+ * @param {string}
+ *            type - 메세지의 종류(success, info, warning, danger)
+ * @param {string}
+ *            message - 메세지 본문
+ */
 gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, message) {
+	if (typeof type !== "string") {
+		console.error("type must be string");
+		return;
+	}
 	var alert = "alert-";
 	switch (type) {
 	case "success":
@@ -3251,7 +3348,14 @@ gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, messag
 	var jclass = "." + this.msg;
 	$(jclass).append(div);
 };
-
+/**
+ * 레이어의 톨러런스 조건(컨디션, 수치 조건)을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#deleteLayerCodeTolerance
+ * @param {HTMLElement}
+ *            btn - 삭제 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -3341,7 +3445,14 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn
 		$(layerElem).remove();
 	}
 };
-
+/**
+ * 레이어의 피규어 조건(애트리뷰트, 속성 검수)을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#deleteLayerCodeFigure
+ * @param {HTMLElement}
+ *            btn - 삭제 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -3431,7 +3542,14 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 		$(layerElem).remove();
 	}
 };
-
+/**
+ * 레이어의 피규어 조건을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#deleteFigureRow
+ * @param {HTMLElement}
+ *            btn - 삭제 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 	// 필터 엘리먼트
 	var filterElem = $(btn).parents().eq(2);
@@ -3502,7 +3620,14 @@ gb.validation.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 		$(filterElem).remove();
 	}
 };
-
+/**
+ * 톨러런스 조건의 간격값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputToleranceInterval
+ * @param {HTMLElement}
+ *            inp - 값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -3790,7 +3915,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 		}
 	}
 };
-
+/**
+ * 레이어의 톨러런스 조건의 비교 조건을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#selectToleranceCondition
+ * @param {HTMLElement}
+ *            sel - 비교 조건 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -4078,7 +4210,14 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 		}
 	}
 };
-
+/**
+ * 톨러런스 조건의 기준값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputToleranceValue
+ * @param {HTMLElement}
+ *            inp - 기준값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -4363,7 +4502,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 		}
 	}
 };
-
+/**
+ * 톨러런스 조건의 릴레이션 레이어를 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#selectToleranceCode
+ * @param {HTMLElement}
+ *            sel - 레이어 선택 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 	var nowOption = this.optItem[this.nowOption.alias];
 	if (nowOption === undefined) {
@@ -4585,7 +4731,14 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 		}
 	}
 };
-
+/**
+ * 피규어 조건을 줄 레이어를 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#selectFigureCode
+ * @param {HTMLElement}
+ *            sel - 레이어 선택 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.selectFigureCode = function(sel) {
 	var nowOption = this.optItem[this.nowOption.alias];
 	if (nowOption === undefined) {
@@ -4671,7 +4824,14 @@ gb.validation.OptionDefinition.prototype.selectFigureCode = function(sel) {
 		}
 	}
 };
-
+/**
+ * 피규어 조건의 간격값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFigureInterval
+ * @param {HTMLElement}
+ *            inp - 간격값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -5097,7 +5257,14 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 		}
 	}
 }
-
+/**
+ * 피규어 조건의 비교 조건을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#selectFigureCondition
+ * @param {HTMLElement}
+ *            sel - 비교 조건 선택 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -5523,7 +5690,14 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 		}
 	}
 };
-
+/**
+ * 피규어 조건의 숫자형 기준값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFigureNumber
+ * @param {HTMLElement}
+ *            inp - 기준값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -5949,7 +6123,14 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 		}
 	}
 };
-
+/**
+ * 피규어 조건의 속성명을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFigureKey
+ * @param {HTMLElement}
+ *            inp - 속성명 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -6374,7 +6555,14 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 		}
 	}
 };
-
+/**
+ * 레이어의 필터 설정을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#deleteFilterRow
+ * @param {HTMLElement}
+ *            btn - 설정 삭제 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 	// 필터 엘리먼트
 	var filterElem = $(btn).parents().eq(1);
@@ -6451,7 +6639,14 @@ gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 		$(filterElem).remove();
 	}
 };
-
+/**
+ * 레이어에 설정된 필터를 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#deleteLayerCodeFilter
+ * @param {HTMLElement}
+ *            btn - 설정 삭제 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -6541,7 +6736,14 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 		$(layerElem).remove();
 	}
 };
-
+/**
+ * 피규어 조건의 허용값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFigureValues
+ * @param {HTMLElement}
+ *            inp - 허용값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -6965,7 +7167,14 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 		}
 	}
 }
-
+/**
+ * 필터 조건의 허용값을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFilterValues
+ * @param {HTMLElement}
+ *            inp - 허용값 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -7319,7 +7528,14 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 		}
 	}
 }
-
+/**
+ * 필터 조건의 속성명을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#inputFilterKey
+ * @param {HTMLElement}
+ *            inp - 속성명 입력 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
@@ -7669,7 +7885,16 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 		}
 	}
 }
-
+/**
+ * 인자가 필요없는 검수 항목에 대한 조건을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#setNoParamOption
+ * @param {HTMLElement}
+ *            check - 검수 수행 유무 체크박스 폼 객체
+ * @param {boolean}
+ *            all - 레이어 분류에 포함된 모든 레이어를 검사
+ */
 gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all) {
 	var strc = this.getStructure();
 	var def = strc["definition"];
@@ -8286,7 +8511,14 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 		}
 	}
 };
-
+/**
+ * 선택한 검수 세부 설정을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#clearSetting
+ * @param {string}
+ *            type - 삭제할 조건
+ */
 gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 	var that = this;
 	var cat = this.getLayerDefinition().getStructure();
@@ -8362,7 +8594,14 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 	console.log(this.nowRelationCategory);
 	console.log(this.nowRelationDetailCategory);
 };
-
+/**
+ * 필터 조건에 레이어 선택폼을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addLayerCodeFilter
+ * @param {HTMLElement}
+ *            btn - 조건 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-filtercode");
@@ -8413,7 +8652,14 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea").append(totalArea);
 	$(".gb-optiondefinition-select-filtercode").trigger("change");
 };
-
+/**
+ * 피규어 조건에 레이어 선택 폼을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addLayerCodeFigure
+ * @param {HTMLElement}
+ *            btn - 조건 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
@@ -8463,7 +8709,14 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea").append(totalArea);
 	$(".gb-optiondefinition-select-figurecode").trigger("change");
 };
-
+/**
+ * 톨러런스 조건에 레이어 선택폼 을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addLayerCodeTolerance
+ * @param {HTMLElement}
+ *            btn - 입력폼 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecode");
@@ -8511,7 +8764,7 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var figureArea = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-tolerancearea");
 	// ============================
 	var optItem = this.optItem[this.nowOption.alias];
-	var row = $("<div>").addClass("row");
+	var row = $("<div>").addClass("row");ㅇ
 
 	if (sec) {
 
@@ -8604,7 +8857,14 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea").append(totalArea);
 	$(".gb-optiondefinition-select-tolerancecode").trigger("change");
 };
-
+/**
+ * 필터를 적용할 레이어를 선택한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#selectFilterCode
+ * @param {HTMLElement}
+ *            sel - 레이어 선택 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.selectFilterCode = function(sel) {
 
 	var nowOption = this.optItem[this.nowOption.alias];
@@ -8701,25 +8961,54 @@ gb.validation.OptionDefinition.prototype.selectFilterCode = function(sel) {
 		}
 	}
 };
-
+/**
+ * 검수 분류를 설정한다.
+ * 
+ * @method gb.validation.OptionDefinition#setQACategory
+ * @param {string}
+ *            qa - 검수 분류 식별자
+ */
 gb.validation.OptionDefinition.prototype.setQACategory = function(qa) {
 	this.qaCat = qa;
 	console.log(this.getQACategory());
 };
-
+/**
+ * 검수 분류를 반환한다.
+ * 
+ * @method gb.validation.OptionDefinition#getQACategory
+ * @return {string} 검수 분류 식별자
+ */
 gb.validation.OptionDefinition.prototype.getQACategory = function() {
 	return this.qaCat;
 };
-
+/**
+ * 검수 버전을 설정한다.
+ * 
+ * @method gb.validation.OptionDefinition#setQAVersion
+ * @param {string}
+ *            qa - 검수 버전 식별자
+ */
 gb.validation.OptionDefinition.prototype.setQAVersion = function(qa) {
 	this.qaVer = qa;
 	console.log(this.getQAVersion());
 };
-
+/**
+ * 검수 버전을 반환한다.
+ * 
+ * @method gb.validation.OptionDefinition#getQAVersion
+ * @return {string} 검수 버전 식별자
+ */
 gb.validation.OptionDefinition.prototype.getQAVersion = function() {
 	return this.qaVer;
 };
-
+/**
+ * 필터 조건을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addFilterRow
+ * @param {HTMLElement}
+ *            btn - 조건 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
@@ -8753,7 +9042,14 @@ gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 	$(btn).parents().eq(2).find(".gb-optiondefinition-filterarea").append(row);
 
 };
-
+/**
+ * 피규어 조건 입력폼을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addFigureRow
+ * @param {HTMLElement}
+ *            btn - 입력폼 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
@@ -8830,7 +9126,14 @@ gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 	var outerRow = $("<div>").append(row).append(row2);
 	$(btn).parents().eq(2).find(".gb-optiondefinition-figurearea").append(outerRow);
 };
-
+/**
+ * 톨러런스 조건 입력폼을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#addToleranceRow
+ * @param {HTMLElement}
+ *            btn - 입력폼 추가 버튼 객체
+ */
 gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	if (this.nowOption === undefined) {
 		return;
@@ -8881,7 +9184,14 @@ gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 
 	$(btn).parents().eq(2).find(".gb-optiondefinition-tolerancearea").append(row);
 };
-
+/**
+ * 도곽선 레이어를 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#setBorderLayer
+ * @param {HTMLElement}
+ *            sel - 도곽선 레이어 선택 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.setBorderLayer = function(sel) {
 	var opt = $(sel).find("option:selected");
 	var strc = this.getStructure();
@@ -8895,7 +9205,16 @@ gb.validation.OptionDefinition.prototype.setBorderLayer = function(sel) {
 	}
 	console.log(this.getStructure());
 };
-
+/**
+ * 네비게이션바를 업데이트 한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#updateNavigation
+ * @param {number}
+ *            idx - 현재 설정 단계
+ * @param {boolean}
+ *            rel - 릴레이션 레이어 설정 필요 여부
+ */
 gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	// 인덱스와 레이블을 받아서 해당 인덱스에 레이블 텍스트와 애트리뷰트에 밸류를 넣고 이후의 엘리먼트를 삭제한다.
 	// 제일 마지막 엘리먼트에 링크를 지운다
@@ -8990,12 +9309,25 @@ gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	console.log(this.nowRelationCategory);
 	console.log(this.nowRelationDetailCategory);
 };
-
+/**
+ * 도움말 메세지를 설정한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#setMessage
+ * @param {string}
+ *            msg - 도움말 메세지
+ */
 gb.validation.OptionDefinition.prototype.setMessage = function(msg) {
 	$(this.message).empty();
 	$(this.message).text(msg);
 };
-
+/**
+ * 레이어 분류 목록을 표시한다.
+ * 
+ * @method gb.validation.OptionDefinition#printCategory
+ * @param {boolean}
+ *            rel - 릴레이션 레이어 설정 단계
+ */
 gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 	var className = "gb-optiondefinition-btn-category";
 	var alias;
@@ -9085,7 +9417,15 @@ gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 		$(this.optionArea).append(catArea);
 	}
 };
-
+/**
+ * 현재 레이어 분류에 설정가능한 검수 항목을 표시한다.
+ * 
+ * @method gb.validation.OptionDefinition#printOption
+ * @param {HTMLElement}
+ *            cat - 레이어 분류명 표시 영역
+ * @param {boolean}
+ *            navi - 레이어 분류를 현재 선택한 레이어 분류로 업데이트 하지 않음
+ */
 gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 	if (!navi) {
 		this.nowCategory = $(cat).text();
@@ -9200,7 +9540,20 @@ gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 	$(this.optionArea).append(opArea);
 
 };
-
+/**
+ * 검수 항목의 세부 항목을 표시한다.
+ * 
+ * @private
+ * @method gb.validation.OptionDefinition#printOptionCategory
+ * @param {HTMLElement}
+ *            opt - 선택한 검수 조건의 버튼 객체
+ * @param {boolean}
+ *            navi - 현재 네비게이션 위치로 객체에 업데이트 하지 않음
+ * @param {boolean}
+ *            sec - 릴레이션 레이어 선택 단계
+ * @param {boolean}
+ *            all - 릴레이션 레이어에 대한 세부 설정
+ */
 gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, navi, sec, all) {
 	if (!navi && !sec) {
 		this.nowOption = {
@@ -9475,7 +9828,17 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 		$(this.optionArea).append(row);
 	}
 };
-
+/**
+ * 조건의 세부 설정 입력 폼을 표시한다.
+ * 
+ * @method gb.validation.OptionDefinition#printDetailForm
+ * @param {HTMLElement}
+ *            optcat - 검수 조건 버튼 객체
+ * @param {boolean}
+ *            navi - 현재 위치를 객체 내에 업데이트 하지 않음
+ * @param {boolean}
+ *            sec - 릴레이션 레이어 설정 단계
+ */
 gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec) {
 	if (!sec) {
 		if (!navi) {
@@ -10025,33 +10388,64 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		this.printCategory(true);
 	}
 };
-
+/**
+ * 검수 항목 정의 파일 업로드 폼 객체를 반환한다.
+ * 
+ * @method gb.validation.OptionDefinition#getInputFile
+ * @return {HTMLElement} 파일 업로드 폼 객체
+ */
 gb.validation.OptionDefinition.prototype.getInputFile = function() {
 	return this.file;
 };
-
+/**
+ * 현재 검수 항목 정의 구조로 화면을 업데이트한다.
+ * 
+ * @method gb.validation.OptionDefinition#updateStructure
+ */
 gb.validation.OptionDefinition.prototype.updateStructure = function() {
 	console.log(this.getStructure());
 	$(this.optionArea).empty();
 	var strc = this.getStructure();
 	this.init();
 };
-
+/**
+ * 레이어 정의 구조를 설정한다.
+ * 
+ * @method gb.validation.OptionDefinition#setLayerDefinition
+ * @param {Object}
+ *            strc - 레이어 정의 구조
+ */
 gb.validation.OptionDefinition.prototype.setLayerDefinition = function(strc) {
 	this.layerDef = strc;
 };
-
+/**
+ * 레이어 정의 구조를 반환한다.
+ * 
+ * @method gb.validation.OptionDefinition#getLayerDefinition
+ * @return {Object} 레이어 정의 구조
+ */
 gb.validation.OptionDefinition.prototype.getLayerDefinition = function() {
 	return this.layerDef;
 };
-
+/**
+ * 검수 항목 정의 구조를 초기화한다.
+ * 
+ * @method gb.validation.OptionDefinition#clearStructure
+ */
 gb.validation.OptionDefinition.prototype.clearStructure = function() {
 	this.structure = {
 		"border" : null,
 		"definition" : []
 	};
 };
-
+/**
+ * 검수 항목 정의 구조를 설정한다.
+ * 
+ * @method gb.validation.OptionDefinition#setStructure
+ * @param {Object}
+ *            strc - 검수 항목 정의 구조
+ * @return {boolean} 검수 항목 정의 구조가 제대로 설정됨
+ */
 gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 	var isOK = true;
 	var borderElem = [ "code", "geometry" ];
@@ -10834,16 +11228,23 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 	if (this.isEmpty()) {
 		this.setMessagePopup("warning", this.translation.emptyobj[this.locale]);
 	}
+	return isOK;
 };
-
+/**
+ * 검수 항목 정의 구조를 반환한다.
+ * 
+ * @method gb.validation.OptionDefinition#getStructure
+ * @return {Object} 검수 항목 정의 구조
+ */
 gb.validation.OptionDefinition.prototype.getStructure = function() {
 	return this.structure;
 };
-
-gb.validation.OptionDefinition.prototype.setJSONFile = function() {
-
-};
-
+/**
+ * 검수 항목 정의 구조가 비어있는지 확인한다.
+ * 
+ * @method gb.validation.OptionDefinition#isEmpty
+ * @return {boolean} 구조가 비어있는지 여부
+ */
 gb.validation.OptionDefinition.prototype.isEmpty = function() {
 	var strc = this.getStructure();
 	var isEmpty = false;
@@ -10855,7 +11256,11 @@ gb.validation.OptionDefinition.prototype.isEmpty = function() {
 	}
 	return isEmpty;
 };
-
+/**
+ * 검수 항목 정의 파일을 다운로드한다.
+ * 
+ * @method gb.validation.OptionDefinition#getJSONFile
+ */
 gb.validation.OptionDefinition.prototype.getJSONFile = function() {
 	var isEmpty = this.isEmpty();
 	if (isEmpty) {
@@ -10898,8 +11303,14 @@ gb.validation.OptionDefinition.prototype.getJSONFile = function() {
 	}
 };
 
-/*
- * 제거 확인 모달
+/**
+ * 삭제전 확인창을 표시한다.
+ * 
+ * @method gb.validation.OptionDefinition#deleteConfirmModal
+ * @param {string}
+ *            type - 삭제할 대상의 타입
+ * @param {function}
+ *            callback - 삭제 버튼 클릭 후 수행할 콜백함수
  */
 gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, callback) {
 	var msg1 = $("<div>").css({
@@ -10925,7 +11336,7 @@ gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, cal
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.delete[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 310,
 		"autoOpen" : false,

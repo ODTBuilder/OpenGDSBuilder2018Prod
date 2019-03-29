@@ -1,39 +1,85 @@
-var gb;
-if (!gb)
-	gb = {};
-if (!gb.geoserver)
-	gb.geoserver = {};
-
 /**
  * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
  * 
  * @class gb.geoserver.UploadGeoJSON
  * @memberof gb.geoserver
- * @param {String}
- *            url - geojson 업로드할 URL
- * 
- * @version 0.01
+ * @param {Object}
+ *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            obj.url - json객체를 업로드할 URL
+ * @param {(string|number|function)}
+ *            obj.epsg - 업로드할 레이어의 좌표계
+ * @param {gb.tree.Geoserver}
+ *            obj.geoserverTree - 연동될 gb.tree.GeoServer 객체
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
  * @author SOYIJUN
- * @date 2019. 02. 26
  */
 gb.geoserver.UploadGeoJSON = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.url = typeof options.url === "string" ? options.url : undefined;
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.epsginit = (typeof options.epsg === "number" || typeof options.epsg === "string" || typeof options.epsg === "function") ? options.epsg
 			: undefined;
+	/**
+	 * @private
+	 * @type {gb.tree.GeoServer}
+	 */
 	this.geoserverTree = typeof options.geoserverTree === "function" ? options.geoserverTree : undefined;
-	this.geoserver;
-	this.workspace;
-	this.datastore;
+	/**
+	 * @private
+	 * @type {string}
+	 */
+	this.geoserver = undefined;
+	/**
+	 * @private
+	 * @type {string}
+	 */
+	this.workspace = undefined;
+	/**
+	 * @private
+	 * @type {string}
+	 */
+	this.datastore = undefined;
+	/**
+	 * @private
+	 * @type {boolean}
+	 */
 	this.validEPSG = false;
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.epsg = undefined;
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.locale = options.locale ? options.locale : "en";
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
 
 	// 미발행 레이어 이름 중복 무시 여부 변수
+	/**
+	 * @private
+	 * @type {boolean}
+	 */
 	this.ignorePublic = false;
-
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"400" : {
 			"ko" : "요청값 잘못입력",
@@ -192,10 +238,18 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 			"en" : "You can not upload layers with the same name."
 		},
 	};
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
 		"placeholder" : "EX) 3857"
 	});
+	/**
+	 * @private
+	 * @type {(boolean|function)}
+	 */
 	this.tout = false;
 	$(this.epsgInput).keyup(function() {
 		if (that.tout) {
@@ -215,39 +269,39 @@ gb.geoserver.UploadGeoJSON.prototype.constructor = gb.geoserver.UploadGeoJSON;
  * 지오서버 트리를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getGeoserverTree
- * @return {String} 지오서버 트리 객체
+ * @return {gb.tree.GeoServer} 지오서버 트리 객체
  */
 gb.geoserver.UploadGeoJSON.prototype.getGeoserverTree = function() {
 	return this.geoserverTree();
 };
 
 /**
- * 지오서버 트리를 반환한다.
+ * 지오서버 트리를 설정한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#setGeoserverTree
- * @param {String}
- *            지오서버 트리 객체를 반환하는 함수
+ * @param {function}
+ *            fnc - 지오서버 트리 객체를 반환하는 함수
  */
 gb.geoserver.UploadGeoJSON.prototype.setGeoserverTree = function(fnc) {
 	this.geoserverTree = fnc;
 };
 
 /**
- * 현재 검색한 좌표계의 EPSG 코드를 반환한다.
+ * 업로드할 레이어 좌표계의 EPSG 코드를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getEPSGCode
- * @return {String} 현재 검색한 좌표계의 EPSG 코드
+ * @return {string} 좌표계의 EPSG 코드
  */
 gb.geoserver.UploadGeoJSON.prototype.getEPSGCode = function() {
 	return this.epsg;
 };
 
 /**
- * 현재 검색한 좌표계의 EPSG 코드를 설정한다.
+ * 업로드할 레이어 좌표계의 EPSG 코드를 설정한다.
  * 
- * @method gb.geoserver.UploadGeoJSON#getEPSGCode
- * @param {String}
- *            code - 현재 검색한 좌표계의 EPSG 코드
+ * @method gb.geoserver.UploadGeoJSON#setEPSGCode
+ * @param {string}
+ *            code - 좌표계의 EPSG 코드
  */
 gb.geoserver.UploadGeoJSON.prototype.setEPSGCode = function(code) {
 	this.epsg = code;
@@ -257,7 +311,7 @@ gb.geoserver.UploadGeoJSON.prototype.setEPSGCode = function(code) {
  * 업로드 URL 주소를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getUploadURL
- * @return {String} 업로드 URL 주소
+ * @return {string} 업로드 URL 주소
  */
 gb.geoserver.UploadGeoJSON.prototype.getUploadURL = function() {
 	return this.url;
@@ -267,6 +321,10 @@ gb.geoserver.UploadGeoJSON.prototype.getUploadURL = function() {
  * 모달을 연다
  * 
  * @method gb.geoserver.UploadGeoJSON#open
+ * @param {string}
+ *            epsg - 업로드 할 레이어의 좌표계
+ * @param {Array.
+ *            <ol.layer.Vector>} layers - 업로드 할 벡터 레이어
  * @override
  */
 gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
@@ -471,7 +529,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
-	var uploadModal = new gb.modal.Base({
+	var uploadModal = new gb.modal.ModalBase({
 		"title" : this.translation.uploadgeojson[this.locale],
 		"width" : 440,
 		"autoOpen" : true,
@@ -546,7 +604,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
  * 지오서버를 설정한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#setGeoServer
- * @param {String}
+ * @param {string}
  *            geoserver - 설정할 지오서버의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.setGeoServer = function(geoserver) {
@@ -557,7 +615,7 @@ gb.geoserver.UploadGeoJSON.prototype.setGeoServer = function(geoserver) {
  * 지오서버를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getGeoServer
- * @return {String} 설정한 지오서버의 이름
+ * @return {string} 설정한 지오서버의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.getGeoServer = function() {
 	return this.geoserver;
@@ -567,7 +625,7 @@ gb.geoserver.UploadGeoJSON.prototype.getGeoServer = function() {
  * 워크스페이스를 설정한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#setWorkspace
- * @param {String}
+ * @param {string}
  *            workspace - 설정할 워크스페이스의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.setWorkspace = function(workspace) {
@@ -578,7 +636,7 @@ gb.geoserver.UploadGeoJSON.prototype.setWorkspace = function(workspace) {
  * 워크스페이스를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getWorkspace
- * @return {String} 설정한 워크스페이스의 이름
+ * @return {string} 설정한 워크스페이스의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.getWorkspace = function() {
 	return this.workspace;
@@ -588,7 +646,7 @@ gb.geoserver.UploadGeoJSON.prototype.getWorkspace = function() {
  * 데이터스토어를 설정한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#setDatastore
- * @param {String}
+ * @param {string}
  *            datastore - 설정할 데이터스토어의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.setDatastore = function(datastore) {
@@ -599,7 +657,7 @@ gb.geoserver.UploadGeoJSON.prototype.setDatastore = function(datastore) {
  * 데이터스토어를 반환한다.
  * 
  * @method gb.geoserver.UploadGeoJSON#getDatastore
- * @return {String} 설정한 데이터스토어의 이름
+ * @return {string} 설정한 데이터스토어의 이름
  */
 gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
 	return this.datastore;
@@ -608,16 +666,19 @@ gb.geoserver.UploadGeoJSON.prototype.getDatastore = function() {
 /**
  * JSON 객체를 전송한다.
  * 
+ * @private
  * @method gb.geoserver.UploadGeoJSON#sendJSON
- * @param {String}
- *            server
+ * @param {Object}
+ *            obj - 서버에 업로드할 레이어 정보
+ * @param {gb.modal.ModalBase}
+ *            modal - 업로드 후 닫을 모달 객체
+ * @param {HTMLElement}
+ *            ul - 레이어 이름이 표시될 UL 태그 영역
+ * @param {gb.tree.GeoServer}
+ *            tree - 업로드 완료 후 새로고침 될 지오서버 레이어 목록 객체
  */
 gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal, ul, tree) {
 	var that = this;
-	var params = {
-
-	}
-
 	var toJSON = function(str) {
 		return (str).replace(/(^\?)/, '').split("&").map(function(n) {
 			return n = n.split("="), this[n[0]] = n[1], this
@@ -635,13 +696,6 @@ gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal, ul, tree) {
 	}
 
 	var tranURL = this.getUploadURL();
-	// if (tranURL.indexOf("?") !== -1) {
-	// tranURL += "&";
-	// tranURL += jQuery.param(params);
-	// } else {
-	// tranURL += "?";
-	// tranURL += jQuery.param(params);
-	// }
 	$.ajax(
 			{
 				url : tranURL,
@@ -697,10 +751,11 @@ gb.geoserver.UploadGeoJSON.prototype.sendJSON = function(obj, modal, ul, tree) {
 }
 
 /**
- * GeoGig 저장소의 타겟 브랜치를 변경한다.
+ * 오류 코드에 따른 메세지를 보여준다
  * 
- * @method gb.geoserver.UploadGeoJSON#switchBranch
- * @param {String}
+ * @private
+ * @method gb.geoserver.UploadGeoJSON#errorModal
+ * @param {string}
  *            code - 오류 코드
  */
 gb.geoserver.UploadGeoJSON.prototype.errorModal = function(code) {
@@ -711,13 +766,12 @@ gb.geoserver.UploadGeoJSON.prototype.errorModal = function(code) {
 /**
  * 오류 메시지 창을 생성한다.
  * 
+ * @private
  * @method gb.geoserver.UploadGeoJSON#messageModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {string}
+ *            title - 모달 제목
+ * @param {msg}
+ *            msg - 메세지 내용
  */
 gb.geoserver.UploadGeoJSON.prototype.messageModal = function(title, msg) {
 	var that = this;
@@ -733,7 +787,7 @@ gb.geoserver.UploadGeoJSON.prototype.messageModal = function(title, msg) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 390,
 		"autoOpen" : true,

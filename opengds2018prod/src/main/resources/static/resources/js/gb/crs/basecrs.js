@@ -5,25 +5,22 @@
  * @memberof gb.crs
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
- * @param {String}
- *            obj.title - 모달의 제목
- * @param {Number}
- *            obj.width - 모달의 너비 (픽셀)
- * @param {Number}
- *            obj.height - 모달의 높이 (픽셀)
- * @param {Boolean}
- *            obj.autoOpen - 선언과 동시에 표출 할 것인지 선택
- * @param {DOM}
- *            obj.message - 현재 좌표계를 출력할 DOM
- * @param {ol.Map}
- *            obj.map - 베이스 좌표계를 변경할 ol.Map 객체
- * @param {String}
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
+ * @param {HTMLElement}
+ *            obj.message - 현재 좌표계를 출력할 HTMLElement
+ * @param {Array.
+ *            <ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
+ * @param {string}
  *            obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
- * @version 0.01
  * @author SOYIJUN
- * @date 2017. 07.26
  */
 gb.crs.BaseCRS = function(obj) {
+	var that = this;
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"bcrs" : {
 			"ko" : "기본 좌표계",
@@ -43,19 +40,77 @@ gb.crs.BaseCRS = function(obj) {
 		}
 	};
 	var options = obj ? obj : {};
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.locale = options.locale ? options.locale : "en";
+
 	obj.title = this.translation.bcrs[this.locale];
 	obj.width = 435;
 	obj.height = 180;
 	obj.keep = true;
-	gb.modal.Base.call(this, obj);
-	var that = this;
+	gb.modal.ModalBase.call(this, obj);
 
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.message = options.message ? options.message : undefined;
-	this.maps = options.maps ? options.maps : undefined;
-	this.epsg = options.epsg ? options.epsg : "3857";
-	this.callback = options.callback ? options.callback : undefined;
-	var label = $("<span>").text("EPSG: ");
+	if (Array.isArray(options.maps) && options.maps.length > 0) {
+		var flag = true;
+		for (var i = 0; i < options.maps.length; i++) {
+			if (!options.maps[i] instanceof ol.Map) {
+				flag = false;
+			}
+		}
+		if (!flag) {
+			console.error("maps must Array.<ol.Map>");
+			return;
+		}
+	}
+	/**
+	 * @private
+	 * @type {Array.<ol.Map>}
+	 */
+	this.maps = undefined;
+	var tempmaps = options.maps ? options.maps : undefined;
+	if (tempmaps === undefined) {
+		console.error("maps parameter is required.");
+		return;
+	} else if (Array.isArray(tempmaps)) {
+		for (var i = 0; i < tempmaps.length; i++) {
+			if (!tempmaps[i] instanceof ol.Map) {
+				console.error("maps element must be ol.Map type");
+				return;
+			}
+		}
+	}
+	this.maps = tempmaps;
+	/**
+	 * @private
+	 * @type {string}
+	 */
+	this.epsg = typeof options.epsg === "string" ? options.epsg : "3857";
+	/**
+	 * @private
+	 * @type {function}
+	 */
+	this.callback = typeof options.callback === "function" ? options.callback : undefined;
+	/**
+	 * @private
+	 * @type {function}
+	 */
+	this.projObj = undefined;
+	/**
+	 * @private
+	 * @type {function}
+	 */
+	this.validEPSG = undefined;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.searchBar = $("<input>").attr({
 		"type" : "number",
 		"placeholder" : "EX) 3857"
@@ -63,8 +118,12 @@ gb.crs.BaseCRS = function(obj) {
 		"width" : "312px",
 		"display" : "inline-block"
 	});
-
+	/**
+	 * @private
+	 * @type {function}
+	 */
 	this.tout = false;
+	// 좌표계 입력시 EPSG검색
 	$(this.searchBar).keyup(function() {
 		that.setValidEPSG(1);
 		if (that.tout) {
@@ -76,11 +135,15 @@ gb.crs.BaseCRS = function(obj) {
 			that.searchEPSGCode(v);
 		}, 250);
 	});
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.validIconSpan = $("<span>").css({
 		"margin-left" : "15px",
 		"margin-right" : "0"
 	});
+	var label = $("<span>").text("EPSG: ");
 	var area = $("<div>").append(label).append(this.searchBar).append(this.validIconSpan).css({
 		"margin" : "10px 10px"
 	});
@@ -91,36 +154,35 @@ gb.crs.BaseCRS = function(obj) {
 	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.searchBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(
 			function() {
 				var val = $(that.searchBar).val().replace(/(\s*)/g, '');
-				// that.searchEPSGCode(val);
 				if (that.getValidEPSG()) {
 					that.applyProjection(that.getProjection().code, that.getProjection().name, that.getProjection().proj4, that
 							.getProjection().bbox);
 					that.close();
 				}
 			});
-
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(this.searchBtn).append(closeBtn);
-
 	this.setModalFooter(buttonArea);
-
 	$("body").append(this.modal);
 	$("body").append(this.background);
-
 	this.searchEPSGCode(this.epsg, true, this.callback);
 };
-gb.crs.BaseCRS.prototype = Object.create(gb.modal.Base.prototype);
+gb.crs.BaseCRS.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.crs.BaseCRS.prototype.constructor = gb.crs.BaseCRS;
 
 /**
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 반환한다.
  * 
  * @method gb.crs.BaseCRS#getMaps
- * @return {ol.Map} 베이스 좌표계를 변경하고자 하는 ol.Map 객체
+ * @return {Array.<ol.Map>} 베이스 좌표계를 변경하고자 하는 ol.Map 객체
  */
 gb.crs.BaseCRS.prototype.getMaps = function() {
 	return this.maps;
@@ -130,29 +192,40 @@ gb.crs.BaseCRS.prototype.getMaps = function() {
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 설정한다.
  * 
  * @method gb.crs.BaseCRS#setMaps
- * @param {ol.Map}
- *            map - 베이스 좌표계를 변경하고자 하는 ol.Map 객체
+ * @param {Array.
+ *            <ol.Map>} maps - 베이스 좌표계를 변경하고자 하는 ol.Map 객체의 배열
  */
 gb.crs.BaseCRS.prototype.setMaps = function(maps) {
+	if (maps === undefined) {
+		console.error("maps parameter is required.");
+		return;
+	} else if (Array.isArray(maps)) {
+		for (var i = 0; i < maps.length; i++) {
+			if (!maps[i] instanceof ol.Map) {
+				console.error("maps element must be ol.Map type");
+				return;
+			}
+		}
+	}
 	this.maps = maps;
 };
 
 /**
- * 현재 좌표계를 표시할 DOM 객체를 반환한다.
+ * 현재 좌표계를 표시할 HTMLElement 객체를 반환한다.
  * 
  * @method gb.crs.BaseCRS#getMessage
- * @return 현재 좌표계를 표시할 DOM 객체
+ * @return {HTMLElement} 좌표계가 표시되는 HTMLElement
  */
 gb.crs.BaseCRS.prototype.getMessage = function() {
 	return this.message;
 };
 
 /**
- * 현재 좌표계를 표시할 DOM 객체를 설정한다.
+ * 현재 좌표계를 표시할 HTMLElement 객체를 설정한다.
  * 
  * @method gb.crs.BaseCRS#setMessage
- * @param {DOM}
- *            message - 현재 좌표계를 표시할 DOM 객체
+ * @param {HTMLElement}
+ *            message - 현재 좌표계를 표시할 HTMLElement 객체
  */
 gb.crs.BaseCRS.prototype.setMessage = function(message) {
 	this.message = message;
@@ -162,7 +235,7 @@ gb.crs.BaseCRS.prototype.setMessage = function(message) {
  * 현재 적용된 베이스 좌표계의 EPSG 코드를 반환한다.
  * 
  * @method gb.crs.BaseCRS#getEPSGCode
- * @return {String} 현재 적용된 베이스 좌표계의 EPSG 코드
+ * @return {string} 현재 적용된 베이스 좌표계의 EPSG 코드
  */
 gb.crs.BaseCRS.prototype.getEPSGCode = function() {
 	return this.epsg;
@@ -171,8 +244,8 @@ gb.crs.BaseCRS.prototype.getEPSGCode = function() {
 /**
  * 현재 적용된 베이스 좌표계의 EPSG 코드를 설정한다.
  * 
- * @method gb.crs.BaseCRS#getEPSGCode
- * @param {String}
+ * @method gb.crs.BaseCRS#setEPSGCode
+ * @param {string}
  *            code - 현재 적용된 베이스 좌표계의 EPSG 코드
  */
 gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
@@ -183,8 +256,12 @@ gb.crs.BaseCRS.prototype.setEPSGCode = function(code) {
  * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
  * 
  * @method gb.crs.BaseCRS#searchEPSGCode
- * @param {String}
+ * @param {string}
  *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ * @param {boolean}
+ *            apply - 검색된 좌표계를 적용
+ * @param {function}
+ *            callback - 좌표계 적용 후 수행할 콜백함수
  */
 gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 	console.log(code);
@@ -263,14 +340,16 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
  * 베이스 좌표계를 적용한다.
  * 
  * @method gb.crs.BaseCRS#applyProjection
- * @param {String}
+ * @param {string}
  *            code - EPSG 코드
- * @param {String}
+ * @param {string}
  *            name - 좌표계 이름
- * @param {String}
+ * @param {string}
  *            proj4def - proj4 좌표계
- * @param {Number[]}
+ * @param {number[]}
  *            bbox - 좌표계 영역
+ * @param {function}
+ *            callback - 적용 후 수행할 콜백함수
  */
 gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, callback) {
 	var that = this;
@@ -332,13 +411,13 @@ gb.crs.BaseCRS.prototype.applyProjection = function(code, name, proj4def, bbox, 
  * 베이스 좌표계를 설정한다.
  * 
  * @method gb.crs.BaseCRS#setProjection
- * @param {String}
+ * @param {string}
  *            code - EPSG 코드
- * @param {String}
+ * @param {string}
  *            name - 좌표계 이름
- * @param {String}
+ * @param {string}
  *            proj4def - proj4 좌표계
- * @param {Number[]}
+ * @param {number[]}
  *            bbox - 좌표계 영역
  */
 gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
@@ -352,7 +431,7 @@ gb.crs.BaseCRS.prototype.setProjection = function(code, name, proj4def, bbox) {
 };
 
 /**
- * 베이스 좌표계를 반환한다.
+ * 베이스 좌표계 정보를 반환한다.
  * 
  * @method gb.crs.BaseCRS#getProjection
  * @return {Object} 좌표계 정보
@@ -365,8 +444,8 @@ gb.crs.BaseCRS.prototype.getProjection = function() {
  * epsg 코드의 유효성을 설정한다.
  * 
  * @method gb.crs.BaseCRS#setValidEPSG
- * @param {Number}
- *            flag - EPSG 코드 유효성
+ * @param {number}
+ *            flag - EPSG 코드 유효성 0 - 불가, 1 - 로딩중, 2 - 가능
  */
 gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 	this.validEPSG = flag;
@@ -428,7 +507,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
  * epsg 코드의 유효성을 반환한다.
  * 
  * @method gb.crs.BaseCRS#getValidEPSG
- * @return {Boolean} EPSG 코드 유효성
+ * @return {boolean} EPSG 코드 유효성
  */
 gb.crs.BaseCRS.prototype.getValidEPSG = function() {
 	return this.validEPSG === 2 ? true : false;
@@ -441,7 +520,7 @@ gb.crs.BaseCRS.prototype.getValidEPSG = function() {
  * @override
  */
 gb.crs.BaseCRS.prototype.open = function() {
-	gb.modal.Base.prototype.open.call(this);
+	gb.modal.ModalBase.prototype.open.call(this);
 	$(this.searchBar).val(this.getEPSGCode());
 	if (this.getValidEPSG()) {
 		$(this.searchBtn).prop("disabled", false);

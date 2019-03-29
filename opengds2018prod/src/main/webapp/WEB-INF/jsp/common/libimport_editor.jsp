@@ -11,7 +11,7 @@
 <!-- 폴리필 -->
 <!-- <script src="//cdn.polyfill.io/v1/polyfill.min.js"></script> -->
 <!-- 바벨 -->
-<!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <!-- 제이쿼리 -->
 <script src="${pageContext.request.contextPath}/resources/js/jquery/jquery-2.2.2.min.js"></script>

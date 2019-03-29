@@ -7,21 +7,21 @@
  *            obj - 생성자 옵션을 담은 객체
  * @param {ol.Map}
  *            obj.map - 베이스 맵을 표시할 ol.Map 객체
- * @param {String}
+ * @param {string}
  *            obj.defaultBaseMap - 기본값으로 설정할 베이스맵 이름
  * @param {Object[]}
  *            obj.layers - 추가로 사용할 베이스 맵
- * @param {String}
+ * @param {string}
  *            obj.layers[].value - 추가 베이스 맵을 구분할 구분자
- * @param {String}
+ * @param {string}
  *            obj.layers[].name - 화면상에서 표시할 베이스맵의 이름
  * @param {ol.layer.Base}
  *            obj.layers[].layer - 추가 베이스 맵으로 사용될 레이어 객체
- * @param {String}
+ * @param {string}
  *            obj.layers[].thumb - 베이스 맵의 썸네일로 사용할 클래스명
- * @version 0.01
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
  * @author SOYIJUN
- * @date 2018. 06.04
  */
 
 var gb;
@@ -31,7 +31,10 @@ if (!gb.style)
 	gb.style = {};
 gb.style.BaseMap = function(obj) {
 	var that = this;
-
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"bmap" : {
 			"ko" : "배경지도",
@@ -54,22 +57,26 @@ gb.style.BaseMap = function(obj) {
 	obj.autoOpen = false;
 	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
-	gb.modal.Base.call(this, obj);
+	gb.modal.ModalBase.call(this, obj);
 
 	this.map = options.map ? options.map : undefined;
 	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
 	this.layers = options.layers ? options.layers : undefined;
 	this.now = undefined;
 
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.bases = {
 		worldLight : {
 			name : "World Light",
 			thumb : "gb-base-thumbnail-wlight",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
@@ -78,9 +85,9 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-wbright",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
@@ -89,9 +96,9 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-wblack",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
@@ -100,9 +107,9 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-geography",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
@@ -111,8 +118,8 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-toner",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "toner"
+				source : new ol.source.Stamen({
+					layer : "toner"
 				})
 			})
 		},
@@ -121,8 +128,8 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-water",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "watercolor"
+				source : new ol.source.Stamen({
+					layer : "watercolor"
 				})
 			})
 		},
@@ -131,8 +138,8 @@ gb.style.BaseMap = function(obj) {
 			thumb : "gb-base-thumbnail-terrian",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "terrain"
+				source : new ol.source.Stamen({
+					layer : "terrain"
 				})
 			})
 		},
@@ -266,7 +273,7 @@ gb.style.BaseMap = function(obj) {
 	// $("body").append(this.modal);
 	// $("body").append(this.background);
 };
-gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
+gb.style.BaseMap.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;
 
 /**
@@ -298,7 +305,7 @@ gb.style.BaseMap.prototype.open = function() {
  * 베이스맵을 변경한다.
  * 
  * @method gb.style.BaseMap#changeLayer
- * @param {String}
+ * @param {string}
  *            value - 변경하고자 하는 베이스맵의 구분자
  */
 gb.style.BaseMap.prototype.changeLayer = function(value) {

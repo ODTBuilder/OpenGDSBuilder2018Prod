@@ -910,7 +910,7 @@ gb.versioning.Repository = function(obj) {
 	obj.height = 450;
 	obj.title = this.translation.geogig[this.locale];
 	obj.autoOpen = false;
-	gb.modal.Base.call(this, obj);
+	gb.modal.ModalBase.call(this, obj);
 	var that = this;
 
 	this.epsg = options.epsg ? options.epsg : undefined;
@@ -1301,7 +1301,7 @@ gb.versioning.Repository = function(obj) {
 		"epsg" : typeof this.epsg === "function" ? this.epsg() : this.epsg
 	});
 };
-gb.versioning.Repository.prototype = Object.create(gb.modal.Base.prototype);
+gb.versioning.Repository.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.versioning.Repository.prototype.constructor = gb.versioning.Repository;
 
 /**
@@ -1437,7 +1437,7 @@ gb.versioning.Repository.prototype.beginTransaction = function(serverName, repoN
  *            repoName - 레파지토리 이름
  * @param {Sting}
  *            tid - 트랜잭션 아이디
- * @param {gb.modal.Base}
+ * @param {gb.modal.ModalBase}
  *            modal - 작업 완료후 닫을 Modal 객체
  */
 gb.versioning.Repository.prototype.endTransaction = function(serverName, repoName, tid, modal) {
@@ -1499,7 +1499,7 @@ gb.versioning.Repository.prototype.endTransaction = function(serverName, repoNam
  *            repoName - 레파지토리 이름
  * @param {Sting}
  *            tid - 트랜잭션 아이디
- * @param {gb.modal.Base}
+ * @param {gb.modal.ModalBase}
  *            modal - 작업 완료후 닫을 Modal 객체
  */
 gb.versioning.Repository.prototype.cancelTransaction = function(serverName, repoName, tid, modal, callback) {
@@ -2019,7 +2019,7 @@ gb.versioning.Repository.prototype.open = function() {
 		}
 	}
 
-	gb.modal.Base.prototype.open.call(this);
+	gb.modal.ModalBase.prototype.open.call(this);
 	this.refreshList();
 };
 
@@ -2121,7 +2121,7 @@ gb.versioning.Repository.prototype.checkoutBranch = function(server, repo, branc
 		}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.dnc[this.locale]);
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-		var commitModal = new gb.modal.Base({
+		var commitModal = new gb.modal.ModalBase({
 			"title" : this.translation.warning[this.locale],
 			"width" : 310,
 			"height" : 200,
@@ -2206,7 +2206,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.cmitchnges[that.locale],
 						"width" : 310,
 						"height" : 200,
@@ -2241,7 +2241,7 @@ gb.versioning.Repository.prototype.mergeBranch = function(server, repo, branch, 
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.conflicts[that.locale],
 						"width" : 310,
 						"height" : 200,
@@ -2318,7 +2318,7 @@ gb.versioning.Repository.prototype.removeRemoteRepository = function(server, rep
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var removeModal = new gb.modal.Base({
+	var removeModal = new gb.modal.ModalBase({
 		"title" : this.translation.removeremoterepo[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -2437,7 +2437,7 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.conflicts[that.locale],
 						"width" : 310,
 						"height" : 200,
@@ -2474,7 +2474,7 @@ gb.versioning.Repository.prototype.pullRepository = function(server, repo, branc
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.cmitchnges[that.locale],
 						"width" : 310,
 						"height" : 200,
@@ -2585,7 +2585,7 @@ gb.versioning.Repository.prototype.pushRepository = function(server, repo, branc
 				}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
 				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-				var commitModal = new gb.modal.Base({
+				var commitModal = new gb.modal.ModalBase({
 					"title" : that.translation.message[that.locale],
 					"width" : 310,
 					"height" : 190,
@@ -2671,7 +2671,7 @@ gb.versioning.Repository.prototype.pullRepositoryModal = function(server, repo, 
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.pull[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : this.translation.pull[this.locale],
 		"width" : 410,
 		"height" : 234,
@@ -2790,7 +2790,7 @@ gb.versioning.Repository.prototype.pushRepositoryModal = function(server, repo) 
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.push[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : this.translation.push[this.locale],
 		"width" : 410,
 		"height" : 234,
@@ -3108,7 +3108,7 @@ gb.versioning.Repository.prototype.initRepositoryModal = function() {
 	});
 
 	var repoBody = $("<div>").append(rBody).append(pullBtnRow).append(remoteInputArea);
-	var createRepoModal = new gb.modal.Base({
+	var createRepoModal = new gb.modal.ModalBase({
 		"title" : this.translation.createrepo[this.locale],
 		"width" : 540,
 		"height" : 425,
@@ -3358,7 +3358,7 @@ gb.versioning.Repository.prototype.removeRepositoryModal = function(repo) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var removeModal = new gb.modal.Base({
+	var removeModal = new gb.modal.ModalBase({
 		"title" : this.translation.removerepo[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -3453,7 +3453,7 @@ gb.versioning.Repository.prototype.messageModal = function(title, msg) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 390,
 		"autoOpen" : true,
@@ -3502,7 +3502,7 @@ gb.versioning.Repository.prototype.quitModal = function(server, repo, branch, ti
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.commit[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(saveBtn).append(discardBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : this.translation.endtran[this.locale],
 		"width" : 370,
 		"height" : 176,
@@ -3642,7 +3642,7 @@ gb.versioning.Repository.prototype.mergeModal = function(server, repo, branch) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.merge[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(mergeBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.merge[that.locale],
 		"width" : 370,
 		"height" : 268,
@@ -3783,7 +3783,7 @@ gb.versioning.Repository.prototype.newBranchModal = function(server, repo) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.create[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(createBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : this.translation.newbranch[this.locale],
 		"width" : 370,
 		"height" : 268,
@@ -3960,7 +3960,7 @@ gb.versioning.Repository.prototype.addRemoteRepoModal = function(server, repo) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.add[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(addBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : this.translation.addremorepo[this.locale],
 		"width" : 570,
 		"height" : 268,
@@ -4089,7 +4089,7 @@ gb.versioning.Repository.prototype.addRemoteRepository = function(server, repo, 
  *            tab - 대상 브랜치
  * @param {Object[]}
  *            features - 오버라이드할 객체 정보
- * @param {gb.modal.Base}
+ * @param {gb.modal.ModalBase}
  *            cmodal - 완료후 닫을 모달 객체
  */
 gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo, trepo, cub, tab, ours, theirs, features, cmodal) {
@@ -4208,7 +4208,7 @@ gb.versioning.Repository.prototype.resolveConflictModal = function(server, repo,
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.merge[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : this.translation.resolveconfl[this.locale],
 		"width" : 770,
 		"height" : 800,
@@ -4518,7 +4518,7 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
 				}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.commit[that.locale]);
 				var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-				var commitModal = new gb.modal.Base({
+				var commitModal = new gb.modal.ModalBase({
 					"title" : that.translation.cmitchnges[that.locale],
 					"width" : 310,
 					"height" : 200,
@@ -4556,7 +4556,7 @@ gb.versioning.Repository.prototype.resolveConflict = function(server, repo, feat
  *            tab - 대상 브랜치
  * @param {Object[]}
  *            features - 오버라이드할 객체 정보
- * @param {gb.modal.Base}
+ * @param {gb.modal.ModalBase}
  *            cmodal - 완료후 닫을 모달 객체
  */
 gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos, trepos, cub, tab, path, fid1, fid2, val, idx) {
@@ -4681,7 +4681,7 @@ gb.versioning.Repository.prototype.conflictDetailModal = function(server, crepos
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.compareconfl[that.locale],
 		"width" : 770,
 		"height" : 840,
@@ -5206,7 +5206,7 @@ gb.versioning.Repository.prototype.publishModal = function(server, repo, branch)
 					$(wsSelect).append(opt);
 				}
 				$(wsSelect).trigger("change");
-				var publishModal = new gb.modal.Base({
+				var publishModal = new gb.modal.ModalBase({
 					"title" : that.translation.publish[that.locale],
 					"width" : 540,
 					"height" : 282,
@@ -5378,7 +5378,7 @@ gb.versioning.Repository.prototype.removeLayerModal = function(layer) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.remove[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var removeModal = new gb.modal.Base({
+	var removeModal = new gb.modal.ModalBase({
 		"title" : this.translation.removelayer[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -5599,7 +5599,7 @@ gb.versioning.Repository.prototype.infoRepoModal = function(serverName, repoName
 		that.errorModal(xhr.responseJSON.status);
 	});
 
-	var removeModal = new gb.modal.Base({
+	var removeModal = new gb.modal.ModalBase({
 		"title" : this.translation.repoinfo[this.locale],
 		"width" : 526,
 		"height" : 366,
@@ -5947,7 +5947,7 @@ gb.versioning.Repository.prototype.layerHistoryModal = function(server, repo, pa
 	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : this.translation.history[this.locale],
 		"width" : 1000,
 		"autoOpen" : true,
@@ -5989,7 +5989,7 @@ gb.versioning.Repository.prototype.openRevertModal = function(server, repo, path
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : that.translation.revert[that.locale],
 		"width" : 494,
 		"height" : 200,
@@ -6058,7 +6058,7 @@ gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc,
 					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -6099,7 +6099,7 @@ gb.versioning.Repository.prototype.revert = function(server, repo, path, oc, nc,
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -6542,7 +6542,7 @@ gb.versioning.Repository.prototype.openDetailChanges = function(server, repo, pa
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.comparebeaf[that.locale],
 		"width" : 770,
 		"height" : 840,

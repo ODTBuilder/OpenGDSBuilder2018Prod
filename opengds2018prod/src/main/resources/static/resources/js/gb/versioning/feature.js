@@ -16,16 +16,10 @@
  */
 gb.versioning.Feature = function(obj) {
 	var that = this;
-	var options = obj ? obj : {};
-	this.epsg = options.epsg ? options.epsg : undefined;
-	this.editingTool = options.editingTool ? options.editingTool : undefined;
-	var url = options.url ? options.url : {};
-	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-	this.diffURL = url.diff ? url.diff : undefined;
-	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
-	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
-	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
-	this.locale = options.locale ? options.locale : "en";
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"close" : {
 			"ko" : "닫기",
@@ -164,6 +158,21 @@ gb.versioning.Feature = function(obj) {
 			"en" : "Detail"
 		}
 	};
+	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
+	this.editingTool = options.editingTool ? options.editingTool : undefined;
+	var url = options.url ? options.url : {};
+	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
+	this.diffURL = url.diff ? url.diff : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
+	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
+	this.locale = options.locale ? options.locale : "en";
+
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -171,6 +180,10 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.cfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -178,17 +191,26 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
-
+	/**
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.omap = new ol.Map({
 		"target" : $(this.ofeature)[0],
 		"layers" : []
 	});
-
+	/**
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		"layers" : []
 	});
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.comfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -196,6 +218,10 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.curfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -203,9 +229,16 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
-	this.panel = new gb.panel.Base({
+	/**
+	 * @private
+	 * @type {gb.panel.PanelBase}
+	 */
+	this.panel = new gb.panel.PanelBase({
 		"width" : 500,
 		"height" : 550,
 		"positionX" : 4,
@@ -509,7 +542,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.contrastchg[that.locale],
 		"width" : 770,
 		"height" : 840,
@@ -1021,7 +1054,7 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : that.translation.revert[that.locale],
 		"width" : 494,
 		"height" : 200,
@@ -1092,7 +1125,7 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1123,7 +1156,7 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-					var commitModal = new gb.modal.Base({
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1262,7 +1295,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.override[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.compaconfl[that.locale],
 		"width" : 770,
 		"autoOpen" : true,
@@ -1835,7 +1868,7 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 310,
 		"height" : 200,

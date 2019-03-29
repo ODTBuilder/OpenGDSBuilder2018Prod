@@ -177,8 +177,7 @@ if (!gb.validation)
 	 */
 	gb.validation.Validation = function(obj) {
 		obj.keep = true;
-		gb.modal.Base.call(this, obj);
-		
+		gb.modal.ModalBase.call(this, obj);
 		var that = this;
 
 		/**
@@ -335,7 +334,8 @@ if (!gb.validation)
 		$('<style>.select-hide{' + 'display: none;' + '}</style>').appendTo('head');
 		$('<style>.select-items div:hover, .same-as-selected{background-color: rgba(0, 0, 0, 0.1);}</style>').appendTo('head');
 	}
-	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
+	// gb.footer.Base 상속
+	gb.validation.Validation.prototype = Object.create(gb.modal.ModalBase.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 
 	/**
@@ -350,7 +350,7 @@ if (!gb.validation)
 				return			}
 		}
 		this.geoserverTree.refresh();
-		gb.modal.Base.prototype.open.call(this);
+		gb.modal.ModalBase.prototype.open.call(this);
 	}
 	
 	/**

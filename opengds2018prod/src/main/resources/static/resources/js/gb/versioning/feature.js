@@ -16,16 +16,10 @@
  */
 gb.versioning.Feature = function(obj) {
 	var that = this;
-	var options = obj ? obj : {};
-	this.epsg = options.epsg ? options.epsg : undefined;
-	this.editingTool = options.editingTool ? options.editingTool : undefined;
-	var url = options.url ? options.url : {};
-	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-	this.diffURL = url.diff ? url.diff : undefined;
-	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
-	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
-	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
-	this.locale = options.locale ? options.locale : "en";
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"close" : {
 			"ko" : "닫기",
@@ -164,6 +158,21 @@ gb.versioning.Feature = function(obj) {
 			"en" : "Detail"
 		}
 	};
+	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
+	this.editingTool = options.editingTool ? options.editingTool : undefined;
+	var url = options.url ? options.url : {};
+	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
+	this.diffURL = url.diff ? url.diff : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
+	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
+	this.locale = options.locale ? options.locale : "en";
+
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.ofeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -171,6 +180,10 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.cfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -178,17 +191,26 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
-
+	/**
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.omap = new ol.Map({
 		"target" : $(this.ofeature)[0],
 		"layers" : []
 	});
-
+	/**
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		"layers" : []
 	});
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.comfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -196,6 +218,10 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.curfeature = $("<div>").css({
 		"width" : "100%",
 		"height" : "200px",
@@ -203,8 +229,15 @@ gb.versioning.Feature = function(obj) {
 		"border" : "1px solid #ccc",
 		"border-radius" : "4px"
 	});
-
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
+	/**
+	 * @private
+	 * @type {gb.panel.PanelBase}
+	 */
 	this.panel = new gb.panel.PanelBase({
 		"width" : 500,
 		"height" : 550,

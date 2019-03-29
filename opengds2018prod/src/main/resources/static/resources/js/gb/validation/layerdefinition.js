@@ -1,11 +1,19 @@
 /**
  * 사용자 설정 레이어 정의 객체
  * 
- * @author yijun.so
- * @date 2017. 07.26
- * @version 0.01
  * @class gb.validation.LayerDefinition
- * @constructor
+ * @memberof gb.validation
+ * @param {Object}
+ *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
+ * @param {HTMLElement}
+ *            obj.append - 레이어 정의 영역을 포함할 부모 HTMLElement
+ * @param {HTMLElement}
+ *            obj.fileClass - 레이어 정의 파일을 업로드할 input file 객체
+ * @param {HTMLElement}
+ *            obj.msgClass - 알림 영역을 포함을 부모 HTMLElement
+ * @author SOYIJUN
  * 
  */
 var gb;
@@ -15,199 +23,232 @@ if (!gb.validation)
 	gb.validation = {};
 gb.validation.LayerDefinition = function(obj) {
 	var that = this;
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
-			"layerCode" : {
-				"en" : "Code",
-				"ko" : "코드"
-			},
-			"layerType" : {
-				"en" : "Type",
-				"ko" : "유형"
-			},
-			"deleteLayer" : {
-				"en" : "Delete layer",
-				"ko" : "레이어 삭제"
-			},
-			"addLayer" : {
-				"en" : "Add layer",
-				"ko" : "레이어 추가"
-			},
-			"exLayerCodeField" : {
-				"en" : "Layer code ex) F0010000",
-				"ko" : "레이어 코드 예시) F0010000"
-			},
-			"notice" : {
-				"en" : "Notice",
-				"ko" : "알림"
-			},
-			"notSet" : {
-				"en" : "Not set",
-				"ko" : "미설정"
-			},
-			"deleteCategory" : {
-				"en" : "Delete category",
-				"ko" : "분류 삭제"
-			},
-			"exCategoryField" : {
-				"en" : "Category Name ex) Contour, F001 etc",
-				"ko" : "분류명 예시) 등고선, F001 등"
-			},
-			"attrName" : {
-				"en" : "Attribute name",
-				"ko" : "속성명"
-			},
-			"attrType" : {
-				"en" : "Attribute type",
-				"ko" : "속성 유형"
-			},
-			"fixedAttr" : {
-				"en" : "Fixed Attribute",
-				"ko" : "고정 속성"
-			},
-			"addFixedAttr" : {
-				"en" : "Add fixed attribute",
-				"ko" : "고정 속성 추가"
-			},
-			"deleteFixedAttr" : {
-				"en" : "Delete fixed attribute",
-				"ko" : "고정 속성 삭제"
-			},
-			"exFixedAttrNameField" : {
-				"en" : "",
-				"ko" : "고정 값을 가질 속성명 예시) 구분"
-			},
-			"length" : {
-				"en" : "Length",
-				"ko" : "길이"
-			},
-			"nullAllow" : {
-				"en" : "Null value allowed?",
-				"ko" : "널 허용"
-			},
-			"allowValue" : {
-				"en" : "Allowed value",
-				"ko" : "허용값"
-			},
-			"exAllowValueField" : {
-				"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
-				"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
-			},
-			"success" : {
-				"en" : "Success",
-				"ko" : "성공"
-			},
-			"danger" : {
-				"en" : "Danger",
-				"ko" : "위험"
-			},
-			"noticeOptionStructError" : {
-				"en" : "The top-level structure of options is an array.",
-				"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
-			},
-			"noticeLayerDefUpdate" : {
-				"en" : "[Layer definition] has been changed.",
-				"ko" : "[레이어 정의]가 변경 되었습니다"
-			},
-			"noticeNotExistLayer" : {
-				"en" : " category has no layers.",
-				"ko" : "번째 분류에 포함된 레이어가 없습니다"
-			},
-			"noticeInvalidKey" : {
-				"en" : "is not a valid key name",
-				"ko" : "은/는 유효한 키 이름이 아닙니다"
-			},
-			"noticeCategoryNameEnter" : {
-				"en" : "th category. You must enter a category name.",
-				"ko" : "번째 분류의 분류명을 입력해야 합니다"
-			},
-			"keyName" : {
-				"en" : "Key name:",
-				"ko" : "키 이름:"
-			},
-			"askDelCat" : {
-				"en" : "Are you sure you want to delete the selected layer category?",
-				"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
-			},
-			"askDelLayer" : {
-				"en" : "Are you sure you want to delete the selected layer?",
-				"ko" : "선택한 레이어를 삭제하시겠습니까?"
-			},
-			"askDelFixed" : {
-				"en" : "Are you sure you want to delete this fixed attribute?",
-				"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
-			},
-			"delCatModalTitle" : {
-				"en" : "Delete Category",
-				"ko" : "분류 삭제"
-			},
-			"delLayerModalTitle" : {
-				"en" : "Delete Layer",
-				"ko" : "레이어 삭제"
-			},
-			"delAttrModalTitle" : {
-				"en" : "Delete Fixed Attribute",
-				"ko" : "고정 속성 삭제"
-			},
-			"nodataoutput" : {
-				"en" : "No settings to export.",
-				"ko" : "내보낼 설정이 없습니다."
-			},
-			"readfail" : {
-				"en" : "Unable to read file.",
-				"ko" : "파일을 읽을 수 없습니다."
-			},
-			"emptyobj" : {
-				"en" : "There are no defined layers.",
-				"ko" : "정의된 레이어가 없습니다."
-			}
+		"layerCode" : {
+			"en" : "Code",
+			"ko" : "코드"
+		},
+		"layerType" : {
+			"en" : "Type",
+			"ko" : "유형"
+		},
+		"deleteLayer" : {
+			"en" : "Delete layer",
+			"ko" : "레이어 삭제"
+		},
+		"addLayer" : {
+			"en" : "Add layer",
+			"ko" : "레이어 추가"
+		},
+		"exLayerCodeField" : {
+			"en" : "Layer code ex) F0010000",
+			"ko" : "레이어 코드 예시) F0010000"
+		},
+		"notice" : {
+			"en" : "Notice",
+			"ko" : "알림"
+		},
+		"notSet" : {
+			"en" : "Not set",
+			"ko" : "미설정"
+		},
+		"deleteCategory" : {
+			"en" : "Delete category",
+			"ko" : "분류 삭제"
+		},
+		"exCategoryField" : {
+			"en" : "Category Name ex) Contour, F001 etc",
+			"ko" : "분류명 예시) 등고선, F001 등"
+		},
+		"attrName" : {
+			"en" : "Attribute name",
+			"ko" : "속성명"
+		},
+		"attrType" : {
+			"en" : "Attribute type",
+			"ko" : "속성 유형"
+		},
+		"fixedAttr" : {
+			"en" : "Fixed Attribute",
+			"ko" : "고정 속성"
+		},
+		"addFixedAttr" : {
+			"en" : "Add fixed attribute",
+			"ko" : "고정 속성 추가"
+		},
+		"deleteFixedAttr" : {
+			"en" : "Delete fixed attribute",
+			"ko" : "고정 속성 삭제"
+		},
+		"exFixedAttrNameField" : {
+			"en" : "",
+			"ko" : "고정 값을 가질 속성명 예시) 구분"
+		},
+		"length" : {
+			"en" : "Length",
+			"ko" : "길이"
+		},
+		"nullAllow" : {
+			"en" : "Null value allowed?",
+			"ko" : "널 허용"
+		},
+		"allowValue" : {
+			"en" : "Allowed value",
+			"ko" : "허용값"
+		},
+		"exAllowValueField" : {
+			"en" : "Separate different values with a comma. ex)value1, value2, value3, ...",
+			"ko" : "해당 속성이 가질 수 있는 값들을 콤마(,)로 구분하여 입력 예시)주곡선, 계곡선, 간곡선, ..."
+		},
+		"success" : {
+			"en" : "Success",
+			"ko" : "성공"
+		},
+		"danger" : {
+			"en" : "Danger",
+			"ko" : "위험"
+		},
+		"noticeOptionStructError" : {
+			"en" : "The top-level structure of options is an array.",
+			"ko" : "옵션의 최상위 구조는 배열 형태여야 합니다"
+		},
+		"noticeLayerDefUpdate" : {
+			"en" : "[Layer definition] has been changed.",
+			"ko" : "[레이어 정의]가 변경 되었습니다"
+		},
+		"noticeNotExistLayer" : {
+			"en" : " category has no layers.",
+			"ko" : "번째 분류에 포함된 레이어가 없습니다"
+		},
+		"noticeInvalidKey" : {
+			"en" : "is not a valid key name",
+			"ko" : "은/는 유효한 키 이름이 아닙니다"
+		},
+		"noticeCategoryNameEnter" : {
+			"en" : "th category has no name.",
+			"ko" : "번째 분류의 분류명을 입력해야 합니다"
+		},
+		"keyName" : {
+			"en" : "Key name:",
+			"ko" : "키 이름:"
+		},
+		"askDelCat" : {
+			"en" : "Are you sure you want to delete the selected layer category?",
+			"ko" : "선택한 레이어 분류를 삭제하시겠습니까?"
+		},
+		"askDelLayer" : {
+			"en" : "Are you sure you want to delete the selected layer?",
+			"ko" : "선택한 레이어를 삭제하시겠습니까?"
+		},
+		"askDelFixed" : {
+			"en" : "Are you sure you want to delete this fixed attribute?",
+			"ko" : "선택한 고정 속성을 삭제하시겠습니까?"
+		},
+		"delCatModalTitle" : {
+			"en" : "Delete Category",
+			"ko" : "분류 삭제"
+		},
+		"delLayerModalTitle" : {
+			"en" : "Delete Layer",
+			"ko" : "레이어 삭제"
+		},
+		"delAttrModalTitle" : {
+			"en" : "Delete Fixed Attribute",
+			"ko" : "고정 속성 삭제"
+		},
+		"nodataoutput" : {
+			"en" : "No settings to export.",
+			"ko" : "내보낼 설정이 없습니다."
+		},
+		"readfail" : {
+			"en" : "Unable to read file.",
+			"ko" : "파일을 읽을 수 없습니다."
+		},
+		"emptyobj" : {
+			"en" : "There are no defined layers.",
+			"ko" : "정의된 레이어가 없습니다."
 		}
+	}
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.dataType = [ "DATE", "DATETIME", "INTEGER", "NUMBER", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
 	var options = obj ? obj : {};
 	this.structure = [];
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.locale = options.locale ? options.locale : "en";
-	
-	// this.panelBody = $("<div>").addClass("panel-body");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panelBody = $("<div>").addClass("gb-layerdefinition-body");
-	// this.panel =
-	// $("<div>").addClass("panel").addClass("panel-default").append(this.panelBody);
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.panel = $("<div>").append(this.panelBody);
-	if (typeof options.append === "string") {
-		$(options.append).append(this.panel);
-	}
-	this.msg = typeof options.msgClass === "string" ? options.msgClass : undefined;
+	$(options.append).append(this.panel);
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.msg = options.msgClass;
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.fileParent = undefined;
+	/**
+	 * @private
+	 * @type {string}
+	 */
 	this.fileClass = undefined;
-	this.file = undefined;
-	if (typeof options.fileClass === "string") {
-		this.file = $("." + options.fileClass)[0];
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.file = $(options.fileClass)[0];
+	if (this.file !== undefined) {
 		this.fileClass = $(this.file).attr("class");
-		var jclass = "." + this.fileClass;
-		this.fileParent = $(jclass).parent();
-		$(this.fileParent).on("change", jclass, function(event) {
-			var fileList = that.file.files;
-			var reader = new FileReader();
-			if (fileList.length === 0) {
+	}
+	var jclass = "." + this.fileClass;
+	this.fileParent = $(this.file).parent();
+	$(this.fileParent).on("change", jclass, function(event) {
+		var fileList = that.file.files;
+		var reader = new FileReader();
+		if (fileList.length === 0) {
+			return;
+		}
+		reader.readAsText(fileList[0]);
+		$(reader).on("load", function(event) {
+			try {
+				var obj = JSON.parse(reader.result);
+			} catch (e) {
+				that.setMessage("danger", " " + that.translation.readfail[that.locale]);
 				return;
 			}
-			reader.readAsText(fileList[0]);
-			$(reader).on("load", function(event) {
-				try {
-					var obj = JSON.parse(reader.result);
-				} catch (e) {
-					that.setMessage("danger", " " + that.translation.readfail[that.locale]);
-					return;
-				}
-				var flag = that.setStructure(obj);
-				that.updateStructure();
-			});
-			$(that.file).remove();
-			that.file = $("<input>").attr({
-				"type" : "file"
-			}).css("display", "none").addClass(that.fileClass)[0];
-			$(that.fileParent).append(that.file);
+			var flag = that.setStructure(obj);
+			that.updateStructure();
 		});
-	}
+		$(that.file).remove();
+		that.file = $("<input>").attr({
+			"type" : "file"
+		}).css("display", "none").addClass(that.fileClass)[0];
+		$(that.fileParent).append(that.file);
+	});
 	$(this.panelBody).on("click", ".gb-layerdefinition-delete-category", function() {
 		var thisBtn = this;
 		var idx = $(thisBtn).parents().eq(4).index();
@@ -304,17 +345,31 @@ gb.validation.LayerDefinition = function(obj) {
 		console.log(that.getStructure());
 	});
 
-//	$(this.panelBody).tooltip({
-//		"html" : true,
-//		"placement" : "right",
-//		"selector" : ".gb-layerdefinition-input-categoryname"
-//	});
+	// $(this.panelBody).tooltip({
+	// "html" : true,
+	// "placement" : "right",
+	// "selector" : ".gb-layerdefinition-input-categoryname"
+	// });
 
 };
 gb.validation.LayerDefinition.prototype = Object.create(gb.validation.LayerDefinition.prototype);
 gb.validation.LayerDefinition.prototype.constructor = gb.validation.LayerDefinition;
 
+/**
+ * 지정된 영역에 메세지를 표시한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#setMessage
+ * @param {string}
+ *            type - 메세지의 종류(success, info, warning, danger)
+ * @param {string}
+ *            message - 메세지 본문
+ */
 gb.validation.LayerDefinition.prototype.setMessage = function(type, message) {
+	if (typeof type !== "string") {
+		console.error("type must be string");
+		return;
+	}
 	var alert = "alert-";
 	switch (type) {
 	case "success":
@@ -339,14 +394,24 @@ gb.validation.LayerDefinition.prototype.setMessage = function(type, message) {
 	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
 			.append(message);
-	var jclass = "." + this.msg;
-	$(jclass).append(div);
+	$(this.msg).append(div);
 };
 
+/**
+ * 레이어 정의 파일 업로드에 사용할 파일 객체를 반환한다.
+ * 
+ * @method gb.validation.LayerDefinition#getInputFile
+ * @return {HTMLElement} input 파일 객체
+ */
 gb.validation.LayerDefinition.prototype.getInputFile = function() {
 	return this.file;
 };
 
+/**
+ * 현재 레이어 정의 구조로 화면을 업데이트한다.
+ * 
+ * @method gb.validation.LayerDefinition#updateStructure
+ */
 gb.validation.LayerDefinition.prototype.updateStructure = function() {
 	console.log(this.getStructure());
 	$(this.panelBody).empty();
@@ -507,10 +572,23 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 	}
 };
 
+/**
+ * 레이어 정의 구조를 초기화 한다.
+ * 
+ * @method gb.validation.LayerDefinition#clearStructure
+ */
 gb.validation.LayerDefinition.prototype.clearStructure = function() {
 	this.structure = [];
 };
 
+/**
+ * 레이어 정의 구조를 설정한다.
+ * 
+ * @method gb.validation.LayerDefinition#setStructure
+ * @param {Object}
+ *            strc - 레이어 정의 구조
+ * @return {boolean} 설정 성공 여부
+ */
 gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 	var isOK = true;
 	var elemName = [ "name", "layers" ];
@@ -590,14 +668,23 @@ gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 	return isOK;
 };
 
+/**
+ * 레이어 정의 구조를 반환한다.
+ * 
+ * @method gb.validation.LayerDefinition#getStructure
+ * @return {Object} 레이어 정의 구조
+ */
 gb.validation.LayerDefinition.prototype.getStructure = function() {
 	return this.structure;
 };
 
-gb.validation.LayerDefinition.prototype.setJSONFile = function() {
-
-};
-
+/**
+ * 해당 레이어에 대한 옵션이 비어있는지 확인한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#isEmpty
+ * @return {boolean} 해당 레이어에 대한 옵션이 비어있는지 여부
+ */
 gb.validation.LayerDefinition.prototype.isEmpty = function() {
 	var strc = this.getStructure();
 	var isEmpty = true;
@@ -608,6 +695,11 @@ gb.validation.LayerDefinition.prototype.isEmpty = function() {
 	return isEmpty;
 };
 
+/**
+ * 레이어 정의 구조를 파일로 다운로드 한다.
+ * 
+ * @method gb.validation.LayerDefinition#getJSONFile
+ */
 gb.validation.LayerDefinition.prototype.getJSONFile = function() {
 	var isEmpty = this.isEmpty();
 	if (isEmpty) {
@@ -650,6 +742,14 @@ gb.validation.LayerDefinition.prototype.getJSONFile = function() {
 	}
 };
 
+/**
+ * 입력한 레이어의 고정 속성값들을 저장한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#inputAttributeValues
+ * @param {HTMLElement}
+ *            inp - 레이어 고정 속성값 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.inputAttributeValues = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
@@ -687,6 +787,14 @@ gb.validation.LayerDefinition.prototype.inputAttributeValues = function(inp) {
 	}
 };
 
+/**
+ * 체크 유무에 따라 고정 속성값이 널을 가질수 있는지 저장한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#checkAttributeNull
+ * @param {HMTLElement}
+ *            chk - 널 허용 체크박스 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.checkAttributeNull = function(chk) {
 	var catIdx = $(chk).parents().eq(12).index();
 	var layerIdx = $(chk).parents().eq(6).index();
@@ -713,6 +821,14 @@ gb.validation.LayerDefinition.prototype.checkAttributeNull = function(chk) {
 	}
 };
 
+/**
+ * 레이어의 고정 속성값의 길이를 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#inputAttributeLength
+ * @param {HTMLElement}
+ *            inp - 고정 속성값의 길이 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.inputAttributeLength = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
@@ -739,6 +855,14 @@ gb.validation.LayerDefinition.prototype.inputAttributeLength = function(inp) {
 	}
 };
 
+/**
+ * 레이어의 고정 속성값의 데이터 타입을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#selectAttributeType
+ * @param {HTMLElement}
+ *            sel - 고정 속성값의 데이터 타입 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.selectAttributeType = function(sel) {
 	var catIdx = $(sel).parents().eq(12).index();
 	var layerIdx = $(sel).parents().eq(6).index();
@@ -765,6 +889,14 @@ gb.validation.LayerDefinition.prototype.selectAttributeType = function(sel) {
 	}
 };
 
+/**
+ * 레이어의 고정 속성값의 속성명을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#inputAttributeName
+ * @param {HTMLElement}
+ *            inp - 속성명 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.inputAttributeName = function(inp) {
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
@@ -791,6 +923,14 @@ gb.validation.LayerDefinition.prototype.inputAttributeName = function(inp) {
 	}
 };
 
+/**
+ * 레이어의 고정 속성값 설정을 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteAttribute
+ * @param {HTMLElement}
+ *            btn - 고정 속성 삭제 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.deleteAttribute = function(btn) {
 	var catIdx = $(btn).parents().eq(12).index();
 	var layerIdx = $(btn).parents().eq(6).index();
@@ -811,6 +951,14 @@ gb.validation.LayerDefinition.prototype.deleteAttribute = function(btn) {
 	}
 };
 
+/**
+ * 레이어를 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteLayer
+ * @param {HTMLElement}
+ *            btn - 레이어 삭제 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.deleteLayer = function(btn) {
 	var catIdx = $(btn).parents().eq(8).index();
 	console.log(catIdx);
@@ -827,6 +975,14 @@ gb.validation.LayerDefinition.prototype.deleteLayer = function(btn) {
 	}
 };
 
+/**
+ * 레이어의 지오메트리 타입을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#selectLayerGeometry
+ * @param {HTMLElement}
+ *            sel - 레이어 지오메트리 선택 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.selectLayerGeometry = function(sel) {
 	var catIdx = $(sel).parents().eq(8).index();
 	console.log(catIdx);
@@ -843,6 +999,14 @@ gb.validation.LayerDefinition.prototype.selectLayerGeometry = function(sel) {
 	}
 };
 
+/**
+ * 레이어의 이름을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#inputLayerCode
+ * @param {HTMLElement}
+ *            inp - 레이어 이름 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.inputLayerCode = function(inp) {
 	var catIdx = $(inp).parents().eq(8).index();
 	console.log(catIdx);
@@ -859,6 +1023,14 @@ gb.validation.LayerDefinition.prototype.inputLayerCode = function(inp) {
 	}
 };
 
+/**
+ * 레이어 분류를 삭제한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteCategory
+ * @param {HTMLElement}
+ *            btn - 레이어 분류 삭제 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.deleteCategory = function(btn) {
 	var idx = $(btn).parents().eq(4).index();
 	var strc = this.getStructure();
@@ -869,6 +1041,14 @@ gb.validation.LayerDefinition.prototype.deleteCategory = function(btn) {
 	$(btn).parents().eq(4).remove();
 };
 
+/**
+ * 레이어 분류 이름을 설정한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#inputCategoryName
+ * @param {HTMLElement}
+ *            inp - 레이어 분류 이름 입력 폼 객체
+ */
 gb.validation.LayerDefinition.prototype.inputCategoryName = function(inp) {
 	var idx = $(inp).parents().eq(3).index();
 	var strc = this.getStructure();
@@ -882,6 +1062,14 @@ gb.validation.LayerDefinition.prototype.inputCategoryName = function(inp) {
 	}
 };
 
+/**
+ * 레이어 분류내 레이어 정의 영역을 보이거나 감춘다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#toggleLayerArea
+ * @param {HTMLElement}
+ *            btn - 레이어 정의 영역 보임/숨김 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.toggleLayerArea = function(btn) {
 	var toggleArea = $(btn).parent().parent().next();
 	var icon = $(btn).find("i");
@@ -902,6 +1090,12 @@ gb.validation.LayerDefinition.prototype.toggleLayerArea = function(btn) {
 	}
 };
 
+/**
+ * 새로운 레이어 분류를 추가한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#addCategory
+ */
 gb.validation.LayerDefinition.prototype.addCategory = function() {
 	var toggleIcon = $("<i>").addClass("fas").addClass("fa-caret-up").addClass("fa-lg");
 	var toggleBtn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-layerdefinition-toggle-category").append(toggleIcon);
@@ -942,6 +1136,14 @@ gb.validation.LayerDefinition.prototype.addCategory = function() {
 	strc.push(obj);
 };
 
+/**
+ * 새로운 레이어를 추가한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#addLayer
+ * @param {HTMLElement}
+ *            btn - 새로운 레이어 추가 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.addLayer = function(btn) {
 	var col1 = $("<div>").addClass("col-md-1").append(this.translation.layerCode[this.locale]);
 	var codeInput = $("<input>").attr({
@@ -1002,6 +1204,14 @@ gb.validation.LayerDefinition.prototype.addLayer = function(btn) {
 	}
 };
 
+/**
+ * 새로운 고정 속성을 추가한다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#addAttribute
+ * @param {HTMLElement}
+ *            btn - 고정 속성 추가 버튼 객체
+ */
 gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 	var r1col1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale]);
 
@@ -1083,8 +1293,16 @@ gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 		}
 	}
 };
-/*
- * 카테고리 삭제전 확인창 출력
+
+/**
+ * 레이어 분류를 삭제하기전에 확인창을 보여준다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteCategoryModal
+ * @param {string}
+ *            catname - 삭제할 레이어 분류 이름
+ * @param {function}
+ *            callback - 레이어 분류 삭제 버튼 클릭 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, callback) {
 	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).css({
@@ -1125,8 +1343,16 @@ gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, 
 	});
 	deleteModal.open();
 };
-/*
- * 레이어 삭제전 확인창 출력
+
+/**
+ * 레이어를 삭제하기 전에 확인창을 보여준다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteLayerModal
+ * @param {string}
+ *            layer - 삭제할 레이어 이름
+ * @param {function}
+ *            callback - 삭제 버튼을 누른 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callback) {
 	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).css({
@@ -1167,8 +1393,14 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
 	});
 	deleteModal.open();
 };
-/*
- * 고정속성 제거 모달
+
+/**
+ * 레이어의 고정 속성을 삭제하기 전에 확인창을 보여준다.
+ * 
+ * @private
+ * @method gb.validation.LayerDefinition#deleteFixedAttrModal
+ * @param {function}
+ *            callback - 삭제 버튼을 클릭 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback) {
 	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).css({

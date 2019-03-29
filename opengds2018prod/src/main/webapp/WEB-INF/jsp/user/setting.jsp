@@ -69,6 +69,167 @@ input.radio:checked+label::before {
 </style>
 </head>
 <body>
+	<div class="container">
+		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
+
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<section class="SettingSection Step1">
+					<div class="row text-right" style="margin-top: 10px; margin-bottom: 10px;">
+						<div class="col-md-12">
+							<button class="btn btn-default MoveToStep2">
+								<spring:message code="lang.next" />
+							</button>
+						</div>
+					</div>
+					<h3>
+						1.
+						<spring:message code="lang.validationType" />
+					</h3>
+					<div class="row QA-Type-Sect" style="margin-bottom: 20px;" title="some tips">
+						<div class="col-md-4">
+							<input type="radio" class="radio" name="qacat2" id="qacat21" value="numetrical" checked /> <label for="qacat21">
+								<spring:message code="lang.digitalMap" />
+							</label>
+						</div>
+						<div class="col-md-4">
+							<input type="radio" class="radio" name="qacat2" id="qacat22" value="underground" /> <label for="qacat22"><spring:message
+									code="lang.underFacility" /></label>
+						</div>
+						<div class="col-md-4">
+							<input type="radio" class="radio" name="qacat2" id="qacat23" value="forest" /> <label for="qacat23"><spring:message
+									code="lang.forestMap" /> </label>
+						</div>
+					</div>
+					<div class="row VersionArea QA-detail-sect" title="some tips">
+						<div class="col-md-6">
+							<input type="radio" class="radio" name="qacat1" id="qacat11" value="qa1" checked /> <label for="qacat11">
+								<spring:message code="lang.exactPosition" />
+							</label>
+						</div>
+						<div class="col-md-6">
+							<input type="radio" class="radio" name="qacat1" id="qacat12" value="qa2" /> <label for="qacat12"><spring:message
+									code="lang.structuring" /> </label>
+						</div>
+					</div>
+				</section>
+				<section class="SettingSection Step2" style="display: none;">
+					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+						<div class="col-md-6 text-left">
+							<button class="btn btn-default MoveToStep1">
+								<spring:message code="lang.prev" />
+							</button>
+						</div>
+						<div class="col-md-6 text-right">
+							<button class="btn btn-default MoveToStep3">
+								<spring:message code="lang.next" />
+							</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<h3>
+								2.
+								<spring:message code="lang.layerDefinition" />
+							</h3>
+						</div>
+						<div class="col-md-2">
+							<!-- <button id="btnSetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">설정
+								파일 업로드</button> -->
+							<label class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;"><spring:message
+									code="lang.importConfig" /><input type="file" class="layerSetting" style="display: none;"> </label>
+						</div>
+						<div class="col-md-2">
+							<button id="btnGetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
+								<spring:message code="lang.exportConfig" />
+							</button>
+						</div>
+						<div class="col-md-2">
+							<button id="btnAddCategory" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
+								<spring:message code="lang.addCategory" />
+							</button>
+						</div>
+					</div>
+					<div class="LayerDefinitionArea"></div>
+				</section>
+				<section class="SettingSection Step3" style="display: none;">
+					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+						<div class="col-md-6 text-left">
+							<button class="btn btn-default MoveToStep2">
+								<spring:message code="lang.prev" />
+							</button>
+						</div>
+						<div class="col-md-6 text-right">
+							<button class="btn btn-default MoveToStep4">
+								<spring:message code="lang.next" />
+							</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-8">
+							<h3>
+								3.
+								<spring:message code="lang.validateItemDefinition" />
+							</h3>
+						</div>
+						<div class="col-md-2">
+							<!-- <button id="btnSetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">설정
+								파일 업로드</button> -->
+							<label class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;"><spring:message
+									code="lang.importConfig" /><input type="file" class="optionSetting" style="display: none;" /> </label>
+						</div>
+						<div class="col-md-2">
+							<button id="btnGetOptionJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
+								<spring:message code="lang.exportConfig" />
+							</button>
+						</div>
+						<!-- 						<div class="col-md-2">
+							<button id="btnInitOption" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">레이어
+								정의 불러오기</button>
+						</div> -->
+					</div>
+					<div class="OptionDefinitionArea"></div>
+				</section>
+				<section class="SettingSection Step4" style="display: none;">
+					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
+						<div class="col-md-6 text-left">
+							<button class="btn btn-default MoveToStep3">
+								<spring:message code="lang.prev" />
+							</button>
+						</div>
+						<div class="col-md-6 text-right">
+							<c:if test="${pid ne null}">
+								<button id="update-def" class="btn btn-default">
+									<spring:message code="lang.save" />
+								</button>
+							</c:if>
+							<c:if test="${pid eq null}">
+								<button id="save-def" class="btn btn-default">
+									<spring:message code="lang.save" />
+								</button>
+							</c:if>
+						</div>
+					</div>
+					<h3>
+						4.
+						<spring:message code="lang.saveConfig" />
+					</h3>
+					<div class="row">
+						<div class="col-md-2">
+							<spring:message code="lang.name" />
+						</div>
+						<div class="col-md-10">
+							<input type="text" id="def-name" class="form-control">
+						</div>
+					</div>
+				</section>
+			</div>
+		</div>
+		<section class="SettingSection">
+			<jsp:include page="/WEB-INF/jsp/common/footer.jsp" />
+		</section>
+		<div class="Message"></div>
+	</div>
 	<script>
 	var locale = '<spring:message code="lang.localeCode" />';
 	var pid = undefined;
@@ -276,17 +437,17 @@ input.radio:checked+label::before {
 			var tempLayerDef = "";
 
 			var layerDef = new gb.validation.LayerDefinition({
-				"append" : ".LayerDefinitionArea",
-				"fileClass" : "layerSetting",
-				"msgClass" : "Message",
+				"append" : $(".LayerDefinitionArea")[0],
+				"fileClass" : $(".layerSetting")[0],
+				"msgClass" : $(".Message")[0],
 				"locale" : locale
 			});
 
 			var optionDef = new gb.validation.OptionDefinition({
 				"layerDefinition" : layerDef,
-				"append" : ".OptionDefinitionArea",
-				"fileClass" : "optionSetting",
-				"msgClass" : "Message",
+				"append" : $(".OptionDefinitionArea")[0],
+				"fileClass" : $(".optionSetting")[0],
+				"msgClass" : $(".Message")[0],
 				"locale" : locale
 			});
 
@@ -377,168 +538,5 @@ input.radio:checked+label::before {
 			}
 		};
 	</script>
-
-
-	<div class="container">
-		<jsp:include page="/WEB-INF/jsp/common/header.jsp" />
-
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<section class="SettingSection Step1">
-					<div class="row text-right" style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="col-md-12">
-							<button class="btn btn-default MoveToStep2">
-								<spring:message code="lang.next" />
-							</button>
-						</div>
-					</div>
-					<h3>
-						1.
-						<spring:message code="lang.validationType" />
-					</h3>
-					<div class="row QA-Type-Sect" style="margin-bottom: 20px;" title="some tips">
-						<div class="col-md-4">
-							<input type="radio" class="radio" name="qacat2" id="qacat21" value="numetrical" checked /> <label for="qacat21">
-								<spring:message code="lang.digitalMap" />
-							</label>
-						</div>
-						<div class="col-md-4">
-							<input type="radio" class="radio" name="qacat2" id="qacat22" value="underground" /> <label for="qacat22"><spring:message
-									code="lang.underFacility" /></label>
-						</div>
-						<div class="col-md-4">
-							<input type="radio" class="radio" name="qacat2" id="qacat23" value="forest" /> <label for="qacat23"><spring:message
-									code="lang.forestMap" /> </label>
-						</div>
-					</div>
-					<div class="row VersionArea QA-detail-sect" title="some tips">
-						<div class="col-md-6">
-							<input type="radio" class="radio" name="qacat1" id="qacat11" value="qa1" checked /> <label for="qacat11">
-								<spring:message code="lang.exactPosition" />
-							</label>
-						</div>
-						<div class="col-md-6">
-							<input type="radio" class="radio" name="qacat1" id="qacat12" value="qa2" /> <label for="qacat12"><spring:message
-									code="lang.structuring" /> </label>
-						</div>
-					</div>
-				</section>
-				<section class="SettingSection Step2" style="display: none;">
-					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="col-md-6 text-left">
-							<button class="btn btn-default MoveToStep1">
-								<spring:message code="lang.prev" />
-							</button>
-						</div>
-						<div class="col-md-6 text-right">
-							<button class="btn btn-default MoveToStep3">
-								<spring:message code="lang.next" />
-							</button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
-							<h3>
-								2.
-								<spring:message code="lang.layerDefinition" />
-							</h3>
-						</div>
-						<div class="col-md-2">
-							<!-- <button id="btnSetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">설정
-								파일 업로드</button> -->
-							<label class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;"><spring:message
-									code="lang.importConfig" /><input type="file" class="layerSetting" style="display: none;"> </label>
-						</div>
-						<div class="col-md-2">
-							<button id="btnGetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<spring:message code="lang.exportConfig" />
-							</button>
-						</div>
-						<div class="col-md-2">
-							<button id="btnAddCategory" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<spring:message code="lang.addCategory" />
-							</button>
-						</div>
-					</div>
-					<div class="LayerDefinitionArea"></div>
-				</section>
-				<section class="SettingSection Step3" style="display: none;">
-					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="col-md-6 text-left">
-							<button class="btn btn-default MoveToStep2">
-								<spring:message code="lang.prev" />
-							</button>
-						</div>
-						<div class="col-md-6 text-right">
-							<button class="btn btn-default MoveToStep4">
-								<spring:message code="lang.next" />
-							</button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-8">
-							<h3>
-								3.
-								<spring:message code="lang.validateItemDefinition" />
-							</h3>
-						</div>
-						<div class="col-md-2">
-							<!-- <button id="btnSetLayerJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">설정
-								파일 업로드</button> -->
-							<label class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;"><spring:message
-									code="lang.importConfig" /><input type="file" class="optionSetting" style="display: none;" /> </label>
-						</div>
-						<div class="col-md-2">
-							<button id="btnGetOptionJSON" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">
-								<spring:message code="lang.exportConfig" />
-							</button>
-						</div>
-						<!-- 						<div class="col-md-2">
-							<button id="btnInitOption" class="btn btn-default" style="margin-top: 15px; margin-bottom: 10px; width: 100%;">레이어
-								정의 불러오기</button>
-						</div> -->
-					</div>
-					<div class="OptionDefinitionArea"></div>
-				</section>
-				<section class="SettingSection Step4" style="display: none;">
-					<div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-						<div class="col-md-6 text-left">
-							<button class="btn btn-default MoveToStep3">
-								<spring:message code="lang.prev" />
-							</button>
-						</div>
-						<div class="col-md-6 text-right">
-							<c:if test="${pid ne null}">
-								<button id="update-def" class="btn btn-default">
-									<spring:message code="lang.save" />
-								</button>
-							</c:if>
-							<c:if test="${pid eq null}">
-								<button id="save-def" class="btn btn-default">
-									<spring:message code="lang.save" />
-								</button>
-							</c:if>
-						</div>
-					</div>
-					<h3>
-						4.
-						<spring:message code="lang.saveConfig" />
-					</h3>
-					<div class="row">
-						<div class="col-md-2">
-							<spring:message code="lang.name" />
-						</div>
-						<div class="col-md-10">
-							<input type="text" id="def-name" class="form-control">
-						</div>
-					</div>
-				</section>
-			</div>
-		</div>
-		<section class="SettingSection">
-			<jsp:include page="/WEB-INF/jsp/common/footer.jsp" />
-		</section>
-		<div class="Message"></div>
-	</div>
 </body>
 </html>

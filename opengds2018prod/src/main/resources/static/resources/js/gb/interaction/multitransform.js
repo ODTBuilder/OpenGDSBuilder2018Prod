@@ -27,16 +27,14 @@ gb.interaction.MultiTransform = function(opt_options) {
 
 	/**
 	 * 현재 커서의 위치를 저장
-	 * 
-	 * @type {<Array>}
+	 * @type {Array.<number>}
 	 * @private
 	 */
 	this.cursorCoordinate_ = null;
 
 	/**
 	 * 이전 커서의 위치를 저장
-	 * 
-	 * @type {<Array>}
+	 * @type {Array.<number>}
 	 * @private
 	 */
 	this.prevCursor_ = null;
@@ -44,14 +42,14 @@ gb.interaction.MultiTransform = function(opt_options) {
 	/**
 	 * 수행할 작업을 저장 ('rotate', 'scale', 'filp')
 	 * 
-	 * @type {<String>}
+	 * @type {string}
 	 * @private
 	 */
 	this.task_ = null;
 
 	/**
 	 * true 일 때 drag event로 feature scale 실행
-	 * @type {<Boolean>}
+	 * @type {boolean}
 	 * @private
 	 */
 	this.scale_ = false;
@@ -684,10 +682,29 @@ gb.interaction.MultiTransform.prototype.flipAlgorithm_ = function(feature, direc
 	feature.setGeometry(newGeometry);
 };
 
-// MultiTransform event type
+/**
+ * MultiTransform event type
+ * @enum {string}
+ */
 gb.interaction.MultiTransformEventType = {
+	/**
+	 * Triggered upon feature multiTransform start 
+	 * @event gb.interaction.MultiTransform#transformstart
+	 * @type {string} 
+	 * @api
+	 */
 	TRANSFORMSTART : 'transformstart',
+	/**
+	 * Triggered upon feature multiTransforming 
+	 * @event gb.interaction.MultiTransform#transforming
+	 * @api
+	 */
 	TRANSFORMING : 'transforming',
+	/**
+	 * Triggered upon feature multiTransform end 
+	 * @event gb.interaction.MultiTransform#transformend
+	 * @api
+	 */
 	TRANSFORMEND : 'transformend'
 };
 

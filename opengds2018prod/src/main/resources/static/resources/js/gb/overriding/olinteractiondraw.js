@@ -4,7 +4,7 @@
 ol.interaction.Draw.prototype.switchType_ = function() {
 	this.type_ = this.selectedType();
 	/**
-	 * Drawing mode (derived from geometry type.
+	 * Drawing mode (derived from geometry type).
 	 * 
 	 * @type {ol.interaction.Draw.Mode_}
 	 * @private
@@ -28,11 +28,8 @@ ol.interaction.Draw.prototype.switchType_ = function() {
 	if (!geometryFunction) {
 		if (this.type_ === 'Circle') {
 			/**
-			 * @param {ol.Coordinate|Array.
-			 *            <ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
-			 *            coordinates The coordinates.
-			 * @param {ol.geom.SimpleGeometry=}
-			 *            opt_geometry Optional geometry.
+			 * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates - The coordinates.
+			 * @param {ol.geom.SimpleGeometry} [opt_geometry=] - Optional geometry.
 			 * @return {ol.geom.SimpleGeometry} A geometry.
 			 */
 			geometryFunction = function(coordinates, opt_geometry) {
@@ -53,11 +50,8 @@ ol.interaction.Draw.prototype.switchType_ = function() {
 				Constructor = ol.geom.Polygon;
 			}
 			/**
-			 * @param {ol.Coordinate|Array.
-			 *            <ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
-			 *            coordinates The coordinates.
-			 * @param {ol.geom.SimpleGeometry=}
-			 *            opt_geometry Optional geometry.
+			 * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates - The coordinates.
+			 * @param {ol.geom.SimpleGeometry} [opt_geometry=] opt_geometry - Optional geometry.
 			 * @return {ol.geom.SimpleGeometry} A geometry.
 			 */
 			geometryFunction = function(coordinates, opt_geometry) {

@@ -441,12 +441,27 @@ if (!gb.layer)
 	
 	/**
 	 * Pointer event type
-	 * @type {Object}
-	 * @protected
+	 * @enum {string}
 	 */
 	gb.layer.PointerEventType = {
+		/**
+		 * Triggered upon feature multiTransform start 
+		 * @event gb.layer.Pointer#transformstart
+		 * @type {string} 
+		 * @api
+		 */
 		TRANSFORMSTART : 'transformstart',
+		/**
+		 * Triggered upon feature multiTransforming 
+		 * @event gb.layer.Pointer#transforming
+		 * @api
+		 */
 		TRANSFORMING : 'transforming',
+		/**
+		 * Triggered upon feature multiTransform end 
+		 * @event gb.layer.Pointer#transformend
+		 * @api
+		 */
 		TRANSFORMEND : 'transformend'
 	};
 	

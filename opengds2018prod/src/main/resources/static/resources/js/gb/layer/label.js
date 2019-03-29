@@ -1,10 +1,3 @@
-/**
- * Layer Label
- * 
- * @author hochul.kim
- * @date 2019. 02. 21
- * @version 0.01
- */
 var gb;
 if (!gb)
 	gb = {};
@@ -12,6 +5,34 @@ if (!gb.layer)
 	gb.layer = {};
 
 (function($){
+	/**
+	 * 레이어 라벨 기능. 레이어의 속성값 중 하나를 선택하여 라벨을 표시한다.
+	 * Vector 레이어에 대해서만 적용 가능.
+	 * @class gb.layer.Label
+	 * @memberof gb.layer
+	 * @constructor
+	 * @param {Object} obj - gb.layer.Label 생성 옵션
+	 * @param {ol.layer.Vector} obj.layer - 기능을 적용할 레이어 객체
+	 * @param {Object} obj.labelOptions - 라벨 옵션
+	 * @param {string} [obj.labelOptions.attribute="errName"] - 속성 컬럼명
+	 * @param {string} [obj.labelOptions.align="center"] - 좌우 텍스트 정렬
+	 * @param {string} [obj.labelOptions.baseline="middle"] - 상하 텍스트 정렬
+	 * @param {string|number} [obj.labelOptions.size="12px"] - 텍스트 크기
+	 * @param {string|number} [obj.labelOptions.offsetX=0] - x좌표 여백
+	 * @param {string|number} [obj.labelOptions.offsetY=0] - y좌표 여백
+	 * @param {string} [obj.labelOptions.weight="normal"] - 텍스트 굵기('Bold' or 'normal')
+	 * @param {string} [obj.labelOptions.placement="point"] - 텍스트 위치('Point' or 'Line')
+	 * @param {string|number} [obj.labelOptions.maxAngle="0.7853981633974483"] - 텍스트 꺽임 허용 범위
+	 * @param {boolean} [obj.labelOptions.overflow=true] - 텍스트 객체 범위 벗어남 허용
+	 * @param {string|number} [obj.labelOptions.rotation="0"] - 텍스트 회전
+	 * @param {string} [obj.labelOptions.fillColor="blue"] - 텍스트 색상(hex code 사용 가능)
+	 * @param {string} [obj.labelOptions.outlineColor="#ffffff"] - 텍스트 테두리 색상
+	 * @param {string|number} [obj.labelOptions.outlineWidth=3] - 텍스트 테두리 넓이
+	 * @param {number} [obj.labelOptions.maxResolution=1200] - 줌 레벨에 따른 라벨 가시화 여부(작게 설정할 수록 맵을 더 확대해야 라벨이 보임)
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 25
+	 * @version 0.01
+	 */
 	gb.layer.Label = function(obj){
 		var that = this;
 		var options = obj;
@@ -57,6 +78,14 @@ if (!gb.layer)
 		return func;
 	}
 	
+	/**
+	 * Feature에서 특정 속성 컬럼의 값을 반환한다.
+	 * @method gb.layer.Label#getText
+	 * @function
+	 * @param {ol.Feature} feature - 속성값을 가져올 객체
+	 * @param {number} resolution - 현재 맵의 줌 레벨
+	 * @return {string} 속성값
+	 */
 	gb.layer.Label.prototype.getText = function(feature, resolution){
 		var props = feature instanceof ol.Feature ? feature.getProperties() : undefined;
 		
@@ -76,8 +105,15 @@ if (!gb.layer)
 
 		return text;
 	};
-
-
+	
+	/**
+	 * 설정한 label 스타일 옵션이 적용된 ol.style.Text 객체를 반환한다.
+	 * @method gb.layer.Label#createTextStyle
+	 * @function
+	 * @param {ol.Feature} feature - 속성값을 가져올 객체
+	 * @param {number} resolution - 현재 맵의 줌 레벨
+	 * @return {ol.style.Text}
+	 */
 	gb.layer.Label.prototype.createTextStyle = function (feature, resolution) {
 		return new ol.style.Text({
 			textAlign: this.labelOptions.align == '' ? undefined : this.labelOptions.align,
@@ -95,7 +131,17 @@ if (!gb.layer)
 		});
 	};
 
-	// http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
+	/**
+	 * 텍스트 유효성 체크 및 변환
+	 * 참조: {@link http://stackoverflow.com/questions/14484787/wrap-text-in-javascript}
+	 * @method stringDivider
+	 * @function
+	 * @param {string} str - 속성값을 가져올 객체
+	 * @param {number} width - 속성값을 가져올 객체
+	 * @param {string} spaceReplacer - 현재 맵의 줌 레벨
+	 * @return {string}
+	 * @private
+	 */
 	function stringDivider(str, width, spaceReplacer) {
 		if (str.length > width) {
 			var p = width;

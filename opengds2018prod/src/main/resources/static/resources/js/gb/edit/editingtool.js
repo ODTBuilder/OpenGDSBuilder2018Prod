@@ -1,49 +1,97 @@
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.header)
-	gb.header = {};
+if (!gb.edit)
+	gb.edit = {};
 
-gb.header.ZOOMLEVEL = 11;
-gb.header.ACTIVEAREA = 7.75;
+gb.edit.ACTIVEAREA = 7.75;
 /**
- * 레이어 편집 기능을 정의한다. 필수 라이브러리: jQuery, fontawesome, openlayers, gb.header.Base
+ * @classdesc
+ * 피처 편집 기능을 정의한다.
+ * 필수 라이브러리: jQuery, fontawesome, openlayers, {@link gb.header.HeaderBase}
+ * @example
+ * <head>
+ * <script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
+ * <link rel="stylesheet" href="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/css/ol.css" type="text/css">
+ * <link rel="stylesheet" href="./gb/css/gb.css">
+ * <script src="./gb/gb.js"></script>
+ * <script src="./gb/map/map.js"></script>
+ * <%-- jsTree openlayers3--%>
+ * <script type="text/javascript" src="./jsTree-openlayers3/jstree.js"></script>
+ * <link rel="stylesheet" type="text/css"
+ *   href="./jsTree-openlayers3/themes/default/style.css" />
+ * <script type="text/javascript"
+ *   src="./jsTree-openlayers3/jstree-visibility.js"></script>
+ * <script type="text/javascript"
+ *   src="./jsTree-openlayers3/jstree-layerproperties.js"></script>
+ * <script type="text/javascript"
+ *   src="./jsTree-openlayers3/jstree-legends.js"></script>
+ * <script type="text/javascript"
+ *   src="./jsTree-openlayers3/jstree-functionmarker.js"></script>
+ * <!-- gb.tree.openlayers -->
+ * <script src="./gb/tree/openlayers.js"></script>
+ * <!-- gb.edit -->
+ * <script src="./gb/edit/edithistory.js"></script>
+ * <script src="./gb/edit/undo.js"></script>
+ * <!-- gb.header -->
+ * <script src="./gb/header/base.js"></script>
+ * <script src="./gb/header/editingtool.js"></script>
+ * <title>OpenGDS/Builder example</title>
+ * </head>
  * 
+ * <body>
+ * <div class="builderLayer">
+ *   <div class="builderLayerClientPanel"></div>
+ * </div>
+ * <div class="bind"></div>
+ * 
+ * <script type="text/javascript">
+ *   var gbMap = new gb.Map({
+ *     "target" : $(".bind")[0] // Openlayers Map을 생성할 HTML Element 객체
+ *   });
+ *   
+ *   var otree = new gb.tree.OpenLayers({
+ *     "append" : $(".builderLayerClientPanel")[0], // Openlayers Tree를 생성할 HTML Element 객체
+ *     "map" : gbMap.getUpperMap()
+ *   });
+ *   
+ *   var temp = new gb.header.EditingTool({
+ *     targetElement : gbMap.getLowerDiv(), // EditingTool 메뉴바를 생성할 Div의 jQuery객체
+ *     map : gbMap.getUpperMap(), // ol.Map 객체
+ *     otree : otree,
+ *     featureRecord : new gb.edit.FeatureRecord(), // feature의 변경사항을 저장하는 객체
+ *     locale : "en", // 언어 설정
+ *     isEditing : gb.module.isEditing // EditingTool 활성화시 다른 작업을 제한하는 모듈
+ *   });
+ * </script>
+ * </body>
  * @class gb.edit.EditingTool
+ * @requires {@link gb.header.HeaderBase}
  * @memberof gb.edit
+ * @param {Object}
+ *            obj - 생성자 옵션
+ * @param {ol.Map}
+ *            obj.map - 편집 기능을 적용할 Openlayers Map 객체
+ * @param {gb.edit.FeatureRecord}
+ *            [obj.featureRecord] - feature 편집 이력을 관리하는 객체
+ * @param {gb.tree.OpenLayers}
+ *            obj.otree - gb.tree.OpenLayers 객체와 EditingTool 객체를 연동. OpenLayer Tree의 레이어들을 편집
+ * @param {string}
+ *            obj.layerInfo - Geoserver 레이어 정보 요청 URL
  * @param {gb.versioning.Feature}
- *            obj.versioning - 피처별 버전 관리 객체
- * @author hochul.kim
- * @date 2018. 06.04
+ *            [obj.versioning] - 버저닝 객체
+ * @param {gb.module.isEditing}
+ *            [obj.isEditing] - EditingTool 작업 실행 중 다른 작업 제한 기능을 하는 모듈
+ * @param {string}
+ *            obj.wfsURL - Geoserver WFS 요청 URL
+ * @param {string}
+ *            [obj.locale="en"] - 언어 코드
+ * @author KIM HOCHUL
+ * @date 2019. 03. 18
  * @version 0.01
- * @constructor
  */
-gb.header.EditingTool = function(obj) {
-	gb.header.Base.call(this, obj);
-	var options = obj ? obj : {};
-	this.map = options.map ? options.map : undefined;
-	console.log(this.map.getView().getProjection());
-	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
-	this.otree = options.otree ? options.otree : undefined;
-	this.treeElement = this.otree ? this.otree.getJSTreeElement() : undefined;
-	this.selected = options.selected ? options.selected : undefined;
-	this.layerInfo = options.layerInfo ? options.layerInfo : undefined;
-	this.imageTile = options.imageTile ? options.imageTile : undefined;
-	this.versioningFeature = options.versioning instanceof gb.versioning.Feature ? options.versioning : undefined; 
-	this.selectedSource = undefined;
-	this.selectSources = new ol.Collection();
-	this.layer = undefined;
-
-	// hochul
-	this.isEditing = options.isEditing instanceof Object ? options.isEditing : undefined;
-	this.vectorSourcesOfServer_ = {};
-	this.vectorSourcesOfVector_ = {};
-//	this.customVector_ = {};
-	this.copyPaste_ = undefined;
-	this.wfsURL = options.wfsURL;
-	this.otree.setEditingTool(this);
-
-	this.locale = options.locale || "en";
+gb.edit.EditingTool = function(obj) {
+	var that = this;
 	this.translation = {
 		"notSupportHistory" : {
 			"en" : "This layer is not support feature history",
@@ -108,47 +156,118 @@ gb.header.EditingTool = function(obj) {
 		"transformPointHint" : {
 			"ko" : "Point객체는 변환 기능을 사용할 수 없습니다.",
 			"en" : "Point objects can not use the transform function."
+		},
+		"requiredOption" : {
+			"ko" : "은 필수 입력항목입니다.",
+			"en" : "is a required field."
 		}
-	}
-
-	this.snapWMS = [];
+	};
+	
+	gb.header.HeaderBase.call(this, obj);
+	
+	/**
+	 * 현재 편집중인 레이어
+	 * @private
+	 * @type {ol.layer.Base}
+	 */
+	this.layer = undefined;
+	
+	/**
+	 * 선택된 객체들의 집합
+	 * @private
+	 * @type {ol.Collection.<ol.Feature>}
+	 */
+	this.selected = undefined;
+	
+	/**
+	 * 현재 편집중인 레이어의 Source 객체
+	 * @private
+	 * @type {ol.source.TileSource|ol.source.VectorSource}
+	 */
+	this.selectedSource = undefined;
+	
+	/**
+	 * 현재 편집중인 Source 객체들의 집합
+	 * @private
+	 * @type {ol.Collection.<ol.source.VectorSource>}
+	 */
+	this.selectSources = new ol.Collection();
+	
+	/**
+	 * Geoserver로부터 import된 레이어들의 Vector Source 객체 집합
+	 * @private
+	 * @type {Object.<string, ol.source.VectorSource>}
+	 */
+	this.vectorSourcesOfServer_ = {};
+	
+	/**
+	 * 벡터 레이어들의 Vector Source 객체 집합
+	 * @private
+	 * @type {Object.<string, ol.source.VectorSource>}
+	 */
+	this.vectorSourcesOfVector_ = {};
+	
+	/**
+	 * 객체 복사, 붙여넣기 기능 모듈
+	 * @private
+	 * @type {gb.interaction.Copypaste}
+	 */
+	this.copyPaste_ = undefined;
+	
+	/**
+	 * Snap 기능 활성화를 위한 Vector Source 객체
+	 * @private
+	 * @type {ol.source.Vector}
+	 */
 	this.snapSource = new ol.source.Vector();
 
+	/**
+	 * Snap 기능을 적용할 Vector Layer들의 집합
+	 * @private
+	 * @type {ol.Collection.<ol.layer.Vector>}
+	 */
 	this.snapVector = new ol.Collection();
 
+	/**
+	 * Move 기능을 적용할 Feature 객체들의 집합
+	 * @private
+	 * @type {ol.Collection.<ol.Feature>}
+	 */
 	this.features = new ol.Collection();
+	
+	/**
+	 * Move 기능 활성화를 위한 Vector Source 객체
+	 * @private
+	 * @type {ol.source.Vector}
+	 */
 	this.tempSource = new ol.source.Vector({
 		features : this.features
 	});
+	
+	/**
+	 * Move 기능 활성화를 위한 Vector Layer 객체
+	 * @private
+	 * @type {ol.layer.Vector}
+	 */
 	this.tempVector = new ol.layer.Vector({
 		renderMode: "vector",
 		source : this.tempSource
 	});
 	this.tempVector.set("name", this.translation.tempLayer[this.locale]);
-	this.managed = new ol.layer.Vector({
-		renderMode: "vector",
-		source : this.tempSource
-	});
-	this.managed.set("name", "temp_vector");
-	this.managed.set("id", "temp_vector");
-
-	this.styles = [ new ol.style.Style({
-		stroke : new ol.style.Stroke({
-			color : 'rgba(0,153,255,1)',
-			width : 2
-		}),
-		fill : new ol.style.Fill({
-			color : 'rgba(255, 255, 255, 0.5)'
-		})
-	}), new ol.style.Style({
-		image : new ol.style.Circle({
-			radius : 10,
-			fill : new ol.style.Fill({
-				color : 'rgba(0,153,255,0.4)'
-			})
-		})
-	}) ];
-
+	
+	
+//	this.managed = new ol.layer.Vector({
+//		renderMode: "vector",
+//		source : this.tempSource
+//	});
+//	this.managed.set("name", "temp_vector");
+//	this.managed.set("id", "temp_vector");
+	
+	/**
+	 * Feature 객체 강조 표시를 위한 Openlayers Style 객체 배열
+	 * @private
+	 * @type {Array.<ol.style.Style>}
+	 */
 	this.highlightStyles1 = [ new ol.style.Style({
 		stroke : new ol.style.Stroke({
 			color : 'rgba(255,0,0,1)',
@@ -164,6 +283,11 @@ gb.header.EditingTool = function(obj) {
 		})
 	}) ];
 
+	/**
+	 * Feature 객체 강조 표시를 위한 Openlayers Style 객체 배열
+	 * @private
+	 * @type {Array.<ol.style.Style>}
+	 */
 	this.highlightStyles2 = [ new ol.style.Style({
 		stroke : new ol.style.Stroke({
 			color : 'rgba(0, 0, 255, 1)',
@@ -179,6 +303,11 @@ gb.header.EditingTool = function(obj) {
 		})
 	}) ];
 
+	/**
+	 * 선택된 Feature 객체 스타일 변경을 위한 Openlayers Style 객체 배열
+	 * @private
+	 * @type {Array.<ol.style.Style>}
+	 */
 	this.selectedStyles = [ new ol.style.Style({
 		stroke : new ol.style.Stroke({
 			color : 'rgba(0,153,255,1)',
@@ -195,7 +324,6 @@ gb.header.EditingTool = function(obj) {
 			})
 		}),
 		geometry : function(feature) {
-
 			var coordinates;
 			var geom;
 
@@ -218,14 +346,29 @@ gb.header.EditingTool = function(obj) {
 				coordinates = [ feature.getGeometry().getCoordinates() ];
 				geom = new ol.geom.MultiPoint(coordinates);
 			}
-
 			return geom;
 		}
 	}) ];
-
+	
+	/**
+	 * Interval 함수의 ID
+	 * @private
+	 * @type {number}
+	 */
 	this.interval = undefined;
+	
+	/**
+	 * Interval 함수의 지연시간을 위한 변수
+	 * @private
+	 * @type {number}
+	 */
 	this.count = 1;
-
+	
+	/**
+	 * EditingTool 작업표시줄에 표현될 DOM 객체들의 집합
+	 * @private
+	 * @type {Object.<string, DOM>}
+	 */
 	this.btn = {
 			selectBtn : undefined,
 			drawBtn : undefined,
@@ -234,6 +377,12 @@ gb.header.EditingTool = function(obj) {
 			modiBtn : undefined,
 			delBtn : undefined
 	};
+	
+	/**
+	 * EditingTool 작업 상태 집합
+	 * @private
+	 * @type {Object.<string, boolean>}
+	 */
 	this.isOn = {
 			select : false,
 			draw : false,
@@ -243,6 +392,12 @@ gb.header.EditingTool = function(obj) {
 			rotate : false,
 			snap : false
 	};
+	
+	/**
+	 * EditingTool 기본 interaction 집합
+	 * @private
+	 * @type {Object.<string, ol.interaction.Interaction>}
+	 */
 	this.interaction = {
 			select : undefined,
 			dragbox : undefined,
@@ -254,13 +409,40 @@ gb.header.EditingTool = function(obj) {
 			snap : undefined,
 			remove : undefined
 	};
-	this.customInteractions = [];
-
-	var that = this;
-
+	
 	/**
-	 * default list
+	 * 사용자가 추가한 Interaction 객체의 집합
+	 * @private
+	 * @type {Array.<Object>}
 	 */
+	this.customInteractions = [];
+	
+	var options = obj ? obj : {};
+	this.locale = options.locale || "en";
+	this.map = options.map ? options.map : undefined;
+	if(!this.map){
+		console.error("gb.edit.EditingTool: 'map'" + this.translation.requiredOption[this.locale]);
+	}
+	this.layerInfo = options.layerInfo ? options.layerInfo : undefined;
+	if(!this.layerInfo){
+		console.error("gb.edit.EditingTool: 'layerInfo'" + this.translation.requiredOption[this.locale]);
+	}
+	this.wfsURL = options.wfsURL ? options.wfsURL : undefined;
+	if(!this.wfsURL){
+		console.error("gb.edit.EditingTool: 'wfsURL'" + this.translation.requiredOption[this.locale]);
+	}
+	this.otree = options.otree ? options.otree : undefined;
+	if(!this.otree){
+		console.error("gb.edit.EditingTool: 'otree'" + this.translation.requiredOption[this.locale]);
+	}
+	this.treeElement = this.otree ? this.otree.getJSTreeElement() : undefined;
+	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
+	this.versioningFeature = options.versioning instanceof gb.versioning.Feature ? options.versioning : undefined; 
+	this.isEditing = options.isEditing instanceof Object ? options.isEditing : undefined;
+	
+	this.otree.setEditingTool(this);
+	
+	// EditingTool 작업 표시줄 기본 항목
 	var defaultList = [
 		{
 			content: "draw",
@@ -333,7 +515,7 @@ gb.header.EditingTool = function(obj) {
 
 	// this.createContent() 함수 실행 이후 this.contentList 배열안에 content list들의 <a>
 	// tag element가 저장됨
-	// gb.header.Base 함수 참조
+	// gb.header.HeaderBase 함수 참조
 	var eventList = this.contentList;
 	var match = {
 			"select": "selectBtn",
@@ -440,7 +622,6 @@ gb.header.EditingTool = function(obj) {
 			if(that.checkActiveTool()){
 				if(data.selected.length === 1){
 					that.select(that.updateSelected());
-					// that.moveUpEditingLayer_();
 				}
 			}
 		}
@@ -492,15 +673,18 @@ gb.header.EditingTool = function(obj) {
 		$(this.ulTagRight).append(liTag);
 	}
 };
-gb.header.EditingTool.prototype = Object.create(gb.header.Base.prototype);
-gb.header.EditingTool.prototype.constructor = gb.header.EditingTool;
+gb.edit.EditingTool.prototype = Object.create(gb.header.HeaderBase.prototype);
+gb.edit.EditingTool.prototype.constructor = gb.edit.EditingTool;
 
 /**
- * 피처 변경 이력창을 연다
+ * 피처 변경 이력창을 생성한다.
  * 
- * @method toggleFeatureHistoryModal
+ * @method gb.edit.EditingTool#toggleFeatureHistoryModal
+ * @function
+ * @param {ol.Feature}
+ *            feature - 변경 이력창을 생성할 Feature 객체
  */
-gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
+gb.edit.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
 	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
 	if (layers.length !== 1) {
@@ -565,13 +749,15 @@ gb.header.EditingTool.prototype.toggleFeatureHistoryModal = function(feature) {
 		}
 	}
 };
-
 /**
- * 피처 변경 이력창을 업데이트한다
+ * 피처 변경 이력창을 업데이트한다.
  * 
- * @method updateFeatureHistoryModal
+ * @method gb.edit.EditingTool#updateFeatureHistoryModal
+ * @function
+ * @param {ol.Feature}
+ *            feature - 변경 이력창을 업데이트할 Feature 객체
  */
-gb.header.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
+gb.edit.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
 	var vfeature = this.getVersioningFeature();
 	var layers = $(this.treeElement).jstreeol3("get_selected_layer");
 	var feature = feature instanceof ol.Feature ? feature : this.interaction.select.getFeatures().getLength() === 1 ? this.interaction.select.getFeatures().item(0) : undefined;
@@ -615,70 +801,69 @@ gb.header.EditingTool.prototype.updateFeatureHistoryModal = function(feature) {
 /**
  * gb.versioning.Feature 객체를 반환한다.
  * 
- * @method getVersioningFeature
- * @return {gb.versioning.Feature} 피처 변경 이력 객체
+ * @method gb.edit.EditingTool#getVersioningFeature
+ * @function
+ * @return {gb.versioning.Feature} 버저닝 객체
  */
-gb.header.EditingTool.prototype.getVersioningFeature = function() {
+gb.edit.EditingTool.prototype.getVersioningFeature = function() {
 	return this.versioningFeature;
 };
-
 /**
- * 피처목록을 생성한다.
+ * 내부 Interaction 객체 집합을 반환한다.
  * 
- * @method setFeatureList_
+ * @method gb.edit.EditingTool#getInteractions_
+ * @function
+ * @return {Object.<string, ol.interaction.Interaction>}
  */
-gb.header.EditingTool.prototype.setFeatureList_ = function() {
+gb.edit.EditingTool.prototype.getInteractions_ = function() {
 	return this.interaction;
 };
 /**
- * 내부 인터랙션 구조를 반환한다.
+ * 특정 내부 인터랙션을 반환한다.
  * 
- * @method getInteractions_
- * @return {Mixed Obj} {select : ol.interaction.Select..}
+ * @method gb.edit.EditingTool#getInteraction_
+ * @function
+ * @param {string}
+ *            key - interaction name
+ * @return {ol.interaction.Interaction}
  */
-gb.header.EditingTool.prototype.getInteractions_ = function() {
-	return this.interaction;
-};
-/**
- * 내부 인터랙션 하나를 반환한다.
- * 
- * @method getInteraction_
- * @return {Mixed Obj} {select : ol.interaction.Select..}
- */
-gb.header.EditingTool.prototype.getInteraction_ = function(key) {
+gb.edit.EditingTool.prototype.getInteraction_ = function(key) {
 	return this.interaction[key];
 };
 /**
  * 내부 인터랙션 구조를 설정한다.
  * 
- * @method setInteraction_
+ * @method gb.edit.EditingTool#setInteraction_
+ * @function
  * @param {String}
  *            key - interaction name
  * @param {ol.interaction.Interaction}
- *            val - interaction
+ *            val - interaction 객체
  */
-gb.header.EditingTool.prototype.setInteraction_ = function(key, val) {
+gb.edit.EditingTool.prototype.setInteraction_ = function(key, val) {
 	this.interaction[key] = val;
 };
 
 /**
  * 편집중인 레이어를 반환한다.
  * 
- * @method getLayer
+ * @method gb.edit.EditingTool#getLayer
+ * @function
  * @return {ol.layer.Base}
  */
-gb.header.EditingTool.prototype.getLayer = function() {
+gb.edit.EditingTool.prototype.getLayer = function() {
 	return this.layer;
 };
 
 /**
- * 해당 인터랙션을 활성화 시킨다.
+ * Interaction을 활성화 시킨다.
  * 
- * @method activeIntrct_
- * @param {String ||
- *            Array<String>} 활성화 시킬 인터랙션 이름
+ * @method gb.edit.EditingTool#activeIntrct_
+ * @function
+ * @param {String|Array<String>}
+ *            intrct - interaction 이름 또는 interaction 이름의 배열
  */
-gb.header.EditingTool.prototype.activeIntrct_ = function(intrct) {
+gb.edit.EditingTool.prototype.activeIntrct_ = function(intrct) {
 	// var that = this;
 	// var keys = Object.keys(this.getInteractions_());
 	// for (var i = 0; i < keys.length; i++) {
@@ -707,11 +892,12 @@ gb.header.EditingTool.prototype.activeIntrct_ = function(intrct) {
 /**
  * 해당 인터랙션을 비활성화 시킨다.
  * 
- * @method deactiveIntrct_
- * @param {String ||
- *            Array<String>} 인터랙션의 이름 또는 인터랙션 이름의 배열
+ * @method gb.edit.EditingTool#deactiveIntrct_
+ * @function
+ * @param {String|Array<String>}
+ *            intrct - interaction 이름 또는 interaction 이름의 배열
  */
-gb.header.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
+gb.edit.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
 	var selectInter = true;
 	if (Array.isArray(intrct)) {
 		for (var j = 0; j < intrct.length; j++) {
@@ -724,7 +910,7 @@ gb.header.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
 				selectInter = false;
 			} else {
 				this.isOn[intrct[j]] = false;
-				// this.map.removeLayer(this.managed);
+//				this.map.removeLayer(this.managed);
 			}
 		}
 	} else if (typeof intrct === "string") {
@@ -735,7 +921,7 @@ gb.header.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
 			this.isOn["select"] = false;
 		} else {
 			this.isOn[intrct] = false;
-			// this.map.removeLayer(this.managed);
+//			this.map.removeLayer(this.managed);
 		}
 
 		if (intrct !== "select" && intrct !== "dragbox") {
@@ -769,16 +955,17 @@ gb.header.EditingTool.prototype.deactiveIntrct_ = function(intrct) {
 		}
 	}
 
-	// this.map.removeLayer(this.managed);
+//	this.map.removeLayer(this.managed);
 };
 /**
- * 버튼을 누른상태로 만든다
+ * 버튼 Tag를 활성화된 상태의 Style로 변경한다.
  * 
- * @method activeBtn_
+ * @method gb.edit.EditingTool#activeBtn_
+ * @function
  * @param {String}
- *            button name
+ *            btn - 활성화할 버튼의 이름
  */
-gb.header.EditingTool.prototype.activeBtn_ = function(btn) {
+gb.edit.EditingTool.prototype.activeBtn_ = function(btn) {
 	if(!this.btn[btn]){
 		return;
 	}
@@ -799,13 +986,14 @@ gb.header.EditingTool.prototype.activeBtn_ = function(btn) {
 	}
 };
 /**
- * 버튼을 안 누른 상태로 만든다
+ * 버튼 Tag를 비활성화된 상태의 Style로 변경한다.
  * 
- * @method deactiveBtn_
+ * @method gb.edit.EditingTool#deactiveBtn_
+ * @function
  * @param {String}
- *            button name
+ *            btn - 비활성화할 버튼의 이름
  */
-gb.header.EditingTool.prototype.deactiveBtn_ = function(btn) {
+gb.edit.EditingTool.prototype.deactiveBtn_ = function(btn) {
 	if (this.btn[btn].hasClass("active")) {
 		this.btn[btn].removeClass("active");
 		this.btn[btn].css("border-bottom", "none");
@@ -814,13 +1002,12 @@ gb.header.EditingTool.prototype.deactiveBtn_ = function(btn) {
 };
 
 /**
- * 버튼을 안 누른 상태로 만든다
+ * 모든 작업 버튼을 비활성화 상태로 변경한다.
  * 
- * @method deactiveBtn_
- * @param {String}
- *            button name
+ * @method gb.edit.EditingTool#deactiveAllBtn_
+ * @function
  */
-gb.header.EditingTool.prototype.deactiveAllBtn_ = function() {
+gb.edit.EditingTool.prototype.deactiveAllBtn_ = function() {
 	for(var btn in this.btn){
 		if(this.btn[btn] === undefined){
 			continue;
@@ -833,13 +1020,14 @@ gb.header.EditingTool.prototype.deactiveAllBtn_ = function() {
 	}
 };
 /**
- * 피처 선택을 활성화 한다
+ * Feature 선택 기능을 활성화한다.
  * 
- * @method select
- * @param {ol.layer.Base}
- *            layer - 편집할 레이어
+ * @method gb.edit.EditingTool#select
+ * @function
+ * @param {ol.source.Vector}
+ *            source - Feature 선택 기능을 적용할 레이어의 Vector Source 객체
  */
-gb.header.EditingTool.prototype.select = function(source) {
+gb.edit.EditingTool.prototype.select = function(source) {
 	var that = this;
 	if(!source){
 		return;
@@ -1159,13 +1347,14 @@ gb.header.EditingTool.prototype.select = function(source) {
 
 };
 /**
- * 피처 그리기를 활성화 한다
+ * Feature 그리기 기능을 활성화한다.
  * 
- * @method draw
+ * @method gb.edit.EditingTool#draw
+ * @function
  * @param {ol.layer.Base}
  *            layer - 편집할 레이어
  */
-gb.header.EditingTool.prototype.draw = function(layer) {
+gb.edit.EditingTool.prototype.draw = function(layer) {
 
 	// if (this.isOn.draw) {
 		if (!!this.interaction.draw || !!this.interaction.updateDraw) {
@@ -1173,12 +1362,12 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 				this.deactiveIntrct_("snap");
 				this.deactiveIntrct_("draw");
 				this.deactiveBtn_("drawBtn");
-				this.map.removeLayer(this.managed);
+//				this.map.removeLayer(this.managed);
 				return;
 			}
 		}
 	// }
-	this.map.removeLayer(this.managed);
+//	this.map.removeLayer(this.managed);
 	var that = this;
 	if (this.interaction.select) {
 		this.interaction.select.getFeatures().clear();
@@ -1452,7 +1641,7 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 		this.activeIntrct_("snap");
 		this.activeBtn_("drawBtn");
 	} else if (git.editable === true && sourceLayer instanceof ol.layer.Base) {
-		this.map.addLayer(this.managed);
+//		this.map.addLayer(this.managed);
 
 		this.interaction.draw = new ol.interaction.Draw({
 			source : this.tempSource,
@@ -1507,13 +1696,14 @@ gb.header.EditingTool.prototype.draw = function(layer) {
 
 };
 /**
- * 피처 이동을 활성화 한다
+ * Feature 이동 기능을 활성화한다.
  * 
- * @method move
+ * @method gb.edit.EditingTool#move
+ * @function
  * @param {ol.layer.Base}
  *            layer - 편집할 레이어
  */
-gb.header.EditingTool.prototype.move = function(layer) {
+gb.edit.EditingTool.prototype.move = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
@@ -1522,12 +1712,12 @@ gb.header.EditingTool.prototype.move = function(layer) {
 			this.interaction.select.getFeatures().clear();
 			this.deactiveIntrct_("move");
 			this.deactiveBtn_("moveBtn");
-			// this.map.removeLayer(this.tempVector);
-			// this.map.removeLayer(this.managed);
+//			this.map.removeLayer(this.tempVector);
+//			this.map.removeLayer(this.managed);
 		}
 		return;
 	}
-	// this.map.removeLayer(this.managed);
+//	this.map.removeLayer(this.managed);
 	var that = this;
 
 	var selectSource = this.selectedSource;
@@ -1537,7 +1727,7 @@ gb.header.EditingTool.prototype.move = function(layer) {
 
 	if (this.interaction.select.getFeatures().getLength() > 0) {
 
-		// this.map.addLayer(this.managed);
+//		this.map.addLayer(this.managed);
 		this.interaction.move = new ol.interaction.Translate({
 			features : this.interaction.select.getFeatures()
 		});
@@ -1603,13 +1793,14 @@ gb.header.EditingTool.prototype.move = function(layer) {
 	}
 };
 /**
- * 피처 멀티편집을 활성화 한다
+ * Feature 크기, 회전, 반전 편집 기능을 활성화한다.
  * 
- * @method rotate
+ * @method gb.edit.EditingTool#rotate
+ * @function
  * @param {ol.layer.Base}
  *            layer - 편집할 레이어
  */
-gb.header.EditingTool.prototype.rotate = function(layer) {
+gb.edit.EditingTool.prototype.rotate = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
@@ -1698,13 +1889,14 @@ gb.header.EditingTool.prototype.rotate = function(layer) {
 	}
 };
 /**
- * 피처 수정을 활성화 한다
+ * Feature 버텍스 편집 기능을 활성화한다.
  * 
- * @method modify
+ * @method gb.edit.EditingTool#modify
+ * @function
  * @param {ol.layer.Base}
  *            layer - 편집할 레이어
  */
-gb.header.EditingTool.prototype.modify = function(layer) {
+gb.edit.EditingTool.prototype.modify = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
@@ -1813,13 +2005,14 @@ gb.header.EditingTool.prototype.modify = function(layer) {
 	}
 };
 /**
- * 피처를 삭제한다
+ * 선택된 Feature를 삭제한다.
  * 
- * @method remove
+ * @method gb.edit.EditingTool#remove
+ * @function
  * @param {ol.layer.Base}
  *            layer - 편집할 레이어
  */
-gb.header.EditingTool.prototype.remove = function(layer) {
+gb.edit.EditingTool.prototype.remove = function(layer) {
 	if (this.interaction.select === undefined) {
 		return;
 	}
@@ -1953,12 +2146,13 @@ gb.header.EditingTool.prototype.remove = function(layer) {
 };
 
 /**
- * 선택한 레이어를 업데이트한다
+ * 선택한 레이어를 업데이트한다.
  * 
- * @method updateSelected
- * @return {ol.layer.Base}
+ * @method gb.edit.EditingTool#updateSelected
+ * @function
+ * @return {ol.source.Vector}
  */
-gb.header.EditingTool.prototype.updateSelected = function() {
+gb.edit.EditingTool.prototype.updateSelected = function() {
 	var source = undefined;
 	var tree = this.otree.getJSTree();
 	
@@ -2042,49 +2236,44 @@ gb.header.EditingTool.prototype.updateSelected = function() {
 	}
 	return source;
 };
+//gb.edit.EditingTool.prototype.setFeatures = function(newFeature) {
+//	var that = this;
+//	/*
+//	 * if (this.isOn.select) { if (!!this.interaction.select) {
+//	 * this.interaction.select.getFeatures().clear(); this.deactiveIntrct_([
+//	 * "dragbox", "select"]); } this.deactiveBtn_("selectBtn"); this.isOn.select =
+//	 * false; } this.select(this.layer);
+//	 */
+//	if (newFeature.length === 1) {
+//		// this.interaction.select.getFeatures().extend(newFeature);
+//		this.open();
+//		this.attrPop.getPanel().position({
+//			"my" : "left top",
+//			"at" : "right top",
+//			"of" : this.getPanel(),
+//			"collision" : "fit"
+//		});
+//	}
+//};
 /**
- * 피처를 선택한다
+ * 선택한 Feature들의 집합을 반환한다.
  * 
- * @method setFeatures
- * @param {ol.Feature}
+ * @method gb.edit.EditingTool#getFeatures
+ * @function
+ * @return {ol.Collection.<ol.Feature>}
  */
-gb.header.EditingTool.prototype.setFeatures = function(newFeature) {
-	var that = this;
-	/*
-	 * if (this.isOn.select) { if (!!this.interaction.select) {
-	 * this.interaction.select.getFeatures().clear(); this.deactiveIntrct_([
-	 * "dragbox", "select"]); } this.deactiveBtn_("selectBtn"); this.isOn.select =
-	 * false; } this.select(this.layer);
-	 */
-	if (newFeature.length === 1) {
-		// this.interaction.select.getFeatures().extend(newFeature);
-		this.open();
-		this.attrPop.getPanel().position({
-			"my" : "left top",
-			"at" : "right top",
-			"of" : this.getPanel(),
-			"collision" : "fit"
-		});
-	}
-
-};
-/**
- * 선택한 피처를 반환한다.
- * 
- * @method getFeatures
- * @return {ol.Collection<ol.Feature>}
- */
-gb.header.EditingTool.prototype.getFeatures = function() {
+gb.edit.EditingTool.prototype.getFeatures = function() {
 	return this.features;
 };
 /**
  * 삭제한 레이어에 포함되는 피처를 임시 레이어에서 지운다
  * 
- * @method removeFeatureFromUnmanaged
+ * @method gb.edit.EditingTool#removeFeatureFromUnmanaged
+ * @function
  * @param {ol.layer.Base}
- *            layer
+ *            layer - 임시 레이어 목록에서 삭제할 레이어 객체
  */
-gb.header.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
+gb.edit.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
 	var that = this;
 
 	if (layer instanceof ol.layer.Group) {
@@ -2146,11 +2335,12 @@ gb.header.EditingTool.prototype.removeFeatureFromUnmanaged = function(layer) {
 };
 
 /**
- * 임시 레이어에 있는 피처를 전부 삭제한다.
+ * 임시 레이어에 있는 Feature들을 전부 삭제한다.
  * 
- * @method clearUnmanaged
+ * @method gb.edit.EditingTool#clearUnmanaged
+ * @function
  */
-gb.header.EditingTool.prototype.clearUnmanaged = function() {
+gb.edit.EditingTool.prototype.clearUnmanaged = function() {
 	if (this.tempVector instanceof ol.layer.Vector) {
 		this.tempVector.clear();
 	}
@@ -2158,167 +2348,159 @@ gb.header.EditingTool.prototype.clearUnmanaged = function() {
 	return;
 };
 
-/**
- * 패널을 나타낸다.
- * 
- * @method open
- */
-gb.header.EditingTool.prototype.open = function() {
-	var layer = this.updateSelected();
-	if (layer instanceof ol.layer.Group) {
-		console.error("group layer can not edit");
-	} else if (layer instanceof ol.layer.Tile) {
-		var git = layer.get("git");
-		if (git.hasOwnProperty("fake")) {
-			if (git.fake === "parent") {
-				console.error("fake parent layer can not edit");
-			} else {
-				// this.headerTag.css("display", "block");
-			}
-		} else {
-			// this.headerTag.css("display", "block");
-		}
-	} else if (layer instanceof ol.layer.Base) {
-		// this.headerTag.css("display", "block");
-	}
+//gb.edit.EditingTool.prototype.open = function() {
+//	var layer = this.updateSelected();
+//	if (layer instanceof ol.layer.Group) {
+//		console.error("group layer can not edit");
+//	} else if (layer instanceof ol.layer.Tile) {
+//		var git = layer.get("git");
+//		if (git.hasOwnProperty("fake")) {
+//			if (git.fake === "parent") {
+//				console.error("fake parent layer can not edit");
+//			} else {
+//				// this.headerTag.css("display", "block");
+//			}
+//		} else {
+//			// this.headerTag.css("display", "block");
+//		}
+//	} else if (layer instanceof ol.layer.Base) {
+//		// this.headerTag.css("display", "block");
+//	}
+//};
 
-};
+//gb.edit.EditingTool.prototype.setWMSSource = function(sourceLayer, callback) {
+//	var that = this;
+//	if (sourceLayer instanceof ol.layer.Vector || sourceLayer instanceof ol.layer.Group) {
+//		return;
+//	}
+//	var arr = {
+//			"geoLayerList" : [ sourceLayer.get("id") ]
+//	}
+//	var names = [];
+//
+//	$.ajax({
+//		url : this.layerInfo,
+//		method : "POST",
+//		contentType : "application/json; charset=UTF-8",
+//		cache : false,
+//		data : JSON.stringify(arr),
+//		beforeSend : function() { // 호출전실행
+//			$("body").css("cursor", "wait");
+//		},
+//		traditional : true,
+//		success : function(data2, textStatus, jqXHR) {
+//			console.log(data2);
+//			if (Array.isArray(data2)) {
+//				for (var i = 0; i < 1; i++) {
+//					var source = new ol.source.TileWMS({
+//						url : "geoserver/geoserverWMSLayerLoad.do",
+//						params : {
+//							'LAYERS' : data2[i].lName,
+//							'TILED' : true,
+//							'FORMAT' : 'image/png8',
+//							'VERSION' : '1.1.0',
+//							'CRS' : that.getMap().getView().getProjection().getCode(),
+//							'SRS' : that.getMap().getView().getProjection().getCode(),
+//							'BBOX' : data2[i].nbBox.minx.toString() + "," + data2[i].nbBox.miny.toString() + ","
+//							+ data2[i].nbBox.maxx.toString() + "," + data2[i].nbBox.maxy.toString()
+//						},
+//						serverType : 'geoserver'
+//					});
+//					sourceLayer.setSource(source);
+//					var ogit = sourceLayer.get("git");
+//					ogit["attribute"] = data2[i].attInfo;
+//					ogit["geometry"] = data2[i].geomType;
+//					var getPosition = function(str, subString, index) {
+//						return str.split(subString, index).join(subString).length;
+//					};
+//					var id = sourceLayer.get("id");
+//					var format = id.substring((getPosition(id, "_", 1) + 1), getPosition(id, "_", 2));
+//					var layer;
+//					if (format === "ngi") {
+//						layer = new gb.layer.LayerInfo({
+//							name : sourceLayer.get("name"),
+//							id : id,
+//							format : format,
+//							epsg : data2[i].srs,
+//							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
+//								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
+//								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
+//								isNew : false,
+//								geometry : id.substring(getPosition(id, "_", 4) + 1),
+//								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
+//						});
+//					} else if (format === "dxf") {
+//						layer = new gb.layer.LayerInfo({
+//							name : sourceLayer.get("name"),
+//							id : id,
+//							format : format,
+//							epsg : data2[i].srs,
+//							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
+//								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
+//								isNew : false,
+//								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
+//								isNew : false,
+//								geometry : id.substring(getPosition(id, "_", 4) + 1),
+//								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
+//						});
+//					} else if (format === "shp") {
+//						layer = new gb.layer.LayerInfo({
+//							name : sourceLayer.get("name"),
+//							id : id,
+//							format : format,
+//							epsg : data2[i].srs,
+//							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
+//								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
+//								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
+//								isNew : false,
+//								geometry : id.substring(getPosition(id, "_", 4) + 1),
+//								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
+//						});
+//					}
+//					ogit["information"] = layer;
+//					console.log(ogit["attribute"]);
+//					console.log("source injected");
+//					if (typeof callback === "function") {
+//						callback(source);
+//					}
+//				}
+//				$("body").css("cursor", "default");
+//			}
+//		}
+//	});
+//};
 
 /**
- * 베이스 타입 레이어에 소스를 입력한다.
+ * ol.Map 객체를 설정한다.
  * 
- * @method setWMSSource(layer)
- * @param {ol.layer.Base}
+ * @method gb.edit.EditingTool#setMap
+ * @function
+ * @param {ol.Map}
+ *            map - EditingTool을 적용할 ol Map 객체
  */
-gb.header.EditingTool.prototype.setWMSSource = function(sourceLayer, callback) {
-	var that = this;
-	if (sourceLayer instanceof ol.layer.Vector || sourceLayer instanceof ol.layer.Group) {
-		return;
-	}
-	var arr = {
-			"geoLayerList" : [ sourceLayer.get("id") ]
-	}
-	var names = [];
-	// console.log(JSON.stringify(arr));
-
-	$.ajax({
-		url : this.layerInfo,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		cache : false,
-		data : JSON.stringify(arr),
-		beforeSend : function() { // 호출전실행
-			$("body").css("cursor", "wait");
-		},
-		traditional : true,
-		success : function(data2, textStatus, jqXHR) {
-			console.log(data2);
-			if (Array.isArray(data2)) {
-				for (var i = 0; i < 1; i++) {
-					var source = new ol.source.TileWMS({
-						url : this.imageTile,
-						params : {
-							'LAYERS' : data2[i].lName,
-							'TILED' : true,
-							'FORMAT' : 'image/png8',
-							'VERSION' : '1.1.0',
-							'CRS' : that.getMap().getView().getProjection().getCode(),
-							'SRS' : that.getMap().getView().getProjection().getCode(),
-							'BBOX' : data2[i].nbBox.minx.toString() + "," + data2[i].nbBox.miny.toString() + ","
-							+ data2[i].nbBox.maxx.toString() + "," + data2[i].nbBox.maxy.toString()
-						},
-						serverType : 'geoserver'
-					});
-					sourceLayer.setSource(source);
-					var ogit = sourceLayer.get("git");
-					ogit["attribute"] = data2[i].attInfo;
-					ogit["geometry"] = data2[i].geomType;
-					var getPosition = function(str, subString, index) {
-						return str.split(subString, index).join(subString).length;
-					};
-					var id = sourceLayer.get("id");
-					var format = id.substring((getPosition(id, "_", 1) + 1), getPosition(id, "_", 2));
-					var layer;
-					if (format === "ngi") {
-						layer = new gb.layer.LayerInfo({
-							name : sourceLayer.get("name"),
-							id : id,
-							format : format,
-							epsg : data2[i].srs,
-							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
-								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
-								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
-								isNew : false,
-								geometry : id.substring(getPosition(id, "_", 4) + 1),
-								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
-						});
-					} else if (format === "dxf") {
-						layer = new gb.layer.LayerInfo({
-							name : sourceLayer.get("name"),
-							id : id,
-							format : format,
-							epsg : data2[i].srs,
-							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
-								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
-								isNew : false,
-								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
-								isNew : false,
-								geometry : id.substring(getPosition(id, "_", 4) + 1),
-								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
-						});
-					} else if (format === "shp") {
-						layer = new gb.layer.LayerInfo({
-							name : sourceLayer.get("name"),
-							id : id,
-							format : format,
-							epsg : data2[i].srs,
-							mbound : [ [ data2[i].nbBox.minx.toString(), data2[i].nbBox.miny.toString() ],
-								[ data2[i].nbBox.maxx.toString(), data2[i].nbBox.maxy.toString() ] ],
-								lbound : [ [ 122.71, 28.6 ], [ 134.28, 40.27 ] ],
-								isNew : false,
-								geometry : id.substring(getPosition(id, "_", 4) + 1),
-								sheetNum : id.substring((getPosition(id, "_", 2) + 1), getPosition(id, "_", 3))
-						});
-					}
-					ogit["information"] = layer;
-					console.log(ogit["attribute"]);
-					console.log("source injected");
-					if (typeof callback === "function") {
-						callback(source);
-					}
-				}
-				$("body").css("cursor", "default");
-			}
-		}
-	});
-};
-/**
- * ol.Map을 입력한다.
- * 
- * @method setMap(map)
- * @param {ol.layer.Base}
- */
-gb.header.EditingTool.prototype.setMap = function(map) {
+gb.edit.EditingTool.prototype.setMap = function(map) {
 	this.map = map;
 }
 /**
- * ol.Map을 반환한다.
+ * ol.Map 객체를 반환한다.
  * 
- * @method getMap(map)
- * @return {ol.layer.Base}
+ * @method gb.edit.EditingTool#getMap
+ * @function
+ * @return {ol.Map}
  */
-gb.header.EditingTool.prototype.getMap = function() {
+gb.edit.EditingTool.prototype.getMap = function() {
 	return this.map;
 }
 /**
- * String인지 검사한다.
+ * String 타입인지 검사한다.
  * 
- * @method isString()
- * @param {mixed}
- *            va
- * @return {Boolean} is String?
+ * @method gb.edit.EditingTool#isString
+ * @function
+ * @param {string}
+ *            va - 타입 검사를 수행할 값
+ * @return {boolean} 타입이 적합할 시 True 반환, 적합하지않을 시 False반환
  */
-gb.header.EditingTool.prototype.isString = function(va) {
+gb.edit.EditingTool.prototype.isString = function(va) {
 	var result = false;
 	if (typeof va === "string") {
 		result = true;
@@ -2326,14 +2508,15 @@ gb.header.EditingTool.prototype.isString = function(va) {
 	return result;
 }
 /**
- * Integer인지 검사한다.
+ * Integer 타입인지 검사한다.
  * 
- * @method isString()
- * @param {mixed}
- *            va
- * @return {Boolean} is Integer?
+ * @method gb.edit.EditingTool#isInteger
+ * @function
+ * @param {string}
+ *            va - 타입 검사를 수행할 값
+ * @return {boolean} 타입이 적합할 시 True 반환, 적합하지않을 시 False반환
  */
-gb.header.EditingTool.prototype.isInteger = function(va) {
+gb.edit.EditingTool.prototype.isInteger = function(va) {
 	var num = /^-?[0-9]+$/;
 	if (typeof va === "string") {
 		return num.test(va);
@@ -2341,14 +2524,15 @@ gb.header.EditingTool.prototype.isInteger = function(va) {
 	return false;
 }
 /**
- * Double인지 검사한다.
+ * Double 타입인지 검사한다.
  * 
- * @method isDouble()
- * @param {mixed}
- *            va
- * @return {Boolean} is Double?
+ * @method gb.edit.EditingTool#isDouble
+ * @function
+ * @param {string}
+ *            va - 타입 검사를 수행할 값
+ * @return {boolean} 타입이 적합할 시 True 반환, 적합하지않을 시 False반환
  */
-gb.header.EditingTool.prototype.isDouble = function(va) {
+gb.edit.EditingTool.prototype.isDouble = function(va) {
 	var num = /^[-+]?[0-9]*\.?[0-9]+$/;
 	if (typeof va === "string") {
 		return num.test(va);
@@ -2356,14 +2540,15 @@ gb.header.EditingTool.prototype.isDouble = function(va) {
 	return false;
 }
 /**
- * Boolean인지 검사한다.
+ * Boolean 타입인지 검사한다.
  * 
- * @method isBoolean()
- * @param {mixed}
- *            va
- * @return {Boolean} is Boolean?
+ * @method gb.edit.EditingTool#isBoolean
+ * @function
+ * @param {string}
+ *            va - 타입 검사를 수행할 값
+ * @return {boolean} 타입이 적합할 시 True 반환, 적합하지않을 시 False반환
  */
-gb.header.EditingTool.prototype.isBoolean = function(va) {
+gb.edit.EditingTool.prototype.isBoolean = function(va) {
 	var result = false;
 	if (va == "true" || va == "false") {
 		result = true;
@@ -2371,14 +2556,15 @@ gb.header.EditingTool.prototype.isBoolean = function(va) {
 	return result;
 }
 /**
- * Date인지 검사한다.
+ * Date 타입인지 검사한다.
  * 
- * @method isDate()
- * @param {mixed}
- *            va
- * @return {Boolean} is Date?
+ * @method gb.edit.EditingTool#isDate
+ * @function
+ * @param {string}
+ *            va - 타입 검사를 수행할 값
+ * @return {boolean} 타입이 적합할 시 True 반환, 적합하지않을 시 False반환
  */
-gb.header.EditingTool.prototype.isDate = function(va) {
+gb.edit.EditingTool.prototype.isDate = function(va) {
 	var result = false;
 	if (typeof va === "string") {
 		if ((new Date(va)).getTime() > 0) {
@@ -2388,12 +2574,15 @@ gb.header.EditingTool.prototype.isDate = function(va) {
 	return result;
 }
 /**
- * 스냅핑 레이어를 설정한다.
+ * 레이어에 스냅핑 기능을 적용시킨다.
  * 
- * @method addSnappingLayer()
+ * @method gb.edit.EditingTool#addSnappingLayer
+ * @function
  * @param {ol.layer.Base}
+ *            layer - 스냅핑 기능을 적용할 레이어. 그룹레이어 입력 시 하위의 모든 레이어에 스냅핑 기능 적용
+ * @return {boolean} 성공적으로 스냅핑 기능 적용 시 True 반환, 실패 시 False반환
  */
-gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
+gb.edit.EditingTool.prototype.addSnappingLayer = function(layer) {
 	var success = false;
 	var array = undefined;
 	var git = undefined;
@@ -2448,12 +2637,15 @@ gb.header.EditingTool.prototype.addSnappingLayer = function(layer) {
 	return success;
 }
 /**
- * 스냅핑 레이어를 삭제한다.
+ * 레이어의 스냅핑 기능을 해제시킨다.
  * 
- * @method removeSnappingLayer()
+ * @method gb.edit.EditingTool#removeSnappingLayer
+ * @function
  * @param {ol.layer.Base}
+ *            layer - 스냅핑 기능을 해제시킬 레이어. 그룹레이어 입력시 하위의 모든 레이어 스냅핑 기능 해제
+ * @return {boolean} 성공적으로 스냅핑 기능 해제 시 True 반환, 실패 시 False반환
  */
-gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
+gb.edit.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	var that = this;
 	var success = false;
 	var jstree = this.otree ? this.otree.getJSTree() : undefined;
@@ -2519,12 +2711,14 @@ gb.header.EditingTool.prototype.removeSnappingLayer = function(layer) {
 	return success;
 }
 /**
- * 스냅핑 레이어를 로드한다.
+ * 현재 맵에서 보여지는 범위에 있는 스냅핑 기능이 적용된 레이어들의 모든 Feature들을 스냅핑 Source에 추가시킨다.
  * 
- * @method addSnappingLayer()
- * @param {ol.layer.Base}
+ * @method gb.edit.EditingTool#loadSnappingLayer
+ * @function
+ * @param {Array.<number>}
+ *            extent - 스냅핑 기능을 적용시킬 범위
  */
-gb.header.EditingTool.prototype.loadSnappingLayer = function(extent) {
+gb.edit.EditingTool.prototype.loadSnappingLayer = function(extent) {
 	var that = this;
 	that.snapSource.clear();
 
@@ -2537,12 +2731,14 @@ gb.header.EditingTool.prototype.loadSnappingLayer = function(extent) {
 	}
 };
 /**
- * zoom to fit
+ * 레이어 최대 범위에 맞춰 현재 맵 시점을 이동시킨다.
  * 
- * @method zoomToFit()
+ * @method gb.edit.EditingTool#zoomToFit
+ * @function
  * @param {ol.layer.Base}
+ *            layer - 시점 이동할 레이어
  */
-gb.header.EditingTool.prototype.zoomToFit = function(layer) {
+gb.edit.EditingTool.prototype.zoomToFit = function(layer) {
 	var that = this;
 	if (layer instanceof ol.layer.Group) {
 		var extent = ol.extent.createEmpty();
@@ -2597,7 +2793,7 @@ gb.header.EditingTool.prototype.zoomToFit = function(layer) {
 			}
 		};
 		if (typeof source === "undefined" || source === null) {
-			this.setWMSSource(layer, func);
+//			this.setWMSSource(layer, func);
 		} else if (source instanceof ol.source.TileWMS) {
 			func(source);
 		}
@@ -2605,14 +2801,62 @@ gb.header.EditingTool.prototype.zoomToFit = function(layer) {
 	return;
 };
 
-// hochul
-gb.header.EditingTool.prototype.addInteraction = function(options){
+/**
+ * EditingTool에 새로운 Interaction을 추가한다.
+ * @example
+ * // EditingTool 객체 선언
+ * var edit = new gb.header.EditingTool({
+ *  ...
+ * });
+ * 
+ * // 홀 폴리곤 그리기 객체 선언
+ * var hole = new gb.interaction.HoleDraw({
+ *  selected : epan.selected
+ * });
+ * 
+ * // EditingTool에 홀 폴리곤 그리기 기능 추가
+ * edit.addInteraction({
+ *  icon : "fab fa-bitbucket",
+ *  content : "Hole",
+ *  interaction : hole,
+ *  selectActive : true,
+ *  "float" : "right",
+ *  clickEvent : function() {
+ *   console.log("Hole draw");
+ *  }
+ * });
+ * @method gb.edit.EditingTool#addInteraction
+ * @function
+ * @param {Object}
+ *            options - Interaction 추가 옵션
+ * @param {ol.interaction.Interaction}
+ *            options.interaction - 추가하려는 Interaction 객체
+ * @param {string}
+ *            [options.content=Unknown] - 작업 버튼에 표시될 작업명
+ * @param {string}
+ *            [options.icon=fas fa-asterisk] - 작업 버튼에 표시될 아이콘. fontawesome 참조({@link https://fontawesome.com/})
+ * @param {function}
+ *            [options.clickEvent] - 작업 활성화 버튼 클릭 시 실행될 함수
+ * @param {string}
+ *            [options.className] - 작업 버튼 태그 Class명 설정
+ * @param {Object}
+ *            [options.color] - Interaction 추가 옵션
+ * @param {boolean}
+ *            [options.selectActive=false] - ol.interaction.Select 객체와의 연동 여부. True 입력 시 선택된 Feature가 있을 시에만 작업이 활성화됨
+ * @param {string}
+ *            [options.float] - EditingTool 작업표시줄에서의 float 스타일
+ */
+gb.edit.EditingTool.prototype.addInteraction = function(options){
 	function adjustStyle(element, style){
 		for(var content in style){
 			element.css(content, style[content]);
 		}
 	}
 	var interaction = options.interaction;
+	if(!(interaction instanceof ol.interaction.Interaction)){
+		console.error("gb.edit.EditingTool: The type of 'interaction' must be an ol.interaction.Interaction");
+		return;
+	}
 	this.customInteractions.push(interaction);
 	this.map.addInteraction(interaction);
 	interaction.setActive(false);
@@ -2714,8 +2958,17 @@ gb.header.EditingTool.prototype.addInteraction = function(options){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interaction, select){
+/**
+ * 설정한 interaction 객체를 제외한 모든 interaction 객체를 비활성화한다.
+ * 
+ * @method gb.edit.EditingTool#deactiveAnotherInteraction
+ * @function
+ * @param {ol.interaction.Interaction}
+ *            interaction - 비활성화 시키지않을 interaction 객체
+ * @param {boolean}
+ *            select - ture 설정 시 선택된 객체들을 해제하지않음. false 설정 시 현재 선택된 객체들을 해제.
+ */
+gb.edit.EditingTool.prototype.deactiveAnotherInteraction = function(interaction, select){
 	var bool = select || false;
 	for(var i in this.interaction){
 		if(interaction !== this.interaction[i] && !!this.interaction[i]){
@@ -2744,8 +2997,16 @@ gb.header.EditingTool.prototype.deactiveAnotherInteraction = function(interactio
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
+/**
+ * Openlayers Map 객체에 포함되어있는 모든 Tile 레이어들을 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getTileLayersInMap
+ * @function
+ * @param {ol.Map}
+ *            map - 오픈레이어스 맵 객체
+ * @return {Array.<ol.layer.Tile>}
+ */
+gb.edit.EditingTool.prototype.getTileLayersInMap = function(map){
 	var tileLayers = [];
 	var wmsLayers;
 	
@@ -2822,8 +3083,18 @@ gb.header.EditingTool.prototype.getTileLayersInMap = function(map){
 	return tileLayers;
 }
 
-// yijun
-gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection, dish){
+/**
+ * render 모드가 Vector인 모든 Vector 레이어들을 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getVectorVectorLayersInMap
+ * @function
+ * @param {ol.Collection.<ol.layer.Base>}
+ *            collection - Vector 레이어를 가지고 있는 ol.Collection 객체
+ * @param {Array}
+ *            dish - Vector 레이어들을 담을 배열 객체
+ * @return {Array.<ol.layer.Vector>}
+ */
+gb.edit.EditingTool.prototype.getVectorVectorLayersInMap = function(collection, dish){
 	var that = this;
 	var source = undefined;
 	var temp = undefined;
@@ -2846,8 +3117,18 @@ gb.header.EditingTool.prototype.getVectorVectorLayersInMap = function(collection
 	return dish;
 }
 
-// yijun
-gb.header.EditingTool.prototype.getImageVectorLayersInMap = function(collection, dish){
+/**
+ * render 모드가 Image인 모든 Vector 레이어들을 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getImageVectorLayersInMap
+ * @function
+ * @param {ol.Collection.<ol.layer.Base>}
+ *            collection - Vector 레이어를 가지고 있는 ol.Collection 객체
+ * @param {Array}
+ *            dish - Vector 레이어들을 담을 배열 객체
+ * @return {Array.<ol.layer.Vector>}
+ */
+gb.edit.EditingTool.prototype.getImageVectorLayersInMap = function(collection, dish){
 	var that = this;
 	collection.forEach(function(layer){
 		if (layer instanceof ol.layer.Vector) {
@@ -2866,8 +3147,15 @@ gb.header.EditingTool.prototype.getImageVectorLayersInMap = function(collection,
 	return dish;
 }
 
-// hochul
-gb.header.EditingTool.prototype.loadWFS_ = function(){
+/**
+ * Geoserver로부터 Import된 모든 레이어들에 WFS를 요청하여 Openlayer Map에 Vector 레이어를 생성한다.
+ * gb.tree.OpenLayers 객체가 필수적으로 설정되어 있어야만 한다.
+ * 
+ * @method gb.edit.EditingTool#loadWFS_
+ * @function
+ * @private
+ */
+gb.edit.EditingTool.prototype.loadWFS_ = function(){
 	var that = this;
 	var tileLayers = that.getTileLayersInMap(that.map);
 	var tree = this.otree.getJSTree();
@@ -2877,9 +3165,12 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 	for(var i in tileLayers){
 		if(typeof tileLayers[i].get("git") === "object"){
 			if(!this.getVectorSourceOfServer(tileLayers[i].get("treeid"))){
+				// 레이어가 요청된 적이 있는지 확인. 각 레이어들은 tree ID로 구분.
 				if(tileLayers[i] instanceof ol.layer.Group){
 					continue;
 				}
+				
+				// Vector source를 새로 요청하여 gb.edit.EditingTool~vectorSourcesOfServer_ 변수에 저장
 				vectorSource = this.setVectorSourceOfServer(tileLayers[i].get("git"), tileLayers[i].get("id"), 
 						tileLayers[i].get("name"), tileLayers[i].get("treeid"), tileLayers[i].getSource().getParams()["SLD_BODY"]);
 				selectedLayer = $(this.treeElement).jstreeol3("get_selected_layer");
@@ -2932,8 +3223,14 @@ gb.header.EditingTool.prototype.loadWFS_ = function(){
 //	}
 }
 
-// yijun
-gb.header.EditingTool.prototype.moveUpEditingLayer_ = function(){
+/**
+ * 현재 편집중인 레이어의 z-index를 최상위로 설정한다.
+ * 
+ * @method gb.edit.EditingTool#moveUpEditingLayer_
+ * @function
+ * @private
+ */
+gb.edit.EditingTool.prototype.moveUpEditingLayer_ = function(){
 	var layers  = $(this.treeElement).jstreeol3("get_selected_layer");
 	var tree = this.otree.getJSTree();
 	var layer;
@@ -2951,8 +3248,14 @@ gb.header.EditingTool.prototype.moveUpEditingLayer_ = function(){
 	}
 };
 
-// yijun
-gb.header.EditingTool.prototype.loadVector_ = function(){
+/**
+ * OpenLayers Tree에 로드된 모든 Vector 레이어들의 render mode 및 z-index를 설정한다.
+ * 
+ * @method gb.edit.EditingTool#loadVector_
+ * @function
+ * @private
+ */
+gb.edit.EditingTool.prototype.loadVector_ = function(){
 	var rootLayers =  this.map.getLayers();
 	var dish = [];
 	var vecLayers = this.getImageVectorLayersInMap(rootLayers, dish);
@@ -3008,8 +3311,15 @@ gb.header.EditingTool.prototype.loadVector_ = function(){
 //	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
+/**
+ * WFS 레이어들의 가시화 여부를 설정한다.
+ * 
+ * @method gb.edit.EditingTool#setVisibleWFS
+ * @function
+ * @param {boolean}
+ *            bool - 가시화 여부
+ */
+gb.edit.EditingTool.prototype.setVisibleWFS = function(bool){
 	var tree = this.otree.getJSTree();
 	var set;
 	if(bool){
@@ -3044,8 +3354,15 @@ gb.header.EditingTool.prototype.setVisibleWFS = function(bool){
 //	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
+/**
+ * WMS 레이어들의 가시화 여부를 설정한다.
+ * 
+ * @method gb.edit.EditingTool#setVisibleWMS
+ * @function
+ * @param {boolean}
+ *            bool - 가시화 여부
+ */
+gb.edit.EditingTool.prototype.setVisibleWMS = function(bool){
 //	var tileLayers = this.getTileLayersInMap(this.map);
 	var tree = this.otree.getJSTree();
 //	
@@ -3122,8 +3439,15 @@ gb.header.EditingTool.prototype.setVisibleWMS = function(bool){
 	// wms 성능 고도화 끝
 }
 
-// yijun
-gb.header.EditingTool.prototype.setVisibleVectorVector = function(bool){
+/**
+ * render 모드가 Vector인 Vector 레이어들의 가시화 여부를 설정한다.
+ * 
+ * @method gb.edit.EditingTool#setVisibleVectorVector
+ * @function
+ * @param {boolean}
+ *            bool - 가시화 여부
+ */
+gb.edit.EditingTool.prototype.setVisibleVectorVector = function(bool){
 	var rootLayers = this.map.getLayers();
 	var dish = [];
 	var source = undefined;
@@ -3151,8 +3475,15 @@ gb.header.EditingTool.prototype.setVisibleVectorVector = function(bool){
 	}
 }
 
-// yijun
-gb.header.EditingTool.prototype.setVisibleImageVector = function(bool){
+/**
+ * render 모드가 Image인 Vector 레이어들의 가시화 여부를 설정한다.
+ * 
+ * @method gb.edit.EditingTool#setVisibleImageVector
+ * @function
+ * @param {boolean}
+ *            bool - 가시화 여부
+ */
+gb.edit.EditingTool.prototype.setVisibleImageVector = function(bool){
 	var rootLayers = this.map.getLayers();
 	var dish = [];
 	var vecLayers = this.getImageVectorLayersInMap(rootLayers, dish);
@@ -3169,8 +3500,13 @@ gb.header.EditingTool.prototype.setVisibleImageVector = function(bool){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.refreshTileLayer = function(){
+/**
+ * 모든 Tile 레이어를 refresh 한다.
+ * 
+ * @method gb.edit.EditingTool#refreshTileLayer
+ * @function
+ */
+gb.edit.EditingTool.prototype.refreshTileLayer = function(){
 	var tileLayers = this.getTileLayersInMap(this.map);
 
 	for(var i = 0; i < tileLayers.length; i++){
@@ -3180,8 +3516,13 @@ gb.header.EditingTool.prototype.refreshTileLayer = function(){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.refreshSources = function(){
+/**
+ * 모든 Vector 레이어를 refresh 한다.
+ * 
+ * @method gb.edit.EditingTool#refreshSources
+ * @function
+ */
+gb.edit.EditingTool.prototype.refreshSources = function(){
 	var source = this.getVectorSourcesOfServer();
 
 	for(var i = 0; i < source.length; i++){
@@ -3189,8 +3530,32 @@ gb.header.EditingTool.prototype.refreshSources = function(){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId, sld){
+/**
+ * Geoserver 로부터 Import된 레이어들의 WFS 데이터로부터 vector source 객체를 생성하여 변수에 저장한다.
+ * 
+ * @method gb.edit.EditingTool#setVectorSourceOfServer
+ * @function
+ * @param {Object}
+ *            obj - Geoserver 레이어 정보 객체
+ * @param {string}
+ *            obj.geoserver - geoserver명
+ * @param {string}
+ *            obj.workspace - workspace명
+ * @param {boolean}
+ *            obj.labelActive - label 스타일 활성화 여부
+ * @param {Object}
+ *            obj.labelOptions - label 스타일 옵션({@link gb.layer.Label})
+ * @param {string}
+ *            layerId - 레이어 아이디
+ * @param {string}
+ *            layerName - 레이어명
+ * @param {string}
+ *            treeId - Openlayer Tree 아이디
+ * @param {string}
+ *            sld - 레이어 스타일 SLD
+ * @return {ol.source.Vector|null} vector source 객체가 이미 저장되어있거나 잘못된 요청일 경우 null 값 반환
+ */
+gb.edit.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId, layerName, treeId, sld){
 	var git = obj || {};
 	var layerid = layerId;
 	var layername = layerName;
@@ -3284,8 +3649,23 @@ gb.header.EditingTool.prototype.setVectorSourceOfServer = function(obj, layerId,
 	return null;
 }
 
-// yijun
-gb.header.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId, layerName, treeId){
+/**
+ * Openlayers Map에 로드되어있는 Vector 레이어들에 대하여 
+ * render 모드가 "Vector"인 vector source 객체를 생성하여 변수에 저장한다.
+ * 
+ * @method gb.edit.EditingTool#setVectorSourceOfVector
+ * @function
+ * @param {Object}
+ *            obj - 벡터 레이어 정보 객체
+ * @param {string}
+ *            layerId - 레이어 아이디
+ * @param {string}
+ *            layerName - 레이어명
+ * @param {string}
+ *            treeId - Openlayer Tree 노드 아이디
+ * @return {ol.source.Vector|null} vector source 객체가 이미 저장되어있거나 잘못된 요청일 경우 null 값 반환
+ */
+gb.edit.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId, layerName, treeId){
 	var git = obj || {};
 	var layerid = layerId;
 	var layername = layerName;
@@ -3308,8 +3688,6 @@ gb.header.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId,
 		}
 // layer.setMap(this.map);
 
-		
-
 		git.layerID = layerid;
 		git.tempLayer = layer;
 		git.treeID = treeid;
@@ -3320,13 +3698,27 @@ gb.header.EditingTool.prototype.setVectorSourceOfVector = function(obj, layerId,
 	return null;
 }
 
-// hochul
-gb.header.EditingTool.prototype.getVectorSourceOfServer = function(treeId){
+/**
+ * Geoserver로부터 Import된 레이어의 Vector source를 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getVectorSourceOfServer
+ * @function
+ * @param {string}
+ *            treeId - Openlayer Tree 노드 아이디
+ * @return {ol.source.Vector|undifined} vector source 가 없을 경우 undifined 값 반환
+ */
+gb.edit.EditingTool.prototype.getVectorSourceOfServer = function(treeId){
 	return this.vectorSourcesOfServer_[treeId];
 }
 
-// hochul
-gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
+/**
+ * Geoserver로부터 Import된 모든 레이어들의 Vector source를 배열 형태로 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getVectorSourcesOfServer
+ * @function
+ * @return {Array.<ol.source.Vector>}
+ */
+gb.edit.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	var a = [];
 	for(var i in this.vectorSourcesOfServer_){
 		a.push(this.vectorSourcesOfServer_[i]);
@@ -3334,13 +3726,27 @@ gb.header.EditingTool.prototype.getVectorSourcesOfServer = function(){
 	return a;
 }
 
-// yijun
-gb.header.EditingTool.prototype.getVectorSourceOfVector = function(treeId){
+/**
+ * 특정 벡터 레이어의 Vector source를 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getVectorSourceOfVector
+ * @function
+ * @param {string}
+ *            treeId - Openlayer Tree 노드 아이디
+ * @return {ol.source.Vector|undifined} vector source 가 없을 경우 undifined 값 반환
+ */
+gb.edit.EditingTool.prototype.getVectorSourceOfVector = function(treeId){
 	return this.vectorSourcesOfVector_[treeId];
 }
 
-// yijun
-gb.header.EditingTool.prototype.getVectorSourcesOfVector = function(){
+/**
+ * 모든 벡터 레이어들의 Vector source를 배열 형태로 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getVectorSourcesOfVector
+ * @function
+ * @return {Array.<ol.source.Vector>}
+ */
+gb.edit.EditingTool.prototype.getVectorSourcesOfVector = function(){
 	var a = [];
 	for(var i in this.vectorSourcesOfVector_){
 		a.push(this.vectorSourcesOfVector_[i]);
@@ -3348,8 +3754,13 @@ gb.header.EditingTool.prototype.getVectorSourcesOfVector = function(){
 	return a;
 }
 
-// hochul
-gb.header.EditingTool.prototype.editToolOpen = function(){
+/**
+ * EditingTool 작업표시줄을 생성한다.
+ * 
+ * @method gb.edit.EditingTool#editToolOpen
+ * @function
+ */
+gb.edit.EditingTool.prototype.editToolOpen = function(){
 	// openlayers tree wms layer 보기/숨김 기능 비활성화
 	this.otree.getJSTree().setDisplayIndex(false);
 	
@@ -3385,8 +3796,13 @@ gb.header.EditingTool.prototype.editToolOpen = function(){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.editToolClose = function(){
+/**
+ * EditingTool 작업표시줄을 삭제한다.
+ * 
+ * @method gb.edit.EditingTool#editToolClose
+ * @function
+ */
+gb.edit.EditingTool.prototype.editToolClose = function(){
 	if(this.featureRecord.isEditing()){
 		this.featureRecord.save(this);
 		return;
@@ -3448,8 +3864,13 @@ gb.header.EditingTool.prototype.editToolClose = function(){
 	this.vectorSourcesOfVector_ = {};
 }
 
-// hochul
-gb.header.EditingTool.prototype.editToolToggle = function(){
+/**
+ * EditingTool 작업표시줄 토글
+ * 
+ * @method gb.edit.EditingTool#editToolToggle
+ * @function
+ */
+gb.edit.EditingTool.prototype.editToolToggle = function(){
 	if(this.getActiveTool()){
 		this.editToolClose();
 	} else {
@@ -3457,8 +3878,16 @@ gb.header.EditingTool.prototype.editToolToggle = function(){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
+/**
+ * 작업표시줄을 비활성화 시키고 도움말을 생성한다.
+ * False값을 설정하면 작업표시줄이 다시 활성화 된다.
+ * 
+ * @method gb.edit.EditingTool#displayEditZoomHint
+ * @function
+ * @param {boolean}
+ *            bool - 줌 레벨 도움말 생성 및 삭제
+ */
+gb.edit.EditingTool.prototype.displayEditZoomHint = function(bool){
 	if(bool){
 		if(this.headerTag.find(".edit-zoom-hint").length === 0){
 			this.ulTagLeft.css("display", "none");
@@ -3500,7 +3929,7 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 				var area = ol.sphere.getArea(geom, {projection: view.getProjection().getCode()});
 				area = Math.round(area/1000000*100)/100;
 				
-				var zoomSqrt = Math.sqrt((gb.header.ACTIVEAREA)/area);
+				var zoomSqrt = Math.sqrt((gb.edit.ACTIVEAREA)/area);
 				var zoomExtent = [extent[0]*zoomSqrt, extent[1]*zoomSqrt, extent[2]*zoomSqrt, extent[3]*zoomSqrt];
 				
 				view.fit(zoomExtent);
@@ -3526,13 +3955,25 @@ gb.header.EditingTool.prototype.displayEditZoomHint = function(bool){
 	}
 }
 
-// hochul
-gb.header.EditingTool.prototype.getSelectSources = function(){
+/**
+ * 현재 편집중인 레이어의 vector source 객체를 반환한다.
+ * 
+ * @method gb.edit.EditingTool#getSelectSources
+ * @function
+ * @return {ol.source.Vector|undifined} vector source 가 없을 경우 undifined 값 반환
+ */
+gb.edit.EditingTool.prototype.getSelectSources = function(){
 	return this.selectSources;
 }
 
-//hochul
-gb.header.EditingTool.prototype.checkActiveTool = function(){
+/**
+ * 현재 지도의 줌 레벨이 EditingTool을 활성화할 수 있는 레벨인지 여부를 boolean값으로 반환한다.
+ * True 값이 반환될 시에 작업표시줄 활성화가 가능하다.
+ * @method gb.edit.EditingTool#checkActiveTool
+ * @function
+ * @return {boolean}
+ */
+gb.edit.EditingTool.prototype.checkActiveTool = function(){
 	var map = this.map;
 	var view = map.getView();
 	var extent = view.calculateExtent();
@@ -3542,7 +3983,7 @@ gb.header.EditingTool.prototype.checkActiveTool = function(){
 	var geom = new ol.geom.Polygon(coordinates);
 	var area = ol.sphere.getArea(geom, {projection: view.getProjection().getCode()});
 	var active;
-	if((Math.round(area/1000000*100)/100) <= gb.header.ACTIVEAREA){
+	if((Math.round(area/1000000*100)/100) <= gb.edit.ACTIVEAREA){
 		active = true;
 	} else {
 		active = false;

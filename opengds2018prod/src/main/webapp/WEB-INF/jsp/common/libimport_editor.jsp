@@ -100,6 +100,10 @@
 <!-- gb.modal -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
+<!-- gb.header -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/header/base.js"></script>
+<!-- gb.footer -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/footer/base.js"></script>
 <!-- gb panel  base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
 <!-- gb.style -->
@@ -122,13 +126,8 @@
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/edithistory.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/undo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
-<!-- gb.footer -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/featureList.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/command.js"></script>
-<!-- gb.header -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/header/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/header/editingtool.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/editingtool.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/command.js"></script>
 <!-- gb.interaction -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/overriding/olinteractiondraw.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/interaction/multitransform.js"></script>
@@ -138,7 +137,6 @@
 <!-- gb.geocoder -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/ol-geocoder.css">
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
 <!-- gb.geoserver.uploadjson-->
@@ -146,5 +144,6 @@
 <!-- gb.layer-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/attributeinfo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/featureList.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/imageLayer.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/label.js"></script>

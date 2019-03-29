@@ -7,70 +7,28 @@ if (!gb.layer)
 (function($){
 	
 	/**
-	 * Add Image Layer
-	 * 
-	 * @author hochul.kim
-	 * @date 2018. 10. 26
+	 * @classdesc
+	 * 이미지 레이어 추가 기능. 로컬에 있는 이미지 파일을 불러와 Openlayers Map에 이미지 레이어 객체로 추가한다.
+	 * @class gb.layer.ImageLayer
+	 * @memberof gb.layer
+	 * @constructor
+	 * @param {Object} obj - gb.layer.Navigator 생성 옵션
+	 * @param {ol.Map} obj.map - 기능을 적용할 Openlayers Map 객체
+	 * @param {string|number} obj.width - 이미지 넓이
+	 * @param {string|number} obj.height - 이미지 높이
+	 * @param {string} obj.url - 이미지 파일 URL
+	 * @param {string} [obj.title="New Image"] - 이미지 제목
+	 * @param {string} [obj.baseDiv=".bind > div:last-child"] - Image Layer 수정을 위한 메뉴바 생성 위치 jQuery 선택자
+	 * @param {gb.tree.OpenLayers} [obj.jstree] - Openlayers JSTree 객체
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 26
 	 * @version 0.01
 	 */
 	gb.layer.ImageLayer = function(obj) {
 		var that = this;
-		var options = obj;
-		
-		/**
-		 * ol.Map 객체
-		 * @type {ol.Map}
-		 * @private
-		 */
-		this.map = options.map || undefined;
-		
-		/**
-		 * Image Width
-		 * @type {string}
-		 * @private
-		 */
-		this.imageWidth = options.width || undefined;
-		
-		/**
-		 * Image Height
-		 * @type {string}
-		 * @private
-		 */
-		this.imageHeight = options.height || undefined;
-		
-		/**
-		 * Image file url
-		 * @type {string}
-		 * @private
-		 */
-		this.imageURL = options.url || undefined;
-		
-		/**
-		 * Image Title
-		 * 
-		 * @type {String}
-		 * @private
-		 */
-		var title = options.title || "New Image";
-		
-		/**
-		 * Image Layer 수정을 위한 메뉴바 생성 위치
-		 * 
-		 * @type {DOM}
-		 * @private
-		 */
-		this.baseDiv = options.baseDiv ? $(options.baseDiv) : $(".bind > div:last-child");
-		
-		/**
-		 * Openlayers JSTree 객체
-		 * @type {Object}
-		 * @private
-		 */
-		this.jstree = options.jstree || undefined;
 		
 		/**
 		 * Image Layer
-		 * 
 		 * @type {ol.layer.Image}
 		 * @private
 		 */
@@ -79,7 +37,6 @@ if (!gb.layer)
 		/**
 		 * pointer interaction
 		 * image layer scale
-		 * 
 		 * @type {gb.layer.Pointer}
 		 * @private
 		 */
@@ -87,7 +44,6 @@ if (!gb.layer)
 		
 		/**
 		 * Translate Interaction
-		 * 
 		 * @type {ol.interaction.Translate}
 		 * @private
 		 */
@@ -95,7 +51,6 @@ if (!gb.layer)
 		
 		/**
 		 * listener
-		 * 
 		 * @type {Array.<ol.events.Event>}
 		 * @private
 		 */
@@ -126,6 +81,19 @@ if (!gb.layer)
 			})
 		});
 		
+		var options = obj;
+		this.map = options.map || undefined;
+		if(this.map === undefined){
+			console.error("gb.layer.ImageLayer: 'map' is required field");
+			return;
+		}
+		this.imageWidth = options.width || undefined;
+		this.imageHeight = options.height || undefined;
+		this.imageURL = options.url || undefined;
+		var title = options.title || "New Image";
+		this.baseDiv = options.baseDiv ? $(options.baseDiv) : $(".bind > div:last-child");
+		this.jstree = options.jstree || undefined;
+		
 		this.vector.set("git", {
 			"editable" : true,
 			"geometry" : "Polygon",
@@ -142,6 +110,14 @@ if (!gb.layer)
 			}
 		});
 		
+		/**
+		 * Image Layer 생성 영역 그리기 활성 시 실행되는 함수. 이미지 생성 영역을 정하기 위한 Geometry 객체를 생성한다.
+		 * R키를 누른채로 그리면 이미지의 비율에 맞게 그려진 Geometry를 반환한다.
+		 * @function geometryFunction
+		 * @param {Array.<number>} coordinates - 마우스 커서 좌표
+		 * @param {ol.geom.Geometry} geometry - Geometry 객체
+		 * @private
+		 */
 		function geometryFunction(coordinates, geometry){
 			var geometry = geometry;
 			var coordinates = coordinates;
@@ -234,6 +210,11 @@ if (!gb.layer)
 		return this.type_;
 	}
 	
+	/**
+	 * 이미지 레이어 편집 메뉴바를 생성한다. 설정한 엘리먼트의 왼쪽 상단에 표시된다.
+	 * @function gb.layer.ImageLayer#createMenuBar
+	 * @param {DOM} target - 메뉴바를 생성할 element
+	 */
 	gb.layer.ImageLayer.prototype.createMenuBar = function(target){
 		if($.find("#imageLayerMenu").length !== 0){
 			this.removeMenuBar();
@@ -299,6 +280,10 @@ if (!gb.layer)
 		target.append(menu);
 	}
 	
+	/**
+	 * 이미지 레이어 편집 메뉴바를 제거한다.
+	 * @function gb.layer.ImageLayer#removeMenuBar
+	 */
 	gb.layer.ImageLayer.prototype.removeMenuBar = function(){
 		var features = this.vector.getSource().getFeatures();
 		for(var i = 0; i < features.length; i++){
@@ -318,6 +303,11 @@ if (!gb.layer)
 		this.deActiveEdit();
 	}
 	
+	/**
+	 * 선택한 이미지 레이어 편집 기능을 활성화한다.
+	 * @function gb.layer.ImageLayer#activeEdit
+	 * @param {string} str - 편집 기능 종류("move", "scale")
+	 */
 	gb.layer.ImageLayer.prototype.activeEdit = function(str){
 		var editName = str;
 		
@@ -330,6 +320,11 @@ if (!gb.layer)
 		}
 	}
 	
+	/**
+	 * 선택한 이미지 레이어 편집 기능을 비활성화한다.
+	 * @function gb.layer.ImageLayer#deActiveEdit
+	 * @param {string} str - 편집 기능 종류("move", "scale")
+	 */
 	gb.layer.ImageLayer.prototype.deActiveEdit = function(){
 		var that = this;
 		this.map.getInteractions().forEach(function(interaction) {
@@ -339,6 +334,10 @@ if (!gb.layer)
 		});
 	}
 	
+	/**
+	 * 이미지 레이어 move 기능을 활성화한다.
+	 * @function gb.layer.ImageLayer#move
+	 */
 	gb.layer.ImageLayer.prototype.move = function(){
 		var that = this;
 		var features = this.vector.getSource().getFeatures();
@@ -392,6 +391,10 @@ if (!gb.layer)
 		this.map.addInteraction(move);
 	}
 	
+	/**
+	 * 이미지 레이어 scale 기능을 활성화한다.
+	 * @function gb.layer.ImageLayer#scale
+	 */
 	gb.layer.ImageLayer.prototype.scale = function(){
 		var that = this;
 		var features = this.vector.getSource().getFeatures();
@@ -436,8 +439,10 @@ if (!gb.layer)
 		this.map.addInteraction(scale);
 	}
 	
-	/*
+	/**
 	 * Pointer event type
+	 * @type {Object}
+	 * @protected
 	 */
 	gb.layer.PointerEventType = {
 		TRANSFORMSTART : 'transformstart',
@@ -445,9 +450,21 @@ if (!gb.layer)
 		TRANSFORMEND : 'transformend'
 	};
 	
+	/**
+	 * Image Layer의 Pointer 이벤트 객체를 생성한다. Image Layer 편집 기능 중 scale 기능을 위해 사용한다.
+	 * 편집 실행 중 마우스 이벤트 4가지(down, drag, move, up)에 대해 정의한다.
+	 * @class gb.layer.Pointer
+	 * @memberof gb.layer
+	 * @constructor
+	 * @param {Object} opt_options - Pointer 이벤트 객체 생성자 옵션
+	 * @param {ol.Map} opt_options.map - 기능을 적용할 Openlayers Map 객체
+	 * @param {ol.layer.Image} opt_options.imageLayer - Pointer Event를 적용할 Image Layer 객체
+	 * @param {ol.Feature} opt_options.feature - 마우스 이벤트를 적용시킬 feature
+	 * @param {Object} opt_options - Pointer 이벤트 객체 생성자 옵션
+	 */
 	gb.layer.Pointer = function(opt_options){
-		var options = opt_options ? opt_options : {};
-
+		var that = this;
+		
 		ol.interaction.Pointer.call(this, {
 			handleDownEvent : gb.layer.Pointer.prototype.handleDownEvent,
 			handleDragEvent : gb.layer.Pointer.prototype.handleDragEvent,
@@ -456,54 +473,32 @@ if (!gb.layer)
 		});
 		
 		/**
-		 * ol.Map 객체
-		 * 
-		 * @type {ol.Map}
-		 * @private
-		 */
-		this.map = options.map || undefined;
-		
-		/**
-		 * ol.Map 객체
-		 * 
-		 * @type {ol.layer.Image}
-		 * @private
-		 */
-		this.imageLayer = options.imageLayer || undefined;
-		
-		/**
 		 * 현재 커서의 위치를 저장
-		 * 
-		 * @type {<Array>}
+		 * @type {Array.<number>}
 		 * @private
 		 */
 		this.cursorCoordinate_ = null;
 
 		/**
 		 * 이전 커서의 위치를 저장
-		 * 
-		 * @type {<Array>}
+		 * @type {Array.<number>}
 		 * @private
 		 */
 		this.prevCursor_ = null;
-
-		/**
-		 * 마우스 이벤트를 적용시킬 feature를 저장
-		 * 
-		 * @type {ol.Feature}
-		 * @private
-		 */
-		this.feature_ = options.feature;
 		
 		/**
 		 * rotate, scale 함수 parameter 값을 위한 feature의 중점좌표
 		 * 
-		 * @type {<Array>}
+		 * @type {Array.<number>}
 		 * @private
 		 */
 		this.flatInteriorPoint_ = null;
 		
-		var that = this;
+		var options = opt_options ? opt_options : {};
+		this.map = options.map || undefined;
+		this.imageLayer = options.imageLayer || undefined;
+		this.feature_ = options.feature;
+		
 		this.map.on('postcompose', function(evt) {
 			that.map.getInteractions().forEach(function(interaction) {
 				if (interaction instanceof gb.layer.Pointer) {
@@ -518,9 +513,9 @@ if (!gb.layer)
 	
 	/**
 	 * Mouse down 이벤트
-	 * 
+	 * @method gb.layer.Pointer#handleDownEvent
+	 * @param {ol.MapBrowserEvent} evt - 지도 브라우저 이벤트로 방출되는 이벤트 인스턴스
 	 * @return {Boolean} true 반환시 drag squence 시작
-	 * @this {gb.layer.Pointer}
 	 */
 	gb.layer.Pointer.prototype.handleDownEvent = function(evt) {
 		var map = evt.map;
@@ -541,8 +536,8 @@ if (!gb.layer)
 
 	/**
 	 * Mouse Drag 이벤트
-	 * 
-	 * @this {gb.layer.Pointer}
+	 * @method gb.layer.Pointer#handleDragEvent
+	 * @param {ol.MapBrowserEvent} evt - 지도 브라우저 이벤트로 방출되는 이벤트 인스턴스
 	 */
 	gb.layer.Pointer.prototype.handleDragEvent = function(evt) {
 		var cursorPoint = evt.coordinate;
@@ -562,8 +557,8 @@ if (!gb.layer)
 
 	/**
 	 * Mouse Move 이벤트. drag 실행 중에는 실행되지 않는다.
-	 * 
-	 * @this {gb.layer.Pointer}
+	 * @method gb.layer.Pointer#handleMoveEvent
+	 * @param {ol.MapBrowserEvent} evt - 지도 브라우저 이벤트로 방출되는 이벤트 인스턴스
 	 */
 	gb.layer.Pointer.prototype.handleMoveEvent = function(evt) {
 		if (!evt.dragging) {
@@ -593,9 +588,9 @@ if (!gb.layer)
 
 	/**
 	 * Mouse Up 이벤트
-	 * 
+	 * @method gb.layer.Pointer#handleUpEvent
+	 * @param {ol.MapBrowserEvent} evt - 지도 브라우저 이벤트로 방출되는 이벤트 인스턴스
 	 * @return {Boolean} false 반환시 drag squence 종료
-	 * @this {gb.layer.Pointer}
 	 */
 	gb.layer.Pointer.prototype.handleUpEvent = function(evt) {
 		var element = evt.map.getTargetElement();
@@ -610,7 +605,8 @@ if (!gb.layer)
 	/**
 	 * @classdesc Events emitted by {@link gb.interaction.MultiTransform} instances
 	 *            are instances of this type.
-	 * 
+	 * @class gb.layer.Pointer.Event
+	 * @memberof gb.layer.Pointer
 	 * @constructor
 	 * @extends {ol.events.Event}
 	 * @param {ol.interaction.MultiTransformEventType}
@@ -622,32 +618,28 @@ if (!gb.layer)
 	 *            {@link ol.MapBrowserPointerEvent}.
 	 */
 	gb.layer.Pointer.Event = function(type, feature, mapBrowserPointerEvent) {
-
 		//ol.events.Event.call(this, type);
 
 		/**
 		 * The features being modified.
-		 * 
 		 * @type {ol.Feature}
-		 * @api
+		 * @private
 		 */
 		this.feature = feature;
 
 		/**
 		 * Associated {@link ol.MapBrowserEvent}.
-		 * 
 		 * @type {ol.MapBrowserEvent}
-		 * @api
+		 * @private
 		 */
 		this.mapBrowserEvent = mapBrowserPointerEvent;
 	};
 	//ol.inherits(gb.layer.Pointer.Event, ol.events.Event);
 	
 	/**
-	 * 이벤트 영역을 {ol.style.Style}객체로 그려낸다.
-	 * 
-	 * @param {ol.render.Event}
-	 * @this {gb.layer.Pointer}
+	 * 이벤트 영역을 {ol.style.Style} 객체로 그려낸다.
+	 * @method gb.layer.Pointer#drawMbr
+	 * @param {ol.render.Event} evt - 렌더링 이벤트 객체
 	 */
 	gb.layer.Pointer.prototype.drawMbr = function(evt) {
 
@@ -741,12 +733,11 @@ if (!gb.layer)
 	/**
 	 * style로 그려진 버튼들의 영역을 설정하고 cursor가 그 위치에 있을때 해당버튼에 맞는 작업의 이름을
 	 * String으로 반환한다. 커서가 버튼 영역에 놓여있지 않다면 null 값을 반환한다.
-	 * 
-	 * @param {ol.Map}
-	 * @param {ol.Feature}
-	 * @param {Array}
-	 * @return {String}
-	 * @this {gb.layer.Pointer}
+	 * @method gb.layer.Pointer#selectTask_
+	 * @param {ol.Map} map - 작업 중인 ol.Map 객체
+	 * @param {ol.Feature} feature - 작업 중인 ol.Feature 객체
+	 * @param {Array.<number>} cursor - 커서 위치 좌표
+	 * @return {string} 선택된 작업명
 	 */
 	gb.layer.Pointer.prototype.selectTask_ = function(map, feature, cursor) {
 
@@ -774,12 +765,10 @@ if (!gb.layer)
 	/**
 	 * 피처 확대, 축소 알고리즘. 선택된 scale버튼의 이전 좌표값과 pointer를 drag함으로서 변경된 커서의 좌표, 두 좌표값사이
 	 * 길이의 배율값을 구하여 그 배율의 절대값을 리턴한다.
-	 * 
-	 * @param {ol.Feature}
-	 * @param {Array}
-	 *            drag를 통해 변경된 커서의 위치
-	 * @return {Array} 늘어난 x좌표, y좌표 배율의 절대값
-	 * @this {gb.interaction.MultiTransform}
+	 * @method gb.layer.Pointer#scaleAlgorithm_
+	 * @param {ol.Feature} feature - 작업 중인 ol.Feature 객체
+	 * @param {Array.<number>} currentCursorPoint - drag를 통해 변경된 커서의 위치
+	 * @return {Array.<number>} scale이 적용된 x좌표, y좌표 배율의 절대값
 	 */
 	gb.layer.Pointer.prototype.scaleAlgorithm_ = function(feature, currentCursorPoint) {
 		var map = this.getMap();

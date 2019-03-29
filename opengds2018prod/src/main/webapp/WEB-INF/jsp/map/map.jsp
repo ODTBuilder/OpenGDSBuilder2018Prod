@@ -304,7 +304,6 @@ html {
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLegend : "geoserver/geoserverWMSGetLegendGraphic.ajax",
-			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
 			requestValidate : "web/validate.do",
 			geoserverFileUpload : "geoserver/upload.do"
 		}
@@ -388,7 +387,6 @@ html {
 
 		// 검수 수행 Modal 생성
 		var validation = new gb.validation.Validation({
-			"token" : urlList.token,
 			"autoOpen" : false,
 			"locale" : locale,
 			"title" : "<spring:message code='lang.validation' />",
@@ -445,7 +443,6 @@ html {
 			"map" : gbMap.getUpperMap(),
 			"properties" : new gb.edit.ModifyLayerProperties({
 				"token" : urlList.token,
-				"featureRecord" : frecord,
 				"locale" : locale !== "" ? locale : "en"
 			}),
 			"uploadSHP" : uploadSHP,
@@ -474,14 +471,13 @@ html {
 		});
 
 		// EditTool 활성화
-		var epan = new gb.header.EditingTool({
+		var epan = new gb.edit.EditingTool({
 			targetElement : gbMap.getLowerDiv(),
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			otree : otree,
 			wfsURL : urlList.getWFSFeature + urlList.token,
 			layerInfo : urlList.getLayerInfo + urlList.token,
-			imageTile : urlList.getLayerTile,
 			locale : locale || "en",
 			versioning : fhist,
 			isEditing : gb.module.isEditing
@@ -567,7 +563,7 @@ html {
 			}
 		});
 		// feature list
-		var featureList = new gb.footer.FeatureList({
+		var featureList = new gb.layer.FeatureList({
 			map : gbMap.getUpperMap(),
 			targetElement : gbMap.getLowerDiv(),
 			title : "All Feature List",
@@ -610,7 +606,7 @@ html {
 		});
 
 		// command line
-		var commandLine = new gb.footer.CommandLine({
+		var commandLine = new gb.edit.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
 			jstree : otree,
 			locale : locale,

@@ -5,38 +5,26 @@ if (!gb.interaction)
 	gb.interaction = {};
 
 /**
- * 길이, 면적을 나타내는 element overlay를 생성한다. 길이, 면적을 측정하기위해 그려지는 feature들은 ol.Map 상에 임시적으로 그려지는 vector layer에 속해있다.
- * @author hochul.kim
- * @date 2018. 06. 25
- * @version 0.01
+ * @classdesc
+ * 길이, 면적을 나타내는 element overlay를 생성한다.
+ * 길이, 면적을 측정하기위해 그려지는 feature들은 ol.Map 상에 임시적으로 그려지는 vector layer에 속해있다.
  * @class gb.interaction.MeasureTip
+ * @memberof gb.interaction
  * @constructor
  * @param {Object} opt_options - gb.interaction.MeasureTip 생성 옵션
+ * @param {ol.source.Vector} opt_options.snapSource - Snap Interaction에 추가할 Vector Source 객체
+ * @param {ol.Map} opt_options.editTool - 측정 기능을 적용할 Openlayers Map 객체
+ * @author KIM HOCHUL
+ * @date 2019. 03. 25
+ * @version 0.01
  */
 gb.interaction.MeasureTip = function(opt_options) {
-	
-	var options = opt_options ? opt_options : {};
-
-	/**
-	 * 길이, 면적 측정 기능을 사용할 ol.Map 객체
-	 * @type {ol.Map}
-	 * @private
-	 */
-	this.map = options.map;
-	
 	/**
 	 * 길이, 면적 측정 피쳐 생성을 위한 임시 vector source
 	 * @type {ol.source.Vector}
 	 * @private
 	 */
 	this.source_ = new ol.source.Vector();
-	
-	/**
-	 * Snap Interaction
-	 * @type {ol.interaction.Snap}
-	 * @private
-	 */
-	this.snapSource =  options.snapSource || undefined;
 	
 	/**
 	 * Snap Interaction
@@ -68,6 +56,35 @@ gb.interaction.MeasureTip = function(opt_options) {
 			})
 		})
 	});
+	
+	/**
+	 * listener
+	 * @type {Array.<ol.events.Event>}
+	 * @private
+	 */
+	this.listener_ = [];
+
+	/**
+	 * The measure tooltip element.
+	 * @type {Array.<DOM>}
+	 * @private
+	 */
+	this.measureTipElement_ = [];
+
+	/**
+	 * Overlay to show the measurement.
+	 * @type {Array.<ol.Overlay>}
+	 * @private
+	 */
+	this.measureTipOverlay_ = [];
+	
+	var options = opt_options ? opt_options : {};
+	this.map = options.map;
+	if(!(this.map instanceof ol.Map)){
+		console.error("gb.interaction.MeasureTip: 'map' is a required field.");
+	}
+	this.snapSource =  options.snapSource || undefined;
+	
 	this.vector_.setMap(this.map);
 	
 	ol.interaction.Draw.call(this, {
@@ -76,35 +93,10 @@ gb.interaction.MeasureTip = function(opt_options) {
 	});
 	
 	/**
-	 * listener
-	 * 
-	 * @type {Array.<ol.events.Event>}
-	 * @private
-	 */
-	this.listener_ = [];
-
-	/**
-	 * The measure tooltip element.
-	 * 
-	 * @type {Overlay<Element>}
-	 * @private
-	 */
-	this.measureTipElement_ = [];
-
-	/**
-	 * Overlay to show the measurement.
-	 * 
-	 * @type {Array.<ol.Overlay>}
-	 * @private
-	 */
-	this.measureTipOverlay_ = [];
-
-	/**
 	 * measure 수치를 map에 나타내어줄 element와 overlay를 생성한다 두 개를 객체형태로 저장하여 반환한다
-	 * 
-	 * @type {Function}
-	 * @return {Object}
-	 * @private
+	 * @method gb.interaction.MeasureTip#createMeasureTip_
+	 * @function
+	 * @return {Object.<string, Array>}
 	 */
 	this.createMeasureTip_ = function() {
 		var map = this.getMap();
@@ -129,13 +121,14 @@ gb.interaction.MeasureTip = function(opt_options) {
 			overlay : measureTipOverlay
 		};
 	};
+	
 	/**
 	 * 인자값으로 <ol.Feature>가 주어진다면 해당 feature에 관련된 element와 overlay만 삭제하고 인자값이
 	 * 주어지지 않는다면 this.measureTipElement_와 this.measureTipOverlay_ 멤버변수에 저장되어 있는
 	 * 모든 객체 또는 요소가 삭제된다.
-	 * 
-	 * @type {Function}
-	 * @private
+	 * @method gb.interaction.MeasureTip#removeMeasureTip_
+	 * @function
+	 * @param {ol.Feature} feature - ol.Feature 객체
 	 */
 	this.removeMeasureTip_ = function(feature) {
 		var element;
@@ -174,10 +167,11 @@ gb.interaction.MeasureTip = function(opt_options) {
 	
 	/**
 	 * 인자값으로 주어진 폴리곤 객체에 대한 면적을 계산하여 String 형식으로 반환한다
-	 *
-	 * @type {Function}
-	 * @return {String}
-	 * @private
+	 * @method gb.interaction.MeasureTip#formatArea_
+	 * @function
+	 * @param {ol.geom.Polygon|ol.geom.MultiPolygon} polygon - 면적을 계산할 Geometry 객체
+	 * @param {string|number} srs - 좌표체계 코드
+	 * @return {string} 면적 계산 결과
 	 */
 	this.formatArea_ = function(polygon, srs) {
 		var area = ol.sphere.getArea(polygon, {projection: srs});
@@ -194,10 +188,11 @@ gb.interaction.MeasureTip = function(opt_options) {
 	 * 인자값으로 주어진 라인스트링 객체에 대한 길이를 계산하여 String 형식으로 반환한다 MultiLineString 객체일때에는
 	 * getLength() 함수가 적용되지 않으므로 우선 LineString객체들을 추출해낸 다음 각 LineString객체들의 길이를
 	 * 더하여 반환한다
-	 * 
-	 * @type {Function}
-	 * @return {String}
-	 * @private
+	 * @method gb.interaction.MeasureTip#formatLength_
+	 * @function
+	 * @param {ol.geom.LineString|ol.geom.MultiLineString} line - 면적을 계산할 Geometry 객체
+	 * @param {string|number} srs - 좌표체계 코드
+	 * @return {string} 길이 계산 결과
 	 */
 	this.formatLength_ = function(line, srs) {
 		var length = 0;
@@ -301,7 +296,6 @@ gb.interaction.MeasureTip = function(opt_options) {
 	});
 };
 ol.inherits(gb.interaction.MeasureTip, ol.interaction.Draw);
-
 ol.interaction.Draw.prototype.selectedType = function(){
 	return this.type_;
 }

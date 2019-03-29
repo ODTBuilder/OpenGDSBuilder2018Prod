@@ -5,83 +5,27 @@ if (!gb.header)
 	gb.header = {};
 
 /**
+ * @classdesc
  * ol Map header 객체를 정의한다.
  * header를 생성하고 싶은 element를 인자값으로 받는다.
  * 해당 element는 반드시 relative position 이어야만 한다.
  * 필수 라이브러리: jQuery, fontawesome
- * @author hochul.kim
- * @date 2018. 05.31
- * @version 0.01
- * @class
+ * @class gb.header.HeaderBase
+ * @memberof gb.header
  * @constructor
  * @param {Object} obj - gb.header 생성 기본 옵션
+ * @param {boolean} [obj.isDisplay=false] - 기본 Display 옵션. true일 시 header가 생성될 때 바로 가시화
+ * @param {string} [obj.toggleClass="header-toggle-btn"] - 토글 이벤트를 생성할 element 클래스 이름
+ * @param {DOM} [obj.targetElement] - header를 생성할 element. 기본 body에 생성
+ * @param {Array.<Object.<string, string>>} [obj.list] - header의 내용에 표시될 목록. content, icon, color 항목 필요
+ * @param {string} [obj.locale="en"] - 언어 코드
+ * @author KIM HOCHUL
+ * @date 2019. 03. 25
+ * @version 0.01
  */
-gb.header.Base = function(obj) {
-	
-	var options = obj ? obj : {};
-	
-	/**
-	 * 최상위 element
-	 * @type {n.fn.init.<HTMLDivElement>}
-	 */
-	this.headerTag = undefined;
-	
-	/**
-	 * 좌측 ul element
-	 * @type {n.fn.init.<HTMLDivElement>}
-	 */
-	this.ulTagLeft = undefined;
-	
-	/**
-	 * 우측 ul element
-	 * @type {n.fn.init.<HTMLDivElement>}
-	 */
-	this.ulTagRight = undefined;
-	
-	/**
-	 * content list
-	 */
-	this.contentList = [];
-	
-	/**
-	 * Default display
-	 */
-	this.isDisplay = options.isDisplay ? true : false;
-	
-	/**
-	 * active header
-	 */
-	this.active_ = false;
-	
-	/**
-	 * header toggle event element class name
-	 */
-	this.toggleClass = options.toggleClass || "header-toggle-btn";
-	
-	/**
-	 * header를 생성할 element
-	 */
-	this.targetElement = options.targetElement;
-	
-	/**
-	 * default list
-	 */
-	var defaultList = [
-		{
-			content: "Draw",
-			icon: "fas fa-pencil-alt fa-lg",
-			color: ""
-		}
-	];
-	
-	/**
-	 * 언어 코드
-	 */
-	this.locale = options.locale || "en";
-	
-	/**
-	 * 다국적 언어 지원
-	 */
+gb.header.HeaderBase = function(obj) {
+	var that = this;
+	// 다국적 언어 지원
 	this.translator = {
 		"draw": {
 			"en": "Draw",
@@ -122,13 +66,50 @@ gb.header.Base = function(obj) {
 	}
 	
 	/**
-	 * header에 표시할 list
+	 * 최상위 element
+	 * @type {n.fn.init.<HTMLDivElement>}
+	 * @private
 	 */
-	this.list = options.list || defaultList;
+	this.headerTag = undefined;
 	
 	/**
-	 * element style 정의
+	 * 좌측 ul element
+	 * @type {n.fn.init.<HTMLDivElement>}
+	 * @private
 	 */
+	this.ulTagLeft = undefined;
+	
+	/**
+	 * 우측 ul element
+	 * @type {n.fn.init.<HTMLDivElement>}
+	 * @private
+	 */
+	this.ulTagRight = undefined;
+	
+	/**
+	 * content list
+	 * @type {Array.<n.fn.init.<HTMLDivElement>>}
+	 * @private
+	 */
+	this.contentList = [];
+	
+	/**
+	 * active header
+	 * @type {boolean}
+	 * @private
+	 */
+	this.active_ = false;
+	
+	// default list
+	var defaultList = [
+		{
+			content: "Draw",
+			icon: "fas fa-pencil-alt fa-lg",
+			color: ""
+		}
+	];
+	
+	// element style 정의
 	this.aStyle = {
 		"color": "#555555"
 	};
@@ -186,6 +167,13 @@ gb.header.Base = function(obj) {
 		"font-weight": "700"
 	};
 	
+	var options = obj ? obj : {};
+	this.locale = options.locale || "en";
+	this.isDisplay = options.isDisplay ? true : false;
+	this.toggleClass = options.toggleClass || "header-toggle-btn";
+	this.targetElement = options.targetElement;
+	this.list = options.list || defaultList;
+	
 	this.createContent(this.list);
 	
 	this.createToggleEvent(this.toggleClass);
@@ -197,10 +185,10 @@ gb.header.Base = function(obj) {
 
 /**
  * header에 list content를 생성한다.
- * @method createContent
- * @param {Array} list (header에 나열할 content list)
+ * @method gb.header.HeaderBase#createContent
+ * @param {Array.<Object.<string, string>>} list - header에 나열할 content list
  */
-gb.header.Base.prototype.createContent = function(list){
+gb.header.HeaderBase.prototype.createContent = function(list){
 	
 	var that = this;
 	
@@ -213,8 +201,9 @@ gb.header.Base.prototype.createContent = function(list){
 	/**
 	 * element style 적용 함수
 	 * @method adjustStyle
-	 * @param {n.fn.init} element (jQuery 선택자)
-	 * @param {Object} style (style정의 객체)
+	 * @param {n.fn.init} element - jQuery 선택자
+	 * @param {Object} style - style정의 객체
+	 * @private
 	 */
 	function adjustStyle(element, style){
 		for(var content in style){
@@ -322,9 +311,9 @@ gb.header.Base.prototype.createContent = function(list){
 
 /**
  * header를 나타낸다.
- * @method open
+ * @method gb.header.HeaderBase#openTool
  */
-gb.header.Base.prototype.openTool = function(){
+gb.header.HeaderBase.prototype.openTool = function(){
 	if(this.active_){
 		this.headerTag.css("display", "block");
 		this.isDisplay = true;
@@ -333,18 +322,18 @@ gb.header.Base.prototype.openTool = function(){
 
 /**
  * header를 숨긴다
- * @method close
+ * @method gb.header.HeaderBase#closeTool
  */
-gb.header.Base.prototype.closeTool = function(){
+gb.header.HeaderBase.prototype.closeTool = function(){
 	this.headerTag.css("display", "none");
 	this.isDisplay = false;
 }
 
 /**
  * header open/close toggle
- * @method toggleTool
+ * @method gb.header.HeaderBase#toggleTool
  */
-gb.header.Base.prototype.toggleTool = function(){
+gb.header.HeaderBase.prototype.toggleTool = function(){
 	if(this.isDisplay){
 		this.closeTool();
 	} else {
@@ -354,9 +343,10 @@ gb.header.Base.prototype.toggleTool = function(){
 
 /**
  * header를 open, close 하는 이벤트 함수를 생성한다.
- * @method createToggleEvent
+ * @method gb.header.HeaderBase#createToggleEvent
+ * @param {string} className - header 토글 이벤트를 바인딩할 element의 클래스 이름
  */
-gb.header.Base.prototype.createToggleEvent = function(className){
+gb.header.HeaderBase.prototype.createToggleEvent = function(className){
 	var that = this;
 	
 	$("." + className).on("click", function(){
@@ -365,10 +355,11 @@ gb.header.Base.prototype.createToggleEvent = function(className){
 }
 
 /**
- * header open/close toggle
- * @method toggleTool
+ * header 활성화 설정
+ * @method gb.header.HeaderBase#setActiveTool
+ * @param {boolean} bool - header 활성화 여부
  */
-gb.header.Base.prototype.setActiveTool = function(bool){
+gb.header.HeaderBase.prototype.setActiveTool = function(bool){
 	this.active_ = bool;
 	
 	if(bool){
@@ -379,9 +370,10 @@ gb.header.Base.prototype.setActiveTool = function(bool){
 }
 
 /**
- * header 활성화 설정값 반환 함수
- * @method getActiveTool
+ * header 활성화 설정값 반환
+ * @method gb.header.HeaderBase#getActiveTool
+ * @return {boolean} 
  */
-gb.header.Base.prototype.getActiveTool = function(){
+gb.header.HeaderBase.prototype.getActiveTool = function(){
 	return this.active_;
 }

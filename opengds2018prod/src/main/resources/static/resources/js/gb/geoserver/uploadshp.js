@@ -11,33 +11,20 @@ gb.geoserver.CHECKBOXINPUT = {
 };
 
 /**
+ * @classdesc
  * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
- * 
  * @class gb.geoserver.UploadSHP
  * @memberof gb.geoserver
- * @param {String}
- *            url - SHP파일을 업로드할 URL
- * 
- * @version 0.01
+ * @constructor
+ * @param {Object} obj - gb.geoserver.UploadSHP 생성 옵션
+ * @param {string} obj.url - 파일 업로드 요청 URL
+ * @param {string} [obj.locale="en"] - 언어 코드
  * @author SOYIJUN
- * @date 2017. 07.26
+ * @date 2019. 03. 26
+ * @version 0.01
  */
 gb.geoserver.UploadSHP = function(obj) {
 	var that = this;
-	var options = obj ? obj : {};
-	this.url = typeof options.url === "string" ? options.url : undefined;
-	this.geoserver = undefined;
-	this.workspace = undefined;
-	this.datastore = undefined;
-	this.callback = undefined;
-	this.validEPSG = false;
-	this.epsg = undefined;
-	this.bodyArea = undefined;
-	this.locale = options.locale ? options.locale : "en";
-	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
-
-	// 미발행 레이어 이름 중복 무시 여부 변수
-	this.ignorePublic = false;
 	
 	this.translation = {
 		"uploadshp" : {
@@ -137,10 +124,88 @@ gb.geoserver.UploadSHP = function(obj) {
 			"en" : "The publication failed because the compressed file contains a folder."
 		}
 	};
+	
+	/**
+	 * geoserver명
+	 * @type {string}
+	 * @private
+	 */
+	this.geoserver = undefined;
+	
+	/**
+	 * workspace명
+	 * @type {string}
+	 * @private
+	 */
+	this.workspace = undefined;
+	
+	/**
+	 * datastore명
+	 * @type {string}
+	 * @private
+	 */
+	this.datastore = undefined;
+	
+	/**
+	 * 파일 업로드 요청 콜백함수
+	 * @type {function}
+	 * @private
+	 */
+	this.callback = undefined;
+	
+	/**
+	 * 좌표계 코드 유효성 여부
+	 * @type {boolean}
+	 * @private
+	 */
+	this.validEPSG = false;
+	
+	/**
+	 * 좌표계 코드
+	 * @type {string|number}
+	 * @private
+	 */
+	this.epsg = undefined;
+	
+	/**
+	 * 파일 업로드 요청창 내용 부분 Element
+	 * @type {DOM}
+	 * @private
+	 */
+	this.bodyArea = undefined;
+	
+	/**
+	 * 좌표계 유효성 결과 아이콘 Element
+	 * @type {DOM}
+	 * @private
+	 */
+	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
+	
+	/**
+	 * 미발행 레이어 이름 중복 무시 여부 변수
+	 * @type {boolean}
+	 * @private
+	 */
+	this.ignorePublic = false;
+	
+	/**
+	 * 좌표계 입력 Element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({
 		"type" : "text",
 		"placeholder" : "EX) 3857"
 	});
+	
+	var options = obj ? obj : {};
+	this.url = typeof options.url === "string" ? options.url : undefined;
+	if(!this.url){
+		console.error("gb.geoserver.UploadSHP: 'url' is required field!");
+		return;
+	}
+	this.locale = options.locale ? options.locale : "en";
+	
 	this.tout = false;
 	$(this.epsgInput).keyup(function() {
 		if (that.tout) {
@@ -158,9 +223,9 @@ gb.geoserver.UploadSHP.prototype.constructor = gb.geoserver.UploadSHP;
 
 /**
  * 현재 검색한 좌표계의 EPSG 코드를 반환한다.
- * 
  * @method gb.geoserver.UploadSHP#getEPSGCode
- * @return {String} 현재 검색한 좌표계의 EPSG 코드
+ * @function
+ * @return {string} 현재 검색한 좌표계의 EPSG 코드
  */
 gb.geoserver.UploadSHP.prototype.getEPSGCode = function() {
 	return this.epsg;
@@ -168,10 +233,9 @@ gb.geoserver.UploadSHP.prototype.getEPSGCode = function() {
 
 /**
  * 현재 검색한 좌표계의 EPSG 코드를 설정한다.
- * 
- * @method gb.geoserver.UploadSHP#getEPSGCode
- * @param {String}
- *            code - 현재 검색한 좌표계의 EPSG 코드
+ * @method gb.geoserver.UploadSHP#setEPSGCode
+ * @function
+ * @param {string} code - 현재 검색한 좌표계의 EPSG 코드
  */
 gb.geoserver.UploadSHP.prototype.setEPSGCode = function(code) {
 	this.epsg = code;
@@ -179,10 +243,9 @@ gb.geoserver.UploadSHP.prototype.setEPSGCode = function(code) {
 
 /**
  * epsg 코드의 유효성을 설정한다.
- * 
  * @method gb.geoserver.UploadSHP#setValidEPSG
- * @param {Boolean}
- *            flag - EPSG 코드 유효성
+ * @function
+ * @param {boolean} flag - EPSG 코드 유효성
  */
 gb.geoserver.UploadSHP.prototype.setValidEPSG = function(flag) {
 	this.validEPSG = flag;
@@ -218,9 +281,9 @@ gb.geoserver.UploadSHP.prototype.setValidEPSG = function(flag) {
 
 /**
  * epsg 코드의 유효성을 반환한다.
- * 
  * @method gb.geoserver.UploadSHP#getValidEPSG
- * @return {Boolean} EPSG 코드 유효성
+ * @function
+ * @return {boolean} EPSG 코드 유효성
  */
 gb.geoserver.UploadSHP.prototype.getValidEPSG = function() {
 	return this.validEPSG;
@@ -228,18 +291,21 @@ gb.geoserver.UploadSHP.prototype.getValidEPSG = function() {
 
 /**
  * 업로드 URL 주소를 반환한다.
- * 
  * @method gb.geoserver.UploadSHP#getUploadURL
- * @return {String} 업로드 URL 주소
+ * @function
+ * @return {string} 업로드 URL 주소
  */
 gb.geoserver.UploadSHP.prototype.getUploadURL = function() {
 	return this.url;
 };
 
 /**
- * 모달을 연다
- * 
+ * 파일 업로드 모달을 연다
  * @method gb.geoserver.UploadSHP#open
+ * @function
+ * @param {string} geoserver - geoserver명
+ * @param {string} workspace - workspace명
+ * @param {string} datastore - datastore명
  * @override
  */
 gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastrore) {
@@ -353,11 +419,11 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 };
 
 /**
- * 파일 업로드 요청 결과 테이블을 생성한다.
- * 
+ * 파일 업로드 요청 결과 테이블을 생성한다. 객체의 배열을 인자값으로 주어야하며
+ * 각 결과 정보 객체는 요청결과 코드를 가지고 있어야한다.
  * @method gb.geoserver.UploadSHP#resultTable
- * @param {String}
- *            geoserver - 설정할 지오서버의 이름
+ * @function
+ * @param {Array.<string, Object<string, string>>} result - 요청 결과 목록
  */
 gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 	if(!(result instanceof Array)){
@@ -406,10 +472,9 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 
 /**
  * callback 함수를 설정한다.
- * 
  * @method gb.geoserver.UploadSHP#setCallback
- * @param {String}
- *            geoserver - 설정할 지오서버의 이름
+ * @function
+ * @param {string} callback - 설정할 콜백함수
  */
 gb.geoserver.UploadSHP.prototype.setCallback = function(callback) {
 	this.callback = callback;
@@ -417,72 +482,69 @@ gb.geoserver.UploadSHP.prototype.setCallback = function(callback) {
 
 /**
  * callback 함수를 반환한다.
- * 
  * @method gb.geoserver.UploadSHP#getCallback
- * @return {String} 설정한 지오서버의 이름
+ * @function
+ * @return {string} 반환할 콜백함수
  */
 gb.geoserver.UploadSHP.prototype.getCallback = function() {
 	return this.callback;
 }
 
 /**
- * 지오서버를 설정한다.
- * 
+ * geoserver명을 설정한다.
  * @method gb.geoserver.UploadSHP#setGeoServer
- * @param {String}
- *            geoserver - 설정할 지오서버의 이름
+ * @function
+ * @param {string} geoserver - 설정할 geoserver명
  */
 gb.geoserver.UploadSHP.prototype.setGeoServer = function(geoserver) {
 	this.geoserver = geoserver;
 }
 
 /**
- * 지오서버를 반환한다.
- * 
+ * geoserver명을 반환한다.
  * @method gb.geoserver.UploadSHP#getGeoServer
- * @return {String} 설정한 지오서버의 이름
+ * @function
+ * @return {string} 설정한 geoserver명
  */
 gb.geoserver.UploadSHP.prototype.getGeoServer = function() {
 	return this.geoserver;
 }
 
 /**
- * 워크스페이스를 설정한다.
- * 
+ * workspace명을 설정한다.
  * @method gb.geoserver.UploadSHP#setWorkspace
- * @param {String}
- *            workspace - 설정할 워크스페이스의 이름
+ * @function
+ * @param {string} workspace - 설정할 workspace명
  */
 gb.geoserver.UploadSHP.prototype.setWorkspace = function(workspace) {
 	this.workspace = workspace;
 }
 
 /**
- * 워크스페이스를 반환한다.
- * 
+ * workspace명을 반환한다.
  * @method gb.geoserver.UploadSHP#getWorkspace
- * @return {String} 설정한 워크스페이스의 이름
+ * @function
+ * @return {string} 설정한 workspace명
  */
 gb.geoserver.UploadSHP.prototype.getWorkspace = function() {
 	return this.workspace;
 }
 
 /**
- * 데이터스토어를 설정한다.
- * 
+ * datastore명을 설정한다.
  * @method gb.geoserver.UploadSHP#setDatastore
- * @param {String}
- *            datastore - 설정할 데이터스토어의 이름
+ * @function
+ * @param {string} datastore - 설정할 datastore명
  */
 gb.geoserver.UploadSHP.prototype.setDatastore = function(datastore) {
 	this.datastore = datastore
 }
 
 /**
- * 데이터스토어를 반환한다.
- * 
+ * datastore명을 반환한다.
  * @method gb.geoserver.UploadSHP#getDatastore
- * @return {String} 설정한 데이터스토어의 이름
+ * @function
+ * @return {String} 설정한 datastore명
  */
 gb.geoserver.UploadSHP.prototype.getDatastore = function() {
 	return this.datastore;
@@ -490,9 +552,10 @@ gb.geoserver.UploadSHP.prototype.getDatastore = function() {
 
 /**
  * 선택한 파일을 업로드한다.
- * 
  * @method gb.geoserver.UploadSHP#uploadFile
- * @param {Element}
+ * @function
+ * @param {window.File} input - 업로드할 파일
+ * @param {gb.modal.ModalBase} modal - 업로드 모달 객체. 요청 완료 후 닫기 위함.
  */
 gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 	var that = this;
@@ -568,10 +631,9 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 
 /**
  * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
- * 
  * @method gb.geoserver.UploadSHP#searchEPSGCode
- * @param {String}
- *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ * @function
+ * @param {string} code - 베이스 좌표계를 변경하기 위한 EPSG 코드
  */
 gb.geoserver.UploadSHP.prototype.searchEPSGCode = function(code) {
 	console.log(code);

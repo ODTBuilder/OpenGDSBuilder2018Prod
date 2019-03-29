@@ -1,61 +1,43 @@
-/**
- * ol Map footer 객체를 정의한다.
- * footer를 생성하고 싶은 element를 인자값으로 받는다.
- * 해당 element는 반드시 relative position 이어야만 한다.
- * 
- * @author hochul.kim
- * @date 2018. 05.31
- * @version 0.01
- * @class gb.footer.Base
- * @constructor
- * @param {Object} obj (gb.footer 생성 기본 옵션)
- * @dependency jQuery
- */
-
 var gb;
 if (!gb)
 	gb = {};
 if (!gb.footer)
 	gb.footer = {};
 
-gb.footer.Base = function(obj) {
-	var options = obj || {};
-	
+/**
+ * @classdesc
+ * ol Map footer 객체를 정의한다.
+ * footer를 생성하고 싶은 element를 인자값으로 받는다.
+ * 해당 element는 반드시 relative position 이어야만 한다.
+ * @class gb.footer.FooterBase
+ * @memberof gb.footer
+ * @constructor
+ * @param {Object} obj - gb.footer.FooterBase 생성 기본 옵션
+ * @param {DOM} obj.targetElement - footer를 생성할 element
+ * @param {boolean} [obj.isDisplay=false] - Default display
+ * @param {string} [obj.toggleTarget=.footer-toggle-btn] - footer 토글 이벤트 element 클래스명
+ * @param {string} [obj.title] - footer 제목
+ * @param {DOM} [obj.content=$("<h4>content area</h4>")] - footer 내용
+ * @author KIM HOCHUL
+ * @date 2019. 03. 18
+ * @version 0.01
+ */
+gb.footer.FooterBase = function(obj) {
 	/**
 	 * 최상위 element
+	 * @private
+	 * @type {DOM}
 	 */
 	this.footerTag = $("<footer>");
 	
+	/**
+	 * 내용 element
+	 * @private
+	 * @type {DOM}
+	 */
 	this.contentTag = undefined;
 	
-	/**
-	 * Default display
-	 */
-	this.isDisplay = options.isDisplay ? true : false;
-	
-	/**
-	 * footer toggle event element class name
-	 */
-	this.toggleTarget = options.toggleTarget || ".footer-toggle-btn";
-	
-	/**
-	 * footer를 생성할 element
-	 */
-	this.targetElement = options.targetElement;
-	
-	/**
-	 * footer title
-	 */
-	this.title = options.title;
-	
-	/**
-	 * footer content
-	 */
-	this.content = options.content || $("<h4>content area</h4>");
-	
-	/**
-	 * element style 정의
-	 */
+	// element style 정의
 	this.footerStyle = {
 		"position": "absolute",
 		"z-index": "3",
@@ -82,20 +64,37 @@ gb.footer.Base = function(obj) {
 		"margin-top": "0"
 	};
 	
+	var options = obj || {};
+	this.isDisplay = options.isDisplay ? true : false;
+	this.toggleTarget = options.toggleTarget || ".footer-toggle-btn";
+	this.targetElement = options.targetElement;
+	if(this.targetElement === null || this.targetElement === undefined){
+		console.error("gb.footer.FooterBase: targetElement is a required field");
+	}
+	this.title = options.title;
+	this.content = options.content || $("<h4>content area</h4>");
+	
 	this.createFooter({
 		title: this.title,
 		content: this.content
 	});
 	
+	// 토글 이벤트 생성
 	this.createToggleEvent(this.toggleTarget);
 	
+	// 다른 foorter가 열려있거나 가시화 옵션이 false일 시 footer를 닫는다.
 	if(!this.isDisplay || this.anotherFooterIsOpen()){
 		this.close();
 		this.isDisplay = false;
 	}
 }
 
-gb.footer.Base.prototype.anotherFooterIsOpen = function(){
+/**
+ * 다른 footer element를 연다.
+ * @method gb.footer.FooterBase#anotherFooterIsOpen
+ * @return {boolean} 다른 footer가 성공적으로 가시화되었을 때 True 반환
+ */
+gb.footer.FooterBase.prototype.anotherFooterIsOpen = function(){
 	var bool = false;
 	var that = this;
 	this.targetElement.find("footer").each(function(){
@@ -108,7 +107,11 @@ gb.footer.Base.prototype.anotherFooterIsOpen = function(){
 	return bool;
 }
 
-gb.footer.Base.prototype.anotherFooterClose = function(){
+/**
+ * 다른 footer element를 닫는다.
+ * @method gb.footer.FooterBase#anotherFooterClose
+ */
+gb.footer.FooterBase.prototype.anotherFooterClose = function(){
 	var that = this;
 	this.targetElement.find("footer").each(function(){
 		if(that.footerTag[0] !== this){
@@ -122,12 +125,12 @@ gb.footer.Base.prototype.anotherFooterClose = function(){
 
 /**
  * element style 적용 함수
- * @method adjustStyle_
- * @param {n.fn.init} element (jQuery 선택자)
- * @param {Object} style (style정의 객체)
+ * @method gb.footer.FooterBase#adjustStyle_
+ * @param {n.fn.init} element - jQuery 선택자
+ * @param {Object.<string, string>} style - style정의 객체
  * @private
  */
-gb.footer.Base.prototype.adjustStyle_ = function(element, style){
+gb.footer.FooterBase.prototype.adjustStyle_ = function(element, style){
 	for(var content in style){
 		element.css(content, style[content]);
 	}
@@ -135,10 +138,12 @@ gb.footer.Base.prototype.adjustStyle_ = function(element, style){
 
 /**
  * footer layout을 생성한다
- * @method createContent
- * @param {Object} opt (footer Tag 내부에 정의할 element 정보)
+ * @method gb.footer.FooterBase#createContent
+ * @param {Object} opt - footer Tag 내부에 정의할 element 정보
+ * @param {string} opt.title - footer Title
+ * @param {DOM} opt.content - footer Content
  */
-gb.footer.Base.prototype.createFooter = function(opt){
+gb.footer.FooterBase.prototype.createFooter = function(opt){
 	
 	var that = this;
 	
@@ -172,27 +177,28 @@ gb.footer.Base.prototype.createFooter = function(opt){
 
 /**
  * footer를 나타낸다.
- * @method open
+ * @method gb.footer.FooterBase#open
  */
-gb.footer.Base.prototype.open = function(){
+gb.footer.FooterBase.prototype.open = function(){
 	this.footerTag.css("display", "block");
 	this.footerTag.addClass("footer-open").trigger("footeropen");
 }
 
 /**
  * footer를 숨긴다
- * @method close
+ * @method gb.footer.FooterBase#close
  */
-gb.footer.Base.prototype.close = function(){
+gb.footer.FooterBase.prototype.close = function(){
 	this.footerTag.css("display", "none");
 	this.footerTag.removeClass("footer-open").trigger("footerclose");
 }
 
 /**
- * footer를 open, close 하는 이벤트 함수를 생성한다.
- * @method createToggleEvent
+ * 특정 element에 footer를 토글하는 이벤트를 생성한다.
+ * @method gb.footer.FooterBase#createToggleEvent
+ * @param {string} target - HTML Tag 클래스명 또는 ID
  */
-gb.footer.Base.prototype.createToggleEvent = function(target){
+gb.footer.FooterBase.prototype.createToggleEvent = function(target){
 	var that = this;
 	
 	$(target).click(function(){
@@ -207,7 +213,12 @@ gb.footer.Base.prototype.createToggleEvent = function(target){
 	})
 }
 
-gb.footer.Base.prototype.setTitle = function(title){
+/**
+ * footer의 제목을 설정한다.
+ * @method gb.footer.FooterBase#setTitle
+ * @param {string} title - 제목
+ */
+gb.footer.FooterBase.prototype.setTitle = function(title){
 	if(typeof title === "string"){
 		this.title = title;
 		this.titleTag.text(title);

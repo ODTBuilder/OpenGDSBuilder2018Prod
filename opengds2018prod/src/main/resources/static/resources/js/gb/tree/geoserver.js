@@ -4,34 +4,29 @@
  */
 
 /**
+ * @classdescs
  * 지오서버 레이어 목록을 표시한다.
- * 
  * @class gb.tree.GeoServer
  * @memberof gb.tree
- * @param {Object}
- *            obj - 생성자 옵션을 담은 객체
- * @param {String |
- *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
- * @param {jstreeol3}
- *            jstree - 클라이언트 레이어 트리 객체
- * @param {ol.Map}
- *            obj.map - 편집 영역을 담당하는 ol.Map
- * @param {gb.geoserver.UploadSHP}
- *            obj.uploadSHP - SHP 파일 업로드 객체
- * @param {Object}
- *            obj.url - 요청을 처리하기 위한 URL 객체
- * @param {String}
- *            obj.url.getTree - 지오서버 트리 구조를 요청하기 위한 URL
- * @param {String}
- *            obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
- * @param {String}
- *            obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
- * @param {String}
- *            obj.url.getMapWMS - WMS 레이어를 요청하기 위한 URL
+ * @param {Object} obj - 생성자 옵션을 담은 객체
+ * @param {ol.Map} obj.map - Openlayers Map 객체
+ * @param {$.jstreeol3} obj.clientTree - 클라이언트 레이어 트리 객체
+ * @param {gb.edit.ModifyLayerProperties} obj.properties - 레이어 상세정보 수정 기능 모듈
+ * @param {gb.geoserver.UploadSHP} obj.uploadSHP - SHP 파일 업로드 객체
+ * @param {Object} obj.url - 요청을 처리하기 위한 URL 객체
+ * @param {string} obj.url.getTree - 지오서버 트리 구조를 요청하기 위한 URL
+ * @param {string} obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
+ * @param {string} obj.url.geoserverInfo - 지오서버 상세정보를 위한 URL
+ * @param {string} obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
+ * @param {string} obj.url.getLayerInfo - 지오서버 레이어 상세정보를 요청하기 위한 URL
+ * @param {string} obj.url.deleteGeoServerLayer - 지오서버 레이어를 삭제하기 위한 URL
+ * @param {string} obj.url.getMapWMS - WMS 요청하기 위한 URL
+ * @param {string} obj.url.getWFSFeature - WFS 요청하기 위한 URL
+ * @param {string} obj.url.switchGeoGigBranch - GeoGig Branch 제어를 위한 URL
+ * @param {String|undefined} [obj.locale="en"] - 언어 코드
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
- * 
  */
 gb.tree.GeoServer = function(obj) {
 	var that = this;
@@ -40,11 +35,15 @@ gb.tree.GeoServer = function(obj) {
 	var url = options.url ? options.url : undefined;
 	this.clientTree = options.clientTree ? options.clientTree : undefined;
 	this.properties = options.properties || undefined;
+	if(!this.properties){
+		console.error("gb.tree.GeoServer: 'properties' is required field. The type is {gb.edit.ModifyLayerProperties}");
+	}
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
 	this.deleteGeoServerLayerURL = url.deleteGeoServerLayer ? url.deleteGeoServerLayer : undefined;
 	this.geoserverInfoURL = url.geoserverInfo ? url.geoserverInfo : undefined;
+	
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.getMapWMS = url.getMapWMS ? url.getMapWMS : undefined;
 	this.getWFSFeature = url.getWFSFeature ? url.getWFSFeature : undefined;

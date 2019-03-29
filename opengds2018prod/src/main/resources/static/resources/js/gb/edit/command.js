@@ -1,8 +1,8 @@
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.footer)
-	gb.footer = {};
+if (!gb.edit)
+	gb.edit = {};
 
 (function($){
 	/**
@@ -10,11 +10,11 @@ if (!gb.footer)
 	 * @author hochul.kim
 	 * @date 2018.06.05
 	 * @version 0.01
-	 * @class gb.footer.CommandLine
+	 * @class gb.edit.CommandLine
 	 * @constructor
 	 */
-	gb.footer.CommandLine = function(obj) {
-		gb.footer.Base.call(this, obj);
+	gb.edit.CommandLine = function(obj) {
+		gb.footer.FooterBase.call(this, obj);
 		
 		var options = obj || {};
 		
@@ -409,15 +409,15 @@ if (!gb.footer)
 		this.autocomplete();
 	}
 
-	// gb.footer.Base 상속
-	gb.footer.CommandLine.prototype = Object.create(gb.footer.Base.prototype);
-	gb.footer.CommandLine.prototype.constructor = gb.footer.CommandLine;
+	// gb.footer.FooterBase 상속
+	gb.edit.CommandLine.prototype = Object.create(gb.footer.FooterBase.prototype);
+	gb.edit.CommandLine.prototype.constructor = gb.edit.CommandLine;
 	
 	/**
 	 * command layout안에 내용 element를 생성한다.
 	 * @method createContent
 	 */
-	gb.footer.CommandLine.prototype.createContent = function(){
+	gb.edit.CommandLine.prototype.createContent = function(){
 		var that = this;
 		
 		this.contentTag.empty();
@@ -528,7 +528,7 @@ if (!gb.footer)
 	 * @method setLabel
 	 * @param {string} label 명령어 입력 도움글
 	 */
-	gb.footer.CommandLine.prototype.setLabel = function(label){
+	gb.edit.CommandLine.prototype.setLabel = function(label){
 		if(typeof label === "string"){
 			this.label.text(label);
 		} else if(!label){
@@ -540,7 +540,7 @@ if (!gb.footer)
 	 * input에 입력된 모든 값을 저장한 변수를 초기화한다.
 	 * @method resetParams
 	 */
-	gb.footer.CommandLine.prototype.resetParams = function(){
+	gb.edit.CommandLine.prototype.resetParams = function(){
 		for(var i in this.params_){
 			delete this.params_[i];
 		}
@@ -552,7 +552,7 @@ if (!gb.footer)
 	 * @param {string} value input에 입력된 값
 	 * @return {number}
 	 */
-	gb.footer.CommandLine.prototype.pushParam = function(value){
+	gb.edit.CommandLine.prototype.pushParam = function(value){
 		var num = 0;
 		var index = [];
 		for(var i in this.params_){
@@ -570,7 +570,7 @@ if (!gb.footer)
 	 * @method pushWorkHistory
 	 * @param {string[]} list - input에 입력된 값들의 배열
 	 */
-	gb.footer.CommandLine.prototype.pushWorkHistory = function(list){
+	gb.edit.CommandLine.prototype.pushWorkHistory = function(list){
 		var time = getTime();
 		if($.isArray(list)){
 			this.workHistory_[time.flat] = list.slice();
@@ -582,7 +582,7 @@ if (!gb.footer)
 	 * 작업 이력 다운로드
 	 * @method downHistory
 	 */
-	gb.footer.CommandLine.prototype.downHistory = function(){
+	gb.edit.CommandLine.prototype.downHistory = function(){
 		var text = "";
 		for(var i in this.workHistory_){
 			text += this.workHistory_[i].toString();
@@ -600,7 +600,7 @@ if (!gb.footer)
 	 * @method uploadHistory
 	 * @param {DOM} input - 파일을 포함하고 있는 DOM 객체
 	 */
-	gb.footer.CommandLine.prototype.uploadHistory = function(input){
+	gb.edit.CommandLine.prototype.uploadHistory = function(input){
 		var that = this;
 		
 		if("files" in input){
@@ -619,7 +619,7 @@ if (!gb.footer)
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.parseCmdText = function(text){
+	gb.edit.CommandLine.prototype.parseCmdText = function(text){
 		var lines, cmds;
 		
 		if(typeof text === "string"){
@@ -635,7 +635,7 @@ if (!gb.footer)
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.insertHistoryLayout = function(time, list){
+	gb.edit.CommandLine.prototype.insertHistoryLayout = function(time, list){
 		if($.isArray(list)){
 			var item = $("<div class='list-item'>");
 			this.adjustStyle_(item, this.elementStyle_.item);
@@ -645,7 +645,7 @@ if (!gb.footer)
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.insertLogLayout = function(text){
+	gb.edit.CommandLine.prototype.insertLogLayout = function(text){
 		if(typeof text === "string"){
 			var item = $("<div class='list-item'>");
 			this.adjustStyle_(item, this.elementStyle_.item);
@@ -655,7 +655,7 @@ if (!gb.footer)
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.executeCommand = function(value){
+	gb.edit.CommandLine.prototype.executeCommand = function(value){
 		if(!!value){
 			
 			if(!!this.currentCmd[value]){
@@ -730,25 +730,25 @@ if (!gb.footer)
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.resetAll = function(){
+	gb.edit.CommandLine.prototype.resetAll = function(){
 		this.resetCommand();
 		this.setLabel();
 		this.resetParams();
 		this.inputHistory_ = [];
 	}
 	
-	gb.footer.CommandLine.prototype.resetCommand = function(){
+	gb.edit.CommandLine.prototype.resetCommand = function(){
 		this.currentCmd = this.commandList_;
 	}
 	
 	
-	gb.footer.CommandLine.prototype.addCommand = function(cmdName, cmdCallback){
+	gb.edit.CommandLine.prototype.addCommand = function(cmdName, cmdCallback){
 		if(!this.commandList[cmdName]){
 			this.commandList[cmdName] = cmdCallback;
 		}
 	}
 	
-	gb.footer.CommandLine.prototype.getCommandList = function(){
+	gb.edit.CommandLine.prototype.getCommandList = function(){
 		var a = [];
 		for(name in this.commandList_){
 			a.push(name);
@@ -870,7 +870,7 @@ if (!gb.footer)
 	 * 명령어 자동 완성 기능 활성화
 	 * @method autocomplete
 	 */
-	gb.footer.CommandLine.prototype.autocomplete = function(){
+	gb.edit.CommandLine.prototype.autocomplete = function(){
 		var that = this;
 		var except = ["tip", "paramKey", "before", "beforeFailLog", "log", "next", "end", "successLog", "failLog"];
 		/*the autocomplete function takes two arguments,

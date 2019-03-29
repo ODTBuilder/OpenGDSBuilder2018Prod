@@ -1,11 +1,3 @@
-/**
- * 검수 수행창 객체를 정의한다.
- * 
- * @author hochul.kim
- * @class gb.validation.Validation
- * @date 2018. 09
- * @version 0.01
- */
 var gb;
 if (!gb)
 	gb = {};
@@ -13,11 +5,7 @@ if (!gb.validation)
 	gb.validation = {};
 
 (function($) {
-
-	var presetIndex_ = 0;
-
-	var locale = locale || "en";
-	
+	var locale = "en";
 	var translation = {
 		"add" : {
 			"ko" : "추가",
@@ -86,9 +74,32 @@ if (!gb.validation)
 		"noneCategoryHint" : {
 			"ko" : "Category ID가 없습니다.",
 			"en" : "Category ID is missing."
+		},
+		"requestSuccessAlert" : {
+			"ko" : "검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.",
+			"en" : "Your verification request has been completed. You can check your progress on the Result page."
+		},
+		"requestFailAlert" : {
+			"ko" : "검수 요청이 실패했습니다.",
+			"en" : "The validation request failed."
 		}
 	};
 	
+	/**
+	 * 검수 요청 방식 INDEX
+	 * 0: error
+	 * 1: workspace를 여러개 선택하여 검수를 요청할 수 있음
+	 * 2: 한 개의 workspace만 검수를 요청할 수 있음
+	 * @type {number}
+	 * @private
+	 */
+	var presetIndex_ = 0;
+	
+	/**
+	 * Preset Index 목록
+	 * @type {Object.<string, number>}
+	 * @private
+	 */
 	var INDEXLIST = {
 		"Digital Map 1.0" : 1,
 		"Digital Map 2.0" : 1,
@@ -98,6 +109,11 @@ if (!gb.validation)
 		"nonset" : 3
 	};
 
+	/**
+	 * 검수 버전, 타입값
+	 * @type {Object.<string, Object.<string, string>>}
+	 * @private
+	 */
 	var QATYPE = {
 		"1" : {
 			"ver" : "qa1",
@@ -121,6 +137,11 @@ if (!gb.validation)
 		},
 	};
 
+	/**
+	 * 버튼 element 스타일
+	 * @type {Object.<string, string>}
+	 * @private
+	 */
 	var BUTTONSTYLE = {
 		"width" : "33.3333%",
 		"border" : "none",
@@ -137,33 +158,98 @@ if (!gb.validation)
 		"pointer-events" : "none"
 	};
 
+	/**
+	 * @classdesc
+	 * Web 검수 요청 모듈. Geoserver 레이어 목록을 불러와 레이어 선택하고 검수를 요청한다.
+	 * @class gb.validation.Validation
+	 * @memberof gb.validation
+	 * @constructor
+	 * @param {Object} obj - gb.validation.Validation 생성 옵션
+	 * @param {Object} obj.url - 검수 요청 정보
+	 * @param {string} obj.url.token - 요청 토큰
+	 * @param {string} obj.url.requestValidate - 검수 요청 URL
+	 * @param {gb.module.isEditing} [obj.isEditing] - {@link gb.edit.EditingTool} 활성화 여부 전역 변수
+	 * @param {string} [obj.locale="en"] - 언어 코드
+	 * @requires {@link gb.modal.ModalBase}, {@link gb.tree.GeoServer}
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 26
+	 * @version 0.01
+	 */
 	gb.validation.Validation = function(obj) {
 		obj.keep = true;
 		gb.modal.Base.call(this, obj);
+		
 		var that = this;
 
-		var options = obj || {};
-
-		this.url = options.url || "";
-
-		this.isEditing = options.isEditing || undefined;
-
-		this.locale = locale = options.locale || "en";
-		
+		/**
+		 * Geoserver JSTree
+		 * @type {gb.tree.GeoServer}
+		 * @private
+		 */
 		this.geoserverTree = undefined;
+		
+		/**
+		 * Working JSTree. Geoserver JSTree에서 선택한 노드를 옮겨놓는 트리.
+		 * 검수요청 시 Working JSTree에 추가되어 있는 노드들이 요청되어진다.
+		 * @type {$.jstree.plugins.wholerow}
+		 * @private
+		 */
 		this.workingTree = undefined;
+		
+		/**
+		 * 작업 도움말 Element Tag
+		 * @type {DOM}
+		 * @private
+		 */
 		this.messageContent = undefined;
-
+		
+		/**
+		 * 로딩중인 Geoserver 레이어 노드 리스트
+		 * @type {Array.<Object.<string, boolean>>}
+		 * @private
+		 */
 		this.loadingList = [];
+		
+		/**
+		 * 로딩되야할 자식노드의 개수 리스트
+		 * @type {Array.<number>}
+		 * @private
+		 */
 		this.loadingNumber = [];
-
+		
+		/**
+		 * 저장된 검수 설정 목록 Select Tag
+		 * @type {DOM}
+		 * @private
+		 */
 		this.presetSelectTag = $("<select class='form-control'>");
 
+		/**
+		 * 검수 종류 Select Tag
+		 * 수치지도, 지하시설물, 임상도
+		 * @type {DOM}
+		 * @private
+		 */
 		this.verSelectTag = $("<div>").css({
 			"width" : "100%",
 			"display" : "inline-flex"
 		});
-
+		
+		/**
+		 * 좌표계 Select Tag
+		 * @type {DOM}
+		 * @private
+		 */
+		this.srsSelectTag = $("<select class='form-control'>");
+		
+		var options = obj || {};
+		this.url = options.url || "";
+		if(this.url === ""){
+			console.error("gb.validation.Validation: 'url' is a required field.");
+		}
+		this.isEditing = options.isEditing || undefined;
+		this.locale = locale = options.locale || "en";
+		
 		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.under[this.locale]);
 		this.verSelectTag.append(button);
 
@@ -185,9 +271,9 @@ if (!gb.validation)
 			});
 
 			if ($(this).data("index") === 1) {
-				that.messageContent.html($(this).text() + " " + translation.selectNodesHint[that.locale]);
+				that.messageContent.html($(this).text() + " " + translation.selectNodesHint[locale]);
 			} else if ($(this).data("index") === 2) {
-				that.messageContent.html($(this).text() + " " + translation.selectNodeHint[that.locale]);
+				that.messageContent.html($(this).text() + " " + translation.selectNodeHint[locale]);
 			}
 			var nowPidx  = parseInt($(this).attr("data-index"));
 			if (nowPidx !== presetIndex_) {
@@ -199,8 +285,7 @@ if (!gb.validation)
 			presetIndex_ = nowPidx;
 			console.log(presetIndex_);
 		});
-
-		this.srsSelectTag = $("<select class='form-control'>");
+		
 		this.srsSelectTag.append($("<option>").text(translation.selectCrsHint[this.locale]));
 		this.srsSelectTag.append($("<option>").val("5186").text("중부원점 투영좌표계(Central Belt 2010)"));
 		this.srsSelectTag.append($("<option>").val("4737").text("GRS80 경위도 좌표계(Korean 2000)"));
@@ -250,11 +335,14 @@ if (!gb.validation)
 		$('<style>.select-hide{' + 'display: none;' + '}</style>').appendTo('head');
 		$('<style>.select-items div:hover, .same-as-selected{background-color: rgba(0, 0, 0, 0.1);}</style>').appendTo('head');
 	}
-
-	// gb.footer.Base 상속
 	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 
+	/**
+	 * 검수 요청창을 연다.
+	 * @method gb.validation.Validation#open
+	 * @function
+	 */
 	gb.validation.Validation.prototype.open = function() {
 		if (this.isEditing instanceof Object) {
 			if (this.isEditing.get()) {
@@ -264,6 +352,13 @@ if (!gb.validation)
 		this.geoserverTree.refresh();
 		gb.modal.Base.prototype.open.call(this);
 	}
+	
+	/**
+	 * 검수 요청창에서 선택한 값들을 반환한다.
+	 * @method gb.validation.Validation#getParameter
+	 * @function
+	 * @return {Object.<string, string|Object>}
+	 */
 	gb.validation.Validation.prototype.getParameter = function() {
 		var params = {};
 		var datastoreList = {};
@@ -325,6 +420,11 @@ if (!gb.validation)
 		return params;
 	}
 
+	/**
+	 * @method gb.validation.Validation#createStepDiv
+	 * @function
+	 * @private
+	 */
 	gb.validation.Validation.prototype.createStepDiv = function() {
 		var icon1 = $("<i>");
 		var title1 = $("<h2 class='step-title'>");
@@ -350,9 +450,13 @@ if (!gb.validation)
 		var wrapper = $("<div class='step-wrapper'>").css({});
 	}
 
+	/**
+	 * 검수 요청 Layout에 Geoserver Tree, 검수 옵션 선택자, Working Tree를 생성한다.
+	 * Body Tag 하위에 생성
+	 * @method gb.validation.Validation#createContent
+	 * @function
+	 */
 	gb.validation.Validation.prototype.createContent = function() {
-		// ==================== Create Modal Body HTML Start
-		// >>>>>>>>>>>>>>>>>>>>>>
 		var treePanel = this.createJSTreePanel();
 		var optionPanel = this.createOptionPanel();
 		var workTreePanel = this.createWorkTreePanel();
@@ -374,20 +478,21 @@ if (!gb.validation)
 			"width" : "700px"
 		});
 		this.setModalBody(body);
-		// <<<<<<<<<<<<<<<<<<<< Create Modal Body HTML End
-		// ========================
-
-		// ==================== Create Modal Footer HTML Start
-		// >>>>>>>>>>>>>>>>>>>>
+		
 		var footer = this.createModalFooter();
 		this.setModalFooter(footer);
-		// <<<<<<<<<<<<<<<<<<<< Create Modal Footer HTML End
-		// ======================
 
 		$("body").append(this.modal);
 		$("body").append(this.background);
 	}
 
+	/**
+	 * Geoserver JSTree 패널을 생성하여 반환한다.
+	 * {@link gb.tree.GeoServer} 모듈 필수
+	 * @method gb.validation.Validation#createJSTreePanel
+	 * @function
+	 * @return {DOM}
+	 */
 	gb.validation.Validation.prototype.createJSTreePanel = function() {
 		var that = this;
 
@@ -513,6 +618,14 @@ if (!gb.validation)
 		return treeContent;
 	}
 
+	/**
+	 * 중복되는 노드 삭제
+	 * @method gb.validation.Validation#removeSameTypeNode
+	 * @function
+	 * @param {Object} node - JSTree 노드 정보
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {string} root - 부모 노드 아이디
+	 */
 	gb.validation.Validation.prototype.removeSameTypeNode = function(node, workingTree, root) {
 		var that = this;
 		var node = node;
@@ -531,6 +644,14 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * 선택된 노드의 자식 노드들을 전부 Working Tree에 추가한다.
+	 * @method gb.validation.Validation#createChildren
+	 * @function
+	 * @param {gb.tree.GeoServer} geoTree - Geoserver JSTree
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {Array} children - 자식 노드 리스트
+	 */
 	gb.validation.Validation.prototype.createChildren = function(geoTree, workingTree, children) {
 		var that = this;
 		var i, node;
@@ -553,8 +674,16 @@ if (!gb.validation)
 		}
 	}
 
-	// work tree의 자식 노드들을 적절한 부모 노드 아래로 이동
-	gb.validation.Validation.prototype.updateChildren = function(geoTree, workingTree, children)	{
+	/**
+	 * Working Tree의 자식 노드들을 적절한 부모 노드 아래로 이동.
+	 * 자식 노드가 이미 Working Tree에 로드되어 있는 상태에서 부모 노드가 추가될때 사용되는 함수.
+	 * @method gb.validation.Validation#updateChildren
+	 * @function
+	 * @param {gb.tree.GeoServer} geoTree - Geoserver JSTree
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {Array} children - 자식 노드 리스트
+	 */
+	gb.validation.Validation.prototype.updateChildren = function(geoTree, workingTree, children){
 		var that = this;
 		var i, node;
 		var tree = geoTree;
@@ -572,6 +701,12 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * Working JSTree 패널을 생성하여 반환한다.
+	 * @method gb.validation.Validation#createWorkTreePanel
+	 * @function
+	 * @return {DOM}
+	 */
 	gb.validation.Validation.prototype.createWorkTreePanel = function() {
 		var that = this;
 
@@ -676,6 +811,12 @@ if (!gb.validation)
 		return div;
 	}
 
+	/**
+	 * 검수 옵션 선택 패널을 생성하여 반환한다.
+	 * @method gb.validation.Validation#createOptionPanel
+	 * @function
+	 * @return {DOM}
+	 */
 	gb.validation.Validation.prototype.createOptionPanel = function() {
 
 		// ==================== Create Panel body HTML Start
@@ -702,6 +843,12 @@ if (!gb.validation)
 		return div;
 	}
 
+	/**
+	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
+	 * @method gb.validation.Validation#createModalFooter
+	 * @function
+	 * @return {DOM}
+	 */
 	gb.validation.Validation.prototype.createModalFooter = function() {
 		var that = this;
 
@@ -751,12 +898,12 @@ if (!gb.validation)
 			});
 
 			deferredObj.done(function(data, textStatus, jqXHR) {
-				alert("검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");
+				alert(translation.requestSuccessAlert[locale]);
 				that.close();
 			});
 
 			deferredObj.fail(function(jqXHR, textStatus, errorThrown) {
-				alert("검수 요청이 실패했습니다.");
+				alert(translation.requestFailAlert[locale]);
 				that.close();
 			});
 		});
@@ -766,6 +913,15 @@ if (!gb.validation)
 		return buttonArea;
 	}
 
+	/**
+	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
+	 * @function requestPreset
+	 * @param {gb.validation.Validation} that
+	 * @param {DOM} obj - 저장된 검수 옵션 Select Tag
+	 * @param {DOM} div - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {string} message - 작업 진행 도움말
+	 * @private
+	 */
 	function requestPreset(that, obj, div, message) {
 		var select = obj;
 		var div = div;
@@ -793,33 +949,39 @@ if (!gb.validation)
 		});
 	}
 
+	/**
+	 * Select Tag 이벤트 처리 함수
+	 * @function customSelect
+	 * @param {DOM} selectDiv - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {string} message - 작업 진행 도움말
+	 * @param {gb.validation.Validation} that
+	 * @private
+	 */
 	function customSelect(selectDiv, message, that) {
 		var x, j, selElmnt, a, b, c;
 		var that = that;
-		/* look for any elements with the class "custom-select": */
+		// look for any elements with the class "custom-select":
 		x = selectDiv;
 		selElmnt = x.find("select")[0];
-		/*
-		 * for each element, create a new DIV that will act as the selected
-		 * item:
-		 */
+		
+		// for each element, create a new DIV that will act as the selected
+		// item:
 		a = $("<div>").addClass("validation-select-selected");
 		a.html(selElmnt.options[selElmnt.selectedIndex].innerHTML);
 		x.append(a);
-		/* for each element, create a new DIV that will contain the option list: */
+		// for each element, create a new DIV that will contain the option list:
 		b = $("<div>").addClass("select-items select-hide");
 		for (j = 1; j < selElmnt.length; j++) {
-			/*
-			 * for each option in the original select element, create a new DIV
-			 * that will act as an option item:
-			 */
+			
+			// for each option in the original select element, create a new DIV
+			// that will act as an option item:
+			
 			c = $("<div>");
 			c.html(selElmnt.options[j].innerHTML);
 			c.on("click", function(e) {
-				/*
-				 * when an item is clicked, update the original select box, and
-				 * the selected item:
-				 */
+				
+				// when an item is clicked, update the original select box, and
+				// the selected item:
 				var y, i, k, s, h, l, list;
 				s = this.parentNode.parentNode.getElementsByTagName("select")[0];
 				h = this.parentNode.previousSibling;
@@ -850,9 +1012,9 @@ if (!gb.validation)
 									});
 								}
 								if (INDEXLIST[s.options[i].dataset.title] === 1) {
-									message.html(s.options[i].dataset.title + "는 workspace를 여러개 선택할 수 있습니다.");
+									message.html(s.options[i].dataset.title + translation.selectNodesHint[locale]);
 								} else if (INDEXLIST[s.options[i].dataset.title] === 2) {
-									message.html(s.options[i].dataset.title + "는 workspace를 하나만 선택할 수 있습니다.");
+									message.html(s.options[i].dataset.title + translation.selectNodeHint[locale]);
 								}
 								if (presetIndex_ !== undefined && presetIndex_ !== null) {
 									if (presetIndex_ !== INDEXLIST[s.options[i].dataset.title]) {
@@ -875,10 +1037,8 @@ if (!gb.validation)
 		}
 		x.append(b);
 		a.on("click", function(e) {
-			/*
-			 * when the select box is clicked, close any other select boxes, and
-			 * open/close the current select box:
-			 */
+			// when the select box is clicked, close any other select boxes, and
+			// open/close the current select box:
 			e.stopPropagation();
 			closeAllSelect(this);
 			this.nextSibling.classList.toggle("select-hide");
@@ -886,6 +1046,12 @@ if (!gb.validation)
 		});
 	}
 
+	/**
+	 * Select Tag 내용 업데이트 함수
+	 * @function updateFormatSelect
+	 * @param {Array} list - Select Tag options
+	 * @private
+	 */
 	function updateFormatSelect(list) {
 		var l;
 		$(".validation-format-select").parent().find(".validation-select-selected").empty();
@@ -916,11 +1082,15 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * Select Tag를 닫는 함수
+	 * @function closeAllSelect
+	 * @param {DOM} elmnt - 선택된 Select Tag
+	 * @private
+	 */
 	function closeAllSelect(elmnt) {
-		/*
-		 * a function that will close all select boxes in the document, except
-		 * the current select box:
-		 */
+		// a function that will close all select boxes in the document, except
+		// the current select box:
 		var x, y, i, arrNo = [];
 		x = document.getElementsByClassName("select-items");
 		y = document.getElementsByClassName("validation-select-selected");
@@ -941,7 +1111,6 @@ if (!gb.validation)
 
 /**
  * 노드를 마지막 자식 노드까지 로드한다.
- * 
  * @method gb.validation.Validation#openNodeRecursive
  * @param {Number}
  *            idx - 레이어 목록에서 선택한 노드들의 인덱스
@@ -998,7 +1167,6 @@ gb.validation.Validation.prototype.openNodeRecursive = function(idx, node, topNo
 
 /**
  * loadingNumber 객체를 반환한다.
- * 
  * @method gb.validation.Validation#getLoadingNumber
  * @return {Object} 로딩할 노드목록을 가진 객체
  */
@@ -1008,17 +1176,17 @@ gb.validation.Validation.prototype.getLoadingNumber = function() {
 
 /**
  * loadingNumber 객체를 설정한다.
- * 
  * @method gb.validation.Validation#setLoadingNumber
+ * @param {number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {number} num - 설정할 값
  */
 gb.validation.Validation.prototype.setLoadingNumber = function(idx, num) {
 	this.loadingNumber[idx] = num;
 };
 
 /**
- * loadingNumber 객체를 설정한다.
- * 
- * @method gb.validation.Validation#setLoadingNumber
+ * loadingNumber 객체를 초기화한다.
+ * @method gb.validation.Validation#initLoadingNumber
  */
 gb.validation.Validation.prototype.initLoadingNumber = function() {
 	this.loadingNumber = [];
@@ -1026,7 +1194,6 @@ gb.validation.Validation.prototype.initLoadingNumber = function() {
 
 /**
  * loadingList 객체를 반환한다.
- * 
  * @method gb.validation.Validation#getLoadingList
  * @return {Object} 로딩할 노드목록을 가진 객체
  */
@@ -1036,8 +1203,8 @@ gb.validation.Validation.prototype.getLoadingList = function() {
 
 /**
  * loadingList 객체를 설정한다.
- * 
  * @method gb.validation.Validation#setLoadingList
+ * @param {Array.<Object.<string, boolean>>} list - 로딩중인 Geoserver 레이어 노드 리스트
  */
 gb.validation.Validation.prototype.setLoadingList = function(list) {
 	this.loadingList = list;
@@ -1045,8 +1212,9 @@ gb.validation.Validation.prototype.setLoadingList = function(list) {
 
 /**
  * loadingList 목록에 추가한다.
- * 
- * @method gb.validation.Validation#addLoadingList
+ * @param {Number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {string} nodeId - JSTree 노드 아이디
+ * @method gb.validation.Validation#addNodeToLoadingList
  */
 gb.validation.Validation.prototype.addNodeToLoadingList = function(idx, nodeId) {
 	var list = this.getLoadingList();
@@ -1057,14 +1225,13 @@ gb.validation.Validation.prototype.addNodeToLoadingList = function(idx, nodeId) 
 		}
 		list[idx][nodeId] = false;
 	} else {
-		console.error("로딩 리스트 객체가 배열이 아닙니다.");
+		console.error("gb.validation.Validation: The loadingList object is not an array.");
 	}
 };
 
 /**
- * loadingList 객체를 설정한다.
- * 
- * @method gb.validation.Validation#setLoadingList
+ * loadingList 객체를 초기화한다.
+ * @method gb.validation.Validation#initLoadingList
  */
 gb.validation.Validation.prototype.initLoadingList = function() {
 	this.loadingList = [];
@@ -1072,8 +1239,10 @@ gb.validation.Validation.prototype.initLoadingList = function() {
 
 /**
  * loadingList 객체에 노드를 추가한다.
- * 
- * @method gb.validation.Validation#setLoadingList
+ * @param {Number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {string} nodeId - JSTree 노드 아이디
+ * @param {boolean} flag
+ * @method gb.validation.Validation#changeNodeOnLoadingList
  */
 gb.validation.Validation.prototype.changeNodeOnLoadingList = function(idx, nodeId, flag) {
 	var that = this;
@@ -1091,7 +1260,7 @@ gb.validation.Validation.prototype.changeNodeOnLoadingList = function(idx, nodeI
 			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
 		}
 	} else {
-		console.error("there is no node id:", nodeId);
+		console.error("gb.validation.Validation: there is no node id:", nodeId);
 		return;
 	}
 };

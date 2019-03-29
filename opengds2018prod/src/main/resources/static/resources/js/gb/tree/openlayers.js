@@ -4,274 +4,290 @@
  */
 
 /**
+ * @classdesc
  * 오픈레이어스 레이어 목록을 표시한다.
- * 
  * @class gb.tree.OpenLayers
  * @memberof gb.tree
- * @param {Object}
- *            obj - 생성자 옵션을 담은 객체
- * @param {String |
- *            Element} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
- * @param {ol.Map}
- *            obj.map - 편집 영역을 담당하는 ol.Map
- * @param {Object}
- *            url - 요청을 처리할 URL 객체
- * @param {String}
- *            obj.url.getLegend - WMS 범례 이미지를 요청할 URL
+ * @param {Object} obj - 생성자 옵션을 담은 객체
+ * @param {DOM} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
+ * @param {ol.Map} obj.map - 편집 영역을 담당하는 ol.Map
+ * @param {Object} obj.url - 요청 주소 정보
+ * @param {string} obj.url.getLegend - WMS 범례 이미지를 요청할 URL
+ * @param {string} [obj.token] - 요청 토큰
+ * @param {gb.geoserver.UploadGeoJSON} obj.uploadJSON - Geoserver JSON 업로드 기능 객체
+ * @param {gb.edit.EditingTool} obj.editingTool - 편집 기능 객체
+ * @param {string|undefined} [obj.locale="en"] - 언어 코드
  * @author SOYIJUN
  * @date 2018.07.02
  * @version 0.01
- * 
  */
 gb.tree.OpenLayers = function(obj) {
 	var that = this;
-	var options = obj ? obj : {};
-	this.append = options.append ? options.append : undefined;
-	this.map = options.map instanceof ol.Map ? options.map : undefined;
-	this.editingTool = options.editingTool || undefined;
-	this.token = options.token || "";
-	this.locale = options.locale || "en";
-	this.uploadjson = options.uploadJSON !== undefined ? options.uploadJSON : undefined;
-	// edit tool 활성화 여부 객체
-	this.isEditing = options.isEditing || undefined;
-
-	this.createdLayer = {};
-	this.selectedLayer = undefined;
-	this.layerPropModal = undefined;
-	var url = options.url;
-	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
 	this.translation = {
-			"zoom" : {
-				"en" : "Zoom",
-				"ko" : "확대"
-			},
-			"snap" : {
-				"en" : "Snap",
-				"ko" : "스냅"
-			},
-			"countOfFeature" : {
-				"en" : "Count",
-				"ko" : "객체개수"
-			},
-			"prop" : {
-				"ko" : "속성",
-				"en" : "Properties"
-			},
-			"style" : {
-				"en" : "Style",
-				"ko" : "스타일"
-			},
-			"navigator" : {
-				"en" : "Navigator",
-				"ko" : "객체추적"
-			},
-			"layerCode" : {
-				"en" : "Code",
-				"ko" : "코드"
-			},
-			"layerName" : {
-				"en" : "Name",
-				"ko" : "이름"
-			},
-			"layerType" : {
-				"en" : "Type",
-				"ko" : "유형"
-			},
-			"add" : {
-				"ko" : "추가",
-				"en" : "Add"
-			},
-			"close" : {
-				"ko" : "닫기",
-				"en" : "Close"
-			},
-			"cancel" : {
-				"ko" : "취소",
-				"en" : "Cancel"
-			},
-			"delete" : {
-				"ko" : "삭제",
-				"en" : "Delete"
-			},
-			"deleteLayer" : {
-				"ko" : "레이어 삭제",
-				"en" : "Delete Layer"
-			},
-			"deleteAttr" : {
-				"ko" : "속성 삭제",
-				"en" : "Delete Attribute"
-			},
-			"deleteHint" : {
-				"ko" : "정말로 삭제하시겠습니까?",
-				"en" : "Are you sure to delete?"
-			},
-			"deleteLayerHint" : {
-				"ko" : "선택한 레이어를 정말로 삭제하시겠습니까?",
-				"en" : "Are you sure to delete this layer?"
-			},
-			"deleteLayersHint" : {
-				"ko" : "선택한 레이어들을 정말로 삭제하시겠습니까?",
-				"en" : "Are you sure to delete these layers?"
-			},
-			"inputNameHint" : {
-				"ko" : "Layer 이름을 입력해주세요!",
-				"en" : "Please enter a layer name!"
-			},
-			"inputAttrHint" : {
-				"ko" : "속성값 이름을 입력해주세요!",
-				"en" : "Please enter a Attribute name!"
-			},
-			"uploadFile" : {
-				"ko" : "Zip 파일 올리기",
-				"en" : "Upload zip file"
-			},
-			"uploadImage" : {
-				"ko" : "이미지 올리기",
-				"en" : "Upload Image"
-			},
-			"attribute" : {
-				"en" : "Attribute",
-				"ko" : "속성"
-			},
-			"addAttribute" : {
-				"en" : "Add Attribute",
-				"ko" : "속성 추가"
-			},
-			"addLayer" : {
-				"en" : "Add layer",
-				"ko" : "레이어 추가"
-			},
-			"exLayerCodeField" : {
-				"en" : "Layer code ex) F0010000",
-				"ko" : "레이어 코드 예시) F0010000"
-			},
-			"geoserverURL" : {
-				"ko" : "GeoServer URL",
-				"en" : "GeoServer URL"
-			},
-			"geoserverID" : {
-				"ko" : "GeoServer ID",
-				"en" : "GeoServer ID"
-			},
-			"geoserver" : {
-				"ko" : "GeoServer",
-				"en" : "GeoServer"
-			},
-			"workspace" : {
-				"ko" : "작업공간",
-				"en" : "Workspace"
-			},
-			"datastore" : {
-				"ko" : "저장소",
-				"en" : "Datastore"
-			},
-			"style" : {
-				"ko" : "스타일",
-				"en" : "Style"
-			},
-			"nativeName" : {
-				"ko" : "레이어 원본 이름",
-				"en" : "Native Layer Name"
-			},
-			"lName" : {
-				"ko" : "레이어 이름",
-				"en" : "Layer Name"
-			},
-			"title" : {
-				"ko" : "제목",
-				"en" : "Title"
-			},
-			"abstractContent" : {
-				"ko" : "개요",
-				"en" : "Summary"
-			},
-			"srs" : {
-				"ko" : "좌표계",
-				"en" : "SRS"
-			},
-			"llbBox" : {
-				"ko" : "위/경도 영역",
-				"en" : "Lat/Lon Boundary"
-			},
-			"nbBox" : {
-				"ko" : "원본 레이어 최소경계 영역",
-				"en" : "Layer Minimum Boundary"
-			},
-			"dsType" : {
-				"ko" : "저장소 형식",
-				"en" : "Datastore Type"
-			},
-			"geomType" : {
-				"ko" : "지오메트리 형식",
-				"en" : "Geometry Type"
-			},
-			"geomkey" : {
-				"ko" : "지오메트리 속성명",
-				"en" : "Geometry Key Name"
-			},
-			"styleWorkspace" : {
-				"ko" : "스타일의 작업공간",
-				"en" : "Style's Workspace"
-			},
-			"attInfo" : {
-				"ko" : "속성 정보",
-				"en" : "Attribute Info"
-			},
-			"sld" : {
-				"ko" : "SLD",
-				"en" : "SLD"
-			},
-			"myserver" : {
-				"ko" : "전체 스타일",
-				"en" : "All Styles"
-			},
-			"duplicateKeyHint" : {
-				"ko" : "이 값은 중복되었습니다.",
-				"en" : "This value is a duplicate."
-			},
-			"upload" : {
-				"ko" : "서버에 업로드",
-				"en" : "Upload to Server"
-			},
-			"uploadShpAlert" : {
-				"ko" : "zip파일 형식만 업로드가능합니다.",
-				"en" : "Only zip file types can be uploaded."
-			},
-			"layerNameHint" : {
-				"ko" : "레이어 이름은 문자로 시작해야하며 영어 대소문자, 숫자, 언더스코어(_), 하이픈(-) 만 입력이 가능합니다.",
-				"en" : "Layer names must begin with a letter and can only contain letters in English, capital letters, numbers, hyphens(-) and underscores(_)."
-			},
-			"layerSpecialChar" : {
-				"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
-				"en" : "Special characters are not allowed in the layer name."
-			},
-			"columnNameHint" : {
-				"ko" : "컬럼명은 다음과 같은 규칙을 가지고있습니다.\n1.첫 단어는 문자이여야만 한다.\n2.단어 수는 1-30자까지이다.\n3.영단어 대소문자, 숫자, _, #, $ 만 입력할 수 있다.\n4.공백을 허용하지 않는다.",
-				"en" : "A column name has the following rules:\n1.The first word must be a letter.\n2.The word count can be from 1 to 30 characters.\n3.Only English letters, numbers, _, #, and $ can be entered.\n4.Do not allow spaces."
-			},
-			"imageUploadHint" : {
-				"ko" : "업로드할 이미지 파일을 선택해주세요.",
-				"en" : "Please select an image file to upload."
-			},
-			"imageFileHint" : {
-				"ko" : "이미지 형식의 파일만 업로드 가능합니다.",
-				"en" : "Only image format can be uploaded."
-			},
-			"and" : {
-				"ko" : "외",
-				"en" : "and"
-			},
-			"more" : {
-				"ko" : "개",
-				"en" : "more"
-			}
-	}
-	this.getLegend = url.getLegend ? url.getLegend : undefined;
+		"zoom" : {
+			"en" : "Zoom",
+			"ko" : "확대"
+		},
+		"snap" : {
+			"en" : "Snap",
+			"ko" : "스냅"
+		},
+		"countOfFeature" : {
+			"en" : "Count",
+			"ko" : "객체개수"
+		},
+		"prop" : {
+			"ko" : "속성",
+			"en" : "Properties"
+		},
+		"style" : {
+			"en" : "Style",
+			"ko" : "스타일"
+		},
+		"navigator" : {
+			"en" : "Navigator",
+			"ko" : "객체추적"
+		},
+		"layerCode" : {
+			"en" : "Code",
+			"ko" : "코드"
+		},
+		"layerName" : {
+			"en" : "Name",
+			"ko" : "이름"
+		},
+		"layerType" : {
+			"en" : "Type",
+			"ko" : "유형"
+		},
+		"add" : {
+			"ko" : "추가",
+			"en" : "Add"
+		},
+		"close" : {
+			"ko" : "닫기",
+			"en" : "Close"
+		},
+		"cancel" : {
+			"ko" : "취소",
+			"en" : "Cancel"
+		},
+		"delete" : {
+			"ko" : "삭제",
+			"en" : "Delete"
+		},
+		"deleteLayer" : {
+			"ko" : "레이어 삭제",
+			"en" : "Delete Layer"
+		},
+		"deleteAttr" : {
+			"ko" : "속성 삭제",
+			"en" : "Delete Attribute"
+		},
+		"deleteHint" : {
+			"ko" : "정말로 삭제하시겠습니까?",
+			"en" : "Are you sure to delete?"
+		},
+		"deleteLayerHint" : {
+			"ko" : "선택한 레이어를 정말로 삭제하시겠습니까?",
+			"en" : "Are you sure to delete this layer?"
+		},
+		"deleteLayersHint" : {
+			"ko" : "선택한 레이어들을 정말로 삭제하시겠습니까?",
+			"en" : "Are you sure to delete these layers?"
+		},
+		"inputNameHint" : {
+			"ko" : "Layer 이름을 입력해주세요!",
+			"en" : "Please enter a layer name!"
+		},
+		"inputAttrHint" : {
+			"ko" : "속성값 이름을 입력해주세요!",
+			"en" : "Please enter a Attribute name!"
+		},
+		"uploadFile" : {
+			"ko" : "Zip 파일 올리기",
+			"en" : "Upload zip file"
+		},
+		"uploadImage" : {
+			"ko" : "이미지 올리기",
+			"en" : "Upload Image"
+		},
+		"attribute" : {
+			"en" : "Attribute",
+			"ko" : "속성"
+		},
+		"addAttribute" : {
+			"en" : "Add Attribute",
+			"ko" : "속성 추가"
+		},
+		"addLayer" : {
+			"en" : "Add layer",
+			"ko" : "레이어 추가"
+		},
+		"exLayerCodeField" : {
+			"en" : "Layer code ex) F0010000",
+			"ko" : "레이어 코드 예시) F0010000"
+		},
+		"geoserverURL" : {
+			"ko" : "GeoServer URL",
+			"en" : "GeoServer URL"
+		},
+		"geoserverID" : {
+			"ko" : "GeoServer ID",
+			"en" : "GeoServer ID"
+		},
+		"geoserver" : {
+			"ko" : "GeoServer",
+			"en" : "GeoServer"
+		},
+		"workspace" : {
+			"ko" : "작업공간",
+			"en" : "Workspace"
+		},
+		"datastore" : {
+			"ko" : "저장소",
+			"en" : "Datastore"
+		},
+		"style" : {
+			"ko" : "스타일",
+			"en" : "Style"
+		},
+		"nativeName" : {
+			"ko" : "레이어 원본 이름",
+			"en" : "Native Layer Name"
+		},
+		"lName" : {
+			"ko" : "레이어 이름",
+			"en" : "Layer Name"
+		},
+		"title" : {
+			"ko" : "제목",
+			"en" : "Title"
+		},
+		"abstractContent" : {
+			"ko" : "개요",
+			"en" : "Summary"
+		},
+		"srs" : {
+			"ko" : "좌표계",
+			"en" : "SRS"
+		},
+		"llbBox" : {
+			"ko" : "위/경도 영역",
+			"en" : "Lat/Lon Boundary"
+		},
+		"nbBox" : {
+			"ko" : "원본 레이어 최소경계 영역",
+			"en" : "Layer Minimum Boundary"
+		},
+		"dsType" : {
+			"ko" : "저장소 형식",
+			"en" : "Datastore Type"
+		},
+		"geomType" : {
+			"ko" : "지오메트리 형식",
+			"en" : "Geometry Type"
+		},
+		"geomkey" : {
+			"ko" : "지오메트리 속성명",
+			"en" : "Geometry Key Name"
+		},
+		"styleWorkspace" : {
+			"ko" : "스타일의 작업공간",
+			"en" : "Style's Workspace"
+		},
+		"attInfo" : {
+			"ko" : "속성 정보",
+			"en" : "Attribute Info"
+		},
+		"sld" : {
+			"ko" : "SLD",
+			"en" : "SLD"
+		},
+		"myserver" : {
+			"ko" : "전체 스타일",
+			"en" : "All Styles"
+		},
+		"duplicateKeyHint" : {
+			"ko" : "이 값은 중복되었습니다.",
+			"en" : "This value is a duplicate."
+		},
+		"upload" : {
+			"ko" : "서버에 업로드",
+			"en" : "Upload to Server"
+		},
+		"uploadShpAlert" : {
+			"ko" : "zip파일 형식만 업로드가능합니다.",
+			"en" : "Only zip file types can be uploaded."
+		},
+		"layerNameHint" : {
+			"ko" : "레이어 이름은 문자로 시작해야하며 영어 대소문자, 숫자, 언더스코어(_), 하이픈(-) 만 입력이 가능합니다.",
+			"en" : "Layer names must begin with a letter and can only contain letters in English, capital letters, numbers, hyphens(-) and underscores(_)."
+		},
+		"layerSpecialChar" : {
+			"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
+			"en" : "Special characters are not allowed in the layer name."
+		},
+		"columnNameHint" : {
+			"ko" : "컬럼명은 다음과 같은 규칙을 가지고있습니다.\n1.첫 단어는 문자이여야만 한다.\n2.단어 수는 1-30자까지이다.\n3.영단어 대소문자, 숫자, _, #, $ 만 입력할 수 있다.\n4.공백을 허용하지 않는다.",
+			"en" : "A column name has the following rules:\n1.The first word must be a letter.\n2.The word count can be from 1 to 30 characters.\n3.Only English letters, numbers, _, #, and $ can be entered.\n4.Do not allow spaces."
+		},
+		"imageUploadHint" : {
+			"ko" : "업로드할 이미지 파일을 선택해주세요.",
+			"en" : "Please select an image file to upload."
+		},
+		"imageFileHint" : {
+			"ko" : "이미지 형식의 파일만 업로드 가능합니다.",
+			"en" : "Only image format can be uploaded."
+		},
+		"and" : {
+			"ko" : "외",
+			"en" : "and"
+		},
+		"more" : {
+			"ko" : "개",
+			"en" : "more"
+		}
+	};
+	
+	/**
+	 * 현재 선택된 레이어
+	 * @type {ol.layer.Base}
+	 * @private
+	 */
+	this.selectedLayer = undefined;
+	
+	/**
+	 * 레이어 정보보기 Modal 객체
+	 * @type {gb.modal.ModalBase}
+	 * @private
+	 */
+	this.layerPropModal = undefined;
+	
+	/**
+	 * Geometry Type 목록
+	 * @type {Array.<string>}
+	 * @private
+	 */
+	this.geometryType = [ "point", "linestring", "polygon", "multipoint", "multilinestring", "multipolygon" ];
+	
+	/**
+	 * Openlayers Tree 제목
+	 * @type {DOM}
+	 * @private
+	 */
 	this.panelTitle = $("<p>").text("Now editing").css({
 		"margin" : "0",
 		"float" : "left"
 	});
+	
+	
 	var addIcon = $("<i>").addClass("fas").addClass("fa-plus");
+	/**
+	 * 레이어 추가 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.addBtn = $("<button>").addClass("gb-button-clear").append(addIcon).css({
 		"float" : "right"
 	}).click(function() {
@@ -283,26 +299,49 @@ gb.tree.OpenLayers = function(obj) {
 		}
 		that.openAddLayer();
 	});
+	
 	var createGroupIcon = $("<i>").addClass("fas").addClass("fa-folder-open");
+	/**
+	 * 그룹 레이어 추가 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.createGroupBtn = $("<button>").addClass("gb-button-clear").append(createGroupIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.createGroupNode();
 	});
-
+	
 	var importFileIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-archive");
+	/**
+	 * 레이어 파일 불러오기 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.importFileBtn = $("<button>").addClass("gb-button-clear").append(importFileIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.createUploadModal();
 	});
+	
 	var addImgIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-image");
+	/**
+	 * 이미지 파일 불러오기 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.addImgBtn = $("<button>").addClass("gb-button-clear").append(addImgIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.createImageModal();
 	});
+	
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	/**
+	 * Openlayers Tree 새로고침 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
 		"float" : "right"
 	}).click(function() {
@@ -314,16 +353,32 @@ gb.tree.OpenLayers = function(obj) {
 		}
 		that.refreshList();
 	});
+	
 	var searchIcon = $("<i>").addClass("fas").addClass("fa-search");
+	/**
+	 * Openlayers Tree 노드 검색 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.searchBtn = $("<button>").addClass("gb-button-clear").append(searchIcon).css({
 		"float" : "right"
 	}).click(function() {
 		that.openSearchBar();
 	});
 
+	/**
+	 * Openlayers Tree 노드 검색 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.titleArea = $("<div>").append(this.panelTitle).append(this.searchBtn).append(this.refBtn).append(this.addImgBtn).append(
 			this.importFileBtn).append(this.createGroupBtn).append(this.addBtn);
 
+	/**
+	 * Openlayers Tree 노드 검색 input element
+	 * @type {DOM}
+	 * @private
+	 */
 	this.searchInput = $("<input>").attr({
 		"type" : "text"
 	}).css({
@@ -332,6 +387,68 @@ gb.tree.OpenLayers = function(obj) {
 		"background-color" : "transparent",
 		"width" : "90%"
 	});
+	
+	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
+	/**
+	 * Openlayers Tree 노드 검색창 닫기 버튼 element
+	 * @type {DOM}
+	 * @private
+	 */
+	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
+		"float" : "right"
+	}).click(function() {
+		$(that.searchInput).val("");
+		that.getJSTree().search("");
+		that.closeSearchBar();
+	});
+	
+	/**
+	 * Openlayers Tree 노드 검색 layout element
+	 * @type {DOM}
+	 * @private
+	 */
+	this.searchArea = $("<div>").css({
+		"display" : "none"
+	}).append(this.searchInput).append(this.closeSearchBtn);
+	
+	/**
+	 * Openlayers Tree 패널 header
+	 * @type {DOM}
+	 * @private
+	 */
+	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
+	
+	/**
+	 * Openlayers Tree 패널 body
+	 * @type {DOM}
+	 * @private
+	 */
+	this.panelBody = $("<div>").addClass("gb-article-body").css({
+		"overflow-y" : "auto"
+	});
+	
+	/**
+	 * Openlayers Tree 패널 layout
+	 * @type {DOM}
+	 * @private
+	 */
+	this.panel = $("<div>").addClass("gb-article").css({
+		"margin" : "0"
+	}).append(this.panelHead).append(this.panelBody);
+	
+	var options = obj ? obj : {};
+	this.append = options.append ? options.append : undefined;
+	this.map = options.map instanceof ol.Map ? options.map : undefined;
+	if(this.map === undefined){
+		console.error("gb.tree.OpenLayers: 'map' is a required field.");
+	}
+	this.editingTool = options.editingTool || undefined;
+	this.token = options.token || "";
+	this.locale = options.locale || "en";
+	this.uploadjson = options.uploadJSON !== undefined ? options.uploadJSON : undefined;
+	var url = options.url;
+	this.getLegend = url.getLegend ? url.getLegend : undefined;
+	
 	this.tout = false;
 	$(this.searchInput).keyup(function() {
 		if (that.tout) {
@@ -342,24 +459,8 @@ gb.tree.OpenLayers = function(obj) {
 			that.getJSTree().search(v);
 		}, 250);
 	});
-	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
-	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
-		"float" : "right"
-	}).click(function() {
-		$(that.searchInput).val("");
-		that.getJSTree().search("");
-		that.closeSearchBar();
-	});
-	this.searchArea = $("<div>").css({
-		"display" : "none"
-	}).append(this.searchInput).append(this.closeSearchBtn);
-	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
-	this.panelBody = $("<div>").addClass("gb-article-body").css({
-		"overflow-y" : "auto"
-	});
-	this.panel = $("<div>").addClass("gb-article").css({
-		"margin" : "0"
-	}).append(this.panelHead).append(this.panelBody);
+	
+	// append 옵션에 설정한 값에 Openlayers Tree 패널을 append
 	if (typeof options.append === "string") {
 		$(options.append).append(this.panel);
 	} else if ($(options.append).is("div")) {
@@ -398,7 +499,8 @@ gb.tree.OpenLayers = function(obj) {
 					"properties" : undefined,
 					"navigator" : new gb.layer.Navigator({
 						map : this.map,
-						token : this.token
+						token : this.token,
+						getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax"
 					}),
 					"layerRecord" : undefined,
 					"featureRecord" : options.frecord,
@@ -862,8 +964,9 @@ gb.tree.OpenLayers.prototype.constructor = gb.tree.OpenLayers;
 
 /**
  * jstree가 적용된 jquery 객체를 반환한다.
- * 
  * @method gb.tree.OpenLayers#getJSTreeElement
+ * @function
+ * @return {DOM}
  */
 gb.tree.OpenLayers.prototype.getJSTreeElement = function() {
 	return $(this.panelBody);
@@ -871,8 +974,9 @@ gb.tree.OpenLayers.prototype.getJSTreeElement = function() {
 
 /**
  * jstree 객체를 반환한다.
- * 
  * @method gb.tree.OpenLayers#getJSTree
+ * @function
+ * @return {$.jstreeol3.plugins.functionmarker} jstree-functionmarker.js 파일 참조
  */
 gb.tree.OpenLayers.prototype.getJSTree = function() {
 	return this.jstree;
@@ -880,8 +984,9 @@ gb.tree.OpenLayers.prototype.getJSTree = function() {
 
 /**
  * jstree 객체를 설정한다.
- * 
  * @method gb.tree.OpenLayers#setJSTree
+ * @function
+ * @param {$.jstreeol3} jstree - jstree 객체(jsTree-openlayers3/jstree.js 파일 참조)
  */
 gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
 	this.jstree = jstree;
@@ -889,8 +994,9 @@ gb.tree.OpenLayers.prototype.setJSTree = function(jstree) {
 
 /**
  * EditingTool 객체를 설정한다.
- * 
  * @method gb.tree.OpenLayers#setEditingTool
+ * @function
+ * @param {gb.edit.EditingTool} param - editingTool 객체
  */
 gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
 	this.jstree._data.layerproperties.editingTool = param;
@@ -898,8 +1004,9 @@ gb.tree.OpenLayers.prototype.setEditingTool = function(param) {
 
 /**
  * EditingTool 객체를 반환한다.
- * 
  * @method gb.tree.OpenLayers#getEditingTool
+ * @function
+ * @return {gb.edit.EditingTool}
  */
 gb.tree.OpenLayers.prototype.getEditingTool = function() {
 	return this.jstree._data.layerproperties.editingTool;
@@ -907,8 +1014,8 @@ gb.tree.OpenLayers.prototype.getEditingTool = function() {
 
 /**
  * Tree에 Group Node를 생성한다.
- * 
  * @method gb.tree.OpenLayers#createGroupNode
+ * @function
  */
 gb.tree.OpenLayers.prototype.createGroupNode = function() {
 	var tree = this.jstree;
@@ -921,18 +1028,19 @@ gb.tree.OpenLayers.prototype.createGroupNode = function() {
 };
 
 /**
- * 목록을 새로고침한다.
- * 
+ * Tree 노드 목록을 새로고침한다. 모든 노드의 tree 아이디를 재설정한다.
  * @method gb.tree.OpenLayers#refreshList
+ * @function
  */
 gb.tree.OpenLayers.prototype.refreshList = function() {
 	console.log("refresh");
 	this.getJSTree().refresh();
 };
+
 /**
- * 레이어 검색창을 연다.
- * 
+ * Openlayers Tree 노드 검색창을 연다.
  * @method gb.tree.OpenLayers#openSearchBar
+ * @function
  */
 gb.tree.OpenLayers.prototype.openSearchBar = function() {
 	console.log("open search on geoserver");
@@ -943,10 +1051,11 @@ gb.tree.OpenLayers.prototype.openSearchBar = function() {
 		"display" : "block"
 	});
 };
+
 /**
- * 레이어 검색창을 닫는다.
- * 
+ * Openlayers Tree 노드 검색창을 닫는다.
  * @method gb.tree.OpenLayers#closeSearchBar
+ * @function
  */
 gb.tree.OpenLayers.prototype.closeSearchBar = function() {
 	console.log("close search geoserver");
@@ -960,8 +1069,9 @@ gb.tree.OpenLayers.prototype.closeSearchBar = function() {
 
 /**
  * uploadjson 객체를 반환한다.
- * 
  * @method gb.tree.OpenLayers#getUploadJSON
+ * @function
+ * @return {gb.geoserver.UploadGeoJSON}
  */
 gb.tree.OpenLayers.prototype.getUploadJSON = function() {
 	return this.uploadjson;
@@ -969,17 +1079,18 @@ gb.tree.OpenLayers.prototype.getUploadJSON = function() {
 
 /**
  * uploadjson 객체를 설정한다.
- * 
  * @method gb.tree.OpenLayers#setUploadJSON
+ * @function
+ * @param {gb.geoserver.UploadGeoJSON} obj - uploadjson 객체
  */
 gb.tree.OpenLayers.prototype.setUploadJSON = function(obj) {
 	this.uploadjson = obj;
 };
 
 /**
- * Layer 생성창을 연다.
- * 
+ * Layer 생성창을 연다. Layer명, 속성명은 Geoserver의 명명 규칙을 따른다.
  * @method gb.tree.OpenLayers#openAddLayer
+ * @function
  */
 gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	var that = this;
@@ -1143,6 +1254,13 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 	);
 };
 
+/**
+ * 레이어 속성 정보 설정 Layout Table을 반환한다.
+ * @method gb.tree.OpenLayers#getAttrForm
+ * @function
+ * @param {boolean} bool - Not Null, Unique 조건 설정 가시화 여부. true일 시 Not Null, Unique 조건 설정 불가.
+ * @return {DOM}
+ */
 gb.tree.OpenLayers.getAttrForm = function(bool) {
 	var addBtn = 
 		$("<a href='#'>")
@@ -1207,9 +1325,9 @@ gb.tree.OpenLayers.getAttrForm = function(bool) {
 };
 
 /**
- * Shp file 업로드창을 생성한다.
- * 
+ * Shp file 업로드창을 생성한다. Zip형식의 파일만 업로드 가능하다.
  * @method gb.tree.OpenLayers#createUploadModal
+ * @function
  */
 gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	var that = this;
@@ -1329,6 +1447,15 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 	});
 };
 
+/**
+ * Shp file 업로드창을 생성한다. Zip형식의 파일만 업로드 가능하다.
+ * @method gb.tree.OpenLayers#loadShpZip
+ * @function
+ * @param {string|undefined|null} encode - 인코딩 타입(Default "EUC-KR")
+ * @param {window.File} file - 업로드 파일 객체
+ * @param {ol.Map} map - 파일을 업로드할 맵 객체
+ * @param {function} callback - 콜백함수
+ */
 gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) {
 	var epsg = epsg || 4326;
 	var encode = encode || "EUC-KR";
@@ -1375,8 +1502,8 @@ gb.tree.OpenLayers.prototype.loadShpZip = function(encode, file, map, callback) 
 
 /**
  * Image file 업로드창을 생성한다.
- * 
  * @method gb.tree.OpenLayers#createImageModal
+ * @function
  */
 gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var that = this;
@@ -1487,8 +1614,9 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 
 /**
  * 레이어 삭제 확인창을 연다.
- * 
- * @method gb.tree.OpenLayers#openDeleteGeoServerLayer
+ * @method gb.tree.OpenLayers#openDeleteLayer
+ * @function
+ * @param {Array.<Object>} layer - 삭제하려는 레이어들의 노드 정보 배열
  */
 gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 	var that = this;
@@ -1553,9 +1681,11 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 };
 
 /**
- * 레이어 삭제
- * 
+ * 레이어를 삭제한다. 
  * @method gb.tree.OpenLayers#deleteLayer
+ * @function
+ * @param {Array.<Object>} layers - 삭제하려는 레이어들의 노드 정보 배열
+ * @param {function} callback - 콜백함수
  */
 gb.tree.OpenLayers.prototype.deleteLayer = function(layers, callback){
 	var that = this;
@@ -1569,6 +1699,12 @@ gb.tree.OpenLayers.prototype.deleteLayer = function(layers, callback){
 	}
 };
 
+/**
+ * Vector 레이어의 상세정보창을 생성한다.
+ * @method gb.tree.OpenLayers#vectorLayerInfo
+ * @function
+ * @param {ol.layer.Vector} layer - 레이어 객체
+ */
 gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
 	
 	var params = {};
@@ -1638,6 +1774,16 @@ gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
 	});
 }
 
+/**
+ * Geoserver로부터 Import된 레이어의 상세정보를 요청한다.
+ * @method gb.tree.OpenLayers#requestLayerInfo
+ * @function
+ * @param {Object} obj - 요청 파라미터
+ * @param {string} obj.geoserver - Geoserver명
+ * @param {string} obj.workspace - workspace명
+ * @param {string} obj.datastore - datastore명
+ * @param {string} obj.layername - layer명
+ */
 gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
 	var that = this;
 	var geoserver = obj.geoserver || false,
@@ -1752,6 +1898,14 @@ gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
 	});
 }
 
+/**
+ * 레이어 상세정보창에 표시할 Table Element를 생성하고 반환한다.
+ * @method gb.tree.OpenLayers#createPropTable
+ * @function
+ * @param {Object.<string, string|Object>} obj - 테이블 내용
+ * @param {boolean} isVector - 레이어 타입이 Vector인지 여부 
+ * @return {DOM}
+ */
 gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	var that = this;
 	
@@ -1985,6 +2139,12 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	return tableTag;
 }
 
+/**
+ * 레이어 속성값 추가 모달창을 생성한다.
+ * @method gb.tree.OpenLayers#addPropModal
+ * @function
+ * @param {boolean} obj - Not Null, Unique 옵션 설정 가능 여부. True일 시 설정 불가
+ */
 gb.tree.OpenLayers.prototype.addPropModal = function(obj) {
 	var that = this;
 	var attrTable = gb.tree.OpenLayers.getAttrForm(obj);

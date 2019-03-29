@@ -6,24 +6,20 @@ if (!gb.interaction)
 
 (function($){
 	/**
+	 * @classdesc
 	 * Hole Polygon 그리기 기능
-	 * @author hochul.kim
-	 * @date 2018. 08. 06
-	 * @version 0.01
 	 * @class gb.interaction.HoleDraw
-	 * @constructor
+	 * @memberof gb.interaction
 	 * @param {Object} opt_options - gb.interaction.HoleDraw 생성 옵션
+	 * @param {gb.edit.EditingTool} opt_options.editTool - 피처 편집 기능 객체. 선택된 피처를 가져오기위한 필수 옵션
+	 * @param {gb.edit.FeatureRecord} [opt_options.featureRecord] - feature 편집 이력 관리 객체
+	 * @extends {ol.interaction.Interaction}
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 25
+	 * @version 0.01
 	 */
 	gb.interaction.HoleDraw = function(opt_options) {
 		var that = this;
-		var options = opt_options ? opt_options : {};
-		
-		this.featureRecord = options.featureRecord || undefined;
-		
-		this.editTool = options.editTool || undefined;
-		//this.coordinates = undefined;
-		
-		this.selected = this.editTool ? this.editTool.selected : undefined;
 		
 		/**
 		 * 임시 vector source
@@ -31,6 +27,14 @@ if (!gb.interaction)
 		 * @private
 		 */
 		this.source_ = new ol.source.Vector();
+		
+		
+		var options = opt_options ? opt_options : {};
+		this.featureRecord = options.featureRecord || undefined;
+		this.editTool = options.editTool || undefined;
+		// this.coordinates = undefined;
+		
+		this.selected = this.editTool ? this.editTool.selected : undefined;
 		
 		ol.interaction.Draw.call(this, {
 			type: "Polygon",
@@ -168,6 +172,13 @@ if (!gb.interaction)
 	};
 	ol.inherits(gb.interaction.HoleDraw, ol.interaction.Draw);
 
+	/**
+	 * 선택된 피처의 유효성을 확인한다. 선택된 피쳐는 타입이 Polygon또는 MultiPolygon인
+	 * ol.Feature 객체이여야하며 한 개의 피쳐만 선택되어있어야한다.
+	 * @method gb.interaction.HoleDraw#checkSelected
+	 * @function
+	 * @return {boolean} 유효성 검사 결과
+	 */
 	gb.interaction.HoleDraw.prototype.checkSelected = function(){
 		if(!(this.selected instanceof ol.Collection)){
 			alert("There is no object of ol.interaction.Select");
@@ -188,6 +199,13 @@ if (!gb.interaction)
 		}
 	}
 	
+	/**
+	 * 선택된 피처를 설정한다.
+	 * @method gb.interaction.HoleDraw#setSelectFeatures
+	 * @function
+	 * @param {ol.Collection} sel - 선택된 피처 모음 객체
+	 * @return {boolean} 선택된 피처 설정 성공 여부
+	 */
 	gb.interaction.HoleDraw.prototype.setSelectFeatures = function(sel){
 		if(sel instanceof ol.Collection){
 			this.selected = sel;
@@ -196,6 +214,16 @@ if (!gb.interaction)
 			return false;
 		}
 	}
+	
+	/**
+	 * 인자값으로 주어진 배열 객체의 첫번째 항목을 복사하여 배열의 맨마지막 항목에 추가한다.
+	 * Geometry 객체를 생성하기 위한 좌표 배열을 만들기위해 사용한다.
+	 * @method pushFirstElement
+	 * @function
+	 * @param {Array} arr - 재배열할 배열 객체
+	 * @return {Array}
+	 * @private
+	 */
 	function pushFirstElement(arr){
 		var retArray = new Array()
 		for (var i = 0; i < arr.length; i++) {

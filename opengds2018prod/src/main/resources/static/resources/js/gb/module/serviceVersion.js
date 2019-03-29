@@ -4,17 +4,65 @@ if (!gb)
 if (!gb.module)
 	gb.module = {};
 
+/**
+ * Geoserver Web Service 버전을 정의하는 전역 객체
+ * @namespace {Object} gb.module.serviceVersion
+ * @memberof gb.module
+ */
 gb.module.serviceVersion = {
+	/**
+	 * WCS 버전 변수. 기본 "1.0.0"
+	 * @member {string} gb.module.serviceVersion.WCS
+	 */
 	WCS : "1.0.0",
+	/**
+	 * WFS 버전 변수. 기본 "1.0.0"
+	 * @member {string} gb.module.serviceVersion.WFS
+	 */
 	WFS : "1.0.0",
+	/**
+	 * WMS 버전 변수. 기본 "1.0.0"
+	 * @member {string} gb.module.serviceVersion.WMS
+	 */
 	WMS : "1.0.0",
+	/**
+	 * TMS 버전 변수. 기본 "1.0.0"
+	 * @member {string} gb.module.serviceVersion.TMS
+	 */
 	TMS : "1.0.0",
+	/**
+	 * WMSC 버전 변수. 기본 "1.1.1"
+	 * @member {string} gb.module.serviceVersion.WMSC
+	 */
 	WMSC : "1.1.1",
+	/**
+	 * WMTS 버전 변수. 기본 "1.0.0"
+	 * @member {string} gb.module.serviceVersion.WMTS
+	 */
 	WMTS : "1.0.0",
+	/**
+	 * WMS 성능 고도화 옵션
+	 * @member {Object} gb.module.serviceVersion.loadPerformance
+	 */
 	loadPerformance:{
+		/**
+		 * 최대 레이어 개수. 설정한 레이어 개수 이상으로 import 실행 시 WMS 성능 고도화가 실행됨.
+		 * 기본 10
+		 * @member {number} gb.module.serviceVersion.loadPerformance.limit
+		 */
 		limit: 10,
+		/**
+		 * WMS 성능 고도화 활성화 여부. 기본 true
+		 * @member {boolean} gb.module.serviceVersion.loadPerformance.active
+		 */
 		active: true
 	},
+	/**
+	 * WMS 서비스 버전에 따른 좌표계 요청 Key값 반환.
+	 * 버전 "1.3.0"의 좌표계 key값은 "crs", 나머지는 "srs"
+	 * @method gb.module.serviceVersion.getWMSCrs
+	 * @return {string}
+	 */
 	getWMSCrs : function(){
 		if(this.WMS === "1.3.0"){
 			return "crs";
@@ -26,15 +74,9 @@ gb.module.serviceVersion = {
 };
 
 /**
- * 레파지토리 정보 확인창을 생성한다.
- * 
- * @method gb.tree.Geoserver#geoserverSettingModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * Geoserver Web Service 버전 확인창을 생성한다.
+ * @method gb.module.serviceVersion.geoserverSettingModal
+ * @param {string} locale - 언어 설정
  */
 gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	var that = this;

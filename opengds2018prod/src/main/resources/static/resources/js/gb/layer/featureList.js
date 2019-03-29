@@ -1,36 +1,33 @@
 var gb;
 if (!gb)
 	gb = {};
-if (!gb.footer)
-	gb.footer = {};
+if (!gb.layer)
+	gb.layer = {};
 
 (function($){
 	/**
-	 * feature list table 객체를 정의한다.
+	 * feature 목록 테이블 객체를 정의한다.
 	 * 
-	 * @author hochul.kim
-	 * @date 2018. 06.05
-	 * @version 0.01
-	 * @class gb.footer.FeatureList
+	 * @class gb.layer.FeatureList
 	 * @constructor
+	 * @requires {@link gb.footer.FooterBase}
+	 * @memberof gb.layer
+	 * @param {Object} obj - 생성자 옵션을 담은 객체
+	 * @param {ol.Map} obj.map - Openlayers Map 객체
+	 * @param {String} obj.wfstURL - WFS-T 요청 URL
+	 * @param {String} obj.layerInfoURL - Geoserver 레이어 정보 요청 URL
+	 * @param {String} obj.getFeatureURL - Geoserver 레이어 WFS 요청 URL
+	 * @param {String} [obj.tableId=featureListTable] - footer content에 생성할 테이블 element의 ID
+	 * @param {String|undefined} [obj.locale="en"] - 언어 코드
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 18
+	 * @version 0.01
 	 */
-	gb.footer.FeatureList = function(obj) {
+	gb.layer.FeatureList = function(obj) {
 		obj.title = "";
-		gb.footer.Base.call(this, obj);
+		gb.footer.FooterBase.call(this, obj);
 		
 		var that = this;
-		
-		var options = obj || {};
-		
-		this.map = options.map || undefined;
-		
-		this.wfstURL = options.wfstURL || '';
-		
-		this.layerInfoURL = options.layerInfoURL || '';
-		
-		this.getFeatureURL = options.getFeatureURL || '';
-		
-		this.locale = options.locale || "en";
 		this.translation = {
 			"notNullHint" : {
 				"ko" : "빈 값이 허용되지않습니다.",
@@ -51,70 +48,99 @@ if (!gb.footer)
 			"totalFeature" : {
 				"en" : "Total number of Feature",
 				"ko" : "총 객체 개수"
+			},
+			"saveHint" : {
+				"en" : "There are changes. Do you want to save it?",
+				"ko" : "변경사항이 있습니다. 저장하시겠습니까?"
+			},
+			"save" : {
+				"en" : "Save",
+				"ko" : "저장"
+			},
+			"wfstUrlHint" : {
+				"ko" : "'wfstURL'은 필수 입력항목입니다.",
+				"en" : "'wfstURL' is a required field."
+			},
+			"layerInfoUrlHint" : {
+				"ko" : "'layerInfoURL'은 필수 입력항목입니다.",
+				"en" : "'layerInfoURL' is a required field."
+			},
+			"getFeatureUrlHint" : {
+				"ko" : "'getFeatureURL'은 필수 입력항목입니다.",
+				"en" : "'getFeatureURL' is a required field."
 			}
 		}
 		
 		/**
 		 * 현재 선택된 레이어의 JSTree ID
+		 * @private
+		 * @type {string}
 		 */
 		this.selectedTreeId = undefined;
 		
 		/**
 		 * 현재 선택된 레이어
+		 * @private
+		 * @type {ol.layer.Base}
 		 */
 		this.selectedLayer = undefined;
 		
 		/**
 		 * 현재 선택된 객체
+		 * @private
+		 * @type {ol.Featrue}
 		 */
 		this.selectedFeature = undefined;
 		
 		/**
-		 * feature 요청 parameter
+		 * GetFeature 요청 파라미터 정보 객체
+		 * @private
+		 * @type {Object}
 		 */
 		this.parameters = undefined;
 		
 		/**
-		 * scrollTop height
+		 * scroll 막대의 Top 부분이 위치해있는 높이
+		 * @private
+		 * @type {number}
 		 */
 		this.scrollTop = undefined;
 		
 		/**
 		 * JSTree의 treeid가 key이고 value는 feature의 속성 key값인 col, feature의 속성값인 data로 구성
+		 * @private
+		 * @type {Object.<string, string>}
 		 */
 		this.attrList = {};
 		
 		/**
 		 * 속성값이 수정된 feature들의 집합
+		 * @private
+		 * @type {Object.<string, Object>}
 		 */
 		this.editedFeature = {};
 		
 		/**
 		 * DataTable ID 고유번호
+		 * @private
+		 * @type {number}
 		 */
 		this.countId = 0;
 		
 		/**
 		 * feature 요청 리스트 시작 index
+		 * @private
+		 * @type {number}
 		 */
 		this.startIndex = 0;
 		
 		/**
 		 * feature 요청 리스트 최대 개수
+		 * @private
+		 * @type {number}
 		 */
 		this.maxFeatures = 10;
 		
-		/**
-		 * footer content에 생성할 table element의 ID
-		 */
-		this.tableId = options.tableId || "featureListTable";
-		
-		this.tableTitles = options.tableTitles || [];
-		
-		this.tableData = options.tableData || [];
-		
-		this.content = options.content;
-			
 		this.titleAreaStyle = {
 			"position": "absolute",
 			"width": "100%",
@@ -138,9 +164,28 @@ if (!gb.footer)
 			"background-color": "rgb(0, 0, 0)",
 			"background-color": "rgba(0, 0, 0, 0.4)"
 		};
+			
+		var options = obj || {};
+		this.locale = options.locale || "en";
+		this.map = options.map || undefined;
+		this.wfstURL = options.wfstURL || '';
+		if(!this.wfstURL){
+			console.error("gb.layer.FeatureList: " + this.translation.wfstUrlHint[this.locale]);
+		}
+		this.layerInfoURL = options.layerInfoURL || '';
+		if(!this.layerInfoURL){
+			console.error("gb.layer.FeatureList: " + this.translation.layerInfoUrlHint[this.locale]);
+		}
+		this.getFeatureURL = options.getFeatureURL || '';
+		if(!this.getFeatureURL){
+			console.error("gb.layer.FeatureList: " + this.translation.getFeatureUrlHint[this.locale]);
+		}
+		this.tableId = options.tableId || "featureListTable";
 		
+		// Datatable을 적용할 테이블 element 생성
 		this.tableElement = this.createTableElement();
 		
+		// Background 블러 처리
 		this.backgroundDiv = $("<div class='footer-background'>");
 		this.adjustStyle_(this.backgroundDiv, this.backgroundStyle);
 		this.targetElement.append(this.backgroundDiv);
@@ -254,12 +299,17 @@ if (!gb.footer)
 			}
 		});
 	}
+	// gb.footer.FooterBase 상속
+	gb.layer.FeatureList.prototype = Object.create(gb.footer.FooterBase.prototype);
+	gb.layer.FeatureList.prototype.constructor = gb.layer.FeatureList;
 	
-	// gb.footer.Base 상속
-	gb.footer.FeatureList.prototype = Object.create(gb.footer.Base.prototype);
-	gb.footer.FeatureList.prototype.constructor = gb.footer.FeatureList;
-	
-	gb.footer.FeatureList.prototype.createTableElement = function(){
+	/**
+	 * 이전 테이블 element를 제거하고 새로 생성하여 반환한다.
+	 * @method gb.layer.FeatureList#createTableElement
+	 * @function
+	 * @return {DOM} 테이블 element
+	 */
+	gb.layer.FeatureList.prototype.createTableElement = function(){
 		this.removeTableElement();
 		
 		var that = this;
@@ -277,7 +327,9 @@ if (!gb.footer)
 				return;
 			}
 			
-			that.map.getView().fit(data[0].getGeometry().getExtent(), that.map.getSize());
+			if(that.map !== undefined){
+				that.map.getView().fit(data[0].getGeometry().getExtent(), that.map.getSize());
+			}
 		});
 		
 		this.createFooter({
@@ -288,7 +340,12 @@ if (!gb.footer)
 		return table;
 	}
 	
-	gb.footer.FeatureList.prototype.removeTableElement = function(){
+	/**
+	 * 테이블 element를 제거한다.
+	 * @method gb.layer.FeatureList#removeTableElement
+	 * @function
+	 */
+	gb.layer.FeatureList.prototype.removeTableElement = function(){
 		if(!this.tableElement){
 			return;
 		}
@@ -303,9 +360,11 @@ if (!gb.footer)
 	
 	/**
 	 * feature list layout 생성 클릭 이벤트
-	 * @param {jquery} target Target
+	 * @method gb.layer.FeatureList#clickEvent
+	 * @function
+	 * @param {DOM} target - Target element
 	 */
-	gb.footer.FeatureList.prototype.clickEvent = function(target){
+	gb.layer.FeatureList.prototype.clickEvent = function(target){
 		var that = this;
 		$(target).click(function(){
 			that.createFooter({
@@ -317,8 +376,10 @@ if (!gb.footer)
 	
 	/**
 	 * 전체 객체 리스트 테이블 크기 재갱신
+	 * @method gb.layer.FeatureList#onResize
+	 * @function
 	 */
-	gb.footer.FeatureList.prototype.onResize = function(){
+	gb.layer.FeatureList.prototype.onResize = function(){
 		if(!!this.dataTable){
 			this.dataTable.columns.adjust().draw();
 			this.resizeTbody();
@@ -326,9 +387,11 @@ if (!gb.footer)
 	}
 	
 	/**
-	 * tbody height 갱신
+	 * tbody Tag height 갱신
+	 * @method gb.layer.FeatureList#resizeTbody
+	 * @function
 	 */
-	gb.footer.FeatureList.prototype.resizeTbody = function(){
+	gb.layer.FeatureList.prototype.resizeTbody = function(){
 		var a = this.footerTag.find(".footer-content").height();
 		var b = $("#" + this.tableId + this.countId + "_wrapper").find(".dt-buttons").height();
 		var c = $("#" + this.tableId + this.countId + "_wrapper .dataTables_scrollHead").height();
@@ -340,12 +403,14 @@ if (!gb.footer)
 	
 	/**
 	 * Feature Attribute 편집 저장 여부 알림창을 생성한다.
+	 * 취소 버튼 클릭 시 모든 변경사항을 무시한다.
+	 * @method gb.layer.FeatureList#openSaveModal
+	 * @function
 	 */
-	gb.footer.FeatureList.prototype.openSaveModal = function(){
+	gb.layer.FeatureList.prototype.openSaveModal = function(){
 		var that = this;
 
-		var row2 = $("<div>").addClass("row").append(
-		"변경사항이 있습니다. 저장하시겠습니까?");
+		var row2 = $("<div>").addClass("row").append(this.translation.saveHint[this.locale]);
 
 		var well = $("<div>").addClass("well").append(row2);
 
@@ -365,7 +430,7 @@ if (!gb.footer)
 			"width" : "100%"
 		});
 		var openSaveModal = new gb.modal.Base({
-			"title" : "저장",
+			"title" : this.translation.save[this.locale],
 			"width" : 540,
 			"height" : 250,
 			"autoOpen" : true,
@@ -382,7 +447,14 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.searchTable = function(column, value){
+	/**
+	 * 특정컬럼의 특정값을 검색한다. 검색결과만을 포함하도록 테이블 내용을 업데이트한다.
+	 * @method gb.layer.FeatureList#searchTable
+	 * @function
+	 * @param {string} column - 컬럼명
+	 * @param {string} value - 검색하려는 값
+	 */
+	gb.layer.FeatureList.prototype.searchTable = function(column, value){
 		var that = this;
 		var col = column,
 			val = value,
@@ -461,10 +533,12 @@ if (!gb.footer)
 	}
 	
 	/**
-	 * DataTable Table 내용 갱신
-	 * @param {String} treeid
+	 * 현재 선택된 레이어로 DataTable Table 내용 갱신
+	 * @method gb.layer.FeatureList#updateTable
+	 * @function
+	 * @param {string} treeid - 선택한 레이어의 JSTree 노드 아이디
 	 */
-	gb.footer.FeatureList.prototype.updateTable = function(treeid){
+	gb.layer.FeatureList.prototype.updateTable = function(treeid){
 		var that = this;
 		this.selectedTreeId = treeid;
 		
@@ -689,7 +763,13 @@ if (!gb.footer)
 		this.onResize();
 	}
 	
-	gb.footer.FeatureList.prototype.updateFeatureList = function(layer){
+	/**
+	 * 인자값으로 주어진 레이어의 정보로 테이블 내용 업데이트
+	 * @method gb.layer.FeatureList#updateFeatureList
+	 * @function
+	 * @param {ol.layer.Base} layer - 갱신할 레이어 객체
+	 */
+	gb.layer.FeatureList.prototype.updateFeatureList = function(layer){
 		this.startIndex = 0;
 		this.scrollTop = 0;
 		
@@ -753,19 +833,19 @@ if (!gb.footer)
 		
 		var geoserver = options.geoserver;
 		if(!geoserver){
-			console.error('gb.footer.FeatureList: geoserver name is required');
+			console.error('gb.layer.FeatureList: geoserver name is required');
 			return;
 		}
 		
 		var workspace = options.workspace;
 		if(!workspace){
-			console.error('gb.footer.FeatureList: workspace name is required');
+			console.error('gb.layer.FeatureList: workspace name is required');
 			return;
 		}
 		
 		var layerName = layer.get("name");
 		if(!layerName){
-			console.error('gb.footer.FeatureList: layer name is required');
+			console.error('gb.layer.FeatureList: layer name is required');
 			return;
 		}
 		
@@ -820,7 +900,12 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.nextFeatureList = function(){
+	/**
+	 * 테이블 데이터 페이징 처리
+	 * @method gb.layer.FeatureList#nextFeatureList
+	 * @function
+	 */
+	gb.layer.FeatureList.prototype.nextFeatureList = function(){
 		var that = this;
 		this.startIndex = this.startIndex + this.maxFeatures;
 		var list = this.attrList;
@@ -902,7 +987,16 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){
+	/**
+	 * 레이어의 Geometry Key 정보를 요청한다
+	 * @method gb.layer.FeatureList#requestLayerInfo
+	 * @function
+	 * @param {string} serverName - 서버 이름
+	 * @param {string} workspace - 작업공간 이름
+	 * @param {string} layer - 레이어 이름
+	 * @param {string} treeid - JSTree 노드 아이디
+	 */
+	gb.layer.FeatureList.prototype.requestLayerInfo = function(serverName, workspace, layer, treeid){
 		var list = this.attrList;
 		var treeid = treeid;
 		var a = {
@@ -927,7 +1021,13 @@ if (!gb.footer)
 		});
 	}
 	
-	gb.footer.FeatureList.prototype.sendWFSTTransaction = function(openSaveModal){
+	/**
+	 * 레이어의 속성 변경사항을 저장 요청한다
+	 * @method gb.layer.FeatureList#sendWFSTTransaction
+	 * @function
+	 * @param {DOM} openSaveModal - 요청 성공 시 닫아야할 DIV
+	 */
+	gb.layer.FeatureList.prototype.sendWFSTTransaction = function(openSaveModal){
 		var featureInfo = this.editedFeature;
 		var format = new ol.format.WFS();
 		var node, param;

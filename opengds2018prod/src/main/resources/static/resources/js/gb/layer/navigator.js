@@ -1,29 +1,24 @@
-/**
- * Layer Navigator
- * 
- * @author hochul.kim
- * @date 2018. 09. 18
- * @version 0.01
- */
 var gb;
 if (!gb)
 	gb = {};
 if (!gb.layer)
 	gb.layer = {};
 
+/**
+ * @classdesc
+ * Layer Navigator. 레이어의 객체를 추적한다.
+ * @class gb.layer.Navigator
+ * @memberof gb.layer
+ * @constructor
+ * @param {Object} obj - gb.layer.Navigator 생성 옵션
+ * @param {ol.Map} obj.map - 기능을 적용할 Openlayers Map 객체
+ * @param {string} [obj.token] - 요청 인증 토큰
+ * @param {string} obj.getWFSFeature - Geoserver 레이어 WFS 요청 URL
+ * @author KIM HOCHUL
+ * @date 2019. 03. 25
+ * @version 0.01
+ */
 gb.layer.Navigator = function(obj) {
-	var options = obj;
-	
-	this.map = options.map || false;
-	if(!this.map){
-		console.error("gb.layer.Navigator: ol.map is required");
-		return null;
-	}
-	
-	this.token = options.token || "";
-	
-	this.getWFSFeature = options.getWFSFeature || "geoserver/geoserverWFSGetFeature.ajax";
-	
 	this.featureList = undefined;
 	
 	this.count = 0;
@@ -52,9 +47,29 @@ gb.layer.Navigator = function(obj) {
 		"z-Index" : "999",
 	});
 	
+	var options = obj;
+	this.map = options.map || false;
+	if(!this.map){
+		console.error("gb.layer.Navigator: 'map' is required field");
+		return null;
+	}
+	this.token = options.token || "";
+	this.getWFSFeature = options.getWFSFeature || false;
+	if(!this.getWFSFeature){
+		console.error("gb.layer.Navigator: 'getWFSFeature' is required field");
+		return null;
+	}
+	
+	// Navigator 창 생성
 	this.createNavigator_();
 }
 
+/**
+ * 객체 추적 기능을 적용할 레이어 객체를 설정한다.
+ * @method gb.layer.Navigator#setFeatures
+ * @function
+ * @param {ol.layer.Layer} Layer - 객체 추적 기능을 적용할 레이어 객체
+ */
 gb.layer.Navigator.prototype.setFeatures = function(Layer){
 	var layer = Layer;
 	this.count = 0;
@@ -74,6 +89,12 @@ gb.layer.Navigator.prototype.setFeatures = function(Layer){
 	this.selectedLayer = layer;
 }
 
+/**
+ * Geoserver에 WFS를 요청한다. 요청 성공 시 네비게이터창이 생성된다.
+ * @method gb.layer.Navigator#requestFeatureList
+ * @function
+ * @param {ol.layer.Layer} Layer - 객체 추적 기능을 적용할 레이어 객체
+ */
 gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace, layer){
 	var that = this;
 	var a = {
@@ -113,11 +134,13 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		},
 		success: function(data, textStatus, jqXHR) {
 			if(that.count === data.totalFeatures){
+				// count 변수가 Feature 총 개수와 같다면 count를 1 줄이고 작업을 중단함
 				that.count = data.totalFeatures - 1;
 				return;
 			}
 			
 			that.featureList = new ol.format.GeoJSON().readFeatures(JSON.stringify(data));
+			// 네비게이터창 생성
 			that.showFeatureInfo(that.featureList[0]);
 			that.open();
 		},
@@ -128,6 +151,12 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 	});
 }
 
+/**
+ * Feature 목록을 업데이트 한다. 선택된 레이어가 Vector 레이어일 경우에 실행하는 함수.
+ * @method gb.layer.Navigator#updateNavigator
+ * @function
+ * @private
+ */
 gb.layer.Navigator.prototype.updateNavigator = function(){
 	var features = this.featureList;
 	this.count = 0;
@@ -135,6 +164,12 @@ gb.layer.Navigator.prototype.updateNavigator = function(){
 	this.open();
 }
 
+/**
+ * Body Tag에 네비게이터창을 생성한다.
+ * @method gb.layer.Navigator#createNavigator_
+ * @function
+ * @private
+ */
 gb.layer.Navigator.prototype.createNavigator_ = function(){
 	var that = this;
 	var prevIcon = $("<span>").addClass("glyphicon").addClass("glyphicon-backward"),
@@ -204,16 +239,33 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 	$(this.naviWindow).hide();
 }
 
+/**
+ * 네비게이터창을 연다.
+ * @method gb.layer.Navigator#open
+ * @function
+ */
 gb.layer.Navigator.prototype.open = function(){
 	$(this.naviWindow).show();
 }
 
+/**
+ * 네비게이터창을 닫는다.
+ * @method gb.layer.Navigator#close
+ * @function
+ */
 gb.layer.Navigator.prototype.close = function(){
 	$(this.naviWindow).hide();
 }
 
+/**
+ * 선택된 Feature의 세부정보 테이블을 네비게이터창에 생성하고 맵을 Feature가 위치한 곳으로 이동시킨다.
+ * @method gb.layer.Navigator#showFeatureInfo
+ * @function
+ * @param {ol.Feature} feature - Feature 세부정보창에 보여질 객체
+ */
 gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
-	if(!feature){
+	if(!(feature instanceof ol.Feature)){
+		console.error("gb.layer.Navigator#showFeatureInfo: type error(ol.Feature)");
 		return;
 	}
 	var fid = feature.getId();
@@ -234,9 +286,15 @@ gb.layer.Navigator.prototype.showFeatureInfo = function(feature) {
 	this.map.getView().fit(geom.getExtent(), this.map.getSize());
 }
 
+/**
+ * 이전 객체를 불러온다. count 변수가 1 줄어든다.
+ * @method gb.layer.Navigator#prev
+ * @function
+ */
 gb.layer.Navigator.prototype.prev = function(){
 	var features = this.featureList;
 	
+	// Tile 레이어일 때는 이전 객체를 Geoserver에 요청, Vector 레이어 일때는 Feature 목록에서 이전 객체를 불러옴
 	if(this.selectedLayer instanceof ol.layer.Tile){
 		var git = this.selectedLayer.get("git");
 		if(this.count > 0){
@@ -259,9 +317,15 @@ gb.layer.Navigator.prototype.prev = function(){
 	}
 }
 
+/**
+ * 다음 객체를 불러온다. count 변수가 1 증가한다.
+ * @method gb.layer.Navigator#prev
+ * @function
+ */
 gb.layer.Navigator.prototype.next = function(){
 	var features = this.featureList;
 	
+	// Tile 레이어일 때는 다음 객체를 Geoserver에 요청, Vector 레이어 일때는 Feature 목록에서 다음 객체를 불러옴
 	if(this.selectedLayer instanceof ol.layer.Tile){
 		var git = this.selectedLayer.get("git");
 		this.count++;

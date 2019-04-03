@@ -70,7 +70,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	var downloadWithCRS = function(url, params) {
 		var a = url, b = params;
 
-		var modal = new gb.modal.Base({
+		var modal = new gb.modal.ModalBase({
 			width : 435,
 			height : 180
 		});
@@ -1202,7 +1202,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		}).addClass("gb-button").addClass("gb-button-primary").text("OK");
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-		var modal = new gb.modal.Base({
+		var modal = new gb.modal.ModalBase({
 			"title" : title,
 			"width" : 310,
 			"autoOpen" : true,

@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 임베드 객체를 정의한다.
  * 
  * @class gb.embed.EmbedBase

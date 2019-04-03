@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 베이스맵을 변경하는 객체를 정의한다.
  * 
  * @class gb.style.BaseMap
@@ -8,7 +9,7 @@
  * @param {ol.Map}
  *            obj.map - 베이스 맵을 표시할 ol.Map 객체
  * @param {string}
- *            obj.defaultBaseMap - 기본값으로 설정할 베이스맵 이름
+ *            [obj.defaultBaseMap="black"] - 기본값으로 설정할 베이스맵 이름
  * @param {Object[]}
  *            obj.layers - 추가로 사용할 베이스 맵
  * @param {string}
@@ -20,7 +21,7 @@
  * @param {string}
  *            obj.layers[].thumb - 베이스 맵의 썸네일로 사용할 클래스명
  * @param {string}
- *            obj.locale - 사용할 언어 ko | en
+ *            [obj.locale="en"] - 사용할 언어 ko | en
  * @author SOYIJUN
  */
 

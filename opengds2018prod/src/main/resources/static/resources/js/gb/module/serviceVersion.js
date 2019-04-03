@@ -43,18 +43,11 @@ gb.module.serviceVersion = {
 	/**
 	 * WMS 성능 고도화 옵션
 	 * @member {Object} gb.module.serviceVersion.loadPerformance
+	 * @property {number} limit - 최대 레이어 개수. 설정한 레이어 개수 이상으로 import 실행 시 WMS 성능 고도화가 실행됨. 기본 10
+	 * @property {number} active - WMS 성능 고도화 활성화 여부. 기본 true
 	 */
 	loadPerformance:{
-		/**
-		 * 최대 레이어 개수. 설정한 레이어 개수 이상으로 import 실행 시 WMS 성능 고도화가 실행됨.
-		 * 기본 10
-		 * @member {number} gb.module.serviceVersion.loadPerformance.limit
-		 */
 		limit: 10,
-		/**
-		 * WMS 성능 고도화 활성화 여부. 기본 true
-		 * @member {boolean} gb.module.serviceVersion.loadPerformance.active
-		 */
 		active: true
 	},
 	/**
@@ -317,7 +310,7 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	}).addClass("gb-button").addClass("gb-button-default").text(translation.close[locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-	var removeModal = new gb.modal.Base({
+	var removeModal = new gb.modal.ModalBase({
 		"title" : translation.serverSetting[locale],
 		"width" : 574,
 		"autoOpen" : true,

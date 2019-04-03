@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
  * 
  * @class gb.geoserver.UploadGeoJSON
@@ -9,10 +10,10 @@
  *            obj.url - json객체를 업로드할 URL
  * @param {(string|number|function)}
  *            obj.epsg - 업로드할 레이어의 좌표계
- * @param {gb.tree.Geoserver}
+ * @param {gb.tree.GeoServer}
  *            obj.geoserverTree - 연동될 gb.tree.GeoServer 객체
  * @param {string}
- *            obj.locale - 사용할 언어 ko | en
+ *            [obj.locale="en"] - 사용할 언어 ko | en
  * @author SOYIJUN
  */
 gb.geoserver.UploadGeoJSON = function(obj) {
@@ -321,10 +322,8 @@ gb.geoserver.UploadGeoJSON.prototype.getUploadURL = function() {
  * 모달을 연다
  * 
  * @method gb.geoserver.UploadGeoJSON#open
- * @param {string}
- *            epsg - 업로드 할 레이어의 좌표계
- * @param {Array.
- *            <ol.layer.Vector>} layers - 업로드 할 벡터 레이어
+ * @param {string} epsg - 업로드 할 레이어의 좌표계
+ * @param {Array.<ol.layer.Vector>} layers - 업로드 할 벡터 레이어
  * @override
  */
 gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {

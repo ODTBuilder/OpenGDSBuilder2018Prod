@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 패널 객체를 정의한다.
  * 
  * @class gb.panel.PanelBase
@@ -6,17 +7,17 @@
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
  * @param {(number|string)}
- *            obj.width - 패널의 너비 (픽셀)
+ *            [obj.width="auto"] - 패널의 너비 (픽셀)
  * @param {(number|string)}
- *            obj.height - 패널의 높이 (픽셀)
+ *            [obj.height="auto"] - 패널의 높이 (픽셀)
  * @param {(number|string)}
- *            obj.positionX - 패널의 페이지 왼편 또는 오른편으로 부터의 거리 (픽셀)
+ *            [obj.positionX=0] - 패널의 페이지 왼편 또는 오른편으로 부터의 거리 (픽셀)
  * @param {boolean}
- *            obj.right - positionX를 오른쪽 기준으로 적용할것인지 (false일땐 왼쪽)
+ *            [obj.right=false] - positionX를 오른쪽 기준으로 적용할것인지 (false일땐 왼쪽)
  * @param {(number|string)}
- *            obj.positionY - 패널의 페이지 상단으로 부터의 거리 (픽셀)
+ *            [obj.positionY=0] - 패널의 페이지 상단으로 부터의 거리 (픽셀)
  * @param {boolean}
- *            obj.autoOpen - 패널을 선언과 동시에 표출 할 것인지 선택
+ *            [obj.autoOpen=false] - 패널을 선언과 동시에 표출 할 것인지 선택
  * @author SOYIJUN
  */
 gb.panel.PanelBase = function(obj) {

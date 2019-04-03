@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 사용자 설정 레이어 정의 객체
  * 
  * @class gb.validation.LayerDefinition
@@ -6,7 +7,7 @@
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
  * @param {string}
- *            obj.locale - 사용할 언어 ko | en
+ *            [obj.locale="en"] - 사용할 언어 ko | en
  * @param {HTMLElement}
  *            obj.append - 레이어 정의 영역을 포함할 부모 HTMLElement
  * @param {HTMLElement}

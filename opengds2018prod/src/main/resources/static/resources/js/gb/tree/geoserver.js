@@ -9,36 +9,21 @@
  * 
  * @class gb.tree.GeoServer
  * @memberof gb.tree
- * @param {Object}
- *            obj - 생성자 옵션을 담은 객체
- * @param {HTMLElement}
- *            obj.append - 영역 본문이 삽입될 부모 노드의 HTMLElement
- * @param {gb.tree.Openlayers}
- *            cliendTree - 클라이언트 레이어 트리 객체
- * @param {ol.Map}
- *            obj.map - 편집 영역의 ol.Map
- * @param {gb.geoserver.UploadSHP}
- *            obj.uploadSHP - SHP 파일 업로드 객체
- * @param {Object}
- *            obj.url - 요청을 처리하기 위한 URL 객체
- * @param {string}
- *            obj.url.getTree - 지오서버 트리 구조를 요청하기 위한 URL
- * @param {string}
- *            obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
- * @param {string}
- *            obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
- * @param {string}
- *            obj.url.getMapWMS - WMS 레이어를 요청하기 위한 URL
- * @param {string}
- *            obj.url.getLayerInfo - WMS 레이어 세부 정보를 요청하기 위한 URL
- * @param {string}
- *            obj.url.getWFSFeature - WMS 레이어의 피처 세부 정보를 요청하기 위한 URL
- * @param {string}
- *            obj.url.switchGeoGigBranch - GeoGig 데이터저장소의 연결 브랜치 변경을 요청하기 위한 URL
- * @param {string}
- *            obj.url.geoserverInfo - GeoServer 정보를 요청하기 위한 URL
- * @param {gb.edit.ModifyLayerProperties}
- *            obj.properties - GeoServer 레이어 속성 편집 객체
+ * @param {Object} obj - 생성자 옵션을 담은 객체
+ * @param {HTMLElement} obj.append - 영역 본문이 삽입될 부모 노드의 HTMLElement
+ * @param {gb.tree.Openlayers} obj.cliendTree - 클라이언트 레이어 트리 객체
+ * @param {ol.Map} obj.map - 편집 영역의 ol.Map
+ * @param {gb.geoserver.UploadSHP} obj.uploadSHP - SHP 파일 업로드 객체
+ * @param {Object} obj.url - 요청을 처리하기 위한 URL 객체
+ * @param {string} obj.url.getTree - 지오서버 트리 구조를 요청하기 위한 URL
+ * @param {string} obj.url.addGeoServer - 지오서버를 추가하기 위한 URL
+ * @param {string} obj.url.deleteGeoServer - 지오서버를 삭제하기 위한 URL
+ * @param {string} obj.url.getMapWMS - WMS 레이어를 요청하기 위한 URL
+ * @param {string} obj.url.getLayerInfo - WMS 레이어 세부 정보를 요청하기 위한 URL
+ * @param {string} obj.url.getWFSFeature - WMS 레이어의 피처 세부 정보를 요청하기 위한 URL
+ * @param {string} obj.url.switchGeoGigBranch - GeoGig 데이터저장소의 연결 브랜치 변경을 요청하기 위한 URL
+ * @param {string} obj.url.geoserverInfo - GeoServer 정보를 요청하기 위한 URL
+ * @param {gb.edit.ModifyLayerProperties} [obj.properties] - GeoServer 레이어 속성 편집 객체
  * @author SOYIJUN
  */
 gb.tree.GeoServer = function(obj) {
@@ -48,9 +33,6 @@ gb.tree.GeoServer = function(obj) {
 	var url = options.url ? options.url : undefined;
 	this.clientTree = options.clientTree ? options.clientTree : undefined;
 	this.properties = options.properties || undefined;
-	if(!this.properties){
-		console.error("gb.tree.GeoServer: 'properties' is required field. The type is {gb.edit.ModifyLayerProperties}");
-	}
 	this.getTreeURL = url.getTree ? url.getTree : undefined;
 	this.addGeoServerURL = url.addGeoServer ? url.addGeoServer : undefined;
 	this.deleteGeoServerURL = url.deleteGeoServer ? url.deleteGeoServer : undefined;
@@ -1624,8 +1606,7 @@ gb.tree.GeoServer.prototype.getLoadingList = function() {
  * loadingList 객체를 설정한다.
  * 
  * @method gb.tree.GeoServer#setLoadingList
- * @param {Array.
- *            <Object>} list - 로딩할 레이어 목록
+ * @param {Array.<Object>} list - 로딩할 레이어 목록
  */
 gb.tree.GeoServer.prototype.setLoadingList = function(list) {
 	this.loadingList = list;
@@ -1797,6 +1778,11 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 		"display" : "table-row"
 	});
 
+	gNameInput.val("geo42");
+	gURLInput.val("http://175.116.181.42:9990/geoserver");
+	gIDInput.val("admin");
+	gPassInput.val("geoserver");
+	
 	var closeBtn = $("<button>").css({
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-default").text(that.translation["close"][that.locale]);
@@ -2034,16 +2020,11 @@ gb.tree.GeoServer.prototype.openDeleteGeoServerLayer = function(server, work, st
  * GeoServer Layer 를 삭제한다.
  * 
  * @method gb.tree.GeoServer#deleteGeoServerLayer
- * @param {string}
- *            geoserver - 삭제할 레이어의 지오서버 이름
- * @param {string}
- *            work - 삭제할 레이어의 지오서버 워크스페이스 이름
- * @param {string}
- *            store - 삭제할 레이어의 데이터저장소 이름
- * @param {(string|Array.
- *            <string>)} layer - 삭제할 레이어의 이름
- * @param {gb.modal.ModalBase}
- *            modal - 완료후 창을 닫을 모달 객체
+ * @param {string} geoserver - 삭제할 레이어의 지오서버 이름
+ * @param {string} work - 삭제할 레이어의 지오서버 워크스페이스 이름
+ * @param {string} store - 삭제할 레이어의 데이터저장소 이름
+ * @param {(string|Array.<string>)} layer - 삭제할 레이어의 이름
+ * @param {gb.modal.ModalBase} modal - 완료후 창을 닫을 모달 객체
  */
 gb.tree.GeoServer.prototype.deleteGeoServerLayer = function(geoserver, work, store, layer, modal) {
 	var that = this;
@@ -2240,7 +2221,7 @@ gb.tree.GeoServer.prototype.setSwitchGeoGigBranchURL = function(url) {
  * SHP 파일 업로드 객체를 반환한다.
  * 
  * @method gb.tree.GeoServer#getUploadSHP
- * @return {gb.geoserverUploadSHP} SHP 업로드 객체
+ * @return {gb.geoserver.UploadSHP} SHP 업로드 객체
  */
 gb.tree.GeoServer.prototype.getUploadSHP = function() {
 	return this.uploadSHP;

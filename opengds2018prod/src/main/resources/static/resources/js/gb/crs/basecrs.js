@@ -1,18 +1,14 @@
 /**
+ * @classdesc
  * 베이스 좌표계 변경 모달 객체를 정의한다.
  * 
  * @class gb.crs.BaseCRS
  * @memberof gb.crs
- * @param {Object}
- *            obj - 생성자 옵션을 담은 객체
- * @param {string}
- *            obj.locale - 사용할 언어 ko | en
- * @param {HTMLElement}
- *            obj.message - 현재 좌표계를 출력할 HTMLElement
- * @param {Array.
- *            <ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
- * @param {string}
- *            obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
+ * @param {Object} obj - 생성자 옵션을 담은 객체
+ * @param {string} [obj.locale="en"] - 사용할 언어 ko | en
+ * @param {HTMLElement} obj.message - 현재 좌표계를 출력할 HTMLElement
+ * @param {Array.<ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
+ * @param {string} obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
  * @author SOYIJUN
  */
 gb.crs.BaseCRS = function(obj) {
@@ -192,8 +188,7 @@ gb.crs.BaseCRS.prototype.getMaps = function() {
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 설정한다.
  * 
  * @method gb.crs.BaseCRS#setMaps
- * @param {Array.
- *            <ol.Map>} maps - 베이스 좌표계를 변경하고자 하는 ol.Map 객체의 배열
+ * @param {Array.<ol.Map>} maps - 베이스 좌표계를 변경하고자 하는 ol.Map 객체의 배열
  */
 gb.crs.BaseCRS.prototype.setMaps = function(maps) {
 	if (maps === undefined) {

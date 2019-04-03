@@ -6,12 +6,14 @@ if (!gb.edit)
 
 (function($){
 	/**
+	 * @classdesc
 	 * command 기능
-	 * @author hochul.kim
-	 * @date 2018.06.05
-	 * @version 0.01
 	 * @class gb.edit.CommandLine
+	 * @memberof gb.edit
 	 * @constructor
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 26
+	 * @version 0.01
 	 */
 	gb.edit.CommandLine = function(obj) {
 		gb.footer.FooterBase.call(this, obj);
@@ -66,6 +68,10 @@ if (!gb.edit)
 			"commandLine": {
 				"en": "Command line",
 				"ko": "명령어 입력"
+			},
+			"layerNameHint" : {
+				"ko" : "레이어 이름은 문자로 시작해야하며 영어 대소문자, 숫자, 언더스코어(_), 하이픈(-) 만 입력이 가능합니다.",
+				"en" : "Layer names must begin with a letter and can only contain letters in English, capital letters, numbers, hyphens(-) and underscores(_)."
 			}
 		}
 		
@@ -104,7 +110,8 @@ if (!gb.edit)
 		 * paramKey: 입력값을 저장하기위한 Key값
 		 * before: 다음 입력 단계로 넘어가기전에 수행할 함수. return true일때 다음 작업으로 넘어감. false 일시 재입력
 		 * beforeFailLog: before 함수가 false를 return할때의 log
-		 * log: 현재 입력 단계 성공시 log
+		 * beforeSuccessLog: before 함수가 true를 return할때의 log
+		 * log: 현재 입력 단계 log
 		 * next: 다음 입력 단계
 		 * end: 마무리 단계에서 수행할 함수. 현재까지 입력한 값들을 Object에 담아 함수의 인자값으로 전달함
 		 * successLog: 작업 성공시 log. end함수가 true 값을 return할때
@@ -113,132 +120,141 @@ if (!gb.edit)
 		 * @private
 		 */
 		this.commandList_ = {
-			createLayer: {
-				tip: "enter the geoserver",
-				paramKey: "geoserver",
-				before: function(value){
-					if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-						return false;
-					} else {
-						return true;
-					}
-				},
-				beforeFailLog: "Cannot input special characters",
-				next: {
-					tip: "enter the workspace",
-					paramKey: "workspace",
-					before: function(value){
-						if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-							return false;
-						} else {
-							return true;
-						}
-					},
-					beforeFailLog: "Cannot input special characters",
-					next: {
-						tip: "Enter the datastore",
-						paramKey: "datastore",
-						before: function(value){
-							if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-								return false;
-							} else {
-								return true;
-							}
-						},
-						beforeFailLog: "Cannot input special characters",
-						next: {
-							tip: "Enter layer name",
-							paramKey: "layerName",
-							before: function(value){
-								if(/[`~!@#$%^&*|\\\'\";:\/?]/gi.test(value)){
-									return false;
-								} else {
-									return true;
-								}
-							},
-							beforeFailLog: "Cannot input special characters",
-							log: "Enter layer name success!",
-							next: {
-								tip: "Layer type? ( point / lineString / polygon )",
-								point: {
-									end: function(params){
-										createVectorLayer(that.map, params.geoserver, 
-												params.workspace, params.datastore, params.layerName, "Point");
-									},
-									successLog: "create POINT Layer success!",
-									failLog: "create POINT Layer falied!"
-								},
-								lineString: {
-									end: function(params){
-										createVectorLayer(that.map, params.geoserver, 
-												params.workspace, params.datastore, params.layerName, "LineString");
-									},
-									successLog: "create LINESTRING Layer success!",
-									failLog: "create LINESTRING Layer falied!"
-								},
-								polygon: {
-									end: function(params){
-										createVectorLayer(that.map, params.geoserver, 
-												params.workspace, params.datastore, params.layerName, "Polygon");
-									},
-									successLog: "create POLYGON Layer success!",
-									failLog: "create POLYGON Layer falied!"
-								}
-							}
-						}
-					}
-				}
-			},
+//			createLayer: {
+//				tip: "Enter layer name",
+//				paramKey: "layerName",
+//				before: function(value){
+//					var layername_pattern = /^([A-Za-z])([A-Za-z0-9_-]+)$/;
+//					return layername_pattern.test(value)
+//				},
+//				beforeFailLog: this.translation.layerNameHint[this.locale],
+//				beforeSuccesslog: "Enter layer name success!",
+//				log: "CreateLayer command start!",
+//				next: {
+//					tip: "Layer type? ( point / lineString / polygon )",
+//					point: {
+//						end: function(params){
+//							return createVectorLayer(that.map, params.layerName, "Point");
+//						},
+//						successLog: "create POINT Layer success!",
+//						failLog: "create POINT Layer falied!"
+//					},
+//					lineString: {
+//						end: function(params){
+//							return createVectorLayer(that.map, params.layerName, "LineString");
+//						},
+//						successLog: "create LINESTRING Layer success!",
+//						failLog: "create LINESTRING Layer falied!"
+//					},
+//					polygon: {
+//						end: function(params){
+//							return createVectorLayer(that.map, params.layerName, "Polygon");
+//						},
+//						successLog: "create POLYGON Layer success!",
+//						failLog: "create POLYGON Layer falied!"
+//					}
+//				}
+//			},
 			createFeature: {
 				tip: "Enter Coodinates (ex.point: [x,y] / lineString & polygon: [[x,y], ...])",
 				paramKey: "coordinates",
 				before: function(value){
 					var layers = that.jstree.getJSTree().get_selected_layer();
-					if(layers.length === 1){
-						return true;
-					} else {
+					if(layers.length !== 1){
+						this.beforeFailLog = "You must select only one layer";
 						return false;
 					}
+					
+					var layer = layers[0];
+					if(!(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile)){
+						this.beforeFailLog = "You must select only vector type or tile type layer";
+						return false;
+					}
+					
+					return true;
 				},
 				beforeFailLog: "You must select only one layer",
 				end: function(params){
 					var layers = that.jstree.getJSTree().get_selected_layer();
 					var insertCoords = params.coordinates;
-					var coords = insertCoords.replace(/[[\]]/g, '').split(",");
-					var layer, type, geometry, feature;
+					var coords = insertCoords.replace(/[[\]\s]/g, '').split(",");
+					var layer, type, geometry, feature, git, vectorLayer, source;
 					
 					if(coords.length === 0 || coords.length % 2 !== 0){
+						this.failLog = "Wrong Coordinates";
 						return false;
 					}
 					if(layers.length === 1){
 						layer = layers[0];
-						type = layer.get("git").geometry;
+						git = layer.get("git");
+						if(!(git instanceof Object)){
+							this.failLog = "The layer has not 'git' property";
+							return false;
+						}
+						vectorLayer = git.tempLayer;
+						if(!(vectorLayer instanceof ol.layer.Vector)){
+							this.failLog = "The layer has not ol.layer.Vector";
+							return false;
+						}
+						type = git.geometry;
 						switch(type){
 							case "Point":
-								if(!regexCoordinate(coords[0]) || !regexCoordinate(coords[1])){
+								if(!regexCoordinate(coords[0]) || !regexCoordinate(coords[1]) || coords.length < 2){
+									this.failLog = "Wrong Coordinates";
 									return false;
 								}
-								geometry = new ol.geom.Point([coords[0], coords[1]]);
+								geometry = new ol.geom.Point([parseFloat(coords[0]), parseFloat(coords[1])]);
 								break;
 							case "LineString":
 								var lineCoord = [];
 								for(var i = 0; i < coords.length; i = i + 2){
-									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1])){
+									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1]) || coords.length < 4){
+										this.failLog = "Wrong Coordinates";
 										return false;
 									}
-									lineCoord.push([coords[i], coords[i+1]]);
+									lineCoord.push([parseFloat(coords[i]), parseFloat(coords[i+1])]);
 								}
 								geometry = new ol.geom.LineString(lineCoord);
 								break;
 							case "Polygon":
 								var polyCoord = [];
 								for(var i = 0; i < coords.length; i = i + 2){
-									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1])){
+									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1]) || coords.length < 6){
+										this.failLog = "Wrong Coordinates";
 										return false;
 									}
-									polyCoord.push([coords[i], coords[i+1]]);
+									polyCoord.push([parseFloat(coords[i]), parseFloat(coords[i+1])]);
 								}
 								geometry = new ol.geom.Polygon([polyCoord]);
+								break;
+							case "MultiPoint":
+								if(!regexCoordinate(coords[0]) || !regexCoordinate(coords[1]) || coords.length < 2){
+									this.failLog = "Wrong Coordinates";
+									return false;
+								}
+								geometry = new ol.geom.MultiPoint([[parseFloat(coords[0]), parseFloat(coords[1])]]);
+								break;
+							case "MultiLineString":
+								var lineCoord = [];
+								for(var i = 0; i < coords.length; i = i + 2){
+									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1]) || coords.length < 4){
+										this.failLog = "Wrong Coordinates";
+										return false;
+									}
+									lineCoord.push([parseFloat(coords[i]), parseFloat(coords[i+1])]);
+								}
+								geometry = new ol.geom.MultiLineString([lineCoord]);
+								break;
+							case "MultiPolygon":
+								var polyCoord = [];
+								for(var i = 0; i < coords.length; i = i + 2){
+									if(!regexCoordinate(coords[i]) || !regexCoordinate(coords[i+1]) || coords.length < 6){
+										this.failLog = "Wrong Coordinates";
+										return false;
+									}
+									polyCoord.push([parseFloat(coords[i]), parseFloat(coords[i+1])]);
+								}
+								geometry = new ol.geom.MultiPolygon([[polyCoord]]);
 								break;
 						}
 						feature = new ol.Feature({
@@ -246,7 +262,8 @@ if (!gb.edit)
 						});
 						feature.setId(createFeatureId(layer));
 						epan.featureRecord.create(layer, feature);
-						layer.getSource().addFeature(feature);
+						vectorLayer.getSource().addFeature(feature);
+						return true;
 					} else {
 						return false;
 					}
@@ -255,60 +272,73 @@ if (!gb.edit)
 				failLog: "Wrong Coordinates"
 			},
 			moveFeature: {
-				tip: "Enter Workspace ID",
-				paramKey: "workId",
+				tip: "Enter feature ID",
+				paramKey: "featureId",
+				before: function(value){
+					var layers = that.jstree.getJSTree().get_selected_layer();
+					if(layers.length !== 1){
+						this.beforeFailLog = "You must select only one layer";
+						return false;
+					}
+					
+					var layer = layers[0];
+					if(!(layer instanceof ol.layer.Vector || layer instanceof ol.layer.Tile)){
+						this.beforeFailLog = "You must select only vector type or tile type layer";
+						return false;
+					}
+					var git = layer.get("git");
+					var feature = git.tempLayer.getSource().getFeatureById(value);
+					
+					if(feature instanceof ol.Feature){
+						return true;
+					} else {
+						this.beforeFailLog = "There is no Feature that matches the value you entered";
+						return false;
+					}
+				},
+				beforeFailLog: "You must select only one layer",
 				next: {
-					tip: "Enter Layer ID",
-					paramKey: "layerId",
-					before: function(value){
-						var layer = that.jstree.getJSTree().get_selected_layer();
-						if(!layer){
+					tip: "Enter coordinate (ex.[x,y])",
+					paramKey: "coordinates",
+					end: function(params){
+						var layers = that.jstree.getJSTree().get_selected_layer();
+						var insertCoords = params.coordinates;
+						var coords = insertCoords.replace(/[[\]\s]/g, '').split(",");
+						
+						var layer, git, feature, geometry, lastCoord, deltaX, deltaY;
+						
+						if(coords.length !== 2){
 							return false;
-						} else {
+						}
+						
+						if(!regexCoordinate(coords[0]) || !regexCoordinate(coords[1])){
+							return false;
+						}
+						
+						if(layers.length === 1){
+							layer = layers[0];
+							git = layer.get("git");
+							
+							feature = git.tempLayer.getSource().getFeatureById(params.featureId);
+							
+							if(!(feature instanceof ol.Feature)){
+								return false;
+							}
+							geometry = feature.getGeometry();
+							lastCoord = geometry.getLastCoordinate();
+							
+							deltaX = parseFloat(coords[0]) - lastCoord[0];
+							deltaY = parseFloat(coords[1]) - lastCoord[1];
+							
+							geometry.translate(deltaX, deltaY);
+							feature.setGeometry(geometry);
 							return true;
+						} else {
+							return false;
 						}
 					},
-					beforeFailLog: "You must select only one layer",
-					next: {
-						tip: "Enter feature ID",
-						paramKey: "featureId",
-						next: {
-							tip: "Enter coordinate (ex.[x,y])",
-							paramKey: "coordinates",
-							end: function(params){
-								var layer = that.jstree.getJSTree().get_selected_layer();
-								var insertCoords = params.coordinates;
-								var coords = insertCoords.replace(/[[\]]/g, '').split(",");
-								
-								var tempVectorSource = new ol.source.Vector();
-								var vectorLayer = new ol.layer.Vector({
-									source: tempVectorSource
-								});
-								
-								var layer, feature, geometry, lastCoord, deltaX, deltaY;
-								
-								if(coords.length !== 2){
-									return false;
-								}
-								
-								feature = getFeatureByServer(params.workId, params.layerId, params.featureId);
-								if(!feature){
-									return false;
-								}
-								geometry = feature.getGeometry();
-								lastCoord = feature.getLastCoordinate();
-								
-								deltaX = lastCoord[0] - coords[0];
-								deltaY = lastCoord[1] - coords[1];
-								
-								geometry.translate(deltaX, deltaY);
-								feature.setGeometry(geometry);
-								tempVectorSource.addFeature(feature);
-								that.map.addLayer(vectorLayer);
-								return true;
-							}
-						}
-					}
+					successLog: "Move Feature success!",
+					failLog: "Move Feature fail!"
 				}
 			}
 		}
@@ -415,7 +445,7 @@ if (!gb.edit)
 	
 	/**
 	 * command layout안에 내용 element를 생성한다.
-	 * @method createContent
+	 * @method gb.edit.CommandLine#createContent
 	 */
 	gb.edit.CommandLine.prototype.createContent = function(){
 		var that = this;
@@ -525,7 +555,7 @@ if (!gb.edit)
 	
 	/**
 	 * 명령어 입력 도움글 설정
-	 * @method setLabel
+	 * @method gb.edit.CommandLine#setLabel
 	 * @param {string} label 명령어 입력 도움글
 	 */
 	gb.edit.CommandLine.prototype.setLabel = function(label){
@@ -538,7 +568,7 @@ if (!gb.edit)
 	
 	/**
 	 * input에 입력된 모든 값을 저장한 변수를 초기화한다.
-	 * @method resetParams
+	 * @method gb.edit.CommandLine#resetParams
 	 */
 	gb.edit.CommandLine.prototype.resetParams = function(){
 		for(var i in this.params_){
@@ -548,7 +578,7 @@ if (!gb.edit)
 	
 	/**
 	 * input에 입력된 값을 저장
-	 * @method pushParam
+	 * @method gb.edit.CommandLine#pushParam
 	 * @param {string} value input에 입력된 값
 	 * @return {number}
 	 */
@@ -567,7 +597,7 @@ if (!gb.edit)
 	
 	/**
 	 * 작업 이력을 저장
-	 * @method pushWorkHistory
+	 * @method gb.edit.CommandLine#pushWorkHistory
 	 * @param {string[]} list - input에 입력된 값들의 배열
 	 */
 	gb.edit.CommandLine.prototype.pushWorkHistory = function(list){
@@ -580,7 +610,7 @@ if (!gb.edit)
 	
 	/**
 	 * 작업 이력 다운로드
-	 * @method downHistory
+	 * @method gb.edit.CommandLine#downHistory
 	 */
 	gb.edit.CommandLine.prototype.downHistory = function(){
 		var text = "";
@@ -597,7 +627,7 @@ if (!gb.edit)
 	
 	/**
 	 * 작업 이력 업로드
-	 * @method uploadHistory
+	 * @method gb.edit.CommandLine#uploadHistory
 	 * @param {DOM} input - 파일을 포함하고 있는 DOM 객체
 	 */
 	gb.edit.CommandLine.prototype.uploadHistory = function(input){
@@ -659,17 +689,23 @@ if (!gb.edit)
 		if(!!value){
 			
 			if(!!this.currentCmd[value]){
-				
+				this.insertLogLayout(this.currentCmd.log);
+				// 입력
 				if(!!this.currentCmd[value].tip){
-					
+					// tip option이 존재하면 라벨창에 tip 가시화
 					this.setLabel(this.currentCmd[value].tip);
 					this.inputHistory_.push(value);
 					this.insertLogLayout(this.currentCmd[value].log);
 					this.currentCmd = this.currentCmd[value];
 					
 				} else if(!!this.currentCmd[value].end){
-					
-					this.currentCmd[value].end(this.params_);
+					// end function이 존재하면 실행 후 모든 변수를 초기화
+					if(this.currentCmd[value].end(this.params_) === false){
+						this.insertLogLayout(this.currentCmd[value].failLog);
+						return;
+					} else {
+						this.insertLogLayout(this.currentCmd[value].successLog);
+					}
 					this.inputHistory_.push(value);
 					this.pushWorkHistory(this.inputHistory_);
 					this.insertLogLayout(this.currentCmd[value].log);
@@ -678,50 +714,67 @@ if (!gb.edit)
 				}
 				
 			} else if(!!this.currentCmd.end){
-				
+				// 현재 명령 위치에 end function이 존재할 때 실행부분
 				if(!!this.currentCmd.before){
+					// 현재 명령 위치에 before function이 존재할 때 실행
 					if(!this.currentCmd.before(value)){
+						// before function 실행 실패 시
 						this.insertLogLayout(this.currentCmd.beforeFailLog);
 						return;
+					} else {
+						// before function 실행 성공
+						this.insertLogLayout(this.currentCmd.beforeSuccesslog);
 					}
 				}
 				
 				if(!!this.currentCmd.paramKey){
+					// end function 실행을 위한 파라미터값에 key값이 필요할 때
 					this.params_[this.currentCmd.paramKey] = value;
 				} else {
+					// end function 실행을 위한 파라미터값에 key값이 필요하지않을 때
 					this.pushParam(value);
 				}
 				
-				this.currentCmd.end(this.params_);
+				// end function 실행
+				if(this.currentCmd.end(this.params_) === false){
+					this.insertLogLayout(this.currentCmd.failLog);
+					return;
+				} else {
+					this.insertLogLayout(this.currentCmd.successLog);
+				}
+				
 				this.inputHistory_.push(value);
 				this.pushWorkHistory(this.inputHistory_);
 				this.resetAll();
-				this.insertLogLayout(this.currentCmd.log);
+//				this.insertLogLayout(this.currentCmd.log);
 				
 			} else if(!!this.currentCmd.next){
-				
+				// 현재 명령 위치에 next 객체가 존재할 시 실행
 				if(!!this.currentCmd.before){
+					// before function이 존재할 시 실행
 					if(!this.currentCmd.before(value)){
+						// before function 실행 실패 시 다음 명령으로 이동하지않음
 						this.insertLogLayout(this.currentCmd.beforeFailLog);
 						return;
+					} else {
+						// before function 실행 성공
+						this.insertLogLayout(this.currentCmd.beforeSuccesslog);
 					}
 				}
 				
 				this.setLabel(this.currentCmd.next.tip);
 				
 				if(!!this.currentCmd.paramKey){
-					
+					// 다음 명령 실행을 위한 파라미터값에 key값이 필요할 때
 					this.params_[this.currentCmd.paramKey] = value;
-					
 				} else {
-					
+					// 다음 명령 실행을 위한 파라미터값에 key값이 필요하지않을 때
 					this.pushParam(value);
 				}
 				
 				this.inputHistory_.push(value);
-				this.insertLogLayout(this.currentCmd.log);
+//				this.insertLogLayout(this.currentCmd.log);
 				this.currentCmd = this.currentCmd.next;
-				
 			} else {
 				this.insertLogLayout(value + " is not command");
 			}
@@ -756,33 +809,21 @@ if (!gb.edit)
 		return a;
 	}
 	
-	function createVectorLayer(map, geo, work, store, name, type){
-		/*var layer = new gb.layer.LayerInfo({
-			format: "shp",
-			srs: "EPSG:5186",
-			name: name,
-			geometry: type,
-			isNew: true
-		});*/
+	function createVectorLayer(map, name, type){
 		var vectorLayer = new ol.layer.Vector({
+			renderMode : "image",
 			source: new ol.source.Vector()
 		});
-		var groupLayer = new ol.layer.Group();
 		var gitLayer = {
 			"editable" : true,
 			"geometry" : type,
 			"validation" : false,
-			"geoserver": geo,
-			"workspace": work,
-			"datastore": store
+			"attribute" : []
 		};
 		vectorLayer.set("git", gitLayer);
-		groupLayer.set("name", store);
 		vectorLayer.set("name", name);
-		var collect = new ol.Collection();
-		collect.push(vectorLayer);
-		groupLayer.setLayers(collect);
-		map.addLayer(groupLayer);
+		map.addLayer(vectorLayer);
+		return true;
 	}
 	
 	function createFeatureId(layer){
@@ -845,7 +886,7 @@ if (!gb.edit)
 	
 	function regexCoordinate(coord){
 		if(typeof coord === "string"){
-			return /^-?[0-9]*(?:\.[0-9]*)?$/g.test(coord);
+			return /^-?[0-9]*(?:\.[0-9]*)?$/g.test(coord.trim());
 		} else {
 			return false;
 		}
@@ -868,7 +909,7 @@ if (!gb.edit)
 	
 	/**
 	 * 명령어 자동 완성 기능 활성화
-	 * @method autocomplete
+	 * @method gb.edit.CommandLine#autocomplete
 	 */
 	gb.edit.CommandLine.prototype.autocomplete = function(){
 		var that = this;
@@ -878,6 +919,7 @@ if (!gb.edit)
 		var currentFocus;
 		/*execute a function when someone writes in the text field:*/
 		var inp = this.input[0];
+		inp.setAttribute("autocomplete", "off");
 		inp.addEventListener("input", function(e) {
 			var a, b, i, val = this.value;
 			// 명령어 목록 배열

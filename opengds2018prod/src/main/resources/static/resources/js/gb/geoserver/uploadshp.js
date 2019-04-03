@@ -394,7 +394,7 @@ gb.geoserver.UploadSHP.prototype.open = function(geoserver, workspace, datastror
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
-	var uploadModal = new gb.modal.Base({
+	var uploadModal = new gb.modal.ModalBase({
 		"title" : this.translation.uploadshp[this.locale],
 		"width" : 450,
 		"autoOpen" : true,

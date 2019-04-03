@@ -429,7 +429,7 @@ if (!gb.layer)
 			"display" : "table",
 			"width" : "100%"
 		});
-		var openSaveModal = new gb.modal.Base({
+		var openSaveModal = new gb.modal.ModalBase({
 			"title" : this.translation.save[this.locale],
 			"width" : 540,
 			"height" : 250,

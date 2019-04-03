@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 레이어 스타일 패널 객체를 정의한다.
  * 
  * @class gb.style.LayerStyle
@@ -6,9 +7,11 @@
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
  * @param {boolean}
- *            obj.autoOpen - 패널을 선언과 동시에 표출 할 것인지 선택
+ *            [obj.autoOpen=false] - 패널을 선언과 동시에 표출 할 것인지 선택
  * @param {ol.layer.Base}
  *            obj.layer - 스타일을 변경할 레이어 객체
+ * @param {string}
+ *            [obj.locale="en"] - 사용할 언어 ko | en
  * @author SOYIJUN
  */
 var gb;

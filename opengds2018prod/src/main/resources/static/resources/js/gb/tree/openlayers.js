@@ -1137,7 +1137,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
 		"display" : "table",
 		"width" : "100%"
 	});
-	var addGeoServerModal = new gb.modal.Base({
+	var addGeoServerModal = new gb.modal.ModalBase({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
 		"autoOpen" : true,
@@ -1403,7 +1403,7 @@ gb.tree.OpenLayers.prototype.createUploadModal = function() {
 		"width" : "100%"
 	});
 
-	var addGeoServerModal = new gb.modal.Base({
+	var addGeoServerModal = new gb.modal.ModalBase({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
 		"height" : 280,
@@ -1595,7 +1595,7 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 		"width" : "100%"
 	});
 
-	var addGeoServerModal = new gb.modal.Base({
+	var addGeoServerModal = new gb.modal.ModalBase({
 		"title" : this.translation.addLayer[this.locale],
 		"width" : 540,
 		"height" : 460,
@@ -1657,7 +1657,7 @@ gb.tree.OpenLayers.prototype.openDeleteLayer = function(layer) {
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation["delete"][this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	var deleteModal = new gb.modal.Base({
+	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.deleteLayer[this.locale],
 		"width" : 310,
 		"height" : 200,
@@ -1758,7 +1758,7 @@ gb.tree.OpenLayers.prototype.vectorLayerInfo = function(layer) {
 	
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-	var modal = this.layerPropModal = new gb.modal.Base({
+	var modal = this.layerPropModal = new gb.modal.ModalBase({
 		"title" : "Properties",
 		"width" : "700px",
 		"autoOpen" : true,
@@ -1876,7 +1876,7 @@ gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
 					
 					buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
 
-					modal = new gb.modal.Base({
+					modal = new gb.modal.ModalBase({
 						"title" : "Properties",
 						"width" : "700px",
 						"autoOpen" : true,
@@ -2063,7 +2063,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 						
 						var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 						
-						var modal = new gb.modal.Base({
+						var modal = new gb.modal.ModalBase({
 							"title" : that.translation.deleteAttr[that.locale],
 							"width" : 310,
 							"height" : 200,
@@ -2180,7 +2180,7 @@ gb.tree.OpenLayers.prototype.addPropModal = function(obj) {
 				"overflow-y" : "auto"
 			});
 	
-	var addPropModal = new gb.modal.Base({
+	var addPropModal = new gb.modal.ModalBase({
 		"title" : this.translation.addAttribute[this.locale],
 		"width" : 540,
 		"autoOpen" : true,

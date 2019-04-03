@@ -1,4 +1,5 @@
 /**
+ * @classdesc
  * 모달 객체를 정의한다.
  * 
  * @class gb.modal.ModalBase

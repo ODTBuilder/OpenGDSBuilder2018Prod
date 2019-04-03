@@ -889,7 +889,7 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 				"overflow-y" : "auto"
 			});
 	
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : "",
 		"width" : 540,
 		"autoOpen" : true,

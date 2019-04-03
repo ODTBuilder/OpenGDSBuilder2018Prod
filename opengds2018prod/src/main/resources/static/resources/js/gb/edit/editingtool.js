@@ -18,16 +18,11 @@ gb.edit.ACTIVEAREA = 7.75;
  * <script src="./gb/map/map.js"></script>
  * <%-- jsTree openlayers3--%>
  * <script type="text/javascript" src="./jsTree-openlayers3/jstree.js"></script>
- * <link rel="stylesheet" type="text/css"
- *   href="./jsTree-openlayers3/themes/default/style.css" />
- * <script type="text/javascript"
- *   src="./jsTree-openlayers3/jstree-visibility.js"></script>
- * <script type="text/javascript"
- *   src="./jsTree-openlayers3/jstree-layerproperties.js"></script>
- * <script type="text/javascript"
- *   src="./jsTree-openlayers3/jstree-legends.js"></script>
- * <script type="text/javascript"
- *   src="./jsTree-openlayers3/jstree-functionmarker.js"></script>
+ * <link rel="stylesheet" type="text/css" href="./jsTree-openlayers3/themes/default/style.css" />
+ * <script type="text/javascript" src="./jsTree-openlayers3/jstree-visibility.js"></script>
+ * <script type="text/javascript" src="./jsTree-openlayers3/jstree-layerproperties.js"></script>
+ * <script type="text/javascript" src="./jsTree-openlayers3/jstree-legends.js"></script>
+ * <script type="text/javascript" src="./jsTree-openlayers3/jstree-functionmarker.js"></script>
  * <!-- gb.tree.openlayers -->
  * <script src="./gb/tree/openlayers.js"></script>
  * <!-- gb.edit -->
@@ -1481,7 +1476,7 @@ gb.edit.EditingTool.prototype.draw = function(layer) {
 								"overflow-y" : "auto"
 							});
 					
-					var addPropModal = new gb.modal.Base({
+					var addPropModal = new gb.modal.ModalBase({
 						"width" : 540,
 						"autoOpen" : source.get("git").attribute.length !== 0 ? true : false,
 						"body" : body,
@@ -2069,7 +2064,7 @@ gb.edit.EditingTool.prototype.remove = function(layer) {
 			"float" : "right"
 		}).addClass("gb-button").addClass("gb-button-primary").text(this.translation["delete"][this.locale]);
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-		var deleteModal = new gb.modal.Base({
+		var deleteModal = new gb.modal.ModalBase({
 			"title" : this.translation.deleteFeature[this.locale],
 			"width" : 310,
 			"height" : 200,

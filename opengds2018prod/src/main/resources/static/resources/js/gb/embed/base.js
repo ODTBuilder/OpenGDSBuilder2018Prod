@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 임베드 객체를 정의한다.
+ * @classdesc 임베드 객체를 정의한다.
  * 
  * @class gb.embed.EmbedBase
  * @memberof gb.embed
@@ -19,7 +18,7 @@ gb.embed.EmbedBase = function(obj) {
 	var body = typeof options.body === "function" ? options.body() : options.body;
 	/**
 	 * @private
-	 * @type {Object}
+	 * @type {HTMLElement}
 	 */
 	this.panelBody = $("<div>").addClass("panel-body");
 	if (body) {
@@ -27,7 +26,7 @@ gb.embed.EmbedBase = function(obj) {
 	}
 	/**
 	 * @private
-	 * @type {Object}
+	 * @type {HTMLElement}
 	 */
 	this.panel = $("<div>").addClass("panel").addClass("panel-default").append(this.panelBody);
 	if (typeof options.append === "string") {

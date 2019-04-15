@@ -1,11 +1,65 @@
 @CHARSET "UTF-8";
 
-.gb-basecrs-area .gb-basecrs-searchbar {
+.gb-uploadgeojson-msg-body {
+	text-align: center;
+	font-size: 16px;
+	margin-top: 18px;
+	margin-bottom: 18px;
+	font-size: 16px;
+}
+
+.gb-button-float-right {
+	float: right;
+}
+
+.gb-uploadgeojson-body {
+	height: 245px;
+}
+
+.gb-uploadgeojson-ul {
+	padding-left: 15px;
+}
+
+.gb-uploadgeojson-right div.gb-uploadgeojson-list {
+	height: 154px;
+	overflow: auto;
+}
+
+.gb-uploadgeojson-margin-bottom {
+	margin-bottom: 5px;
+}
+
+.gb-uploadgeojson-checkbox {
+	vertical-align: top;
+	margin-right: 6px;
+}
+
+.gb-uploadgeojson-ignore {
+	margin-top: 10px;
+}
+
+.gb-uploadgeojson-right {
+	width: 238px;
+	float: left;
+	margin: 5px;
+}
+
+.gb-uploadgeojson-left {
+	width: 160px;
+	float: left;
+	margin: 5px;
+}
+
+.gb-basecrs-area {
+	margin: 10px 10px;
+}
+
+.gb-basecrs-area input.gb-basecrs-searchbar {
 	width: 312px;
 	display: inline-block;
 }
 
-.gb-basecrs-area .gb-basecrs-icon-margin {
+.gb-basecrs-icon-margin {
 	margin-left: 15px;
 	margin-right: 0;
 }

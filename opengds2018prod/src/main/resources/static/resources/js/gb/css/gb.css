@@ -1,5 +1,15 @@
 @CHARSET "UTF-8";
 
+.gb-basecrs-area .gb-basecrs-searchbar {
+	width: 312px;
+	display: inline-block;
+}
+
+.gb-basecrs-area .gb-basecrs-icon-margin {
+	margin-left: 15px;
+	margin-right: 0;
+}
+
 .gb-tooltip {
 	position: relative;
 	display: inline-block;

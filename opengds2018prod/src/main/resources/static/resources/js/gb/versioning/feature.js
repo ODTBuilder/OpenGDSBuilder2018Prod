@@ -5,14 +5,23 @@
  * @memberof gb.versioning
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
  * @param {Object}
  *            obj.url - 요청을 수행할 URL
- * @param {String}
- *            obj.url.serverTree - 서버 목록 트리를 요청할 컨트롤러 주소
- * 
- * @version 0.01
+ * @param {string}
+ *            obj.url.featureLog - 피처의 이력 조회를 요청할 URL ex)/featureLog.do
+ * @param {string}
+ *            obj.url.diff - 피처간의 비교를 요청할 URL ex)/diff.do
+ * @param {string}
+ *            obj.url.featureRevert - 피처의 되돌리기를 요청할 URL ex)/featureRevert.do
+ * @param {string}
+ *            obj.url.featureAttribute - 피처의 속성 조회를 요청할 URL
+ *            ex)/featureAttribute.do
+ * @param {string}
+ *            obj.url.catFeatureObject - 피처의 변경된 속성 조회를 요청할 URL
+ *            ex)/catFeatureObject.do
  * @author SOYIJUN
- * @date 2018. 10.26
  */
 gb.versioning.Feature = function(obj) {
 	var that = this;
@@ -323,7 +332,24 @@ gb.versioning.Feature.prototype.open = function() {
 /**
  * 피처 이력을 요청한다.
  * 
+ * @private
  * @method gb.versioning.Feature#loadFeatureHistory
+ * @param {string}
+ *            server - 등록한 GeoServer의 이름
+ * @param {string}
+ *            repo - 레이어가 저장된 GeoGig 저장소의 이름
+ * @param {string}
+ *            path - 이력을 조회할 피처의 path
+ * @param {(string|number)}
+ *            limit - 불러올 이력의 개수
+ * @param {(string|number)}
+ *            idx - 새로 불러올 이력의 인덱스
+ * @param {string}
+ *            until - 새로 불러올 이력의 기준이 될 이력(특정하면 그 이력 이전에 발생한 변경사항만 가져옴)
+ * @param {string}
+ *            head - 현재 불러온 이력 중 최신 이력
+ * @param {boolean}
+ *            refresh - 현재 요청이 새로고침 요청인지 여부
  */
 gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head, refresh) {
 	var that = this;
@@ -455,17 +481,18 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 /**
  * 피처 디테일 창을 연다.
  * 
+ * @private
  * @method gb.versioning.Feature#openDetailChanges
- * @param {String}
- *            server - 서버 이름
- * @param {String}
- *            repo - 레파지토리 이름
- * @param {String}
- *            path - 피처 패스
- * @param {Number}
- *            nidx - 최신 커밋 인덱스
- * @param {Number}
- *            oidx - 타겟 커밋 인덱스
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {number}
+ *            nid - 최신 커밋 아이디
+ * @param {number}
+ *            oid - 타겟 커밋 아이디
  */
 gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nid, oid) {
 	var that = this;
@@ -1027,7 +1054,20 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 /**
  * 피처 revert 요청 모달을 연다.
  * 
+ * @private
  * @method gb.versioning.Feature#openRevertModal
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소
+ * @param {string}
+ *            path - 피처 path
+ * @param {string}
+ *            oc - 되돌릴 이전 커밋 아이디
+ * @param {string}
+ *            nc - 새로운 커밋 아이디
+ * @param {gb.modal.ModalBase}
+ *            cmpmodal - 요청 완료 후 닫을 모달 객체
  */
 gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc, cmpmodal) {
 	var that = this;
@@ -1074,7 +1114,26 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 /**
  * 피처 revert 요청한다.
  * 
+ * @private
  * @method gb.versioning.Feature#revert
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {string}
+ *            oc - 되돌릴 이전 커밋 아이디
+ * @param {string}
+ *            nc - 새로운 커밋 아이디
+ * @param {string}
+ *            cm - 커밋 메세지
+ * @param {string}
+ *            mm - 머지 메세지
+ * @param {gb.modal.ModalBase}
+ *            rmodal - 완료 후 닫을 메세지 입력 모달 객체
+ * @param {gb.modal.ModalBase}
+ *            cmpmodal - 완료 후 닫을 피처 비교 모달 객체
  */
 gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal, cmpmodal) {
 	var that = this;
@@ -1608,42 +1667,34 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 
 			}
 		});
-	} else {
-
 	}
 };
 
 /**
- * 충돌 피처를 머지한다.
- * 
- * @method gb.versioning.Feature#mergeConflictFeature
- */
-gb.versioning.Feature.prototype.mergeConflictFeature = function() {
-
-};
-
-/**
- * 피처 로그 요청 URL을 반환한다.
+ * 피처의 이력 조회 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureLogURL
+ * @return {string} 요청 URL
  */
 gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 	return this.featureLogURL;
 };
 
 /**
- * 피처 비교 객체 요청 URL을 반환한다.
+ * 피처 비교 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getDiffURL
+ * @return {string} 요청 URL
  */
 gb.versioning.Feature.prototype.getDiffURL = function() {
 	return this.diffURL;
 };
 
 /**
- * 피처 정보 반환 URL을 반환한다.
+ * 변경 피처 속성 조회 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getCatFeatureObjectURL
+ * @return {string} 요청 URL
  */
 gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
 	return this.catFeatureObjectURL;
@@ -1653,6 +1704,7 @@ gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
  * 피처 되돌리기 요청 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureRevertURL
+ * @return {string}요청 URL
  */
 gb.versioning.Feature.prototype.getFeatureRevertURL = function() {
 	return this.featureRevertURL;
@@ -1680,6 +1732,7 @@ gb.versioning.Feature.prototype.clearChangesTbody = function() {
  * 피처이력 목록 테이블 바디를 반환한다.
  * 
  * @method gb.versioning.Feature#getTBody
+ * @return {HTMLElement} 피처 이력 목록을 표시하는 tbody 요소
  */
 gb.versioning.Feature.prototype.getTBody = function() {
 	return this.tbody;
@@ -1689,6 +1742,8 @@ gb.versioning.Feature.prototype.getTBody = function() {
  * 피처이력 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setCommits
+ * @param {Object}
+ *            obj - 피처 이력 객체
  */
 gb.versioning.Feature.prototype.setCommits = function(obj) {
 	this.commits = obj;
@@ -1698,6 +1753,7 @@ gb.versioning.Feature.prototype.setCommits = function(obj) {
  * 피처이력 객체를 반환한다.
  * 
  * @method gb.versioning.Feature#getCommits
+ * @return {Object} 피처 이력 객체
  */
 gb.versioning.Feature.prototype.getCommits = function() {
 	return this.commits;
@@ -1707,6 +1763,14 @@ gb.versioning.Feature.prototype.getCommits = function() {
  * 조회한 피처이력을 분류 보관한다.
  * 
  * @method gb.versioning.Feature#setCommitsByInfo
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {Array.
+ *            <Object>} arr - 변경 이력 정보
  */
 gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, arr) {
 	if (server || repo || path || arr) {
@@ -1728,6 +1792,8 @@ gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, 
  * 현재 편집중인 객체 path를 설정한다.
  * 
  * @method gb.versioning.Feature#setPath
+ * @param {string}
+ *            path - 피처 path
  */
 gb.versioning.Feature.prototype.setPath = function(path) {
 	this.curPath = path;
@@ -1737,6 +1803,7 @@ gb.versioning.Feature.prototype.setPath = function(path) {
  * 현재 편집중인 객체 path를 반환한다.
  * 
  * @method gb.versioning.Feature#getPath
+ * @return {string} 피처 path
  */
 gb.versioning.Feature.prototype.getPath = function() {
 	return this.curPath;
@@ -1746,6 +1813,8 @@ gb.versioning.Feature.prototype.getPath = function() {
  * 현재 편집중인 객체 repo 를 설정한다.
  * 
  * @method gb.versioning.Feature#setRepo
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
  */
 gb.versioning.Feature.prototype.setRepo = function(repo) {
 	this.curRepo = repo;
@@ -1755,6 +1824,7 @@ gb.versioning.Feature.prototype.setRepo = function(repo) {
  * 현재 편집중인 객체 repo 를 반환한다.
  * 
  * @method gb.versioning.Feature#getRepo
+ * @return {string} GeoGig 저장소 이름
  */
 gb.versioning.Feature.prototype.getRepo = function() {
 	return this.curRepo;
@@ -1764,6 +1834,8 @@ gb.versioning.Feature.prototype.getRepo = function() {
  * 현재 편집중인 객체 server 를 설정한다.
  * 
  * @method gb.versioning.Feature#setServer
+ * @param {string}
+ *            server - GeoServer 이름
  */
 gb.versioning.Feature.prototype.setServer = function(server) {
 	this.curServer = server;
@@ -1773,6 +1845,7 @@ gb.versioning.Feature.prototype.setServer = function(server) {
  * 현재 편집중인 객체 server 를 반환한다.
  * 
  * @method gb.versioning.Feature#getServer
+ * @return {string} GeoServer 이름
  */
 gb.versioning.Feature.prototype.getServer = function() {
 	return this.curServer;
@@ -1782,6 +1855,8 @@ gb.versioning.Feature.prototype.getServer = function() {
  * 현재 편집중인 객체 idstring을 설정한다.
  * 
  * @method gb.versioning.Feature#setIDString
+ * @param {string}
+ *            id - 객체의 idstring
  */
 gb.versioning.Feature.prototype.setIDString = function(id) {
 	this.idstring = id;
@@ -1791,6 +1866,7 @@ gb.versioning.Feature.prototype.setIDString = function(id) {
  * 현재 편집중인 객체 idstring을 반환한다.
  * 
  * @method gb.versioning.Feature#getIDString
+ * @return {string} 객체의 idstring
  */
 gb.versioning.Feature.prototype.getIDString = function() {
 	return this.idstring;
@@ -1800,6 +1876,7 @@ gb.versioning.Feature.prototype.getIDString = function() {
  * panel 을 반환한다.
  * 
  * @method gb.versioning.Feature#getPanel
+ * @return {gb.panel.PanelBase} 피처 이력 패널 객체
  */
 gb.versioning.Feature.prototype.getPanel = function() {
 	return this.panel;
@@ -1823,6 +1900,8 @@ gb.versioning.Feature.prototype.refresh = function() {
  * 현재 편집중인 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setFeature
+ * @param {ol.Feature}
+ *            feature - 현재 편집중인 피처 객체
  */
 gb.versioning.Feature.prototype.setFeature = function(feature) {
 	this.feature = feature;
@@ -1831,30 +1910,21 @@ gb.versioning.Feature.prototype.setFeature = function(feature) {
 /**
  * 현재 편집중인 객체를 반환한다.
  * 
- * @method gb.versioning.Feature#getIDString
+ * @method gb.versioning.Feature#getFeature
+ * @return {ol.Feature} 현재 편집중인 피처 객체
  */
 gb.versioning.Feature.prototype.getFeature = function() {
 	return this.feature;
 };
 
 /**
- * 다음 편집이력을 로드한다.
- * 
- * @method gb.versioning.Feature#loadMoreHistory
- */
-gb.versioning.Feature.prototype.loadMoreHistory = function() {
-
-};
-/**
- * 오류 메시지 창을 생성한다.
+ * 오류 메세지 창을 생성한다.
  * 
  * @method gb.versioning.Feature#messageModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {string}
+ *            title - 메세지 창의 제목
+ * @param {string}
+ *            msg - 메세지 내용
  */
 gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 	var that = this;
@@ -1885,8 +1955,7 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
  * 왼쪽 ol.Map을 반환한다.
  * 
  * @method gb.versioning.Feature#getLeftMap
- * @return {ol.Map}
- * 
+ * @return {ol.Map} 왼쪽 지도 객체
  */
 gb.versioning.Feature.prototype.getLeftMap = function() {
 	return this.omap;
@@ -1896,8 +1965,7 @@ gb.versioning.Feature.prototype.getLeftMap = function() {
  * 오른쪽 ol.Map을 반환한다.
  * 
  * @method gb.versioning.Feature#getRightMap
- * @return {ol.Map}
- * 
+ * @return {ol.Map} 오른쪽 지도 객체
  */
 gb.versioning.Feature.prototype.getRightMap = function() {
 	return this.cmap;
@@ -1907,8 +1975,7 @@ gb.versioning.Feature.prototype.getRightMap = function() {
  * 왼쪽 피처 tbody를 반환한다.
  * 
  * @method gb.versioning.Feature#getLeftTBody
- * @return {element}
- * 
+ * @return {HTMLElement} 피처 속성을 표시하는 tbody 객체
  */
 gb.versioning.Feature.prototype.getLeftTBody = function() {
 	return this.oattrtbody;
@@ -1918,31 +1985,38 @@ gb.versioning.Feature.prototype.getLeftTBody = function() {
  * 오른쪽 피처 tbody를 반환한다.
  * 
  * @method gb.versioning.Feature#getRightTBody
- * @return {element}
- * 
+ * @return {HTMLElement} 피처 속성을 표시하는 tbody 객체
  */
 gb.versioning.Feature.prototype.getRightTBody = function() {
 	return this.cattrtbody;
 }
 
 /**
- * 레이어 저장후 함수를 실행한다.
+ * 레이어 저장후 타일 레이어를 새로고침 한다.
  * 
- * @method gb.versioning.Feature#afterSaveCallback
- * @return {element}
- * 
+ * @method gb.versioning.Feature#runAfterSaveCallback
  */
 gb.versioning.Feature.prototype.runAfterSaveCallback = function() {
 	this.editingTool.refreshTileLayer();
 }
 
 /**
- * 레이어 저장후 함수를 설정한다.
+ * EditingTool 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setEditingTool
- * @param {Function}
- *            fnc - 리버트 또는 충돌관리 후 변경된 레이어로 업데이트할 함수 설정
+ * @param {gb.edit.EditingTool}
+ *            tool - EditingTool 객체
  */
 gb.versioning.Feature.prototype.setEditingTool = function(tool) {
 	this.editingTool = tool;
+}
+
+/**
+ * EditingTool 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getEditingTool
+ * @return {gb.edit.EditingTool} EditingTool 객체
+ */
+gb.versioning.Feature.prototype.getEditingTool = function() {
+	return this.editingTool;
 }

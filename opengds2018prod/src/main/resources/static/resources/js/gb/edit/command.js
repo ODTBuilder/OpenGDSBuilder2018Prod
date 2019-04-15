@@ -1227,7 +1227,7 @@ if (!gb.edit)
 	 * 작업 이력 업로드. 자동으로 이력 내용을 실행함.
 	 * @method gb.edit.CommandLine#uploadHistory
 	 * @function
-	 * @param {DOM} input - 파일을 포함하고 있는 DOM 객체
+	 * @param {HTMLElement} input - 파일을 포함하고 있는 HTMLElement 객체
 	 */
 	gb.edit.CommandLine.prototype.uploadHistory = function(input){
 		var that = this;

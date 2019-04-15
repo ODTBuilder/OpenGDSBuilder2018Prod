@@ -1,19 +1,25 @@
 /**
- * @classdesc
- * 베이스 좌표계 변경 모달 객체를 정의한다.
+ * @classdesc 베이스 좌표계 변경 모달 객체를 정의한다.
  * 
  * @class gb.crs.BaseCRS
  * @memberof gb.crs
- * @param {Object} obj - 생성자 옵션을 담은 객체
- * @param {string} [obj.locale="en"] - 사용할 언어 ko | en
- * @param {HTMLElement} obj.message - 현재 좌표계를 출력할 HTMLElement
- * @param {Array.<ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
- * @param {string} obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
+ * @param {Object}
+ *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            [obj.locale="en"] - 사용할 언어 ko | en
+ * @param {HTMLElement}
+ *            obj.message - 현재 좌표계를 출력할 HTMLElement
+ * @param {Array.
+ *            <ol.Map>} obj.maps - 베이스 좌표계를 변경할 ol.Map 객체
+ * @param {string}
+ *            obj.epsg - 설정하고자 하는 좌표계의 EPSG 코드
  * @author SOYIJUN
  */
 gb.crs.BaseCRS = function(obj) {
 	var that = this;
 	/**
+	 * 다국어화 정보 객체
+	 * 
 	 * @private
 	 * @type {Object}
 	 */
@@ -37,6 +43,8 @@ gb.crs.BaseCRS = function(obj) {
 	};
 	var options = obj ? obj : {};
 	/**
+	 * 언어 설정 코드
+	 * 
 	 * @private
 	 * @type {string}
 	 */
@@ -66,6 +74,8 @@ gb.crs.BaseCRS = function(obj) {
 		}
 	}
 	/**
+	 * 베이스 좌표계를 적용할 ol.Map 객체
+	 * 
 	 * @private
 	 * @type {Array.<ol.Map>}
 	 */
@@ -84,37 +94,47 @@ gb.crs.BaseCRS = function(obj) {
 	}
 	this.maps = tempmaps;
 	/**
+	 * EPSG 코드
+	 * 
 	 * @private
 	 * @type {string}
 	 */
 	this.epsg = typeof options.epsg === "string" ? options.epsg : "3857";
 	/**
+	 * 좌표계 검색 후 수행할 콜백함수
+	 * 
 	 * @private
 	 * @type {function}
 	 */
 	this.callback = typeof options.callback === "function" ? options.callback : undefined;
 	/**
+	 * 좌표계 정보
+	 * 
 	 * @private
 	 * @type {function}
 	 */
 	this.projObj = undefined;
 	/**
+	 * epsg코드의 유효성
+	 * 
 	 * @private
-	 * @type {function}
+	 * @type {number}
 	 */
 	this.validEPSG = undefined;
 	/**
+	 * 검색 폼 객체
+	 * 
 	 * @private
 	 * @type {HTMLElement}
 	 */
 	this.searchBar = $("<input>").attr({
 		"type" : "number",
 		"placeholder" : "EX) 3857"
-	}).addClass("gb-form").css({
-		"width" : "312px",
-		"display" : "inline-block"
-	});
+	}).addClass("gb-form").addClass("gb-basecrs-searchbar");
+
 	/**
+	 * 검색값 입력시 타임아웃 이벤트
+	 * 
 	 * @private
 	 * @type {function}
 	 */
@@ -125,6 +145,7 @@ gb.crs.BaseCRS = function(obj) {
 		if (that.tout) {
 			clearTimeout(that.tout);
 		}
+		// 시간을 두고 입력값을 검색하도록 함
 		that.tout = setTimeout(function() {
 			var v = $(that.searchBar).val();
 			console.log(v);
@@ -132,15 +153,15 @@ gb.crs.BaseCRS = function(obj) {
 		}, 250);
 	});
 	/**
+	 * 좌표계 유효성 아이콘
+	 * 
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.validIconSpan = $("<span>").css({
-		"margin-left" : "15px",
-		"margin-right" : "0"
-	});
+	this.validIconSpan = $("<span>").addClass("gb-basecrs-icon-margin");
+
 	var label = $("<span>").text("EPSG: ");
-	var area = $("<div>").append(label).append(this.searchBar).append(this.validIconSpan).css({
+	var area = $("<div>").addClass("gb-basecrs-area").append(label).append(this.searchBar).append(this.validIconSpan).css({
 		"margin" : "10px 10px"
 	});
 	this.setModalBody(area);
@@ -158,6 +179,7 @@ gb.crs.BaseCRS = function(obj) {
 		"float" : "right"
 	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(
 			function() {
+				// 공백 제거
 				var val = $(that.searchBar).val().replace(/(\s*)/g, '');
 				if (that.getValidEPSG()) {
 					that.applyProjection(that.getProjection().code, that.getProjection().name, that.getProjection().proj4, that
@@ -188,7 +210,8 @@ gb.crs.BaseCRS.prototype.getMaps = function() {
  * 베이스 좌표계를 변경하고자 하는 ol.Map 객체를 설정한다.
  * 
  * @method gb.crs.BaseCRS#setMaps
- * @param {Array.<ol.Map>} maps - 베이스 좌표계를 변경하고자 하는 ol.Map 객체의 배열
+ * @param {Array.
+ *            <ol.Map>} maps - 베이스 좌표계를 변경하고자 하는 ol.Map 객체의 배열
  */
 gb.crs.BaseCRS.prototype.setMaps = function(maps) {
 	if (maps === undefined) {
@@ -276,24 +299,14 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 			console.log(data);
 			var json = data;
 			if (json.number_result !== 1) {
-				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
-				// EPSG:"
-				// +
-				// that.getEPSGCode());
 				that.setValidEPSG(0);
 				that.setProjection(undefined, undefined, undefined, undefined);
 				console.error("no crs");
-				// that.close();
 				return;
 			} else if (json.number_result < 1) {
-				// $(that.getMessage()).text("Error: Couldn't find EPSG Code.
-				// EPSG:"
-				// +
-				// that.getEPSGCode());
 				that.setValidEPSG(0);
 				that.setProjection(undefined, undefined, undefined, undefined);
 				console.error("no crs");
-				// that.close();
 				return;
 			}
 			var results = json['results'];
@@ -303,7 +316,6 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 					if (result) {
 						var codes = result['code'], name = result['name'], proj4def = result['proj4'], bbox = result['bbox'];
 						if (codes && codes.length > 0 && proj4def && proj4def.length > 0 && bbox && bbox.length == 4) {
-
 							if (code === codes) {
 								that.setEPSGCode(code);
 								that.setValidEPSG(2);
@@ -312,7 +324,6 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
 									that.applyProjection(code, name, proj4def, bbox, callback);
 								}
 							}
-
 							return;
 						} else {
 							console.error("no crs");
@@ -450,10 +461,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 	if (flag === 2) {
 		var validIcon = $("<i>").addClass("fas").addClass("fa-check");
 		$(this.validIconSpan).append(validIcon);
-
-		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
-			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		} else {
+		if (!$(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
 			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
 				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-invalid-icon");
 			}
@@ -466,10 +474,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 	} else if (flag === 1) {
 		var validIcon = $("<i>").addClass("fas").addClass("fa-spinner").addClass("fa-spin");
 		$(this.validIconSpan).append(validIcon);
-
-		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
-			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		} else {
+		if (!$(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-loading-icon")) {
 			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
 				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
 			}
@@ -483,9 +488,7 @@ gb.crs.BaseCRS.prototype.setValidEPSG = function(flag) {
 		var validIcon = $("<i>").addClass("fas").addClass("fa-times");
 		$(this.validIconSpan).append(validIcon);
 
-		if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
-			// $(this.validIconSpan).addClass("gb-geoserver-uploadshp-epsg-invalid-icon");
-		} else {
+		if (!$(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-invalid-icon")) {
 			if ($(this.validIconSpan).hasClass("gb-geoserver-uploadshp-epsg-valid-icon")) {
 				$(this.validIconSpan).removeClass("gb-geoserver-uploadshp-epsg-valid-icon");
 			}

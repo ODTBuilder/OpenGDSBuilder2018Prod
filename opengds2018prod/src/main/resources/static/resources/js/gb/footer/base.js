@@ -13,11 +13,11 @@ if (!gb.footer)
  * @memberof gb.footer
  * @constructor
  * @param {Object} obj - gb.footer.FooterBase 생성 기본 옵션
- * @param {DOM} obj.targetElement - footer를 생성할 element
+ * @param {HTMLElement} obj.targetElement - footer를 생성할 element
  * @param {boolean} [obj.isDisplay=false] - Default display
  * @param {string} [obj.toggleTarget=.footer-toggle-btn] - footer 토글 이벤트 element 클래스명
  * @param {string} [obj.title] - footer 제목
- * @param {DOM} [obj.content=$("<h4>content area</h4>")] - footer 내용
+ * @param {HTMLElement} [obj.content=$("<h4>content area</h4>")] - footer 내용
  * @author KIM HOCHUL
  * @date 2019. 03. 18
  * @version 0.01
@@ -26,14 +26,14 @@ gb.footer.FooterBase = function(obj) {
 	/**
 	 * 최상위 element
 	 * @private
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 */
 	this.footerTag = $("<footer>");
 	
 	/**
 	 * 내용 element
 	 * @private
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 */
 	this.contentTag = undefined;
 	
@@ -141,7 +141,7 @@ gb.footer.FooterBase.prototype.adjustStyle_ = function(element, style){
  * @method gb.footer.FooterBase#createContent
  * @param {Object} opt - footer Tag 내부에 정의할 element 정보
  * @param {string} opt.title - footer Title
- * @param {DOM} opt.content - footer Content
+ * @param {HTMLElement} opt.content - footer Content
  */
 gb.footer.FooterBase.prototype.createFooter = function(opt){
 	

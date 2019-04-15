@@ -169,14 +169,14 @@ gb.geoserver.UploadSHP = function(obj) {
 	
 	/**
 	 * 파일 업로드 요청창 내용 부분 Element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.bodyArea = undefined;
 	
 	/**
 	 * 좌표계 유효성 결과 아이콘 Element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.validIconSpan = $("<span>").addClass("gb-geoserver-uploadshp-epsg-icon");
@@ -190,7 +190,7 @@ gb.geoserver.UploadSHP = function(obj) {
 	
 	/**
 	 * 좌표계 입력 Element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.epsgInput = $("<input>").addClass("gb-geoserver-uploadshp-epsg-input").attr({

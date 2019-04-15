@@ -66,7 +66,7 @@ gb.interaction.MeasureTip = function(opt_options) {
 
 	/**
 	 * The measure tooltip element.
-	 * @type {Array.<DOM>}
+	 * @type {Array.<HTMLElement>}
 	 * @private
 	 */
 	this.measureTipElement_ = [];

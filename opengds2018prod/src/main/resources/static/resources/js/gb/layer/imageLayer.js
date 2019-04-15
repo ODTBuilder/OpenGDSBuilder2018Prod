@@ -213,7 +213,7 @@ if (!gb.layer)
 	/**
 	 * 이미지 레이어 편집 메뉴바를 생성한다. 설정한 엘리먼트의 왼쪽 상단에 표시된다.
 	 * @function gb.layer.ImageLayer#createMenuBar
-	 * @param {DOM} target - 메뉴바를 생성할 element
+	 * @param {HTMLElement} target - 메뉴바를 생성할 element
 	 */
 	gb.layer.ImageLayer.prototype.createMenuBar = function(target){
 		if($.find("#imageLayerMenu").length !== 0){

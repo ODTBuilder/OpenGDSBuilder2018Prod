@@ -9,7 +9,7 @@
  * @class gb.tree.OpenLayers
  * @memberof gb.tree
  * @param {Object} obj - 생성자 옵션을 담은 객체
- * @param {DOM} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
+ * @param {HTMLElement} obj.append - 영역 본문이 삽입될 부모 노드의 ID 또는 Class 또는 Element
  * @param {ol.Map} obj.map - 편집 영역을 담당하는 ol.Map
  * @param {Object} obj.url - 요청 주소 정보
  * @param {string} obj.url.getLegend - WMS 범례 이미지를 요청할 URL
@@ -273,7 +273,7 @@ gb.tree.OpenLayers = function(obj) {
 	
 	/**
 	 * Openlayers Tree 제목
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.panelTitle = $("<p>").text("Now editing").css({
@@ -285,7 +285,7 @@ gb.tree.OpenLayers = function(obj) {
 	var addIcon = $("<i>").addClass("fas").addClass("fa-plus");
 	/**
 	 * 레이어 추가 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.addBtn = $("<button>").addClass("gb-button-clear").append(addIcon).css({
@@ -303,7 +303,7 @@ gb.tree.OpenLayers = function(obj) {
 	var createGroupIcon = $("<i>").addClass("fas").addClass("fa-folder-open");
 	/**
 	 * 그룹 레이어 추가 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.createGroupBtn = $("<button>").addClass("gb-button-clear").append(createGroupIcon).css({
@@ -315,7 +315,7 @@ gb.tree.OpenLayers = function(obj) {
 	var importFileIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-archive");
 	/**
 	 * 레이어 파일 불러오기 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.importFileBtn = $("<button>").addClass("gb-button-clear").append(importFileIcon).css({
@@ -327,7 +327,7 @@ gb.tree.OpenLayers = function(obj) {
 	var addImgIcon = $("<i>").addClass("far fa-lg").addClass("fa-file-image");
 	/**
 	 * 이미지 파일 불러오기 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.addImgBtn = $("<button>").addClass("gb-button-clear").append(addImgIcon).css({
@@ -339,7 +339,7 @@ gb.tree.OpenLayers = function(obj) {
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
 	/**
 	 * Openlayers Tree 새로고침 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).css({
@@ -357,7 +357,7 @@ gb.tree.OpenLayers = function(obj) {
 	var searchIcon = $("<i>").addClass("fas").addClass("fa-search");
 	/**
 	 * Openlayers Tree 노드 검색 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.searchBtn = $("<button>").addClass("gb-button-clear").append(searchIcon).css({
@@ -368,7 +368,7 @@ gb.tree.OpenLayers = function(obj) {
 
 	/**
 	 * Openlayers Tree 노드 검색 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.titleArea = $("<div>").append(this.panelTitle).append(this.searchBtn).append(this.refBtn).append(this.addImgBtn).append(
@@ -376,7 +376,7 @@ gb.tree.OpenLayers = function(obj) {
 
 	/**
 	 * Openlayers Tree 노드 검색 input element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.searchInput = $("<input>").attr({
@@ -391,7 +391,7 @@ gb.tree.OpenLayers = function(obj) {
 	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
 	/**
 	 * Openlayers Tree 노드 검색창 닫기 버튼 element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.closeSearchBtn = $("<button>").addClass("gb-button-clear").append(closeIcon).css({
@@ -404,7 +404,7 @@ gb.tree.OpenLayers = function(obj) {
 	
 	/**
 	 * Openlayers Tree 노드 검색 layout element
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.searchArea = $("<div>").css({
@@ -413,14 +413,14 @@ gb.tree.OpenLayers = function(obj) {
 	
 	/**
 	 * Openlayers Tree 패널 header
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.panelHead = $("<div>").addClass("gb-article-head").append(this.titleArea).append(this.searchArea);
 	
 	/**
 	 * Openlayers Tree 패널 body
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.panelBody = $("<div>").addClass("gb-article-body").css({
@@ -429,7 +429,7 @@ gb.tree.OpenLayers = function(obj) {
 	
 	/**
 	 * Openlayers Tree 패널 layout
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 * @private
 	 */
 	this.panel = $("<div>").addClass("gb-article").css({
@@ -963,7 +963,7 @@ gb.tree.OpenLayers.prototype.constructor = gb.tree.OpenLayers;
  * jstree가 적용된 jquery 객체를 반환한다.
  * @method gb.tree.OpenLayers#getJSTreeElement
  * @function
- * @return {DOM}
+ * @return {HTMLElement}
  */
 gb.tree.OpenLayers.prototype.getJSTreeElement = function() {
 	return $(this.panelBody);
@@ -1256,7 +1256,7 @@ gb.tree.OpenLayers.prototype.openAddLayer = function() {
  * @method gb.tree.OpenLayers#getAttrForm
  * @function
  * @param {boolean} bool - Not Null, Unique 조건 설정 가시화 여부. true일 시 Not Null, Unique 조건 설정 불가.
- * @return {DOM}
+ * @return {HTMLElement}
  */
 gb.tree.OpenLayers.getAttrForm = function(bool) {
 	var addBtn = 
@@ -1901,7 +1901,7 @@ gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
  * @function
  * @param {Object.<string, string|Object>} obj - 테이블 내용
  * @param {boolean} isVector - 레이어 타입이 Vector인지 여부 
- * @return {DOM}
+ * @return {HTMLElement}
  */
 gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	var that = this;

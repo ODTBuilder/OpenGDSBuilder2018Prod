@@ -12,7 +12,7 @@ if (!gb.map)
  * @param {Object} obj - 생성자 옵션을 담은 객체
  * @param {ol.Map} obj.map - ol.Map 객체
  * @param {string} [obj.projection] - projection
- * @param {DOM} [obj.element=$(."mouse-position")] - 좌표정보를 가시화할 jquery 인스턴스
+ * @param {HTMLElement} [obj.element=$(."mouse-position")] - 좌표정보를 가시화할 jquery 인스턴스
  * @author KIM HOCHUL
  * @date 2019. 03. 27
  * @version 0.01

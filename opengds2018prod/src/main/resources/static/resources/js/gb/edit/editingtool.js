@@ -360,9 +360,9 @@ gb.edit.EditingTool = function(obj) {
 	this.count = 1;
 	
 	/**
-	 * EditingTool 작업표시줄에 표현될 DOM 객체들의 집합
+	 * EditingTool 작업표시줄에 표현될 HTMLElement 객체들의 집합
 	 * @private
-	 * @type {Object.<string, DOM>}
+	 * @type {Object.<string, HTMLElement>}
 	 */
 	this.btn = {
 			selectBtn : undefined,

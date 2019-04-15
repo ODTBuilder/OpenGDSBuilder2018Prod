@@ -16,7 +16,7 @@ if (!gb.header)
  * @param {Object} obj - gb.header 생성 기본 옵션
  * @param {boolean} [obj.isDisplay=false] - 기본 Display 옵션. true일 시 header가 생성될 때 바로 가시화
  * @param {string} [obj.toggleClass="header-toggle-btn"] - 토글 이벤트를 생성할 element 클래스 이름
- * @param {DOM} [obj.targetElement] - header를 생성할 element. 기본 body에 생성
+ * @param {HTMLElement} [obj.targetElement] - header를 생성할 element. 기본 body에 생성
  * @param {Array.<Object.<string, string>>} [obj.list] - header의 내용에 표시될 목록. content, icon, color 항목 필요
  * @param {string} [obj.locale="en"] - 언어 코드
  * @author KIM HOCHUL

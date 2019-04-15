@@ -197,7 +197,7 @@ if (!gb.validation)
 		
 		/**
 		 * 작업 도움말 Element Tag
-		 * @type {DOM}
+		 * @type {HTMLElement}
 		 * @private
 		 */
 		this.messageContent = undefined;
@@ -218,7 +218,7 @@ if (!gb.validation)
 		
 		/**
 		 * 저장된 검수 설정 목록 Select Tag
-		 * @type {DOM}
+		 * @type {HTMLElement}
 		 * @private
 		 */
 		this.presetSelectTag = $("<select class='form-control'>");
@@ -226,7 +226,7 @@ if (!gb.validation)
 		/**
 		 * 검수 종류 Select Tag
 		 * 수치지도, 지하시설물, 임상도
-		 * @type {DOM}
+		 * @type {HTMLElement}
 		 * @private
 		 */
 		this.verSelectTag = $("<div>").css({
@@ -236,7 +236,7 @@ if (!gb.validation)
 		
 		/**
 		 * 좌표계 Select Tag
-		 * @type {DOM}
+		 * @type {HTMLElement}
 		 * @private
 		 */
 		this.srsSelectTag = $("<select class='form-control'>");
@@ -491,7 +491,7 @@ if (!gb.validation)
 	 * {@link gb.tree.GeoServer} 모듈 필수
 	 * @method gb.validation.Validation#createJSTreePanel
 	 * @function
-	 * @return {DOM}
+	 * @return {HTMLElement}
 	 */
 	gb.validation.Validation.prototype.createJSTreePanel = function() {
 		var that = this;
@@ -705,7 +705,7 @@ if (!gb.validation)
 	 * Working JSTree 패널을 생성하여 반환한다.
 	 * @method gb.validation.Validation#createWorkTreePanel
 	 * @function
-	 * @return {DOM}
+	 * @return {HTMLElement}
 	 */
 	gb.validation.Validation.prototype.createWorkTreePanel = function() {
 		var that = this;
@@ -815,7 +815,7 @@ if (!gb.validation)
 	 * 검수 옵션 선택 패널을 생성하여 반환한다.
 	 * @method gb.validation.Validation#createOptionPanel
 	 * @function
-	 * @return {DOM}
+	 * @return {HTMLElement}
 	 */
 	gb.validation.Validation.prototype.createOptionPanel = function() {
 
@@ -847,7 +847,7 @@ if (!gb.validation)
 	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
 	 * @method gb.validation.Validation#createModalFooter
 	 * @function
-	 * @return {DOM}
+	 * @return {HTMLElement}
 	 */
 	gb.validation.Validation.prototype.createModalFooter = function() {
 		var that = this;
@@ -917,8 +917,8 @@ if (!gb.validation)
 	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
 	 * @function requestPreset
 	 * @param {gb.validation.Validation} that
-	 * @param {DOM} obj - 저장된 검수 옵션 Select Tag
-	 * @param {DOM} div - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {HTMLElement} obj - 저장된 검수 옵션 Select Tag
+	 * @param {HTMLElement} div - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
 	 * @param {string} message - 작업 진행 도움말
 	 * @private
 	 */
@@ -952,7 +952,7 @@ if (!gb.validation)
 	/**
 	 * Select Tag 이벤트 처리 함수
 	 * @function customSelect
-	 * @param {DOM} selectDiv - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {HTMLElement} selectDiv - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
 	 * @param {string} message - 작업 진행 도움말
 	 * @param {gb.validation.Validation} that
 	 * @private
@@ -1085,7 +1085,7 @@ if (!gb.validation)
 	/**
 	 * Select Tag를 닫는 함수
 	 * @function closeAllSelect
-	 * @param {DOM} elmnt - 선택된 Select Tag
+	 * @param {HTMLElement} elmnt - 선택된 Select Tag
 	 * @private
 	 */
 	function closeAllSelect(elmnt) {

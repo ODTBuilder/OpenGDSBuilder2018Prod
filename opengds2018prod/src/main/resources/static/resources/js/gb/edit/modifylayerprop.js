@@ -184,7 +184,7 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	/**
 	 * 레이어 수정창
 	 * @private
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 */
 	this.window;
 	
@@ -231,14 +231,14 @@ gb.edit.ModifyLayerProperties = function(obj) {
 	/**
 	 * 좌표계 유효성 알림 아이콘 Tag
 	 * @private
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 */
 	this.validIconSpan = undefined;
 	
 	/**
 	 * 좌표계 검색 버튼 Tag
 	 * @private
-	 * @type {DOM}
+	 * @type {HTMLElement}
 	 */
 	this.searchBtn = undefined;
 	
@@ -731,7 +731,7 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
  * @param {Object} options - 요청 파라미터 객체
  * @param {string} options.serverName - geoserver명
  * @param {string} options.workspace - workspace명
- * @param {DOM} options.selectTag - HTML Select Tag
+ * @param {HTMLElement} options.selectTag - HTML Select Tag
  */
 gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var params = {};
@@ -785,7 +785,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
  * @param {string} options.workspace - workspace명
  * @param {string} options.layerName - 레이어명
  * @param {string} options.style - 스타일 ID
- * @param {DOM} options.legendTag - 범례 이미지를 표시할 HTML Tag
+ * @param {HTMLElement} options.legendTag - 범례 이미지를 표시할 HTML Tag
  */
 gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var params = {};

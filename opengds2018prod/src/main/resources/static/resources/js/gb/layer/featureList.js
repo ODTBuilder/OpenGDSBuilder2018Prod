@@ -307,7 +307,7 @@ if (!gb.layer)
 	 * 이전 테이블 element를 제거하고 새로 생성하여 반환한다.
 	 * @method gb.layer.FeatureList#createTableElement
 	 * @function
-	 * @return {DOM} 테이블 element
+	 * @return {HTMLElement} 테이블 element
 	 */
 	gb.layer.FeatureList.prototype.createTableElement = function(){
 		this.removeTableElement();
@@ -362,7 +362,7 @@ if (!gb.layer)
 	 * feature list layout 생성 클릭 이벤트
 	 * @method gb.layer.FeatureList#clickEvent
 	 * @function
-	 * @param {DOM} target - Target element
+	 * @param {HTMLElement} target - Target element
 	 */
 	gb.layer.FeatureList.prototype.clickEvent = function(target){
 		var that = this;
@@ -1025,7 +1025,7 @@ if (!gb.layer)
 	 * 레이어의 속성 변경사항을 저장 요청한다
 	 * @method gb.layer.FeatureList#sendWFSTTransaction
 	 * @function
-	 * @param {DOM} openSaveModal - 요청 성공 시 닫아야할 DIV
+	 * @param {HTMLElement} openSaveModal - 요청 성공 시 닫아야할 DIV
 	 */
 	gb.layer.FeatureList.prototype.sendWFSTTransaction = function(openSaveModal){
 		var featureInfo = this.editedFeature;

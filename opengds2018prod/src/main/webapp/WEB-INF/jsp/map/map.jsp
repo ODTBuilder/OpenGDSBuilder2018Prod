@@ -608,9 +608,10 @@ html {
 		var commandLine = new gb.edit.CommandLine({
 			targetElement : gbMap.getLowerDiv(),
 			jstree : otree,
+			editTool : epan,
 			locale : locale,
 			title : "<spring:message code='lang.command' />",
-			serverURL : urlList.getWFSFeature + urlList.token,
+			// serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,
 			map : gbMap.getUpperMap()

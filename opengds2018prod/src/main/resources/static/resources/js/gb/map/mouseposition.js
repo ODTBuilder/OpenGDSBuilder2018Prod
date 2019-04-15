@@ -20,7 +20,7 @@ if (!gb.map)
 gb.map.MousePosition = function(obj) {
 	var options = obj || {};
 	this.map = options.map;
-	if(this.map instanceof ol.Map){
+	if(!(this.map instanceof ol.Map)){
 		console.error("gb.map.MousePosition: 'map' is a required field. The type is {ol.Map}.")
 	}
 	this.projection = options.projection || this.map.getView().getProjection().getCode();

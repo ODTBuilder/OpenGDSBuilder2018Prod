@@ -177,28 +177,28 @@ gb.edit.EditingTool = function(obj) {
 	/**
 	 * 현재 편집중인 레이어의 Source 객체
 	 * @private
-	 * @type {ol.source.TileSource|ol.source.VectorSource}
+	 * @type {ol.source.TileSource|ol.source.Vector}
 	 */
 	this.selectedSource = undefined;
 	
 	/**
 	 * 현재 편집중인 Source 객체들의 집합
 	 * @private
-	 * @type {ol.Collection.<ol.source.VectorSource>}
+	 * @type {ol.Collection.<ol.source.Vector>}
 	 */
 	this.selectSources = new ol.Collection();
 	
 	/**
 	 * Geoserver로부터 import된 레이어들의 Vector Source 객체 집합
 	 * @private
-	 * @type {Object.<string, ol.source.VectorSource>}
+	 * @type {Object.<string, ol.source.Vector>}
 	 */
 	this.vectorSourcesOfServer_ = {};
 	
 	/**
 	 * 벡터 레이어들의 Vector Source 객체 집합
 	 * @private
-	 * @type {Object.<string, ol.source.VectorSource>}
+	 * @type {Object.<string, ol.source.Vector>}
 	 */
 	this.vectorSourcesOfVector_ = {};
 	
@@ -2041,8 +2041,6 @@ gb.edit.EditingTool.prototype.remove = function(layer) {
 			fill : undefined,
 			stroke : undefined
 		});
-		
-		
 		
 		var msg1 = $("<div>").css({
 			"text-align" : "center",
@@ -3951,11 +3949,11 @@ gb.edit.EditingTool.prototype.displayEditZoomHint = function(bool){
 }
 
 /**
- * 현재 편집중인 레이어의 vector source 객체를 반환한다.
+ * 현재 편집중인 레이어의 vector source 객체들를 반환한다.
  * 
  * @method gb.edit.EditingTool#getSelectSources
  * @function
- * @return {ol.source.Vector|undifined} vector source 가 없을 경우 undifined 값 반환
+ * @return {ol.Collection.<ol.source.Vector>}
  */
 gb.edit.EditingTool.prototype.getSelectSources = function(){
 	return this.selectSources;

@@ -930,7 +930,7 @@ if (!gb.edit)
 			},
 			historyContent: {
 				"flex": "1 1 auto",
-				"overflow": "auto",
+				"overflow": "auto"
 			},
 			log: {
 				"width": "50%",
@@ -1004,46 +1004,46 @@ if (!gb.edit)
 		var that = this;
 		
 		this.contentTag.empty();
-		this.adjustStyle_(this.contentTag, this.elementStyle_.content);
+//		this.adjustStyle_(this.contentTag, this.elementStyle_.content);
 		
-		var commandWrapper = $("<div>").addClass("command-wrapper");
-		this.adjustStyle_(commandWrapper, this.elementStyle_.commandWrapper);
+		var commandWrapper = $("<div>").addClass("gb-commandline-wrapper-cmd");
+//		this.adjustStyle_(commandWrapper, this.elementStyle_.commandWrapper);
 		
-		var logHistoryWrapper = $("<div>").addClass("log-history-wrapper");
-		this.adjustStyle_(logHistoryWrapper, this.elementStyle_.logHistoryWrapper);
+		var logHistoryWrapper = $("<div>").addClass("gb-commandline-wrapper-log");
+//		this.adjustStyle_(logHistoryWrapper, this.elementStyle_.logHistoryWrapper);
 		
-		var history = $("<div>").addClass("command-history");
-		this.adjustStyle_(history, this.elementStyle_.history);
+		var history = $("<div>").addClass("gb-commandline-history");
+//		this.adjustStyle_(history, this.elementStyle_.history);
 		
-		var historyTitle = $("<div>").addClass("history-title");
-		this.adjustStyle_(historyTitle, this.elementStyle_.historyTitle);
+		var historyTitle = $("<div>").addClass("gb-commandline-history-title");
+//		this.adjustStyle_(historyTitle, this.elementStyle_.historyTitle);
 		historyTitle.text(this.translation.history[this.locale]);
 		
-		var historyFunction = $("<div>").addClass("history-function");
-		this.adjustStyle_(historyFunction, this.elementStyle_.historyFunction);
+		var historyFunction = $("<div>").addClass("gb-commandline-history-function");
+//		this.adjustStyle_(historyFunction, this.elementStyle_.historyFunction);
 		
-		this.historyContent = $("<div>").addClass("history-content");
-		this.adjustStyle_(this.historyContent, this.elementStyle_.historyContent);
+		this.historyContent = $("<div>").addClass("gb-commandline-history-content");
+//		this.adjustStyle_(this.historyContent, this.elementStyle_.historyContent);
 		
-		var log = $("<div>").addClass("command-log");
-		this.adjustStyle_(log, this.elementStyle_.log);
+		var log = $("<div>").addClass("gb-commandline-log");
+//		this.adjustStyle_(log, this.elementStyle_.log);
 		
-		var logTitle = $("<div>").addClass("log-title");
-		this.adjustStyle_(logTitle, this.elementStyle_.logTitle);
+		var logTitle = $("<div>").addClass("gb-commandline-log-title");
+//		this.adjustStyle_(logTitle, this.elementStyle_.logTitle);
 		logTitle.text(this.translation.log[this.locale]);
 		
-		this.logContent = $("<div>").addClass("log-content");
-		this.adjustStyle_(this.logContent, this.elementStyle_.logContent);
+		this.logContent = $("<div>").addClass("gb-commandline-log-content");
+//		this.adjustStyle_(this.logContent, this.elementStyle_.logContent);
 		
-		var lineWrapper = $("<div>").addClass("command-line-wrapper");
-		this.adjustStyle_(lineWrapper, this.elementStyle_.lineWrapper);
+		var lineWrapper = $("<div>").addClass("gb-commandline-wrapper-line");
+//		this.adjustStyle_(lineWrapper, this.elementStyle_.lineWrapper);
 		
-		this.label = $("<div>").addClass("command-label");
+		this.label = $("<div>").addClass("gb-commandline-label");
 		this.setLabel();
-		this.adjustStyle_(this.label, this.elementStyle_.label);
+//		this.adjustStyle_(this.label, this.elementStyle_.label);
 		
-		var line = this.input = $("<input id='commandInput' placeholder='" + this.translation.commandLine[this.locale] + "'>").addClass("command-line");
-		this.adjustStyle_(line, this.elementStyle_.line);
+		var line = this.input = $("<input id='commandInput' placeholder='" + this.translation.commandLine[this.locale] + "'>").addClass("gb-commandline-line");
+//		this.adjustStyle_(line, this.elementStyle_.line);
 		line.keypress(function(e){
 			if(e.which === 13){
 				that.executeCommand(this.value);
@@ -1308,8 +1308,8 @@ if (!gb.edit)
 	 */
 	gb.edit.CommandLine.prototype.insertHistoryLayout = function(time, list){
 		if($.isArray(list)){
-			var item = $("<div class='list-item'>");
-			this.adjustStyle_(item, this.elementStyle_.item);
+			var item = $("<div class='gb-commandline-item'>");
+//			this.adjustStyle_(item, this.elementStyle_.item);
 			item.text(time + " " + list.join(" > "));
 			this.historyContent.append(item);
 			this.historyContent.scrollTop(this.historyContent[0].scrollHeight)
@@ -1333,8 +1333,8 @@ if (!gb.edit)
 	 */
 	gb.edit.CommandLine.prototype.insertLogLayout = function(text){
 		if(typeof text === "string"){
-			var item = $("<div class='list-item'>");
-			this.adjustStyle_(item, this.elementStyle_.item);
+			var item = $("<div class='gb-commandline-item'>");
+//			this.adjustStyle_(item, this.elementStyle_.item);
 			item.text(text);
 			this.logContent.append(item);
 			this.logContent.scrollTop(this.logContent[0].scrollHeight)
@@ -1681,7 +1681,7 @@ if (!gb.edit)
 			// 명령어 목록 배열
 			var arr = Object.keys(that.currentCmd);
 			
-			var labelWidth = this.parentNode.getElementsByClassName("command-label")[0].clientWidth;
+			var labelWidth = this.parentNode.getElementsByClassName("gb-commandline-label")[0].clientWidth;
 			/*close any already open lists of autocompleted values*/
 			closeAllLists();
 			if (!val) { return false;}

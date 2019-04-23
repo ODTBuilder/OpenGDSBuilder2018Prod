@@ -16,7 +16,7 @@
 gb.embed.EmbedBase = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
-	var body = typeof options.body === "function" ? options.body() : options.body;
+	var body = typeof options.body === "function" ? options.body() : $(options.body);
 	/**
 	 * @private
 	 * @type {Object}

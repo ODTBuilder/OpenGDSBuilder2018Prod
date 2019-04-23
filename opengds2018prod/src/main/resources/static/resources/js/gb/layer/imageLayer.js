@@ -258,26 +258,9 @@ if (!gb.layer)
 			that.activeEdit("move");
 		});
 		
-		var menu = $("<div id='imageLayerMenu'>").css({
-			"position": "absolute",
-			"background-color": "#27292a",
-			"color": "#fff",
-			"text-shadow": "none",
-			"top": "5em",
-			"left": "0px",
-			"width": "40px",
-			"height": "auto",
-			"white-space": "nowrap",
-			"overflow": "hidden",
-			"-webkit-transition": "0.3s width ease, 0.5s transform ease",
-			"-moz-transition": "0.3s width ease, 0.5s transform ease",
-			"-o-transition": "0.3s width ease, 0.5s transform ease",
-			"-ms-transition": "0.3s width ease, 0.5s transform ease",
-			"transition": "0.3s width ease, 0.5s transform ease",
-			"z-index": "2"
-		}).append(item1).append(item2);
+		var menu = $("<div id='imageLayerMenu'>").addClass("gb-imagelayer-menu").append(item1).append(item2);
 		
-		target.append(menu);
+		$(target).append(menu);
 	}
 	
 	/**

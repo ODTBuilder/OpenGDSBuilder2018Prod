@@ -28,7 +28,7 @@ gb.footer.FooterBase = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.footerTag = $("<footer>");
+	this.footerTag = $("<footer>").addClass("gb-footerbase");
 	
 	/**
 	 * 내용 element
@@ -38,18 +38,18 @@ gb.footer.FooterBase = function(obj) {
 	this.contentTag = undefined;
 	
 	// element style 정의
-	this.footerStyle = {
-		"position": "absolute",
-		"z-index": "3",
-		"padding": "5px",
-		"bottom": "0",
-		"left": "0",
-		"right": "0",
-		"height": "30%",
-		"background": "linear-gradient(to bottom, rgba(52,71,98,0.8) 0%,rgba(38,35,35,0.8) 100%)",
-		"box-shadow": "0px 0px 20px rgba(0,0,0, 0.5)",
-		"color": "#DDD"
-	};
+//	this.footerStyle = {
+//		"position": "absolute",
+//		"z-index": "3",
+//		"padding": "5px",
+//		"bottom": "0",
+//		"left": "0",
+//		"right": "0",
+//		"height": "30%",
+//		"background": "linear-gradient(to bottom, rgba(52,71,98,0.8) 0%,rgba(38,35,35,0.8) 100%)",
+//		"box-shadow": "0px 0px 20px rgba(0,0,0, 0.5)",
+//		"color": "#DDD"
+//	};
 	
 	this.titleAreaStyle = {
 		"height": "20%",
@@ -67,12 +67,12 @@ gb.footer.FooterBase = function(obj) {
 	var options = obj || {};
 	this.isDisplay = options.isDisplay ? true : false;
 	this.toggleTarget = options.toggleTarget || ".footer-toggle-btn";
-	this.targetElement = options.targetElement;
-	if(this.targetElement === null || this.targetElement === undefined){
+	this.targetElement = $(options.targetElement);
+	if(this.targetElement.length === 0){
 		console.error("gb.footer.FooterBase: targetElement is a required field");
 	}
 	this.title = options.title;
-	this.content = options.content || $("<h4>content area</h4>");
+	this.content = $(options.content) || $("<h4>content area</h4>");
 	
 	this.createFooter({
 		title: this.title,
@@ -150,18 +150,18 @@ gb.footer.FooterBase.prototype.createFooter = function(opt){
 	// footer Tag 초기화
 	this.footerTag.empty();
 	
-	this.adjustStyle_(this.footerTag, this.footerStyle);
+//	this.adjustStyle_(this.footerTag, this.footerStyle);
 	
-	var titleArea = $("<div class='footer-header'>");
-	this.adjustStyle_(titleArea, this.titleAreaStyle);
+	var titleArea = $("<div>").addClass(opt.titleClass || "gb-footerbase-wrapper-title");
+//	this.adjustStyle_(titleArea, this.titleAreaStyle);
 	
-	this.contentTag = $("<div class='footer-content'>");
-	this.adjustStyle_(this.contentTag, this.contentAreaStyle);
+	this.contentTag = $("<div>").addClass(opt.contentClass || "gb-footerbase-wrapper-content");
+//	this.adjustStyle_(this.contentTag, this.contentAreaStyle);
 	
 	this.title = opt.title || "";
 	
-	this.titleTag = $("<h3>");
-	this.adjustStyle_(this.titleTag, this.titleStyle);
+	this.titleTag = $("<h3>").addClass("gb-footerbase-title");
+//	this.adjustStyle_(this.titleTag, this.titleStyle);
 	this.titleTag.text(this.title);
 	
 	titleArea.append(this.titleTag);

@@ -276,10 +276,7 @@ gb.tree.OpenLayers = function(obj) {
 	 * @type {HTMLElement}
 	 * @private
 	 */
-	this.panelTitle = $("<p>").text("Now editing").css({
-		"margin" : "0",
-		"float" : "left"
-	});
+	this.panelTitle = $("<p>").text("Now editing").addClass("gb-openlayers-title");
 	
 	
 	var addIcon = $("<i>").addClass("fas").addClass("fa-plus");
@@ -381,12 +378,7 @@ gb.tree.OpenLayers = function(obj) {
 	 */
 	this.searchInput = $("<input>").attr({
 		"type" : "text"
-	}).css({
-		"border" : "0",
-		"border-bottom" : "solid 1px #909090",
-		"background-color" : "transparent",
-		"width" : "90%"
-	});
+	}).addClass("gb-openlayers-search-input");
 	
 	var closeIcon = $("<i>").addClass("fas").addClass("fa-times");
 	/**
@@ -1590,10 +1582,7 @@ gb.tree.OpenLayers.prototype.createImageModal = function() {
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
 
-	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(preview).css({
-		"display" : "table",
-		"width" : "100%"
-	});
+	var gBody = $("<div>").append(uploadBtn).append(fileInfo).append(preview).addClass("gb-openlayers-table");
 
 	var addGeoServerModal = new gb.modal.ModalBase({
 		"title" : this.translation.addLayer[this.locale],
@@ -1906,64 +1895,6 @@ gb.tree.OpenLayers.prototype.requestLayerInfo = function(obj) {
 gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 	var that = this;
 	
-	var tdStyle = {
-		"padding" : ".78571429em .78571429em"
-	};
-
-	var tdKeyStyle = {
-		"padding" : ".78571429em .78571429em",
-		"background" : "rgba(0,0,0,.03)",
-		"font-weight" : "700"
-	};
-
-	var trStyle = {
-		"border-bottom" : "1px solid rgba(0,0,0,.1)"
-	};
-	
-	var labelStyle = {
-		"display" : "inline-block",
-		"position" : "relative",
-		"background" : "#e0e1e2 none",
-		"color" : "rgba(0,0,0,.6)",
-		"margin" : "0 .25em .25em 0",
-		"padding" : ".78571429em 1.5em .78571429em",
-		"font-weight" : "700",
-		"line-height" : "1em",
-		"border-radius" : ".28571429rem"
-	};
-	
-	var attrLabelStyle = {
-		"display" : "inline-block",
-		"position" : "relative",
-		"background" : "#e0e1e2 none",
-		"color" : "rgba(0,0,0,.6)",
-		"margin" : "0 .25em .25em 0",
-		"padding" : ".785714em 2.0em .785714em .785714em",
-		"font-weight" : "700",
-		"line-height" : "1em",
-		"border-radius" : ".28571429rem"
-	};
-
-	var fieldStyle = {
-		"width" : "50%",
-		"padding-left" : ".5em",
-		"padding-right" : ".5em"
-	};
-	
-	var selectTitleStyle = {
-		"font-weight" : "700"
-	};
-	
-	var iconStyle = {
-		"left" : "auto",
-		"right" : "0",
-		"position" : "absolute",
-		"text-align": "center",
-		"width": "30px",
-		"color": "#db2828",
-		"cursor": "pointer"
-	};
-
 	var list = obj || false;
 	if (!list) {
 		return;
@@ -1979,7 +1910,7 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 		}
 		
 		if(!this.translation[i]){
-			key = $("<td>").css(tdKeyStyle).text(i).css("width", "20%");
+			key = $("<td>").addClass("gb-openlayers-td-key").text(i).css("width", "20%");
 		} else {
 			if(i === "attInfo" && isVector){
 				var addLabel = 
@@ -2001,14 +1932,14 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 						.append(addIcon)
 						.css({"width": "100%"});
 				
-				key = $("<td>").css(tdKeyStyle).append(addDiv).css("width", "20%");
+				key = $("<td>").addClass("gb-openlayers-td-key").append(addDiv).css("width", "20%");
 			} else {
-				key = $("<td>").css(tdKeyStyle).text(this.translation[i][that.locale]).css("width", "20%");
+				key = $("<td>").addClass("gb-openlayers-td-key").text(this.translation[i][that.locale]).css("width", "20%");
 			}
 		}
 		
 		if (list[i] instanceof Object) {
-			value = $("<td>").css(tdStyle);
+			value = $("<td>").addClass("gb-openlayers-td");
 			for ( var j in list[i]) {
 				labelKey = $("<span>").addClass("layer-attr-key").text(j);
 				if (list[i][j] instanceof Object) {
@@ -2024,12 +1955,12 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 					labelValue = $("<span>").text(list[i][j]);
 				}
 				
-				label = $("<div>").css(labelStyle).append(labelKey).append(labelValue);
+				label = $("<div>").addClass("gb-openlayers-label").append(labelKey).append(labelValue);
 				if (isVector) {
 					removeAttr = 
 						$("<i>")
 							.addClass("far fa-trash-alt")
-							.css(iconStyle);
+							.addClass("gb-openlayers-icon");
 					
 					removeAttr.click(function(){
 						var attrKey = $(this).parent().find(".layer-attr-key").text();
@@ -2098,33 +2029,33 @@ gb.tree.OpenLayers.prototype.createPropTable = function(obj, isVector) {
 						
 						modal.open();
 					});
-					label.append(removeAttr).css(attrLabelStyle);
+					label.append(removeAttr).addClass("gb-openlayers-label-attr");
 				}
 				value.append(label);
 			}
 		} else {
 			if (i === "style") {
-				selectTitle = $("<label>").css(selectTitleStyle).text(this.translation["workspace"][this.locale]);
+				selectTitle = $("<label>").addClass("gb-openlayers-select-title").text(this.translation["workspace"][this.locale]);
 				select = $("<div>").text(list.styleWorkspace || this.translation["myserver"][this.locale]);
-				selectField = $("<div>").css(fieldStyle).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-openlayers-field").append(selectTitle).append(select);
 
-				value = $("<td>").css(tdStyle).css("display", "flex").append(selectField);
+				value = $("<td>").addClass("gb-openlayers-td").css("display", "flex").append(selectField);
 
 				selectTitle = 
 					$("<div>")
-						.append($("<label>").css(selectTitleStyle).text(this.translation["style"][this.locale]));
+						.append($("<label>").addClass("gb-openlayers-select-title").text(this.translation["style"][this.locale]));
 				select = $("<div>").text(list[i]);
-				selectField = $("<div>").css(fieldStyle).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-openlayers-field").append(selectTitle).append(select);
 				value.append(selectField);
 			} else {
 				if (i === "styleWorkspace") {
 					continue;
 				}
-				value = $("<td>").css(tdStyle).text(list[i]);
+				value = $("<td>").addClass("gb-openlayers-td").text(list[i]);
 			}
 		}
 
-		tr = $("<tr>").css(trStyle).append(key).append(value);
+		tr = $("<tr>").addClass("gb-openlayers-tr").append(key).append(value);
 		if(i === "geoserver" || i === "workspace" || i === "datastore" || i === "geoserverURL" || i === "geoserverID"){
 			tbody.prepend(tr);
 		} else {

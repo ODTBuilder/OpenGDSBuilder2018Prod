@@ -186,8 +186,8 @@ if (!gb.layer)
 		this.tableElement = this.createTableElement();
 		
 		// Background 블러 처리
-		this.backgroundDiv = $("<div class='footer-background'>");
-		this.adjustStyle_(this.backgroundDiv, this.backgroundStyle);
+		this.backgroundDiv = $("<div class='gb-featurelist-background'>");
+//		this.adjustStyle_(this.backgroundDiv, this.backgroundStyle);
 		this.targetElement.append(this.backgroundDiv);
 		
 		this.dataTable = this.tableElement.DataTable({
@@ -334,7 +334,9 @@ if (!gb.layer)
 		
 		this.createFooter({
 			title: this.title,
-			content: table
+			titleClass: "gb-featurelist-wrapper-title",
+			content: table,
+			contentClass: "gb-featurelist-wrapper-content"
 		});
 		
 		return table;
@@ -369,7 +371,9 @@ if (!gb.layer)
 		$(target).click(function(){
 			that.createFooter({
 				title: that.title,
-				content: that.tableElement
+				content: that.tableElement,
+				titleClass: "gb-featurelist-wrapper-title",
+				contentClass: "gb-featurelist-wrapper-content"
 			});
 		});
 	}
@@ -392,13 +396,13 @@ if (!gb.layer)
 	 * @function
 	 */
 	gb.layer.FeatureList.prototype.resizeTbody = function(){
-		var a = this.footerTag.find(".footer-content").height();
+		var a = this.footerTag.find(".gb-featurelist-wrapper-content").height();
 		var b = $("#" + this.tableId + this.countId + "_wrapper").find(".dt-buttons").height();
 		var c = $("#" + this.tableId + this.countId + "_wrapper .dataTables_scrollHead").height();
 		
 		var height = a - b - c;
 		
-		this.footerTag.find(".footer-content #" + this.tableId + this.countId + "_wrapper .dataTables_scrollBody").css("max-height", height + "px");
+		this.footerTag.find(".gb-featurelist-wrapper-content #" + this.tableId + this.countId + "_wrapper .dataTables_scrollBody").css("max-height", height + "px");
 	}
 	
 	/**
@@ -506,15 +510,6 @@ if (!gb.layer)
 						data[format[i].getId()] = format[i];
 					}
 					
-					if(format.length === 0){
-						col.push("No Data");
-						data[0] = {
-							get: function(e){
-								return "No Data";
-							}
-						};
-					}
-					
 					list[treeid].col = col;
 					list[treeid].features = data;
 					list[treeid].total = errorData.totalFeatures;
@@ -563,23 +558,12 @@ if (!gb.layer)
 		}
 		var column = [],
 			data= [];
-		var select = $("<select>").addClass("gb-form").css({
-			"float": "right",
-			"width": "auto",
-			"margin-right": "10px"
-		});
+		var select = $("<select>").addClass("gb-form").addClass("gb-featurelist-form");
 		var icon = $("<i>").addClass("fas fa-search fa-lg");
 		var button = $("<button>").addClass("gb-button gb-button-primary").css({
 			"float": "right"
 		}).append(icon);
-		var input = $("<input>").addClass("gb-input").css({
-			"float": "right",
-			"border": "1px solid rgba(34, 36, 38, 0.15)",
-			"border-radius": "0.285714rem",
-			"line-height": "2px",
-			"color": "#555",
-			"padding": "8px 4px"
-		});
+		var input = $("<input>").addClass("gb-featurelist-input");
 		
 		button.click(function(e){
 			that.searchTable(select.find("option:selected").val(), input.val());
@@ -729,25 +713,12 @@ if (!gb.layer)
 				success(rowdata);
 			}
 		});
-		var statisticVal = $("<div>").html(this.attrList[treeid].total).css({
-			"color": "#fff",
-			"text-align": "center",
-			"font-size": "25px"
-		});
-		var statisticLabel = $("<div>").html(this.translation.totalFeature[this.locale]).css({
-			"color": "#fff",
-			"text-align": "center",
-			"margin": "0 .75em 0 0"
-		});
-		var statistic = $("<div>").append(statisticLabel).append(statisticVal).css({
-			"display": "inline-flex",
-			"float": "right",
-			"margin": "0 1.5em 1em",
-			"align-items": "center"
-		});
+		var statisticVal = $("<div>").html(this.attrList[treeid].total).addClass("gb-featurelist-statistic-val");
+		var statisticLabel = $("<div>").html(this.translation.totalFeature[this.locale]).addClass("gb-featurelist-statistic-label");
+		var statistic = $("<div>").append(statisticLabel).append(statisticVal).addClass("gb-featurelist-statistic");
 		this.footerTag.find(".dt-buttons").css({"z-index": "3"});
-		this.footerTag.find(".footer-header").empty();
-		this.footerTag.find(".footer-header").append(button).append(input).append(select).append(statistic);
+		this.footerTag.find(".gb-featurelist-wrapper-title").empty();
+		this.footerTag.find(".gb-featurelist-wrapper-title").append(button).append(input).append(select).append(statistic);
 		
 		$("#" + this.tableId + this.countId).parent().scroll(function(){
 			if($(this).scrollTop() + $(this)[0].clientHeight == $(this).children(":first").height()){
@@ -773,20 +744,16 @@ if (!gb.layer)
 		this.startIndex = 0;
 		this.scrollTop = 0;
 		
-		this.contentTag.append($("<div id='feature-list-loading'>").css({
-			"z-index" : "10",
-			"position" : "absolute",
-			"left" : "0",
-			"top" : "0",
-			"width" : "100%",
-			"height" : "100%",
-			"text-align" : "center",
-			"background-color" : "rgba(0, 0, 0, 0.4)"
-		}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-			"position" : "relative",
-			"top" : "50%",
-			"margin-top" : "-5em"
-		})));
+		this.contentTag
+			.append(
+				$("<div id='feature-list-loading'>")
+					.addClass("gb-body-loading")
+					.append(
+						$("<i>")
+							.addClass("fas fa-spinner fa-spin fa-5x")
+							.addClass("gb-body-loading-icon")
+					)
+			);
 		
 		var options = layer.get("git") || {};
 		
@@ -910,6 +877,17 @@ if (!gb.layer)
 		this.startIndex = this.startIndex + this.maxFeatures;
 		var list = this.attrList;
 		
+		this.contentTag
+		.append(
+			$("<div id='feature-list-loading'>")
+				.addClass("gb-body-loading")
+				.append(
+					$("<i>")
+						.addClass("fas fa-spinner fa-spin fa-5x")
+						.addClass("gb-body-loading-icon")
+				)
+		);
+		
 		if(!this.parameters){
 			var all = list[this.selectedTreeId].all,
 				data = [];
@@ -939,6 +917,7 @@ if (!gb.layer)
 			this.tableElement.find("tbody > tr").css("background-color", "transparent");
 			this.footerTag.find("label").css("color", "#DDD");
 			$("#" + this.tableId + this.countId).parent().scrollTop(this.scrollTop);
+			$("#feature-list-loading").remove();
 			return;
 		}
 		
@@ -980,8 +959,10 @@ if (!gb.layer)
 				that.tableElement.find("tbody > tr").css("background-color", "transparent");
 				that.footerTag.find("label").css("color", "#DDD");
 				$("#" + that.tableId + that.countId).parent().scrollTop(that.scrollTop);
+				$("#feature-list-loading").remove();
 			},
 			error: function(jqXHR, textStatus, errorThrown){
+				$("#feature-list-loading").remove();
 				console.log(errorThrown);
 			}
 		});
@@ -1025,7 +1006,7 @@ if (!gb.layer)
 	 * 레이어의 속성 변경사항을 저장 요청한다
 	 * @method gb.layer.FeatureList#sendWFSTTransaction
 	 * @function
-	 * @param {HTMLElement} openSaveModal - 요청 성공 시 닫아야할 DIV
+	 * @param {gb.modal.ModalBase} openSaveModal - 요청 성공 시 닫아야할 modal 객체
 	 */
 	gb.layer.FeatureList.prototype.sendWFSTTransaction = function(openSaveModal){
 		var featureInfo = this.editedFeature;

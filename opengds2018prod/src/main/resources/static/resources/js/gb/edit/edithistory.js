@@ -681,21 +681,8 @@ gb.edit.FeatureRecord.prototype.save = function(editTool){
 		
 		// loading div 생성
 		$("body").append(
-			$("<div id='shp-upload-loading'>").css({
-				"z-index": "10",
-				"position": "absolute",
-				"left": "0",
-				"top": "0",
-				"width": "100%",
-				"height": "100%",
-				"text-align": "center",
-				"background-color": "rgba(0, 0, 0, 0.4)"
-			}).append(
-				$("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-					"position": "relative",
-					"top": "50%",
-					"margin-top": "-5em"
-				})
+			$("<div id='shp-upload-loading' class='gb-body-loading'>").append(
+				$("<i>").addClass("gb-body-loading-icon").addClass("fas fa-spinner fa-spin fa-5x")
 			)
 		);
 		

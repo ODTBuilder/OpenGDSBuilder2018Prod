@@ -471,7 +471,7 @@ html {
 
 		// EditTool 활성화
 		var epan = new gb.edit.EditingTool({
-			targetElement : gbMap.getLowerDiv(),
+			targetElement : gbMap.getLowerDiv()[0],
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			otree : otree,
@@ -564,7 +564,7 @@ html {
 		// feature list
 		var featureList = new gb.layer.FeatureList({
 			map : gbMap.getUpperMap(),
-			targetElement : gbMap.getLowerDiv(),
+			targetElement : gbMap.getLowerDiv()[0],
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
 			wfstURL : urlList.wfst + urlList.token,
@@ -606,7 +606,7 @@ html {
 
 		// command line
 		var commandLine = new gb.edit.CommandLine({
-			targetElement : gbMap.getLowerDiv(),
+			targetElement : gbMap.getLowerDiv()[0],
 			jstree : otree,
 			editTool : epan,
 			locale : locale,

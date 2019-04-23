@@ -436,12 +436,12 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 	var tbody = $("<tbody>");
 	var table = $("<table>").css("width", "100%").append(thead).append(tbody);
 	
-	tr = $("<tr>").css(gb.edit.TRSTYLE);
+	tr = $("<tr>").addClass("gb-modifylayerproperties-tr");
 	th = $("<th>");
 	tr.append(th);
-	th = $("<th>").css(gb.edit.THSTYLE).text(this.translation.success[this.locale]);
+	th = $("<th>").addClass("gb-modifylayerproperties-th").text(this.translation.success[this.locale]);
 	tr.append(th);
-	th = $("<th>").css(gb.edit.THSTYLE).text(this.translation.remarks[this.locale]);
+	th = $("<th>").addClass("gb-modifylayerproperties-th").text(this.translation.remarks[this.locale]);
 	tr.append(th);
 	thead.append(tr);
 	
@@ -449,8 +449,8 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 		if(list[i] instanceof Object){
 			keys = Object.keys(list[i]);
 			for(var j = 0; j < keys.length; j++){
-				key = $("<td>").css(gb.edit.TDKEYSTYLE).text(keys[j]);
-				value = $("<td>").css(gb.edit.TDSTYLE).css("text-align", "center");
+				key = $("<td>").addClass("gb-modifylayerproperties-td-key").text(keys[j]);
+				value = $("<td>").addClass("gb-modifylayerproperties-td").css("text-align", "center");
 				if(list[i][keys[j]] == "200"){
 					value.append($("<i>").addClass("fas fa-check").css("color", "#2c662d"));
 					value.css("background", "#fcfff5");
@@ -458,9 +458,9 @@ gb.geoserver.UploadSHP.prototype.resultTable = function(result) {
 					value.append($("<i>").addClass("fas fa-times").css("color", "#9f3a38"));
 					value.css("background", "#fff6f6");
 				}
-				detail = $("<td>").css(gb.edit.TDSTYLE).text(this.translation[list[i][keys[j]]][this.locale]);
+				detail = $("<td>").addClass("gb-modifylayerproperties-td").text(this.translation[list[i][keys[j]]][this.locale]);
 				
-				tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value).append(detail);
+				tr = $("<tr>").addClass("gb-modifylayerproperties-tr").append(key).append(value).append(detail);
 				tbody.append(tr);
 			}
 		}
@@ -600,20 +600,8 @@ gb.geoserver.UploadSHP.prototype.uploadFile = function(input, modal) {
 		processData : false,
 		beforeSend : function() {
 			// $("body").css("cursor", "wait");
-			modal.modal.append($("<div id='shp-upload-loading'>").css({
-				"z-index" : "10",
-				"position" : "absolute",
-				"left" : "0",
-				"top" : "0",
-				"width" : "100%",
-				"height" : "100%",
-				"text-align" : "center",
-				"background-color" : "rgba(0, 0, 0, 0.4)"
-			}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-				"position" : "relative",
-				"top" : "50%",
-				"margin-top" : "-5em"
-			})));
+			modal.modal.append($("<div id='shp-upload-loading' class='gb-body-loading'>")
+					.append($("<i>").addClass("gb-body-loading-icon").addClass("fas fa-spinner fa-spin fa-5x")));
 		},
 		complete : function() {
 			// $("body").css("cursor", "default");

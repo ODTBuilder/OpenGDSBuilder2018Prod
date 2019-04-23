@@ -39,13 +39,7 @@ gb.layer.Navigator = function(obj) {
 	
 	this.tbody = $("<tbody>");
 	
-	this.naviWindow = $("<div>").css({
-		"max-width" : "400px",
-		"top" : "150px",
-		"right" : "5px",
-		"position" : "absolute",
-		"z-Index" : "999",
-	});
+	this.naviWindow = $("<div>").addClass("gb-navigator-window");
 	
 	var options = obj;
 	this.map = options.map || false;
@@ -114,20 +108,14 @@ gb.layer.Navigator.prototype.requestFeatureList = function(serverName, workspace
 		data: a,
 		dataType: "JSON",
 		beforeSend : function() {
-			that.naviWindow.append($("<div id='navigator-loading'>").css({
-				"z-index" : "10",
-				"position" : "absolute",
-				"left" : "0",
-				"top" : "0",
-				"width" : "100%",
-				"height" : "100%",
-				"text-align" : "center",
-				"background-color" : "rgba(0, 0, 0, 0.4)"
-			}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-				"position" : "relative",
-				"top" : "50%",
-				"margin-top" : "-5em"
-			})));
+			that.naviWindow.append(
+				$("<div id='navigator-loading'>")
+					.addClass("gb-body-loading")
+					.append(
+						$("<i>")
+							.addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-body-loading-icon")
+					)
+			);
 		},
 		complete : function() {
 			$("#navigator-loading").remove();
@@ -212,18 +200,7 @@ gb.layer.Navigator.prototype.createNavigator_ = function(){
 	}).attr({
 		"data-dismiss" : "modal",
 		"aria-label" : "Close"
-	}).css({
-		"display" : "inline-block",
-		"float" : "right",
-		"padding" : "0",
-		"margin" : "0",
-		"color" : "#ccc",
-		"border" : "none",
-		"background-color" : "transparent",
-		"cursor" : "pointer",
-		"outline" : "none",
-		"color" : "#ccc"
-	}).append(xSpan);
+	}).addClass("gb-navigator-close-btn").append(xSpan);
 
 	var title = $("<span>").text("Feature Navigator");
 	var tb = $("<table>").addClass("table").append(this.tbody);

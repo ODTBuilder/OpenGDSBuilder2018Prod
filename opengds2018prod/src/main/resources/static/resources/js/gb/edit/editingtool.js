@@ -3882,16 +3882,16 @@ gb.edit.EditingTool.prototype.editToolToggle = function(){
  */
 gb.edit.EditingTool.prototype.displayEditZoomHint = function(bool){
 	if(bool){
-		if(this.headerTag.find(".edit-zoom-hint").length === 0){
+		if(this.headerTag.find(".gb-editingtool-zoom-hint").length === 0){
 			this.ulTagLeft.css("display", "none");
 
-			var editZoomHintTag = $("<h1 class='edit-zoom-hint'>");
+			var editZoomHintTag = $("<h1 class='gb-editingtool-zoom-hint'>");
 			var icon = $("<span>").html("<i class='fas fa-exclamation-circle'></i>");
 			var text = $("<span>").html(this.translation.editToolHint[this.locale]);
 
-			editZoomHintTag.css("margin-top", "6px");
-			editZoomHintTag.css("padding-left", "6px");
-			editZoomHintTag.css("display", "inline-block");
+//			editZoomHintTag.css("margin-top", "6px");
+//			editZoomHintTag.css("padding-left", "6px");
+//			editZoomHintTag.css("display", "inline-block");
 
 			editZoomHintTag.append(icon);
 			editZoomHintTag.append(text);
@@ -3901,49 +3901,30 @@ gb.edit.EditingTool.prototype.displayEditZoomHint = function(bool){
 			var icon = $("<i class='fas fa-plus'>");
 			var span = $("<span class='label'>").append(icon).append(this.translation.editToolHint[this.locale]);
 			
-			var btn = $("<button class='zoom-in'>").css({
-				"position": "absolute",
-				"margin": "auto",
-				"left": "0",
-				"right": "0",
-				"width": "300px",
-				"height": "70px",
-				"font-size": "150%",
-				"border-radius": "8px",
-				"background": "rgba(0,0,0,0.5)",
-				"color": "#fff",
-				"cursor": "default",
-				"pointer-events": "none"
-			}).append(span)/*.click(function(){
-				var view = that.map.getView();
-				var extent = view.calculateExtent();
-				var coordinates = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
-				var geom = new ol.geom.Polygon(coordinates);
-				var area = ol.sphere.getArea(geom, {projection: view.getProjection().getCode()});
-				area = Math.round(area/1000000*100)/100;
-				
-				var zoomSqrt = Math.sqrt((gb.edit.ACTIVEAREA)/area);
-				var zoomExtent = [extent[0]*zoomSqrt, extent[1]*zoomSqrt, extent[2]*zoomSqrt, extent[3]*zoomSqrt];
-				
-				view.fit(zoomExtent);
-			});*/
+			var btn = $("<button class='gb-editingtool-zoomin-btn'>")
+				.append(span)
+				/*.click(function(){
+					var view = that.map.getView();
+					var extent = view.calculateExtent();
+					var coordinates = [[[extent[0], extent[1]], [extent[2], extent[1]], [extent[2], extent[3]], [extent[0], extent[3]], [extent[0], extent[1]]]];
+					var geom = new ol.geom.Polygon(coordinates);
+					var area = ol.sphere.getArea(geom, {projection: view.getProjection().getCode()});
+					area = Math.round(area/1000000*100)/100;
+					
+					var zoomSqrt = Math.sqrt((gb.edit.ACTIVEAREA)/area);
+					var zoomExtent = [extent[0]*zoomSqrt, extent[1]*zoomSqrt, extent[2]*zoomSqrt, extent[3]*zoomSqrt];
+					
+					view.fit(zoomExtent);
+				});*/
 			
-			var notice = $("<div id='zoomNotice' class='notice'>").css({
-				"position": "absolute",
-				"top": "50%",
-				"left": "0",
-				"right": "0",
-				"text-align": "center",
-				"z-index": "2"
-			}).append(btn);
-			
+			var notice = $("<div id='zoomNotice' class='gb-editingtool-zoom-notice'>").append(btn);
 			this.targetElement.append(notice);
 		}
 
 		// this.deactiveAnotherInteraction();
 	} else {
 		$("#zoomNotice").remove();
-		this.headerTag.find(".edit-zoom-hint").remove();
+		this.headerTag.find(".gb-editingtool-zoom-hint").remove();
 		this.ulTagLeft.css("display", "inline-block");
 	}
 }

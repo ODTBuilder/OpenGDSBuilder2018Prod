@@ -2407,120 +2407,27 @@ gb.tree.GeoServer.prototype.errorModal = function(code) {
 gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
 	var that = this;
 
-	var geoserverkey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	}).text("GeoServer "+this.translation.version[this.locale]);
-	var geoserverval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	});
-	var row1 = $("<div>").css({
-		"display" : "table-row"
-	}).append(geoserverkey).append(geoserverval);
+	var geoserverkey = $("<div>").addClass("gb-geoserver-key").text("GeoServer "+this.translation.version[this.locale]);
+	var geoserverval = $("<div>").addClass("gb-geoserver-val");
+	var row1 = $("<div>").addClass("gb-geoserver-row").append(geoserverkey).append(geoserverval);
 
-	var geotoolskey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	}).text("GeoTools "+this.translation.version[this.locale]);
-	var geotoolsval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	});
-	var row2 = $("<div>").css({
-		"display" : "table-row"
-	}).append(geotoolskey).append(geotoolsval);
+	var geotoolskey = $("<div>").addClass("gb-geoserver-key").text("GeoTools "+this.translation.version[this.locale]);
+	var geotoolsval = $("<div>").addClass("gb-geoserver-val");
+	var row2 = $("<div>").addClass("gb-geoserver-row").append(geotoolskey).append(geotoolsval);
 
-	var cachekey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	}).text("GeoWebCache "+this.translation.version[this.locale]);
-	var cacheval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	});
-	var row3 = $("<div>").css({
-		"display" : "table-row"
-	}).append(cachekey).append(cacheval);
+	var cachekey = $("<div>").addClass("gb-geoserver-key").text("GeoWebCache "+this.translation.version[this.locale]);
+	var cacheval = $("<div>").addClass("gb-geoserver-val");
+	var row3 = $("<div>").addClass("gb-geoserver-row").append(cachekey).append(cacheval);
 
-	var idkey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	}).text(this.translation.id[this.locale]);
-	var idval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	});
-	var row4 = $("<div>").css({
-		"display" : "table-row"
-	}).append(idkey).append(idval);
+	var idkey = $("<div>").addClass("gb-geoserver-key").text(this.translation.id[this.locale]);
+	var idval = $("<div>").addClass("gb-geoserver-val");
+	var row4 = $("<div>").addClass("gb-geoserver-row").append(idkey).append(idval);
 
-	var urlkey = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "30%",
-		"vertical-align" : "middle"	,
-		"text-align" : "right",
-		"padding": "0.785714em", 
-		"background": "rgba(0, 0, 0, 0.03)", 
-		"font-weight": "700",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	}).text("URL");
-	var urlval = $("<div>").css({
-		"display" : "table-cell",
-		"width" : "70%",
-		"word-break":" break-word",
-		"vertical-align" : "middle"	,
-		"padding": "0.785714em",
-		"border-bottom": "1px solid rgba(0, 0, 0, 0.1)"
-	});
-	var row5 = $("<div>").css({
-		"display" : "table-row"
-	}).append(urlkey).append(urlval);
+	var urlkey = $("<div>").addClass("gb-geoserver-key").text("URL");
+	var urlval = $("<div>").addClass("gb-geoserver-val");
+	var row5 = $("<div>").addClass("gb-geoserver-row").append(urlkey).append(urlval);
 
-	var tb = $("<div>").css({
-		"display" : "table",
-		"width" : "100%"
-	}).append(row1).append(row2).append(row3).append(row4).append(row5);
+	var tb = $("<div>").addClass("gb-geoserver-table").append(row1).append(row2).append(row3).append(row4).append(row5);
 	var body = $("<div>").append(tb);
 	var closeBtn = $("<button>").css({
 		"float" : "right"
@@ -2595,20 +2502,11 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
  */
 gb.tree.GeoServer.prototype.showSpinner = function(show, modal) {
 	if (show) {
-		var spinnerArea = $("<div>").addClass("gb-spinner-wrap").css({
-			"z-index" : "10",
-			"position" : "absolute",
-			"left" : "0",
-			"top" : "0",
-			"width" : "100%",
-			"height" : "100%",
-			"text-align" : "center",
-			"background-color" : "rgba(0, 0, 0, 0.4)"
-		}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-			"position" : "relative",
-			"top" : "50%",
-			"margin-top" : "-5em"
-		}));
+		var spinnerArea = 
+			$("<div>")
+				.addClass("gb-spinner-wrap")
+				.addClass("gb-body-loading")
+				.append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-body-loading-icon"));
 		$(modal.modal).append(spinnerArea);
 	} else {
 		$(modal.modal).find(".gb-spinner-wrap").remove();

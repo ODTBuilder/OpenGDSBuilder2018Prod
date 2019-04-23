@@ -95,13 +95,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.layerName = $("<div>").text(this.translation.choose[this.locale]).css({
-		"margin-bottom" : "8px",
-		"overflow-x" : "hidden",
-		"text-overflow" : "ellipsis",
-		"font-size" : "1.1em",
-		"font-weight" : "bold"
-	});
+	this.layerName = $("<div>").text(this.translation.choose[this.locale]).addClass("gb-layerstyle-name");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -327,13 +321,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.btnArea = $("<div>").append(this.saveBtn).css({
-		"float" : "right",
-		"margin" : "5px",
-		"position" : "absolute",
-		"bottom" : 0,
-		"right" : 0
-	});
+	this.btnArea = $("<div>").append(this.saveBtn).addClass("gb-layerstyle-save-btn");
 	$(this.panelBody).append(this.layerName).append(this.fillArea).append(this.lineArea).append(this.widthArea).append(this.radArea)
 			.append(this.outlineArea).append(this.opaArea).append(this.checkboxDiv).append(this.btnArea);
 	$(this.panelBody).css({
@@ -451,9 +439,9 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 	}
 
 	for ( var i in options) {
-		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(i);
+		key = $("<td>").addClass("gb-modifylayerproperties-td-key").text(i);
 		if (options[i] instanceof Array) {
-			select = $("<select>").addClass("gb-form").attr("id", "label" + i).css(gb.edit.SELECTSTYLE);
+			select = $("<select>").addClass("gb-form").attr("id", "label" + i).addClass("gb-modifylayerproperties-select");
 			for (var j = 0; j < options[i].length; j++) {
 				option = $("<option>").val(options[i][j]).text(options[i][j]);
 				select.append(option);
@@ -461,17 +449,17 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 					option.attr("selected", "selected");
 				}
 			}
-			value = $("<td>").css(gb.edit.TDSTYLE).append(select);
+			value = $("<td>").addClass("gb-modifylayerproperties-td").append(select);
 		} else {
-			value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
+			value = $("<td>").addClass("gb-modifylayerproperties-td").append($("<input>").addClass("layer-prop-input").attr({
 				"id" : "label" + i,
 				"value" : labelOptions[i.charAt(0).toLowerCase() + i.slice(1)] || options[i],
 				"type" : "text",
 				"readonly" : false
-			}).css(gb.edit.INPUTSTYLE));
+			}).addClass("gb-modifylayerproperties-input"));
 		}
 
-		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
+		tr = $("<tr>").addClass("gb-modifylayerproperties-tr").append(key).append(value);
 		tbody.append(tr);
 	}
 

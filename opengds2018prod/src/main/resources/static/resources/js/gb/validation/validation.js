@@ -138,27 +138,6 @@ if (!gb.validation)
 	};
 
 	/**
-	 * 버튼 element 스타일
-	 * @type {Object.<string, string>}
-	 * @private
-	 */
-	var BUTTONSTYLE = {
-		"width" : "33.3333%",
-		"border" : "none",
-		"background" : "#e0e1e2 none",
-		"cursor" : "pointer",
-		"padding" : ".78571429em 0em .78571429em",
-		"font-weight" : "700",
-		"border-top-left-radius" : ".28571429rem",
-		"border-bottom-left-radius" : ".28571429rem",
-		"line-height" : "1em",
-		"color" : "rgba(0,0,0,.6)",
-		"cursor" : "default",
-		"opacity" : ".45",
-		"pointer-events" : "none"
-	};
-
-	/**
 	 * @classdesc
 	 * Web 검수 요청 모듈. Geoserver 레이어 목록을 불러와 레이어 선택하고 검수를 요청한다.
 	 * @class gb.validation.Validation
@@ -249,13 +228,13 @@ if (!gb.validation)
 		this.isEditing = options.isEditing || undefined;
 		this.locale = locale = options.locale || "en";
 		
-		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.under[this.locale]);
+		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).addClass("gb-validation-btn").text(translation.under[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).css(BUTTONSTYLE).text(translation.digitalMap[this.locale]);
+		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).addClass("gb-validation-btn").text(translation.digitalMap[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.forestMap[this.locale]);
+		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).addClass("gb-validation-btn").text(translation.forestMap[this.locale]);
 		this.verSelectTag.append(button);
 
 		$(document).on("click", ".version-btn", function() {
@@ -299,40 +278,6 @@ if (!gb.validation)
 		this.modalFooter.css({
 			"position" : "relative"
 		});
-
-		$('<style>.validation-custom-select{position: relative;margin-bottom: 10px;}</style>').appendTo('head');
-		$('<style>.validation-custom-select select{display: none;}</style>').appendTo('head');
-		$(
-				'<style>.validation-select-selected{' + 'background: #00b5ad none;' + 'cursor: pointer;'
-						+ 'padding: .78571429em 1.5em .78571429em;' + 'font-weight: 700;' + 'border-radius: .28571429rem;'
-						+ 'line-height: 1em;' + 'color: #fff' + '}</style>').appendTo('head');
-		$('<style>.validation-select-selected:hover{' + 'background-color: #009c95;' + 'background-image: none;' + '}</style>').appendTo(
-				'head');
-		$(
-				'<style>.validation-select-selected:after{' + 'position: absolute;' + 'content: "";' + 'top: 14px;' + 'right: 10px;'
-						+ 'width: 0;' + 'height: 0;' + 'border: 6px solid transparent;'
-						+ 'border-color: #fff transparent transparent transparent;' + '}</style>').appendTo('head');
-		$(
-				'<style>.validation-select-selected.select-arrow-active:after{' + 'border-color: transparent transparent #fff transparent;'
-						+ 'top: 7px;' + '}</style>').appendTo('head');
-		$(
-				'<style>.validation-message{' + 'position: relative;' + 'min-height: 1em;' + 'background: #fffaf3;'
-						+ 'line-height: 1.4285em;' + 'padding: 4px 4px;' + 'margin: 10px 0;' + 'color: #573a08;' + 'display: flex;'
-						+ 'width: 100%;' + '-webkit-box-align: center;' + 'align-items: center;' + 'border-radius: .28571429rem;'
-						+ 'box-shadow: 0 0 0 1px #c9ba9b inset, 0 0 0 0 transparent;' + '}</style>').appendTo('head');
-
-		$(
-				'<style>.select-items div{' + 'color: rgba(0,0,0,.87);' + 'padding: 8px 16px;' + 'cursor: pointer;' + 'border: none;'
-						+ 'height: auto;' + 'text-align: left;' + 'border-top: none;' + 'line-height: 1em;' + 'font-weight: 400;'
-						+ 'box-shadow: none;' + '}</style>').appendTo('head');
-		$(
-				'<style>.select-items{' + 'position: absolute;' + 'background-color: #fff;' + 'margin-top: .3em!important;' + 'top: 100%;'
-						+ 'left: 0;' + 'right: 0;' + 'z-index: 99;' + 'font-size: 1em;' + 'text-shadow: none;'
-						+ 'border: 1px solid rgba(34,36,38,.15);' + 'border-radius: .28571429rem!important;'
-						+ 'box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.15)!important;' + '}</style>').appendTo(
-				'head');
-		$('<style>.select-hide{' + 'display: none;' + '}</style>').appendTo('head');
-		$('<style>.select-items div:hover, .same-as-selected{background-color: rgba(0, 0, 0, 0.1);}</style>').appendTo('head');
 	}
 	// gb.footer.Base 상속
 	gb.validation.Validation.prototype = Object.create(gb.modal.ModalBase.prototype);
@@ -421,6 +366,7 @@ if (!gb.validation)
 	}
 
 	/**
+	 * 사용하지않는 함수
 	 * @method gb.validation.Validation#createStepDiv
 	 * @function
 	 * @private
@@ -471,7 +417,7 @@ if (!gb.validation)
 		var right = $("<div class='col-md-6'>").append(rightContent);
 
 		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
-		var messageContent = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
+		var messageContent = $("<div>").addClass("gb-validation-message").append(i).append(this.messageContent);
 		var message = $("<div>").addClass("col-md-12 ").append(messageContent);
 
 		var body = $("<div class='row'>").append(left).append(right).append(message).css({
@@ -517,27 +463,19 @@ if (!gb.validation)
 
 		var icon = $("<i class='fas fa-plus'>")
 
-		var panelFooter = $("<div>").css({
-			"margin" : "-2px 1px 0",
-			"cursor" : "pointer",
-			"box-shadow" : "0 0 0 1px rgba(34,36,38,.15)",
-			"border-bottom-left-radius" : "3px",
-			"border-bottom-right-radius" : "3px",
-			"background" : "#e0e1e2 none",
-			"padding" : ".78571429em 1.5em .78571429em",
-			"font-weight" : "700",
-			"text-align" : "center"
-		}).hover(function() {
-			$(this).css({
-				"background-color" : "#cacbcd",
-				"color" : "rgba(0,0,0,.8)"
-			})
-		}, function() {
-			$(this).css({
-				"background-color" : "#e0e1e2",
-				"color" : "#333"
-			})
-		}).append(icon).append(translation.add[this.locale]);
+		var panelFooter = $("<div>")
+			.addClass("gb-validation-footer")
+			.hover(function() {
+				$(this).css({
+					"background-color" : "#cacbcd",
+					"color" : "rgba(0,0,0,.8)"
+				})
+			}, function() {
+				$(this).css({
+					"background-color" : "#e0e1e2",
+					"color" : "#333"
+				})
+			}).append(icon).append(translation.add[this.locale]);
 
 		panelFooter.on("click", function(e) {
 			var i, arr, children;
@@ -774,17 +712,9 @@ if (!gb.validation)
 		var titleArea = $("<div>").append(panelTitle)
 		var panelHead = $("<div>").addClass("gb-article-head").append(titleArea);
 
-		var panelFooter = $("<div>").css({
-			"margin" : "-2px 1px 0",
-			"cursor" : "pointer",
-			"box-shadow" : "0 0 0 1px rgba(34,36,38,.15)",
-			"border-bottom-left-radius" : "3px",
-			"border-bottom-right-radius" : "3px",
-			"background" : "#e0e1e2 none",
-			"padding" : ".78571429em 1.5em .78571429em",
-			"font-weight" : "700",
-			"text-align" : "center"
-		}).hover(function() {
+		var panelFooter = $("<div>")
+		.addClass("gb-validation-footer")
+		.hover(function() {
 			$(this).css({
 				"background-color" : "#cacbcd",
 				"color" : "rgba(0,0,0,.8)"
@@ -821,9 +751,9 @@ if (!gb.validation)
 
 		// ==================== Create Panel body HTML Start
 		// >>>>>>>>>>>>>>>>>>>>
-		var presetDiv = $("<div>").addClass("validation-custom-select").append(this.presetSelectTag);
-		var verDiv = $("<div>").addClass("validation-custom-select").append(this.verSelectTag);
-		var srsDiv = $("<div>").addClass("validation-custom-select").append(this.srsSelectTag);
+		var presetDiv = $("<div>").addClass("gb-validation-select").append(this.presetSelectTag);
+		var verDiv = $("<div>").addClass("gb-validation-select").append(this.verSelectTag);
+		var srsDiv = $("<div>").addClass("gb-validation-select").append(this.srsSelectTag);
 
 		var body = $("<div>").append(presetDiv).append(verDiv).append(srsDiv);
 
@@ -874,20 +804,9 @@ if (!gb.validation)
 				dataType : "json",
 				cache : false,
 				beforeSend : function() {
-					that.modal.append($("<div id='validate-request-loading'>").css({
-						"z-index" : "10",
-						"position" : "absolute",
-						"left" : "0",
-						"top" : "0",
-						"width" : "100%",
-						"height" : "100%",
-						"text-align" : "center",
-						"background-color" : "rgba(0, 0, 0, 0.4)"
-					}).append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").css({
-						"position" : "relative",
-						"top" : "50%",
-						"margin-top" : "-5em"
-					})));
+					that.modal.append($("<div id='validate-request-loading'>")
+							.addClass("gb-body-loading")
+							.append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-body-loading-icon")));
 				},
 				complete : function() {
 					// $("body").css("cursor", "default");
@@ -923,8 +842,8 @@ if (!gb.validation)
 	 * @private
 	 */
 	function requestPreset(that, obj, div, message) {
-		var select = obj;
-		var div = div;
+		var select = $(obj);
+		var div = $(div);
 		var message = message;
 		$.ajax({
 			url : "option/retrievePresetByUidx.ajax",
@@ -966,11 +885,11 @@ if (!gb.validation)
 		
 		// for each element, create a new DIV that will act as the selected
 		// item:
-		a = $("<div>").addClass("validation-select-selected");
+		a = $("<div>").addClass("gb-validation-select-selected");
 		a.html(selElmnt.options[selElmnt.selectedIndex].innerHTML);
 		x.append(a);
 		// for each element, create a new DIV that will contain the option list:
-		b = $("<div>").addClass("select-items select-hide");
+		b = $("<div>").addClass("gb-validation-select-items gb-validation-select-hide");
 		for (j = 1; j < selElmnt.length; j++) {
 			
 			// for each option in the original select element, create a new DIV
@@ -1041,7 +960,7 @@ if (!gb.validation)
 			// open/close the current select box:
 			e.stopPropagation();
 			closeAllSelect(this);
-			this.nextSibling.classList.toggle("select-hide");
+			this.nextSibling.classList.toggle("gb-validation-select-hide");
 			this.classList.toggle("select-arrow-active");
 		});
 	}
@@ -1054,14 +973,14 @@ if (!gb.validation)
 	 */
 	function updateFormatSelect(list) {
 		var l;
-		$(".validation-format-select").parent().find(".validation-select-selected").empty();
-		$(".validation-format-select").parent().find(".select-items").empty();
+		$(".validation-format-select").parent().find(".gb-validation-select-selected").empty();
+		$(".validation-format-select").parent().find(".gb-validation-select-items").empty();
 		$(".validation-format-select").empty();
 		$(".validation-format-select").append($("<option>").text("Select File Format:"));
-		$(".validation-format-select").parent().find(".validation-select-selected").html("Select File Format:");
+		$(".validation-format-select").parent().find(".gb-validation-select-selected").html("Select File Format:");
 		for (l = 0; l < list.length; l++) {
 			$(".validation-format-select").append($("<option>").val(list[l]).text(list[l]));
-			$(".validation-format-select").parent().find(".select-items").append($("<div>").html(list[l]).on("click", function(e) {
+			$(".validation-format-select").parent().find(".gb-validation-select-items").append($("<div>").html(list[l]).on("click", function(e) {
 				var y, i, k, s, h;
 				s = this.parentNode.parentNode.getElementsByTagName("select")[0];
 				h = this.parentNode.previousSibling;
@@ -1092,8 +1011,8 @@ if (!gb.validation)
 		// a function that will close all select boxes in the document, except
 		// the current select box:
 		var x, y, i, arrNo = [];
-		x = document.getElementsByClassName("select-items");
-		y = document.getElementsByClassName("validation-select-selected");
+		x = document.getElementsByClassName("gb-validation-select-items");
+		y = document.getElementsByClassName("gb-validation-select-selected");
 		for (i = 0; i < y.length; i++) {
 			if (elmnt == y[i]) {
 				arrNo.push(i)
@@ -1103,7 +1022,7 @@ if (!gb.validation)
 		}
 		for (i = 0; i < x.length; i++) {
 			if (arrNo.indexOf(i)) {
-				x[i].classList.add("select-hide");
+				x[i].classList.add("gb-validation-select-hide");
 			}
 		}
 	}

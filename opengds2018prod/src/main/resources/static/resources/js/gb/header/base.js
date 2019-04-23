@@ -171,7 +171,7 @@ gb.header.HeaderBase = function(obj) {
 	this.locale = options.locale || "en";
 	this.isDisplay = options.isDisplay ? true : false;
 	this.toggleClass = options.toggleClass || "header-toggle-btn";
-	this.targetElement = options.targetElement;
+	this.targetElement = $(options.targetElement);
 	this.list = options.list || defaultList;
 	
 	this.createContent(this.list);
@@ -212,14 +212,14 @@ gb.header.HeaderBase.prototype.createContent = function(list){
 	}
 	
 	// header element 생성
-	this.headerTag = $("<header>");
-	adjustStyle(this.headerTag, this.headerStyle);
+	this.headerTag = $("<header>").addClass("gb-headerbase-header");
+//	adjustStyle(this.headerTag, this.headerStyle);t
 	
-	this.ulTagLeft = $("<ul class='left-content'>");
-	adjustStyle(this.ulTagLeft, this.ulStyleLeft);
+	this.ulTagLeft = $("<ul class='left-content'>").addClass("gb-headerbase-ul-lef");
+//	adjustStyle(this.ulTagLeft, this.ulStyleLeft);
 	
-	this.ulTagRight = $("<ul class='right-conent'>");
-	adjustStyle(this.ulTagRight, this.ulStyleRight);
+	this.ulTagRight = $("<ul class='right-conent'>").addClass("gb-headerbase-ul-right");
+//	adjustStyle(this.ulTagRight, this.ulStyleRight);
 	
 	
 	// close button 생성
@@ -245,7 +245,7 @@ gb.header.HeaderBase.prototype.createContent = function(list){
 	for(var i in list){
 		iTag = $("<i>").addClass(list[i].icon).attr("aria-hidden", "true");
 		
-		aTag = $("<a>").attr("href", "#").attr("data-content", list[i].content);
+		aTag = $("<a>").addClass("gb-headerbase-a").attr("href", "#").attr("data-content", list[i].content);
 		
 		aTag.hover(function(){
 			if(!$(this).hasClass("active")){
@@ -261,7 +261,7 @@ gb.header.HeaderBase.prototype.createContent = function(list){
 		// content element 저장
 		this.contentList.push(aTag);
 		
-		liTag = $("<li>");
+		liTag = $("<li>").addClass("gb-headerbase-li");
 		
 		if(typeof list[i].clickEvent === "function"){
 			aTag.click(list[i].clickEvent);
@@ -275,9 +275,9 @@ gb.header.HeaderBase.prototype.createContent = function(list){
 			iTag.css("color", list[i].color);
 		}
 		
-		adjustStyle(iTag, this.iStyle);
-		adjustStyle(aTag, this.aStyle);
-		adjustStyle(liTag, this.liStyle);
+//		adjustStyle(iTag, this.iStyle);
+//		adjustStyle(aTag, this.aStyle);
+//		adjustStyle(liTag, this.liStyle);
 		
 		if(this.translator[list[i].content]){
 			aTag.html(this.translator[list[i].content][this.locale]);

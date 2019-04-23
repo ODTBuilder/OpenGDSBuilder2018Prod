@@ -171,7 +171,7 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	var key, select, content, row, option;
 	var rows = [];
 	for(var i = 0; i < contentList.length; i++){
-		key = $("<div>").css(keyStyle).text(contentList[i].text);
+		key = $("<div>").addClass("gb-serviceversion-key").text(contentList[i].text);
 		
 		select = $("<select>").attr("data-id", contentList[i].id).addClass("gb-form");
 		
@@ -197,7 +197,7 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 			}
 		});
 		
-		content = $("<div>").css(contentStyle).append(select);
+		content = $("<div>").addClass("gb-serviceversion-content").append(select);
 		
 		row = $("<div>").css({
 			"display" : "table-row"
@@ -242,8 +242,8 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		}
 	});
 	
-	var cachekey = $("<div>").css(keyStyle).text(translation.webCacheActive[locale]);
-	var cacheContent = $("<div>").css(contentStyle).append(toggleDiv);
+	var cachekey = $("<div>").addClass("gb-serviceversion-key").text(translation.webCacheActive[locale]);
+	var cacheContent = $("<div>").addClass("gb-serviceversion-content").append(toggleDiv);
 	var cacheRow = $("<div>").css({
 		"display" : "table-row"
 	}).append(cachekey).append(cacheContent);
@@ -253,9 +253,9 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		"width" : "100%"
 	}).append(cacheRow);
 	
-	key = $("<div>").css(keyStyle).text(translation.active[locale]);
+	key = $("<div>").addClass("gb-serviceversion-key").text(translation.active[locale]);
 	
-	content = $("<div>").css(contentStyle).append(toggleDiv);
+	content = $("<div>").addClass("gb-serviceversion-content").append(toggleDiv);
 	
 	row = $("<div>").css({
 		"display" : "table-row",
@@ -267,9 +267,9 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 		"width" : "100%"
 	}).append(row);
 	
-	key = $("<div>").css(keyStyle).text(translation.limit[locale]);
+	key = $("<div>").addClass("gb-serviceversion-key").text(translation.limit[locale]);
 	
-	var input = $("<input type='number'>").css(inputStyle).val(gb.module.serviceVersion.loadPerformance.limit);
+	var input = $("<input type='number'>").addClass("gb-serviceversion-input").val(gb.module.serviceVersion.loadPerformance.limit);
 	
 	$(input).change(function() {
 		gb.module.serviceVersion.loadPerformance.limit = $(this).val();
@@ -277,7 +277,7 @@ gb.module.serviceVersion.geoserverSettingModal = function(locale) {
 	
 	content = 
 		$("<div>")
-			.css(contentStyle)
+			.addClass("gb-serviceversion-content")
 			.append(input);
 	
 	row = $("<div>").css({

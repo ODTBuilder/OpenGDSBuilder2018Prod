@@ -386,9 +386,9 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search;
 	for ( var i in list) {
 		console.log(i);
-		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(that.translation[i][that.locale]).css("width", "20%");
+		key = $("<td>").addClass("gb-modifylayerproperties-td-key").text(that.translation[i][that.locale]).css("width", "20%");
 		if (list[i] instanceof Object) {
-			value = $("<td>").css(gb.edit.TDSTYLE);
+			value = $("<td>").addClass("gb-modifylayerproperties-td");
 			for ( var j in list[i]) {
 				labelKey = $("<span>").text(j);
 				if (list[i][j] instanceof Object) {
@@ -400,25 +400,25 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 				} else {
 					labelValue = $("<span>").text(list[i][j]);
 				}
-				label = $("<div>").css(gb.edit.LABELSTYLE).append(labelKey).append(labelValue);
+				label = $("<div>").addClass("gb-modifylayerproperties-label").append(labelKey).append(labelValue);
 				value.append(label);
 			}
 		} else {
 			if (i === "lName" || i === "title") {
-				value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
+				value = $("<td>").addClass("gb-modifylayerproperties-td").append($("<input>").addClass("layer-prop-input").attr({
 					"id" : "prop" + i,
 					"value" : list[i],
 					"type" : "text",
 					"readonly" : false
-				}).css(gb.edit.INPUTSTYLE));
+				}).addClass("gb-modifylayerproperties-input"));
 			} else if (i === "abstractContent") {
-				value = $("<td>").css(gb.edit.TDSTYLE).append($("<textarea>").addClass("layer-prop-textarea").attr({
+				value = $("<td>").addClass("gb-modifylayerproperties-td").append($("<textarea>").addClass("layer-prop-textarea").attr({
 					"id" : "prop" + i,
 					"readonly" : false
-				}).val(list[i]).css(gb.edit.INPUTSTYLE).css("width", "250px"));
+				}).val(list[i]).addClass("gb-modifylayerproperties-input").css("width", "250px"));
 			} else if (i === "style") {
-				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["workspace"][this.locale]);
-				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				selectTitle = $("<label>").addClass("gb-modifylayerproperties-select-title").text(this.translation["workspace"][this.locale]);
+				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").addClass("gb-modifylayerproperties-select");
 				select.change(function() {
 					var params = {};
 					params.selectTag = $("#styleSelect");
@@ -430,7 +430,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 					that.requestStyleList(params);
 				});
-				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-modifylayerproperties-field").append(selectTitle).append(select);
 
 				option = $("<option>").val("geoserver").text(this.translation["myserver"][this.locale]);
 				select.append(option);
@@ -441,16 +441,16 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 						option.attr("selected", "selected");
 					}
 				}
-				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
+				value = $("<td>").addClass("gb-modifylayerproperties-td").css("display", "flex").append(selectField);
 
 				selectTitle = 
 					$("<div>")
-						.append($("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["style"][this.locale]))
+						.append($("<label>").addClass("gb-modifylayerproperties-select-title").text(this.translation["style"][this.locale]))
 						.append($("<img id='styleLegend'>").css({"float": "right"}))
 						.css({
 							"width": "100%"
 						});
-				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				select = $("<select id='styleSelect' class='gb-form'>").addClass("gb-modifylayerproperties-select");
 				select.change(function() {
 					var params = {};
 					params.legendTag = $("#styleLegend");
@@ -465,7 +465,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 					that.requestStyleLegend(params);
 				});
-				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-modifylayerproperties-field").append(selectTitle).append(select);
 				value.append(selectField);
 
 				this.requestStyleList({
@@ -480,7 +480,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"value" : list[i] ? list[i].replace(/[^0-9]/g, "") : "",
 					"type" : "text",
 					"readonly" : false
-				}).css(gb.edit.INPUTSTYLE);
+				}).addClass("gb-modifylayerproperties-input");
 
 				var tout = false;
 				$(search).keyup(function() {
@@ -499,17 +499,17 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"margin-right" : "0"
 				});
 
-				value = $("<td>").append($("<span>").text("EPSG: ")).append(search).append(this.validIconSpan).css(gb.edit.TDSTYLE);
+				value = $("<td>").append($("<span>").text("EPSG: ")).append(search).append(this.validIconSpan).addClass("gb-modifylayerproperties-td");
 			} else {
 				if (i === "styleWorkspace") {
 					continue;
 				}
-				value = $("<td>").css(gb.edit.TDSTYLE).text(list[i]);
+				value = $("<td>").addClass("gb-modifylayerproperties-td").text(list[i]);
 			}
 
 		}
 
-		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
+		tr = $("<tr>").addClass("gb-modifylayerproperties-tr").append(key).append(value);
 		this.tbody.append(tr);
 	}
 }
@@ -740,7 +740,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var style = options.style || "";
 
 	if (!!options.selectTag) {
-		select = options.selectTag;
+		select = $(options.selectTag);
 	} else {
 		return;
 	}
@@ -794,7 +794,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var src = "";
 
 	if (!!options.legendTag) {
-		legendTag = options.legendTag;
+		legendTag = $(options.legendTag);
 	} else {
 		return;
 	}

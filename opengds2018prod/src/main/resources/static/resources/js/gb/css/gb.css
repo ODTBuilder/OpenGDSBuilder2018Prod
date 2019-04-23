@@ -1,5 +1,46 @@
 @CHARSET "UTF-8";
 
+.gb-layerstyle-body {
+	padding: 8px;
+}
+
+.gb-layerstyle-label-area {
+	width: 100%;
+}
+
+.gb-layerstyle-body .gb-layerstyle-select-area {
+	margin-bottom: 5px;
+}
+
+.gb-layerstyle-body .gb-layerstyle-text-area {
+	width: 175px;
+	height: 26px;
+}
+
+.gb-layerstyle-body .gb-layerstyle-replacer-area {
+	width: 175px;
+}
+
+.gb-layerstyle-body .gb-layerstyle-preview-area {
+	width: 149px;
+}
+
+.gb-layerstyle-body .gb-layerstyle-button-area {
+	float: right;
+	margin: 5px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.gb-layerstyle-body .gb-layerstyle-layer-name {
+	margin-bottom: 8px;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
 .gb-basemap-body label:hover {
 	cursor: pointer;
 }

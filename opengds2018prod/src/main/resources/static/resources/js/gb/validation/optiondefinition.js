@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 사용자 설정 레이어 검수 옵션 정의 객체
+ * @classdesc 사용자 설정 레이어 검수 옵션 정의 객체
  * 
  * @class gb.validation.OptionDefinition
  * @memberof gb.validation
@@ -32,6 +31,8 @@ gb.validation.OptionDefinition = function(obj) {
 	 */
 	this.locale = options.locale ? options.locale : "en";
 	/**
+	 * 번역 정보
+	 * 
 	 * @private
 	 * @type {Object}
 	 */
@@ -511,6 +512,8 @@ gb.validation.OptionDefinition = function(obj) {
 		}
 	}
 	/**
+	 * 검수 항목 정보
+	 * 
 	 * @private
 	 * @type {Object}
 	 */
@@ -2952,9 +2955,7 @@ gb.validation.OptionDefinition = function(obj) {
 	 * @type {HTMLElement}
 	 */
 	this.panel = $("<div>").append(this.panelBody);
-	if (typeof options.append === "string") {
-		$(options.append).append(this.panel);
-	}
+	$(options.append).append(this.panel);
 	/**
 	 * 현재 분류
 	 * 
@@ -3346,8 +3347,7 @@ gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, messag
 	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
 			.append(" " + message);
-	var jclass = "." + this.msg;
-	$(jclass).append(div);
+	$(this.msg).append(div);
 };
 /**
  * 레이어의 톨러런스 조건(컨디션, 수치 조건)을 삭제한다.
@@ -8638,12 +8638,10 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfilter").text(
-			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
-	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").css({
-		"width" : "100%"
-	}).text(this.translation.addFilter[this.locale]);
+	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").addClass("gb-optiondefinition-btn-with100").text(this.translation.addFilter[this.locale]);
 	var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 	var addFilterRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -8696,11 +8694,11 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfigure").text(
-			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn)
 
 	var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure").text(
-			this.translation.addAttr[this.locale]).css("width", "100%");
+			this.translation.addAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 	var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -8753,7 +8751,7 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayertolerance").text(
-			this.translation.deleteLayerCode[this.locale]).css("width", "100%");
+			this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 	/*
@@ -9036,7 +9034,7 @@ gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 		$(row).append(filterCol1).append(filterCol2);
 	}
 	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefilterrow").text(
-			this.translation.deleteFilter[this.locale]).css("width", "100%");
+			this.translation.deleteFilter[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row).append(delCol1);
 
@@ -9120,7 +9118,7 @@ gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 	$(row2).append(numCol1).append(numCol2);
 
 	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletefigurerow").text(
-			this.translation.deleteAttr[this.locale]).css("width", "100%");
+			this.translation.deleteAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row2).append(delCol1);
 
@@ -9179,7 +9177,7 @@ gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	$(row).append(numCol1).append(numCol2);
 
 	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-deletetolerancerow").text("조건 삭제")
-			.css("width", "100%");
+			.addClass("gb-optiondefinition-btn-with100");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row).append(delCol1);
 
@@ -9354,13 +9352,8 @@ gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 	$(this.optionArea).empty();
 	if (rel) {
 		var allBtn = $("<button>").text(this.translation.allCat[this.locale]).addClass("btn").addClass("btn-default").addClass(
-				"gb-optiondefinition-btn-relationcategory-all").css("width", "100%");
-		var col = $("<div>").addClass("col-md-12").css({
-			"margin-top" : "5px",
-			"margin-bottom" : "5px",
-			"padding-left" : "5px",
-			"padding-right" : "5px"
-		}).addClass("text-right").append(allBtn);
+				"gb-optiondefinition-btn-relationcategory-all").addClass("gb-optiondefinition-btn-with100");
+		var col = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-all-relation").addClass("text-right").append(allBtn);
 		var row = $("<div>").addClass("row").append(col);
 		$(this.optionArea).append(row);
 	}
@@ -9400,19 +9393,14 @@ gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 	if (Array.isArray(layers)) {
 		var catArea = $("<div>").addClass("row");
 		for (var i = 0; i < layers.length; i++) {
-			var btn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(layers[i].name);
+			var btn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(layers[i].name);
 			for (var j = 0; j < def.length; j++) {
 				if (layers[i].name === def[j].name) {
 					$(btn).removeClass("btn-default");
 					$(btn).addClass("btn-primary");
 				}
 			}
-			var colArea = $("<div>").addClass("col-md-3").css({
-				"margin-top" : "5px",
-				"margin-bottom" : "5px",
-				"padding-left" : "5px",
-				"padding-right" : "5px"
-			}).append(btn);
+			var colArea = $("<div>").addClass("col-md-3").addClass("gb-optiondefinition-all-relation").append(btn);
 			$(catArea).append(colArea);
 		}
 		$(this.optionArea).append(catArea);
@@ -9453,11 +9441,7 @@ gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 			}
 		}
 		if (flag) {
-			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").css({
-				"width" : "100%",
-				"overflow-x" : "hidden",
-				"text-overflow" : "ellipsis"
-			}).text(this.optItem[keys[i]].title).attr("value", keys[i]);
+			var optBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-option").addClass("gb-optiondefinition-btn-option").text(this.optItem[keys[i]].title).attr("value", keys[i]);
 			var strc = this.getStructure();
 			// 현재 버튼이 도곽선 설정인지
 			if (this.optItem[keys[i]].alias === "BorderLayer") {
@@ -9529,12 +9513,7 @@ gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 					}
 				}
 			}
-			var colArea = $("<div>").addClass("col-md-3").css({
-				"margin-top" : "5px",
-				"margin-bottom" : "5px",
-				"padding-left" : "5px",
-				"padding-right" : "5px"
-			}).append(optBtn);
+			var colArea = $("<div>").addClass("col-md-3").addClass("gb-optiondefinition-all-relation").append(optBtn);
 			$(opArea).append(colArea);
 		}
 	}
@@ -9625,21 +9604,21 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 			if (all) {
 				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
-					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.filterValidation[this.locale]).attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
 						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
-					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.attrValidation[this.locale]).attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
 						|| optItem.relation.tolerance.interval) {
-					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.condValidation[this.locale]).attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
@@ -9700,21 +9679,21 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 			} else {
 				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
-					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.filterValidation[this.locale]).attr("value", "filter");
 					var col = $("<div>").addClass("col-md-3").append(filterBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
 						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
-					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.attrValidation[this.locale]).attr("value", "figure");
 					var col = $("<div>").addClass("col-md-3").append(figBtn);
 					$(row).append(col);
 				}
 				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
 						|| optItem.relation.tolerance.interval) {
-					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.condValidation[this.locale]).attr("value", "tolerance");
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
@@ -9796,20 +9775,20 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 			}
 
 			if (optItem.filter.code || optItem.filter.key || optItem.filter.values) {
-				var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+				var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 						this.translation.filterValidation[this.locale]).attr("value", "filter");
 				var col = $("<div>").addClass("col-md-3").append(filterBtn);
 				$(row).append(col);
 			}
 			if (optItem.figure.code || optItem.figure.key || optItem.figure.values || optItem.figure.number || optItem.figure.condition
 					|| optItem.figure.interval) {
-				var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+				var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 						this.translation.attrValidation[this.locale]).attr("value", "figure");
 				var col = $("<div>").addClass("col-md-3").append(figBtn);
 				$(row).append(col);
 			}
 			if (optItem.tolerance.code || optItem.tolerance.value || optItem.tolerance.condition || optItem.tolerance.interval) {
-				var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).css("width", "100%").text(
+				var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 						this.translation.condValidation[this.locale]).attr("value", "tolerance");
 				var col = $("<div>").addClass("col-md-3").append(tolBtn);
 				$(row).append(col);
@@ -9820,8 +9799,7 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 							|| optItem.relation.figure.values || optItem.relation.figure.number || optItem.relation.figure.condition
 							|| optItem.relation.figure.interval || optItem.relation.tolerance.code || optItem.relation.tolerance.value
 							|| optItem.relation.tolerance.condition || optItem.relation.tolerance.interval) && !sec))) {
-				var relBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-detailcategory").css(
-						"width", "100%").text(this.translation.layerRelation[this.locale]).attr("value", "relation");
+				var relBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-detailcategory").addClass("gb-optiondefinition-btn-with100").text(this.translation.layerRelation[this.locale]).attr("value", "relation");
 				var col = $("<div>").addClass("col-md-3").append(relBtn);
 				$(row).append(col);
 			}
@@ -9867,12 +9845,12 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 	var type = $(optcat).attr("value");
 	if (type === "filter") {
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-filteraddcode").text(
-				this.translation.addLayerCode[this.locale]).css("width", "100%");
+				this.translation.addLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiltersetting")
-				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+				.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
@@ -9954,14 +9932,10 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfilter").text(this.translation.deleteLayerCode[this.locale]).css(
-								"width", "100%");
+								"gb-optiondefinition-btn-deletelayerfilter").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
-						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter")
-								.css({
-									"width" : "100%"
-								}).text(this.translation.addFilter[this.locale]);
+						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").addClass("gb-optiondefinition-btn-with100").text(this.translation.addFilter[this.locale]);
 						var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 						var addFilterRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -9997,8 +9971,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 								$(row).append(filterCol1).append(filterCol2);
 							}
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).css(
-									"width", "100%");
+									"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).addClass("gb-optiondefinition-btn-with100");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row).append(delCol1);
 
@@ -10040,12 +10013,12 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 
 	} else if (type === "figure") {
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiguresetting")
-				.text(this.translation.clearsetting[this.locale]).css("width", "100%");
+				.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-figureaddcode").text(
-				this.translation.addLayerCode[this.locale]).css("width", "100%");
+				this.translation.addLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 		var tupleArea = $("<div>").addClass("gb-optiondefinition-tuplearea");
@@ -10121,12 +10094,11 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).css(
-								"width", "100%");
-						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn)
+								"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
+						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure")
-								.text(this.translation.addAttr[this.locale]).css("width", "100%");
+								.text(this.translation.addAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 						var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -10211,8 +10183,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							$(row2).append(numCol1).append(numCol2);
 
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).css("width",
-									"100%");
+									"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row2).append(delCol1);
 
@@ -10230,12 +10201,12 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		}
 	} else if (type === "tolerance") {
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-				"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).css("width", "100%");
+				"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
 		var addCodeBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-toleranceaddcode").text(
-				this.translation.addLayerCode[this.locale]).css("width", "100%");
+				this.translation.addLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var addCodeBtnCol1 = $("<div>").addClass("col-md-12").append(addCodeBtn);
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 
@@ -10311,8 +10282,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayertolerance").text(this.translation.deleteLayerCode[this.locale]).css(
-								"width", "100%");
+								"gb-optiondefinition-btn-deletelayertolerance").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						/*
@@ -11314,10 +11284,7 @@ gb.validation.OptionDefinition.prototype.getJSONFile = function() {
  *            callback - 삭제 버튼 클릭 후 수행할 콜백함수
  */
 gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, callback) {
-	var msg1 = $("<div>").css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
+	var msg1 = $("<div>").addClass("gb-optiondefinition-msg16");
 	var title;
 	if (type === "code") {
 		$(msg1).text(this.translation.askDelCode[this.locale]);
@@ -11330,12 +11297,8 @@ gb.validation.OptionDefinition.prototype.deleteConfirmModal = function(type, cal
 		title = this.translation.resetOptTitle[this.locale];
 	}
 	var body = $("<div>").append(msg1);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.delete[this.locale]);
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(this.translation.cancel[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(this.translation.delete[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : title,

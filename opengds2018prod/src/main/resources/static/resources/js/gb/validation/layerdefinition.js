@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 사용자 설정 레이어 정의 객체
+ * @classdesc 사용자 설정 레이어 정의 객체
  * 
  * @class gb.validation.LayerDefinition
  * @memberof gb.validation
@@ -416,7 +415,9 @@ gb.validation.LayerDefinition.prototype.getInputFile = function() {
 gb.validation.LayerDefinition.prototype.updateStructure = function() {
 	console.log(this.getStructure());
 	$(this.panelBody).empty();
+	// 편집중인 옵션구조 가져오기
 	var strc = this.getStructure();
+	// 배열인지?
 	if (!Array.isArray(strc)) {
 		return;
 	}
@@ -425,16 +426,12 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 		var toggleIcon = $("<i>").addClass("fas").addClass("fa-caret-up").addClass("fa-lg");
 		var toggleBtn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-layerdefinition-toggle-category")
 				.append(toggleIcon);
+		// 카테고리 이름 입력
 		var categoryName = $("<input>").attr({
 			"type" : "text",
 			"placeholder" : this.translation.exCategoryField[this.locale],
 			"title" : "some tips"
-		}).css({
-			"border" : "0",
-			"border-bottom" : "solid 1px #9a9a9a",
-			"height" : "32px",
-			"width" : "100%"
-		}).addClass("gb-layerdefinition-input-categoryname").val(strc[a].name);
+		}).addClass("gb-layerdefinition-cat-name-input").addClass("gb-layerdefinition-input-categoryname").val(strc[a].name);
 
 		var catNameCol = $("<div>").addClass("col-md-11").append(categoryName);
 		var toggleCol = $("<div>").addClass("col-md-1").addClass("text-right").append(toggleBtn);
@@ -452,6 +449,7 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 		if (Array.isArray(layers)) {
 			for (var b = 0; b < layers.length; b++) {
 				var codeCol1 = $("<div>").addClass("col-md-1").append(this.translation.layerCode[this.locale]);
+				// 레이어 코드
 				var code = layers[b].code;
 				var codeInput = $("<input>").attr({
 					"type" : "text",
@@ -461,6 +459,7 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 				var codeCol2 = $("<div>").addClass("col-md-6").append(codeInput);
 				var typeCol1 = $("<div>").addClass("col-md-1").text(this.translation.layerType[this.locale]);
 				var geomSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-geometry");
+				// 레이어 지오메트리 타입
 				var geometry = layers[b].geometry;
 				for (var i = 0; i < this.geometryType.length; i++) {
 					var option = $("<option>").text(this.geometryType[i].toUpperCase()).attr("value", this.geometryType[i]);
@@ -471,40 +470,36 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 				}
 				var typeCol2 = $("<div>").addClass("col-md-2").append(geomSelect);
 				var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-layer").text(
-						this.translation.deleteLayer[this.locale]).css("width", "100%");
+						this.translation.deleteLayer[this.locale]).addClass("gb-layerdefinition-btn-with100");
 				var deleLayerCol1 = $("<div>").addClass("col-md-2").append(delBtn);
 				var row1o = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(typeCol1).append(typeCol2).append(
 						deleLayerCol1);
 
-				var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).css({
-					"float" : "left"
-				});
-				var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute").text(
-						this.translation.addFixedAttr[this.locale]).css({
-					"width" : "100%"
-				});
+				var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).addClass(".gb-layerdefinition-keyname-left");
+				var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute")
+						.addClass("gb-layerdefinition-btn-with100").text(this.translation.addFixedAttr[this.locale]);
 				var fixCol1 = $("<div>").addClass("col-md-10").append(fixAttr);
 				var fixCol2 = $("<div>").addClass("col-md-2").append(delFixAttr);
 				var row2o = $("<div>").addClass("row").append(fixCol1).append(fixCol2);
 
 				var attrAreaCol1 = $("<div>").addClass("col-md-12").addClass("gb-layerdefinition-attributearea");
-
+				// 고정속성 객체 가져오기
 				var fix = layers[b].fix;
 				if (Array.isArray(fix)) {
 					for (var k = 0; k < fix.length; k++) {
 						var r1col1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale]);
-
+						// 고정속성 이름 입력
 						var attrName = $("<input>").attr({
 							"type" : "text",
 							"placeholder" : this.translation.exFixedAttrNameField[this.locale]
 						}).addClass("form-control").addClass("gb-layerdefinition-input-attributename").val(fix[k].name);
 						var r1col2 = $("<div>").addClass("col-md-3").append(attrName);
-
 						var r1col3 = $("<div>").addClass("col-md-1").text(this.translation.attrType[this.locale]);
 
 						var dtypeSelect = $("<select>").addClass("form-control").addClass("gb-layerdefinition-select-attributetype");
 						var nullOption = $("<option>").text(this.translation.notSet[this.locale]).attr("value", "null");
 						$(dtypeSelect).append(nullOption);
+						// 데이터 타입 입력
 						for (var i = 0; i < this.dataType.length; i++) {
 							var option = $("<option>").text(this.dataType[i]).attr("value", this.dataType[i]);
 							if (fix[k].type === $(option).val()) {
@@ -517,13 +512,13 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 						var r1col4 = $("<div>").addClass("col-md-2").append(dtypeSelect);
 
 						var r1col5 = $("<div>").addClass("col-md-1").text(this.translation.length[this.locale]);
-
+						// 데이터 길이 입력
 						var attrLength = $("<input>").attr("type", "number").addClass("form-control").addClass(
 								"gb-layerdefinition-input-attributelength").val(fix[k].length);
 						var r1col6 = $("<div>").addClass("col-md-2").append(attrLength);
 
 						var r1col7 = $("<div>").addClass("col-md-1").text(this.translation.nullAllow[this.locale]);
-
+						// 널인지?
 						var nullCheck = $("<input>").attr("type", "checkbox").addClass("gb-layerdefinition-check-attributenull");
 						if (fix[k].isnull) {
 							$(nullCheck).prop("checked", true);
@@ -1104,12 +1099,7 @@ gb.validation.LayerDefinition.prototype.addCategory = function() {
 		"type" : "text",
 		"placeholder" : this.translation.exCategoryField[this.locale],
 		"title" : "some tips"
-	}).css({
-		"border" : "0",
-		"border-bottom" : "solid 1px #9a9a9a",
-		"height" : "32px",
-		"width" : "100%"
-	}).addClass("gb-layerdefinition-input-categoryname");
+	}).addClass("gb-layerdefinition-cat-name-input").addClass("gb-layerdefinition-input-categoryname");
 
 	var catNameCol = $("<div>").addClass("col-md-11").append(categoryName);
 	var toggleCol = $("<div>").addClass("col-md-1").addClass("text-right").append(toggleBtn);
@@ -1164,17 +1154,13 @@ gb.validation.LayerDefinition.prototype.addLayer = function(btn) {
 	}
 	var col4 = $("<div>").addClass("col-md-2").append(geomSelect);
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-delete-layer").text(
-			this.translation.deleteLayer[this.locale]).css("width", "100%");
+			this.translation.deleteLayer[this.locale]).addClass("gb-layerdefinition-btn-with100");
 	var col5 = $("<div>").addClass("col-md-2").append(delBtn);
 	var row1 = $("<div>").addClass("row").append(col1).append(col2).append(col3).append(col4).append(col5);
 
-	var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).css({
-		"float" : "left"
-	});
-	var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute").text(
-			this.translation.addFixedAttr[this.locale]).css({
-		"width" : "100%"
-	});
+	var fixAttr = $("<p>").text(this.translation.fixedAttr[this.locale]).addClass("gb-layerdefinition-keyname-left");
+	var delFixAttr = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-layerdefinition-add-attribute").addClass(
+			"gb-layerdefinition-keyname-left").text(this.translation.addFixedAttr[this.locale]);
 	var r2col1 = $("<div>").addClass("col-md-10").append(fixAttr);
 	var r2col2 = $("<div>").addClass("col-md-2").append(delFixAttr);
 	var row2 = $("<div>").addClass("row").append(r2col1).append(r2col2);
@@ -1306,25 +1292,12 @@ gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
  *            callback - 레이어 분류 삭제 버튼 클릭 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, callback) {
-	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
-	var msg2 = $("<div>").text('"' + catname + '"').css({
-		"text-align" : "center",
-		"font-size" : "24px",
-		"word-break" : "break-word"
-	});
+	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).addClass("gb-layerdefinition-msg16");
+	var msg2 = $("<div>").text('"' + catname + '"').addClass("gb-layerdefinition-msg24");
 	var body = $("<div>").append(msg1).append(msg2);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	// var modalFooter =
-	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delCatModalTitle[this.locale],
 		"width" : 310,
@@ -1356,25 +1329,12 @@ gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, 
  *            callback - 삭제 버튼을 누른 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callback) {
-	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
-	var msg2 = $("<div>").text('"' + layer + '"').css({
-		"text-align" : "center",
-		"font-size" : "24px",
-		"word-break" : "break-word"
-	});
+	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).addClass("gb-layerdefinition-msg16");
+	var msg2 = $("<div>").text('"' + layer + '"').addClass("gb-layerdefinition-msg24");
 	var body = $("<div>").append(msg1).append(msg2);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-	// var modalFooter =
-	// $("<div>").addClass("gb-modal-footer").append(buttonArea);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delLayerModalTitle[this.locale],
 		"width" : 310,
@@ -1404,17 +1364,10 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
  *            callback - 삭제 버튼을 클릭 후 수행할 콜백함수
  */
 gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback) {
-	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
+	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).addClass("gb-layerdefinition-msg16");
 	var body = $("<div>").append(msg1);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delAttrModalTitle[this.locale],

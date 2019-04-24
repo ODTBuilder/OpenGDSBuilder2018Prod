@@ -1,5 +1,33 @@
 @CHARSET "UTF-8";
 
+.gb-optiondefinition-btn-option {
+	width: 100%;
+	overflow-x: hidden;
+	text-overflow: ellipsis;
+}
+
+.gb-optiondefinition-all-relation {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.gb-layerdefinition-keyname-left {
+	float: left;
+}
+
+.gb-layerdefinition-btn-with100, .gb-optiondefinition-btn-with100 {
+	width: 100%;
+}
+
+.gb-layerdefinition-cat-name-input {
+	border: 0;
+	border-bottom: solid 1px #9a9a9a;
+	height: 32px;
+	width: 100%;
+}
+
 .gb-geoserver-spinner-position {
 	position: relative;
 	top: 50%;
@@ -81,13 +109,13 @@
 	height: 250px;
 }
 
-.gb-geoserver-msg16 {
+.gb-geoserver-msg16, .gb-layerdefinition-msg16, .gb-optiondefinition-msg16 {
 	text-align: center;
 	font-size: 16px;
 	word-break: "keep-all;
 }
 
-.gb-geoserver-msg24 {
+.gb-geoserver-msg24, .gb-layerdefinition-msg24 {
 	text-align: center;
 	font-size: 24px;
 	word-break: "keep-all;

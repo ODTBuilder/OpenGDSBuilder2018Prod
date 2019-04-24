@@ -1,5 +1,118 @@
 @CHARSET "UTF-8";
 
+.gb-geoserver-spinner-position {
+	position: relative;
+	top: 50%;
+	margin-top: -5em;
+}
+
+.gb-geoserver-spinner-body {
+	z-index: 10;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.gb-geoserver-info-table {
+	display: table;
+	width: 100%;
+}
+
+.gb-geoserver-info-key {
+	display: table-cell;
+	width: 30%;
+	vertical-align: middle;
+	text-align: right;
+	padding: 0.785714em;
+	background: rgba(0, 0, 0, 0.03);
+	font-weight: 700;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-geoserver-info-value {
+	display: table-cell;
+	width: 70%;
+	word-break: break-word;
+	vertical-align: middle;
+	padding: 0.785714em;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-geoserver-msgmodal-body {
+	text-align: center;
+	font-size: 16px;
+	margin-top: 18px;
+	margin-bottom: 18px;
+	word-break: keep-all;
+}
+
+.gb-geoserver-add-label {
+	display: table-cell;
+	width: 20%;
+	text-align: right;
+	vertical-align: middle;
+}
+
+.gb-geoserver-add-input {
+	width: 83%;
+	border: none;
+	border-bottom: solid 1px #a9a9a9;
+	margin-left: 8px;
+}
+
+.gb-geoserver-add-input-cell {
+	display: table-cell;
+	width: 80%;
+	vertical-align: middle;
+}
+
+.gb-geoserver-add-row, .gb-geoserver-info-row {
+	display: table-row;
+}
+
+.gb-geoserver-add-table {
+	display: table;
+	padding: 10px;
+	width: 100%;
+	height: 250px;
+}
+
+.gb-geoserver-msg16 {
+	text-align: center;
+	font-size: 16px;
+	word-break: "keep-all;
+}
+
+.gb-geoserver-msg24 {
+	text-align: center;
+	font-size: 24px;
+	word-break: "keep-all;
+}
+
+.gb-geoserver-body .gb-article {
+	margin: 0;
+}
+
+.gb-geoserver-body .gb-article-body {
+	overflow-y: auto;
+}
+
+.gb-geoserver-body .gb-article-head input {
+	border: 0;
+	border-bottom: solid 1px #909090;
+	background-color: transparent;
+	width: 90%;
+}
+
+.gb-geoserver-body .gb-article-head p {
+	margin: 0;
+	float: left;
+}
+
 .gb-layerstyle-body {
 	padding: 8px;
 }

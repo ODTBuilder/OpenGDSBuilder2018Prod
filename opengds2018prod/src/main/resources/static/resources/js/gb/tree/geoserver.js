@@ -2386,7 +2386,7 @@ gb.tree.GeoServer.prototype.geoserverInfoModal = function(serverName) {
  */
 gb.tree.GeoServer.prototype.showSpinner = function(show, modal) {
 	if (show) {
-		var spinnerArea = $("<div>").addClass("gb-spinner-wrap").addClass("gb-geoserver-spinner-body").append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-geoserver-spinner-position"));
+		var spinnerArea = $("<div>").addClass("gb-spinner-wrap").addClass("gb-spinner-body").append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-spinner-position"));
 		$(modal.modal).append(spinnerArea);
 	} else {
 		$(modal.modal).find(".gb-spinner-wrap").remove();

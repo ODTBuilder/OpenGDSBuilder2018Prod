@@ -492,7 +492,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 	this.oattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
 	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
 	var oattribute = $("<div>").append(oattrtable).addClass("gb-feature-attr-table-area");
-	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).addClass("gb-feature-attr-area");
+	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).addClass("gb-feature-attr-area-half");
 	// 커밋 피처 영역 끝
 	// 최신 피처 영역 시작
 	var clabel = $("<div>").append(that.translation.latestft[that.locale]).addClass("gb-form").addClass("gb-feature-text-center");
@@ -513,7 +513,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		$(that.cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
-	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).addClass("gb-feature-attr-area");
+	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).addClass("gb-feature-attr-area-half");
 	// 최신 피처 영역 끝
 
 	var ocarea = $("<div>").addClass("gb-feature-compare-area").append(oarea).append(carea);
@@ -1196,7 +1196,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	var cattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
 	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
 	var cattribute = $("<div>").append(cattrtable).addClass("gb-feature-attr-table-area");
-	var carea = $("<div>").append(crepo).append(this.comfeature).append(cattribute).addClass("gb-feature-attr-area");
+	var carea = $("<div>").append(crepo).append(this.comfeature).append(cattribute).addClass("gb-feature-attr-area-half");
 	// this.conflictView = new ol.View({
 	// "center" : [ 0, 0 ],
 	// "zoom" : 1
@@ -1235,7 +1235,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	// this.scrollLeft);
 	// });
 
-	var tarea = $("<div>").append(trepo).append(this.curfeature).append(tattribute).addClass("gb-feature-attr-area");
+	var tarea = $("<div>").append(trepo).append(this.curfeature).append(tattribute).addClass("gb-feature-attr-area-half");
 	// this.tmap = new ol.Map({
 	// "target" : $(tfeature)[0],
 	// "view" : this.conflictView,
@@ -1399,7 +1399,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 							var name = attrs[i].name;
 							var value = attrs[i].value;
 							var td1 = $("<td>").text(name);
-							var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-row");
+							var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-value");
 							var tr = $("<tr>").append(td1).append(td2);
 							$(cattrtbody).append(tr);
 						}
@@ -1519,7 +1519,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 											var name = attrs[i].name;
 											var value = attrs[i].value;
 											var td1 = $("<td>").text(name);
-											var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-row");
+											var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-value");
 											var tr = $("<tr>").append(td1).append(td2);
 											$(tattrtbody).append(tr);
 										}

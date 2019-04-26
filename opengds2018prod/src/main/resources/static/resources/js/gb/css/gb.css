@@ -1,31 +1,377 @@
 @CHARSET "UTF-8";
 
+.gb-repository-tree-btn-inline {
+	display: inline-block;
+}
+
+.gb-repository-tree-fetch-circle {
+	color: #fff;
+	background-color: #515151;
+	display: inline-block;
+	min-width: 18px;
+	margin: 0 5px;
+	text-align: center;
+	border-radius: 9px;
+	height: 18px;
+	vertical-align: middle;
+}
+
+.gb-repository-tree-fetch-number {
+	text-align: center;
+	margin-top: -3px;
+	vertical-align: middle;
+}
+
+.gb-repository-history-detail-changes-label {
+	text-align: center;
+}
+
+.gb-repository-history-detail-li-span {
+	margin: 5px;
+}
+
+.gb-repository-history-detail-area {
+	padding: 5px 11px;
+}
+
+.gb-repository-history-detail-ul {
+	padding-left: 22px;
+}
+
+.gb-repository-history-area {
+	height: 498px;
+	overflow-y: auto;
+}
+
+.gb-repository-history-readmore {
+	width: 100%;
+	text-align: center;
+	padding-top: 5px;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-repository-history-refresh {
+	width: 100%;
+	text-align: center;
+	padding-bottom: 5px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-repository-history-table {
+	width: 100%;
+}
+
+.gb-repository-history-cell-content-center {
+	text-align: center;
+}
+
+.gb-repository-history-cell-content {
+	word-break: break-word;
+	vertical-align: middle;
+	padding: 0.785714em;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-repository-history-no-right-border {
+	word-break: break-word;
+	vertical-align: middle;
+	padding: 0.785714em;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	border-right: 0 !important;
+	background: rgba(0, 0, 0, 0.03);
+	text-align: center;
+}
+
+.gb-repository-history-cell {
+	word-break: break-word;
+	vertical-align: middle;
+	padding: 0.785714em;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	border-right: 1px solid rgba(0, 0, 0, 0.1);
+	background: rgba(0, 0, 0, 0.03);
+	text-align: center;
+}
+
+.gb-repository-history-cell-revert {
+	width: 10%;
+}
+
+.gb-repository-history-cell-detail {
+	width: 10%;
+}
+
+.gb-repository-history-cell-msg {
+	width: 50%;
+}
+
+.gb-repository-history-cell-date {
+	width: 15%;
+}
+
+.gb-repository-history-cell-user {
+	width: 15%;
+}
+
+.gb-repository-info-table {
+	display: table;
+}
+
+.gb-repository-info-value {
+	display: table-cell;
+	width: 80%;
+	word-break: break-word;
+	vertical-align: middle;
+	padding: 0.785714em;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-repository-info-key {
+	display: table-cell;
+	width: 20%;
+	vertical-align: middle;
+	text-align: right;
+	padding: 0.785714em;
+	background: rgba(0, 0, 0, 0.03);
+	font-weight: 700;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.gb-repository-publish-area {
+	height: 158px;
+}
+
+.gb-repository-publish-layer-list {
+	height: 112px;
+}
+
+.gb-repository-publish-half {
+	width: 50%;
+	float: left;
+}
+
+.gb-repository-publish-work-select-area, .gb-repository-publish-store-select-area {
+	padding: 10px;
+}
+
+.gb-repository-publish-work-label, .gb-repository-publish-store-label, .gb-repository-publish-layer-label {
+	padding: 4px 10px 0 10px;
+}
+
+.gb-repository-conflict-detail-select {
+	padding: 10px;
+}
+
+.gb-repository-conflict-detail-attr-area {
+	height: 370px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.gb-repository-conflict-detail-branch {
+	margin-top: 8px;
+	margin-bottom: 8px;
+	text-align: center;
+}
+
+.gb-repository-conflict-detail-repo {
+	text-align: center;
+}
+
+.gb-repository-conflict-use-area {
+	margin: 10px 0;
+	display: none;
+	width: 100%;
+}
+
+.gb-repository-conflict-use-btn {
+	display: inline-block;
+	width: 49%;
+}
+
+.gb-repository-conflict-table-area {
+	width: 100%;
+}
+
+.gb-repository-conflict-value {
+	vertical-align: middle;
+	padding-left: 5px;
+}
+
+.gb-repository-conflict-keyname {
+	text-align: right;
+	vertical-align: middle;
+}
+
+.gb-repository-addremote-input {
+	width: 95%;
+}
+
+.gb-repository-newbranch-body, .gb-repository-addremote-body {
+	display: table;
+	padding: 10px;
+	width: 100%;
+	height: 138px;
+}
+
+.gb-repository-branch-name {
+	width: 95%;
+}
+
+.gb-repository-branch-source {
+	width: 95%;
+	height: 90%;
+}
+
+.gb-repository-merge-body {
+	display: table;
+	padding: 10px;
+	width: 100%;
+	height: 138px;
+}
+
+.gb-repository-merge-value, .gb-repository-newbranch-value, .gb-repository-addremote-value {
+	display: table-cell;
+	width: 65%;
+	vertical-align: middle;
+	padding-left: 5px;
+}
+
+.gb-repository-merge-keyname, .gb-repository-branch-keyname, .gb-repository-addremote-keyname {
+	display: table-cell;
+	width: 35%;
+	text-align: right;
+	vertical-align: middle;
+}
+
+.gb-repository-msg-modal {
+	text-align: center;
+	font-size: 16px;
+	margin-top: 18px;
+	margin-bottom: 18px;
+}
+
+.gb-repository-init-area {
+	display: table;
+	padding: 10px;
+	width: 100%;
+	height: 270px;
+}
+
+.gb-repository-init-remote-pull-row {
+	display: block;
+	text-align: center;
+}
+
+.gb-repository-init-remote-area {
+	display: none;
+	padding: 10px;
+	width: 100%;
+	height: 109px;
+	display: none;
+}
+
+.gb-repository-init-remote-table {
+	display: table;
+	width: 100%;
+}
+
+.gb-repository-init-input-row {
+	display: table-row;
+}
+
+.gb-repository-init-input-cell {
+	display: table-cell;
+	width: 80%;
+	vertical-align: middle;
+}
+
+.gb-repository-init-input {
+	width: 83% !important;
+	margin-left: 6px;
+}
+
+.gb-repository-init-keyname {
+	display: table-cell;
+	width: 20%;
+	text-align: right;
+	vertical-align: middle;
+}
+
+.gb-repository-pull-area, .gb-repository-push-area {
+	height: 113px;
+}
+
+.gb-repository-arrow-area {
+	float: left;
+	width: 10%;
+	text-align: center;
+}
+
+.gb-repository-remote-area, .gb-repository-local-area {
+	float: left;
+	width: 45%;
+}
+
+.gb-repository-remote-branch-select, .gb-repository-local-branch-select {
+	margin-top: 10px;
+}
+
+.gb-repository-remote-label, .gb-repository-local-label {
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+.gb-repository-modal-body {
+	padding: 0 !important;
+}
+
+.gb-repository-body {
+	padding: 0;
+}
+
+.gb-repository-tree-body, .gb-repository-tree-remote-body {
+	height: 306px;
+	overflow-y: auto;
+	width: 100%;
+}
+
+.gb-repository-search-input {
+	border: 0;
+	border-bottom: solid 1px #909090;
+	background-color: transparent;
+	width: 94%;
+}
+
+.gb-repository-repo-select, .gb-repository-branch-select {
+	width: 100%;
+}
+
 .gb-feature-conflict-select-area {
 	padding: 10px;
 }
 
-.gb-feature-compare-area {
+.gb-feature-compare-area, .gb-repository-history-detail-changes-compare-area {
 	height: 496px;
 }
 
-.gb-feature-attr-area {
+.gb-feature-attr-area-half, .gb-repository-conflict-detail-half, .gb-repository-history-detail-changes-half {
 	float: left;
 	width: 50%;
 	padding: 10px;
 }
 
-.gb-feature-attr-table-area {
+.gb-feature-attr-table-area, .gb-repository-history-detail-changes-area {
 	height: 240px;
 	width: 100%;
 	overflow: auto;
 }
 
-.gb-feature-attr-tbody-row {
+.gb-feature-attr-tbody-value, .gb-repository-conflict-detail-attr-value {
 	word-break: break-word;
 	overflow-wrap: break-word;
 }
 
-.gb-feature-attr-tbody {
+.gb-feature-attr-tbody, .gb-repository-conflict-detail-attr-tbody, .gb-repository-history-detail-changes-tbody {
 	overflow-y: auto;
 	height: 340px;
 	width: 354px;
@@ -55,7 +401,7 @@
 	text-align: center;
 }
 
-.gb-feature-map-body {
+.gb-feature-map-body, .gb-repository-map-body {
 	width: 100%;
 	height: 200px;
 	background-color: #dbdbdb;
@@ -91,13 +437,13 @@
 	width: 100%;
 }
 
-.gb-geoserver-spinner-position {
+.gb-spinner-position {
 	position: relative;
 	top: 50%;
 	margin-top: -5em;
 }
 
-.gb-geoserver-spinner-body {
+.gb-spinner-body {
 	z-index: 10;
 	position: absolute;
 	left: 0;
@@ -161,7 +507,8 @@
 	vertical-align: middle;
 }
 
-.gb-geoserver-add-row, .gb-geoserver-info-row {
+.gb-geoserver-add-row, .gb-geoserver-info-row, .gb-repository-merge-row, .gb-repository-newbranch-row,
+	.gb-repository-addremote-row, .gb-repository-info-row {
 	display: table-row;
 }
 
@@ -172,13 +519,13 @@
 	height: 250px;
 }
 
-.gb-geoserver-msg16, .gb-layerdefinition-msg16, .gb-optiondefinition-msg16, .gb-feature-msg16 {
+.gb-geoserver-msg16, .gb-layerdefinition-msg16, .gb-optiondefinition-msg16, .gb-feature-msg16, .gb-repository-msg16 {
 	text-align: center;
 	font-size: 16px;
 	word-break: "keep-all;
 }
 
-.gb-geoserver-msg24, .gb-layerdefinition-msg24 {
+.gb-geoserver-msg24, .gb-layerdefinition-msg24, .gb-repository-msg24 {
 	text-align: center;
 	font-size: 24px;
 	word-break: "keep-all;

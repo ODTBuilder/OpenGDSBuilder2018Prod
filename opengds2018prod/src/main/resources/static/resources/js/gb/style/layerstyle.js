@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 레이어 스타일 패널 객체를 정의한다.
+ * @classdesc 레이어 스타일 패널 객체를 정의한다.
  * 
  * @class gb.style.LayerStyle
  * @memberof gb.style
@@ -95,7 +94,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.layerName = $("<div>").text(this.translation.choose[this.locale]).addClass("gb-layerstyle-name");
+	this.layerName = $("<div>").text(this.translation.choose[this.locale]).addClass("gb-layerstyle-layer-name");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -117,9 +116,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.lineArea = $("<div>").append(this.lineLabel).append(this.lineContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.lineArea = $("<div>").append(this.lineLabel).append(this.lineContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -141,9 +138,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.fillArea = $("<div>").append(this.fillLabel).append(this.fillContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.fillArea = $("<div>").append(this.fillLabel).append(this.fillContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -156,10 +151,8 @@ gb.style.LayerStyle = function(obj) {
 	this.widthInput = $("<input>").attr({
 		"type" : "number",
 		"min" : "1"
-	}).css({
-		"width" : "175px",
-		"height" : "26px"
-	}).val("1");
+	}).addClass("gb-layerstyle-text-area").val("1");
+
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -169,9 +162,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.widthArea = $("<div>").append(this.widthLabel).append(this.widthContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.widthArea = $("<div>").append(this.widthLabel).append(this.widthContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -184,10 +175,7 @@ gb.style.LayerStyle = function(obj) {
 	this.radInput = $("<input>").attr({
 		"type" : "number",
 		"min" : "0"
-	}).css({
-		"width" : "175px",
-		"height" : "26px"
-	}).val("5");
+	}).addClass("gb-layerstyle-text-area").val("5");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -197,9 +185,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.radArea = $("<div>").append(this.radLabel).append(this.radContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.radArea = $("<div>").append(this.radLabel).append(this.radContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -240,10 +226,8 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.outlineInput = $("<select>").append(this.outline1).append(this.outline2).append(this.outline3).append(this.outline4).css({
-		"width" : "175px",
-		"height" : "26px"
-	});
+	this.outlineInput = $("<select>").append(this.outline1).append(this.outline2).append(this.outline3).append(this.outline4).addClass(
+			"gb-layerstyle-text-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -253,9 +237,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.outlineArea = $("<div>").append(this.outlineLabel).append(this.outlineContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.outlineArea = $("<div>").append(this.outlineLabel).append(this.outlineContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -289,9 +271,7 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.opaArea = $("<div>").append(this.opaLabel).append(this.opaContent).css({
-		"margin-bottom" : "5px"
-	});
+	this.opaArea = $("<div>").append(this.opaLabel).append(this.opaContent).addClass("gb-layerstyle-select-area");
 	/**
 	 * @private
 	 * @type {HTMLElement}
@@ -321,38 +301,30 @@ gb.style.LayerStyle = function(obj) {
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.btnArea = $("<div>").append(this.saveBtn).addClass("gb-layerstyle-save-btn");
+	this.btnArea = $("<div>").addClass("gb-layerstyle-button-area").append(this.saveBtn);
+
+	$(this.panelBody).addClass("gb-layerstyle-body");
 	$(this.panelBody).append(this.layerName).append(this.fillArea).append(this.lineArea).append(this.widthArea).append(this.radArea)
 			.append(this.outlineArea).append(this.opaArea).append(this.checkboxDiv).append(this.btnArea);
-	$(this.panelBody).css({
-		"padding" : "8px"
-	});
-	$("body").append(this.panel);
 
+	$("body").append(this.panel);
+	// 선색깔 설정을 위한 스펙트럼 객체 선언
 	$(this.linePicker).spectrum({
 		showInput : true,
 		showAlpha : true,
 		preferredFormat : "rgb"
 	});
-
+	// 면색깔 설정을 위한 스펙트럼 객체 선언
 	$(this.fillPicker).spectrum({
 		showInput : true,
 		showAlpha : true,
 		preferredFormat : "rgb"
 	});
-
-	$(this.lineContent).find(".sp-replacer").css({
-		"width" : "175px"
-	});
-	$(this.lineContent).find(".sp-preview").css({
-		"width" : "149px"
-	});
-	$(this.fillContent).find(".sp-replacer").css({
-		"width" : "175px"
-	});
-	$(this.fillContent).find(".sp-preview").css({
-		"width" : "149px"
-	});
+	// 레이어 스타일 패널 크기에 맞게 너비 수정
+	$(this.lineContent).find(".sp-replacer").addClass("gb-layerstyle-replacer-area");
+	$(this.lineContent).find(".sp-preview").addClass("gb-layerstyle-preview-area");
+	$(this.fillContent).find(".sp-replacer").addClass("gb-layerstyle-replacer-area");
+	$(this.fillContent).find(".sp-preview").addClass("gb-layerstyle-preview-area");
 
 	var temp = this.getLayer();
 	if (temp instanceof ol.layer.Base) {
@@ -402,7 +374,7 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 		"Attribute" : attrs,
 		"Text" : [ "normal", "hide", "shorten", "wrap" ],
 		"MaxResolution" : [ "38400", "19200", "9600", "4800", "2400", "1200", "600", "300", "150", "75", "32", "16", "8" ],
-		"Align" : [ "center", "end", "left", "reight", "start" ],
+		"Align" : [ "center", "end", "left", "right", "start" ],
 		"Baseline" : [ "alphabetic", "bottom", "hanging", "ideographic", "middle", "top" ],
 		"Rotation" : [ "0", "0.785398164", "1.570796327" ],
 		"Font" : [ "Arial", "'Courier New'", "Verdana" ],
@@ -419,7 +391,7 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
 
 	var tr, key, value, select, option;
 	var tbody = $("<tbody>");
-	var table = $("<table>").css("width", "100%").append(tbody);
+	var table = $("<table>").addClass("gb-layerstyle-label-area").append(tbody);
 
 	if (!this.labelPanel) {
 		this.labelPanel = new gb.panel.PanelBase({
@@ -478,6 +450,7 @@ gb.style.LayerStyle.prototype.createWFSLabelPanel = function(bool) {
  */
 gb.style.LayerStyle.prototype.updateStyle = function() {
 	var layer = this.getLayer();
+	// 레이어 스타일 패널에서 선택한 옵션값 추출후 오픈레이어스 스타일 객체 생성
 	var style = new ol.style.Style(
 			{
 				"fill" : this.geom === "Polygon" || this.geom === "MultiPolygon" ? new ol.style.Fill({

@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
+ * @classdesc 지오서버에 레이어를 업로드 하기위한 모달 객체를 정의한다.
  * 
  * @class gb.geoserver.UploadGeoJSON
  * @memberof gb.geoserver
@@ -20,37 +19,51 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 	var that = this;
 	var options = obj ? obj : {};
 	/**
+	 * 업로드 주소 URL
+	 * 
 	 * @private
-	 * @type {Object}
+	 * @type {string}
 	 */
 	this.url = typeof options.url === "string" ? options.url : undefined;
 	/**
+	 * EPSG 코드 저장
+	 * 
 	 * @private
-	 * @type {Object}
+	 * @type {(string|number|function)}
 	 */
 	this.epsginit = (typeof options.epsg === "number" || typeof options.epsg === "string" || typeof options.epsg === "function") ? options.epsg
 			: undefined;
 	/**
+	 * GeoServer 트리 객체
+	 * 
 	 * @private
 	 * @type {gb.tree.GeoServer}
 	 */
 	this.geoserverTree = typeof options.geoserverTree === "function" ? options.geoserverTree : undefined;
 	/**
+	 * GeoServer 이름
+	 * 
 	 * @private
 	 * @type {string}
 	 */
 	this.geoserver = undefined;
 	/**
+	 * Workspace 이름
+	 * 
 	 * @private
 	 * @type {string}
 	 */
 	this.workspace = undefined;
 	/**
+	 * Datastore 이름
+	 * 
 	 * @private
 	 * @type {string}
 	 */
 	this.datastore = undefined;
 	/**
+	 * EPSG 코드 유효성
+	 * 
 	 * @private
 	 * @type {boolean}
 	 */
@@ -194,7 +207,7 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 			"ko" : "선택 없음",
 			"en" : "Not selected"
 		},
-		"noserver" : {
+		"noserver1" : {
 			"ko" : "지오서버 없음",
 			"en" : "No GeoServer"
 		},
@@ -218,7 +231,7 @@ gb.geoserver.UploadGeoJSON = function(obj) {
 			"ko" : "중복되는 미발행 레이어 덮어쓰기",
 			"en" : "Overwrite duplicate unpublished layers"
 		},
-		"noserver" : {
+		"noserver2" : {
 			"ko" : "GeoServer가 설정되지 않았습니다.",
 			"en" : "GeoServer is not set up."
 		},
@@ -322,29 +335,42 @@ gb.geoserver.UploadGeoJSON.prototype.getUploadURL = function() {
  * 모달을 연다
  * 
  * @method gb.geoserver.UploadGeoJSON#open
- * @param {string} epsg - 업로드 할 레이어의 좌표계
- * @param {Array.<ol.layer.Vector>} layers - 업로드 할 벡터 레이어
+ * @param {string}
+ *            epsg - 업로드 할 레이어의 좌표계
+ * @param {Array.
+ *            <ol.layer.Vector>} layers - 업로드 할 벡터 레이어
  * @override
  */
 gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 	var that = this;
+	// 업로드 할 트리 객체 가져오기
 	var tree = typeof this.getGeoserverTree === "function" ? this.getGeoserverTree() : undefined;
 	if (tree === undefined) {
 		return;
 	}
+	// jstree 객체 가져오기
 	var jstree = tree.getJSTree();
+	// 루트 노드 가져오기
 	var root = jstree.get_node("#");
 	console.log(root);
+	// 루트의 자식 노드는 서버
 	var servers = root.children;
 	var serverLabel = $("<div>").text("GeoServer");
-	var serversel = $("<select>").addClass("gb-form").css({
-		"margin-bottom" : "5px"
-	}).change(function() {
+	var serversel = $("<select>").addClass("gb-form").addClass("gb-uploadgeojson-margin-bottom").change(function() {
 		console.log("server change");
-
+		// 선택한 서버 노드 가져오기
 		var wnode = jstree.get_node($(serversel).find("option:selected").attr("nodeid"));
+		// 서버 노드의 자식노드는 작업공간 노드
 		var works = wnode.children;
-		if (works.length === 0 && wnode.state.loaded === false) {
+		// 작업공간 노드의 자식노드 모음이 배열이 아님 -> 서버 노드 찾을 수 없음
+		if (!Array.isArray(works)) {
+			$(serversel).empty();
+			var opt = $("<option>").attr({
+				"value" : "noset"
+			}).text(that.translation.noserver1[that.locale]);
+			$(serversel).append(opt);
+			// 작업공간 노드 배열의 길이가 0임 -> 작업공간이 없음
+		} else if (works.length === 0 && wnode.state.loaded === false) {
 			var rootNode = jstree.get_node("#");
 			var nodes = root.children;
 			var callback = function() {
@@ -389,7 +415,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 	if (servers.length === 0) {
 		var opt = $("<option>").attr({
 			"value" : "noset"
-		}).text(this.translation.noserver[this.locale]);
+		}).text(this.translation.noserver1[this.locale]);
 		$(serversel).append(opt);
 	} else {
 		for (var i = 0; i < servers.length; i++) {
@@ -405,9 +431,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		"value" : "noset"
 	}).text(this.translation.noset[this.locale]);
 	var workLabel = $("<div>").text(this.translation.workspace[this.locale]);
-	var worksel = $("<select>").addClass("gb-form").css({
-		"margin-bottom" : "5px"
-	}).append(nowork).change(function() {
+	var worksel = $("<select>").addClass("gb-form").addClass("gb-uploadgeojson-margin-bottom").append(nowork).change(function() {
 		console.log("work change");
 
 		var snode = jstree.get_node($(worksel).find("option:selected").attr("nodeid"));
@@ -455,40 +479,22 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		"value" : "noset"
 	}).text(this.translation.noset[this.locale]);
 	var storeLabel = $("<div>").text(this.translation.datastore[this.locale]);
-	var storesel = $("<select>").addClass("gb-form").css({
-		"margin-bottom" : "5px"
-	}).append(nostore);
-
+	var storesel = $("<select>").addClass("gb-form").addClass("gb-uploadgeojson-margin-bottom").append(nostore);
+	// 미발행 이름 중복 레이어 덮어쓰기 체크박스
 	var ignoredup = $("<input>").attr({
 		"type" : "checkbox"
-	}).css({
-		"vertical-align" : "top",
-		"margin-right" : "6px"
-	});
+	}).addClass("gb-uploadgeojson-checkbox");
 	var ignoreLabel = $("<label>").append(ignoredup).append(this.translation.ignore[this.locale]);
-	var ignoreArea = $("<div>").append(ignoreLabel).css({
-		"margin-top" : "10px"
-	});
-	var left = $("<div>").css({
-		"width" : "160px",
-		"float" : "left",
-		"margin" : "5px"
-	}).append(serverLabel).append(serversel).append(workLabel).append(worksel).append(storeLabel).append(storesel).append(ignoreArea);
+	var ignoreArea = $("<div>").append(ignoreLabel).addClass("gb-uploadgeojson-ignore");
+	var left = $("<div>").addClass("gb-uploadgeojson-left").append(serverLabel).append(serversel).append(workLabel).append(worksel).append(
+			storeLabel).append(storesel).append(ignoreArea);
 
 	var crsLabel = $("<div>").text(this.translation.crs[this.locale]);
 	var epsgVal = $("<span>").text(epsg);
-	var epsgArea = $("<div>").addClass("gb-form").append(epsgVal).css({
-		"margin-bottom" : "5px"
-	});
+	var epsgArea = $("<div>").addClass("gb-form").append(epsgVal).addClass("gb-uploadgeojson-margin-bottom");
 	var layerLabel = $("<div>").text(this.translation.slayer[this.locale]);
-	var list = $("<div>").addClass("gb-form").css({
-		"margin-bottom" : "5px",
-		"height" : "154px",
-		"overflow" : "auto"
-	});
-	var ul = $("<ul>").css({
-		"padding-left" : "15px"
-	});
+	var list = $("<div>").addClass("gb-form").addClass("gb-uploadgeojson-margin-bottom").addClass("gb-uploadgeojson-list");
+	var ul = $("<ul>").addClass("gb-uploadgeojson-ul");
 	if (Array.isArray(layers)) {
 		var checkObj = {};
 		var duplicateFlag = false;
@@ -510,21 +516,13 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 			return;
 		}
 	}
-	var right = $("<div>").css({
-		"width" : "238px",
-		"float" : "left",
-		"margin" : "5px"
-	}).append(crsLabel).append(epsgArea).append(layerLabel).append(list);
-	var bodyArea = $("<div>").css({
-		"height" : "245px"
-	}).append(left).append(right);
+	var right = $("<div>").addClass("gb-uploadgeojson-right").append(crsLabel).append(epsgArea).append(layerLabel).append(list);
+	var bodyArea = $("<div>").addClass("gb-uploadgeojson-body").append(left).append(right);
 
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.upload[this.locale]);
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			this.translation.close[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			this.translation.upload[this.locale]);
 
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var modalFooter = $("<div>").append(buttonArea);
@@ -545,7 +543,7 @@ gb.geoserver.UploadGeoJSON.prototype.open = function(epsg, layers) {
 		var sendObj = {};
 		var server = $(serversel).val();
 		if (server === "noset" || server === "" || server === undefined) {
-			that.messageModal(that.translation.err[that.locale], that.translation.noserver[that.locale]);
+			that.messageModal(that.translation.err[that.locale], that.translation.noserver2[that.locale]);
 			return;
 		}
 		sendObj["serverName"] = server;
@@ -774,16 +772,10 @@ gb.geoserver.UploadGeoJSON.prototype.errorModal = function(code) {
  */
 gb.geoserver.UploadGeoJSON.prototype.messageModal = function(title, msg) {
 	var that = this;
-	var msg1 = $("<div>").append(msg).css({
-		"text-align" : "center",
-		"font-size" : "16px",
-		"margin-top" : "18px",
-		"margin-bottom" : "18px"
-	});
+	var msg1 = $("<div>").append(msg).addClass("gb-uploadgeojson-msg-body");
 	var body = $("<div>").append(msg1);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			this.translation.ok[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
 	var modal = new gb.modal.ModalBase({

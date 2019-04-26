@@ -1,6 +1,5 @@
 /**
- * @classdesc
- * 모달 객체를 정의한다.
+ * @classdesc 모달 객체를 정의한다.
  * 
  * @class gb.modal.ModalBase
  * @memberof gb.modal
@@ -9,12 +8,13 @@
  * @param {string}
  *            obj.title - 모달의 제목
  * @param {number}
- *            obj.width - 모달의 너비 (픽셀)
+ *            [obj.width="auto"] - 모달의 너비 (픽셀)
  * @param {boolean}
  *            obj.autoOpen - 선언과 동시에 표출 할 것인지 선택
  * @param {boolean}
- *            obj.keep - 모달 element를 생성시 미리 body에 append한다. true시 append된
- *            element를 css를 통해 보이거나 감춤, false시 open때마다 새롭게 body에 append한다.
+ *            [obj.keep="false"] - 모달 element를 생성시 미리 body에 append한다. true시
+ *            append된 element를 css를 통해 보이거나 감춤, false시 open때마다 새롭게 body에
+ *            append한다.
  * @param {function |
  *            string | HTMLElement} obj.body - Modal 본문에 삽입될 내용
  * @param {function |

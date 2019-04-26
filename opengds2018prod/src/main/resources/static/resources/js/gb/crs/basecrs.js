@@ -161,23 +161,19 @@ gb.crs.BaseCRS = function(obj) {
 	this.validIconSpan = $("<span>").addClass("gb-basecrs-icon-margin");
 
 	var label = $("<span>").text("EPSG: ");
-	var area = $("<div>").addClass("gb-basecrs-area").append(label).append(this.searchBar).append(this.validIconSpan).css({
-		"margin" : "10px 10px"
-	});
+	var area = $("<div>").addClass("gb-basecrs-area").append(label).append(this.searchBar).append(this.validIconSpan);
 	this.setModalBody(area);
 
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
 	/**
 	 * @private
 	 * @type {HTMLElement}
 	 */
-	this.searchBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(
+	this.searchBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			this.translation.ok[this.locale]).click(
 			function() {
 				// 공백 제거
 				var val = $(that.searchBar).val().replace(/(\s*)/g, '');
@@ -352,8 +348,8 @@ gb.crs.BaseCRS.prototype.searchEPSGCode = function(code, apply, callback) {
  *            name - 좌표계 이름
  * @param {string}
  *            proj4def - proj4 좌표계
- * @param {number[]}
- *            bbox - 좌표계 영역
+ * @param {Array.
+ *            <number>} bbox - 좌표계 영역
  * @param {function}
  *            callback - 적용 후 수행할 콜백함수
  */

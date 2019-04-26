@@ -141,9 +141,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						if (!!node.children) {
 							var repoBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
 									that._data.geogigfunction.repository.translation.newrepo[that._data.geogigfunction.repository.locale])
-									.css({
-										"display" : "inline-block"
-									}).click(function() {
+									.addClass("gb-repository-tree-btn-inline").click(function() {
 										console.log("new repo");
 										console.log(node);
 										var server = node;
@@ -157,9 +155,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					} else if (type === "repository") {
 						var branchBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
 								that._data.geogigfunction.repository.translation.newbranch[that._data.geogigfunction.repository.locale])
-								.css({
-									"display" : "inline-block"
-								}).click(function() {
+								.addClass("gb-repository-tree-btn-inline").click(function() {
 									var server = that.get_node(node.parents[0]);
 									var repo = node;
 									that._data.geogigfunction.repository.setNowServer(server);
@@ -168,9 +164,7 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 								});
 						var remoteBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
 								that._data.geogigfunction.repository.translation.remoterepo[that._data.geogigfunction.repository.locale])
-								.css({
-									"display" : "inline-block"
-								}).click(function() {
+								.addClass("gb-repository-tree-btn-inline").click(function() {
 									console.log("checkout");
 									console.log(node);
 									var server = that.get_node(node.parents[0]);
@@ -180,25 +174,23 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 									that._data.geogigfunction.repository.manageRemoteRepository(server.text, repo.text);
 								});
 						var infoBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.info[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that.get_node(node.parents[0]);
-							var repo = node;
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.infoRepoModal(server.text, repo.text);
-						});
+								that._data.geogigfunction.repository.translation.info[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[0]);
+									var repo = node;
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.infoRepoModal(server.text, repo.text);
+								});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that.get_node(node.parents[0]);
-							var repo = node;
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.removeRepositoryModal(repo.text);
-						});
+								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[0]);
+									var repo = node;
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.removeRepositoryModal(repo.text);
+								});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(branchBtn).append(remoteBtn).append(
 								infoBtn).append(removeBtn);
 						var obj = this.get_node(node, true);
@@ -206,30 +198,28 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 					} else if (type === "remoteRepository") {
 						that._data.geogigfunction.repository.setNowRemoteRepository(node);
 						var fetchBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.fetch[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that._data.geogigfunction.repository.getNowServer();
-							console.log(server);
-							var repo = that._data.geogigfunction.repository.getNowRepository();
-							console.log(repo);
-							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
-							console.log(remote);
-							that._data.geogigfunction.repository.setFetchRepository(remote.text);
-							that.refresh();
-						});
+								that._data.geogigfunction.repository.translation.fetch[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that._data.geogigfunction.repository.getNowServer();
+									console.log(server);
+									var repo = that._data.geogigfunction.repository.getNowRepository();
+									console.log(repo);
+									var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
+									console.log(remote);
+									that._data.geogigfunction.repository.setFetchRepository(remote.text);
+									that.refresh();
+								});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that._data.geogigfunction.repository.getNowServer();
-							console.log(server);
-							var repo = that._data.geogigfunction.repository.getNowRepository();
-							console.log(repo);
-							var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
-							console.log(remote);
-							that._data.geogigfunction.repository.removeRemoteRepository(server.text, repo.text, remote.text);
-						});
+								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that._data.geogigfunction.repository.getNowServer();
+									console.log(server);
+									var repo = that._data.geogigfunction.repository.getNowRepository();
+									console.log(repo);
+									var remote = that._data.geogigfunction.repository.getNowRemoteRepository();
+									console.log(remote);
+									that._data.geogigfunction.repository.removeRemoteRepository(server.text, repo.text, remote.text);
+								});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(fetchBtn).append(removeBtn);
 						var obj = this.get_node(node, true);
 						$(obj[0].childNodes[1]).after(btnArea);
@@ -237,25 +227,22 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var states = Object.keys(node.state);
 
 						var quitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.end[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							console.log("quit");
-							console.log(node);
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							var tid = that.getTransactionId(repo.id);
-							that._data.geogigfunction.repository.quitModal(server, repo, branch, tid);
-						});
+								that._data.geogigfunction.repository.translation.end[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									console.log("quit");
+									console.log(node);
+									var server = that.get_node(node.parents[1]);
+									var repo = that.get_node(node.parents[0]);
+									var branch = node;
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									var tid = that.getTransactionId(repo.id);
+									that._data.geogigfunction.repository.quitModal(server, repo, branch, tid);
+								});
 
 						var checkoutBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
 								that._data.geogigfunction.repository.translation.checkout[that._data.geogigfunction.repository.locale])
-								.css({
-									"display" : "inline-block"
-								}).click(function() {
+								.addClass("gb-repository-tree-btn-inline").click(function() {
 									console.log("checkout");
 									console.log(node);
 									var server = that.get_node(node.parents[1]);
@@ -267,69 +254,62 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 								});
 
 						var addBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.add[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						});
+								that._data.geogigfunction.repository.translation.add[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline");
 						var commitBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.commit[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						});
+								that._data.geogigfunction.repository.translation.commit[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline");
 						var pullBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.pull[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							var tid = that.getTransactionId(repo.id);
-							if (typeof tid === "string") {
-								that._data.geogigfunction.repository.setNowServer(server);
-								that._data.geogigfunction.repository.setNowRepository(repo);
-								that._data.geogigfunction.repository.setNowBranch(branch);
-								that._data.geogigfunction.repository.pullRepositoryModal(server.text, repo.text, tid);
-							}
-						});
+								that._data.geogigfunction.repository.translation.pull[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[1]);
+									var repo = that.get_node(node.parents[0]);
+									var branch = node;
+									var tid = that.getTransactionId(repo.id);
+									if (typeof tid === "string") {
+										that._data.geogigfunction.repository.setNowServer(server);
+										that._data.geogigfunction.repository.setNowRepository(repo);
+										that._data.geogigfunction.repository.setNowBranch(branch);
+										that._data.geogigfunction.repository.pullRepositoryModal(server.text, repo.text, tid);
+									}
+								});
 						var pushBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.push[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							var tid = that.getTransactionId(repo.id);
-							if (typeof tid === "string") {
-								that._data.geogigfunction.repository.setNowServer(server);
-								that._data.geogigfunction.repository.setNowRepository(repo);
-								that._data.geogigfunction.repository.setNowBranch(branch);
-								that._data.geogigfunction.repository.pushRepositoryModal(server.text, repo.text);
-							}
-						});
+								that._data.geogigfunction.repository.translation.push[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[1]);
+									var repo = that.get_node(node.parents[0]);
+									var branch = node;
+									var tid = that.getTransactionId(repo.id);
+									if (typeof tid === "string") {
+										that._data.geogigfunction.repository.setNowServer(server);
+										that._data.geogigfunction.repository.setNowRepository(repo);
+										that._data.geogigfunction.repository.setNowBranch(branch);
+										that._data.geogigfunction.repository.pushRepositoryModal(server.text, repo.text);
+									}
+								});
 						var mergeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.merge[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.mergeModal(server.text, repo.text, branch.text);
-						});
+								that._data.geogigfunction.repository.translation.merge[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[1]);
+									var repo = that.get_node(node.parents[0]);
+									var branch = node;
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.setNowBranch(branch);
+									that._data.geogigfunction.repository.mergeModal(server.text, repo.text, branch.text);
+								});
 
 						var publishBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.publish[that._data.geogigfunction.repository.locale]).css(
-								{
-									"display" : "inline-block"
-								}).click(function() {
-							var server = that.get_node(node.parents[1]);
-							var repo = that.get_node(node.parents[0]);
-							var branch = node;
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.publishModal(server.text, repo.text, branch.text);
-						});
+								that._data.geogigfunction.repository.translation.publish[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									var server = that.get_node(node.parents[1]);
+									var repo = that.get_node(node.parents[0]);
+									var branch = node;
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.setNowBranch(branch);
+									that._data.geogigfunction.repository.publishModal(server.text, repo.text, branch.text);
+								});
 
 						if (states.indexOf("merged") !== -1 || states.indexOf("staged") !== -1 || states.indexOf("unmerged") !== -1
 								|| states.indexOf("unstaged") !== -1) {
@@ -375,24 +355,21 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 						var layer = node;
 
 						var historyBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.history[that._data.geogigfunction.repository.locale]).css(
-								{
-									"display" : "inline-block"
-								}).click(function() {
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.layerHistoryModal(server, repo, layer);
-						});
+								that._data.geogigfunction.repository.translation.history[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.setNowBranch(branch);
+									that._data.geogigfunction.repository.layerHistoryModal(server, repo, layer);
+								});
 						var removeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").text(
-								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale]).css({
-							"display" : "inline-block"
-						}).click(function() {
-							that._data.geogigfunction.repository.setNowServer(server);
-							that._data.geogigfunction.repository.setNowRepository(repo);
-							that._data.geogigfunction.repository.setNowBranch(branch);
-							that._data.geogigfunction.repository.removeLayerModal(layer.text);
-						});
+								that._data.geogigfunction.repository.translation.remove[that._data.geogigfunction.repository.locale])
+								.addClass("gb-repository-tree-btn-inline").click(function() {
+									that._data.geogigfunction.repository.setNowServer(server);
+									that._data.geogigfunction.repository.setNowRepository(repo);
+									that._data.geogigfunction.repository.setNowBranch(branch);
+									that._data.geogigfunction.repository.removeLayerModal(layer.text);
+								});
 						var btnArea = $("<span>").addClass("gb-versioning-repository-btnarea").append(removeBtn);
 						if (branch !== undefined && branch.text === "master") {
 							$(btnArea).append(historyBtn);
@@ -427,22 +404,8 @@ $.jstree.plugins.geogigfunction = function(options, parent) {
 			if (nobj.type === "remoteBranch") {
 				if (this._data.geogigfunction.fetchRemote.hasOwnProperty(nobj.id)) {
 					var num = this._data.geogigfunction.fetchRemote[nobj.id];
-					var fetchNum = $("<div>").text(num).css({
-						"text-align" : "center",
-						"margin-top" : "-3px",
-						"vertical-align" : "middle"
-					});
-					var fetchCircle = $("<div>").css({
-						"color" : "#fff",
-						"background-color" : "#515151",
-						"display" : "inline-block",
-						"min-width" : "18px",
-						"margin" : "0 5px",
-						"text-align" : "center",
-						"border-radius" : "9px",
-						"height" : "18px",
-						"vertical-align" : "middle"
-					}).append(fetchNum);
+					var fetchNum = $("<div>").addClass("gb-repository-tree-fetch-number").text(num);
+					var fetchCircle = $("<div>").addClass("gb-repository-tree-fetch-circle").append(fetchNum);
 					$(obj.childNodes[1]).append(fetchCircle);
 				}
 			} else if (nobj.type === "default") {

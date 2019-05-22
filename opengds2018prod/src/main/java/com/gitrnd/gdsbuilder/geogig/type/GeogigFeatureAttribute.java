@@ -5,6 +5,10 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author DY.Oh
+ *
+ */
 @XmlRootElement(name = "response")
 public class GeogigFeatureAttribute {
 

@@ -11,23 +11,50 @@ import javax.xml.bind.annotation.XmlValue;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverWorkSpace.Workspace;
 
+/**
+ * Geoserver DataStore 조회 결과 객체.
+ * 
+ * @author DY.Oh
+ *
+ */
 @XmlRootElement(name = "dataStore")
 public class GeogigGeoserverDataStore {
 
+	/**
+	 * Command 응답 성공 여부
+	 */
 	private String success;
 
+	/**
+	 * error message
+	 */
 	private String error;
 
+	/**
+	 * Geoserver DataStore명
+	 */
 	private String name;
 
+	/**
+	 * Geoserver DataStore 타입
+	 */
 	private String type;
 
+	/**
+	 * Geoserver DataStore 상태
+	 */
 	private String enabled;
 
+	/**
+	 * Geoserver DataStore를 포함한 Workspace 명
+	 */
 	private Workspace workspace;
 
 	private String _default;
 
+	/**
+	 * Geoserver DataStore 생성 파라미터
+	 */
 	private ConnectionParameters connetParams;
 
 	public String getSuccess() {

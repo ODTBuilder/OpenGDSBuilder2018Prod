@@ -45,12 +45,9 @@ public class SHPFileReader {
 	/**
 	 * zip 파일 압축 해제 경로의 shp 파일을 읽어 DTSHPLayerCollection 객체로 변환하여 반환
 	 * 
-	 * @param upZipFilePath
-	 *            zip 파일 압축 해제 경로
-	 * @param entryName
-	 *            zip 파일 내 폴더명
-	 * @param fileNameMap
-	 *            shp, shx, dbf 파일명
+	 * @param upZipFilePath zip 파일 압축 해제 경로
+	 * @param entryName     zip 파일 내 폴더명
+	 * @param fileNameMap   shp, shx, dbf 파일명
 	 * @return DTSHPLayerCollection
 	 * @throws Exception
 	 */
@@ -108,8 +105,7 @@ public class SHPFileReader {
 	/**
 	 * shp 파일 객체를 SimpleFeatureCollection으로 변환하여 반환
 	 * 
-	 * @param shpFile
-	 *            shp 파일 객체
+	 * @param shpFile shp 파일 객체
 	 * @return SimpleFeatureCollection
 	 */
 	public SimpleFeatureCollection getShpObject(File shpFile) {

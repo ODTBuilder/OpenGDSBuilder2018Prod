@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Geogig Log Command 응답 xml 객체.
  * 
- * @author GIT
+ * @author DY.Oh
  *
  */
 @XmlRootElement(name = "response")
@@ -30,62 +30,38 @@ public class GeogigRepositoryLog {
 	 */
 	private String message;
 
+	/**
+	 * error message
+	 */
 	private String error;
 
+	/**
+	 * 30개 이상의 commit 이력이 있는 경우 "true"
+	 */
 	private String nextPage;
 
-	/**
-	 * Geogig Command 응답 성공 여부 반환
-	 * 
-	 * @return String
-	 */
 	@XmlElement(name = "success")
 	public String getSuccess() {
 		return success;
 	}
 
-	/**
-	 * commit 이력 반환
-	 * 
-	 * @return List<Commit>
-	 */
 	@XmlElement(name = "commit")
 	public List<Commit> getCommits() {
 		return commits;
 	}
 
-	/**
-	 * commit message 반환
-	 * 
-	 * @return String
-	 */
 	public String getMessage() {
 		return message;
 	}
 
-	/**
-	 * Geogig Command 응답 성공 여부 설정
-	 * 
-	 * @param success Geogig Command 응답 성공 여부
-	 */
 	public void setSuccess(String success) {
 		this.success = success;
 	}
 
-	/**
-	 * commit 이력 설정
-	 * 
-	 * @param commits commit 이력
-	 */
 	public void setCommits(List<Commit> commits) {
 		this.commits = commits;
 	}
 
-	/**
-	 * commit message 설정
-	 * 
-	 * @param message commit message
-	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
@@ -118,9 +94,7 @@ public class GeogigRepositoryLog {
 	public static class Commit {
 
 		public enum ChangeType {
-
 			ADDED, MODIFIED, REMOVED;
-
 		}
 
 		/**
@@ -144,6 +118,9 @@ public class GeogigRepositoryLog {
 		 */
 		private GeogigAuthor author;
 
+		/**
+		 * message
+		 */
 		private String message;
 
 		/**
@@ -245,7 +222,7 @@ public class GeogigRepositoryLog {
 	/**
 	 * Parents 객체
 	 * 
-	 * @author GIT
+	 * @author DY.Oh
 	 *
 	 */
 	@XmlRootElement(name = "parents")
@@ -256,21 +233,11 @@ public class GeogigRepositoryLog {
 		 */
 		private String id;
 
-		/**
-		 * parent commit id 반환
-		 * 
-		 * @return
-		 */
 		@XmlElement(name = "id")
 		public String getId() {
 			return id;
 		}
 
-		/**
-		 * parent commit id 설정
-		 * 
-		 * @param id parent commit id
-		 */
 		public void setId(String id) {
 			this.id = id;
 		}

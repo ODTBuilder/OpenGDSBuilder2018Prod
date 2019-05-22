@@ -19,8 +19,27 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 
+/**
+ * {@link SimpleFeatureCollection}을 SHP 파일로 Export 하는 클래스.
+ * 
+ * @author DY.Oh
+ *
+ */
 public class SHPFileWriter {
 
+	/**
+	 * {@link SimpleFeatureCollection}을 SHP 파일로 Export함.
+	 * 
+	 * @param epsg                    좌표계 (ex.EPSG:4326)
+	 * @param simpleFeatureCollection {@link SimpleFeatureCollection}
+	 * @param filePath                Export할 경로
+	 * @throws IOException                  IOException
+	 * @throws SchemaException              SchemaException
+	 * @throws NoSuchAuthorityCodeException NoSuchAuthorityCodeException
+	 * @throws FactoryException             FactoryException
+	 * 
+	 * @author DY.Oh
+	 */
 	public static void writeSHP(String epsg, SimpleFeatureCollection simpleFeatureCollection, String filePath)
 			throws IOException, SchemaException, NoSuchAuthorityCodeException, FactoryException {
 

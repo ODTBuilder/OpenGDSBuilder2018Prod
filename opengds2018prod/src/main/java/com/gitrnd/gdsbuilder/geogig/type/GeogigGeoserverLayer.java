@@ -4,15 +4,33 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * Geoserver Layer 조회 결과 객체.
+ * 
+ * @author DY.Oh
+ *
+ */
 @XmlRootElement(name = "layer")
 public class GeogigGeoserverLayer {
 
+	/**
+	 * Command 응답 성공 여부
+	 */
 	private String success;
 
+	/**
+	 * error message
+	 */
 	private String error;
 
+	/**
+	 * Layer 명
+	 */
 	private String name;
 
+	/**
+	 * Layer 타입
+	 */
 	private String type;
 
 	private DefaultStyle defaultStyle;

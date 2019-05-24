@@ -42,7 +42,7 @@ import it.geosolutions.geoserver.rest.HTTPUtils;
 /**
  * Session을 관리한다.
  * @author SG.Lee
- * @Date 2016.02
+ * @Since 2016.02
  * */
 @Controller
 public class AbstractController {
@@ -107,7 +107,7 @@ public class AbstractController {
 	/**
 	 * Geoserver Session 추가
 	 * @author SG.Lee
-	 * @Date 2018. 7. 5. 오후 4:25:03
+	 * @Since 2018. 7. 5. 오후 4:25:03
 	 * @param request
 	 * @return int
 	 *         200 : 성공
@@ -188,7 +188,7 @@ public class AbstractController {
 	/**
 	 * Geoserver Seesion 삭제
 	 * @author SG.Lee
-	 * @Date 2018. 7. 6. 오후 4:41:04
+	 * @Since 2018. 7. 6. 오후 4:41:04
 	 * @param request
 	 * @return int
 	 *         200 : 성공
@@ -246,7 +246,7 @@ public class AbstractController {
 	/**
 	 *
 	 * @author SG.Lee
-	 * @Date 2018. 7. 6. 오후 5:36:50
+	 * @Since 2018. 7. 6. 오후 5:36:50
 	 * @param request
 	 * @return DTGeoserverManager
 	 * */
@@ -287,7 +287,7 @@ public class AbstractController {
 	/**
 	 * @Description Geoserver 세션 리스트조회
 	 * @author SG.Lee
-	 * @Date 2018. 7. 16. 오전 9:59:52
+	 * @Since 2018. 7. 16. 오전 9:59:52
 	 * @param request
 	 * @param loginUser
 	 * @return DTGeoserverManagerList
@@ -315,7 +315,7 @@ public class AbstractController {
 	/**
 	 * @Description 
 	 * @author SG.Lee
-	 * @Date 2018. 12. 14. 오후 1:27:42
+	 * @Since 2018. 12. 14. 오후 1:27:42
 	 * @param request
 	 * @param loginUser
 	 * @return int

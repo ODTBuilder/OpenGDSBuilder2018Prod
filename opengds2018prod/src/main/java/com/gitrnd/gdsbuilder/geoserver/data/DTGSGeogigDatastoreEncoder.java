@@ -4,6 +4,7 @@ import java.util.Map;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 
+
 public class DTGSGeogigDatastoreEncoder extends DTGSAbstractDatastoreEncoder {
 
 	static final String TYPE = "GeoGIG";

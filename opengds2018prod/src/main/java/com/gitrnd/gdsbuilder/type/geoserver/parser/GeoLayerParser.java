@@ -55,7 +55,7 @@ import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerList;
  * GeoServer로부터 레이어 정보를 받아오는 클래스. GeoLayer 객체로 파싱
  * 
  * @author DY.Oh
- * @Date 2017. 3. 11. 오후 1:39:13
+ * @Since 2017. 3. 11. 오후 1:39:13
  */
 public class GeoLayerParser {
 

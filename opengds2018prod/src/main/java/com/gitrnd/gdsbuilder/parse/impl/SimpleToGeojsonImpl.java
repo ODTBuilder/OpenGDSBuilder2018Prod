@@ -15,6 +15,11 @@ import org.opengis.feature.simple.SimpleFeature;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+/**
+ * {@link SimpleFeatureCollection} 인터페이스를 Geojson 구조의 {@link JSONObject} 객체로 변환하는 클래스
+ * @author SG.LEE
+ *
+ */
 public class SimpleToGeojsonImpl {
 	
 	/**
@@ -24,13 +29,19 @@ public class SimpleToGeojsonImpl {
 	 * @data 2016.02
 	 * @param simpleFeatureCollection
 	 *            변환할 SimpleFeatureCollection
-	 * @return JSONObject
+	 * @return JSONObject 변환된 {@link JSONObject}
 	 */
 	public JSONObject build(SimpleFeatureCollection simpleFeatureCollection) {
 
 		return buildFeatureCollection(simpleFeatureCollection);
 	}
 
+	/**
+	 * {@link JSONObject} 형태의 {@link SimpleFeatureCollection} 객체 생성
+	 * @author SG.LEE
+	 * @param featureCollection 변환할 SimpleFeatureCollection
+	 * @return JSONObject 변환된 {@link JSONObject}
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject buildFeatureCollection(SimpleFeatureCollection featureCollection) {
 
@@ -48,6 +59,11 @@ public class SimpleToGeojsonImpl {
 		return obj;
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param simpleFeature
+	 * @return JSONObject 변환된 {@link JSONObject}
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject buildFeature(SimpleFeature simpleFeature) {
 
@@ -59,6 +75,11 @@ public class SimpleToGeojsonImpl {
 		return obj;
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param simpleFeature
+	 * @return JSONObject 변환된 {@link JSONObject}
+	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject buildProperties(SimpleFeature simpleFeature) {
 
@@ -71,6 +92,11 @@ public class SimpleToGeojsonImpl {
 		return obj;
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param simpleFeature
+	 * @return JSONObject 변환된 {@link JSONObject}
+	 */
 	private List<String> buildPropertiesType(SimpleFeature simpleFeature) {
 
 		Collection<Property> properties = simpleFeature.getProperties();
@@ -85,6 +111,11 @@ public class SimpleToGeojsonImpl {
 		return typeArray;
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param geometry
+	 * @return
+	 */
 	private JSONObject buildGeometry(Geometry geometry) {
 		GeometryJSON gjson = new GeometryJSON();
 		Object obj = JSONValue.parse(gjson.toString(geometry));

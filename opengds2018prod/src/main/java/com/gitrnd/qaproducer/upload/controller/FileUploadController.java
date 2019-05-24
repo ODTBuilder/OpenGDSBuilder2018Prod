@@ -42,22 +42,32 @@ import com.gitrnd.qaproducer.upload.service.FileUploadService;
  * 파일 업로드와 관련된 요청을 수행한다.
  * 
  * @author SG.Lee
- * @Date 2017.04.11
+ * @Since 2017.04.11
  */
 @Controller("fileUploadController")
 @RequestMapping("/file")
 public class FileUploadController extends AbstractController{
+	/**
+	 * 
+	 */
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
+	/**
+	 * 
+	 */
 	@Autowired
 	@Qualifier("fileService")
 	private FileUploadService fileService;
 
 	/**
+	 * 검수대상 파일 업로드
+	 * @author SG.LEE
+	 * @Since 2017. 4
+	 * @param request {@link MultipartHttpServletRequest} 
+	 * @param response {@link HttpServletResponse} 
+	 * @param loginUser 
+	 * @return
 	 * @throws Throwable
-	 *             파일업로드 @author SG.Lee @Date 2017. 4 @param request @param
-	 *             response @return @throws Exception
-	 *             LinkedList<FileMeta> @throws
 	 */
 	@RequestMapping(value = "/fileUpload.ajax", method = RequestMethod.POST)
 	public @ResponseBody LinkedList<FileMeta> fileUploadRequest(MultipartHttpServletRequest request,
@@ -74,7 +84,7 @@ public class FileUploadController extends AbstractController{
 	}
 
 	/**
-	 * 파일명 중복체크 @author SG.Lee @Date 2017. 4 @param fileName @return
+	 * 파일명 중복체크 @author SG.Lee @Since 2017. 4 @param fileName @return
 	 * boolean @throws
 	 */
 /*	@RequestMapping(value = "/fileNameDupCheckAjax.ajax", method = RequestMethod.GET)

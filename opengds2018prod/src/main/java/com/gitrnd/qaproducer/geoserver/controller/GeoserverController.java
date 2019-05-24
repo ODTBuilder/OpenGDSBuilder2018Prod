@@ -52,10 +52,9 @@ import com.gitrnd.qaproducer.geoserver.service.GeoserverLayerProxyService;
 import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 
 /**
- * @ClassName: GeoserverController
- * @Description: Geoserver 관련된 요청을 처리한다.
+ * Geoserver 관련된 요청을 처리한다.
  * @author JY.Kim
- * @date 2017. 4. 3. 오후 2:16:03
+ * @Since 2017. 4. 3. 오후 2:16:03
  * 
  */
 @Controller("geoserverController")
@@ -114,7 +113,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부)
 	 * @author SG.Lee
-	 * @Date 2018. 7. 13. 오후 5:00:28
+	 * @Since 2018. 7. 13. 오후 5:00:28
 	 * @param request
 	 * @param loginUser
 	 * @param workspace
@@ -139,7 +138,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청
 	 * @author SG.Lee
-	 * @Date 2018. 7. 13. 오후 5:00:28
+	 * @Since 2018. 7. 13. 오후 5:00:28
 	 * @param request
 	 * @param loginUser
 	 * @param workspace
@@ -163,7 +162,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description WFST
 	 * @author SG.Lee
-	 * @Date 2018. 7. 20. 오후 2:59:37
+	 * @Since 2018. 7. 20. 오후 2:59:37
 	 * @param request
 	 * @param loginUser
 	 * @return String
@@ -188,7 +187,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description
 	 * @author SG.Lee
-	 * @Date 2018. 7. 20. 오후 2:59:37
+	 * @Since 2018. 7. 20. 오후 2:59:37
 	 * @param request
 	 * @param loginUser
 	 * @return String
@@ -237,7 +236,7 @@ public class GeoserverController extends AbstractController {
 	 * WMS레이어 요청
 	 * 
 	 * @author SG.Lee
-	 * @Date 2017. 4
+	 * @Since 2017. 4
 	 * @param request
 	 * @param response
 	 * @throws Exception
@@ -266,7 +265,7 @@ public class GeoserverController extends AbstractController {
 	 * WFSGetFeature GET
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:30:17
+	 * @Since 2018. 7. 9. 오후 3:30:17
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -296,7 +295,7 @@ public class GeoserverController extends AbstractController {
 	 * WMSGetFeatureInfo
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:32:51
+	 * @Since 2018. 7. 9. 오후 3:32:51
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -327,7 +326,7 @@ public class GeoserverController extends AbstractController {
 	 * getWMSGetLegendGraphic
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:33:02
+	 * @Since 2018. 7. 9. 오후 3:33:02
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -355,7 +354,7 @@ public class GeoserverController extends AbstractController {
 	 * GeoserverInfo Request
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:30:17
+	 * @Since 2018. 7. 9. 오후 3:30:17
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -384,7 +383,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 스타일리스트 조회
 	 * @author SG.Lee
-	 * @Date 2018. 11. 21. 오후 5:17:54
+	 * @Since 2018. 11. 21. 오후 5:17:54
 	 * @param request
 	 * @param response
 	 * @param loginUser
@@ -421,7 +420,7 @@ public class GeoserverController extends AbstractController {
 	
 
 	/**
-	 * Geoserver Layer 조회 @author SG.Lee @Date 2017. 4 @param request @param
+	 * Geoserver Layer 조회 @author SG.Lee @Since 2017. 4 @param request @param
 	 * jsonObject @return DTGeoLayerList @throws
 	 */
 	@SuppressWarnings("unchecked")
@@ -452,7 +451,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * 레이어 중복체크 @author SG.Lee @Date 2017. 5 @param request @param
+	 * 레이어 중복체크 @author SG.Lee @Since 2017. 5 @param request @param
 	 * jsonObject @return DTGeoLayerList @throws
 	 * @throws IOException 
 	 */
@@ -485,7 +484,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 레이어 삭제
 	 * @author SG.Lee
-	 * @Date 2018. 8. 2. 오전 10:14:37
+	 * @Since 2018. 8. 2. 오전 10:14:37
 	 * @param request
 	 * @param jsonObject
 	 * @param loginUser
@@ -521,7 +520,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * Geoserver Group레이어 조회 @author SG.Lee @Date 2017. 4 @param request @param
+	 * Geoserver Group레이어 조회 @author SG.Lee @Since 2017. 4 @param request @param
 	 * jsonObject @return DTGeoLayerList @throws
 	 * @throws IOException 
 	 */

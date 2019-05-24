@@ -24,23 +24,49 @@ import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
- * 업로드파일에 대한 정보 객체
+ * 클라이언트에서 업로드한 파일정보 클래스
  * @author SG.Lee
- * @Date 2017. 5. 12. 오전 2:23:36
+ * @Since 2017. 5. 12. 오전 2:23:36
  * */
 @JsonIgnoreProperties({ "bytes" })
 public class FileMeta {
 
+	/**
+	 * 파일이름
+	 */
 	private String fileName;
+	/**
+	 * 파일경로
+	 */
 	private String filePath;
+	/**
+	 * 파일사이즈
+	 */
 	private String fileSize;
+	/**
+	 * 파일타입
+	 */
 	private String fileType;
+	/**
+	 * 기존 파일경로
+	 */
 	private String originSrc;
+	/**
+	 * 업로드 상태코드
+	 */
 	private long uploadFlag;
+	/**
+	 * 업로드 성공 레이어 리스트
+	 */
 	private List<String> successLayers = new ArrayList<String>();
-	
+	/**
+	 * 업로드 실패 레이어 리스트
+	 * List<Map<파일명,업로드 상태코드>>
+	 */
 	private List<Map<String,Long>> failLayers = new ArrayList<Map<String,Long>>();
-
+	/**
+	 * 
+	 */
 	private byte[] bytes;
 
 	/**

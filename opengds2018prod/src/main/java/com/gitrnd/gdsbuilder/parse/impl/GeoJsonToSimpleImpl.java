@@ -23,6 +23,10 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+/**
+ * Geojson 구조의 {@link JSONObject}를 {@link SimpleFeatureCollection} 객체로 변환하는 클래스
+ * @author SG.LEE
+ */
 public class GeoJsonToSimpleImpl {
 	/**
 	 * 속성을 가진 JSONObject를 SimpleFeatureCollection으로 변환하여 반환한다.
@@ -33,7 +37,7 @@ public class GeoJsonToSimpleImpl {
 	 *            변환할 JSONObject
 	 * @param attribute
 	 *            속성값
-	 * @return JSONObject
+	 * @return JSONObject 변환된 JSONObject
 	 * @throws SchemaException
 	 */
 	public SimpleFeatureCollection converToSimpleFeatureCollection(JSONObject geo, JSONObject attribute)

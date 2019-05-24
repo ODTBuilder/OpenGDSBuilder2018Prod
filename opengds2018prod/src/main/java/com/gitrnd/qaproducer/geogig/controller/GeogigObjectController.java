@@ -22,10 +22,6 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geogig.service.GeogigObjectService;
 
-/**
- * @author GIT
- *
- */
 @Controller
 @RequestMapping("/geogig")
 public class GeogigObjectController extends AbstractController {

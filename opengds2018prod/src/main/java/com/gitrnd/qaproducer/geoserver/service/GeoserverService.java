@@ -52,7 +52,7 @@ public interface GeoserverService {
 	 * @return boolean
 	 */
 	/**
-	 * @Description 
+	 * @Description
 	 * @author SG.Lee
 	 * @Date 2018. 12. 14. 오후 2:48:33
 	 * @param dtGeoManager
@@ -61,11 +61,8 @@ public interface GeoserverService {
 	 * @param layerName    레이어명
 	 * @param zipFile      대상파일(shp,dxf,shx...)
 	 * @param srs          좌표계
-	 * @return int		   200 발행성공
-	 *                     500 서버에러
-	 *                     605 서버존재X
-	 *                     610 발행실패
-	 * */
+	 * @return int 200 발행성공 500 서버에러 605 서버존재X 610 발행실패
+	 */
 	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs);
 
@@ -80,10 +77,7 @@ public interface GeoserverService {
 	 * @param zipFile      대상파일(shp,dxf,shx...)
 	 * @param srs          좌표계
 	 * @param defaultStyle 스타일
-	 * @return int		   200 발행성공
-	 *                     500 서버에러
-	 *                     605 서버존재X
-	 *                     610 발행실패
+	 * @return int 200 발행성공 500 서버에러 605 서버존재X 610 발행실패
 	 */
 	public int shpLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			String layerName, File zipFile, String srs, String defaultStyle);
@@ -96,42 +90,37 @@ public interface GeoserverService {
 	 * @param workspace    작업공간
 	 * @param datastore    저장소
 	 * @param request      MultipartHttpServletRequest
-	 * @return JSONObject {file1 : 200, file2 : 500....} 
-	 * 			 		  200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류 
-	 *         		      607 : workspace 또는 datastore 존재 X 608 : 파일구조 이상 609 : 레이어 중복 613 : 데이터 존재 -> 미발행레이어 615 : prj파일 없음
+	 * @return JSONObject {file1 : 200, file2 : 500....} 200 : 성공 500 : 발행실패 600 :
+	 *         로그인세션 없음 604 : Geoserver 정보오류 607 : workspace 또는 datastore 존재 X 608 :
+	 *         파일구조 이상 609 : 레이어 중복 613 : 데이터 존재 -> 미발행레이어 615 : prj파일 없음
 	 */
-	public JSONObject shpCollectionPublishGeoserver(MultipartHttpServletRequest request, DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication);
-	
-	
+	public JSONObject shpCollectionPublishGeoserver(MultipartHttpServletRequest request,
+			DTGeoserverManager dtGeoManager, String workspace, String datastore, boolean ignorePublication);
 
 	/**
 	 * @Description JSON파일 업로드
 	 * @author SG.Lee
 	 * @Date 2019. 2. 27. 오후 6:06:28
-	 * @param dtGeoManager  DTGeoserverManager Object
-	 * @param workspace     Geoserver Workspace명
-	 * @param datastore     Geoserver Datasource명
-	 * @param layerName     저장하고 싶은 layer명
-	 * @param epsg          좌표계
-	 * @param uploadJsons {
-							   "serverName" : "테스트서버",
-							   "workspace" : "작업공간",
-							   "datastore" : "저장소",
-							   "epsg" : "4326",
-							   "ignorePublication" : "false",
-							   "uploadJson" : [{"layername":"layer1","geojson":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[[[[126.5011195,37.2537839],[126.5011442,37.2538722]...]]]},
-							   					"properties":{"osm_id":"550217018","code":1020,"fclass":"island","population":0,"name":"빌딩"},"id":"d21dd1922902"}]},
-							  					"attJson" : {"osm_id":"String","code":"Integer","fclass":"String","population":"Integer","name":"String"}},
-												{"layername":"layer2","geojson":{}}]
-							}
+	 * @param dtGeoManager      DTGeoserverManager Object
+	 * @param workspace         Geoserver Workspace명
+	 * @param datastore         Geoserver Datasource명
+	 * @param layerName         저장하고 싶은 layer명
+	 * @param epsg              좌표계
+	 * @param uploadJsons       { "serverName" : "테스트서버", "workspace" : "작업공간",
+	 *                          "datastore" : "저장소", "epsg" : "4326",
+	 *                          "ignorePublication" : "false", "uploadJson" :
+	 *                          [{"layername":"layer1","geojson":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"MultiPolygon","coordinates":[[[[126.5011195,37.2537839],[126.5011442,37.2538722]...]]]},
+	 *                          "properties":{"osm_id":"550217018","code":1020,"fclass":"island","population":0,"name":"빌딩"},"id":"d21dd1922902"}]},
+	 *                          "attJson" :
+	 *                          {"osm_id":"String","code":"Integer","fclass":"String","population":"Integer","name":"String"}},
+	 *                          {"layername":"layer2","geojson":{}}] }
 	 * @param ignorePublication 미발행 레이어 무시여부
-	 * @return JSONObject {file1 : 200, file2 : 500....} 
-	 * 					  200 : 성공 500 : 발행실패 600 : 로그인세션 없음 604 : Geoserver 정보오류
-	 *                    607 : workspace 또는 datastore 존재 X 609 : 레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
-	 * */
-	public JSONObject geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore, String epsg, List<JSONObject> uploadJsons, boolean ignorePublication);
-	
-	
+	 * @return JSONObject {file1 : 200, file2 : 500....} 200 : 성공 500 : 발행실패 600 :
+	 *         로그인세션 없음 604 : Geoserver 정보오류 607 : workspace 또는 datastore 존재 X 609 :
+	 *         레이어 중복 610 : 발행실패 613 : 데이터 존재 -> 미발행레이어 614 : Geojson 오류
+	 */
+	public JSONObject geojsonPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String datastore,
+			String epsg, List<JSONObject> uploadJsons, boolean ignorePublication);
 
 	/**
 	 * @Description 에러 레이어 발행
@@ -143,7 +132,8 @@ public interface GeoserverService {
 	 * @param layerInfo    - 레이어 정보객체
 	 * @return boolean
 	 */
-	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo layerInfo);
+	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			GeoLayerInfo layerInfo);
 
 	/**
 	 * @Description Workspace 조건에 따른 Workspace단위 트리생성
@@ -153,7 +143,8 @@ public interface GeoserverService {
 	 * @param serverName    서버명
 	 * @return JSONArray
 	 */
-	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, String type);
+	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String parent,
+			String serverName, String type);
 
 	/**
 	 * @Description 전체 트리생성
@@ -202,7 +193,6 @@ public interface GeoserverService {
 	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace,
 			ArrayList<String> groupList);
 
-
 	/**
 	 * 다중 레이어를 삭제
 	 * 
@@ -210,11 +200,12 @@ public interface GeoserverService {
 	 * @Date 2017. 6. 5. 오전 10:40:17
 	 * @param dtGeoManager  - DTGeoserverManager Object
 	 * @param workspace     - Geoserver Workspace명
-	 * @param dsName         - Geoserver Datasource명
+	 * @param dsName        - Geoserver Datasource명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
 	 * @return int - 200 성공 - 500 요청실패 - 605 해당 조건에 맞는 서버존재X - 606 일부성공 또는 실패
 	 */
-	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, String dsName, List<String> layerNameList);
+	public int removeDTGeoserverLayers(DTGeoserverManager dtGeoManager, String workspace, String dsName,
+			List<String> layerNameList);
 
 	/**
 	 * Geoserver Workspace내의 모든 레이어삭제
@@ -325,33 +316,39 @@ public interface GeoserverService {
 	public boolean exsistLayer(DTGeoserverManager dtGeoManager, String workspace, String layerName);
 
 	/**
-	 * @Description datastore 수정
+	 * Geogig Repository 기반의 Datastore Branch Checkout 요청.
+	 * <p>
+	 * Checkout된 Branch의 데이터로 Datastore 변경.
+	 * 
+	 * @param geoserverManager Geoserver 접속 정보
+	 * @param workspace        geoserver ws
+	 * @param datastore        geoserver ds
+	 * @param branch           checkout Branch 명
+	 * @return checkout 성공 여부
+	 *         <p>
+	 *         {@code true} : 성공, {@code false} : 실패
+	 * 
 	 * @author DY.Oh
-	 * @Date 2018. 11. 14. 오후 3:22:37
-	 * @param geoserverManager
-	 * @param workspace
-	 * @param datastore
-	 * @param branch
 	 */
 	public boolean updateGeogigGsStore(DTGeoserverManager geoserverManager, String workspace, String datastore,
 			String branch);
-	
+
 	/**
 	 * @Description 스타일리스트 조회
 	 * @author SG.Lee
 	 * @Date 2018. 11. 21. 오후 5:13:14
 	 * @param geoserverManager
 	 * @return List<String>
-	 * */
+	 */
 	public List<String> getStyleList(DTGeoserverManager geoserverManager);
-	
+
 	/**
-	 * @Description 스타일리스트 조회 
+	 * @Description 스타일리스트 조회
 	 * @author SG.Lee
 	 * @Date 2018. 11. 21. 오후 6:00:41
 	 * @param geoserverManager
 	 * @param workspace
 	 * @return List<String>
-	 * */
+	 */
 	public List<String> getStyleList(DTGeoserverManager geoserverManager, String workspace);
 }

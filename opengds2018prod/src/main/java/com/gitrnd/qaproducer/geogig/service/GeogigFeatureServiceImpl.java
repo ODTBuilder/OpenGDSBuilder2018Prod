@@ -182,7 +182,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
-			int limit, String until, String head, int index) throws JAXBException {
+			int limit, String until, int index) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();

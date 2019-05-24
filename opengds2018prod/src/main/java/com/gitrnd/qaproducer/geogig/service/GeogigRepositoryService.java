@@ -7,7 +7,6 @@ import javax.xml.bind.JAXBException;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigAdd;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCommit;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -111,14 +110,6 @@ public interface GeogigRepositoryService {
 	 */
 	GeogigPush pushRepository(DTGeoserverManager geoserverManager, String repoName, String remoteName,
 			String branchName, String remoteBranchName) throws JAXBException;
-
-	/**
-	 * @param geoserverManager
-	 * @param repoName
-	 * @return GeogigFetch
-	 * @throws JAXBException
-	 */
-	GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException;
 
 	/**
 	 * @param geoserverManager

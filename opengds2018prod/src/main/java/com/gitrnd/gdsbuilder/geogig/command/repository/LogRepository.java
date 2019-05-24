@@ -53,14 +53,6 @@ public class LogRepository {
 	 * countChanges parameter (선택적), Geogig Commit 변화 이력 조회 여부
 	 */
 	private static final String param_countChanges = "countChanges="; // optional
-	/**
-	 * show parameter (선택적), 1개 요청당 조회할 Geogig Commit 이력 목록 개수
-	 */
-	private static final String param_show = "show="; // optional
-	/**
-	 * page parameter (선택적), Geogig Commit 이력 목록 페이지
-	 */
-	private static final String param_page = "page="; // optional
 
 	/**
 	 * Geogig Repository의 Master Branch의 Commit 이력 목록 반환.

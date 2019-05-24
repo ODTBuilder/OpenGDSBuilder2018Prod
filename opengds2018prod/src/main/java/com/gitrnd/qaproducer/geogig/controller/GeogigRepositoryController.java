@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFetch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPull;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigPush;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
@@ -27,10 +26,6 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService;
 
-/**
- * @author GIT
- *
- */
 @Controller
 @RequestMapping("/geogig")
 public class GeogigRepositoryController extends AbstractController {
@@ -144,16 +139,6 @@ public class GeogigRepositoryController extends AbstractController {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		return reposService.pushRepository(geoserverManager, repoName, remoteName, branchName, remoteBranchName);
-	}
-
-	@RequestMapping(value = "/fetchRepository.do", method = RequestMethod.POST)
-	@ResponseBody
-	public GeogigFetch fetchRepository(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
-			@RequestParam(value = "serverName", required = false) String serverName,
-			@RequestParam(value = "repoName", required = false) String repoName) throws JAXBException {
-
-		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return reposService.fetchRepository(geoserverManager, repoName);
 	}
 
 	@RequestMapping(value = "/infoRepository.do", method = RequestMethod.POST)

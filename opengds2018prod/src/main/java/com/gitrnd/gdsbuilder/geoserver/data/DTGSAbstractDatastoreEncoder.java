@@ -7,12 +7,23 @@ import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.encoder.GSAbstractStoreEncoder;
 import it.geosolutions.geoserver.rest.encoder.utils.NestedElementEncoder;
 
+/**
+ * Geogig Repository 기반 Geoserver Abstract Datastore Encoder.
+ * 
+ * @author DY.Oh
+ *
+ */
 public abstract class DTGSAbstractDatastoreEncoder extends GSAbstractStoreEncoder {
 
 	final static String ROOT = "dataStore";
 
 	NestedElementEncoder connectionParameters = new NestedElementEncoder("connectionParameters");
 
+	/**
+	 * Geoserver Datastore Encoder 생성.
+	 * 
+	 * @param storeName geoserver ds명
+	 */
 	public DTGSAbstractDatastoreEncoder(String storeName) {
 		super(GeoServerRESTPublisher.StoreType.DATASTORES, ROOT);
 		// Add mandatory parameter

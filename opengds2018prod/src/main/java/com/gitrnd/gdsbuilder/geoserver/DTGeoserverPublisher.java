@@ -282,6 +282,19 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		return configuredResult;
 	}
 
+	/**
+	 * Geogig Repository 기반의 Geoserver datastore 환경 설정 변경.
+	 * <p>
+	 * Checkout Branch 변경 시 Geoserver에 발행된 Layer 또한 해당 Branch의 Layer로 변경됨.
+	 * 
+	 * @param workspace geoserver ws
+	 * @param datastore geoserver ds
+	 * @param dsEncoder Geogig Repository 기반의 Geoserver datastore Encoder
+	 * @return Geoserver datastore 환경 설정 변경 성공 여부
+	 *         <p>
+	 *         {@code true} : 변경 성공, {@code false} : 변경 실패
+	 * @author DY.Oh
+	 */
 	public boolean updateDatastore(String workspace, String datastore, DTGSGeogigDatastoreEncoder dsEncoder) {
 
 		String dsXml = dsEncoder.toString();
@@ -293,6 +306,5 @@ public class DTGeoserverPublisher extends GeoServerRESTPublisher {
 		updated = reload();
 		return updated;
 	}
-	
-	
+
 }

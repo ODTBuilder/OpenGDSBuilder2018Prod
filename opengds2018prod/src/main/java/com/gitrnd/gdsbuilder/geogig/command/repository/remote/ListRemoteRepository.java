@@ -55,7 +55,7 @@ public class ListRemoteRepository {
 	 * @param username   Geoserver 사용자 ID
 	 * @param password   Geoserver 사용자 PW
 	 * @param repository Geogig Repository명
-	 * @param verbose    {@code true} : 각 Remote Repository에 대해 더 상세한 정보 번환
+	 * @param verbose    {@code true} : 각 Remote Repository에 대해 더 상세한 정보 반환
 	 *                   <p>
 	 *                   {@code false} : 각 Remote Repository명만 반환
 	 * @return Command 실행 성공 - 등록된 Remote Repository 목록 반환

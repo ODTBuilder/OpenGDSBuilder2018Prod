@@ -46,20 +46,6 @@ public class GeogigLayerServiceImpl implements GeogigLayerService {
 		String user = geoserverManager.getUsername();
 		String pw = geoserverManager.getPassword();
 
-		// LogRepository logRepos = new LogRepository();
-		// GeogigRepositoryLog log = null;
-		// try {
-		// log = logRepos.executeCommand(url, user, pw, repoName, layerName,
-		// limit, until, true);
-		// } catch (GeogigCommandException e) {
-		// JAXBContext jaxbContext =
-		// JAXBContext.newInstance(GeogigRepositoryLog.class);
-		// Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		// log = (GeogigRepositoryLog) unmarshaller.unmarshal(new
-		// StringReader(e.getMessage()));
-		// }
-		// return log;
-
 		LogRepository logRepos = new LogRepository();
 		GeogigLayerSimpleLog simpleLog = new GeogigLayerSimpleLog();
 		try {

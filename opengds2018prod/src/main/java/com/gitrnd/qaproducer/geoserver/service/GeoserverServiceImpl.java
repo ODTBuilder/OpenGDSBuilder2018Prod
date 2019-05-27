@@ -75,7 +75,7 @@ import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 
 /**
- * Geoserver와 관련된 요청을 처리하는 클래스
+ * Geoserver와 관련된 데이터를 처리하는 클래스
  * 
  * @author SG.Lee
  * @Since 2017. 5. 12. 오전 2:22:14

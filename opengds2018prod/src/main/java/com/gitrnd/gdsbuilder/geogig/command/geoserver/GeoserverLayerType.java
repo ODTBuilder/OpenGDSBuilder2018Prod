@@ -19,12 +19,40 @@ import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.command.ResponseType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigGeoserverLayer;
 
+/**
+ * Geoserver Layer List GET Command 실행 클래스.
+ * 
+ * @author SG.LEE
+ *
+ */
 public class GeoserverLayerType {
 
+	/**
+	 * rest
+	 */
 	private static final String rest = "rest";
+	/**
+	 * workspaces parameter
+	 */
 	private static final String command_workspaces = "workspaces";
+	/**
+	 * datastores parameter
+	 */
 	private static final String command_layers = "layers";
 
+	/**
+	 * WorkSpace에 존재하는 모든 Layer 정보 목록을 반환함.
+	 * 
+	 * @param baseURL   Geoserver BaseURL
+	 *                  <p>
+	 *                  (ex. http://localhost:8080/geoserver)
+	 * @param username  Geoserver 사용자 ID
+	 * @param password  Geoserver 사용자 PW
+	 * @param workspace Geoserver workspace명
+	 * @param layers    Geoserver Layer명
+	 * @param type      응답 타입(xml 또는 json)
+	 * @return
+	 */
 	public GeogigGeoserverLayer executeCommand(String baseURL, String username, String password, String workspace,
 			String layers, ResponseType type) {
 

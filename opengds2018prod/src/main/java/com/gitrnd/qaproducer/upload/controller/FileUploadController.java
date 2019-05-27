@@ -48,12 +48,12 @@ import com.gitrnd.qaproducer.upload.service.FileUploadService;
 @RequestMapping("/file")
 public class FileUploadController extends AbstractController{
 	/**
-	 * 
+	 * {@link FileUploadController} {@link Logger}
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
 	/**
-	 * 
+	 * 파일관련 요청 처리 인터페이스
 	 */
 	@Autowired
 	@Qualifier("fileService")

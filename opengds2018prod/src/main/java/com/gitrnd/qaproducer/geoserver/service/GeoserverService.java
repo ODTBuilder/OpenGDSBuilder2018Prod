@@ -25,22 +25,23 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
 import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 
 /**
- * @ClassName: GeoserverService
- * @Description: Geoserver와 관련된 데이터를 처리한다.
+ * Geoserver와 관련된 데이터를 처리하는 인터페이스
  * @author JY.Kim
  * @Since 2017. 4. 3. 오후 2:59:12
  */
 public interface GeoserverService {
 
 	/**
-	 * @Description SHP파일 발행(레이어 존재해있어야함)
+	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
 	 * @Since 2018. 7. 31. 오전 9:44:27
 	 * @param dtGeoManager
@@ -52,7 +53,7 @@ public interface GeoserverService {
 	 * @return boolean
 	 */
 	/**
-	 * @Description 
+	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
 	 * @Since 2018. 12. 14. 오후 2:48:33
 	 * @param dtGeoManager
@@ -70,10 +71,10 @@ public interface GeoserverService {
 			String layerName, File zipFile, String srs);
 
 	/**
-	 * @Description SHP파일 발행(레이어 존재해있어야함)
+	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
 	 * @Since 2018. 7. 31. 오전 9:44:29
-	 * @param dtGeoManager
+	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    작업공간
 	 * @param dsName       저장소
 	 * @param layerName    레이어명
@@ -89,10 +90,10 @@ public interface GeoserverService {
 			String layerName, File zipFile, String srs, String defaultStyle);
 
 	/**
-	 * @Description SHP파일 업로드
+	 * SHP파일 업로드
 	 * @author SG.Lee
 	 * @Since 2018. 11. 5. 오후 5:35:37
-	 * @param dtGeoManager
+	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    작업공간
 	 * @param datastore    저장소
 	 * @param request      MultipartHttpServletRequest
@@ -105,15 +106,17 @@ public interface GeoserverService {
 	
 
 	/**
-	 * @Description JSON파일 업로드
+	 * JSON파일 업로드
 	 * @author SG.Lee
 	 * @Since 2019. 2. 27. 오후 6:06:28
-	 * @param dtGeoManager  DTGeoserverManager Object
+	 * @param dtGeoManager  Geoserver API 연동 클래스
 	 * @param workspace     Geoserver Workspace명
 	 * @param datastore     Geoserver Datasource명
 	 * @param layerName     저장하고 싶은 layer명
 	 * @param epsg          좌표계
-	 * @param uploadJsons {
+	 * @param uploadJsons   업로드 JSON
+	 * 						<p>
+	 * 						{
 							   "serverName" : "테스트서버",
 							   "workspace" : "작업공간",
 							   "datastore" : "저장소",
@@ -134,70 +137,70 @@ public interface GeoserverService {
 	
 
 	/**
-	 * @Description 에러 레이어 발행
+	 * 에러 레이어 발행
 	 * @author SG.Lee
 	 * @Since 2018. 7. 5. 오전 10:26:25
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param workspace    - Geoserver Workspace명
-	 * @param dsName       - Geoserver Datasource명
-	 * @param layerInfo    - 레이어 정보객체
-	 * @return boolean
+	 * @param dtGeoManager  Geoserver API 연동 클래스
+	 * @param workspace     Geoserver Workspace명
+	 * @param dsName        Geoserver Datasource명
+	 * @param layerInfo     레이어 정보객체
+	 * @return boolean 	 	에러레이어 발행여부
 	 */
 	public boolean errLayerPublishGeoserver(DTGeoserverManager dtGeoManager, String workspace, String dsName, GeoLayerInfo layerInfo);
 
 	/**
-	 * @Description Workspace 조건에 따른 Workspace단위 트리생성
+	 * Workspace 조건에 따른 Workspace단위 트리생성
 	 * @author SG.Lee
 	 * @Since 2018. 7. 13. 오후 4:48:25
-	 * @param dtGeoManagers
+	 * @param dtGeoManagers Geoserver API 연동 클래스
 	 * @param serverName    서버명
-	 * @return JSONArray
+	 * @return JSONArray    Workspace단위 트리
 	 */
 	public JSONArray getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, String type);
 
 	/**
-	 * @Description 전체 트리생성
+	 * 전체 트리생성
 	 * @author SG.Lee
 	 * @Since 2018. 7. 13. 오후 4:58:43
-	 * @param dtGeoserverMList
-	 * @return JSONArray
+	 * @param dtGeoserverMList Geoserver API 연동 클래스
+	 * @return JSONArray       Geoserver 전체트리(jsTree(https://www.jstree.com/))
 	 */
 	public JSONArray getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverMList);
 
 	/**
-	 * 레이어를 중복체크한다.
+	 * 레이어 중복체크
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 7
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param workspace    - Geoserver Workspace명
-	 * @param layerList    - 중복체크할 레이어명 리스트
-	 * @return JSONObject - {레이어명 : 중복여부}
+	 * @param dtGeoManager Geoserver API 연동 클래스
+	 * @param workspace    Geoserver Workspace명
+	 * @param layerList    중복체크할 레이어명 리스트
+	 * @return JSONObject  {레이어명 : 중복여부}
 	 */
 	public JSONObject duplicateCheck(DTGeoserverManager dtGeoManager, String workspace, ArrayList<String> layerList);
 
 	/**
-	 * DTGeoLayerList를 조회한다.
+	 * {@link DTGeoLayer} 정보 리스트 조회
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 4
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param workspace    - Geoserver Workspace명
-	 * @param layerList    - 레이어명 리스트
-	 * @return DTGeoLayerList
+	 * @param dtGeoManager Geoserver API 연동 클래스
+	 * @param workspace    Geoserver Workspace명
+	 * @param layerList    레이어명 리스트
+	 * @return DTGeoLayerList {@link DTGeoLayer} 리스트
 	 */
 	public DTGeoLayerList getGeoLayerList(DTGeoserverManager dtGeoManager, String workspace,
 			ArrayList<String> layerList);
 
 	/**
-	 * DTGeoGroupLayerList를 조회한다.
+	 * {@link DTGeoGroupLayer} 리스트조회
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 4
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param workspace    - Geoserver Workspace명
-	 * @param groupList    - 그룹레이어명 리스트
-	 * @return DTGeoGroupLayerList
+	 * @param dtGeoManager Geoserver API 연동 클래스
+	 * @param workspace    Geoserver Workspace명
+	 * @param groupList    그룹레이어명 리스트
+	 * @return DTGeoGroupLayerList {@link DTGeoGroupLayer} 리스트
 	 */
 	public DTGeoGroupLayerList getGeoGroupLayerList(DTGeoserverManager dtGeoManager, String workspace,
 			ArrayList<String> groupList);
@@ -208,9 +211,9 @@ public interface GeoserverService {
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 5. 오전 10:40:17
-	 * @param dtGeoManager  - DTGeoserverManager Object
-	 * @param workspace     - Geoserver Workspace명
-	 * @param dsName         - Geoserver Datasource명
+	 * @param dtGeoManager  Geoserver API 연동 클래스
+	 * @param workspace     Geoserver Workspace명
+	 * @param dsName        Geoserver Datasource명
 	 * @param layerNameList 삭제할 레이어 이름 리스트
 	 * @return int - 200 성공 - 500 요청실패 - 605 해당 조건에 맞는 서버존재X - 606 일부성공 또는 실패
 	 */
@@ -221,11 +224,11 @@ public interface GeoserverService {
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 5. 오전 11:08:03
-	 * @param dtGeoManager   - DTGeoserverManager Object
-	 * @param workspace      - Geoserver Workspace명
-	 * @param dsName         - Geoserver Datasource명
+	 * @param dtGeoManager   Geoserver API 연동 클래스
+	 * @param workspace      Geoserver Workspace명
+	 * @param dsName         Geoserver Datasource명
 	 * @param groupLayerName 삭제할 그룹레이어
-	 * @return boolean - 삭제여부
+	 * @return boolean 삭제여부
 	 */
 	public boolean removeDTGeoserverAllLayer(DTGeoserverManager dtGeoManager, String workspace, String dsName,
 			final String groupLayerName);
@@ -235,8 +238,8 @@ public interface GeoserverService {
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 19. 오후 9:15:07
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @return boolean
+	 * @param dtGeoManager  Geoserver API 연동 클래스
+	 * @return List<String> Geoserver 스타일 리스트
 	 */
 	public List<String> getGeoserverStyleList(DTGeoserverManager dtGeoManager);
 
@@ -245,15 +248,15 @@ public interface GeoserverService {
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 7. 오후 6:15:55
-	 * @param dtGeoManager - DTGeoserverManager Object
-	 * @param sldBody
+	 * @param dtGeoManager DTGeoserverManager Object
+	 * @param sldBody 
 	 * @param name
 	 * @return boolean
 	 */
 	public boolean publishStyle(DTGeoserverManager dtGeoManager, String sldBody, String name);
 
 	/**
-	 * Geoserver 스타일을 수정한다.
+	 * Geoserver 스타일을 수정
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 7. 오후 6:15:57
@@ -265,7 +268,7 @@ public interface GeoserverService {
 	public boolean updateStyle(DTGeoserverManager dtGeoManager, final String sldBody, final String name);
 
 	/**
-	 * Geoserver 스타일을 삭제한다.
+	 * Geoserver 스타일을 삭제
 	 * 
 	 * @author SG.Lee
 	 * @Since 2017. 6. 7. 오후 6:16:01
@@ -293,7 +296,7 @@ public interface GeoserverService {
 			final String srs, final String style, boolean attChangeFlag);
 
 	/**
-	 * @Description WFST 서비스를 요청한다.
+	 * WFST 서비스를 요청한다.
 	 * @author SG.Lee
 	 * @Since 2018. 7. 20. 오후 2:47:50
 	 * @param dtGeoManager
@@ -303,7 +306,7 @@ public interface GeoserverService {
 	public String requestWFSTransaction(DTGeoserverManager dtGeoManager, String workspace, String wfstXml);
 
 	/**
-	 * @Description sld 조회
+	 * sld 조회
 	 * @author SG.Lee
 	 * @Since 2018. 8. 16. 오후 1:26:03
 	 * @param dtGeoManager
@@ -314,7 +317,7 @@ public interface GeoserverService {
 	public String getLayerStyleSld(DTGeoserverManager dtGeoManager, String workspace, String layerName);
 
 	/**
-	 * @Description 레이어 유효성체크
+	 * 레이어 유효성체크
 	 * @author SG.Lee
 	 * @Since 2018. 11. 5. 오후 3:22:37
 	 * @param dtGeoManager
@@ -325,7 +328,7 @@ public interface GeoserverService {
 	public boolean exsistLayer(DTGeoserverManager dtGeoManager, String workspace, String layerName);
 
 	/**
-	 * @Description datastore 수정
+	 * datastore 수정
 	 * @author DY.Oh
 	 * @Since 2018. 11. 14. 오후 3:22:37
 	 * @param geoserverManager
@@ -337,7 +340,7 @@ public interface GeoserverService {
 			String branch);
 	
 	/**
-	 * @Description 스타일리스트 조회
+	 * 스타일리스트 조회
 	 * @author SG.Lee
 	 * @Since 2018. 11. 21. 오후 5:13:14
 	 * @param geoserverManager
@@ -346,7 +349,7 @@ public interface GeoserverService {
 	public List<String> getStyleList(DTGeoserverManager geoserverManager);
 	
 	/**
-	 * @Description 스타일리스트 조회 
+	 * 스타일리스트 조회 
 	 * @author SG.Lee
 	 * @Since 2018. 11. 21. 오후 6:00:41
 	 * @param geoserverManager

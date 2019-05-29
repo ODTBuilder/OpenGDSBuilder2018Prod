@@ -602,6 +602,8 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
+	 * Geoserver에 sldBody를 통한 스타일 추가
+	 * 
 	 * @author SG.LEE
 	 * @param request
 	 * @param jsonObject
@@ -659,6 +661,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
+	 * Geoserver Layer Style SLD 조회
 	 * @author SG.LEE
 	 * @param request
 	 * @param response
@@ -666,7 +669,7 @@ public class GeoserverController extends AbstractController {
 	 * @param serverName
 	 * @param workspace
 	 * @param layerName
-	 * @return
+	 * @return 레이어 스타일 sldBody
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/getLayerStyleSld.ajax")
@@ -684,6 +687,7 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
+	 * 검수파일(zip) 업로드 및 검수 요청
 	 * @author SG.LEE
 	 * @param request
 	 * @param response

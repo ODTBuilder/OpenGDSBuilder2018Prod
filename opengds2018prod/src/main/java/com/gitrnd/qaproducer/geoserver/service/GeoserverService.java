@@ -153,6 +153,7 @@ public interface GeoserverService {
 	 * @author SG.Lee
 	 * @Since 2018. 7. 13. 오후 4:48:25
 	 * @param dtGeoManagers Geoserver API 연동 클래스
+	 * @param parent  
 	 * @param serverName    서버명
 	 * @return JSONArray    Workspace단위 트리
 	 */

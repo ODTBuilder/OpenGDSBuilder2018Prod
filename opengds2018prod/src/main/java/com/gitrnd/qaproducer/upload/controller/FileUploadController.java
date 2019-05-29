@@ -83,19 +83,4 @@ public class FileUploadController extends AbstractController{
 		return files;
 	}
 
-	/**
-	 * 파일명 중복체크 @author SG.Lee @Since 2017. 4 @param fileName @return
-	 * boolean @throws
-	 */
-/*	@RequestMapping(value = "/fileNameDupCheckAjax.ajax", method = RequestMethod.GET)
-	public @ResponseBody boolean fileNameDupCheck(HttpServletRequest request,
-			@RequestParam(value = "fileName", required = true) String fileName) {
-		UserVO generalUser = (UserVO) getSession(request, EnUserType.GENERAL.getTypeName());
-		if (generalUser == null) {
-			return false;
-		}
-		boolean dupFlag = false;
-		dupFlag = fileService.fileNameDupCheck(generalUser, fileName);
-		return dupFlag;
-	}*/
 }

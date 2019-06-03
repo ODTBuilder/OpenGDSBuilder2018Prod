@@ -55,7 +55,6 @@ import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerList;
  * GeoServer로부터 레이어 정보를 받아오는 클래스. GeoLayer 객체로 파싱
  * 
  * @author DY.Oh
- * @Date 2017. 3. 11. 오후 1:39:13
  */
 public class GeoLayerParser {
 
@@ -96,16 +95,11 @@ public class GeoLayerParser {
 	/**
 	 * GeoLayerParser 생성자. Geoserver 레이어를 GeoLayer 객체로 파싱
 	 * 
-	 * @param workspaceName
-	 *            작업공간 이름
-	 * @param dataStore
-	 *            저장소 이름
-	 * @param fileFormat
-	 *            파일포맷
-	 * @param collectionName
-	 *            파일이름
-	 * @param layerName
-	 *            레이어 이름
+	 * @param workspaceName  작업공간 이름
+	 * @param dataStore      저장소 이름
+	 * @param fileFormat     파일포맷
+	 * @param collectionName 파일이름
+	 * @param layerName      레이어 이름
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws ParseException
@@ -124,19 +118,15 @@ public class GeoLayerParser {
 	/**
 	 * GeoLayerParser 생성자. Geoserver 레이어를 GeoLayer 객체로 파싱
 	 * 
-	 * @param workspaceName
-	 *            작업공간 이름
-	 * @param getCapabilities
-	 * @param fileFormat
-	 *            파일포맷
-	 * @param collectionName
-	 *            파일이름
-	 * @param layerName
-	 *            레이어 이름
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @param workspaceName   작업공간 이름
+	 * @param getCapabilities Capabilities
+	 * @param fileFormat      파일포맷
+	 * @param collectionName  파일이름
+	 * @param layerName       레이어 이름
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	public GeoLayerParser(String workspaceName, String getCapabilities, EnFileFormat fileFormat, String collectionName,
 			String layerName) throws FileNotFoundException, IOException, ParseException, SchemaException {
@@ -155,20 +145,15 @@ public class GeoLayerParser {
 	/**
 	 * GeoLayerParser 생성자. 다수의 Geoserver 레이어를 GeoLayerList 객체로 파싱
 	 * 
-	 * @param workspaceName
-	 *            작업공간 이름
-	 * @param dataStore
-	 *            저장소 이름
-	 * @param fileFormat
-	 *            파일포맷
-	 * @param collectionName
-	 *            파일이름
-	 * @param layers
-	 *            레이어 이름 목록
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @param workspaceName  작업공간 이름
+	 * @param dataStore      저장소 이름
+	 * @param fileFormat     파일포맷
+	 * @param collectionName 파일이름
+	 * @param layers         레이어 이름 목록
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	public GeoLayerParser(String workspaceName, DataStore dataStore, EnFileFormat fileFormat, String collectionName,
 			JSONArray layers) throws FileNotFoundException, IOException, ParseException, SchemaException {
@@ -192,8 +177,7 @@ public class GeoLayerParser {
 	/**
 	 * 작업공간 이름 설정
 	 * 
-	 * @param workspaceName
-	 *            작업공간 이름
+	 * @param workspaceName 작업공간 이름
 	 */
 	public void setWorkspaceName(String workspaceName) {
 		this.workspaceName = workspaceName;
@@ -211,8 +195,7 @@ public class GeoLayerParser {
 	/**
 	 * GeoLayer 객체 설정
 	 * 
-	 * @param layer
-	 *            GeoLayer 객체
+	 * @param layer GeoLayer 객체
 	 */
 	public void setLayer(GeoLayer layer) {
 		this.layer = layer;
@@ -230,8 +213,7 @@ public class GeoLayerParser {
 	/**
 	 * GeoLayerList 객체 설정
 	 * 
-	 * @param layerList
-	 *            GeoLayerList 객체
+	 * @param layerList GeoLayerList 객체
 	 */
 	public void setLayerList(GeoLayerList layerList) {
 		this.layerList = layerList;
@@ -254,11 +236,11 @@ public class GeoLayerParser {
 	/**
 	 * GeoServer로부터 레이어 정보를 받아 GeoLayer 객체로 변환하여 반환
 	 * 
-	 * @return GeoLayer
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @return GeoLayer GeoLayer 객체
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	@SuppressWarnings("unchecked")
 	public GeoLayer layerParse() throws FileNotFoundException, IOException, ParseException, SchemaException {
@@ -288,11 +270,11 @@ public class GeoLayerParser {
 	/**
 	 * GeoServer로부터 다수의 레이어 정보를 받아 GeoLayerList 객체로 변환하여 반환
 	 * 
-	 * @return GeoLayerList
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @return GeoLayerList GeoLayerList 객체
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	public GeoLayerList layersParse() throws FileNotFoundException, IOException, ParseException, SchemaException {
 

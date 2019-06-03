@@ -57,7 +57,7 @@ public class PublishGeoserverLayer {
 	 * @param datastore datastore workspace명
 	 * @param layerName Geoserver layer명
 	 * @param src       좌표계 (ex.EPSG:4326)
-	 * @param enabled
+	 * @param enabled   Geoserver 발행 여부
 	 * @return 요청 성공 여부
 	 * 
 	 * @author DY.Oh

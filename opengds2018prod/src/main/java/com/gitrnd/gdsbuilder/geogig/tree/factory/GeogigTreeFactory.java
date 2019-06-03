@@ -28,7 +28,7 @@ public interface GeogigTreeFactory {
 	 * @param dtGeoManagers Geoserver REST Manager 및 Geoserver 접속 정보 목록
 	 * @param type          조회 타입
 	 * @return Geoserver 접속 정보 목록에 해당하는 각각의 Geoserver명을 JSONArray 형태의 Tree
-	 * @throws HttpHostConnectException
+	 * @throws HttpHostConnectException HttpHostConnectException
 	 */
 	public GeogigRepositoryTree createGeogigRepositoryTree(DTGeoserverManagerList dtGeoManagers,
 			EnGeogigRepositoryTreeType type) throws HttpHostConnectException;
@@ -52,7 +52,7 @@ public interface GeogigTreeFactory {
 	 * @param dtGeoserver Geoserver REST Manager 및 Geoserver 접속 정보
 	 * @param serverName  Geoserver 이름
 	 * @param type        조회 타입
-	 * @param node        상위 노드
+	 * @param parent      상위 노드
 	 * @param local       Geogig Repository ID
 	 * @param fetch       버전 갱신 여부
 	 * @return Remote Repository 및 Remote Branch를 {@link JSONArray} 형태의 Tree

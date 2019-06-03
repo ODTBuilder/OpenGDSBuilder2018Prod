@@ -18,7 +18,7 @@ package com.gitrnd.gdsbuilder.fileread.shp;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ import com.gitrnd.gdsbuilder.type.shp.layer.DTSHPLayer;
 import com.gitrnd.gdsbuilder.type.shp.layer.DTSHPLayerList;
 
 /**
- * SHP 파일을 읽어 DTSHPLayerCollection 객체로 변환하는 기능을 제공
+ * SHP 파일을 읽어 {@link DTSHPLayerCollection} 객체로 변환하는 기능을 제공
  * 
  * @author DY.Oh
  *
@@ -48,8 +48,8 @@ public class SHPFileReader {
 	 * @param upZipFilePath zip 파일 압축 해제 경로
 	 * @param entryName     zip 파일 내 폴더명
 	 * @param fileNameMap   shp, shx, dbf 파일명
-	 * @return DTSHPLayerCollection
-	 * @throws Exception
+	 * @return DTSHPLayerCollection {@link DTSHPLayerCollection}
+	 * @throws Exception {@link Exception}
 	 */
 	@SuppressWarnings("unchecked")
 	public DTSHPLayerCollection read(String upZipFilePath, String entryName, Map<String, Object> fileNameMap)
@@ -106,18 +106,15 @@ public class SHPFileReader {
 	 * shp 파일 객체를 SimpleFeatureCollection으로 변환하여 반환
 	 * 
 	 * @param shpFile shp 파일 객체
-	 * @return SimpleFeatureCollection
+	 * @return SimpleFeatureCollection {@link SimpleFeatureCollection}
 	 */
 	public SimpleFeatureCollection getShpObject(File shpFile) {
 
-		Map<String, Object> map = new HashMap<String, Object>();
 		ShapefileDataStore dataStore;
-
 		String typeName;
 		SimpleFeatureCollection collection = null;
-
 		try {
-			map.put("url", shpFile.toURI().toURL());
+			Map map = Collections.singletonMap("url", shpFile.toURI().toURL());
 			dataStore = (ShapefileDataStore) DataStoreFinder.getDataStore(map);
 
 			typeName = dataStore.getTypeNames()[0];

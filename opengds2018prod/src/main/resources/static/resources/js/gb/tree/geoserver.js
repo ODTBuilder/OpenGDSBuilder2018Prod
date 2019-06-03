@@ -1700,11 +1700,6 @@ gb.tree.GeoServer.prototype.openAddGeoServer = function() {
 	var gPassInputDiv = $("<div>").append(gPassInput).addClass("gb-geoserver-add-input-cell");
 	var gPassArea = $("<div>").append(gPass).append(gPassInputDiv).addClass("gb-geoserver-add-row");
 
-	gNameInput.val("geo42");
-	gURLInput.val("http://175.116.181.42:9990/geoserver");
-	gIDInput.val("admin");
-	gPassInput.val("geoserver");
-	
 	var closeBtn = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass("gb-button-float-right").text(that.translation["close"][that.locale]);
 	var okBtn = $("<button>").addClass("gb-button").addClass("gb-button-primary").addClass("gb-button-float-right").text(that.translation["add"][that.locale]);
 

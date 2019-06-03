@@ -14,7 +14,7 @@ import com.gitrnd.qaproducer.qa.mapper.QACategoryMapper;
  * @className QACategoryRepository.java
  * @description
  * @author DY.Oh
- * @date 2018. 3. 9. 오전 10:48:53
+ * @Since 2018. 3. 9. 오전 10:48:53
  */
 
 @Repository
@@ -25,7 +25,7 @@ public class QACategoryRepository {
 
 	/**
 	 * @author DY.Oh
-	 * @Date 2018. 3. 9. 오전 10:50:23
+	 * @Since 2018. 3. 9. 오전 10:50:23
 	 * @param idx
 	 * @return QACategory
 	 * @decription

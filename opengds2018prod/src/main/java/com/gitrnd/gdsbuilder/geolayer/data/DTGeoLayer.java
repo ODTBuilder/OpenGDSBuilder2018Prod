@@ -55,43 +55,75 @@ import org.json.simple.JSONObject;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
 
 /**
- * DTGroupLayer에 대한 정보를 담고있는 클래스
- * 
+ * Geoserver Layer 정보를 가지고 있는 클래스
  * @author SG.Lee
- * @Date 2017. 2
+ * @Since 2017. 2
  */
 public class DTGeoLayer {
-	/*
-	 * public enum Type { SHP("SHP"), DB("DB"), UNKNOWN(null);
-	 * 
-	 * private final String layerType;
-	 * 
-	 * private Type(String layerType) { this.layerType = layerType; }
-	 * 
-	 * public static Type get(String layerType) { for (Type type : values()) {
-	 * if(type == UNKNOWN) continue; if(type.layerType.equals(layerType)) return
-	 * type; } return UNKNOWN; } };
-	 */
 
-	private String nativeName = ""; // 원본이름
-	private String lName = ""; // 레이어이름
-	private String title = ""; // 간략한 레이어 설명
+	/**
+	 * 원본이름
+	 */
+	private String nativeName = "";
+	/**
+	 * 레이어이름
+	 */
+	private String lName = ""; 
+	/**
+	 * 제목
+	 */
+	private String title = ""; 
+	/**
+	 * 개요
+	 */
 	private String abstractContent = "";
-	private String srs = ""; // 좌표체계
+	/**
+	 * 좌표체계
+	 */
+	private String srs = ""; 
+	/**
+	 * 위/경도 영역
+	 */
 	private JSONObject llbBox = new JSONObject(); // LatLonBoundingBox
+	/**
+	 * 원본 데이터 최소경계 영역
+	 */
 	private JSONObject nbBox = new JSONObject(); // NativeBoundingBox
+	/**
+	 * 저장소타입(ex. shp, postgis..)
+	 */
 	private String dsType = ""; // 저장소타입
+	/**
+	 * Geometry 컬럼명 - geom
+	 */
 	private String geomkey = "";
-	private String geomType = ""; // 공간정보타입
+	/**
+	 * 공간정보타입(Point, LineString, Polygon...)
+	 */
+	private String geomType = "";
+	/**
+	 * 속성정보 - {key1 : String, key2 : Integer...}
+	 */
 	private JSONObject attInfo = new JSONObject(); // 속성정보
+	/**
+	 * 스타일
+	 */
 	private String style = "";
+	/**
+	 * 스타일 작업공간
+	 */
 	private String styleWorkspace = "";
+	/**
+	 * SLD 스타일 형식
+	 */
 	private String sld = "";
 
 	/**
-	 * DTGeoLayer Build @author SG.Lee @Date 2017. 2 @param response - 요청
-	 * URL @return DTGeoLayer @throws
-	 * 
+	 * Geoserver REST Response 결과를 {@link DTGeoLayer} 클래스로 변환 
+	 * @author SG.Lee 
+	 * @Since 2017. 2 
+	 * @param response - 요청결과(XML) 
+	 * @return DTGeoLayer  레이어 정보
 	 * @throws IOException
 	 * @throws JDOMException
 	 */
@@ -105,6 +137,14 @@ public class DTGeoLayer {
 		return elem == null ? null : new DTGeoLayer(elem);
 	}
 
+	/**
+	 * XML 전체 Element를 각각의 Element객체로 빌드
+	 * @author SG.LEE
+	 * @param response - 요청결과(XML)
+	 * @return {@link Element} 단일 {@link Element}
+	 * @throws JDOMException
+	 * @throws IOException
+	 */
 	public static Element buildElement(String response) throws JDOMException, IOException {
 		if (response == null)
 			return null;
@@ -120,9 +160,8 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer 생성자
-	 * 
-	 * @param layerElem
+	 * {@link DTGeoLayer} 생성자
+	 * @param layerElem 단일 레이어 {@link Element}
 	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoLayer(Element layerElem) {
@@ -159,8 +198,11 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 Geom 파라미터 값 부여 @author SG.Lee @Date 2017. 2 @param
-	 * layerElem @return String @throws
+	 * {@link DTGeoLayer}에 Geometry Type 정보 조회
+	 * @author SG.Lee 
+	 * @Since 2017. 2 
+	 * @param layerElem 단일 레이어 {@link Element} 
+     * @return String Geometry type(Point, LineString, Polygon...)
 	 */
 	private String buildGeomType(Element layerElem) {
 		String geomType = "";
@@ -190,14 +232,17 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 attInfo 파라미터 값 리턴 @author SG.Lee @Date 2017. 5. 10. 오후
-	 * 9:40:23 @param layerElem @return JSONObject @throws
+	 * {@link DTGeoLayer}에 attInfo 조회 
+	 * @author SG.Lee 
+	 * @Since 2017. 5. 10. 오후 9:40:23
+	 * @param layerElem 단일 레이어 {@link Element} 
+	 * @return JSONObject 속성정보 {key1 : String, key2 : Integer...}
 	 */
 	@SuppressWarnings("unchecked")
 	private JSONObject buildAttType(Element layerElem) {
 		JSONObject object = new JSONObject();
 		Element attsElement = layerElem.getChild("attributes");
-		System.out.println(attsElement.toString());
+//		System.out.println(attsElement.toString());
 		if (attsElement != null) {
 			List<Element> list = attsElement.getChildren();
 			for (int i = 0; i < list.size(); i++) {
@@ -233,8 +278,11 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 srs파라미터 값 리턴 @author SG.Lee @Date 2017. 2 @param
-	 * layerElem @return String @throws
+	 * {@link DTGeoLayer}의 srs 조회
+	 * @author SG.Lee 
+	 * @Since 2017. 2 
+	 * @param layerElem 단일 레이어 {@link Element} 
+	 * @return String 좌표계(ex. EPSG:4326)
 	 */
 	@SuppressWarnings("unused")
 	private String buildSRS(Element layerElem) {
@@ -242,20 +290,17 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * DTGeoLayer의 attInfo 파라미터 값 리턴 @author SG.Lee @Date 2017. 2 @param
-	 * layerElem @return String @throws
+	 * {@link DTGeoLayer}의 저장소 타입 조회
+	 * @author SG.Lee 
+	 * @Since 2017. 2 
+	 * @param layerElem layerElem 단일 레이어 {@link Element} 
+	 * @return String 저장소 타입(shp or postgis...)
 	 */
 	@SuppressWarnings("unused")
 	private String buildStoreType(Element layerElem) {
 		return layerElem.getChild("store").getAttributeValue("class");
 	}
 
-	/**
-	 * DTGeolayer GET, SET
-	 * 
-	 * @author SG.Lee
-	 * @Date 2017.2
-	 */
 	public String getNativeName() {
 		return nativeName;
 	}

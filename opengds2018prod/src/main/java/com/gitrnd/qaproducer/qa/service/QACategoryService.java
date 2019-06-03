@@ -15,7 +15,7 @@ import com.gitrnd.qaproducer.qa.repository.QACategoryRepository;
  * @className QACategoryService.java
  * @description
  * @author DY.Oh
- * @date 2018. 3. 9. 오전 10:48:11
+ * @Since 2018. 3. 9. 오전 10:48:11
  */
 
 @Service

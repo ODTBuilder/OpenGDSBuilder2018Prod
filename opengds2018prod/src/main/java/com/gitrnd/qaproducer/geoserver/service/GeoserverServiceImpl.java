@@ -75,10 +75,10 @@ import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 
 /**
- * Geoserver와 관련된 요청을 처리하는 클래스
+ * Geoserver와 관련된 데이터를 처리하는 클래스
  * 
  * @author SG.Lee
- * @Date 2017. 5. 12. 오전 2:22:14
+ * @Since 2017. 5. 12. 오전 2:22:14
  */
 @Service("geoService")
 public class GeoserverServiceImpl implements GeoserverService {
@@ -908,7 +908,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	/**
 	 *
 	 * @author SG.Lee
-	 * @Date 2017. 6. 19. 오후 9:15:07
+	 * @Since 2017. 6. 19. 오후 9:15:07
 	 * @return boolean
 	 */
 	@Override
@@ -1209,7 +1209,7 @@ public class GeoserverServiceImpl implements GeoserverService {
    	 * 파일이동
    	 * 
    	 * @author SG.Lee
-   	 * @Date 2018. 4. 18. 오전 9:46:27
+   	 * @Since 2018. 4. 18. 오전 9:46:27
    	 * @param folderName
    	 * @param fileName
    	 * @param beforeFilePath
@@ -1244,7 +1244,7 @@ public class GeoserverServiceImpl implements GeoserverService {
    	 * 파일복사
    	 * 
    	 * @author SG.Lee
-   	 * @Date 2018. 4. 18. 오전 9:45:55
+   	 * @Since 2018. 4. 18. 오전 9:45:55
    	 * @param source
    	 * @param dest
    	 * @throws IOException void
@@ -1258,7 +1258,7 @@ public class GeoserverServiceImpl implements GeoserverService {
  * 쓰레드 Result 클래스
  * 
  * @author SG.Lee
- * @Date 2017. 9. 6. 오후 3:09:38
+ * @Since 2017. 9. 6. 오후 3:09:38
  */
 class Result {
 	List<String> successLayerList = new ArrayList<String>();

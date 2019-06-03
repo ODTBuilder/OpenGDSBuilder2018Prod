@@ -1,9 +1,9 @@
 package com.gitrnd.gdsbuilder.fileread.en;
 
 /**
- * EnFileFormat 타입
+ * File 포맷 타입
  * @author SG.Lee
- * @Date 2017. 6. 5. 오후 5:45:47
+ * @Since 2017. 6. 5. 오후 5:45:47
  * */
 public enum EnFileFormat {
 	DXF("DXF", "dxf"), 

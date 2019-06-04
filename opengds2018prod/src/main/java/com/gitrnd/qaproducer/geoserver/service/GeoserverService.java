@@ -36,14 +36,14 @@ import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
 /**
  * Geoserver와 관련된 데이터를 처리하는 인터페이스
  * @author JY.Kim
- * @Since 2017. 4. 3. 오후 2:59:12
+ * @since 2017. 4. 3. 오후 2:59:12
  */
 public interface GeoserverService {
 
 	/**
 	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
-	 * @Since 2018. 7. 31. 오전 9:44:27
+	 * @since 2018. 7. 31. 오전 9:44:27
 	 * @param dtGeoManager
 	 * @param workspace    작업공간
 	 * @param dsName       저장소
@@ -55,7 +55,7 @@ public interface GeoserverService {
 	/**
 	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
-	 * @Since 2018. 12. 14. 오후 2:48:33
+	 * @since 2018. 12. 14. 오후 2:48:33
 	 * @param dtGeoManager
 	 * @param workspace    작업공간
 	 * @param dsName       저장소
@@ -73,7 +73,7 @@ public interface GeoserverService {
 	/**
 	 * SHP파일 발행(레이어 존재해있어야함)
 	 * @author SG.Lee
-	 * @Since 2018. 7. 31. 오전 9:44:29
+	 * @since 2018. 7. 31. 오전 9:44:29
 	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    작업공간
 	 * @param dsName       저장소
@@ -92,7 +92,7 @@ public interface GeoserverService {
 	/**
 	 * SHP파일 업로드
 	 * @author SG.Lee
-	 * @Since 2018. 11. 5. 오후 5:35:37
+	 * @since 2018. 11. 5. 오후 5:35:37
 	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    작업공간
 	 * @param datastore    저장소
@@ -108,7 +108,7 @@ public interface GeoserverService {
 	/**
 	 * JSON파일 업로드
 	 * @author SG.Lee
-	 * @Since 2019. 2. 27. 오후 6:06:28
+	 * @since 2019. 2. 27. 오후 6:06:28
 	 * @param dtGeoManager  Geoserver API 연동 클래스
 	 * @param workspace     Geoserver Workspace명
 	 * @param datastore     Geoserver Datasource명
@@ -139,7 +139,7 @@ public interface GeoserverService {
 	/**
 	 * 에러 레이어 발행
 	 * @author SG.Lee
-	 * @Since 2018. 7. 5. 오전 10:26:25
+	 * @since 2018. 7. 5. 오전 10:26:25
 	 * @param dtGeoManager  Geoserver API 연동 클래스
 	 * @param workspace     Geoserver Workspace명
 	 * @param dsName        Geoserver Datasource명
@@ -151,7 +151,7 @@ public interface GeoserverService {
 	/**
 	 * Workspace 조건에 따른 Workspace단위 트리생성
 	 * @author SG.Lee
-	 * @Since 2018. 7. 13. 오후 4:48:25
+	 * @since 2018. 7. 13. 오후 4:48:25
 	 * @param dtGeoManagers Geoserver API 연동 클래스
 	 * @param parent  
 	 * @param serverName    서버명
@@ -162,7 +162,7 @@ public interface GeoserverService {
 	/**
 	 * 전체 트리생성
 	 * @author SG.Lee
-	 * @Since 2018. 7. 13. 오후 4:58:43
+	 * @since 2018. 7. 13. 오후 4:58:43
 	 * @param dtGeoserverMList Geoserver API 연동 클래스
 	 * @return JSONArray       Geoserver 전체트리(jsTree(https://www.jstree.com/))
 	 */
@@ -172,7 +172,7 @@ public interface GeoserverService {
 	 * 레이어 중복체크
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 7
+	 * @since 2017. 7
 	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    Geoserver Workspace명
 	 * @param layerList    중복체크할 레이어명 리스트
@@ -184,7 +184,7 @@ public interface GeoserverService {
 	 * {@link DTGeoLayer} 정보 리스트 조회
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 4
+	 * @since 2017. 4
 	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    Geoserver Workspace명
 	 * @param layerList    레이어명 리스트
@@ -197,7 +197,7 @@ public interface GeoserverService {
 	 * {@link DTGeoGroupLayer} 리스트조회
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 4
+	 * @since 2017. 4
 	 * @param dtGeoManager Geoserver API 연동 클래스
 	 * @param workspace    Geoserver Workspace명
 	 * @param groupList    그룹레이어명 리스트
@@ -211,7 +211,7 @@ public interface GeoserverService {
 	 * 다중 레이어를 삭제
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 5. 오전 10:40:17
+	 * @since 2017. 6. 5. 오전 10:40:17
 	 * @param dtGeoManager  Geoserver API 연동 클래스
 	 * @param workspace     Geoserver Workspace명
 	 * @param dsName        Geoserver Datasource명
@@ -224,7 +224,7 @@ public interface GeoserverService {
 	 * Geoserver Workspace내의 모든 레이어삭제
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 5. 오전 11:08:03
+	 * @since 2017. 6. 5. 오전 11:08:03
 	 * @param dtGeoManager   Geoserver API 연동 클래스
 	 * @param workspace      Geoserver Workspace명
 	 * @param dsName         Geoserver Datasource명
@@ -238,7 +238,7 @@ public interface GeoserverService {
 	 * Geoserver 스타일리스트 조회
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 19. 오후 9:15:07
+	 * @since 2017. 6. 19. 오후 9:15:07
 	 * @param dtGeoManager  Geoserver API 연동 클래스
 	 * @return List<String> Geoserver 스타일 리스트
 	 */
@@ -248,7 +248,7 @@ public interface GeoserverService {
 	 * Geoserver 스타일을 생성
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 7. 오후 6:15:55
+	 * @since 2017. 6. 7. 오후 6:15:55
 	 * @param dtGeoManager DTGeoserverManager Object
 	 * @param sldBody 
 	 * @param name
@@ -260,7 +260,7 @@ public interface GeoserverService {
 	 * Geoserver 스타일을 수정
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 7. 오후 6:15:57
+	 * @since 2017. 6. 7. 오후 6:15:57
 	 * @param dtGeoManager - DTGeoserverManager Object
 	 * @param sldBody
 	 * @param name
@@ -272,7 +272,7 @@ public interface GeoserverService {
 	 * Geoserver 스타일을 삭제
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 7. 오후 6:16:01
+	 * @since 2017. 6. 7. 오후 6:16:01
 	 * @param dtGeoManager - DTGeoserverManager Object
 	 * @param styleName
 	 * @return boolean
@@ -283,7 +283,7 @@ public interface GeoserverService {
 	 * Geoserver 레이어를 업데이트한다.
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 6. 19. 오후 7:45:22
+	 * @since 2017. 6. 19. 오후 7:45:22
 	 * @param orginalName
 	 * @param name
 	 * @param title
@@ -299,7 +299,7 @@ public interface GeoserverService {
 	/**
 	 * WFST 서비스를 요청한다.
 	 * @author SG.Lee
-	 * @Since 2018. 7. 20. 오후 2:47:50
+	 * @since 2018. 7. 20. 오후 2:47:50
 	 * @param dtGeoManager
 	 * @param wfstXml
 	 * @return String
@@ -309,7 +309,7 @@ public interface GeoserverService {
 	/**
 	 * sld 조회
 	 * @author SG.Lee
-	 * @Since 2018. 8. 16. 오후 1:26:03
+	 * @since 2018. 8. 16. 오후 1:26:03
 	 * @param dtGeoManager
 	 * @param workspace
 	 * @param layerName
@@ -320,7 +320,7 @@ public interface GeoserverService {
 	/**
 	 * 레이어 유효성체크
 	 * @author SG.Lee
-	 * @Since 2018. 11. 5. 오후 3:22:37
+	 * @since 2018. 11. 5. 오후 3:22:37
 	 * @param dtGeoManager
 	 * @param workspace    작업공간
 	 * @param layerName    레이어명
@@ -331,7 +331,7 @@ public interface GeoserverService {
 	/**
 	 * datastore 수정
 	 * @author DY.Oh
-	 * @Since 2018. 11. 14. 오후 3:22:37
+	 * @since 2018. 11. 14. 오후 3:22:37
 	 * @param geoserverManager
 	 * @param workspace
 	 * @param datastore
@@ -343,7 +343,7 @@ public interface GeoserverService {
 	/**
 	 * 스타일리스트 조회
 	 * @author SG.Lee
-	 * @Since 2018. 11. 21. 오후 5:13:14
+	 * @since 2018. 11. 21. 오후 5:13:14
 	 * @param geoserverManager
 	 * @return List<String>
 	 * */
@@ -352,7 +352,7 @@ public interface GeoserverService {
 	/**
 	 * 스타일리스트 조회 
 	 * @author SG.Lee
-	 * @Since 2018. 11. 21. 오후 6:00:41
+	 * @since 2018. 11. 21. 오후 6:00:41
 	 * @param geoserverManager
 	 * @param workspace
 	 * @return List<String>

@@ -12,7 +12,7 @@ import lombok.ToString;
  * @className QACategory.java
  * @description
  * @author DY.Oh
- * @Since 2018. 3. 9. 오전 10:50:02
+ * @since 2018. 3. 9. 오전 10:50:02
  */
 
 @Data

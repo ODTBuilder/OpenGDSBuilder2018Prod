@@ -24,12 +24,11 @@ import java.util.Map;
 
 import com.gitrnd.gdsbuilder.fileread.FileMeta;
 
-
 /**
  * Geoserver에 발행할 레이어 정보를 저장하는 클래스
  * 
  * @author DY.Oh
- * @Since 2017. 5. 1. 오후 1:26:32
+ * @since 2017. 5. 1. 오후 1:26:32
  */
 public class GeoLayerInfo extends FileMeta {
 
@@ -69,10 +68,6 @@ public class GeoLayerInfo extends FileMeta {
 	 * 레이어 boundary 목록
 	 */
 	private Map<String, HashMap<String, Object>> boundarys;
-	/**
-	 * 
-	 */
-	// private Map<String, Boolean> isFeatureMap;
 
 	/**
 	 * GeoLayerInfo 생성자
@@ -85,31 +80,12 @@ public class GeoLayerInfo extends FileMeta {
 		layerTypes = new HashMap<String, String>();
 		layerColumns = new HashMap<String, List<String>>();
 		boundarys = new HashMap<String, HashMap<String, Object>>();
-		// isFeatureMap = new HashMap<String, Boolean>();
 	}
 
-	// public Map<String, Boolean> getIsFeatureMap() {
-	// return isFeatureMap;
-	// }
-	//
-	// public void setIsFeatureMap(Map<String, Boolean> isFeatureMap) {
-	// this.isFeatureMap = isFeatureMap;
-	// }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.git.opengds.upload.domain.FileMeta#getFileType()
-	 */
 	public String getFileType() {
 		return fileType;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.git.opengds.upload.domain.FileMeta#setFileType(java.lang.String)
-	 */
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
 	}
@@ -117,7 +93,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * Geoserver 레이어의 boundary로 사용될 DB Table 컬럼명 반환
 	 * 
-	 * @return String
+	 * @return DB Table 컬럼명
 	 */
 	public static String getBoundary() {
 		return boundary;
@@ -126,7 +102,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 좌표계 EPSG 코드 반환
 	 * 
-	 * @return String
+	 * @return 레이어 좌표계 EPSG 코드
 	 */
 	public String getTransSrc() {
 		return transSrc;
@@ -135,8 +111,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * * 레이어 좌표계 EPSG 코드 반환 설정
 	 * 
-	 * @param transSrc
-	 *            레이어 좌표계 EPSG 코드
+	 * @param transSrc 레이어 좌표계 EPSG 코드
 	 */
 	public void setTransSrc(String transSrc) {
 		this.transSrc = transSrc;
@@ -145,7 +120,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 타입 목록 반환
 	 * 
-	 * @return Map<String, String>
+	 * @return 레이어 타입 목록
 	 */
 	public Map<String, String> getLayerTypes() {
 		return layerTypes;
@@ -154,8 +129,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 타입 목록 설정
 	 * 
-	 * @param layerTypes
-	 *            레이어 타입 목록
+	 * @param layerTypes 레이어 타입 목록
 	 */
 	public void setLayerTypes(Map<String, String> layerTypes) {
 		this.layerTypes = layerTypes;
@@ -164,7 +138,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 column 목록 반환
 	 * 
-	 * @return Map<String, List<String>>
+	 * @return 레이어 column 목록
 	 */
 	public Map<String, List<String>> getLayerColumns() {
 		return layerColumns;
@@ -173,8 +147,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 column 목록 설정
 	 * 
-	 * @param layerColumns
-	 *            레이어 column 목록
+	 * @param layerColumns 레이어 column 목록
 	 */
 	public void setLayerColumns(Map<String, List<String>> layerColumns) {
 		this.layerColumns = layerColumns;
@@ -183,10 +156,8 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 ID, 레이어 타입을 레이어 타입 목록에 추가
 	 * 
-	 * @param layerID
-	 *            레이어 ID
-	 * @param layerType
-	 *            레이어 타입
+	 * @param layerID   레이어 ID
+	 * @param layerType 레이어 타입
 	 */
 	public void putLayerType(String layerID, String layerType) {
 		layerTypes.put(layerID, layerType);
@@ -195,10 +166,8 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 ID, 레이어 타입을 레이어 column 목록에 추가
 	 * 
-	 * @param layerID
-	 *            레이어 ID
-	 * @param columns
-	 *            레이어 column 목록
+	 * @param layerID 레이어 ID
+	 * @param columns 레이어 column 목록
 	 */
 	public void putLayerColumns(String layerID, List<String> columns) {
 		layerColumns.put(layerID, columns);
@@ -207,7 +176,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 명 목록 반환
 	 * 
-	 * @return List<String>
+	 * @return 레이어 명 목록
 	 */
 	public List<String> getLayerNames() {
 		return layerNames;
@@ -216,8 +185,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 명 목록 설정
 	 * 
-	 * @param layerNames
-	 *            레이어 명 목록
+	 * @param layerNames 레이어 명 목록
 	 */
 	public void setLayerNames(List<String> layerNames) {
 		this.layerNames = layerNames;
@@ -226,8 +194,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 명 목록에 레이어 명 추가
 	 * 
-	 * @param layerName
-	 *            레이어 명
+	 * @param layerName 레이어 명
 	 */
 	public void putLayerName(String layerName) {
 		layerNames.add(layerName);
@@ -236,7 +203,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * Geoserver 레이어의 feature id로 사용될 DB Table 컬럼명 반환
 	 * 
-	 * @return String
+	 * @return feature id로 사용될 DB Table 컬럼명
 	 */
 	public static String getFid() {
 		return fid;
@@ -245,7 +212,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * Geoserver 레이어의 geometry로 사용될 DB Table 컬럼명
 	 * 
-	 * @return String
+	 * @return geometry로 사용될 DB Table 컬럼명
 	 */
 	public static String getGeom() {
 		return geom;
@@ -254,7 +221,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 boundary 목록 반환
 	 * 
-	 * @return Map<String, HashMap<String, Object>>
+	 * @return boundary 목록
 	 */
 	public Map<String, HashMap<String, Object>> getBoundarys() {
 		return boundarys;
@@ -263,8 +230,7 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 boundary 목록 설정
 	 * 
-	 * @param boundary
-	 *            레이어 boundary 목록
+	 * @param boundary 레이어 boundary 목록
 	 */
 	public void setBoundarys(Map<String, HashMap<String, Object>> boundary) {
 		this.boundarys = boundary;
@@ -273,10 +239,8 @@ public class GeoLayerInfo extends FileMeta {
 	/**
 	 * 레이어 boundary 목록에 레이어명, 레이어 boundary 추가
 	 * 
-	 * @param layerName
-	 *            레이어명
-	 * @param boundary
-	 *            레이어 boundary
+	 * @param layerName 레이어명
+	 * @param boundary  레이어 boundary
 	 */
 	public void putLayerBoundary(String layerName, HashMap<String, Object> boundary) {
 

@@ -56,8 +56,9 @@ import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
 
 /**
  * Geoserver Layer 정보를 가지고 있는 클래스
+ * 
  * @author SG.Lee
- * @Since 2017. 2
+ * @since 2017. 2
  */
 public class DTGeoLayer {
 
@@ -68,11 +69,11 @@ public class DTGeoLayer {
 	/**
 	 * 레이어이름
 	 */
-	private String lName = ""; 
+	private String lName = "";
 	/**
 	 * 제목
 	 */
-	private String title = ""; 
+	private String title = "";
 	/**
 	 * 개요
 	 */
@@ -80,7 +81,7 @@ public class DTGeoLayer {
 	/**
 	 * 좌표체계
 	 */
-	private String srs = ""; 
+	private String srs = "";
 	/**
 	 * 위/경도 영역
 	 */
@@ -119,13 +120,12 @@ public class DTGeoLayer {
 	private String sld = "";
 
 	/**
-	 * Geoserver REST Response 결과를 {@link DTGeoLayer} 클래스로 변환 
-	 * @author SG.Lee 
-	 * @Since 2017. 2 
-	 * @param response - 요청결과(XML) 
-	 * @return DTGeoLayer  레이어 정보
-	 * @throws IOException
-	 * @throws JDOMException
+	 * Geoserver REST Response 결과를 {@link DTGeoLayer} 클래스로 변환
+	 * 
+	 * @author SG.Lee
+	 * @since 2017. 2
+	 * @param response - 요청결과(XML)
+	 * @return DTGeoLayer 레이어 정보
 	 */
 	public static DTGeoLayer build(String response) {
 		Element elem = null;
@@ -139,11 +139,12 @@ public class DTGeoLayer {
 
 	/**
 	 * XML 전체 Element를 각각의 Element객체로 빌드
+	 * 
 	 * @author SG.LEE
-	 * @param response - 요청결과(XML)
+	 * @param response 요청결과(XML)
 	 * @return {@link Element} 단일 {@link Element}
-	 * @throws JDOMException
-	 * @throws IOException
+	 * @throws JDOMException {@link JDOMException}
+	 * @throws IOException   {@link IOException}
 	 */
 	public static Element buildElement(String response) throws JDOMException, IOException {
 		if (response == null)
@@ -161,6 +162,7 @@ public class DTGeoLayer {
 
 	/**
 	 * {@link DTGeoLayer} 생성자
+	 * 
 	 * @param layerElem 단일 레이어 {@link Element}
 	 */
 	@SuppressWarnings("unchecked")
@@ -174,7 +176,7 @@ public class DTGeoLayer {
 		this.attInfo = this.buildAttType(layerElem);
 		this.dsType = this.buildStoreType(layerElem);
 		this.srs = this.buildSRS(layerElem);
-		
+
 		try {
 			this.nbBox.put("minx", featureType.getNativeBoundingBox().getMinX());
 			this.nbBox.put("miny", featureType.getNativeBoundingBox().getMinY());
@@ -199,10 +201,11 @@ public class DTGeoLayer {
 
 	/**
 	 * {@link DTGeoLayer}에 Geometry Type 정보 조회
-	 * @author SG.Lee 
-	 * @Since 2017. 2 
-	 * @param layerElem 단일 레이어 {@link Element} 
-     * @return String Geometry type(Point, LineString, Polygon...)
+	 * 
+	 * @author SG.Lee
+	 * @since 2017. 2
+	 * @param layerElem 단일 레이어 {@link Element}
+	 * @return String Geometry type(Point, LineString, Polygon...)
 	 */
 	private String buildGeomType(Element layerElem) {
 		String geomType = "";
@@ -217,8 +220,8 @@ public class DTGeoLayer {
 					String geomAtt = attElement.getChildText("binding");
 					int size = geomAtt.length();
 					if (size > 28) {
-						int pos = geomAtt.lastIndexOf( "." );
-						geomType = geomAtt.substring( pos + 1 );
+						int pos = geomAtt.lastIndexOf(".");
+						geomType = geomAtt.substring(pos + 1);
 //						geomType = attElement.getChildText("binding").substring(28);
 						break;
 					} else {
@@ -232,10 +235,11 @@ public class DTGeoLayer {
 	}
 
 	/**
-	 * {@link DTGeoLayer}에 attInfo 조회 
-	 * @author SG.Lee 
-	 * @Since 2017. 5. 10. 오후 9:40:23
-	 * @param layerElem 단일 레이어 {@link Element} 
+	 * {@link DTGeoLayer}에 attInfo 조회
+	 * 
+	 * @author SG.Lee
+	 * @since 2017. 5. 10. 오후 9:40:23
+	 * @param layerElem 단일 레이어 {@link Element}
 	 * @return JSONObject 속성정보 {key1 : String, key2 : Integer...}
 	 */
 	@SuppressWarnings("unchecked")
@@ -254,7 +258,7 @@ public class DTGeoLayer {
 					String binding = attElement.getChildText("binding");
 					JSONObject attContent = new JSONObject();
 					int bindingSize = binding.length();
-					if(bindingSize>9){
+					if (bindingSize > 9) {
 						String type = binding.substring(10);
 						if (type.equals("BigDecimal")) {
 							type = "Double";
@@ -262,8 +266,8 @@ public class DTGeoLayer {
 						attContent.put("type", type);
 						attContent.put("nillable", nillable);
 						object.put(nameAtt, attContent);
-					}else{
-						if(binding.endsWith("[B")){
+					} else {
+						if (binding.endsWith("[B")) {
 							attContent.put("type", "byte[]");
 							attContent.put("nillable", nillable);
 							object.put(nameAtt, attContent);
@@ -279,9 +283,10 @@ public class DTGeoLayer {
 
 	/**
 	 * {@link DTGeoLayer}의 srs 조회
-	 * @author SG.Lee 
-	 * @Since 2017. 2 
-	 * @param layerElem 단일 레이어 {@link Element} 
+	 * 
+	 * @author SG.Lee
+	 * @since 2017. 2
+	 * @param layerElem 단일 레이어 {@link Element}
 	 * @return String 좌표계(ex. EPSG:4326)
 	 */
 	@SuppressWarnings("unused")
@@ -291,9 +296,10 @@ public class DTGeoLayer {
 
 	/**
 	 * {@link DTGeoLayer}의 저장소 타입 조회
-	 * @author SG.Lee 
-	 * @Since 2017. 2 
-	 * @param layerElem layerElem 단일 레이어 {@link Element} 
+	 * 
+	 * @author SG.Lee
+	 * @since 2017. 2
+	 * @param layerElem layerElem 단일 레이어 {@link Element}
 	 * @return String 저장소 타입(shp or postgis...)
 	 */
 	@SuppressWarnings("unused")
@@ -404,6 +410,7 @@ public class DTGeoLayer {
 	public void setGeomkey(String geomkey) {
 		this.geomkey = geomkey;
 	}
+
 	public String getStyleWorkspace() {
 		return styleWorkspace;
 	}

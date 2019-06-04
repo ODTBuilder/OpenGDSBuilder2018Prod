@@ -22,7 +22,7 @@ import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemoteRepository;
 
 /**
- * Geogig Remote Repository Remove Command Execution Class
+ * Geogig Remote Repository Remove Command 실행 클래스.
  * 
  * @author DY.Oh
  *

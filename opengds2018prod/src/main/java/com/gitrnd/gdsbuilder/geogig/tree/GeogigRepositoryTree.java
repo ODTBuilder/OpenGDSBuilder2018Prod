@@ -74,7 +74,7 @@ public class GeogigRepositoryTree extends JSONArray {
 	}
 
 	/**
-	 * 트리 생성 요청 타입 enum
+	 * Repository 트리 생성 요청 타입 enum
 	 * 
 	 * @author DY.Oh
 	 *

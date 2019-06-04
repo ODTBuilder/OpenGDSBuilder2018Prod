@@ -15,7 +15,6 @@
  *    Lesser General Public License for more details.
  */
 
-
 /*
  *  GeoServer-Manager - Simple Manager Library for GeoServer
  *  
@@ -53,55 +52,58 @@ import it.geosolutions.geoserver.rest.decoder.utils.JDOMBuilder;
 
 /**
  * {@link DTGeoGroupLayer} 리스트(Geoserver 레이어 정보 리스트)
+ * 
  * @author SG.Lee
- * @Since 2017. 2
- * */
-public class DTGeoGroupLayerList extends ArrayList<DTGeoGroupLayer> implements Serializable{
+ * @since 2017. 2
+ */
+public class DTGeoGroupLayerList extends ArrayList<DTGeoGroupLayer> implements Serializable {
 
 	private static final long serialVersionUID = -8414210792543933648L;
 
 	/**
-	 * Geoserver REST Response 결과를 {@link DTGeoGroupLayerList} 클래스로 변환 
+	 * Geoserver REST Response 결과를 {@link DTGeoGroupLayerList} 클래스로 변환
+	 * 
 	 * @author SG.LEE
-	 * @Since 2017. 2
-	 * @param responses
+	 * @since 2017. 2
+	 * @param responses Geoserver REST Response 결과
 	 * @return DTGeoGroupLayerList
 	 */
-	public DTGeoGroupLayerList build(List<String> responses){
+	public DTGeoGroupLayerList build(List<String> responses) {
 		List<Element> elements = new ArrayList<Element>();
-		for(String response : responses){
-		Element elem = JDOMBuilder.buildElement(response);
-		elements.add(elem);
+		for (String response : responses) {
+			Element elem = JDOMBuilder.buildElement(response);
+			elements.add(elem);
 		}
 		return elements.size() == 0 ? null : new DTGeoGroupLayerList(elements);
 	}
-	
-	public DTGeoGroupLayerList(){};
-	
+
+	public DTGeoGroupLayerList() {
+	};
+
 	/**
 	 * {@link DTGeoGroupLayerList} 생성자
+	 * 
 	 * @param groupLayerElem Group Layer 리스트 {@link Element}
 	 */
-	public DTGeoGroupLayerList(List<Element> groupLayerElem){
-		for(Element element : groupLayerElem){
+	public DTGeoGroupLayerList(List<Element> groupLayerElem) {
+		for (Element element : groupLayerElem) {
 			DTGeoGroupLayer groupLayer = new DTGeoGroupLayer(element);
 			super.add(groupLayer);
 		}
 	}
-	
-	
+
 	/**
 	 * {@link DTGeoGroupLayer}에서 해당 그룹레이어명에 대한 {@link DTGeoGroupLayer}를 반환
-	 * @author SG.Lee
-	 * @Since 2017. 5. 10. 오후 10:08:58
-	 * @param groupName - 그룹이름
+	 * 
+	 * @param groupName 그룹이름
 	 * @return DTGeoGroupLayer
-	 * @throws
-	 * */
-	public DTGeoGroupLayer getDTGeoGroupLayer(String groupName){
-		for(DTGeoGroupLayer groupLayer : this){
-			if(groupLayer.equals(groupName)){
-				return groupLayer; 
+	 * 
+	 * @author SG.Lee
+	 */
+	public DTGeoGroupLayer getDTGeoGroupLayer(String groupName) {
+		for (DTGeoGroupLayer groupLayer : this) {
+			if (groupLayer.equals(groupName)) {
+				return groupLayer;
 			}
 		}
 		return null;

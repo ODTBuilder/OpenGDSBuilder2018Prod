@@ -27,7 +27,7 @@ import org.apache.commons.io.FileUtils;
 /**
  * ZIP 파일을 지정된 경로에 압축해제하는 기능을 제공 
  * @author SG.Lee
- * @Since 2018. 7. 31. 오후 5:49:40
+ * @since 2018. 7. 31. 오후 5:49:40
  * */
 public class UnZipFile {
 	
@@ -113,7 +113,7 @@ public class UnZipFile {
 	/**
 	 * zip 파일의 압축 해제 후 지정된 경로에 압축 해제
 	 * @author SG.Lee
-	 * @Since 2018. 8. 1. 오전 11:37:15
+	 * @since 2018. 8. 1. 오전 11:37:15
 	 * @return 에러코드 200 성공
 	 *                 700 파일구조 에러
 	 *                 

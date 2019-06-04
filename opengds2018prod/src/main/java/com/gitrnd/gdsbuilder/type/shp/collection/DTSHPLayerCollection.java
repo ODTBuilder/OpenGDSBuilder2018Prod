@@ -31,8 +31,7 @@ public class DTSHPLayerCollection {
 	/**
 	 * SHP 파일 레이어 collection 이름 설정
 	 * 
-	 * @param collectionName
-	 *            SHP 파일 레이어 collection 이름
+	 * @param collectionName SHP 파일 레이어 collection 이름
 	 */
 	public void setCollectionName(String collectionName) {
 		this.collectionName = collectionName;
@@ -41,7 +40,7 @@ public class DTSHPLayerCollection {
 	/**
 	 * 다수의 SHP 파일 레이어 정보 목록 반환
 	 * 
-	 * @return
+	 * @return 다수의 SHP 파일 레이어 정보 목록
 	 */
 	public DTSHPLayerList getShpLayerList() {
 		return shpLayerList;
@@ -50,8 +49,7 @@ public class DTSHPLayerCollection {
 	/**
 	 * 다수의 SHP 파일 레이어 정보 목록 설정
 	 * 
-	 * @param shpLayerList
-	 *            다수의 SHP 파일 레이어 정보 목록
+	 * @param shpLayerList 다수의 SHP 파일 레이어 정보 목록
 	 */
 	public void setShpLayerList(DTSHPLayerList shpLayerList) {
 		this.shpLayerList = shpLayerList;

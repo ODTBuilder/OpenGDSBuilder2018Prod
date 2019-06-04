@@ -92,7 +92,7 @@ public class GeoLayerCollectionParser {
 	/**
 	 * @param collectionObject 검수 레이어 설정 JSONObject
 	 * @param workspaceName    작업공간 이름
-	 * @param getCapabilities
+	 * @param getCapabilities  Capabilities
 	 * @param fileFormat       파일포맷
 	 * @param layerList        레이어 이름 목록
 	 * @throws FileNotFoundException {@link FileNotFoundException}

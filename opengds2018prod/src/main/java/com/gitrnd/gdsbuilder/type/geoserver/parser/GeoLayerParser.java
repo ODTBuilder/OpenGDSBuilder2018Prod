@@ -100,10 +100,10 @@ public class GeoLayerParser {
 	 * @param fileFormat     파일포맷
 	 * @param collectionName 파일이름
 	 * @param layerName      레이어 이름
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	public GeoLayerParser(String workspaceName, DataStore dataStore, EnFileFormat fileFormat, String collectionName,
 			String layerName) throws FileNotFoundException, IOException, ParseException, SchemaException {
@@ -183,52 +183,26 @@ public class GeoLayerParser {
 		this.workspaceName = workspaceName;
 	}
 
-	/**
-	 * GeoLayer 객체 반환
-	 * 
-	 * @return GeoLayer
-	 */
 	public GeoLayer getLayer() {
 		return layer;
 	}
 
-	/**
-	 * GeoLayer 객체 설정
-	 * 
-	 * @param layer GeoLayer 객체
-	 */
 	public void setLayer(GeoLayer layer) {
 		this.layer = layer;
 	}
 
-	/**
-	 * GeoLayerList 객체 반환
-	 * 
-	 * @return GeoLayerList
-	 */
 	public GeoLayerList getLayerList() {
 		return layerList;
 	}
 
-	/**
-	 * GeoLayerList 객체 설정
-	 * 
-	 * @param layerList GeoLayerList 객체
-	 */
 	public void setLayerList(GeoLayerList layerList) {
 		this.layerList = layerList;
 	}
 
-	/**
-	 * @return
-	 */
 	public String getGetCapabilities() {
 		return getCapabilities;
 	}
 
-	/**
-	 * @param getCapabilities
-	 */
 	public void setGetCapabilities(String getCapabilities) {
 		this.getCapabilities = getCapabilities;
 	}

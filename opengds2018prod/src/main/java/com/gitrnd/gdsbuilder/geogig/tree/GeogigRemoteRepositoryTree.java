@@ -38,7 +38,7 @@ public class GeogigRemoteRepositoryTree extends JSONArray {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * 트리 생성 요청 타입 enum
+	 * 원격 Repository 트리 생성 요청 타입 enum.
 	 * 
 	 * @author DY.Oh
 	 *

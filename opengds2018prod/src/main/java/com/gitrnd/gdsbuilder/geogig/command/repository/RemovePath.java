@@ -19,6 +19,8 @@ import com.gitrnd.gdsbuilder.geogig.GeogigCommandException;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRemove;
 
 /**
+ * Geogig Remove Command 실행 클래스.
+ * 
  * @author DY.Oh
  *
  */

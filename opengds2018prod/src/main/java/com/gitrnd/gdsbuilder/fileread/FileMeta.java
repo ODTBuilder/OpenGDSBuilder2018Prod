@@ -26,7 +26,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 /**
  * 클라이언트에서 업로드한 파일정보 클래스
  * @author SG.Lee
- * @Since 2017. 5. 12. 오전 2:23:36
+ * @since 2017. 5. 12. 오전 2:23:36
  * */
 @JsonIgnoreProperties({ "bytes" })
 public class FileMeta {

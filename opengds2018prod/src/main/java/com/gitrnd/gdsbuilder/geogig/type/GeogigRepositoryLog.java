@@ -93,8 +93,25 @@ public class GeogigRepositoryLog {
 	@XmlRootElement(name = "commit")
 	public static class Commit {
 
+		/**
+		 * Commit 변경 타입.
+		 * 
+		 * @author DY.Oh
+		 *
+		 */
 		public enum ChangeType {
-			ADDED, MODIFIED, REMOVED;
+		/**
+		 * 생성
+		 */
+		ADDED,
+		/**
+		 * 수정
+		 */
+		MODIFIED,
+		/**
+		 * 삭제
+		 */
+		REMOVED;
 		}
 
 		/**

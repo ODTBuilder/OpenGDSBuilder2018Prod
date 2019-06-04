@@ -30,9 +30,9 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryType;
 import org.opengis.filter.Filter;
 
-import com.gitrnd.gdsbuilder.type.shp.collection.DTSHPLayerCollection;
-import com.gitrnd.gdsbuilder.type.shp.layer.DTSHPLayer;
-import com.gitrnd.gdsbuilder.type.shp.layer.DTSHPLayerList;
+import com.gitrnd.gdsbuilder.type.shp.DTSHPLayer;
+import com.gitrnd.gdsbuilder.type.shp.DTSHPLayerCollection;
+import com.gitrnd.gdsbuilder.type.shp.DTSHPLayerList;
 
 /**
  * SHP 파일을 읽어 {@link DTSHPLayerCollection} 객체로 변환하는 기능을 제공

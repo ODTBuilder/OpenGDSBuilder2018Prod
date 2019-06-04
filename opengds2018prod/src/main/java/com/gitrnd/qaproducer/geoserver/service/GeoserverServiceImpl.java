@@ -51,10 +51,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gitrnd.gdsbuilder.fileread.UnZipFile;
 import com.gitrnd.gdsbuilder.fileread.shp.SHPFileWriter;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
@@ -62,9 +58,13 @@ import com.gitrnd.gdsbuilder.geoserver.data.DTGSGeogigDatastoreEncoder;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.parse.impl.DataConvertorImpl;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;

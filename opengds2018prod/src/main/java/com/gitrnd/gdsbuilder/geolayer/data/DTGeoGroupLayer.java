@@ -52,7 +52,7 @@ import it.geosolutions.geoserver.rest.decoder.utils.JDOMBuilder;
  * {@link RESTLayerGroup} 확장클래스
  * Geoserver Group레이어 정보
  * @author SG.Lee
- * @Since 2017. 2
+ * @since 2017. 2
  * */
 public class DTGeoGroupLayer extends RESTLayerGroup{
 

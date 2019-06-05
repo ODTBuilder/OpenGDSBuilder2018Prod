@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
  * * order[0][column] : 정렬에 사용할 컬럼
  * * order[0][dir]	  : 정렬 방향 (asc, desc) 
  * @author HC.Kim
- * @Since 2018. 8. 16. 오후 3:20:28
+ * @since 2018. 8. 16. 오후 3:20:28
  * */
 public class ServerSideVO {
 	private int drawCount;

@@ -74,7 +74,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 /**
  * {@link GeoServerRESTReader} 상속 클래스 - Geoserver 정보 및 데이터 읽기 지원 
  * @author SG.LEE
- * @Since 2017. 5. 2. 오후 2:38:58
+ * @since 2017. 5. 2. 오후 2:38:58
  */
 public class DTGeoserverReader extends GeoServerRESTReader {
 
@@ -394,7 +394,7 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	/**
 	 * Geoserver 이용가능한 레이어 존재여부(발행만 안된상태) 
 	 * @author SG.Lee
-	 * @Since 2018. 12. 19. 오후 3:34:53
+	 * @since 2018. 12. 19. 오후 3:34:53
 	 * @param workspace 작업공간
 	 * @param datastores 저장소
 	 * @param layerName 레이어명

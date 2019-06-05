@@ -57,7 +57,7 @@ import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
 /**
  * Geoserver Layer 정보를 가지고 있는 클래스
  * @author SG.Lee
- * @Since 2017. 2
+ * @since 2017. 2
  */
 public class DTGeoLayer {
 
@@ -121,7 +121,7 @@ public class DTGeoLayer {
 	/**
 	 * Geoserver REST Response 결과를 {@link DTGeoLayer} 클래스로 변환 
 	 * @author SG.Lee 
-	 * @Since 2017. 2 
+	 * @since 2017. 2 
 	 * @param response - 요청결과(XML) 
 	 * @return DTGeoLayer  레이어 정보
 	 * @throws IOException
@@ -200,7 +200,7 @@ public class DTGeoLayer {
 	/**
 	 * {@link DTGeoLayer}에 Geometry Type 정보 조회
 	 * @author SG.Lee 
-	 * @Since 2017. 2 
+	 * @since 2017. 2 
 	 * @param layerElem 단일 레이어 {@link Element} 
      * @return String Geometry type(Point, LineString, Polygon...)
 	 */
@@ -234,7 +234,7 @@ public class DTGeoLayer {
 	/**
 	 * {@link DTGeoLayer}에 attInfo 조회 
 	 * @author SG.Lee 
-	 * @Since 2017. 5. 10. 오후 9:40:23
+	 * @since 2017. 5. 10. 오후 9:40:23
 	 * @param layerElem 단일 레이어 {@link Element} 
 	 * @return JSONObject 속성정보 {key1 : String, key2 : Integer...}
 	 */
@@ -280,7 +280,7 @@ public class DTGeoLayer {
 	/**
 	 * {@link DTGeoLayer}의 srs 조회
 	 * @author SG.Lee 
-	 * @Since 2017. 2 
+	 * @since 2017. 2 
 	 * @param layerElem 단일 레이어 {@link Element} 
 	 * @return String 좌표계(ex. EPSG:4326)
 	 */
@@ -292,7 +292,7 @@ public class DTGeoLayer {
 	/**
 	 * {@link DTGeoLayer}의 저장소 타입 조회
 	 * @author SG.Lee 
-	 * @Since 2017. 2 
+	 * @since 2017. 2 
 	 * @param layerElem layerElem 단일 레이어 {@link Element} 
 	 * @return String 저장소 타입(shp or postgis...)
 	 */

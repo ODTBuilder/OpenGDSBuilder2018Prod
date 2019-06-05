@@ -54,7 +54,7 @@ import it.geosolutions.geoserver.rest.decoder.utils.JDOMBuilder;
 /**
  * {@link DTGeoLayer} 리스트(Geoserver 레이어 정보 리스트)
  * @author SG.Lee
- * @Since 2016.08
+ * @since 2016.08
  * */
 public class DTGeoLayerList extends ArrayList<DTGeoLayer> implements Serializable  {
 	
@@ -65,7 +65,7 @@ public class DTGeoLayerList extends ArrayList<DTGeoLayer> implements Serializabl
 	/* *
 	 * Geoserver REST Response 결과를 {@link DTGeoLayerList} 클래스로 변환 
 	 * @author SG.Lee
-	 * @Since 2017. 2
+	 * @since 2017. 2
 	 * @param responses 요청결과(XML)
 	 * @return DTGeoLayerList 레이어 정보 리스트
 	 * @throws
@@ -100,7 +100,7 @@ public class DTGeoLayerList extends ArrayList<DTGeoLayer> implements Serializabl
 	/**
 	 * {@link DTGeoLayerList}에서 해당 레이어이름에 대한 그룹 {@link DTGeoLayer}를 반환
 	 * @author SG.Lee
-	 * @Since 2017. 5. 10. 오후 10:08:58
+	 * @since 2017. 5. 10. 오후 10:08:58
 	 * @param layerName - 레이어 이름
 	 * @return DTGeoLayer 레이어 정보
 	 * @throws

@@ -55,7 +55,7 @@ import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 /**
  * Geoserver 관련된 요청을 처리한다.
  * @author JY.Kim
- * @Since 2017. 4. 3. 오후 2:16:03
+ * @since 2017. 4. 3. 오후 2:16:03
  * 
  */
 @Controller("geoserverController")
@@ -138,7 +138,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부)
 	 * @author SG.Lee
-	 * @Since 2018. 7. 13. 오후 5:00:28
+	 * @since 2018. 7. 13. 오후 5:00:28
 	 * @param request {@link HttpServletRequest}
 	 * @param loginUser 사용자 정보
 	 * @param workspace 작업공간
@@ -163,7 +163,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청
 	 * @author SG.Lee
-	 * @Since 2018. 7. 13. 오후 5:00:28
+	 * @since 2018. 7. 13. 오후 5:00:28
 	 * @param request {@link HttpServletRequest}
 	 * @param loginUser 사용자 정보
 	 * @param workspace 작업공간
@@ -187,7 +187,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * Geoserver WFST요청 처리
 	 * @author SG.Lee
-	 * @Since 2018. 7. 20. 오후 2:59:37
+	 * @since 2018. 7. 20. 오후 2:59:37
 	 * @param request {@link HttpServletRequest}
 	 * @param loginUser 사용자 정보
 	 * @return String WFST 요청 결과
@@ -212,7 +212,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * Geoserver Layer update요청 처리
 	 * @author SG.Lee
-	 * @Since 2018. 7. 20. 오후 2:59:37
+	 * @since 2018. 7. 20. 오후 2:59:37
 	 * @param request {@link HttpServletRequest}
 	 * @param response {@link HttpServletResponse}
 	 * @param jsonObject 요청 파라미터
@@ -263,7 +263,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver WMS GetMap API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Since 2017. 4
+	 * @since 2017. 4
 	 * @param request
 	 * @param response
 	 * @throws Exception
@@ -292,7 +292,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver WFS GetFeature API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Since 2018. 7. 9. 오후 3:30:17
+	 * @since 2018. 7. 9. 오후 3:30:17
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -322,7 +322,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver WMS GetFeatureInfo API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Since 2018. 7. 9. 오후 3:32:51
+	 * @since 2018. 7. 9. 오후 3:32:51
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -353,7 +353,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver getWMSGetLegendGraphic API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Since 2018. 7. 9. 오후 3:33:02
+	 * @since 2018. 7. 9. 오후 3:33:02
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -412,7 +412,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * 단일 Geoserver 스타일리스트 조회
 	 * @author SG.Lee
-	 * @Since 2018. 11. 21. 오후 5:17:54
+	 * @since 2018. 11. 21. 오후 5:17:54
 	 * @param request
 	 * @param response
 	 * @param loginUser
@@ -451,7 +451,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver Layer 조회
 	 * 
 	 * @author SG.LEE
-	 * @Since 2017. 4
+	 * @since 2017. 4
 	 * @param request
 	 * @param response
 	 * @param jsonObject
@@ -490,7 +490,7 @@ public class GeoserverController extends AbstractController {
 	 * Geoserver 레이어 중복체크 
 	 * 
 	 * @author SG.LEE
-	 * @Since 2017. 5 
+	 * @since 2017. 5 
 	 * @param request
 	 * @param response
 	 * @param jsonObject
@@ -527,7 +527,7 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * Geoserver 레이어 삭제
 	 * @author SG.Lee
-	 * @Since 2018. 8. 2. 오전 10:14:37
+	 * @since 2018. 8. 2. 오전 10:14:37
 	 * @param request
 	 * @param jsonObject
 	 * @param loginUser

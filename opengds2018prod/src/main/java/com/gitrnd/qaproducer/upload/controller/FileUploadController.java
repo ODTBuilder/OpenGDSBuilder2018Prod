@@ -42,7 +42,7 @@ import com.gitrnd.qaproducer.upload.service.FileUploadService;
  * 파일 업로드와 관련된 요청을 수행한다.
  * 
  * @author SG.Lee
- * @Since 2017.04.11
+ * @since 2017.04.11
  */
 @Controller("fileUploadController")
 @RequestMapping("/file")
@@ -62,7 +62,7 @@ public class FileUploadController extends AbstractController{
 	/**
 	 * 검수대상 파일 업로드
 	 * @author SG.LEE
-	 * @Since 2017. 4
+	 * @since 2017. 4
 	 * @param request {@link MultipartHttpServletRequest} 
 	 * @param response {@link HttpServletResponse} 
 	 * @param loginUser 

@@ -9,7 +9,7 @@ import com.gitrnd.gdsbuilder.geoserver.service.en.EnGetFeatureInfoFormat;
  * WFS 의GetFeature 작업과 유사하지만 , 입력 및 출력 면에서 융통성이 부족
  * GeoServer 가 WFS 서비스를 제공하고 있으므로 가능한 GetFeatureInfo 대신 GetFeature 를 이용할 것을 권장함
  * @author SG.LEE
- * @Since 2018. 7. 17. 오후 1:26:26
+ * @since 2018. 7. 17. 오후 1:26:26
  */
 public class WMSGetFeatureInfo {
 	/**

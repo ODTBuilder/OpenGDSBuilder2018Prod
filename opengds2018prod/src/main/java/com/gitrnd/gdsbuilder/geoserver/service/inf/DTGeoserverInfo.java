@@ -5,7 +5,7 @@ package com.gitrnd.gdsbuilder.geoserver.service.inf;
 /**
  * Geoserver 정보 조회 클래스 
  * @author SG.Lee
- * @Since 2018. 7. 17. 오전 9:45:55
+ * @since 2018. 7. 17. 오전 9:45:55
  */
 public class DTGeoserverInfo {
 

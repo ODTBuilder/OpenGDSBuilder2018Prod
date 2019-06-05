@@ -29,7 +29,7 @@ import com.gitrnd.gdsbuilder.fileread.FileMeta;
  * Geoserver에 발행할 레이어 정보를 저장하는 클래스
  * 
  * @author DY.Oh
- * @Since 2017. 5. 1. 오후 1:26:32
+ * @since 2017. 5. 1. 오후 1:26:32
  */
 public class GeoLayerInfo extends FileMeta {
 

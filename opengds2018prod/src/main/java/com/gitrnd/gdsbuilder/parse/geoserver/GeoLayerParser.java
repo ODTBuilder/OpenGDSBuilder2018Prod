@@ -32,7 +32,7 @@
  *    Lesser General Public License for more details.
  */
 
-package com.gitrnd.gdsbuilder.type.geoserver.parser;
+package com.gitrnd.gdsbuilder.parse.geoserver;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,8 +48,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
 import com.gitrnd.gdsbuilder.fileread.en.EnFileFormat;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayer;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerList;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayer;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerList;
 
 /**
  * GeoServer로부터 레이어 정보를 받아오는 클래스. GeoLayer 객체로 파싱

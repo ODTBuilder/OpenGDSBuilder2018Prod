@@ -1,5 +1,5 @@
 /**
- * Geoserver로 부터 불러온 데이터 (레이어 또는 그룹 레이어)를 저장하는 클래스를 포함.
+ * Geoserver Layer 데이터 ({@link com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer}, {@link com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayer}) 
  * 
  * @author GIT
  *

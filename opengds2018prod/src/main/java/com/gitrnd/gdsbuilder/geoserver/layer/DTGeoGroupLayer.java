@@ -40,7 +40,7 @@
  * THE SOFTWARE.
  */
 
-package com.gitrnd.gdsbuilder.geolayer.data;
+package com.gitrnd.gdsbuilder.geoserver.layer;
 
 import org.jdom.Element;
 import org.json.simple.JSONObject;

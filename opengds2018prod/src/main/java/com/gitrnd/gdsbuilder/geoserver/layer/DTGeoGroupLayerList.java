@@ -41,7 +41,7 @@
  * THE SOFTWARE.
  */
 
-package com.gitrnd.gdsbuilder.geolayer.data;
+package com.gitrnd.gdsbuilder.geoserver.layer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

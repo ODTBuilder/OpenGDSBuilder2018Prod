@@ -40,7 +40,7 @@
  * THE SOFTWARE.
  */
 
-package com.gitrnd.gdsbuilder.geolayer.data;
+package com.gitrnd.gdsbuilder.geoserver.layer;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -60,7 +60,6 @@ import it.geosolutions.geoserver.rest.decoder.RESTFeatureType;
  * @since 2017. 2
  */
 public class DTGeoLayer {
-
 	/**
 	 * 원본이름
 	 */

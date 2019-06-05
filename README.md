@@ -46,10 +46,9 @@ Getting Started
 
 ### 3. PostgreSQL 설치 및 설정 ###
 - http://www.postgresql.org/download/ 접속 후 PostgreSQL 다운로드 및 설치
-- pgAdmin 실행 후 Databases 생성 후 New Database 클릭 
-- 사용자 계정(테스트 계정 : admin)을 Name으로 입력 후 Database 생성 
+- pgAdmin 실행 후 새로운 데이터베이스 생성 
 - 소스코드에서 gdo2018scheme 파일 다운로드
-- 생성한 Database에 gdo2018scheme 파일 restore
+- 생성한 데이터베이스에 gdo2018scheme 파일 restore
 
 ### 4. RabbitMQ 설치 및 설정 ###
 - erlang 다운로드 및 설치 http://www.erlang.org/download.html
@@ -62,7 +61,7 @@ Getting Started
 
 ### 5. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
-- eclipse 실행 후 zip 파일 형태로 Project Import
+- eclipse 실행 후 Project Import
 - 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
 <pre><code>
 spring:

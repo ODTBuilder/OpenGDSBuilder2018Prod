@@ -16,19 +16,19 @@ import org.opengis.feature.simple.SimpleFeature;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * {@link SimpleFeatureCollection} 인터페이스를 Geojson 구조의 {@link JSONObject} 객체로 변환하는 클래스
+ * {@link SimpleFeatureCollection} 인터페이스를 Geojson 구조의 {@link JSONObject} 객체로
+ * 변환하는 클래스
+ * 
  * @author SG.LEE
  *
  */
 public class SimpleToGeojsonImpl {
-	
+
 	/**
 	 * SimpleFeatureCollection을 JSONObject로 변환하여 반환한다.
 	 * 
 	 * @author dayeon.oh
-	 * @data 2016.02
-	 * @param simpleFeatureCollection
-	 *            변환할 SimpleFeatureCollection
+	 * @param simpleFeatureCollection 변환할 SimpleFeatureCollection
 	 * @return JSONObject 변환된 {@link JSONObject}
 	 */
 	public JSONObject build(SimpleFeatureCollection simpleFeatureCollection) {
@@ -38,6 +38,7 @@ public class SimpleToGeojsonImpl {
 
 	/**
 	 * {@link JSONObject} 형태의 {@link SimpleFeatureCollection} 객체 생성
+	 * 
 	 * @author SG.LEE
 	 * @param featureCollection 변환할 SimpleFeatureCollection
 	 * @return JSONObject 변환된 {@link JSONObject}
@@ -46,7 +47,7 @@ public class SimpleToGeojsonImpl {
 	private JSONObject buildFeatureCollection(SimpleFeatureCollection featureCollection) {
 
 		JSONArray features = new JSONArray();
-		
+
 		JSONObject obj = new JSONObject();
 		obj.put("type", "FeatureCollection");
 		obj.put("features", features);
@@ -111,11 +112,6 @@ public class SimpleToGeojsonImpl {
 		return typeArray;
 	}
 
-	/**
-	 * @author SG.LEE
-	 * @param geometry
-	 * @return
-	 */
 	private JSONObject buildGeometry(Geometry geometry) {
 		GeometryJSON gjson = new GeometryJSON();
 		Object obj = JSONValue.parse(gjson.toString(geometry));

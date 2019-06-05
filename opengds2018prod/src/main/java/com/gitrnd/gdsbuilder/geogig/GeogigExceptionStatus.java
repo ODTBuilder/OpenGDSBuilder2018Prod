@@ -3,7 +3,7 @@ package com.gitrnd.gdsbuilder.geogig;
 import org.springframework.http.HttpStatus;
 
 /**
- * GeogigExceptionStatus
+ * Geogig Command 오류 코드 Enum 클래스.
  * 
  * @author DY.Oh
  *

@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * Geogig Feature 속성 조회 응답 객체.
+ * 
  * @author DY.Oh
  *
  */
@@ -64,6 +66,12 @@ public class GeogigFeatureAttribute {
 		this.attributes = attributes;
 	}
 
+	/**
+	 * Geogig Feature 속성 정보를 저장하는 클래스.
+	 * 
+	 * @author DY.Oh
+	 *
+	 */
 	public static class Attribute {
 
 		private String name;

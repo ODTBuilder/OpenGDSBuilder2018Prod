@@ -15,15 +15,15 @@
  *    Lesser General Public License for more details.
  */
 
-package com.gitrnd.gdsbuilder.type.geoserver.layer;
+package com.gitrnd.gdsbuilder.type.geoserver;
 
 import java.util.ArrayList;
 
 /**
- * GeoLayerList 정보를 저장하는 클래스
+ * GeoLayerInfoList 정보를 저장하는 클래스
  * 
  * @author DY.Oh
  */
-public class GeoLayerList extends ArrayList<GeoLayer> {
+public class GeoLayerInfoList extends ArrayList<GeoLayerInfo> {
 
 }

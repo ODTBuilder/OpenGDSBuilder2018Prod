@@ -32,7 +32,7 @@
  *    Lesser General Public License for more details.
  */
 
-package com.gitrnd.gdsbuilder.type.geoserver.parser;
+package com.gitrnd.gdsbuilder.parse.geoserver;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -48,10 +48,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 import com.gitrnd.gdsbuilder.fileread.en.EnFileFormat;
-import com.gitrnd.gdsbuilder.type.geoserver.collection.GeoLayerCollection;
-import com.gitrnd.gdsbuilder.type.geoserver.collection.GeoLayerCollectionList;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayer;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerList;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayer;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerCollection;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerCollectionList;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerList;
 
 /**
  * 검수 레이어 설정 JSONObject를 GeoLayerCollection 객체로 파싱하는 클래스
@@ -73,7 +73,7 @@ public class GeoLayerCollectionParser {
 	 */
 	private String workspaceName;
 	/**
-	 * 
+	 * Capabilities
 	 */
 	private String getCapabilities;
 	/**
@@ -90,19 +90,15 @@ public class GeoLayerCollectionParser {
 	private List<String> layerList;
 
 	/**
-	 * @param collectionObject
-	 *            검수 레이어 설정 JSONObject
-	 * @param workspaceName
-	 *            작업공간 이름
-	 * @param getCapabilities
-	 * @param fileFormat
-	 *            파일포맷
-	 * @param layerList
-	 *            레이어 이름 목록
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @param collectionObject 검수 레이어 설정 JSONObject
+	 * @param workspaceName    작업공간 이름
+	 * @param getCapabilities  Capabilities
+	 * @param fileFormat       파일포맷
+	 * @param layerList        레이어 이름 목록
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	public GeoLayerCollectionParser(JSONObject collectionObject, String workspaceName, String getCapabilities,
 			EnFileFormat fileFormat, List<String> layerList)
@@ -120,73 +116,34 @@ public class GeoLayerCollectionParser {
 		collectionParser();
 	}
 
-	/**
-	 * GeoLayerCollectionList 반환
-	 * 
-	 * @return GeoLayerCollectionList
-	 */
 	public GeoLayerCollectionList getLayerCollections() {
 		return layerCollections;
 	}
 
-	/**
-	 * GeoLayerCollectionList 설정
-	 * 
-	 * @param layerCollections
-	 *            GeoLayerCollectionList 객체
-	 */
 	public void setLayerCollections(GeoLayerCollectionList layerCollections) {
 		this.layerCollections = layerCollections;
 	}
 
-	/**
-	 * 작업공간 이름 반환
-	 * 
-	 * @return String
-	 */
 	public String getWorkspaceName() {
 		return workspaceName;
 	}
 
-	/**
-	 * 작업공간 이름 설정
-	 * 
-	 * @param workspaceName
-	 *            작업공간 이름
-	 */
 	public void setWorkspaceName(String workspaceName) {
 		this.workspaceName = workspaceName;
 	}
 
-	/**
-	 * @return String
-	 */
 	public String getGetCapabilities() {
 		return getCapabilities;
 	}
 
-	/**
-	 * @param getCapabilities
-	 */
 	public void setGetCapabilities(String getCapabilities) {
 		this.getCapabilities = getCapabilities;
 	}
 
-	/**
-	 * 파일포맷 반환
-	 * 
-	 * @return EnFileFormat
-	 */
 	public EnFileFormat getFileFormat() {
 		return fileFormat;
 	}
 
-	/**
-	 * 파일포맷 설정
-	 * 
-	 * @param fileFormat
-	 *            파일포맷
-	 */
 	public void setFileFormat(EnFileFormat fileFormat) {
 		this.fileFormat = fileFormat;
 	}
@@ -195,10 +152,10 @@ public class GeoLayerCollectionParser {
 	 * 검수 레이어 설정 정보가 담겨있는 JSONObject를 GeoLayerCollection 객체로 파싱하여
 	 * GeoLayerCollectionList 목록에 추가
 	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws SchemaException
+	 * @throws FileNotFoundException {@link FileNotFoundException}
+	 * @throws IOException           {@link IOException}
+	 * @throws ParseException        {@link ParseException}
+	 * @throws SchemaException       {@link SchemaException}
 	 */
 	private void collectionParser() throws FileNotFoundException, IOException, ParseException, SchemaException {
 

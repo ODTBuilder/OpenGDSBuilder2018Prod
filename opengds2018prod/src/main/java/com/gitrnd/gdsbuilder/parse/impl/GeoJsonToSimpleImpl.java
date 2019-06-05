@@ -25,6 +25,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Geojson 구조의 {@link JSONObject}를 {@link SimpleFeatureCollection} 객체로 변환하는 클래스
+ * 
  * @author SG.LEE
  */
 public class GeoJsonToSimpleImpl {
@@ -32,13 +33,10 @@ public class GeoJsonToSimpleImpl {
 	 * 속성을 가진 JSONObject를 SimpleFeatureCollection으로 변환하여 반환한다.
 	 * 
 	 * @author dayeon.oh
-	 * @data 2016.02
-	 * @param geo
-	 *            변환할 JSONObject
-	 * @param attribute
-	 *            속성값
+	 * @param geo       변환할 JSONObject
+	 * @param attribute 속성값
 	 * @return JSONObject 변환된 JSONObject
-	 * @throws SchemaException
+	 * @throws SchemaException {@link SchemaException}
 	 */
 	public SimpleFeatureCollection converToSimpleFeatureCollection(JSONObject geo, JSONObject attribute)
 			throws SchemaException {
@@ -75,7 +73,7 @@ public class GeoJsonToSimpleImpl {
 		// SimpleFeature
 		SimpleFeatureType simpleFeatureType = null;
 		SimpleFeature simpleFeature = null;
-		
+
 		int size = attribute.keySet().size() + 1;
 		Object[] objects;
 		objects = new Object[size];
@@ -111,11 +109,9 @@ public class GeoJsonToSimpleImpl {
 	 * 속성이 없는 JSONObject를 SimpleFeatureCollection으로 변환하여 반환한다.
 	 * 
 	 * @author dayeon.oh
-	 * @data 2016.02
-	 * @param geo
-	 *            변환할 JSONObject
+	 * @param geo 변환할 JSONObject
 	 * @return JSONObject
-	 * @throws SchemaException
+	 * @throws SchemaException {@link SchemaException}
 	 */
 	public SimpleFeatureCollection converToSimpleFeatureCollection(JSONObject geo) throws SchemaException {
 
@@ -164,17 +160,17 @@ public class GeoJsonToSimpleImpl {
 			for (int i = 0; i < coordinates.size(); i++) {
 				Object object = coordinates.get(i);
 				String type = object.getClass().getSimpleName();
-				if(type.equals("Integer")){
+				if (type.equals("Integer")) {
 					String strObj = object.toString();
 					Double douObj = Double.valueOf(strObj).doubleValue();
 					doubleCoordinates.add(douObj);
-				}else{
+				} else {
 					Double douObj = (Double) coordinates.get(i);
 					doubleCoordinates.add(douObj);
 				}
 			}
-			//Double x = (Double) coordinates.get(0);
-			//Double y = (Double) coordinates.get(1);
+			// Double x = (Double) coordinates.get(0);
+			// Double y = (Double) coordinates.get(1);
 			Double x = (Double) doubleCoordinates.get(0);
 			Double y = (Double) doubleCoordinates.get(1);
 			Point point = geometryFactory.createPoint(new Coordinate(x, y));
@@ -193,21 +189,21 @@ public class GeoJsonToSimpleImpl {
 				for (int i = 0; i < innerCoordinates.size(); i++) {
 					Object object = innerCoordinates.get(i);
 					String type = object.getClass().getSimpleName();
-					if(type.equals("Integer")){
+					if (type.equals("Integer")) {
 						String strObj = object.toString();
 						Double douObj = Double.valueOf(strObj).doubleValue();
 						doubleInnerCoordinates.add(douObj);
-					}else{
+					} else {
 						Double douObj = (Double) innerCoordinates.get(i);
 						doubleInnerCoordinates.add(douObj);
 					}
 				}
-				
-				//Double x = (Double) innerCoordinates.get(0);
-				//Double y = (Double) innerCoordinates.get(1);
+
+				// Double x = (Double) innerCoordinates.get(0);
+				// Double y = (Double) innerCoordinates.get(1);
 				Double x = (Double) doubleInnerCoordinates.get(0);
 				Double y = (Double) doubleInnerCoordinates.get(1);
-				
+
 				coordinateArray[k] = new Coordinate(x, y);
 			}
 			LineString lineString = geometryFactory.createLineString(coordinateArray);
@@ -231,21 +227,21 @@ public class GeoJsonToSimpleImpl {
 				for (int r = 0; r < innerCoorSize; r++) {
 					JSONArray innerCoor = (JSONArray) innerCoordinates.get(r);
 					JSONArray doubleInnerCoor = new JSONArray();
-					
+
 					for (int i = 0; i < innerCoor.size(); i++) {
 						Object object = innerCoor.get(i);
 						String type = object.getClass().getSimpleName();
-						if(type.equals("Integer")){
+						if (type.equals("Integer")) {
 							String strObj = object.toString();
 							Double douObj = Double.valueOf(strObj).doubleValue();
 							doubleInnerCoor.add(douObj);
-						}else{
+						} else {
 							Double douObj = (Double) innerCoor.get(i);
 							doubleInnerCoor.add(douObj);
 						}
-					}						
-					//Double x = (Double) innerCoor.get(0);
-					//Double y = (Double) innerCoor.get(1);
+					}
+					// Double x = (Double) innerCoor.get(0);
+					// Double y = (Double) innerCoor.get(1);
 					Double x = (Double) doubleInnerCoor.get(0);
 					Double y = (Double) doubleInnerCoor.get(1);
 					coordinateArray[r] = new Coordinate(x, y);
@@ -266,25 +262,25 @@ public class GeoJsonToSimpleImpl {
 				// Geometry
 				JSONArray innerCoordinates = (JSONArray) outerCoordinates.get(k);
 				JSONArray doubleInnerCoordinates = new JSONArray();
-				
+
 				for (int i = 0; i < innerCoordinates.size(); i++) {
 					Object object = innerCoordinates.get(i);
 					String type = object.getClass().getSimpleName();
-					if(type.equals("Integer")){
+					if (type.equals("Integer")) {
 						String strObj = object.toString();
 						Double douObj = Double.valueOf(strObj).doubleValue();
 						doubleInnerCoordinates.add(douObj);
-					}else{
+					} else {
 						Double douObj = (Double) innerCoordinates.get(i);
 						doubleInnerCoordinates.add(douObj);
 					}
 				}
-				
-				//Double x = (Double) innerCoordinates.get(0);
-				//Double y = (Double) innerCoordinates.get(1);
+
+				// Double x = (Double) innerCoordinates.get(0);
+				// Double y = (Double) innerCoordinates.get(1);
 				Double x = (Double) doubleInnerCoordinates.get(0);
 				Double y = (Double) doubleInnerCoordinates.get(1);
-				
+
 				coordinateArray[k] = new Coordinate(x, y);
 			}
 			MultiPoint multiPoint = geometryFactory.createMultiPoint(coordinateArray);
@@ -339,19 +335,19 @@ public class GeoJsonToSimpleImpl {
 						for (int i = 0; i < thirdInnerCoor.size(); i++) {
 							Object object = thirdInnerCoor.get(i);
 							String type = object.getClass().getSimpleName();
-							if(type.equals("Integer")){
+							if (type.equals("Integer")) {
 								String strObj = object.toString();
 								Double douObj = Double.valueOf(strObj).doubleValue();
 								doubleThirdInnerCoor.add(douObj);
-							}else{
+							} else {
 								Double douObj = (Double) object;
 								doubleThirdInnerCoor.add(douObj);
 							}
 						}
-						
-						//Double x = (Double) thirdInnerCoor.get(0);
-						//Double y = (Double) thirdInnerCoor.get(1);
-						
+
+						// Double x = (Double) thirdInnerCoor.get(0);
+						// Double y = (Double) thirdInnerCoor.get(1);
+
 						Double x = (Double) doubleThirdInnerCoor.get(0);
 						Double y = (Double) doubleThirdInnerCoor.get(1);
 						coordinateArray[r] = new Coordinate(x, y);

@@ -1,4 +1,4 @@
-package com.gitrnd.gdsbuilder.type.shp.collection;
+package com.gitrnd.gdsbuilder.type.shp;
 
 import java.util.ArrayList;
 

@@ -35,7 +35,7 @@ public abstract class DTGSAbstractDatastoreEncoder extends GSAbstractStoreEncode
 	}
 
 	/**
-	 * Create a {@value #TYPE} datastore encoder from a store read from server.
+	 * Create a datastore encoder from a store read from server.
 	 * 
 	 * @param store The existing store.
 	 * @throws IllegalArgumentException if store type or mandatory parameters are

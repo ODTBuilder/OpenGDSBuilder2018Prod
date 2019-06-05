@@ -33,10 +33,10 @@ public class SHPFileWriter {
 	 * @param epsg                    좌표계 (ex.EPSG:4326)
 	 * @param simpleFeatureCollection {@link SimpleFeatureCollection}
 	 * @param filePath                Export할 경로
-	 * @throws IOException                  IOException
-	 * @throws SchemaException              SchemaException
-	 * @throws NoSuchAuthorityCodeException NoSuchAuthorityCodeException
-	 * @throws FactoryException             FactoryException
+	 * @throws IOException                  {@link IOException}
+	 * @throws SchemaException              {@link SchemaException}
+	 * @throws NoSuchAuthorityCodeException {@link NoSuchAuthorityCodeException}
+	 * @throws FactoryException             {@link FactoryException}
 	 * 
 	 * @author DY.Oh
 	 */

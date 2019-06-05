@@ -3,7 +3,7 @@ package com.gitrnd.gdsbuilder.geogig;
 import org.springframework.http.HttpStatus;
 
 /**
- * GeogigCommandException 객체.
+ * Geogig Command 실행 시 발생하는 GeogigCommandException 객체.
  * 
  * @author DY.Oh
  *

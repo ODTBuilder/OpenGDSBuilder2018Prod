@@ -15,13 +15,12 @@
  *    Lesser General Public License for more details.
  */
 
-package com.gitrnd.gdsbuilder.type.geoserver.collection;
+package com.gitrnd.gdsbuilder.type.geoserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.gitrnd.gdsbuilder.fileread.en.EnFileFormat;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayer;
 
 /**
  * GeoLayerCollection 객체 정보를 담고있는 클래스. 검수 대상 레이어 목록, 검수 대상영역 등의 정보가 포함됨.
@@ -62,8 +61,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayerCollection 생성자
 	 * 
-	 * @param collectionName
-	 *            GeoLayerCollection명
+	 * @param collectionName GeoLayerCollection명
 	 */
 	public GeoLayerCollection(String collectionName) {
 		this.collectionName = collectionName;
@@ -74,12 +72,9 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayerCollection 생성자
 	 * 
-	 * @param collectionName
-	 *            GeoLayerCollection명
-	 * @param neatLine
-	 *            검수 영역 GeoLayer
-	 * @param layers
-	 *            GeoLayer 목록
+	 * @param collectionName GeoLayerCollection명
+	 * @param neatLine       검수 영역 GeoLayer
+	 * @param layers         GeoLayer 목록
 	 */
 	public GeoLayerCollection(String collectionName, GeoLayer neatLine, List<GeoLayer> layers) {
 		super();
@@ -100,8 +95,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayerCollection명 설정
 	 * 
-	 * @param collectionName
-	 *            GeoLayerCollection명
+	 * @param collectionName GeoLayerCollection명
 	 */
 	public void setCollectionName(String collectionName) {
 		this.collectionName = collectionName;
@@ -119,8 +113,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayerCollection 파일 포맷 설정
 	 * 
-	 * @param fileFormat
-	 *            GeoLayerCollection 파일 포맷
+	 * @param fileFormat GeoLayerCollection 파일 포맷
 	 */
 	public void setFileFormat(EnFileFormat fileFormat) {
 		this.fileFormat = fileFormat;
@@ -138,8 +131,7 @@ public class GeoLayerCollection {
 	/**
 	 * 검수 영역 GeoLayer 설정
 	 * 
-	 * @param neatLine
-	 *            검수 영역 GeoLayer
+	 * @param neatLine 검수 영역 GeoLayer
 	 */
 	public void setNeatLine(GeoLayer neatLine) {
 		this.neatLine = neatLine;
@@ -148,7 +140,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayer 목록 반환
 	 * 
-	 * @return List<GeoLayer>
+	 * @return GeoLayer 목록
 	 */
 	public List<GeoLayer> getLayers() {
 		return layers;
@@ -157,8 +149,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayer 목록 설정
 	 * 
-	 * @param layers
-	 *            GeoLayer 목록
+	 * @param layers GeoLayer 목록
 	 */
 	public void setLayers(List<GeoLayer> layers) {
 		this.layers = layers;
@@ -167,8 +158,7 @@ public class GeoLayerCollection {
 	/**
 	 * GeoLayer 목록에 GeoLayer 추가
 	 * 
-	 * @param layer
-	 *            GeoLayer
+	 * @param layer GeoLayer
 	 */
 	public void addValidateLayer(GeoLayer layer) {
 		layers.add(layer);
@@ -177,11 +167,9 @@ public class GeoLayerCollection {
 	/**
 	 * geoLayerCollection에서 geoLayerName에 해당하는 GeoLayer 객체를 반환
 	 * 
-	 * @param geoLayerName
-	 *            GeoLayer명
-	 * @param geoLayerCollection
-	 *            GeoLayerCollection
-	 * @return GeoLayer
+	 * @param geoLayerName       GeoLayer명
+	 * @param geoLayerCollection GeoLayerCollection
+	 * @return GeoLayer GeoLayer
 	 */
 	public GeoLayer getLayer(String geoLayerName, GeoLayerCollection geoLayerCollection) {
 

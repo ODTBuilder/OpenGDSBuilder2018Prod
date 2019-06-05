@@ -1,4 +1,4 @@
-package com.gitrnd.gdsbuilder.type.shp.layer;
+package com.gitrnd.gdsbuilder.type.shp;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 
@@ -33,12 +33,9 @@ public class DTSHPLayer {
 	/**
 	 * DTSHPLayer 생성자
 	 * 
-	 * @param layerName
-	 *            SHP 파일 레이어 이름
-	 * @param layerType
-	 *            SHP 파일 레이어 타입
-	 * @param simpleFeatureCollection
-	 *            SimpleFeatureCollection 객체
+	 * @param layerName               SHP 파일 레이어 이름
+	 * @param layerType               SHP 파일 레이어 타입
+	 * @param simpleFeatureCollection SimpleFeatureCollection 객체
 	 */
 	public DTSHPLayer(String layerName, String layerType, SimpleFeatureCollection simpleFeatureCollection) {
 		super();
@@ -50,10 +47,8 @@ public class DTSHPLayer {
 	/**
 	 * DTSHPLayer 생성자
 	 * 
-	 * @param layerName
-	 *            SHP 파일 레이어 이름
-	 * @param layerType
-	 *            SHP 파일 레이어 타입
+	 * @param layerName SHP 파일 레이어 이름
+	 * @param layerType SHP 파일 레이어 타입
 	 */
 	public DTSHPLayer(String layerName, String layerType) {
 		super();
@@ -64,7 +59,7 @@ public class DTSHPLayer {
 	/**
 	 * SHP 파일 레이어 이름 반환
 	 * 
-	 * @return String
+	 * @return SHP 파일 레이어 이름
 	 */
 	public String getLayerName() {
 		return layerName;
@@ -73,7 +68,7 @@ public class DTSHPLayer {
 	/**
 	 * SHP 파일 레이어 이름 설정
 	 * 
-	 * @param layerName
+	 * @param layerName SHP 파일 레이어 이름
 	 */
 	public void setLayerName(String layerName) {
 		this.layerName = layerName;
@@ -82,7 +77,7 @@ public class DTSHPLayer {
 	/**
 	 * SHP 파일 레이어 타입 반환
 	 * 
-	 * @return String
+	 * @return SHP 파일 레이어 타입
 	 */
 	public String getLayerType() {
 		return layerType;
@@ -91,7 +86,7 @@ public class DTSHPLayer {
 	/**
 	 * SHP 파일 레이어 타입 설정
 	 * 
-	 * @param layerType
+	 * @param layerType SHP 파일 레이어 타입
 	 */
 	public void setLayerType(String layerType) {
 		this.layerType = layerType;
@@ -109,8 +104,7 @@ public class DTSHPLayer {
 	/**
 	 * SimpleFeatureCollection 객체 설정
 	 * 
-	 * @param simpleFeatureCollection
-	 *            SimpleFeatureCollection 객체
+	 * @param simpleFeatureCollection SimpleFeatureCollection 객체
 	 */
 	public void setSimpleFeatureCollection(SimpleFeatureCollection simpleFeatureCollection) {
 		this.simpleFeatureCollection = simpleFeatureCollection;

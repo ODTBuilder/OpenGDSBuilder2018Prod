@@ -32,7 +32,7 @@
  *    Lesser General Public License for more details.
  */
 
-package com.gitrnd.gdsbuilder.type.geoserver.layer;
+package com.gitrnd.gdsbuilder.type.geoserver;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
 

@@ -55,7 +55,7 @@ public class GeogigGeoserverDataStore {
 	/**
 	 * Geoserver DataStore 생성 파라미터
 	 */
-	private ConnectionParameters connetParams;
+	ConnectionParameters connetParams;
 
 	public String getSuccess() {
 		return success;
@@ -127,6 +127,12 @@ public class GeogigGeoserverDataStore {
 		this.connetParams = connetParams;
 	}
 
+	/**
+	 * Geoserver DataStore 정보.
+	 * 
+	 * @author DY.Oh
+	 *
+	 */
 	@XmlRootElement(name = "workspace")
 	public static class DataStore {
 
@@ -143,6 +149,12 @@ public class GeogigGeoserverDataStore {
 
 	}
 
+	/**
+	 * Geoserver DataStore 생성 파라미터.
+	 * 
+	 * @author DY.Oh
+	 *
+	 */
 	@XmlRootElement(name = "connectionParameters")
 	public static class ConnectionParameters {
 
@@ -159,6 +171,12 @@ public class GeogigGeoserverDataStore {
 
 	}
 
+	/**
+	 * Geoserver DataStore 접근 정보.
+	 * 
+	 * @author DY.Oh
+	 *
+	 */
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Entry {
 

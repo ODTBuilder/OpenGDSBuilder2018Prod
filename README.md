@@ -57,6 +57,7 @@ Getting Started
   >   rabbitmq-plugins enable rabbitmq_management 커맨드 실행해서 RabbitMQ Management Plug-in 설치
 - RabbitMQ 서비스 재시작
 - RabbitMQ Management 접속(localhost:15672) 후 guest/guest로 로그인
+- 프로젝트를 위한 새로운 계정 생성
 - virtual host, exchange, routing key 설정
 
 ### 5. 소스코드 설치 및 프로젝트 실행 ###

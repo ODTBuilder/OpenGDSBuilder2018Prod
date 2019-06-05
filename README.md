@@ -32,6 +32,8 @@ Getting Started
 - eclipse neon 
 - PostgreSQL 9.4 
 - Geoserver 2.13.2
+- RabbitMQ 3.7.7
+- Erlang 21.0.1
 
 ### 2. Geoserver 설치 및 설정 ###
 - http://geoserver.org/ 접속 후 Geoserver 2.13.2 Windows Installer 다운로드 <br> 
@@ -42,34 +44,29 @@ Getting Started
 <pre><code> http://[host]:[port]/geoserver </code></pre> 
 - 사용자 계정(테스트 계정 : admin)을 작업공간 이름으로 입력 후 작업공간 생성
 
-### 3. PostgreSQL 설치 및 설정 ###
+### 3. RabbitMQ 설치 및 설정 ###
+- 운영체제에 맞는 RabbitMQ, ERLang, RabbitMQ Management Plug-in 설치
+- RabbitMQ Management 접속 후 virtual host, exchange, routing key 설정
+
+### 4. PostgreSQL 설치 및 설정 ###
 - http://www.postgresql.org/download/ 접속 후 PostgreSQL 다운로드 및 설치
-- pgAdmin 실행 후 Databases 생성 후 New Database 클릭 
-- 사용자 계정(테스트 계정 : admin)을 Name으로 입력 후 Database 생성 
+- pgAdmin 실행 후 새로운 데이터베이스 생성
 - 소스코드에서 gdo2018scheme 파일 다운로드
 - 생성한 Database에 gdo2018scheme 파일 restore
 
-### 4. 소스코드 설치 및 프로젝트 실행 ###
+### 5. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
-- eclipse 실행 후 zip 파일 형태로 Project Import
-- eclipse와 톰캣 연동 후 해당 프로젝트 서버 생성
-- server.xml 파일의 Context path를 "/geodt"로 변경
-- src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
-<pre><code> url=http://[host]:[port]/geoserver<br>
- id=[admin]<br>
- pw=[geoserver]<br> </code></pre>
-- src\main\webapp\WEB-INF\spring\root-context.xml 파일에 생성한 Database 정보 입력
-<pre><code> property name="url" value="jdbc:postgresql://[host]:[port]/admin" <br>
- property name="username" value="[username]" <br>
- property name="password" value="[password]" <br></code></pre>
-- 서버 실행 후 메인 페이지 url 접속 
- <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
-- 테스트 계정으로 로그인
- <pre><code> id : guest<br>
- pw : guest<br> </code></pre>
-- 편집도구 초기화면 접속 
+- eclipse에서 Project Import
+- 프로젝트 경로/src/main/resources/application.yml 파일의 설정값을 환경에 맞게 입력
+- eclipse에서 Run as > Maven build... > Goals에 package 입력 후 Run 버튼 클릭
+- 프로젝트 경로 내 target/opengds2018prod-0.0.1-SNAPSHOT.war 복사 후 실행할 경로에 붙여넣기
+- war파일을 넣은 경로에서 shift+오른클릭 후 여기서 명령창 열기
+- java -jar opengds2018prod-0.0.1-SNAPSHOT.war 입력 후 실행
+- 정상시작 로그 확인
+- 웹 브라우저를 열고 application.yml에 입력한 주소로 접속
+- 편집도구 초기화면 확인
 
-### 5. 지원 기능 ###
+### 6. 지원 기능 ###
 
 - ### Openlayers Layer 편집 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png" alt="alt text" width="75%">

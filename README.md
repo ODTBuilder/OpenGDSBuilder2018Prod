@@ -51,23 +51,13 @@ Getting Started
 
 ### 4. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
-- eclipse 실행 후 zip 파일 형태로 Project Import
-- eclipse와 톰캣 연동 후 해당 프로젝트 서버 생성
-- server.xml 파일의 Context path를 "/geodt"로 변경
-- src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
-<pre><code> url=http://[host]:[port]/geoserver<br>
- id=[admin]<br>
- pw=[geoserver]<br> </code></pre>
-- src\main\webapp\WEB-INF\spring\root-context.xml 파일에 생성한 Database 정보 입력
-<pre><code> property name="url" value="jdbc:postgresql://[host]:[port]/admin" <br>
- property name="username" value="[username]" <br>
- property name="password" value="[password]" <br></code></pre>
-- 서버 실행 후 메인 페이지 url 접속 
- <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
-- 테스트 계정으로 로그인
- <pre><code> id : guest<br>
- pw : guest<br> </code></pre>
-- 편집도구 초기화면 접속 
+- eclipse에서 Project Import
+- 프로젝트 경로/src/main/resources/application.yml 파일의 설정값을 환경에 맞게 입력
+- eclipse에서 Run as - Maven build... - Goals에 package 입력 후 Run 버튼 클릭
+- 프로젝트 경로/target/opengds2018prod-0.0.1-SNAPSHOT.war 파일 복사 후 원하는 곳에 붙여넣기
+- 위 경로에서 명령 프롬프트를 열고 java -jar opengds2018prod-0.0.1-SNAPSHOT.war 실행
+- 웹 브라우저를 열고 application.yml에 입력한 주소로 접속
+- 편집도구 초기화면이 나오면 정상
 
 ### 5. 지원 기능 ###
 

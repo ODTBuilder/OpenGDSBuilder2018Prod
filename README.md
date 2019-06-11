@@ -33,7 +33,8 @@ Getting Started
 =====
 ### 1. 환경 ###
 - Java – OpenJDK 1.8.0.111 64 bit
-- eclipse neon 
+- eclipse neon
+- Spring boot 1.5.9
 - PostgreSQL 9.4 
 - Geoserver 2.13.2
 - RabbitMQ 3.7.7

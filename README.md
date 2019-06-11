@@ -37,6 +37,7 @@ Getting Started
 - PostgreSQL 9.4 
 - Geoserver 2.13.2
 - RabbitMQ 3.7.7
+- Apache HTTP Server 2.4
 
 ### 2. Geoserver 설치 및 설정 ###
 - http://geoserver.org/ 접속 후 Geoserver 2.13.2 Windows Installer 다운로드 <br> 
@@ -60,7 +61,14 @@ Getting Started
 - 프로젝트를 위한 새로운 계정 생성
 - virtual host, exchange, routing key 설정
 
-### 5. 소스코드 설치 및 프로젝트 실행 ###
+### 5. Apache web server 설치 및 설정 ###
+- 운영체제에 맞는 Apache http server 설치
+- 텍스트 에디터에서 Apache http server경로/conf/httpd.conf 파일 열기
+- ServerRoot(서버 설치 경로) 설정
+- Listen(사용할 포트 번호) 설정
+- DocumentRoot(파일 저장 경로) 설정
+
+### 6. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
 - eclipse 실행 후 Project Import
 - 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
@@ -111,9 +119,9 @@ server:
 gitrnd:
   serverhost: 프로젝트 접속 주소 EX)175.111.222.333
   apache:
-    host: 아파치 서버 주소 EX) 127.0.0.1
-    port: 아파치 서버 포트 EX) 8888
-    basedir: 디렉토리 이름 EX) gdofiles
+    host: 아파치 http 서버 주소 EX) 127.0.0.1
+    port: 아파치 http 서버 포트 EX) 8888
+    basedir: 파일 저장 디렉토리 이름 EX) gdofiles
     basedrive: 드라이브 명 EX) C
 mybatis:
   config-location: classpath:config/mybatis.xml
@@ -127,7 +135,7 @@ mybatis:
 - 가입 후 로그인
 - 편집도구 초기화면 접속 
 
-### 6. 지원 기능 ###
+### 7. 지원 기능 ###
 
 - ### Openlayers Layer 편집 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png" alt="alt text" width="75%">

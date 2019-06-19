@@ -34,7 +34,7 @@ public class QAValidationResultController {
 	/**
 	 * @Description DataTable server side. 페이징 처리 기능, 검색 기능.
 	 * @author HC.Kim
-	 * @Date 2018. 8. 16. 오후 3:20:28
+	 * @since 2018. 8. 16. 오후 3:20:28
 	 * @param request
 	 * @param response
 	 * @param loginUser

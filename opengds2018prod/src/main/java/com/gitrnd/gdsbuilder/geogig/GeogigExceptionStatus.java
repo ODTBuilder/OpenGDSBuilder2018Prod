@@ -2,6 +2,12 @@ package com.gitrnd.gdsbuilder.geogig;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Geogig Command 오류 코드 Enum 클래스.
+ * 
+ * @author DY.Oh
+ *
+ */
 public enum GeogigExceptionStatus {
 
 	NO_TRANSACTION_WAS_SPECIFIED(HttpStatus.INTERNAL_SERVER_ERROR, "800",
@@ -129,15 +135,12 @@ public enum GeogigExceptionStatus {
 
 	UNRESOLVE_CONFLICTS(HttpStatus.INTERNAL_SERVER_ERROR, "857", "You need to resolve your index first."),
 
-	// host에 숫자가 아닌 값
 	ILLEGALCHARACTERINHOSTNAME(HttpStatus.INTERNAL_SERVER_ERROR, "858", "Illegal character in hostname"),
 
-	// 커밋이력이 없는 remote repos
 	NOCOMMITS(HttpStatus.INTERNAL_SERVER_ERROR, "859", "No Commits Remote Repository"),
 
-	// 잘못된 정보 입력
 	COULDNOTREADJSON(HttpStatus.INTERNAL_SERVER_ERROR, "860", "Could not read JSON"),
-	
+
 	PREMATURE_EOF(HttpStatus.INTERNAL_SERVER_ERROR, "861", "Premature EOF");
 
 	private HttpStatus httpStatus;
@@ -176,6 +179,14 @@ public enum GeogigExceptionStatus {
 		this.message = message;
 	}
 
+	/**
+	 * message에 해당하는 {@link GeogigExceptionStatus} 반환
+	 * 
+	 * @param message error message
+	 * @return {@link GeogigExceptionStatus}
+	 * 
+	 * @author DY.Oh
+	 */
 	public static GeogigExceptionStatus getStatus(String message) {
 		for (GeogigExceptionStatus status : values()) {
 			if (message.contains(status.message)) {
@@ -185,6 +196,14 @@ public enum GeogigExceptionStatus {
 		throw new IllegalArgumentException("No matching constant for [" + message + "]");
 	}
 
+	/**
+	 * message에 해당하는 {@link HttpStatus} 반환
+	 * 
+	 * @param message error message
+	 * @return {@link HttpStatus}
+	 * 
+	 * @author DY.Oh
+	 */
 	public static HttpStatus getHTTPStatus(String message) {
 		for (HttpStatus status : HttpStatus.values()) {
 			if (message.contains(status.getReasonPhrase())) {

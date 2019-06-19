@@ -1,3 +1,7 @@
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Korean](https://img.shields.io/badge/language-Korean-blue.svg)](#korean)
+
+
 <a name="korean"></a>
 OpenGDSBuilder2018Prod (웹 기반 공간 정보 검수 및 편집 솔루션) 
 =======
@@ -29,47 +33,110 @@ Getting Started
 =====
 ### 1. 환경 ###
 - Java – OpenJDK 1.8.0.111 64 bit
-- eclipse neon 
+- eclipse neon
+- Spring boot 1.5.9
 - PostgreSQL 9.4 
 - Geoserver 2.13.2
+- RabbitMQ 3.7.7
+- Apache HTTP Server 2.4
 
 ### 2. Geoserver 설치 및 설정 ###
 - http://geoserver.org/ 접속 후 Geoserver 2.13.2 Windows Installer 다운로드 <br> 
 ** jdk 1.8 버전 이상 사용 시 Geoserver 2.8 버전 이상 사용
 - Windows Installer 실행 후  C:\Program Files (x86) 경로에 설치
 - C:\Program Files (x86)\GeoServer 2.13.2\bin 경로의 startup.bat 실행
-- Geoserver url 접속
-<pre><code> http://[host]:[port]/geoserver </code></pre> 
-- 사용자 계정(테스트 계정 : admin)을 작업공간 이름으로 입력 후 작업공간 생성
 
 ### 3. PostgreSQL 설치 및 설정 ###
 - http://www.postgresql.org/download/ 접속 후 PostgreSQL 다운로드 및 설치
-- pgAdmin 실행 후 Databases 생성 후 New Database 클릭 
-- 사용자 계정(테스트 계정 : admin)을 Name으로 입력 후 Database 생성 
+- pgAdmin 실행 후 새로운 데이터베이스 생성 
 - 소스코드에서 gdo2018scheme 파일 다운로드
-- 생성한 Database에 gdo2018scheme 파일 restore
+- 생성한 데이터베이스에 gdo2018scheme 파일 restore
 
-### 4. 소스코드 설치 및 프로젝트 실행 ###
+### 4. RabbitMQ 설치 및 설정 ###
+- erlang 다운로드 및 설치 http://www.erlang.org/download.html
+- rabbitMQ windows 버전 다운로드 및 설치 http://www.rabbitmq.com/download.html 에서 installer 버전을 받아 설치
+- 명령 프롬프트에서 c:/Program Files/RabbitMQ Server/rabbitmq_server-x.x.x/sbin 으로 이동후
+  >   rabbitmq-plugins enable rabbitmq_management 커맨드 실행해서 RabbitMQ Management Plug-in 설치
+- RabbitMQ 서비스 재시작
+- RabbitMQ Management 접속(localhost:15672) 후 guest/guest로 로그인
+- 프로젝트를 위한 새로운 계정 생성
+- virtual host, exchange, routing key 설정
+
+### 5. Apache web server 설치 및 설정 ###
+- 운영체제에 맞는 Apache http server 설치
+- 텍스트 에디터에서 Apache http server경로/conf/httpd.conf 파일 열기
+- ServerRoot(서버 설치 경로) 설정
+- Listen(사용할 포트 번호) 설정
+- DocumentRoot(파일 저장 경로) 설정
+
+### 6. 소스코드 설치 및 프로젝트 실행 ###
 - https://github.com/ODTBuilder/OpenGDSBuilder2018Prod 접속 후 소스코드 다운로드
-- eclipse 실행 후 zip 파일 형태로 Project Import
-- eclipse와 톰캣 연동 후 해당 프로젝트 서버 생성
-- server.xml 파일의 Context path를 "/geodt"로 변경
-- src\main\resources\geoserver.properties 파일에 Geoserver 정보 입력
-<pre><code> url=http://[host]:[port]/geoserver<br>
- id=[admin]<br>
- pw=[geoserver]<br> </code></pre>
-- src\main\webapp\WEB-INF\spring\root-context.xml 파일에 생성한 Database 정보 입력
-<pre><code> property name="url" value="jdbc:postgresql://[host]:[port]/admin" <br>
- property name="username" value="[username]" <br>
- property name="password" value="[password]" <br></code></pre>
+- eclipse 실행 후 Project Import
+- 프로젝트 경로 내 src/main/resources/application.yml 접근 후 아래 속성들을 수정
+<pre><code>
+spring:
+  rabbitmq:
+    host: 레빗엠큐 호스트 주소 EX)175.111.222.333
+    port: 레빗엠큐 포트번호 EX)5672
+    virtual-host: 레빗 엠큐 버추얼 호스트
+    username: 레빗엠큐 계정명
+    password: 레빗엠큐 비밀번호
+    template:
+      exchange: 레빗엠큐 익스체인지
+      routing-key: 레빗엠큐 라우팅키
+      routing-key-mobile: 레빗엠큐 모바일용 라우팅키
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://postgresql주소:포트번호/데이터베이스 이름?charSet=UTF-8&prepareThreshold=1
+    username: 데이터베이스 계정명
+    password: 데이터베이스 비밀번호
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 3
+      maximum-pool-size: 20
+      pool-name: gdoDBPool_Prod
+      auto-commit: false
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  http:
+    multipart:
+      max-file-size: 10485760KB
+      max-request-size: 10485760KB
+server:
+  port: 프로젝트 접속 포트번호
+  context-path: /geodt
+  servlet:
+    session:
+      timeout: 3600
+  jsp-servlet:
+    init-parameters:
+      development: true
+  error:
+    whitelabel:
+      enabled: false
+gitrnd:
+  serverhost: 프로젝트 접속 주소 EX)175.111.222.333
+  apache:
+    host: 아파치 http 서버 주소 EX) 127.0.0.1
+    port: 아파치 http 서버 포트 EX) 8888
+    basedir: 파일 저장 디렉토리 이름 EX) gdofiles
+    basedrive: 드라이브 명 EX) C
+mybatis:
+  config-location: classpath:config/mybatis.xml
+  mapper-location: classpath:sql/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    use-column-label: true
+</code></pre>
 - 서버 실행 후 메인 페이지 url 접속 
  <pre><code> http://[host]:[port]/geodt/main.do </code></pre>
-- 테스트 계정으로 로그인
- <pre><code> id : guest<br>
- pw : guest<br> </code></pre>
+- 가입 후 로그인
 - 편집도구 초기화면 접속 
 
-### 5. 지원 기능 ###
+### 7. 지원 기능 ###
 
 - ### Openlayers Layer 편집 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584143-11137980-0eb1-11e9-8dc9-8ca533d129f9.png" alt="alt text" width="75%">

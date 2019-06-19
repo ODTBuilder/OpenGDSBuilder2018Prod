@@ -55,11 +55,11 @@ import org.slf4j.LoggerFactory;
 import com.gitrnd.gdsbuilder.geogig.command.repository.branch.ListBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBranch.Branch;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
@@ -67,9 +67,11 @@ import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 
 /**
- * @Description GeoserverLayer Tree 관련 클래스
+ * {@link DTGeoserverManagerList}에 해당하는 서버에 대해 
+ * {@link EnTreeType}에 맞는 정보를 
+ * jsTree(https://www.jstree.com/) 형식에 맞게 변환해주는 클래스
  * @author SG.Lee
- * @Date 2018. 7. 12. 오후 6:56:21
+ * @since 2018. 7. 12. 오후 6:56:21
  */
 @SuppressWarnings("serial")
 public class DTGeoserverTree extends JSONArray {
@@ -78,6 +80,10 @@ public class DTGeoserverTree extends JSONArray {
 
 	static final String delimiter = ":";
 
+	/**
+	 * jsTree 출력 타입
+	 * @author SG.LEE
+	 */
 	public enum EnTreeType {
 		SERVER("server"), WORKSPACE("workspace"), DATASTORE("datastore"), LAYER("layer"), UNKNOWN(null);
 
@@ -87,6 +93,12 @@ public class DTGeoserverTree extends JSONArray {
 			this.type = type;
 		}
 
+		/**
+		 * type명으로 부터 {@link EnTreeType} 조회
+		 * @author SG.LEE
+		 * @param type type명
+		 * @return {@link EnTreeType}
+		 */
 		public static EnTreeType getFromType(String type) {
 			for (EnTreeType tt : values()) {
 				if (tt == UNKNOWN)
@@ -109,8 +121,8 @@ public class DTGeoserverTree extends JSONArray {
 	/**
 	 * type이 EnTreeType.SERVER 일경우에
 	 * 
-	 * @param dtGeoManagers
-	 * @param type
+	 * @param dtGeoManagers {@link DTGeoserverManagerList} 서버정보 리스트
+	 * @param type EnTreeType.SERVER
 	 */
 	public DTGeoserverTree(DTGeoserverManagerList dtGeoManagers, EnTreeType type) {
 		if (type == EnTreeType.SERVER) {
@@ -123,21 +135,22 @@ public class DTGeoserverTree extends JSONArray {
 	/**
 	 * type이 EnTreeType.SERVER가 아닐때
 	 * 
-	 * @param dtGeoManagers
-	 * @param parent
-	 * @param serverName
-	 * @param type
+	 * @param dtGeoManagers {@link DTGeoserverManagerList} 서버정보 리스트
+	 * @param parent 상위 트리명
+	 * @param serverName 서버이름
+	 * @param type EnTreeType.SERVER을 제외한 {@link EnTreeType}
 	 */
 	public DTGeoserverTree(DTGeoserverManagerList dtGeoManagers, String parent, String serverName, EnTreeType type) {
 		build(dtGeoManagers, parent, serverName, type);
 	}
 
 	/**
-	 * @Description Server type
+	 * {@link DTGeoserverManagerList}를 {@link DTGeoserverTree} 형태로 변환
+	 * EnTreeType.SERVER 타입일 경우
 	 * @author SG.Lee
-	 * @Date 2018. 7. 19. 오후 3:42:51
-	 * @param dtGeoManagers
-	 * @return DTGeoserverTree
+	 * @since 2018. 7. 19. 오후 3:42:51
+	 * @param dtGeoManagers {@link DTGeoserverManagerList} 서버정보 리스트
+	 * @return {@link DTGeoserverTree}
 	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers) {
@@ -188,14 +201,14 @@ public class DTGeoserverTree extends JSONArray {
 	}
 
 	/**
-	 * @Description server Type 외
+	 * {@link DTGeoserverManagerList}를 {@link DTGeoserverTree} 형태로 변환
 	 * @author SG.Lee
-	 * @Date 2018. 7. 19. 오후 3:46:01
-	 * @param dtGeoManagers
-	 * @param parent        jstree parent ID
-	 * @param serverName    서버이름
-	 * @param type
-	 * @return DTGeoserverTree
+	 * @since 2018. 7. 19. 오후 3:46:01
+	 * @param dtGeoManagers {@link DTGeoserverManagerList} 서버정보 리스트
+	 * @param parent jstree parent ID
+	 * @param serverName 서버이름
+	 * @param type jsTree 출력 타입
+	 * @return DTGeoserverTree {@link DTGeoserverTree}
 	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTree build(DTGeoserverManagerList dtGeoManagers, String parent, String serverName,

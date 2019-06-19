@@ -351,9 +351,8 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 	 * (non-Javadoc)
 	 * 
 	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
-	 * removeRemoteRepository(com.gitrnd.gdsbuilder.geoserver.
-	 * DTGeoserverManager, java.lang.String, java.lang.Boolean,
-	 * java.lang.String)
+	 * removeRemoteRepository(com.gitrnd.gdsbuilder.geoserver. DTGeoserverManager,
+	 * java.lang.String, java.lang.Boolean, java.lang.String)
 	 */
 	@Override
 	public GeogigRemoteRepository removeRemoteRepository(DTGeoserverManager geoserverManager, String repoName,
@@ -508,35 +507,6 @@ public class GeogigRepositoryServiceImple implements GeogigRepositoryService {
 			geogigPush.setError(geogigStatus.getStatus());
 		}
 		return geogigPush;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService#
-	 * fetchRepository( com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager,
-	 * java.lang.String)
-	 */
-	@Override
-	public GeogigFetch fetchRepository(DTGeoserverManager geoserverManager, String repoName) throws JAXBException {
-
-		// String url = geoserverManager.getRestURL();
-		// String user = geoserverManager.getUsername();
-		// String pw = geoserverManager.getPassword();
-		//
-		// FetchRepository fetch = new FetchRepository();
-		// GeogigFetch geogigFetch = null;
-		// try {
-		// geogigFetch = fetch.executeCommand(url, user, pw, repoName);
-		// } catch (GeogigCommandException e) {
-		// JAXBContext jaxbContext = JAXBContext.newInstance(GeogigFetch.class);
-		// Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		// geogigFetch = (GeogigFetch) unmarshaller.unmarshal(new
-		// StringReader(e.getMessage()));
-		// }
-		// return geogigFetch;
-
-		return null;
 	}
 
 	@Override

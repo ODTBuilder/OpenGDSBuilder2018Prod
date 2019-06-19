@@ -76,7 +76,7 @@ public class ValidationResultService {
 	 * @param serverDataList
 	 * @return
 	 * @Author hochul
-	 * @Date 2018. 8. 20.
+	 * @since 2018. 8. 20.
 	 */
 	private JSONArray parseServerData(JSONArray serverDataList) {
 
@@ -154,7 +154,7 @@ public class ValidationResultService {
 	 * @param idx
 	 * @return com.gitrnd.qaproducer.domain.ValidationResult
 	 * @Author hochul
-	 * @Date 2018. 4. 10.
+	 * @since 2018. 4. 10.
 	 */
 	@Transactional(readOnly = true)
 	public ValidationResult retrieveValidationResultByPidx(int idx) {
@@ -169,7 +169,7 @@ public class ValidationResultService {
 	 * @param list
 	 * @return
 	 * @Author hochul
-	 * @Date 2018. 4. 10.
+	 * @since 2018. 4. 10.
 	 */
 	@Transactional
 	public boolean deleteValidationResult(ArrayList<ValidationResult> vrList) {

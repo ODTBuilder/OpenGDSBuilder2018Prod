@@ -32,10 +32,6 @@ import com.gitrnd.qaproducer.geogig.service.GeogigBranchService;
 import com.gitrnd.qaproducer.geogig.service.GeogigRepositoryService;
 import com.gitrnd.qaproducer.geogig.service.GeogigTransactionService;
 
-/**
- * @author GIT
- *
- */
 @Controller
 @RequestMapping("/geogig")
 public class GeogigBranchController extends AbstractController {

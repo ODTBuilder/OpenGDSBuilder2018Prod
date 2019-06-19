@@ -45,7 +45,6 @@ package com.gitrnd.gdsbuilder.geoserver;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.jdom.JDOMException;
 import org.json.simple.JSONArray;
@@ -55,15 +54,15 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTrees;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnFeatureTypeList;
 import com.gitrnd.gdsbuilder.geoserver.service.inf.DTGeoserverInfo;
 
@@ -73,19 +72,38 @@ import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTLayer;
 
 /**
- * @ClassName: DTGeoserverReader
- * @Description: GeoSolution과 관련 있는 data read 기능
- * @author JY.Kim
- * @date 2017. 5. 2. 오후 2:38:58
+ * {@link GeoServerRESTReader} 상속 클래스 - Geoserver 정보 및 데이터 읽기 지원 
+ * @author SG.LEE
+ * @since 2017. 5. 2. 오후 2:38:58
  */
 public class DTGeoserverReader extends GeoServerRESTReader {
 
+	/**
+	 * LOGGER
+	 */
 	private final static Logger LOGGER = LoggerFactory.getLogger(DTGeoserverReader.class);
 
+	/**
+	 * Geoserver URL 
+	 */
 	private final String baseurl;
+	/**
+	 * Geoserver ID
+	 */
 	private String username;
+	/**
+	 * Geoserver PW
+	 */
 	private String password;
 
+	/**
+	 * DTGeoserverReader 생성자
+	 * @author SG.LEE
+	 * @param gsUrl Geoserver URL
+	 * @param username Geoserver ID
+	 * @param password Geoserver PW
+	 * @throws MalformedURLException
+	 */
 	public DTGeoserverReader(String gsUrl, String username, String password) throws MalformedURLException {
 		super(gsUrl, username, password);
 		this.baseurl = gsUrl;
@@ -93,28 +111,60 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		this.password = password;
 	}
 	
+	/**
+	 * GET Geoserver ID
+	 * @author SG.LEE
+	 * @return
+	 */
 	public String getUsername() {
 		return username;
 	}
 
+	/**
+	 * SET Geoserver ID 
+	 * @author SG.LEE
+	 * @param username
+	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
 
+	/**
+	 * GET Geoserver PW
+	 * @author SG.LEE
+	 * @return
+	 */
 	public String getPassword() {
 		return password;
 	}
 
+	/**
+	 * SET Geoserver PW 
+	 * @author SG.LEE
+	 * @param password
+	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	/**
+	 * GET Geoserver URL
+	 * @author SG.LEE
+	 * @return
+	 */
 	public String getBaseurl() {
 		return baseurl;
 	}
 	
 	
 
+	/**
+	 * REST 요청을 통한 Geoserver Layer정보 조회   
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param name 레이어명
+	 * @return Geoserver Layer 정보를 담고있는 {@link DTGeoLayer} 객체반환 
+	 */
 	public DTGeoLayer getDTGeoLayer(String workspace, String name) {
 		DTGeoLayer dtGeolayer = null;
 
@@ -138,6 +188,13 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return dtGeolayer;
 	}
 
+	/**
+	 * REST 요청을 통한 Geoserver Group Layer정보 조회
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param name 그룹레이어명
+	 * @return Geoserver Group Layer 정보를 담고있는 {@link DTGeoGroupLayer} 객체반환 
+	 */
 	@SuppressWarnings("unused")
 	public DTGeoGroupLayer getDTGeoGroupLayer(String workspace, String name) {
 		if (workspace == null || workspace.isEmpty())
@@ -155,6 +212,13 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return DTGeoGroupLayer.build(load(url));
 	}
 
+	/**
+	 * REST 요청을 통한 Geoserver Layer정보 리스트 조회 
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param layerNames 레이어 이름
+	 * @return Geoserver Layer 정보를 담고있는 {@link DTGeoLayer} 객체들 반환 
+	 */
 	public DTGeoLayerList getDTGeoLayerList(String workspace, ArrayList<String> layerNames) {
 		if (workspace == null || workspace.isEmpty())
 			throw new IllegalArgumentException("Workspace may not be null");
@@ -174,6 +238,13 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return geoLayerList;
 	}
 
+	/**
+	 * REST 요청을 통한 Geoserver Group Layer정보 리스트 조회
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param groupNames 그룹레이어 이름
+	 * @return Geoserver Group Layer 정보를 담고있는 {@link DTGeoGroupLayerList} 객체들 반환 
+	 */
 	public DTGeoGroupLayerList getDTGeoGroupLayerList(String workspace, ArrayList<String> groupNames) {
 		if (workspace == null || workspace.isEmpty())
 			throw new IllegalArgumentException("Workspace may not be null");
@@ -193,6 +264,17 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return groupLayerList;
 	};
 
+	/**
+	 * Geoserver 레이어 리스트를 jsTree(https://www.jstree.com/) 형식에 맞게 변환
+	 * @author SG.LEE
+	 * @param dtGeoserverList {@link DTGeoserverManager} 리스트
+	 * @param parent 상위 트리명
+	 * @param serverName 서버이름
+	 * @param type {@link EnTreeType} SERVER, WORKSPACE, DATASTORE, LAYER
+	 * @return {@link DTGeoserverTree} jsTree
+	 * @throws JDOMException
+	 * @throws IOException
+	 */
 	public DTGeoserverTree getGeoserverLayerCollectionTree(DTGeoserverManagerList dtGeoserverList, String parent,
 			String serverName, EnTreeType type) throws JDOMException, IOException {
 		if (dtGeoserverList == null) {
@@ -201,6 +283,14 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTree(dtGeoserverList, parent, serverName, type);
 	}
 
+	/**
+	 * Geoserver 레이어 리스트를 jsTree(https://www.jstree.com/) 형식에 맞게 변환
+	 * @author SG.LEE
+	 * @param dtGeoserverList {@link DTGeoserverManager} 리스트
+	 * @return {@link DTGeoserverTree} jsTree
+	 * @throws JDOMException
+	 * @throws IOException
+	 */
 	public DTGeoserverTrees getGeoserverLayerCollectionTrees(DTGeoserverManagerList dtGeoserverList)
 			throws JDOMException, IOException {
 		if (dtGeoserverList == null) {
@@ -209,42 +299,57 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return new DTGeoserverTreeFactoryImpl().createDTGeoserverTrees(dtGeoserverList);
 	}
 
-	public List<String> getGeoserverContainNames(String workspace, String name) {
-		List<String> containNames = new ArrayList<String>();
-		RESTFeatureTypeList featureTypeList = getFeatureTypes(workspace);
-		List<String> layerNames = new ArrayList<String>();
 
-		layerNames = featureTypeList.getNames();
-
-		for (String layerName : layerNames) {
-			if (layerName.contains(name)) {
-				containNames.add(layerName);
-			}
-		}
-		return containNames;
-	}
-
-	// 발행되어있는 레이어 목록
+	/**
+	 * Geoserver 발행되어있는 FeatureType 리스트조회
+	 * @author SG.LEE
+	 * @param wsName 작업공간
+	 * @param dsName 저장소
+	 * @param format 출력포맷
+	 * @return 출력포맷에 맞는 FeatureType 정보
+	 */
 	public String getConfiguredFeatureTypes(String wsName, String dsName, String format) {
 		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "featuretypes" + "." + format
 				+ "?list=configured";
 		return load(url);
 	}
 
-	// 발행되어있지 않은 레이어 목록
+	/**
+	 * Geoserver 발행되어있지 않은 FeatureType 리스트조회
+	 * @author SG.LEE
+	 * @param wsName 작업공간
+	 * @param dsName 저장소
+	 * @param format 출력포맷
+	 * @return 출력포맷에 맞는 FeatureType 정보
+	 */
 	public String getAvailableFeatureTypes(String wsName, String dsName, String format) {
 		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + format
 				+ "?list=available";
 		return load(url);
 	}
 
-	// 모든 레이어 목록
+	/**
+	 * Geoserver에 있는 전체 FeatureType 리스트 조회
+	 * @author SG.LEE
+	 * @param wsName 작업공간
+	 * @param dsName 저장소
+	 * @param format 출력포맷
+	 * @return 출력포맷에 맞는 FeatureType 정보
+	 */
 	public String getAllFeatureTypes(String wsName, String dsName, String format) {
 		String url = "/rest/workspaces/" + wsName + "/datastores/" + dsName + "/featuretypes" + "." + format
 				+ "?list=all";
 		return load(url);
 	}
 
+	/**
+	 * list 조건에 맞는 {@link RESTFeatureTypeList} 조회 
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param datastores 저장소
+	 * @param type {@link EnFeatureTypeList} CONFIGURED, AVAILABLE, ALL
+	 * @return {@link RESTFeatureTypeList}
+	 */
 	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores, EnFeatureTypeList type) {
 		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml?list="+type.getType();
 		if (LOGGER.isDebugEnabled()) {
@@ -254,6 +359,12 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	}
 	
 	
+	/**
+	 * Geoserver 상세정보 조회
+	 * @author SG.LEE
+	 * @param dtGeoserverInfo Geoserver 기본정보
+	 * @return JSON String 형식의 Geoserver 기본정보 반환 
+	 */
 	@SuppressWarnings("unchecked")
 	public String getGeoserverInfo(DTGeoserverInfo dtGeoserverInfo) {
 		String url = dtGeoserverInfo.getDTGeoserverInfoURL();
@@ -281,13 +392,13 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 	
 	
 	/**
-	 * @Description 이용가능한 레이어 존재여부(발행만 안된상태)ㅒ
+	 * Geoserver 이용가능한 레이어 존재여부(발행만 안된상태) 
 	 * @author SG.Lee
-	 * @Date 2018. 12. 19. 오후 3:34:53
-	 * @param workspace
-	 * @param datastores
-	 * @param layerName
-	 * @return boolean
+	 * @since 2018. 12. 19. 오후 3:34:53
+	 * @param workspace 작업공간
+	 * @param datastores 저장소
+	 * @param layerName 레이어명
+	 * @return boolean 존재여부
 	 * */
 	public boolean existsFeatureTypesAvailable(String workspace, String datastores, String layerName){
 		boolean result = false;
@@ -323,6 +434,13 @@ public class DTGeoserverReader extends GeoServerRESTReader {
 		return result;
 	}
 	
+	/**
+	 * Geoserver FeatureType 리스트 조회
+	 * @author SG.LEE
+	 * @param workspace 작업공간
+	 * @param datastores 저장소
+	 * @return {@link RESTFeatureTypeList}
+	 */
 	public RESTFeatureTypeList getFeatureTypes(String workspace, String datastores) {
 		String url = "/rest/workspaces/" + workspace + "/datastores/" + datastores + "/featuretypes.xml";
 		if (LOGGER.isDebugEnabled()) {

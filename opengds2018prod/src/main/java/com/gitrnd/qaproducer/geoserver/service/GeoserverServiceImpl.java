@@ -51,10 +51,6 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.gitrnd.gdsbuilder.fileread.UnZipFile;
 import com.gitrnd.gdsbuilder.fileread.shp.SHPFileWriter;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverPublisher;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
@@ -62,9 +58,13 @@ import com.gitrnd.gdsbuilder.geoserver.data.DTGSGeogigDatastoreEncoder;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.DTGeoserverTree.EnTreeType;
 import com.gitrnd.gdsbuilder.geoserver.data.tree.factory.impl.DTGeoserverTreeFactoryImpl;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.service.en.EnLayerBboxRecalculate;
 import com.gitrnd.gdsbuilder.parse.impl.DataConvertorImpl;
-import com.gitrnd.gdsbuilder.type.geoserver.layer.GeoLayerInfo;
+import com.gitrnd.gdsbuilder.type.geoserver.GeoLayerInfo;
 import com.vividsolutions.jts.geom.Geometry;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
@@ -75,10 +75,10 @@ import it.geosolutions.geoserver.rest.encoder.feature.GSFeatureTypeEncoder;
 import it.geosolutions.geoserver.rest.manager.GeoServerRESTStyleManager;
 
 /**
- * Geoserver와 관련된 요청을 처리하는 클래스
+ * Geoserver와 관련된 데이터를 처리하는 클래스
  * 
  * @author SG.Lee
- * @Date 2017. 5. 12. 오전 2:22:14
+ * @since 2017. 5. 12. 오전 2:22:14
  */
 @Service("geoService")
 public class GeoserverServiceImpl implements GeoserverService {
@@ -908,7 +908,7 @@ public class GeoserverServiceImpl implements GeoserverService {
 	/**
 	 *
 	 * @author SG.Lee
-	 * @Date 2017. 6. 19. 오후 9:15:07
+	 * @since 2017. 6. 19. 오후 9:15:07
 	 * @return boolean
 	 */
 	@Override
@@ -1209,7 +1209,7 @@ public class GeoserverServiceImpl implements GeoserverService {
    	 * 파일이동
    	 * 
    	 * @author SG.Lee
-   	 * @Date 2018. 4. 18. 오전 9:46:27
+   	 * @since 2018. 4. 18. 오전 9:46:27
    	 * @param folderName
    	 * @param fileName
    	 * @param beforeFilePath
@@ -1244,7 +1244,7 @@ public class GeoserverServiceImpl implements GeoserverService {
    	 * 파일복사
    	 * 
    	 * @author SG.Lee
-   	 * @Date 2018. 4. 18. 오전 9:45:55
+   	 * @since 2018. 4. 18. 오전 9:45:55
    	 * @param source
    	 * @param dest
    	 * @throws IOException void
@@ -1258,7 +1258,7 @@ public class GeoserverServiceImpl implements GeoserverService {
  * 쓰레드 Result 클래스
  * 
  * @author SG.Lee
- * @Date 2017. 9. 6. 오후 3:09:38
+ * @since 2017. 9. 6. 오후 3:09:38
  */
 class Result {
 	List<String> successLayerList = new ArrayList<String>();

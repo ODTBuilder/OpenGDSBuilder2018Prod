@@ -1,5 +1,5 @@
 /**
- * 베이스맵을 변경하는 객체를 정의한다.
+ * @classdesc 베이스맵을 변경하는 객체를 정의한다.
  * 
  * @class gb.style.BaseMap
  * @memberof gb.style
@@ -7,21 +7,21 @@
  *            obj - 생성자 옵션을 담은 객체
  * @param {ol.Map}
  *            obj.map - 베이스 맵을 표시할 ol.Map 객체
- * @param {String}
- *            obj.defaultBaseMap - 기본값으로 설정할 베이스맵 이름
+ * @param {string}
+ *            [obj.defaultBaseMap="black"] - 기본값으로 설정할 베이스맵 이름
  * @param {Object[]}
  *            obj.layers - 추가로 사용할 베이스 맵
- * @param {String}
+ * @param {string}
  *            obj.layers[].value - 추가 베이스 맵을 구분할 구분자
- * @param {String}
+ * @param {string}
  *            obj.layers[].name - 화면상에서 표시할 베이스맵의 이름
  * @param {ol.layer.Base}
  *            obj.layers[].layer - 추가 베이스 맵으로 사용될 레이어 객체
- * @param {String}
+ * @param {string}
  *            obj.layers[].thumb - 베이스 맵의 썸네일로 사용할 클래스명
- * @version 0.01
+ * @param {string}
+ *            [obj.locale="en"] - 사용할 언어 ko | en
  * @author SOYIJUN
- * @date 2018. 06.04
  */
 
 var gb;
@@ -31,7 +31,10 @@ if (!gb.style)
 	gb.style = {};
 gb.style.BaseMap = function(obj) {
 	var that = this;
-
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"bmap" : {
 			"ko" : "배경지도",
@@ -54,91 +57,95 @@ gb.style.BaseMap = function(obj) {
 	obj.autoOpen = false;
 	obj.title = this.translation.bmap[this.locale];
 	obj.keep = true;
-	gb.modal.Base.call(this, obj);
+	gb.modal.ModalBase.call(this, obj);
 
 	this.map = options.map ? options.map : undefined;
 	this.defaultMap = options.defaultBaseMap ? options.defaultBaseMap : "black";
 	this.layers = options.layers ? options.layers : undefined;
 	this.now = undefined;
 
+	/**
+	 * @private
+	 * @type {Object}
+	 */
 	this.bases = {
 		worldLight : {
 			name : "World Light",
-			thumb : "gb-base-thumbnail-wlight",
+			thumb : "gb-basemap-thumbnail-wlight",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
 		worldBright : {
 			name : "World Bright",
-			thumb : "gb-base-thumbnail-wbright",
+			thumb : "gb-basemap-thumbnail-wbright",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
 		worldBlack : {
 			name : "World Black",
-			thumb : "gb-base-thumbnail-wblack",
+			thumb : "gb-basemap-thumbnail-wblack",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
 		geography : {
 			name : "Geography",
-			thumb : "gb-base-thumbnail-geography",
+			thumb : "gb-basemap-thumbnail-geography",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.TileJSON({
-					url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
-					crossOrigin: 'anonymous'
+				source : new ol.source.TileJSON({
+					url : 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+					crossOrigin : 'anonymous'
 				})
 			})
 		},
 		toner : {
 			name : "Toner",
-			thumb : "gb-base-thumbnail-toner",
+			thumb : "gb-basemap-thumbnail-toner",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "toner"
+				source : new ol.source.Stamen({
+					layer : "toner"
 				})
 			})
 		},
 		water : {
 			name : "Water Color",
-			thumb : "gb-base-thumbnail-water",
+			thumb : "gb-basemap-thumbnail-water",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "watercolor"
+				source : new ol.source.Stamen({
+					layer : "watercolor"
 				})
 			})
 		},
 		terrain : {
 			name : "Terrian",
-			thumb : "gb-base-thumbnail-terrian",
+			thumb : "gb-basemap-thumbnail-terrian",
 			layer : new ol.layer.Tile({
 				visible : false,
-				source: new ol.source.Stamen({
-					layer: "terrain"
+				source : new ol.source.Stamen({
+					layer : "terrain"
 				})
 			})
 		},
 		osm : {
 			name : "OpenStreetMap",
-			thumb : "gb-base-thumbnail-osm",
+			thumb : "gb-basemap-thumbnail-osm",
 			layer : new ol.layer.Tile({
 				visible : false,
 				source : new ol.source.OSM()
@@ -146,7 +153,7 @@ gb.style.BaseMap = function(obj) {
 		},
 		bing : {
 			name : "Bing Map",
-			thumb : "gb-base-thumbnail-bing",
+			thumb : "gb-basemap-thumbnail-bing",
 			layer : new ol.layer.Tile({
 				visible : false,
 				preload : Infinity,
@@ -158,12 +165,12 @@ gb.style.BaseMap = function(obj) {
 		},
 		black : {
 			name : "Black",
-			thumb : "gb-base-thumbnail-none",
+			thumb : "gb-basemap-thumbnail-black",
 			layer : undefined
 		},
 		white : {
 			name : "White",
-			thumb : "gb-base-thumbnail-none",
+			thumb : "gb-basemap-thumbnail-white",
 			layer : undefined
 		}
 	};
@@ -174,7 +181,8 @@ gb.style.BaseMap = function(obj) {
 				if (typeof this.layers[i].value === "string" && typeof this.layers[i].name === "string"
 						&& this.layers[i].layer instanceof ol.layer.Base) {
 					if (this.layers[i].thumb === undefined) {
-						this.layers[i].thumb = "gb-thumbnail-none"
+						// 썸네일 클래스가 없으면 기본 썸네일 사용
+						this.layers[i].thumb = "gb-basemap-thumbnail-none"
 					}
 					var obj = {
 						name : this.layers[i].name,
@@ -188,13 +196,14 @@ gb.style.BaseMap = function(obj) {
 	}
 	var keys = Object.keys(this.bases);
 	for (var i = 0; i < keys.length; i++) {
+		// 검은 바탕이나 흰 바탕이 아니면 레이어 추가
 		if (!(keys[i] === "black" || keys[i] === "white")) {
 			this.map.addLayer(this.bases[keys[i]].layer);
 		}
 	}
 	this.changeLayer(this.defaultMap);
 
-	var body = $("<div>");
+	var body = $("<div>").addClass("gb-basemap-body");
 	$(this.modalBody).append(body);
 	var keys = Object.keys(this.bases);
 	for (var i = 0; i < keys.length; i++) {
@@ -203,58 +212,32 @@ gb.style.BaseMap = function(obj) {
 			"name" : "basemap",
 			"value" : keys[i]
 		});
-		var label = $("<label>").append(radio).hover(function() {
-			$(this).css({
-				"cursor" : "pointer"
-			});
-		});
-		var span = $("<span>").text(this.bases[keys[i]].name).css({
-			"vertical-align" : "text-bottom",
-			"margin" : "5px",
-			"color" : "#fff"
-		});
+		var label = $("<label>").append(radio);
+		var span = $("<span>").text(this.bases[keys[i]].name);
 		label.append(span);
 
-		var heading = $("<div>").addClass("gb-article-head").css({
-			"background-color" : "#337ab7"
-		});
-
+		var heading = $("<div>").addClass("gb-article-head");
 		$(heading).append(label);
 
-		var pBody = $("<div>").addClass("gb-article-body").css({
-			"padding" : "18px"
-		});
+		var pBody = $("<div>").addClass("gb-article-body");
 
-		var img = $("<div>").css({
-			"width" : "120px",
-			"height" : "80px",
-			"margin" : "0 auto"
-		}).addClass(this.bases[keys[i]].thumb);
+		var img = $("<div>").addClass("gb-basemap-thumbnail-frame").addClass(this.bases[keys[i]].thumb);
 
 		$(pBody).append(img);
 
-		var pDefault = $("<div>").css({
-			"width" : "165px",
-			"display" : "inline-block",
-			"margin" : "12px"
-		}).addClass("gb-article").css({
-			"border-color" : "#337ab7"
-		});
+		var pDefault = $("<div>").addClass("gb-article");
 
 		$(pDefault).append(heading);
 		$(pDefault).append(pBody);
-
 		$(body).append(pDefault);
 	}
 
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(this.translation.close[this.locale]).click(function() {
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			this.translation.close[this.locale]).click(function() {
 		that.close();
 	});
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(this.translation.ok[this.locale]).click(function() {
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			this.translation.ok[this.locale]).click(function() {
 		var val = $(that.getModalBody()).find(':radio[name="basemap"]:checked').val();
 		that.changeLayer(val);
 	});
@@ -263,10 +246,8 @@ gb.style.BaseMap = function(obj) {
 	var modalFooter = $("<div>").append(buttonArea);
 	$(this.modalFooter).append(modalFooter);
 
-	// $("body").append(this.modal);
-	// $("body").append(this.background);
 };
-gb.style.BaseMap.prototype = Object.create(gb.modal.Base.prototype);
+gb.style.BaseMap.prototype = Object.create(gb.modal.ModalBase.prototype);
 gb.style.BaseMap.prototype.constructor = gb.style.BaseMap;
 
 /**
@@ -298,13 +279,14 @@ gb.style.BaseMap.prototype.open = function() {
  * 베이스맵을 변경한다.
  * 
  * @method gb.style.BaseMap#changeLayer
- * @param {String}
+ * @param {string}
  *            value - 변경하고자 하는 베이스맵의 구분자
  */
 gb.style.BaseMap.prototype.changeLayer = function(value) {
 	var keys = Object.keys(this.bases);
 	for (var i = 0; i < keys.length; i++) {
 		if (value === keys[i]) {
+			// 검은 바탕 css 조작
 			if (value === "black") {
 				var div = this.map.getTarget();
 				if (typeof div === "string") {
@@ -317,6 +299,7 @@ gb.style.BaseMap.prototype.changeLayer = function(value) {
 					});
 				}
 				this.now = value;
+				// 흰 바탕 css 조작
 			} else if (value === "white") {
 				var div = this.map.getTarget();
 				if (typeof div === "string") {
@@ -330,6 +313,7 @@ gb.style.BaseMap.prototype.changeLayer = function(value) {
 				}
 				this.now = value;
 			} else {
+				// 그 외 상황에 기본 흰 바탕 설정 후 레이어 보이기
 				var div = this.map.getTarget();
 				if (typeof div === "string") {
 					$("#" + div).css({

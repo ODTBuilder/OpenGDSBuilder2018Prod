@@ -524,21 +524,34 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 
 		this._visibleParentLayer(nnode, bool);
 
-		// var showing = [];
+		var showing = [];
 		var layers;
 
-		// if (layer instanceof ol.layer.Tile) {
-		// var children = JSON.parse(JSON.stringify(node.children)).reverse();
-		// // console.log(children);
-		// for (var i = 0; i < children.length; i++) {
-		// showing.push(this.get_LayerById(children[i]).get("id"));
-		// }
-		// // console.log(showing);
-		// var source = layer.getSource();
-		// var params = source.getParams();
-		// params["LAYERS"] = showing.toString();
-		// source.updateParams(params);
-		// }
+		if (layer instanceof ol.layer.Tile) {
+			var git = layer.get("git");
+			var fake = git["fake"];
+			if (fake !== undefined) {
+				if (fake === "parent") {
+					var children = JSON.parse(JSON.stringify(node.children)).reverse();
+					console.log(children);
+					for (var i = 0; i < children.length; i++) {
+						var ch = this.get_LayerById(children[i]);
+						var git = ch.get("git");
+						if (git !== undefined) {
+							var work = git["workspace"];
+							var lname = ch.get("name");
+							var fname = work + ":" + lname;
+							showing.push(fname);
+						}
+					}
+					console.log(showing);
+					var source = layer.getSource();
+					var params = source.getParams();
+					params["LAYERS"] = showing.toString();
+					source.updateParams(params);
+				}
+			}
+		}
 
 		if (layer instanceof ol.layer.Vector) {
 			if (this._displayIndex) {
@@ -567,8 +580,8 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 
 			// layers = layer.getLayersArray();
 			layers = nnode.children;
-			for (let i = 0; i < layers.length; i++) {
-				this._displayTileLayer(layers[i], bool);
+			for (var i = 0; i < layers.length; i++) {
+				this._displayTileLayer(this.get_node(layers[i]), bool);
 
 				// if(layers[i].get("git") instanceof Object){
 				// if(layers[i].get("git").tempLayer instanceof
@@ -603,7 +616,13 @@ $.jstreeol3.plugins.visibility = function(options, parent) {
 				}
 			}
 			for (var i = 0; i < children.length; i++) {
-				showing.push(this.get_LayerById(children[i]).get("id"));
+				var myLayer = this.get_LayerById(children[i]);
+				var git = myLayer.get("git");
+				var work = git !== undefined ? (git["workspace"] + ":") : "";
+				var layerName = myLayer.get("name");
+				var str = work + layerName;
+				showing.push(str);
+				// showing.push(this.get_LayerById(children[i]).get("id"));
 			}
 			// console.log(showing);
 			var source = layer.getSource();

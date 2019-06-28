@@ -1,5 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:choose>
+	<c:when test="${browser == 'MSIE'}">
+		<!-- 		스윗얼럿 익스플로러 지원을 위한 코어js -->
+		<!-- 		<script src='https://cdnjs.cloudflare.com/ajax/libs/core-js/2.6.5/core.min.js'></script> -->
+	</c:when>
+</c:choose>
+<!-- 바벨 폴리필 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.2.5/polyfill.min.js"></script>
+<!-- 폴리필 -->
+<!-- <script src="//cdn.polyfill.io/v1/polyfill.min.js"></script> -->
+<!-- 바벨 -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 <!-- 제이쿼리 -->
 <script src="${pageContext.request.contextPath}/resources/js/jquery/jquery-2.2.2.min.js"></script>
 <!-- 부트스트랩 -->
@@ -9,13 +22,6 @@
 <%-- <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/fontawesome/css/fontawesome-all.min.css" /> --%>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
 	integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-
-<c:choose>
-	<c:when test="${browser == 'MSIE'}">
-		<!-- 스윗얼럿 익스플로러 지원을 위한 코어js -->
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/core-js/2.5.5/core.min.js'></script>
-	</c:when>
-</c:choose>
 <!-- 스윗얼럿(알림) -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/sweetalert2/sweetalert2.css">
 <script src="${pageContext.request.contextPath}/resources/js/sweetalert2/sweetalert2.js"></script>
@@ -82,20 +88,26 @@
 <!-- gb CSS -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/gb.css">
 <!-- gb namespace -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/gb_debug.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/gb_namespace.js"></script>
 <!-- gb module -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/module/isEditing.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/module/serviceVersion.js"></script>
 <!-- gb map -->
+<!-- gb.map.Map -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/map/map.js"></script>
+<!-- gb.map.MousePosition -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>
 <!-- gb.modal -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/modal/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/validation/validation.js"></script>
+<!-- gb.header -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/header/base.js"></script>
+<!-- gb.footer -->
+<script src="${pageContext.request.contextPath}/resources/js/gb/footer/base.js"></script>
 <!-- gb panel  base -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/panel/base.js"></script>
-<!-- gb basemap -->
+<!-- gb.style -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/basemap.js"></script>
-<!-- gb layerstyle -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/style/layerstyle.js"></script>
 <!-- gb layerstyle -->
 <script src="${pageContext.request.contextPath}/resources/js/spectrum/spectrum.js"></script>
@@ -113,13 +125,9 @@
 <!-- gb.edit -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/edithistory.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/edit/undo.js"></script>
-<!-- gb.footer -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/featureList.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/footer/command.js"></script>
-<!-- gb.header -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/header/base.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/header/editingtool.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/modifylayerprop.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/editingtool.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/edit/command.js"></script>
 <!-- gb.interaction -->
 <script src="${pageContext.request.contextPath}/resources/js/gb/overriding/olinteractiondraw.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/interaction/multitransform.js"></script>
@@ -129,12 +137,13 @@
 <!-- gb.geocoder -->
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/js/gb/css/ol-geocoder.css">
 <script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
-<!-- gb.map.MousePosition -->
-<script src="${pageContext.request.contextPath}/resources/js/gb/map/mouseposition.js"></script>
-<script src="${pageContext.request.contextPath}/resources/js/gb/geocoder/ol-geocoder.js"></script>
 <!-- gb.geoserver.ImportSHP-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadshp.js"></script>
+<!-- gb.geoserver.uploadjson-->
+<script src="${pageContext.request.contextPath}/resources/js/gb/geoserver/uploadgeojson.js"></script>
 <!-- gb.layer-->
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/attributeinfo.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/navigator.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/featureList.js"></script>
 <script src="${pageContext.request.contextPath}/resources/js/gb/layer/imageLayer.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/gb/layer/label.js"></script>

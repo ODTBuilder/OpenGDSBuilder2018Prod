@@ -9,17 +9,22 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayer;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverReader;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 
 import it.geosolutions.geoserver.rest.decoder.RESTDataStore;
 import it.geosolutions.geoserver.rest.decoder.RESTDataStoreList;
 import it.geosolutions.geoserver.rest.decoder.RESTFeatureTypeList;
 import it.geosolutions.geoserver.rest.decoder.RESTWorkspaceList;
 
+/**
+ * {@link DTGeoserverManagerList} 에 해당하는 모든 서버에 대해 
+ * jsTree(https://www.jstree.com/) 형식에 맞게 변환해주는 클래스
+ * @author SG.LEE
+ */
 @SuppressWarnings("serial")
 public class DTGeoserverTrees extends JSONArray {
 
@@ -27,11 +32,22 @@ public class DTGeoserverTrees extends JSONArray {
 
 	static final String delimiter = ":";
 
+	/**
+	 * {@link DTGeoserverTrees} 생성자
+	 * @author SG.LEE
+	 * @param dtGeoserverList {@link DTGeoserverManagerList} 서버정보 리스트
+	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTrees(DTGeoserverManagerList dtGeoserverList) {
 		build(dtGeoserverList);
 	}
 
+	/**
+	 * {@link DTGeoserverManagerList}를 {@link DTGeoserverTrees} 형태로 변환
+	 * @author SG.LEE
+	 * @param dtGeoserverList {@link DTGeoserverManagerList} 서버정보 리스트
+	 * @return {@link DTGeoserverTrees}
+	 */
 	@SuppressWarnings("unchecked")
 	public DTGeoserverTrees build(DTGeoserverManagerList dtGeoserverList) {
 		if (dtGeoserverList != null) {

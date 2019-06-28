@@ -86,6 +86,19 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 		parent.refresh.call(this, skip_loading, forget_state);
 		this._model.data[$.jstreeol3.root].type = $.jstreeol3.root;
 	};
+	/**
+	 * 스타일 정보를 합친다
+	 * 
+	 * @method merge_layer_style
+	 */
+	this.merge_layer_style = function(style1, style2) {
+		var style1NamedIdx = style1.indexOf("<NamedLayer>");
+		var style2NamedIdx = style2.indexOf("<NamedLayer>");
+		var style2NamedCloseIdx = style2.indexOf("</NamedLayer>");
+		var cutStyle2 = style2.substring(style2NamedIdx + 12, style2NamedCloseIdx);
+		console.log(style2);
+	}
+
 	this.bind = function() {
 		this.element
 				.on(
@@ -113,44 +126,106 @@ $.jstreeol3.plugins.legends = function(options, parent) {
 												if (layer instanceof ol.layer.Base) {
 													var git = layer.get("git");
 													if (layer instanceof ol.layer.Tile) {
-														var source = layer.getSource();
-														if (source instanceof ol.source.TileWMS) {
-															/*
-															 * m[dpc[i]].icon =
-															 * g.url +
-															 * "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=" +
-															 * g.format +
-															 * "&WIDTH=" +
-															 * g.width +
-															 * "&HEIGHT=" +
-															 * g.height +
-															 * "&LAYER=" +
-															 * git.workspace +
-															 * ":" +
-															 * layer.get("name") +
-															 * "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" +
-															 * "&serverName=" +
-															 * git.geoserver +
-															 * "&workspace=" +
-															 * git.workspace;
-															 */
-															m[dpc[i]].icon = "gb-icon";
+														var fake = git["fake"];
+														if (fake === "parent") {
+
+														} else if (fake === "child") {
+															var csld = git["sld"];
+															if (csld !== undefined) {
+																console.log(csld);
+															}
+															var source = layer.getSource();
+															if (source instanceof ol.source.TileWMS) {
+																/*
+																 * m[dpc[i]].icon =
+																 * g.url +
+																 * "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=" +
+																 * g.format +
+																 * "&WIDTH=" +
+																 * g.width +
+																 * "&HEIGHT=" +
+																 * g.height +
+																 * "&LAYER=" +
+																 * git.workspace +
+																 * ":" +
+																 * layer.get("name") +
+																 * "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" +
+																 * "&serverName=" +
+																 * git.geoserver +
+																 * "&workspace=" +
+																 * git.workspace;
+																 */
+																m[dpc[i]].icon = "gb-icon";
+															}
+
+															// var cnode =
+															// this.get_node(m[dpc[i]].id);
+															// var pnode =
+															// this.get_node(cnode.parent);
+															// console.log(pnode);
+															// var player =
+															// this.get_LayerById(pnode.id);
+															// if (player
+															// instanceof
+															// ol.layer.Tile) {
+															// var git =
+															// player.get("git");
+															// var allc =
+															// git.allChildren;
+															// var loadc =
+															// git.loadedChildren;
+															// if (allc ===
+															// loadc) {
+															// var psource =
+															// player.getSource();
+															// if (psource
+															// instanceof
+															// ol.source.TileWMS)
+															// {
+															// var psld =
+															// psource.getParams()["SLD_BODY"];
+															// console.log(psld);
+															// if (psld !==
+															// undefined) {
+															// this.merge_layer_style();
+															// }
+															// }
+															// }
+															// }
+														} else {
+															var source = layer.getSource();
+															if (source instanceof ol.source.TileWMS) {
+																/*
+																 * m[dpc[i]].icon =
+																 * g.url +
+																 * "&REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=" +
+																 * g.format +
+																 * "&WIDTH=" +
+																 * g.width +
+																 * "&HEIGHT=" +
+																 * g.height +
+																 * "&LAYER=" +
+																 * git.workspace +
+																 * ":" +
+																 * layer.get("name") +
+																 * "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;" +
+																 * "&serverName=" +
+																 * git.geoserver +
+																 * "&workspace=" +
+																 * git.workspace;
+																 */
+																m[dpc[i]].icon = "gb-icon";
+															}
 														}
 														// hochul
 														layerStyle.setLayer(layer);
 														layerStyle.setLegend(m[dpc[i]], g);
 														layerStyle.updateStyle();
+														this.set_flag(m[dpc[i]], "importing", true);
 													} else if (layer instanceof ol.layer.Vector) {
 														layerStyle.setLayer(layer);
 														layerStyle.setLegend(m[dpc[i]], g);
 														layerStyle.updateStyle();
-													}
-													if (git && git.hasOwnProperty("fake")) {
-														if (git.fake === "child") {
-															m[dpc[i]].icon = g.url + "?" + "REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT="
-																	+ g.format + "&WIDTH=" + g.width + "&HEIGHT=" + g.height + "&LAYER="
-																	+ layer.get("id") + "&SCALE=1001&LEGEND_OPTIONS=bgColor:0xededed;";
-														}
 													}
 												}
 

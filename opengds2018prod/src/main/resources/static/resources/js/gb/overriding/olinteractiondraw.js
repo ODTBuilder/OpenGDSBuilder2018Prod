@@ -1,10 +1,10 @@
 /**
- * 드로우 인터렉션에 그리는중에 타입을 바꾸는 함수 추가5
+ * Draw 인터렉션에 그리는 중에 타입을 바꾸는 함수 추가
  */
 ol.interaction.Draw.prototype.switchType_ = function() {
 	this.type_ = this.selectedType();
 	/**
-	 * Drawing mode (derived from geometry type.
+	 * Drawing mode (derived from geometry type).
 	 * 
 	 * @type {ol.interaction.Draw.Mode_}
 	 * @private
@@ -28,11 +28,8 @@ ol.interaction.Draw.prototype.switchType_ = function() {
 	if (!geometryFunction) {
 		if (this.type_ === 'Circle') {
 			/**
-			 * @param {ol.Coordinate|Array.
-			 *            <ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
-			 *            coordinates The coordinates.
-			 * @param {ol.geom.SimpleGeometry=}
-			 *            opt_geometry Optional geometry.
+			 * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates - The coordinates.
+			 * @param {ol.geom.SimpleGeometry} [opt_geometry=] - Optional geometry.
 			 * @return {ol.geom.SimpleGeometry} A geometry.
 			 */
 			geometryFunction = function(coordinates, opt_geometry) {
@@ -53,11 +50,8 @@ ol.interaction.Draw.prototype.switchType_ = function() {
 				Constructor = ol.geom.Polygon;
 			}
 			/**
-			 * @param {ol.Coordinate|Array.
-			 *            <ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
-			 *            coordinates The coordinates.
-			 * @param {ol.geom.SimpleGeometry=}
-			 *            opt_geometry Optional geometry.
+			 * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates - The coordinates.
+			 * @param {ol.geom.SimpleGeometry} [opt_geometry=] opt_geometry - Optional geometry.
 			 * @return {ol.geom.SimpleGeometry} A geometry.
 			 */
 			geometryFunction = function(coordinates, opt_geometry) {
@@ -111,11 +105,10 @@ ol.interaction.Draw.prototype.handleDownEvent = function(event) {
 	}
 };
 
-//=============================== hochul area =========================================
 /**
  * ol.interaction.Draw.handleUpEvent_ 오버라이드
  * @param {ol.MapBrowserPointerEvent} event Event.
- * @return {boolean} Stop drag sequence?
+ * @return {boolean} Stop drag sequence
  * @this {ol.interaction.Draw}
  * @private
  */
@@ -233,6 +226,11 @@ ol.interaction.Draw.prototype.stack_ = [];
  */
 ol.interaction.Draw.prototype.current_ = -1;
 
+/**
+ * 멤버 변수 stack_의 index. undo 수행시 -1, redo 수행시 +1, push 수행시 +1
+ * @type {function}
+ * @private
+ */
 ol.interaction.Draw.prototype.stackPush_ = function(event){
 	var coord = event.coordinate.slice();
 	var coordinates, unCoord;
@@ -251,6 +249,8 @@ ol.interaction.Draw.prototype.stackPush_ = function(event){
 
 /**
  * draw 작업이 시작되었을때 key event를 생성한다
+ * @type {function}
+ * @private
  */
 ol.interaction.Draw.prototype.stackStart = function(){
 	var that = this;
@@ -265,6 +265,8 @@ ol.interaction.Draw.prototype.stackStart = function(){
 
 /**
  * draw 작업을 끝마쳤을때 수행할 함수들을 실행한다. key event를 해제한다
+ * @type {function}
+ * @private
  */
 ol.interaction.Draw.prototype.stackEnd = function(){
 	$(window).unbind("keypress.draw");
@@ -273,6 +275,8 @@ ol.interaction.Draw.prototype.stackEnd = function(){
 
 /**
  * stack(ol.interaction.Draw.stack_)에 저장되어 있는 모든 작업을 초기화한다
+ * @type {function}
+ * @private
  */
 ol.interaction.Draw.prototype.invalidateAll = function () {
 	this.stack_ = [];
@@ -280,11 +284,11 @@ ol.interaction.Draw.prototype.invalidateAll = function () {
 }
 
 /**
- * @classdesc
  * undo, redo에 대한 data를 담는 객체를 생성
  * stack에 저장되며 필요에 따라 호출되어 undo, redo 작업 수행에 필요한 data를 제공한다
  * @param {Array} undo - undo 작업을 수행할 좌표
  * @param {Array} redo - redo 작업을 수행할 좌표
+ * @private
  */
 ol.interaction.Draw.history = function(undo, redo){
 	this.undoCoord = undo;

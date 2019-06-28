@@ -41,6 +41,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		this._data.geoserver.getMapWMS = this.settings.geoserver.getMapWMS;
 		this._data.geoserver.getLayerInfo = this.settings.geoserver.getLayerInfo;
 		this._data.geoserver.clientTree = this.settings.geoserver.clientTree;
+		this._data.geoserver.serverTree = this.settings.geoserver.serverTree;
 		this._data.geoserver.getWFSFeature = this.settings.geoserver.getWFSFeature;
 	};
 
@@ -58,7 +59,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var params = {
 			"serverName" : layer.id.split(":")[0],
 			"workspace" : layer.id.split(":")[1],
-			"version" : "1.0.0",
+			"version" : gb.module.serviceVersion.WFS,
 			"outputformat" : out,
 			"typeName" : layer.id.split(":")[3]
 		}
@@ -69,7 +70,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	var downloadWithCRS = function(url, params) {
 		var a = url, b = params;
 
-		var modal = new gb.modal.Base({
+		var modal = new gb.modal.ModalBase({
 			width : 435,
 			height : 180
 		});
@@ -134,7 +135,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		var that = this;
 		var a = layer;
 		var format = outputformat;
-		
+
 		$.ajax({
 			url : that._data.geoserver.getLayerInfo,
 			method : "POST",
@@ -147,20 +148,20 @@ $.jstree.plugins.geoserver = function(options, parent) {
 			traditional : true,
 			success : function(data, textStatus, jqXHR) {
 				var params, form, keys;
-				
+
 				for (var i = 0; i < data.length; i++) {
 					params = {
 						"serverName" : a.serverName,
 						"workspace" : a.workspace,
-						"version" : "1.1.0",
+						"version" : gb.module.serviceVersion.WMS,
 						"format" : format,
-						"srs": data[i].srs,
 						"bbox" : [ data[i].nbBox.minx, data[i].nbBox.miny, data[i].nbBox.maxx, data[i].nbBox.maxy ],
 						"layers" : data[i].lName,
 						"width" : 1024,
 						"height" : 768
 					};
-					
+					params[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+
 					form = document.createElement("form");
 					form.setAttribute("method", "get");
 					form.setAttribute("action", that._data.geoserver.getMapWMS);
@@ -245,36 +246,58 @@ $.jstree.plugins.geoserver = function(options, parent) {
 						console.log(data);
 						if (Array.isArray(data)) {
 							for (var i = 0; i < data.length; i++) {
+								var obj = {
+									"serverName" : params["serverName"],
+									"workspace" : params["workspace"],
+									"LAYERS" : params["workspace"] + ":" + data[i].lName,
+									// "STYLES" : undefined,
+									"VERSION" : gb.module.serviceVersion.WMS,
+									"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+											+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+									"TILED" : true,
+									"FORMAT" : 'image/png8',
+									"SLD_BODY" : data[i].sld
+								};
+								obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+
 								var wms = new ol.layer.Tile({
 									extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 											data[i].nbBox.maxy.toString() ],
 									source : new ol.source.TileWMS({
 										url : that._data.geoserver.getMapWMS,
-										params : {
-											"serverName" : params["serverName"],
-											"workspace" : params["workspace"],
-											"LAYERS" : params["workspace"] + ":" + data[i].lName,
-											// "STYLES" : undefined,
-											"VERSION" : "1.1.0",
-											"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-													+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-											"TILED" : true,
-											"FORMAT" : 'image/png8',
-											"CRS" : data[i].srs,
-											"SLD_BODY" : data[i].sld
-										},
+										params : obj,
 										serverType : "geoserver"
 									})
 								});
 
+								var attributes = [];
+								if (data[i].attInfo instanceof Object) {
+									var attribute
+									for ( var j in data[i].attInfo) {
+										attribute = new gb.layer.Attribute({
+											originFieldName : j.replace(/(\s*)/g, ''),
+											fieldName : j.replace(/(\s*)/g, ''),
+											type : data[i].attInfo[j].type,
+											decimal : data[i].attInfo[j].type === "Double" ? 30 : null,
+											size : 256,
+											isUnique : false,
+											nullable : data[i].attInfo[j].nillable === "true" ? true : false,
+											isNew : true
+										});
+
+										attributes.push(attribute);
+									}
+								}
+
 								var git = {
 									"geoserver" : params["serverName"],
 									"workspace" : params["workspace"],
-									'layers' : data[i].lName,
+									"layers" : data[i].lName,
 									"geometry" : data[i].geomType,
 									"editable" : true,
 									"sld" : data[i].sld,
-									"native" : data[i].nativeName
+									"native" : data[i].nativeName,
+									"attribute" : attributes
 								};
 								if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 									git["geogigRepo"] = geogig["repo"];
@@ -303,7 +326,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.", 206);
+				var serverTree = that._data.geoserver.serverTree;
+				that.messageModal(serverTree.translation.err[serverTree.locale], serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
 				return;
 			}
@@ -345,7 +369,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 
 			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
 			if (dupLayer !== undefined) {
-				that.messageModal("Error", "동일 레이어가 이미 임포트되어 있습니다.", 206);
+				var serverTree = that._data.geoserver.serverTree;
+				that.messageModal(serverTree.translation.err[serverTree.locale], serverTree.translation.noimpsamestore[serverTree.locale]);
 				console.error("layer duplicated");
 
 				var parent = that._data.geoserver.clientTree.get_LayerByOLId(workspaceNode.id);
@@ -432,7 +457,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 							git["failedChildren"] = failInt + 1;
 						}
 						if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent === undefined)) {
-							that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+							that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
 							that._data.geoserver.clientTree.refresh();
 						} else if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent instanceof ol.layer.Group)) {
 							var git = grandParent.get("git");
@@ -446,7 +471,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 								}
 								if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
 									console.log("done");
-									that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+									that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
 									that._data.geoserver.clientTree.refresh();
 								}
 							}
@@ -485,24 +510,27 @@ $.jstree.plugins.geoserver = function(options, parent) {
 					console.log(data);
 					if (Array.isArray(data)) {
 						for (var i = 0; i < data.length; i++) {
+							var obj = {
+								"serverName" : server.text,
+								"workspace" : workspace.text,
+								"LAYERS" : params["workspace"] + ":" + node.text,
+								// "STYLES" : data[i].style,
+								"VERSION" : gb.module.serviceVersion.WMS,
+								"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+										+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+								"TILED" : true,
+								"FORMAT" : 'image/png8',
+								"SLD_BODY" : data[i].sld
+							};
+
+							obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+
 							var wms = new ol.layer.Tile({
 								extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
 										data[i].nbBox.maxy.toString() ],
 								source : new ol.source.TileWMS({
 									url : that._data.geoserver.getMapWMS,
-									params : {
-										"serverName" : server.text,
-										"workspace" : workspace.text,
-										"LAYERS" : params["workspace"] + ":" + node.text,
-										// "STYLES" : data[i].style,
-										"VERSION" : "1.1.0",
-										"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
-												+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
-										"TILED" : true,
-										"FORMAT" : 'image/png8',
-										"CRS" : data[i].srs,
-										"SLD_BODY" : data[i].sld
-									},
+									params : obj,
 									serverType : "geoserver"
 								})
 							});
@@ -543,7 +571,568 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											console.log("done");
 											that._data.geoserver.clientTree.refresh();
 											if (git["failedChildren"] > 0) {
-												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.", 206);
+												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
+											}
+											var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
+											console.log(parent);
+											if (grandParent instanceof ol.layer.Group) {
+												var git = grandParent.get("git");
+												if (git !== undefined) {
+													var all = git["allChildren"];
+													var allInt = parseInt(all);
+													var load = git["loadedChildren"];
+													var loadInt = parseInt(load);
+													if (!isNaN(loadInt)) {
+														git["loadedChildren"] = loadInt + 1;
+													}
+													if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+														console.log("done");
+														that._data.geoserver.clientTree.refresh();
+														if (git["failedChildren"] > 0) {
+															that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
+														}
+													}
+												}
+											} else {
+												that._data.geoserver.clientTree.refresh();
+											}
+										}
+									}
+								} else {
+									that._data.geoserver.clientTree.refresh();
+								}
+							} else {
+								console.error("no collection to push");
+							}
+						}
+					}
+				}
+			});
+		}
+	};
+
+	/**
+	 * 레이어를 묶어서 요청한다.
+	 * 
+	 * @method recursive_node_load
+	 * @param {Object}
+	 *            node - 트리에서 조회한 레이어 노드 객체
+	 * @param {ol.Collection}
+	 *            collection - 레이어를 주입할 콜렉션
+	 */
+	this.recursive_node_load = function(node, collection, duplication, isLast) {
+		var that = this;
+		if (node.type === "workspace") {
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				var serverTree = that._data.geoserver.serverTree;
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
+				console.error("layer duplicated");
+				duplication = true;
+				return;
+			}
+
+			var childrenLength = node.children.length;
+			console.log("자식노드: " + childrenLength);
+			var git = {
+				"allChildren" : childrenLength,
+				"loadedChildren" : 0,
+				"failedChildren" : 0
+			};
+
+			var workspace = new ol.layer.Group({});
+			workspace.set("id", node.id);
+			workspace.set("name", node.text);
+			workspace.set("git", git);
+
+			if (collection instanceof ol.Collection) {
+				collection.push(workspace);
+				var domnode = that._data.geoserver.clientTree.get_node(workspace.get("treeid"), true);
+				$(domnode).addClass("jstreeol3-loading");
+				console.log(domnode);
+			} else {
+				console.error("no collection to push");
+			}
+
+			var children = node.children;
+			if (children.length === 0) {
+				that._data.geoserver.clientTree.refresh();
+			}
+			for (var i = 0; i < children.length; i++) {
+				var store = this.get_node(children[i]);
+				var isLast = false;
+				if (i == (children.length - 1)) {
+					isLast = true;
+				}
+				this.recursive_node_load(store, workspace.getLayers(), duplication, isLast);
+			}
+		} else if (node.type === "datastore") {
+			var workspaceNode = this.get_node(node.parents[0]);
+			var datastoreNode = node;
+
+			var geogig = {};
+			if (datastoreNode.original.hasOwnProperty("storeType")) {
+				if (datastoreNode.original.storeType === "GeoGIG") {
+					geogig["repo"] = datastoreNode.original.geogigRepos;
+					geogig["branch"] = datastoreNode.original.geogigBranch;
+				}
+			}
+
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				var serverTree = that._data.geoserver.serverTree;
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
+				duplication = true;
+				console.error("layer duplicated");
+
+				var parent = that._data.geoserver.clientTree.get_LayerByOLId(workspaceNode.id);
+				console.log(parent);
+				if (parent instanceof ol.layer.Group) {
+					var git = parent.get("git");
+					if (git !== undefined) {
+						var all = git["allChildren"];
+						var allInt = parseInt(all);
+						var fail = git["failedChildren"];
+						var failInt = parseInt(fail);
+						if (!isNaN(failInt)) {
+							git["failedChildren"] = failInt + 1;
+						}
+						if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+							that._data.geoserver.clientTree.refresh();
+						}
+					}
+				}
+				return;
+			}
+
+			var children = node.children;
+			var childrenLength = node.children.length;
+			console.log(node.children);
+			console.log("자식노드: " + childrenLength);
+			// var git = {
+			// "allChildren" : childrenLength,
+			// "loadedChildren" : 0,
+			// "failedChildren" : 0
+			// };
+
+			if (gb.module.serviceVersion.loadPerformance.active && childrenLength >= gb.module.serviceVersion.loadPerformance.limit) {
+				if (collection instanceof ol.Collection) {
+					var params = {
+						"serverName" : undefined,
+						"workspace" : undefined,
+						"geoLayerList" : []
+					};
+					var layerString = [];
+					var wms;
+					var except = [];
+					if (children.length > 0) {
+						var child = that.get_node(children[0]);
+						var server = that.get_node(child.parents[2]);
+						var workspace = that.get_node(child.parents[1]);
+						params["serverName"] = server.text;
+						params["workspace"] = workspace.text;
+						for (var a = 0; a < children.length; a++) {
+							var item = that.get_node(children[a]);
+
+							var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(item.id);
+							if (dupLayer !== undefined) {
+								var serverTree = that._data.geoserver.serverTree;
+								// that.messageModal(serverTree.translation.err[serverTree.locale],
+								// serverTree.translation.noimpsamestore[serverTree.locale]);
+								duplication = true;
+								except.push(item);
+							} else {
+								params["geoLayerList"].push(item.text);
+								var layer = workspace.text + ":" + item.text;
+								layerString.push(layer);
+							}
+						}
+
+						wms = new ol.layer.Tile({
+							extent : undefined,
+							source : new ol.source.TileWMS({
+								url : that._data.geoserver.getMapWMS,
+								params : {
+									"serverName" : params["serverName"],
+									"workspace" : params["workspace"],
+									"LAYERS" : layerString.toString(),
+									"VERSION" : "1.1.0",
+									"TILED" : true,
+									"FORMAT" : 'image/png8'
+								// "SLD_BODY" : mysld
+								},
+								serverType : "geoserver"
+							})
+						});
+
+						var git = {
+							"fake" : "parent",
+							"geoserver" : params["serverName"],
+							"workspace" : params["workspace"],
+							"layers" : new ol.Collection(),
+							"geometry" : false,
+							"editable" : false,
+							"sld" : false,
+							"native" : false,
+							"allChildren" : childrenLength,
+							"loadedChildren" : 0,
+							"failedChildren" : 0
+						};
+						wms.set("git", git);
+						wms.set("id", node.id);
+						wms.set("name", node.text);
+						collection.push(wms);
+
+						var layers = wms.get("git").layers;
+						if (layers instanceof ol.Collection) {
+							var domnode = that._data.geoserver.clientTree.get_node(wms.get("treeid"), true);
+							$(domnode).addClass("jstreeol3-loading");
+							console.log(domnode);
+						}
+					}
+					$.ajax({
+						url : that._data.geoserver.getLayerInfo,
+						method : "POST",
+						contentType : "application/json; charset=UTF-8",
+						data : JSON.stringify(params),
+						beforeSend : function() {
+							// $("body").css("cursor", "wait");
+						},
+						complete : function() {
+							// $("body").css("cursor", "default");
+						},
+						success : function(data, textStatus, jqXHR) {
+							console.log(data);
+							if (Array.isArray(data)) {
+								for (var i = 0; i < data.length; i++) {
+									var ext = [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(),
+											data[i].nbBox.maxx.toString(), data[i].nbBox.maxy.toString() ];
+									var psource = wms.getSource();
+									var pext = psource.getParams()["BBOX"];
+									if (pext === undefined) {
+										// wms.setExtent(ext);
+										psource.getParams()["BBOX"] = ext.toString();
+									} else {
+										var arrpext = pext.split(",");
+										var newext = ol.extent.extend(arrpext, ext);
+										psource.getParams()["BBOX"] = newext.toString();
+										// wms.setExtent(newext);
+									}
+									var wmsChild = new ol.layer.Tile({
+										extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(),
+												data[i].nbBox.maxx.toString(), data[i].nbBox.maxy.toString() ],
+										source : new ol.source.TileWMS({
+											url : that._data.geoserver.getMapWMS,
+											params : {
+												"serverName" : params["serverName"],
+												"workspace" : params["workspace"],
+												"LAYERS" : params["workspace"] + ":" + data[i].lName,
+												// "STYLES" : undefined,
+												"VERSION" : "1.1.0",
+												"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+														+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+												"TILED" : true,
+												"FORMAT" : 'image/png8',
+												"CRS" : data[i].srs,
+												"SLD_BODY" : data[i].sld
+											},
+											serverType : "geoserver"
+										})
+									});
+									var gitChild = {
+										"fake" : "child",
+										"geoserver" : params["serverName"],
+										"workspace" : params["workspace"],
+										'layers' : data[i].lName,
+										"geometry" : data[i].geomType,
+										"editable" : true,
+										"sld" : data[i].sld,
+										"native" : data[i].nativeName
+									};
+									if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
+										gitChild["geogigRepo"] = geogig["repo"];
+										gitChild["geogigBranch"] = geogig["branch"];
+									}
+									wmsChild.set("git", gitChild);
+									wmsChild.set("id", node.id + ":" + data[i].lName);
+									wmsChild.set("name", data[i].lName);
+									var layers = wms.get("git").layers;
+									if (layers instanceof ol.Collection) {
+										layers.push(wmsChild);
+										that._data.geoserver.clientTree.initTreeId();
+									} else {
+										console.error("no collection to push");
+									}
+									if (wms instanceof ol.layer.Tile) {
+										var git = wms.get("git");
+										if (git !== undefined) {
+											var fakeType = git.fake;
+											if (fakeType !== undefined) {
+												if (fakeType === "parent") {
+													var all = git["allChildren"];
+													var allInt = parseInt(all);
+													var load = git["loadedChildren"];
+													var loadInt = parseInt(load);
+													if (!isNaN(loadInt)) {
+														git["loadedChildren"] = loadInt + 1;
+													}
+													if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+														that._data.geoserver.clientTree.refresh();
+
+													}
+												}
+											}
+										}
+									}
+									if (i === (data.length - 1)) {
+										that._data.geoserver.clientTree.refresh();
+									}
+								}
+							}
+						}
+					});
+				} else {
+					console.error("no collection to push");
+				}
+			} else {
+				
+				var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+				if (dupLayer !== undefined) {
+					var serverTree = that._data.geoserver.serverTree;
+					// that.messageModal(serverTree.translation.err[serverTree.locale],
+					// serverTree.translation.noimpsamestore[serverTree.locale]);
+					duplication = true;
+				}
+				
+				var git = {
+					"allChildren" : childrenLength,
+					"loadedChildren" : 0,
+					"failedChildren" : 0
+				};
+
+				var datastore = new ol.layer.Group({});
+				datastore.set("id", node.id);
+				datastore.set("name", node.text);
+				datastore.set("git", git);
+
+				if (collection instanceof ol.Collection) {
+					collection.push(datastore);
+					var domnode = that._data.geoserver.clientTree.get_node(datastore.get("treeid"), true);
+					$(domnode).addClass("jstreeol3-loading");
+					console.log(domnode);
+
+				} else {
+					console.error("no collection to push");
+				}
+
+				var objNodes = [];
+				if (children.length === 0) {
+					that._data.geoserver.clientTree.refresh();
+				}
+				for (var i = 0; i < children.length; i++) {
+					var layer = this.get_node(children[i]);
+					var isLast = false;
+					if (i == (children.length - 1)) {
+						isLast = true;
+					}
+					this.recursive_node_load(layer, datastore.getLayers(), duplication, isLast);
+					// objNodes.push(layer);
+				}
+			}
+
+			// var children = node.children;
+			// var objNodes = [];
+			// if (children.length === 0) {
+			// that._data.geoserver.clientTree.refresh();
+			// }
+			// for (var i = 0; i < children.length; i++) {
+			// var layer = this.get_node(children[i]);
+			// this.load_each_wms_layer(layer, datastore.getLayers());
+			// // objNodes.push(layer);
+			// }
+
+			/*
+			 * if (collection instanceof ol.Collection) {
+			 * collection.push(datastore); this.load_each_wms_layer(objNodes,
+			 * datastore.getLayers()); } else { console.error("no collection to
+			 * push"); }
+			 */
+		} else if (node.type === "point" || node.type === "multipoint" || node.type === "linestring" || node.type === "multilinestring"
+				|| node.type === "polygon" || node.type === "multipolygon") {
+
+			var server = this.get_node(node.parents[2]);
+			var workspace = this.get_node(node.parents[1]);
+			var datastore = this.get_node(node.parents[0]);
+
+			var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+			if (dupLayer !== undefined) {
+				var serverTree = that._data.geoserver.serverTree;
+				// that.messageModal(serverTree.translation.err[serverTree.locale],
+				// serverTree.translation.noimpsamestore[serverTree.locale]);
+				console.error("layer duplicated");
+				duplication = true;
+				var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
+				var parent = that._data.geoserver.clientTree.get_LayerByOLId(datastore.id);
+				console.log(parent);
+				if (parent instanceof ol.layer.Group) {
+					var git = parent.get("git");
+					if (git !== undefined) {
+						var all = git["allChildren"];
+						var allInt = parseInt(all);
+						var fail = git["failedChildren"];
+						var failInt = parseInt(fail);
+						if (!isNaN(failInt)) {
+							git["failedChildren"] = failInt + 1;
+						}
+						if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent === undefined)) {
+							// that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
+							that._data.geoserver.clientTree.refresh();
+						} else if ((allInt === (git["loadedChildren"] + git["failedChildren"])) && (grandParent instanceof ol.layer.Group)) {
+							var git = grandParent.get("git");
+							if (git !== undefined) {
+								var all = git["allChildren"];
+								var allInt = parseInt(all);
+								var fail = git["failedChildren"];
+								var failInt = parseInt(fail);
+								if (!isNaN(failInt)) {
+									git["failedChildren"] = failInt + 1;
+								}
+								if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+									console.log("done");
+									// that.messageModal("Error", "이미 불러온 레이어는
+									// 제외됩니다.");
+									that._data.geoserver.clientTree.refresh();
+								}
+							}
+						}
+					}
+				}
+				return;
+			}
+
+			var geogig = {};
+			if (datastore.original.hasOwnProperty("storeType")) {
+				if (datastore.original.storeType === "GeoGIG") {
+					geogig["repo"] = datastore.original.geogigRepos;
+					geogig["branch"] = datastore.original.geogigBranch;
+				}
+			}
+			var params = {
+				"serverName" : server.text,
+				"workspace" : workspace.text,
+				"geoLayerList" : [ node.text ]
+			};
+			console.log(params);
+
+			$.ajax({
+				url : that._data.geoserver.getLayerInfo,
+				method : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(params),
+				beforeSend : function() {
+					// $("body").css("cursor", "wait");
+				},
+				complete : function() {
+					// $("body").css("cursor", "default");
+				},
+				success : function(data, textStatus, jqXHR) {
+					console.log(data);
+					if (Array.isArray(data)) {
+						for (var i = 0; i < data.length; i++) {
+							var obj = {
+								"serverName" : server.text,
+								"workspace" : workspace.text,
+								"LAYERS" : params["workspace"] + ":" + node.text,
+								// "STYLES" : data[i].style,
+								"VERSION" : gb.module.serviceVersion.WMS,
+								"BBOX" : data[i].nbBox.minx.toString() + "," + data[i].nbBox.miny.toString() + ","
+										+ data[i].nbBox.maxx.toString() + "," + data[i].nbBox.maxy.toString(),
+								"TILED" : true,
+								"FORMAT" : 'image/png8',
+								"SLD_BODY" : data[i].sld
+							};
+							obj[gb.module.serviceVersion.getWMSCrs()] = data[i].srs;
+
+							var wms = new ol.layer.Tile({
+								extent : [ data[i].nbBox.minx.toString(), data[i].nbBox.miny.toString(), data[i].nbBox.maxx.toString(),
+										data[i].nbBox.maxy.toString() ],
+								source : new ol.source.TileWMS({
+									url : that._data.geoserver.getMapWMS,
+									params : obj,
+									serverType : "geoserver"
+								})
+							});
+
+							var attributes = [];
+							if (data[i].attInfo instanceof Object) {
+								var attribute
+								for ( var j in data[i].attInfo) {
+									attribute = new gb.layer.Attribute({
+										originFieldName : j.replace(/(\s*)/g, ''),
+										fieldName : j.replace(/(\s*)/g, ''),
+										type : data[i].attInfo[j].type,
+										decimal : data[i].attInfo[j].type === "Double" ? 30 : null,
+										size : 256,
+										isUnique : false,
+										nullable : data[i].attInfo[j].nillable === "true" ? true : false,
+										isNew : true
+									});
+
+									attributes.push(attribute);
+								}
+							}
+
+							var git = {
+								"geoserver" : server.text,
+								"workspace" : workspace.text,
+								"layers" : data[i].lName,
+								"geometry" : data[i].geomType,
+								"editable" : true,
+								"sld" : data[i].sld,
+								"native" : data[i].nativeName,
+								"attribute" : attributes
+							};
+							if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
+								git["geogigRepo"] = geogig["repo"];
+								git["geogigBranch"] = geogig["branch"];
+							}
+							wms.set("git", git);
+							wms.set("id", node.id);
+							wms.set("name", node.text);
+							// ====================
+							var dupLayer = that._data.geoserver.clientTree.get_LayerByOLId(node.id);
+							if (dupLayer !== undefined) {
+								var serverTree = that._data.geoserver.serverTree;
+								// that.messageModal(serverTree.translation.err[serverTree.locale],
+								// serverTree.translation.noimpsamestore[serverTree.locale]);
+								console.error("layer duplicated");
+								duplication = true;
+								continue;
+							}
+							// ====================
+
+							if (collection instanceof ol.Collection) {
+								collection.push(wms);
+								// that._data.geoserver.clientTree.initTreeId();
+								var parent = that._data.geoserver.clientTree.get_LayerByOLId(datastore.id);
+								console.log(parent);
+								if (parent instanceof ol.layer.Group) {
+									var git = parent.get("git");
+									if (git !== undefined) {
+										var all = git["allChildren"];
+										var allInt = parseInt(all);
+										var load = git["loadedChildren"];
+										var loadInt = parseInt(load);
+										if (!isNaN(loadInt)) {
+											git["loadedChildren"] = loadInt + 1;
+										}
+										if (allInt === (git["loadedChildren"] + git["failedChildren"])) {
+											console.log("done");
+											that._data.geoserver.clientTree.refresh();
+											if (git["failedChildren"] > 0) {
+												that.messageModal("Error", "이미 불러온 레이어는 제외됩니다.");
 											}
 											var grandParent = that._data.geoserver.clientTree.get_LayerByOLId(workspace.id);
 											console.log(parent);
@@ -581,6 +1170,11 @@ $.jstree.plugins.geoserver = function(options, parent) {
 				}
 			});
 		}
+		if (isLast && duplication) {
+			var serverTree = that._data.geoserver.serverTree;
+			that.messageModal(serverTree.translation.err[serverTree.locale],
+					serverTree.translation.noimpsamestore[serverTree.locale]);
+		}
 	};
 
 	/**
@@ -594,7 +1188,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 	 * @param {Number}
 	 *            height - 모달의 높이(px)
 	 */
-	this.messageModal = function(title, msg, height) {
+	this.messageModal = function(title, msg) {
 		var that = this;
 		var msg1 = $("<div>").text(msg).css({
 			"text-align" : "center",
@@ -608,10 +1202,9 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		}).addClass("gb-button").addClass("gb-button-primary").text("OK");
 		var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-		var modal = new gb.modal.Base({
+		var modal = new gb.modal.ModalBase({
 			"title" : title,
 			"width" : 310,
-			"height" : height,
 			"autoOpen" : true,
 			"body" : body,
 			"footer" : buttonArea
@@ -643,6 +1236,7 @@ $.jstree.plugins.geoserver = function(options, parent) {
 		// console.log(wmsInfo);
 
 	};
+
 	this.import_fake_group_notload = function(obj) {
 		// // =======================================
 		var that = this;

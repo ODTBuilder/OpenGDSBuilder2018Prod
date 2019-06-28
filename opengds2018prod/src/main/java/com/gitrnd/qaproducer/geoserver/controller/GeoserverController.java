@@ -18,6 +18,7 @@
 package com.gitrnd.qaproducer.geoserver.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import javax.xml.bind.JAXBException;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,34 +42,52 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoGroupLayerList;
-import com.gitrnd.gdsbuilder.geolayer.data.DTGeoLayerList;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.gdsbuilder.geoserver.data.DTGeoserverManagerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayer;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoGroupLayerList;
+import com.gitrnd.gdsbuilder.geoserver.layer.DTGeoLayerList;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 import com.gitrnd.qaproducer.controller.AbstractController;
 import com.gitrnd.qaproducer.geoserver.service.GeoserverLayerProxyService;
 import com.gitrnd.qaproducer.geoserver.service.GeoserverService;
 
 /**
- * @ClassName: GeoserverController
- * @Description: Geoserver 관련된 요청을 처리한다.
+ * Geoserver 관련된 요청을 처리한다.
  * @author JY.Kim
- * @date 2017. 4. 3. 오후 2:16:03
+ * @since 2017. 4. 3. 오후 2:16:03
  * 
  */
 @Controller("geoserverController")
 @RequestMapping("/geoserver")
 public class GeoserverController extends AbstractController {
 
+	
+	static final JSONParser jsonP = new JSONParser();
+	
+	/**
+	 * Geoserver 관련 요청 처리 Service 인터페이스
+	 */
 	@Autowired
 	@Qualifier("geoService")
 	private GeoserverService geoserverService;
 
+	/**
+	 * Geoserver Proxy 관련 요청 처리 Service 인터페이스
+	 */
 	@Autowired
 	@Qualifier("proService")
 	private GeoserverLayerProxyService proService;
 
+	/**
+	 * Geoserver정보 세션에 추가
+	 * @author SG.LEE
+	 * @param request {@link HttpServletRequest}
+	 * @param response {@link HttpServletResponse}
+	 * @param loginUser 사용자 정보
+	 * @return 추가여부 {@code true} or {@code false}
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/addGeoserver.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean addGeoserver(HttpServletRequest request, HttpServletResponse response,
@@ -86,6 +107,15 @@ public class GeoserverController extends AbstractController {
 		return flag;
 	}
 
+	/**
+	 * Geoserver 정보 세션에서 삭제
+	 * @author SG.LEE
+	 * @param request {@link HttpServletRequest}
+	 * @param response {@link HttpServletResponse}
+	 * @param loginUser 사용자 정보
+	 * @return 삭제 {@code true} or {@code false}
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/removeGeoserver.ajax", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean removeGeoserver(HttpServletRequest request, HttpServletResponse response,
@@ -106,13 +136,13 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * @Description 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부)
+	 * 로그인한 계정에 대한 Geoserver 트리요청(serverName 조건부)
 	 * @author SG.Lee
-	 * @Date 2018. 7. 13. 오후 5:00:28
-	 * @param request
-	 * @param loginUser
-	 * @param workspace
-	 * @return JSONArray
+	 * @since 2018. 7. 13. 오후 5:00:28
+	 * @param request {@link HttpServletRequest}
+	 * @param loginUser 사용자 정보
+	 * @param workspace 작업공간
+	 * @return JSONArray Workspace단위 트리 조회
 	 * @throws IOException 
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -133,11 +163,11 @@ public class GeoserverController extends AbstractController {
 	/**
 	 * @Description 로그인한 계정에 대한 Geoserver 전체 트리 요청
 	 * @author SG.Lee
-	 * @Date 2018. 7. 13. 오후 5:00:28
-	 * @param request
-	 * @param loginUser
-	 * @param workspace
-	 * @return JSONArray
+	 * @since 2018. 7. 13. 오후 5:00:28
+	 * @param request {@link HttpServletRequest}
+	 * @param loginUser 사용자 정보
+	 * @param workspace 작업공간
+	 * @return JSONArray 세션에 저장된 Geoserver 전체 트리 jsTree(https://www.jstree.com/)
 	 * @throws IOException 
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -155,12 +185,12 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * @Description WFST
+	 * Geoserver WFST요청 처리
 	 * @author SG.Lee
-	 * @Date 2018. 7. 20. 오후 2:59:37
-	 * @param request
-	 * @param loginUser
-	 * @return String
+	 * @since 2018. 7. 20. 오후 2:59:37
+	 * @param request {@link HttpServletRequest}
+	 * @param loginUser 사용자 정보
+	 * @return String WFST 요청 결과
 	 * @throws IOException 
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -180,12 +210,14 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * @Description
+	 * Geoserver Layer update요청 처리
 	 * @author SG.Lee
-	 * @Date 2018. 7. 20. 오후 2:59:37
-	 * @param request
-	 * @param loginUser
-	 * @return String
+	 * @since 2018. 7. 20. 오후 2:59:37
+	 * @param request {@link HttpServletRequest}
+	 * @param response {@link HttpServletResponse}
+	 * @param jsonObject 요청 파라미터
+	 * @param loginUser 사용자 정보
+	 * @return boolean 업데이트 성공여부
 	 * @throws IOException
 	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
@@ -228,10 +260,10 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * WMS레이어 요청
+	 * Geoserver WMS GetMap API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Date 2017. 4
+	 * @since 2017. 4
 	 * @param request
 	 * @param response
 	 * @throws Exception
@@ -257,10 +289,10 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * WFSGetFeature GET
+	 * Geoserver WFS GetFeature API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:30:17
+	 * @since 2018. 7. 9. 오후 3:30:17
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -287,10 +319,10 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * WMSGetFeatureInfo
+	 * Geoserver WMS GetFeatureInfo API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:32:51
+	 * @since 2018. 7. 9. 오후 3:32:51
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -318,10 +350,10 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * getWMSGetLegendGraphic
+	 * Geoserver getWMSGetLegendGraphic API 요청
 	 * 
 	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:33:02
+	 * @since 2018. 7. 9. 오후 3:33:02
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -346,14 +378,16 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * GeoserverInfo Request
+	 * Geoserver API를 통한 정보 요청
 	 * 
-	 * @author SG.Lee
-	 * @Date 2018. 7. 9. 오후 3:30:17
+	 * @author SG.LEE
 	 * @param request
 	 * @param response
+	 * @param loginUser
+	 * @return String Output 타입에 맞는 요청 결과(json, xml..)
 	 * @throws ServletException
-	 * @throws IOException      void
+	 * @throws IOException
+	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getDTGeoserverInfo.ajax")
 	@ResponseBody
@@ -376,13 +410,13 @@ public class GeoserverController extends AbstractController {
 	
 	
 	/**
-	 * @Description 스타일리스트 조회
+	 * 단일 Geoserver 스타일리스트 조회
 	 * @author SG.Lee
-	 * @Date 2018. 11. 21. 오후 5:17:54
+	 * @since 2018. 11. 21. 오후 5:17:54
 	 * @param request
 	 * @param response
 	 * @param loginUser
-	 * @return
+	 * @return List<String> 스타일 리스트
 	 * @throws ServletException
 	 * @throws IOException
 	 * @throws Exception List<String>
@@ -413,10 +447,17 @@ public class GeoserverController extends AbstractController {
 		return styles;
 	}
 	
-
 	/**
-	 * Geoserver Layer 조회 @author SG.Lee @Date 2017. 4 @param request @param
-	 * jsonObject @return DTGeoLayerList @throws
+	 * Geoserver Layer 조회
+	 * 
+	 * @author SG.LEE
+	 * @since 2017. 4
+	 * @param request
+	 * @param response
+	 * @param jsonObject
+	 * @param loginUser
+	 * @return DTGeoLayerList
+	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getGeoLayerInfoList.ajax")
@@ -446,9 +487,16 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * 레이어 중복체크 @author SG.Lee @Date 2017. 5 @param request @param
-	 * jsonObject @return DTGeoLayerList @throws
-	 * @throws IOException 
+	 * Geoserver 레이어 중복체크 
+	 * 
+	 * @author SG.LEE
+	 * @since 2017. 5 
+	 * @param request
+	 * @param response
+	 * @param jsonObject
+	 * @param loginUser
+	 * @return JSONObject {레이어명 : 중복여부(true or false)}
+	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/layerDuplicateCheck.ajax")
@@ -477,13 +525,13 @@ public class GeoserverController extends AbstractController {
 	}
 
 	/**
-	 * @Description 레이어 삭제
+	 * Geoserver 레이어 삭제
 	 * @author SG.Lee
-	 * @Date 2018. 8. 2. 오전 10:14:37
+	 * @since 2018. 8. 2. 오전 10:14:37
 	 * @param request
 	 * @param jsonObject
 	 * @param loginUser
-	 * @return JSONObject
+	 * @return boolean Geoserver 삭제여부
 	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
@@ -507,15 +555,24 @@ public class GeoserverController extends AbstractController {
 			int nFlag = geoserverService.removeDTGeoserverLayers(dtGeoserverManager, workspace, datastore, layerList);
 			if(nFlag!=200){
 				response.sendError(nFlag);
+			}else{
+				resultFlag = true;
 			}
 		}
 		return resultFlag;
 	}
 
+	
 	/**
-	 * Geoserver Group레이어 조회 @author SG.Lee @Date 2017. 4 @param request @param
-	 * jsonObject @return DTGeoLayerList @throws
-	 * @throws IOException 
+	 * {@link DTGeoGroupLayer} 리스트조회
+	 * 
+	 * @author SG.LEE
+	 * @param request
+	 * @param response
+	 * @param jsonObject
+	 * @param loginUser
+	 * @return DTGeoGroupLayerList {@link DTGeoGroupLayer} 리스트
+	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/getGeoGroupLayerInfoList.ajax")
@@ -544,6 +601,14 @@ public class GeoserverController extends AbstractController {
 		}
 	}
 
+	/**
+	 * Geoserver에 sldBody를 통한 스타일 추가
+	 * 
+	 * @author SG.LEE
+	 * @param request
+	 * @param jsonObject
+	 * @param loginUser
+	 */
 	@RequestMapping(value = "/publishGeoserverStyle.ajax")
 	@ResponseBody
 	public void publishGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
@@ -558,6 +623,12 @@ public class GeoserverController extends AbstractController {
 		geoserverService.publishStyle(dtGeoserverManager, sldBody, name);
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param request
+	 * @param jsonObject
+	 * @param loginUser
+	 */
 	@RequestMapping(value = "/updateGeoserverStyle.ajax")
 	@ResponseBody
 	public void updateGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
@@ -571,6 +642,12 @@ public class GeoserverController extends AbstractController {
 		geoserverService.updateStyle(dtGeoserverManager, sldBody, name);
 	}
 
+	/**
+	 * @author SG.LEE
+	 * @param request
+	 * @param jsonObject
+	 * @param loginUser
+	 */
 	@RequestMapping(value = "/removeGeoserverStyle.ajax")
 	@ResponseBody
 	public void removeGeoserverStyle(HttpServletRequest request, @RequestBody JSONObject jsonObject,
@@ -583,6 +660,18 @@ public class GeoserverController extends AbstractController {
 		geoserverService.removeStyle(dtGeoserverManager, name);
 	}
 
+	/**
+	 * Geoserver Layer Style SLD 조회
+	 * @author SG.LEE
+	 * @param request
+	 * @param response
+	 * @param loginUser
+	 * @param serverName
+	 * @param workspace
+	 * @param layerName
+	 * @return 레이어 스타일 sldBody
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/getLayerStyleSld.ajax")
 	@ResponseBody
 	public String getLayerStyleSld(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal LoginUser loginUser,
@@ -597,9 +686,21 @@ public class GeoserverController extends AbstractController {
 		return geoserverService.getLayerStyleSld(dtGeoserverManager, workspace, layerName);
 	}
 
+	/**
+	 * 검수파일(zip) 업로드 및 검수 요청
+	 * @author SG.LEE
+	 * @param request
+	 * @param response
+	 * @param loginUser
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
 	public void uploadProcess(MultipartHttpServletRequest request, HttpServletResponse response,
 			@AuthenticationPrincipal LoginUser loginUser) throws Exception {
+		
+		
+		PrintWriter out = response.getWriter();
+		JSONObject returnJson = new JSONObject();
 		if (loginUser == null) {
 			response.sendError(600);
 			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
@@ -608,17 +709,104 @@ public class GeoserverController extends AbstractController {
 		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
 		String workspace = (String) request.getParameter("workspace");
 		String datastore = (String) request.getParameter("datastore");
-//		String ignorePublication = (String) request.getParameter("ignorePublication");
-		boolean iPFlag = true;
+		String ignorePublication = (String) request.getParameter("ignorePublication");
+		
+		
+		boolean iPFlag = false;
+		
 		if (dtGeoserverManager == null) {
 			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
-		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null) {
+		} else if (workspace.equals("") || workspace == null || datastore.equals("") || datastore == null || ignorePublication.equals("") || ignorePublication ==null) {
 				response.sendError(601, "미입력 텍스트가 존재합니다.");
 		} else {
-			geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
+			if(ignorePublication.toLowerCase().equals("true")){
+				iPFlag = true;
+			}else if(ignorePublication.toLowerCase().equals("false")){
+				iPFlag = false;
+			}else{
+				iPFlag = false;
+			}
+            returnJson = geoserverService.shpCollectionPublishGeoserver(request, dtGeoserverManager, workspace, datastore, iPFlag);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            out.print(returnJson);
+            out.flush();   
 		}
 	}
+	
+	
+	
+	/**
+	 * @author SG.LEE
+	 * @param request
+	 * @param response
+	 * @param jsonObject
+	 * @param loginUser
+	 * @return
+	 * @throws IOException
+	 */
+	@SuppressWarnings({ "unchecked", "static-access" })
+	@RequestMapping(value = "/jsonUpload.ajax", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject jsonUpload(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject jsonObject, @AuthenticationPrincipal LoginUser loginUser) throws IOException {
+		JSONObject returnJson = new JSONObject();
+		JSONArray layers = new JSONArray();
+		returnJson.put("status Code", 500);
+		returnJson.put("layers", layers);
+		if (loginUser == null) {
+			returnJson.put("status Code", 600);
+			throw new NullPointerException("로그인 세션이 존재하지 않습니다.");
+		}
+		
+		 
+		try {
+			jsonObject = (JSONObject) jsonP.parse(jsonObject.toJSONString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		String serverName = (String) jsonObject.get("serverName");
+		String workspace = (String) jsonObject.get("workspace");
+		String datastore = (String) jsonObject.get("datastore");
+		String epsg = "EPSG:" + (String) jsonObject.get("epsg");
+		boolean ignorePublication = (boolean) jsonObject.get("ignorePublication");
+		JSONArray uploadJson = (JSONArray) jsonObject.get("uploadJson");
 
+		DTGeoserverManager dtGeoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		if (dtGeoserverManager == null) {
+//			response.sendError(603, "Geoserver 세션이 존재하지 않습니다.");
+			returnJson.put("status Code", 603);
+			return returnJson;
+		}
+
+		if (serverName == null || serverName.isEmpty() || workspace == null || workspace.isEmpty() || datastore == null
+				|| datastore.isEmpty() || epsg == null || epsg.isEmpty()|| uploadJson == null) {
+			returnJson.put("status Code", 601);
+		} else {
+				returnJson = geoserverService.geojsonPublishGeoserver(dtGeoserverManager, workspace, datastore, epsg, uploadJson, ignorePublication);
+		}
+		return returnJson;
+	}
+	
+	
+	
+	
+	
+
+	/**
+	 * @author SG.LEE
+	 * @param request
+	 * @param loginUser
+	 * @param serverName
+	 * @param workspace
+	 * @param datastore
+	 * @param branch
+	 * @return
+	 * @throws JAXBException
+	 */
 	@RequestMapping(value = "/updateGeogigGsStore.do", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean updateGeogigGsStore(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,

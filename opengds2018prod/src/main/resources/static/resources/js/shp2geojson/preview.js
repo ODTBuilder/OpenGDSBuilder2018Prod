@@ -37,10 +37,38 @@ function loadshp(config, returnData) {
             var reader = new FileReader();
             reader.onload = function(e) {
                 var URL = window.URL || window.webkitURL || window.mozURL || window.msURL,
-                zip = new JSZip(e.target.result),
-                shpString =  zip.file(/.shp$/i)[0].name,
-                dbfString = zip.file(/.dbf$/i)[0].name,
-                prjString = zip.file(/.prj$/i)[0];
+	                zip = new JSZip(e.target.result),
+	                alertText = '';
+                
+                if(zip.file(/.shp$/i).length === 0){
+                    if(locale === 'en'){
+                    	alertText += 'There is no shp file';
+                    } else if(locale === 'ko'){
+                    	alertText += 'SHP파일이 없습니다.';
+                    }
+                }
+				if(zip.file(/.dbf$/i).length === 0){
+					if(locale === 'en'){
+						alertText += '\nThere is no dbf file';
+                    } else if(locale === 'ko'){
+                    	alertText += '\nDBF파일이 없습니다.';
+                    }
+				}
+				if(zip.file(/.prj$/i).length === 0){
+					if(locale === 'en'){
+						alertText += '\nThere is no prj file';
+                    } else if(locale === 'ko'){
+                    	alertText += '\nPRJ파일이 없습니다.';
+                    }
+				}
+				
+				if(alertText !== ''){
+					alert(alertText);
+					return;
+				}
+	            var shpString =  zip.file(/.shp$/i)[0].name,
+	                dbfString = zip.file(/.dbf$/i)[0].name,
+	                prjString = zip.file(/.prj$/i)[0];
                 if(prjString) {
                     proj4.defs('EPSGUSER', zip.file(prjString.name).asText());
                     try {

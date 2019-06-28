@@ -53,7 +53,7 @@ import com.gitrnd.gdsbuilder.geoserver.service.wms.WMSGetMap;
  * 프록시서버 요청에 대한 요청을 처리하는 클래스
  * 
  * @author SG.Lee
- * @Date 2017. 5. 12. 오전 2:08:04
+ * @since 2017. 5. 12. 오전 2:08:04
  */
 @Service("proService")
 public class GeoserverLayerProxyServiceImpl implements GeoserverLayerProxyService {

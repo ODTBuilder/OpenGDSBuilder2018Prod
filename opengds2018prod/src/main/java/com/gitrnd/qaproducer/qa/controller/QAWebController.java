@@ -27,7 +27,9 @@ import com.gitrnd.qaproducer.preset.service.PresetService;
 import com.gitrnd.qaproducer.qa.service.QAWebService;
 
 /**
- * @author GIT
+ * Geoserver 검수 요청 Controller
+ * 
+ * @author DY.Oh
  *
  */
 @Controller
@@ -151,19 +153,6 @@ public class QAWebController extends AbstractController {
 				success = false;
 				throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
 			} else {
-
-//				if (qaVer == null || qaType == null || prid == null || prst == null) {
-//					throw new Exception("인자가 부족합니다. 다시 요청해주세요.");
-//				} else {
-//					JSONParser jsonP = new JSONParser();
-//					JSONObject param = (JSONObject) jsonP.parse(
-//							"{\"serverURL\":\"http://175.116.181.32:9999/geoserver\",\"layers\":{\"forest\":[\"36811001\",\"36811002\",\"36811003\"]},\"crs\":\"EPSG:5186\",\"qaVer\":\"qa1\",\"qaType\":\"fr5\",\"prid\":\"nonset\",\"pid\":4651,\"category\":5,\"uid\":7,\"type\":\"web\"}");
-//					JSONObject layers = (JSONObject) param.get("layers");
-//
-//					webService.validate("http://175.116.181.32:9999/geoserver", layers, prst.getCat(), crs, qaVer, qaType,
-//							prid, prst.getPid(), loginUser.getIdx());
-//				}
-
 				String serverName = (String) geoserver.get("servername");
 				JSONObject layers = (JSONObject) geoserver.get("layers");
 				DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser,

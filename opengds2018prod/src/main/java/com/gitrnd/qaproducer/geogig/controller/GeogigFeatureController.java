@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
@@ -56,16 +57,28 @@ public class GeogigFeatureController extends AbstractController {
 			@RequestParam(value = "path", required = false) String path,
 			@RequestParam(value = "until", required = false) String until,
 			@RequestParam(value = "limit", required = false) int limit,
-			@RequestParam(value = "head", required = false) String head,
 			@RequestParam(value = "index", required = false) int index) throws JAXBException {
 
 		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
-		return featureService.featureLog(geoserverManager, repoName, path, limit, until, head, index);
+		return featureService.featureLog(geoserverManager, repoName, path, limit, until, index);
+	}
+
+	@RequestMapping(value = "/diff.do", method = RequestMethod.POST)
+	@ResponseBody
+	public GeogigDiff diff(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+			@RequestParam(value = "serverName", required = false) String serverName,
+			@RequestParam(value = "repoName", required = false) String repoName,
+			@RequestParam(value = "path", required = false) String path,
+			@RequestParam(value = "newCommitId", required = false) String newCommitId,
+			@RequestParam(value = "oldCommitId", required = false) String oldCommitId) throws JAXBException {
+
+		DTGeoserverManager geoserverManager = super.getGeoserverManagerToSession(request, loginUser, serverName);
+		return featureService.diff(geoserverManager, repoName, path, newCommitId, oldCommitId);
 	}
 
 	@RequestMapping(value = "/featureDiff.do", method = RequestMethod.POST)
 	@ResponseBody
-	public GeogigDiff featureDiff(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
+	public GeogigFeatureDiff featureDiff(HttpServletRequest request, @AuthenticationPrincipal LoginUser loginUser,
 			@RequestParam(value = "serverName", required = false) String serverName,
 			@RequestParam(value = "repoName", required = false) String repoName,
 			@RequestParam(value = "path", required = false) String path,

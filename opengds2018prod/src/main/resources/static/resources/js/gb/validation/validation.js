@@ -1,11 +1,3 @@
-/**
- * 검수 수행창 객체를 정의한다.
- * 
- * @author hochul.kim
- * @class gb.validation.Validation
- * @date 2018. 09
- * @version 0.01
- */
 var gb;
 if (!gb)
 	gb = {};
@@ -13,12 +5,8 @@ if (!gb.validation)
 	gb.validation = {};
 
 (function($) {
-
-	let presetIndex_ = 0;
-
-	var locale = locale || "en";
-	
-	const translation = {
+	var locale = "en";
+	var translation = {
 		"add" : {
 			"ko" : "추가",
 			"en" : "Add"
@@ -86,10 +74,33 @@ if (!gb.validation)
 		"noneCategoryHint" : {
 			"ko" : "Category ID가 없습니다.",
 			"en" : "Category ID is missing."
+		},
+		"requestSuccessAlert" : {
+			"ko" : "검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.",
+			"en" : "Your verification request has been completed. You can check your progress on the Result page."
+		},
+		"requestFailAlert" : {
+			"ko" : "검수 요청이 실패했습니다.",
+			"en" : "The validation request failed."
 		}
 	};
 	
-	const INDEXLIST = {
+	/**
+	 * 검수 요청 방식 INDEX
+	 * 0: error
+	 * 1: workspace를 여러개 선택하여 검수를 요청할 수 있음
+	 * 2: 한 개의 workspace만 검수를 요청할 수 있음
+	 * @type {number}
+	 * @private
+	 */
+	var presetIndex_ = 0;
+	
+	/**
+	 * Preset Index 목록
+	 * @type {Object.<string, number>}
+	 * @private
+	 */
+	var INDEXLIST = {
 		"Digital Map 1.0" : 1,
 		"Digital Map 2.0" : 1,
 		"Underground Map 1.0" : 2,
@@ -98,7 +109,12 @@ if (!gb.validation)
 		"nonset" : 3
 	};
 
-	const QATYPE = {
+	/**
+	 * 검수 버전, 타입값
+	 * @type {Object.<string, Object.<string, string>>}
+	 * @private
+	 */
+	var QATYPE = {
 		"1" : {
 			"ver" : "qa1",
 			"type" : "nm5"
@@ -121,56 +137,104 @@ if (!gb.validation)
 		},
 	};
 
-	let BUTTONSTYLE = {
-		"width" : "33.3333%",
-		"border" : "none",
-		"background" : "#e0e1e2 none",
-		"cursor" : "pointer",
-		"padding" : ".78571429em 0em .78571429em",
-		"font-weight" : "700",
-		"border-top-left-radius" : ".28571429rem",
-		"border-bottom-left-radius" : ".28571429rem",
-		"line-height" : "1em",
-		"color" : "rgba(0,0,0,.6)",
-		"cursor" : "default",
-		"opacity" : ".45",
-		"pointer-events" : "none"
-	};
-
+	/**
+	 * @classdesc
+	 * Web 검수 요청 모듈. Geoserver 레이어 목록을 불러와 레이어 선택하고 검수를 요청한다.
+	 * @class gb.validation.Validation
+	 * @memberof gb.validation
+	 * @constructor
+	 * @param {Object} obj - gb.validation.Validation 생성 옵션
+	 * @param {Object} obj.url - 검수 요청 정보
+	 * @param {string} obj.url.token - 요청 토큰
+	 * @param {string} obj.url.requestValidate - 검수 요청 URL
+	 * @param {gb.module.isEditing} [obj.isEditing] - {@link gb.edit.EditingTool} 활성화 여부 전역 변수
+	 * @param {string} [obj.locale="en"] - 언어 코드
+	 * @requires {@link gb.modal.ModalBase}, {@link gb.tree.GeoServer}
+	 * @author KIM HOCHUL
+	 * @date 2019. 03. 26
+	 * @version 0.01
+	 */
 	gb.validation.Validation = function(obj) {
 		obj.keep = true;
-		gb.modal.Base.call(this, obj);
+		gb.modal.ModalBase.call(this, obj);
 		var that = this;
 
-		var options = obj || {};
-
-		this.url = options.url || "";
-
-		this.isEditing = options.isEditing || undefined;
-
-		this.locale = locale = options.locale || "en";
-		
+		/**
+		 * Geoserver JSTree
+		 * @type {gb.tree.GeoServer}
+		 * @private
+		 */
 		this.geoserverTree = undefined;
+		
+		/**
+		 * Working JSTree. Geoserver JSTree에서 선택한 노드를 옮겨놓는 트리.
+		 * 검수요청 시 Working JSTree에 추가되어 있는 노드들이 요청되어진다.
+		 * @type {$.jstree.plugins.wholerow}
+		 * @private
+		 */
 		this.workingTree = undefined;
+		
+		/**
+		 * 작업 도움말 Element Tag
+		 * @type {HTMLElement}
+		 * @private
+		 */
 		this.messageContent = undefined;
-
+		
+		/**
+		 * 로딩중인 Geoserver 레이어 노드 리스트
+		 * @type {Array.<Object.<string, boolean>>}
+		 * @private
+		 */
 		this.loadingList = [];
+		
+		/**
+		 * 로딩되야할 자식노드의 개수 리스트
+		 * @type {Array.<number>}
+		 * @private
+		 */
 		this.loadingNumber = [];
-
+		
+		/**
+		 * 저장된 검수 설정 목록 Select Tag
+		 * @type {HTMLElement}
+		 * @private
+		 */
 		this.presetSelectTag = $("<select class='form-control'>");
 
+		/**
+		 * 검수 종류 Select Tag
+		 * 수치지도, 지하시설물, 임상도
+		 * @type {HTMLElement}
+		 * @private
+		 */
 		this.verSelectTag = $("<div>").css({
 			"width" : "100%",
 			"display" : "inline-flex"
 		});
-
-		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.under[this.locale]);
+		
+		/**
+		 * 좌표계 Select Tag
+		 * @type {HTMLElement}
+		 * @private
+		 */
+		this.srsSelectTag = $("<select class='form-control'>");
+		
+		var options = obj || {};
+		this.url = options.url || "";
+		if(this.url === ""){
+			console.error("gb.validation.Validation: 'url' is a required field.");
+		}
+		this.isEditing = options.isEditing || undefined;
+		this.locale = locale = options.locale || "en";
+		
+		var button = $("<button id='ug5' class='version-btn'>").attr("data-index", 2).addClass("gb-validation-btn").text(translation.under[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).css(BUTTONSTYLE).text(translation.digitalMap[this.locale]);
+		button = $("<button id='nm5' class='version-btn'>").attr("data-index", 1).addClass("gb-validation-btn").text(translation.digitalMap[this.locale]);
 		this.verSelectTag.append(button);
 
-		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).css(BUTTONSTYLE).text(translation.forestMap[this.locale]);
+		button = $("<button id='fr5' class='version-btn'>").attr("data-index", 2).addClass("gb-validation-btn").text(translation.forestMap[this.locale]);
 		this.verSelectTag.append(button);
 
 		$(document).on("click", ".version-btn", function() {
@@ -185,9 +249,9 @@ if (!gb.validation)
 			});
 
 			if ($(this).data("index") === 1) {
-				that.messageContent.html($(this).text() + " " + translation.selectNodesHint[that.locale]);
+				that.messageContent.html($(this).text() + " " + translation.selectNodesHint[locale]);
 			} else if ($(this).data("index") === 2) {
-				that.messageContent.html($(this).text() + " " + translation.selectNodeHint[that.locale]);
+				that.messageContent.html($(this).text() + " " + translation.selectNodeHint[locale]);
 			}
 			var nowPidx  = parseInt($(this).attr("data-index"));
 			if (nowPidx !== presetIndex_) {
@@ -199,8 +263,7 @@ if (!gb.validation)
 			presetIndex_ = nowPidx;
 			console.log(presetIndex_);
 		});
-
-		this.srsSelectTag = $("<select class='form-control'>");
+		
 		this.srsSelectTag.append($("<option>").text(translation.selectCrsHint[this.locale]));
 		this.srsSelectTag.append($("<option>").val("5186").text("중부원점 투영좌표계(Central Belt 2010)"));
 		this.srsSelectTag.append($("<option>").val("4737").text("GRS80 경위도 좌표계(Korean 2000)"));
@@ -215,58 +278,32 @@ if (!gb.validation)
 		this.modalFooter.css({
 			"position" : "relative"
 		});
-
-		$('<style>.validation-custom-select{position: relative;margin-bottom: 10px;}</style>').appendTo('head');
-		$('<style>.validation-custom-select select{display: none;}</style>').appendTo('head');
-		$(
-				'<style>.validation-select-selected{' + 'background: #00b5ad none;' + 'cursor: pointer;'
-						+ 'padding: .78571429em 1.5em .78571429em;' + 'font-weight: 700;' + 'border-radius: .28571429rem;'
-						+ 'line-height: 1em;' + 'color: #fff' + '}</style>').appendTo('head');
-		$('<style>.validation-select-selected:hover{' + 'background-color: #009c95;' + 'background-image: none;' + '}</style>').appendTo(
-				'head');
-		$(
-				'<style>.validation-select-selected:after{' + 'position: absolute;' + 'content: "";' + 'top: 14px;' + 'right: 10px;'
-						+ 'width: 0;' + 'height: 0;' + 'border: 6px solid transparent;'
-						+ 'border-color: #fff transparent transparent transparent;' + '}</style>').appendTo('head');
-		$(
-				'<style>.validation-select-selected.select-arrow-active:after{' + 'border-color: transparent transparent #fff transparent;'
-						+ 'top: 7px;' + '}</style>').appendTo('head');
-		$(
-				'<style>.validation-message{' + 'position: relative;' + 'min-height: 1em;' + 'background: #fffaf3;'
-						+ 'line-height: 1.4285em;' + 'padding: 4px 4px;' + 'margin: 10px 0;' + 'color: #573a08;' + 'display: flex;'
-						+ 'width: 100%;' + '-webkit-box-align: center;' + 'align-items: center;' + 'border-radius: .28571429rem;'
-						+ 'box-shadow: 0 0 0 1px #c9ba9b inset, 0 0 0 0 transparent;' + '}</style>').appendTo('head');
-
-		$(
-				'<style>.select-items div{' + 'color: rgba(0,0,0,.87);' + 'padding: 8px 16px;' + 'cursor: pointer;' + 'border: none;'
-						+ 'height: auto;' + 'text-align: left;' + 'border-top: none;' + 'line-height: 1em;' + 'font-weight: 400;'
-						+ 'box-shadow: none;' + '}</style>').appendTo('head');
-		$(
-				'<style>.select-items{' + 'position: absolute;' + 'background-color: #fff;' + 'margin-top: .3em!important;' + 'top: 100%;'
-						+ 'left: 0;' + 'right: 0;' + 'z-index: 99;' + 'font-size: 1em;' + 'text-shadow: none;'
-						+ 'border: 1px solid rgba(34,36,38,.15);' + 'border-radius: .28571429rem!important;'
-						+ 'box-shadow: 0 2px 4px 0 rgba(34,36,38,.12),0 2px 10px 0 rgba(34,36,38,.15)!important;' + '}</style>').appendTo(
-				'head');
-		$('<style>.select-hide{' + 'display: none;' + '}</style>').appendTo('head');
-		$('<style>.select-items div:hover, .same-as-selected{background-color: rgba(0, 0, 0, 0.1);}</style>').appendTo('head');
 	}
-
 	// gb.footer.Base 상속
-	gb.validation.Validation.prototype = Object.create(gb.modal.Base.prototype);
+	gb.validation.Validation.prototype = Object.create(gb.modal.ModalBase.prototype);
 	gb.validation.Validation.prototype.constructor = gb.validation.Validation;
 
+	/**
+	 * 검수 요청창을 연다.
+	 * @method gb.validation.Validation#open
+	 * @function
+	 */
 	gb.validation.Validation.prototype.open = function() {
 		if (this.isEditing instanceof Object) {
 			if (this.isEditing.get()) {
 				this.isEditing.alert();
-				return
-				
-
-			}
+				return			}
 		}
 		this.geoserverTree.refresh();
-		gb.modal.Base.prototype.open.call(this);
+		gb.modal.ModalBase.prototype.open.call(this);
 	}
+	
+	/**
+	 * 검수 요청창에서 선택한 값들을 반환한다.
+	 * @method gb.validation.Validation#getParameter
+	 * @function
+	 * @return {Object.<string, string|Object>}
+	 */
 	gb.validation.Validation.prototype.getParameter = function() {
 		var params = {};
 		var datastoreList = {};
@@ -309,7 +346,7 @@ if (!gb.validation)
 			params.qaVer = "qa2";
 			params.qaType = $(".version-btn.active").attr("id");
 
-			for ( let i in QATYPE) {
+			for ( var i in QATYPE) {
 				if (QATYPE[i].ver === params.qaVer && QATYPE[i].type === params.qaType) {
 					params.cat = i;
 				}
@@ -328,6 +365,12 @@ if (!gb.validation)
 		return params;
 	}
 
+	/**
+	 * 사용하지않는 함수
+	 * @method gb.validation.Validation#createStepDiv
+	 * @function
+	 * @private
+	 */
 	gb.validation.Validation.prototype.createStepDiv = function() {
 		var icon1 = $("<i>");
 		var title1 = $("<h2 class='step-title'>");
@@ -353,9 +396,13 @@ if (!gb.validation)
 		var wrapper = $("<div class='step-wrapper'>").css({});
 	}
 
+	/**
+	 * 검수 요청 Layout에 Geoserver Tree, 검수 옵션 선택자, Working Tree를 생성한다.
+	 * Body Tag 하위에 생성
+	 * @method gb.validation.Validation#createContent
+	 * @function
+	 */
 	gb.validation.Validation.prototype.createContent = function() {
-		// ==================== Create Modal Body HTML Start
-		// >>>>>>>>>>>>>>>>>>>>>>
 		var treePanel = this.createJSTreePanel();
 		var optionPanel = this.createOptionPanel();
 		var workTreePanel = this.createWorkTreePanel();
@@ -370,27 +417,28 @@ if (!gb.validation)
 		var right = $("<div class='col-md-6'>").append(rightContent);
 
 		var i = $("<div>").addClass("fas fa-info-circle fa-2x");
-		var messageContent = $("<div>").addClass("validation-message").append(i).append(this.messageContent);
+		var messageContent = $("<div>").addClass("gb-validation-message").append(i).append(this.messageContent);
 		var message = $("<div>").addClass("col-md-12 ").append(messageContent);
 
 		var body = $("<div class='row'>").append(left).append(right).append(message).css({
 			"width" : "700px"
 		});
 		this.setModalBody(body);
-		// <<<<<<<<<<<<<<<<<<<< Create Modal Body HTML End
-		// ========================
-
-		// ==================== Create Modal Footer HTML Start
-		// >>>>>>>>>>>>>>>>>>>>
+		
 		var footer = this.createModalFooter();
 		this.setModalFooter(footer);
-		// <<<<<<<<<<<<<<<<<<<< Create Modal Footer HTML End
-		// ======================
 
 		$("body").append(this.modal);
 		$("body").append(this.background);
 	}
 
+	/**
+	 * Geoserver JSTree 패널을 생성하여 반환한다.
+	 * {@link gb.tree.GeoServer} 모듈 필수
+	 * @method gb.validation.Validation#createJSTreePanel
+	 * @function
+	 * @return {HTMLElement}
+	 */
 	gb.validation.Validation.prototype.createJSTreePanel = function() {
 		var that = this;
 
@@ -415,27 +463,19 @@ if (!gb.validation)
 
 		var icon = $("<i class='fas fa-plus'>")
 
-		var panelFooter = $("<div>").css({
-			"margin" : "-2px 1px 0",
-			"cursor" : "pointer",
-			"box-shadow" : "0 0 0 1px rgba(34,36,38,.15)",
-			"border-bottom-left-radius" : "3px",
-			"border-bottom-right-radius" : "3px",
-			"background" : "#e0e1e2 none",
-			"padding" : ".78571429em 1.5em .78571429em",
-			"font-weight" : "700",
-			"text-align" : "center"
-		}).hover(function() {
-			$(this).css({
-				"background-color" : "#cacbcd",
-				"color" : "rgba(0,0,0,.8)"
-			})
-		}, function() {
-			$(this).css({
-				"background-color" : "#e0e1e2",
-				"color" : "#333"
-			})
-		}).append(icon).append(translation.add[this.locale]);
+		var panelFooter = $("<div>")
+			.addClass("gb-validation-footer")
+			.hover(function() {
+				$(this).css({
+					"background-color" : "#cacbcd",
+					"color" : "rgba(0,0,0,.8)"
+				})
+			}, function() {
+				$(this).css({
+					"background-color" : "#e0e1e2",
+					"color" : "#333"
+				})
+			}).append(icon).append(translation.add[this.locale]);
 
 		panelFooter.on("click", function(e) {
 			var i, arr, children;
@@ -516,6 +556,14 @@ if (!gb.validation)
 		return treeContent;
 	}
 
+	/**
+	 * 중복되는 노드 삭제
+	 * @method gb.validation.Validation#removeSameTypeNode
+	 * @function
+	 * @param {Object} node - JSTree 노드 정보
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {string} root - 부모 노드 아이디
+	 */
 	gb.validation.Validation.prototype.removeSameTypeNode = function(node, workingTree, root) {
 		var that = this;
 		var node = node;
@@ -534,6 +582,14 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * 선택된 노드의 자식 노드들을 전부 Working Tree에 추가한다.
+	 * @method gb.validation.Validation#createChildren
+	 * @function
+	 * @param {gb.tree.GeoServer} geoTree - Geoserver JSTree
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {Array} children - 자식 노드 리스트
+	 */
 	gb.validation.Validation.prototype.createChildren = function(geoTree, workingTree, children) {
 		var that = this;
 		var i, node;
@@ -556,8 +612,16 @@ if (!gb.validation)
 		}
 	}
 
-	// work tree의 자식 노드들을 적절한 부모 노드 아래로 이동
-	gb.validation.Validation.prototype.updateChildren = function(geoTree, workingTree, children)	{
+	/**
+	 * Working Tree의 자식 노드들을 적절한 부모 노드 아래로 이동.
+	 * 자식 노드가 이미 Working Tree에 로드되어 있는 상태에서 부모 노드가 추가될때 사용되는 함수.
+	 * @method gb.validation.Validation#updateChildren
+	 * @function
+	 * @param {gb.tree.GeoServer} geoTree - Geoserver JSTree
+	 * @param {$.jstree.plugins.wholerow} workingTree - 검수 요청 JSTree
+	 * @param {Array} children - 자식 노드 리스트
+	 */
+	gb.validation.Validation.prototype.updateChildren = function(geoTree, workingTree, children){
 		var that = this;
 		var i, node;
 		var tree = geoTree;
@@ -575,6 +639,12 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * Working JSTree 패널을 생성하여 반환한다.
+	 * @method gb.validation.Validation#createWorkTreePanel
+	 * @function
+	 * @return {HTMLElement}
+	 */
 	gb.validation.Validation.prototype.createWorkTreePanel = function() {
 		var that = this;
 
@@ -642,17 +712,9 @@ if (!gb.validation)
 		var titleArea = $("<div>").append(panelTitle)
 		var panelHead = $("<div>").addClass("gb-article-head").append(titleArea);
 
-		var panelFooter = $("<div>").css({
-			"margin" : "-2px 1px 0",
-			"cursor" : "pointer",
-			"box-shadow" : "0 0 0 1px rgba(34,36,38,.15)",
-			"border-bottom-left-radius" : "3px",
-			"border-bottom-right-radius" : "3px",
-			"background" : "#e0e1e2 none",
-			"padding" : ".78571429em 1.5em .78571429em",
-			"font-weight" : "700",
-			"text-align" : "center"
-		}).hover(function() {
+		var panelFooter = $("<div>")
+		.addClass("gb-validation-footer")
+		.hover(function() {
 			$(this).css({
 				"background-color" : "#cacbcd",
 				"color" : "rgba(0,0,0,.8)"
@@ -679,13 +741,19 @@ if (!gb.validation)
 		return div;
 	}
 
+	/**
+	 * 검수 옵션 선택 패널을 생성하여 반환한다.
+	 * @method gb.validation.Validation#createOptionPanel
+	 * @function
+	 * @return {HTMLElement}
+	 */
 	gb.validation.Validation.prototype.createOptionPanel = function() {
 
 		// ==================== Create Panel body HTML Start
 		// >>>>>>>>>>>>>>>>>>>>
-		var presetDiv = $("<div>").addClass("validation-custom-select").append(this.presetSelectTag);
-		var verDiv = $("<div>").addClass("validation-custom-select").append(this.verSelectTag);
-		var srsDiv = $("<div>").addClass("validation-custom-select").append(this.srsSelectTag);
+		var presetDiv = $("<div>").addClass("gb-validation-select").append(this.presetSelectTag);
+		var verDiv = $("<div>").addClass("gb-validation-select").append(this.verSelectTag);
+		var srsDiv = $("<div>").addClass("gb-validation-select").append(this.srsSelectTag);
 
 		var body = $("<div>").append(presetDiv).append(verDiv).append(srsDiv);
 
@@ -705,6 +773,12 @@ if (!gb.validation)
 		return div;
 	}
 
+	/**
+	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
+	 * @method gb.validation.Validation#createModalFooter
+	 * @function
+	 * @return {HTMLElement}
+	 */
 	gb.validation.Validation.prototype.createModalFooter = function() {
 		var that = this;
 
@@ -729,17 +803,26 @@ if (!gb.validation)
 				contentType : "application/json; charset=UTF-8",
 				dataType : "json",
 				cache : false,
+				beforeSend : function() {
+					that.modal.append($("<div id='validate-request-loading'>")
+							.addClass("gb-body-loading")
+							.append($("<i>").addClass("fas fa-spinner fa-spin fa-5x").addClass("gb-body-loading-icon")));
+				},
+				complete : function() {
+					// $("body").css("cursor", "default");
+					$("#validate-request-loading").remove();
+				},
 				data : JSON.stringify(params),
 				traditional : true
 			});
 
 			deferredObj.done(function(data, textStatus, jqXHR) {
-				alert("검수 요청이 완료되었습니다. 검수 결과 페이지에서 진행 상황을 확인할 수 있습니다.");
+				alert(translation.requestSuccessAlert[locale]);
 				that.close();
 			});
 
 			deferredObj.fail(function(jqXHR, textStatus, errorThrown) {
-				alert("검수 요청이 실패했습니다.");
+				alert(translation.requestFailAlert[locale]);
 				that.close();
 			});
 		});
@@ -749,9 +832,18 @@ if (!gb.validation)
 		return buttonArea;
 	}
 
+	/**
+	 * 검수 요청 Layout의 footer tag를 생성하여 반환한다.
+	 * @function requestPreset
+	 * @param {gb.validation.Validation} that
+	 * @param {HTMLElement} obj - 저장된 검수 옵션 Select Tag
+	 * @param {HTMLElement} div - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {string} message - 작업 진행 도움말
+	 * @private
+	 */
 	function requestPreset(that, obj, div, message) {
-		var select = obj;
-		var div = div;
+		var select = $(obj);
+		var div = $(div);
 		var message = message;
 		$.ajax({
 			url : "option/retrievePresetByUidx.ajax",
@@ -776,33 +868,39 @@ if (!gb.validation)
 		});
 	}
 
+	/**
+	 * Select Tag 이벤트 처리 함수
+	 * @function customSelect
+	 * @param {HTMLElement} selectDiv - 저장된 검수 옵션 Select Tag를 감싼 Div Tag
+	 * @param {string} message - 작업 진행 도움말
+	 * @param {gb.validation.Validation} that
+	 * @private
+	 */
 	function customSelect(selectDiv, message, that) {
 		var x, j, selElmnt, a, b, c;
 		var that = that;
-		/* look for any elements with the class "custom-select": */
+		// look for any elements with the class "custom-select":
 		x = selectDiv;
 		selElmnt = x.find("select")[0];
-		/*
-		 * for each element, create a new DIV that will act as the selected
-		 * item:
-		 */
-		a = $("<div>").addClass("validation-select-selected");
+		
+		// for each element, create a new DIV that will act as the selected
+		// item:
+		a = $("<div>").addClass("gb-validation-select-selected");
 		a.html(selElmnt.options[selElmnt.selectedIndex].innerHTML);
 		x.append(a);
-		/* for each element, create a new DIV that will contain the option list: */
-		b = $("<div>").addClass("select-items select-hide");
+		// for each element, create a new DIV that will contain the option list:
+		b = $("<div>").addClass("gb-validation-select-items gb-validation-select-hide");
 		for (j = 1; j < selElmnt.length; j++) {
-			/*
-			 * for each option in the original select element, create a new DIV
-			 * that will act as an option item:
-			 */
+			
+			// for each option in the original select element, create a new DIV
+			// that will act as an option item:
+			
 			c = $("<div>");
 			c.html(selElmnt.options[j].innerHTML);
 			c.on("click", function(e) {
-				/*
-				 * when an item is clicked, update the original select box, and
-				 * the selected item:
-				 */
+				
+				// when an item is clicked, update the original select box, and
+				// the selected item:
 				var y, i, k, s, h, l, list;
 				s = this.parentNode.parentNode.getElementsByTagName("select")[0];
 				h = this.parentNode.previousSibling;
@@ -833,9 +931,9 @@ if (!gb.validation)
 									});
 								}
 								if (INDEXLIST[s.options[i].dataset.title] === 1) {
-									message.html(s.options[i].dataset.title + "는 workspace를 여러개 선택할 수 있습니다.");
+									message.html(s.options[i].dataset.title + translation.selectNodesHint[locale]);
 								} else if (INDEXLIST[s.options[i].dataset.title] === 2) {
-									message.html(s.options[i].dataset.title + "는 workspace를 하나만 선택할 수 있습니다.");
+									message.html(s.options[i].dataset.title + translation.selectNodeHint[locale]);
 								}
 								if (presetIndex_ !== undefined && presetIndex_ !== null) {
 									if (presetIndex_ !== INDEXLIST[s.options[i].dataset.title]) {
@@ -858,27 +956,31 @@ if (!gb.validation)
 		}
 		x.append(b);
 		a.on("click", function(e) {
-			/*
-			 * when the select box is clicked, close any other select boxes, and
-			 * open/close the current select box:
-			 */
+			// when the select box is clicked, close any other select boxes, and
+			// open/close the current select box:
 			e.stopPropagation();
 			closeAllSelect(this);
-			this.nextSibling.classList.toggle("select-hide");
+			this.nextSibling.classList.toggle("gb-validation-select-hide");
 			this.classList.toggle("select-arrow-active");
 		});
 	}
 
+	/**
+	 * Select Tag 내용 업데이트 함수
+	 * @function updateFormatSelect
+	 * @param {Array} list - Select Tag options
+	 * @private
+	 */
 	function updateFormatSelect(list) {
 		var l;
-		$(".validation-format-select").parent().find(".validation-select-selected").empty();
-		$(".validation-format-select").parent().find(".select-items").empty();
+		$(".validation-format-select").parent().find(".gb-validation-select-selected").empty();
+		$(".validation-format-select").parent().find(".gb-validation-select-items").empty();
 		$(".validation-format-select").empty();
 		$(".validation-format-select").append($("<option>").text("Select File Format:"));
-		$(".validation-format-select").parent().find(".validation-select-selected").html("Select File Format:");
+		$(".validation-format-select").parent().find(".gb-validation-select-selected").html("Select File Format:");
 		for (l = 0; l < list.length; l++) {
 			$(".validation-format-select").append($("<option>").val(list[l]).text(list[l]));
-			$(".validation-format-select").parent().find(".select-items").append($("<div>").html(list[l]).on("click", function(e) {
+			$(".validation-format-select").parent().find(".gb-validation-select-items").append($("<div>").html(list[l]).on("click", function(e) {
 				var y, i, k, s, h;
 				s = this.parentNode.parentNode.getElementsByTagName("select")[0];
 				h = this.parentNode.previousSibling;
@@ -899,14 +1001,18 @@ if (!gb.validation)
 		}
 	}
 
+	/**
+	 * Select Tag를 닫는 함수
+	 * @function closeAllSelect
+	 * @param {HTMLElement} elmnt - 선택된 Select Tag
+	 * @private
+	 */
 	function closeAllSelect(elmnt) {
-		/*
-		 * a function that will close all select boxes in the document, except
-		 * the current select box:
-		 */
+		// a function that will close all select boxes in the document, except
+		// the current select box:
 		var x, y, i, arrNo = [];
-		x = document.getElementsByClassName("select-items");
-		y = document.getElementsByClassName("validation-select-selected");
+		x = document.getElementsByClassName("gb-validation-select-items");
+		y = document.getElementsByClassName("gb-validation-select-selected");
 		for (i = 0; i < y.length; i++) {
 			if (elmnt == y[i]) {
 				arrNo.push(i)
@@ -916,7 +1022,7 @@ if (!gb.validation)
 		}
 		for (i = 0; i < x.length; i++) {
 			if (arrNo.indexOf(i)) {
-				x[i].classList.add("select-hide");
+				x[i].classList.add("gb-validation-select-hide");
 			}
 		}
 	}
@@ -924,7 +1030,6 @@ if (!gb.validation)
 
 /**
  * 노드를 마지막 자식 노드까지 로드한다.
- * 
  * @method gb.validation.Validation#openNodeRecursive
  * @param {Number}
  *            idx - 레이어 목록에서 선택한 노드들의 인덱스
@@ -981,7 +1086,6 @@ gb.validation.Validation.prototype.openNodeRecursive = function(idx, node, topNo
 
 /**
  * loadingNumber 객체를 반환한다.
- * 
  * @method gb.validation.Validation#getLoadingNumber
  * @return {Object} 로딩할 노드목록을 가진 객체
  */
@@ -991,17 +1095,17 @@ gb.validation.Validation.prototype.getLoadingNumber = function() {
 
 /**
  * loadingNumber 객체를 설정한다.
- * 
  * @method gb.validation.Validation#setLoadingNumber
+ * @param {number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {number} num - 설정할 값
  */
 gb.validation.Validation.prototype.setLoadingNumber = function(idx, num) {
 	this.loadingNumber[idx] = num;
 };
 
 /**
- * loadingNumber 객체를 설정한다.
- * 
- * @method gb.validation.Validation#setLoadingNumber
+ * loadingNumber 객체를 초기화한다.
+ * @method gb.validation.Validation#initLoadingNumber
  */
 gb.validation.Validation.prototype.initLoadingNumber = function() {
 	this.loadingNumber = [];
@@ -1009,7 +1113,6 @@ gb.validation.Validation.prototype.initLoadingNumber = function() {
 
 /**
  * loadingList 객체를 반환한다.
- * 
  * @method gb.validation.Validation#getLoadingList
  * @return {Object} 로딩할 노드목록을 가진 객체
  */
@@ -1019,8 +1122,8 @@ gb.validation.Validation.prototype.getLoadingList = function() {
 
 /**
  * loadingList 객체를 설정한다.
- * 
  * @method gb.validation.Validation#setLoadingList
+ * @param {Array.<Object.<string, boolean>>} list - 로딩중인 Geoserver 레이어 노드 리스트
  */
 gb.validation.Validation.prototype.setLoadingList = function(list) {
 	this.loadingList = list;
@@ -1028,8 +1131,9 @@ gb.validation.Validation.prototype.setLoadingList = function(list) {
 
 /**
  * loadingList 목록에 추가한다.
- * 
- * @method gb.validation.Validation#addLoadingList
+ * @param {Number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {string} nodeId - JSTree 노드 아이디
+ * @method gb.validation.Validation#addNodeToLoadingList
  */
 gb.validation.Validation.prototype.addNodeToLoadingList = function(idx, nodeId) {
 	var list = this.getLoadingList();
@@ -1040,14 +1144,13 @@ gb.validation.Validation.prototype.addNodeToLoadingList = function(idx, nodeId) 
 		}
 		list[idx][nodeId] = false;
 	} else {
-		console.error("로딩 리스트 객체가 배열이 아닙니다.");
+		console.error("gb.validation.Validation: The loadingList object is not an array.");
 	}
 };
 
 /**
- * loadingList 객체를 설정한다.
- * 
- * @method gb.validation.Validation#setLoadingList
+ * loadingList 객체를 초기화한다.
+ * @method gb.validation.Validation#initLoadingList
  */
 gb.validation.Validation.prototype.initLoadingList = function() {
 	this.loadingList = [];
@@ -1055,8 +1158,10 @@ gb.validation.Validation.prototype.initLoadingList = function() {
 
 /**
  * loadingList 객체에 노드를 추가한다.
- * 
- * @method gb.validation.Validation#setLoadingList
+ * @param {Number} idx - 레이어 목록에서 선택한 노드들의 인덱스
+ * @param {string} nodeId - JSTree 노드 아이디
+ * @param {boolean} flag
+ * @method gb.validation.Validation#changeNodeOnLoadingList
  */
 gb.validation.Validation.prototype.changeNodeOnLoadingList = function(idx, nodeId, flag) {
 	var that = this;
@@ -1074,7 +1179,7 @@ gb.validation.Validation.prototype.changeNodeOnLoadingList = function(idx, nodeI
 			that.setLoadingNumber(idx, (that.getLoadingNumber()[idx] + 1));
 		}
 	} else {
-		console.error("there is no node id:", nodeId);
+		console.error("gb.validation.Validation: there is no node id:", nodeId);
 		return;
 	}
 };

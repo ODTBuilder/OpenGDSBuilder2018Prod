@@ -1,18 +1,20 @@
-/**
- * 레이어 정보를 변경하는 객체를 정의한다.
- * 
- * @author yijun.so
- * @date 2017. 06. 16
- * @version 0.01
- */
 var gb;
 if (!gb)
 	gb = {};
 if (!gb.edit)
 	gb.edit = {};
 
+gb.edit.THSTYLE = {
+	"padding" : ".78571429em .78571429em",
+	"background" : "rgba(0,0,0,.03)",
+	"font-weight" : "700",
+	"border-left": "1px solid rgba(34,36,38,.1)",
+	"text-align": "center"
+}
+
 gb.edit.TDSTYLE = {
-	"padding" : ".78571429em .78571429em"
+	"padding" : ".78571429em .78571429em",
+	"border-left": "1px solid rgba(34,36,38,.1)"
 }
 
 gb.edit.TDKEYSTYLE = {
@@ -57,29 +59,41 @@ gb.edit.SELTITLESTYLE = {
 	"font-weight" : "700"
 }
 
+/**
+ * @classdesc
+ * 레이어 정보를 변경하는 객체를 정의한다.
+ * @class gb.edit.ModifyLayerProperties
+ * @memberof gb.edit
+ * @param {Object} obj - 생성자 옵션
+ * @param {gb.tree.GeoServer} [obj.refer] - gb.tree.GeoServer 객체와 ModifyLayerProperties 객체를 연동
+ * @param {string} [obj.token] - 요청 인증 토큰
+ * @param {string} [obj.locale="en"] - 언어 코드
+ * @author KIM HOCHUL
+ * @date 2019. 03. 20
+ * @version 0.01
+ */
 gb.edit.ModifyLayerProperties = function(obj) {
 	var that = this;
-	var options = obj;
-	this.window;
-	this.layer = undefined;
-	this.serverInfo = undefined;
-	this.layerName = undefined;
-	this.srs = undefined;
-	this.workspaceList = [];
-	this.layerRecord = options.layerRecord ? options.layerRecord : undefined;
-	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
-	this.refer = options.refer ? options.refer : undefined;
-	this.token = options.token || "";
-
-	this.locale = options.locale ? options.locale : "en";
 	this.translation = {
 		"close" : {
 			"ko" : "닫기",
 			"en" : "Close"
 		},
+		"cancel" : {
+			"ko" : "취소",
+			"en" : "Cancel"
+		},
 		"layerprop" : {
 			"ko" : "레이어 속성 정보",
 			"en" : "Layer Properties"
+		},
+		"confirm" : {
+			"ko" : "확인",
+			"en" : "Confirm"
+		},
+		"save" : {
+			"ko" : "저장",
+			"en" : "Save"
 		},
 		"save" : {
 			"ko" : "저장",
@@ -152,11 +166,89 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		"myserver" : {
 			"ko" : "전체 스타일",
 			"en" : "All Styles"
+		},
+		"layerNameHint" : {
+			"ko" : "레이어 이름에 특수문자는 허용되지않습니다.",
+			"en" : "Special characters are not allowed in the name."
+		},
+		"layerTitleHint" : {
+			"ko" : "레이어 제목에 특수문자는 허용되지않습니다.",
+			"en" : "Special characters are not allowed in the title."
+		},
+		"layerChangeHint" : {
+			"ko" : "레이어 정보 변경시 다른 작업자들이 피해를 입을 수 있습니다. 계속하시겠습니까?",
+			"en" : "Changing layer information could harm others. Do you want to continue?"
 		}
 	};
+	
+	/**
+	 * 레이어 수정창
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.window;
+	
+	/**
+	 * 선택된 레이어 정보 객체
+	 * @private
+	 * @type {Object}
+	 */
+	this.layer = undefined;
+	
+	/**
+	 * 선택된 레이어의 정보 객체
+	 * @private
+	 * @type {Object}
+	 */
+	this.serverInfo = {
+		geoserver: undefined,
+		workspace: undefined,
+		datastore: undefined,
+		layername: undefined
+	};
+	
+	/**
+	 * 선택된 레이어의 이름
+	 * @private
+	 * @type {string}
+	 */
+	this.layerName = undefined;
+	
+	/**
+	 * 선택된 레이어의 좌표계
+	 * @private
+	 * @type {string}
+	 */
+	this.srs = undefined;
+	
+	/**
+	 * 레이어 스타일 workspace 목록
+	 * @private
+	 * @type {Array.<string>}
+	 */
+	this.workspaceList = [];
+	
+	/**
+	 * 좌표계 유효성 알림 아이콘 Tag
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.validIconSpan = undefined;
+	
+	/**
+	 * 좌표계 검색 버튼 Tag
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.searchBtn = undefined;
-
+	
+	var options = obj;
+	this.locale = options.locale ? options.locale : "en";
+//	this.layerRecord = options.layerRecord ? options.layerRecord : undefined;
+//	this.featureRecord = options.featureRecord ? options.featureRecord : undefined;
+	this.refer = options.refer ? options.refer : undefined;
+	this.token = options.token || "";
+	
 	var xSpan = $("<span>").attr({
 		"aria-hidden" : true
 	}).html("&times;");
@@ -214,7 +306,6 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		// var opt = that.getDefinitionForm();
 		if (!!that.saveLayerProperties()) {
 			that.close();
-			that.refresh();
 		}
 	});
 	$(okBtn).addClass("btn");
@@ -276,6 +367,13 @@ gb.edit.ModifyLayerProperties = function(obj) {
 		});
 	});
 }
+
+/**
+ * 레이어 정보를 테이블 형식으로 표현한다.
+ * @method gb.edit.ModifyLayerProperties#createTableContent
+ * @function
+ * @param {Object.<string, *>} obj - 레이어 정보를 담은 객체. key 값은 행의 title이 된다.
+ */
 gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	var list = obj || false;
 	if (!list) {
@@ -285,33 +383,42 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 	this.tbody.empty();
 
 	var that = this;
-	var tr, key, value, label, labelKey, labelValue, select, selectTitle, selectField, option, search;
-	for ( let i in list) {
+	var tr, key, value, label, labelKey, labelValue, labelText, select, selectTitle, selectField, option, search;
+	for ( var i in list) {
 		console.log(i);
-		key = $("<td>").css(gb.edit.TDKEYSTYLE).text(that.translation[i][that.locale]).css("width", "20%");
+		key = $("<td>").addClass("gb-modifylayerproperties-td-key").text(that.translation[i][that.locale]).css("width", "20%");
 		if (list[i] instanceof Object) {
-			value = $("<td>").css(gb.edit.TDSTYLE);
+			value = $("<td>").addClass("gb-modifylayerproperties-td");
 			for ( var j in list[i]) {
 				labelKey = $("<span>").text(j);
 				if (list[i][j] instanceof Object) {
-					labelValue = $("<span>").text("[type:" + list[i][j].type + "]");
+					labelText = "[type:" + list[i][j].type + "]";
+					if(list[i][j].nillable === false){
+						labelText += "[NotNull]";
+					}
+					labelValue = $("<span>").text(labelText);
 				} else {
 					labelValue = $("<span>").text(list[i][j]);
 				}
-				label = $("<div>").css(gb.edit.LABELSTYLE).append(labelKey).append(labelValue);
+				label = $("<div>").addClass("gb-modifylayerproperties-label").append(labelKey).append(labelValue);
 				value.append(label);
 			}
 		} else {
 			if (i === "lName" || i === "title") {
-				value = $("<td>").css(gb.edit.TDSTYLE).append($("<input>").addClass("layer-prop-input").attr({
+				value = $("<td>").addClass("gb-modifylayerproperties-td").append($("<input>").addClass("layer-prop-input").attr({
 					"id" : "prop" + i,
 					"value" : list[i],
 					"type" : "text",
 					"readonly" : false
-				}).css(gb.edit.INPUTSTYLE));
+				}).addClass("gb-modifylayerproperties-input"));
+			} else if (i === "abstractContent") {
+				value = $("<td>").addClass("gb-modifylayerproperties-td").append($("<textarea>").addClass("layer-prop-textarea").attr({
+					"id" : "prop" + i,
+					"readonly" : false
+				}).val(list[i]).addClass("gb-modifylayerproperties-input").css("width", "250px"));
 			} else if (i === "style") {
-				selectTitle = $("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["workspace"][this.locale]);
-				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				selectTitle = $("<label>").addClass("gb-modifylayerproperties-select-title").text(this.translation["workspace"][this.locale]);
+				select = $("<select id='styleWorkspaceSelect' class='gb-form'>").addClass("gb-modifylayerproperties-select");
 				select.change(function() {
 					var params = {};
 					params.selectTag = $("#styleSelect");
@@ -323,27 +430,27 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 					that.requestStyleList(params);
 				});
-				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-modifylayerproperties-field").append(selectTitle).append(select);
 
 				option = $("<option>").val("geoserver").text(this.translation["myserver"][this.locale]);
 				select.append(option);
-				for (let w = 0; w < this.workspaceList.length; w++) {
+				for (var w = 0; w < this.workspaceList.length; w++) {
 					option = $("<option>").val("workspace").text(this.workspaceList[w]);
 					select.append(option);
 					if (list.styleWorkspace === this.workspaceList[w]) {
 						option.attr("selected", "selected");
 					}
 				}
-				value = $("<td>").css(gb.edit.TDSTYLE).css("display", "flex").append(selectField);
+				value = $("<td>").addClass("gb-modifylayerproperties-td").css("display", "flex").append(selectField);
 
 				selectTitle = 
 					$("<div>")
-						.append($("<label>").css(gb.edit.SELTITLESTYLE).text(this.translation["style"][this.locale]))
+						.append($("<label>").addClass("gb-modifylayerproperties-select-title").text(this.translation["style"][this.locale]))
 						.append($("<img id='styleLegend'>").css({"float": "right"}))
 						.css({
 							"width": "100%"
 						});
-				select = $("<select id='styleSelect' class='gb-form'>").css(gb.edit.SELECTSTYLE);
+				select = $("<select id='styleSelect' class='gb-form'>").addClass("gb-modifylayerproperties-select");
 				select.change(function() {
 					var params = {};
 					params.legendTag = $("#styleLegend");
@@ -358,7 +465,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 
 					that.requestStyleLegend(params);
 				});
-				selectField = $("<div>").css(gb.edit.FIELDSTYLE).append(selectTitle).append(select);
+				selectField = $("<div>").addClass("gb-modifylayerproperties-field").append(selectTitle).append(select);
 				value.append(selectField);
 
 				this.requestStyleList({
@@ -373,7 +480,7 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"value" : list[i] ? list[i].replace(/[^0-9]/g, "") : "",
 					"type" : "text",
 					"readonly" : false
-				}).css(gb.edit.INPUTSTYLE);
+				}).addClass("gb-modifylayerproperties-input");
 
 				var tout = false;
 				$(search).keyup(function() {
@@ -392,80 +499,188 @@ gb.edit.ModifyLayerProperties.prototype.createTableContent = function(obj) {
 					"margin-right" : "0"
 				});
 
-				value = $("<td>").append($("<span>").text("EPSG: ")).append(search).append(this.validIconSpan).css(gb.edit.TDSTYLE);
+				value = $("<td>").append($("<span>").text("EPSG: ")).append(search).append(this.validIconSpan).addClass("gb-modifylayerproperties-td");
 			} else {
 				if (i === "styleWorkspace") {
 					continue;
 				}
-				value = $("<td>").css(gb.edit.TDSTYLE).text(list[i]);
+				value = $("<td>").addClass("gb-modifylayerproperties-td").text(list[i]);
 			}
 
 		}
 
-		tr = $("<tr>").css(gb.edit.TRSTYLE).append(key).append(value);
+		tr = $("<tr>").addClass("gb-modifylayerproperties-tr").append(key).append(value);
 		this.tbody.append(tr);
 	}
 }
 
-gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function() {
-	return 1;
-}
+//gb.edit.ModifyLayerProperties.prototype.saveLayerInfo = function() {
+//	return 1;
+//}
 
-gb.edit.ModifyLayerProperties.prototype.getLayerRecord = function() {
-	return this.layerRecord;
-};
-gb.edit.ModifyLayerProperties.prototype.setLayerRecord = function(record) {
-	this.layerRecord = record;
-};
-gb.edit.ModifyLayerProperties.prototype.getFeatureRecord = function() {
-	return this.featureRecord;
-};
-gb.edit.ModifyLayerProperties.prototype.setFeatureRecord = function(record) {
-	this.featureRecord = record;
-};
+//gb.edit.ModifyLayerProperties.prototype.getLayerRecord = function() {
+//	return this.layerRecord;
+//};
+//gb.edit.ModifyLayerProperties.prototype.setLayerRecord = function(record) {
+//	this.layerRecord = record;
+//};
+//gb.edit.ModifyLayerProperties.prototype.getFeatureRecord = function() {
+//	return this.featureRecord;
+//};
+//gb.edit.ModifyLayerProperties.prototype.setFeatureRecord = function(record) {
+//	this.featureRecord = record;
+//};
+
+/**
+ * 레이어 정보 수정창을 연다.
+ * @method gb.edit.ModifyLayerProperties#open
+ * @function
+ */
 gb.edit.ModifyLayerProperties.prototype.open = function() {
 	this.window.modal('show');
 };
+
+/**
+ * 레이어 정보 수정창을 닫는다.
+ * @method gb.edit.ModifyLayerProperties#close
+ * @function
+ */
 gb.edit.ModifyLayerProperties.prototype.close = function() {
 	this.window.modal('hide');
 };
+
+/**
+ * jstree 객체를 설정한다.
+ * @method gb.edit.ModifyLayerProperties#setRefer
+ * @function
+ * @param {gb.tree.GeoServer} refer - jstree 객체
+ */
 gb.edit.ModifyLayerProperties.prototype.setRefer = function(refer) {
 	this.refer = refer;
 };
+
+/**
+ * jstree 객체를 반환한다.
+ * @method gb.edit.ModifyLayerProperties#getRefer
+ * @function
+ * @param {gb.tree.GeoServer} refer - jstree 객체
+ */
 gb.edit.ModifyLayerProperties.prototype.getRefer = function() {
 	return this.refer;
 };
+
+/**
+ * jstree 객체를 재로딩한다.
+ * @method gb.edit.ModifyLayerProperties#refresh
+ * @function
+ */
 gb.edit.ModifyLayerProperties.prototype.refresh = function() {
 	this.refer.refresh();
 };
+
+/**
+ * 레이어 정보를 설정한다.
+ * @method gb.edit.ModifyLayerProperties#setLayer
+ * @function
+ * @param {Object} layer - 레이어 정보
+ */
 gb.edit.ModifyLayerProperties.prototype.setLayer = function(layer) {
 	this.layer = layer;
 };
+
+/**
+ * 선택된 레이어 정보를 반환한다.
+ * @method gb.edit.ModifyLayerProperties#getLayer
+ * @function
+ * @return {Object}
+ */
 gb.edit.ModifyLayerProperties.prototype.getLayer = function() {
 	return this.layer;
 };
+
+/**
+ * 레이어 서버 정보를 설정한다.
+ * @method gb.edit.ModifyLayerProperties#setServerInfo
+ * @function
+ * @param {Object} info - 레이어 서버 정보
+ * @param {string} info.geoserver - geoserver명
+ * @param {string} info.workspace - workspace명
+ * @param {string} info.datastore - datastore명
+ * @param {string} info.layername - 레이어명
+ */
 gb.edit.ModifyLayerProperties.prototype.setServerInfo = function(info) {
 	this.serverInfo = info;
 };
+
+/**
+ * 선택된 레이어의 서버 정보를 반환한다.
+ * @method gb.edit.ModifyLayerProperties#getServerInfo
+ * @function
+ * @return {Object.<string, string>} geoserver명, workspace명, datastore명, 레이어명
+ */
 gb.edit.ModifyLayerProperties.prototype.getServerInfo = function() {
 	return this.serverInfo;
 };
 
-gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
-	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
-	this.requestStyleList("geoserver32");
+/**
+ * 선택된 레이어의 아이디를 반환한다.
+ * @method gb.edit.ModifyLayerProperties#getLayerId
+ * @function
+ * @return {string}
+ */
+gb.edit.ModifyLayerProperties.prototype.getLayerId = function() {
+	var id = "";
+	
+	id += this.serverInfo.geoserver || "";
+	id += this.serverInfo.workspace ? (":" + this.serverInfo.workspace) : "";
+	id += this.serverInfo.datastore ? (":" + this.serverInfo.datastore) : "";
+	id += this.serverInfo.layername ? (":" + this.serverInfo.layername) : "";
+	
+	return id;
 };
 
+/**
+ * 레이어 정보 수정창을 설정한다.
+ * @method gb.edit.ModifyLayerProperties#setForm
+ * @function
+ * @param {Object} info - 요청 파라미터 객체
+ * @param {string} info.geoserver - geoserver명
+ * @param {string} info.workspace - workspace명
+ * @param {string} info.datastore - datastore명
+ * @param {string} info.layername - 레이어명
+ */
+gb.edit.ModifyLayerProperties.prototype.setForm = function(info) {
+	this.getImageTileInfo("geoserver/getGeoLayerInfoList.ajax", info);
+	this.requestStyleList(info);
+};
+
+/**
+ * 레이어 스타일 workspace명 목록을 설정한다.
+ * @method gb.edit.ModifyLayerProperties#setWorkSpaceList
+ * @function
+ * @param {Array.<string>} list - Geoserver에 저장되어있는 스타일 workspace 이름 목록
+ */
 gb.edit.ModifyLayerProperties.prototype.setWorkSpaceList = function(list) {
 	if (list instanceof Array) {
 		this.workspaceList = list;
 	}
 };
 
+/**
+ * Geoserver에 레이어 정보를 요청한 후 테이블 DIV생성 요청을 한다.
+ * @method gb.edit.ModifyLayerProperties#getImageTileInfo
+ * @function
+ * @param {string} url - 레이어 정보 요청 URL
+ * @param {Object} info - 요청 파라미터 객체
+ * @param {string} info.geoserver - geoserver명
+ * @param {string} info.workspace - workspace명
+ * @param {string} info.datastore - datastore명
+ * @param {string} info.layername - 레이어명
+ */
 gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	var that = this;
 	var geoserver = info.geoserver || false, workspace = info.workspace || false, datastore = info.datastore || false, layername = info.layername || false;
-
+	
 	if (!geoserver || !workspace || !datastore || !layername) {
 		console.error("Missed Parameter");
 		return;
@@ -509,6 +724,15 @@ gb.edit.ModifyLayerProperties.prototype.getImageTileInfo = function(url, info) {
 	});
 };
 
+/**
+ * Geoserver에 저장되어 있는 Style 목록 정보를 요청한다.
+ * @method gb.edit.ModifyLayerProperties#requestStyleList
+ * @function
+ * @param {Object} options - 요청 파라미터 객체
+ * @param {string} options.serverName - geoserver명
+ * @param {string} options.workspace - workspace명
+ * @param {HTMLElement} options.selectTag - HTML Select Tag
+ */
 gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var params = {};
 	var options = options;
@@ -516,7 +740,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	var style = options.style || "";
 
 	if (!!options.selectTag) {
-		select = options.selectTag;
+		select = $(options.selectTag);
 	} else {
 		return;
 	}
@@ -552,6 +776,17 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleList = function(options) {
 	});
 }
 
+/**
+ * Geoserver에 저장되어 있는 Style 범례를 요청한다.
+ * @method gb.edit.ModifyLayerProperties#requestStyleLegend
+ * @function
+ * @param {Object} options - 요청 파라미터 객체
+ * @param {string} options.serverName - geoserver명
+ * @param {string} options.workspace - workspace명
+ * @param {string} options.layerName - 레이어명
+ * @param {string} options.style - 스타일 ID
+ * @param {HTMLElement} options.legendTag - 범례 이미지를 표시할 HTML Tag
+ */
 gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var params = {};
 	var options = options;
@@ -559,7 +794,7 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	var src = "";
 
 	if (!!options.legendTag) {
-		legendTag = options.legendTag;
+		legendTag = $(options.legendTag);
 	} else {
 		return;
 	}
@@ -598,6 +833,12 @@ gb.edit.ModifyLayerProperties.prototype.requestStyleLegend = function(options) {
 	legendTag.attr("src", "geoserver/geoserverWMSGetLegendGraphic.ajax" + this.token + src);
 }
 
+/**
+ * 레이어 정보 변경사항 저장 요청을 한다. 유효성 검사를 수행한다.
+ * @method gb.edit.ModifyLayerProperties#saveLayerProperties
+ * @function
+ * @return {boolean} 요청 성공 시 True, 실패시 False 반환
+ */
 gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var that = this;
 	var special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
@@ -606,48 +847,168 @@ gb.edit.ModifyLayerProperties.prototype.saveLayerProperties = function() {
 	var serverInfo = this.getServerInfo();
 
 	if (special_pattern.test($("#proplName").val()) === true) {
-		alert("레이어 이름에 특수문자는 허용되지않습니다.");
+		alert(this.translation.layerNameHint[this.locale]);
 		return false;
 	}
 	if (special_pattern.test($("#proptitle").val()) === true) {
-		alert("레이어 제목에 특수문자는 허용되지않습니다.");
+		alert(this.translation.layerTitleHint[this.locale]);
 		return false;
 	}
-	/*
-	 * if(!$.isNumeric($("#propsrs").val())){ alert("EPSG 코드는 숫자만 입력 가능합니다.");
-	 * return false; }
-	 */
+	
+	var closeBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-default")
+			.text(this.translation.cancel[this.locale]);
+	
+	var okBtn = 
+		$("<button>")
+			.css({
+				"float" : "right"
+			})
+			.addClass("gb-button")
+			.addClass("gb-button-primary")
+			.text(this.translation.confirm[this.locale]);
 
-	var arr = {
-		"serverName" : serverInfo.geoserver,
-		"workspace" : serverInfo.workspace,
-		"datastore" : serverInfo.datastore,
-		"originalName" : serverInfo.layername,
-		"name" : $("#proplName").val(),
-		"title" : $("#proptitle").val(),
-		"srs" : "EPSG:" + $("#propsrs").val()
-	}
+	var buttonArea = 
+		$("<span>")
+			.addClass("gb-modal-buttons")
+			.append(okBtn)
+			.append(closeBtn);
+	
+	var modalFooter = $("<div>").append(buttonArea);
 
-	$.ajax({
-		url : "geoserver/updateLayer.ajax" + this.token,
-		method : "POST",
-		contentType : "application/json; charset=UTF-8",
-		cache : false,
-		data : JSON.stringify(arr),
-		success : function(data, textStatus, jqXHR) {
-			console.log(data);
-		}
+	var body = 
+		$("<div>")
+			.append(this.translation.layerChangeHint[this.locale])
+			.css({
+				"max-height" : "300px",
+				"overflow-y" : "auto"
+			});
+	
+	var modal = new gb.modal.ModalBase({
+		"title" : "",
+		"width" : 540,
+		"autoOpen" : true,
+		"body" : body,
+		"footer" : modalFooter
 	});
 
+	$(closeBtn).click(function() {
+		modal.close();
+	});
+	
+	$(okBtn).click(function(){
+		var arr = {
+			"serverName" : serverInfo.geoserver,
+			"workspace" : serverInfo.workspace,
+			"datastore" : serverInfo.datastore,
+			"originalName" : serverInfo.layername,
+			"name" : $("#proplName").val(),
+			"title" : $("#proptitle").val(),
+			"abstractContent" : $("#propabstractContent").val(),
+			"srs" : "EPSG:" + $("#propsrs").val(),
+			"style": $("#styleSelect").find("option:selected").val()
+		}
+
+		$.ajax({
+			url : "geoserver/updateLayer.ajax" + that.token,
+			method : "POST",
+			contentType : "application/json; charset=UTF-8",
+			cache : false,
+			data : JSON.stringify(arr),
+			success : function(data, textStatus, jqXHR) {
+				console.log(data);
+				that.refer.refresh();
+				that.checkOtreeLayer();
+				modal.close();
+			}
+		});
+	});
+	
 	return true;
 }
 
 /**
+ * gb.tree.OpenLayers 객체에 포함되어 있는 레이어 중 현재 변경된 레이어와 같은 것이 있다면
+ * 변경된 정보를 업데이트하고 refresh한다.
+ * @method gb.edit.ModifyLayerProperties#checkOtreeLayer
+ * @function
+ */
+gb.edit.ModifyLayerProperties.prototype.checkOtreeLayer = function() {
+	var otree = this.refer.settings.geoserver.clientTree;
+	var root = otree.get_node("#");
+	var list = root.children_d;
+	var id = this.getLayerId();
+	var layername = $("#proplName").val();
+	var info = this.serverInfo;
+	var node, layer, source, params, git;
+	
+	for(var i = 0; i < list.length; i++){
+		node = otree.get_node(list[i]);
+		layer = otree.get_LayerById(list[i]);
+		
+		if(layer instanceof ol.layer.Tile){
+			if(layer.get("id") === id){
+				source = layer.getSource();
+				params = source.getParams();
+				git = layer.get("git");
+				
+				layer.set("id", info.geoserver + ":" + info.workspace + ":" + info.datastore + ":" + layername);
+				layer.set("name", layername);
+				node.text = layername;
+				git.layers = layername;
+				git.native = layername;
+				source.updateParams({
+					'LAYERS' : info.workspace + ":" + layername
+				});
+				
+				otree.refresh();
+				
+				var arr = {
+					"serverName" : info.geoserver,
+					"workspace" : info.workspace,
+					"geoLayerList" : [ layername ]
+				}
+				
+				$.ajax({
+					url : "geoserver/getGeoLayerInfoList.ajax" + this.token,
+					method : "POST",
+					contentType : "application/json; charset=UTF-8",
+					cache : false,
+					data : JSON.stringify(arr),
+					beforeSend : function() { // 호출전실행
+						$("body").css("cursor", "wait");
+					},
+					complete : function() {
+						$("body").css("cursor", "default");
+					},
+					traditional : true,
+					success : function(data, textStatus, jqXHR) {
+						if (Array.isArray(data)) {
+							if (data.length === 1) {
+								source.updateParams({
+									'SLD_BODY' : data[0].sld
+								});
+								
+								otree.refresh();
+							}
+							$("body").css("cursor", "default");
+						}
+					}
+				});
+			}
+		}
+	}
+}
+
+/**
  * epsg 코드의 유효성을 설정한다.
- * 
  * @method gb.edit.ModifyLayerProperties#setValidEPSG
- * @param {Number}
- *            flag - EPSG 코드 유효성
+ * @param {Number} flag - EPSG 코드 유효성
  */
 gb.edit.ModifyLayerProperties.prototype.setValidEPSG = function(flag) {
 	$(this.validIconSpan).empty();
@@ -705,10 +1066,10 @@ gb.edit.ModifyLayerProperties.prototype.setValidEPSG = function(flag) {
 
 /**
  * 베이스 좌표계를 변경하기 위한 EPSG 코드를 검색한다.
- * 
  * @method gb.edit.ModifyLayerProperties#searchEPSGCode
- * @param {String}
- *            code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ * @param {String} code - 베이스 좌표계를 변경하기 위한 EPSG 코드
+ * @param {String} apply
+ * @param {Function} callback - 콜백함수
  */
 gb.edit.ModifyLayerProperties.prototype.searchEPSGCode = function(code, apply, callback) {
 	var that = this;

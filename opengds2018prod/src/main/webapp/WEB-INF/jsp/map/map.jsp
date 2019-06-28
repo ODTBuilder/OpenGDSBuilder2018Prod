@@ -151,6 +151,9 @@ html {
 				<li><a href="#" title="Information" id="binfo" data-toggle="modal" data-target="#infoModal"> <i
 						class="fas fa-info-circle fa-lg" style="color: #ffc000;"></i> <spring:message code="lang.info" />
 				</a></li>
+				<li><a href="#" title="setting" id="editSetting"> <i class="fas fa-cog fa-lg" style="color: #c0c1c2;"></i>
+						<spring:message code="lang.setting" />
+				</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -301,7 +304,6 @@ html {
 			getFeatureInfo : "geoserver/geoserverWFSGetFeature.ajax",
 			getWFSFeature : "geoserver/geoserverWFSGetFeature.ajax",
 			getLegend : "geoserver/geoserverWMSGetLegendGraphic.ajax",
-			getLayerTile : "geoserver/geoserverWMSLayerLoad.do",
 			requestValidate : "web/validate.do",
 			geoserverFileUpload : "geoserver/upload.do"
 		}
@@ -326,6 +328,10 @@ html {
 
 		$("#changeBase").click(function() {
 			gbBaseMap.open();
+		});
+
+		$("#editSetting").click(function() {
+			gb.module.serviceVersion.geoserverSettingModal(locale);
 		});
 
 		var vrepo = new gb.versioning.Repository({
@@ -354,7 +360,11 @@ html {
 				"listGeoserverLayer" : "geogig/listGeoserverLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"publishGeogigLayer" : "geogig/publishGeogigLayer.do?${_csrf.parameterName}=${_csrf.token}",
 				"removeGeogigLayer" : "geogig/removeLayer.do?${_csrf.parameterName}=${_csrf.token}",
-				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}"
+				"infoRepository" : "geogig/infoRepository.do?${_csrf.parameterName}=${_csrf.token}",
+				"logLayer" : "geogig/logLayer.do?${_csrf.parameterName}=${_csrf.token}",
+				"diffLayer" : "geogig/diffLayerById.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}"
 			},
 			"isEditing" : gb.module.isEditing
 		});
@@ -364,9 +374,8 @@ html {
 		});
 
 		var crs = new gb.crs.BaseCRS({
-			"autoOpen" : false,
 			"locale" : locale !== "" ? locale : "en",
-			"message" : $(".epsg-now"),
+			"message" : $(".epsg-now")[0],
 			"maps" : [ gbMap.getUpperMap(), gbMap.getLowerMap() ],
 			"epsg" : "4326"
 		});
@@ -377,7 +386,6 @@ html {
 
 		// 검수 수행 Modal 생성
 		var validation = new gb.validation.Validation({
-			"token" : urlList.token,
 			"autoOpen" : false,
 			"locale" : locale,
 			"title" : "<spring:message code='lang.validation' />",
@@ -399,11 +407,23 @@ html {
 			layerInfoURL : urlList.getLayerInfo + urlList.token
 		});
 
+		var uploadjson = new gb.geoserver.UploadGeoJSON({
+			"url" : "geoserver/jsonUpload.ajax?${_csrf.parameterName}=${_csrf.token}",
+			"epsg" : function() {
+				return crs.getEPSGCode();
+			},
+			"geoserverTree" : function() {
+				return gtree;
+			},
+			"locale" : locale !== "" ? locale : "en"
+		});
+
 		var otree = new gb.tree.OpenLayers({
 			"locale" : locale || "en",
 			"append" : $(".builderLayerClientPanel")[0],
 			"map" : gbMap.getUpperMap(),
 			"frecord" : frecord,
+			"uploadJSON" : uploadjson,
 			"token" : urlList.token,
 			"url" : {
 				"getLegend" : urlList.getLegend + urlList.token
@@ -422,7 +442,6 @@ html {
 			"map" : gbMap.getUpperMap(),
 			"properties" : new gb.edit.ModifyLayerProperties({
 				"token" : urlList.token,
-				"featureRecord" : frecord,
 				"locale" : locale !== "" ? locale : "en"
 			}),
 			"uploadSHP" : uploadSHP,
@@ -443,7 +462,7 @@ html {
 			"locale" : locale !== "" ? locale : "en",
 			"url" : {
 				"featureLog" : "geogig/featureLog.do?${_csrf.parameterName}=${_csrf.token}",
-				"featureDiff" : "geogig/featureDiff.do?${_csrf.parameterName}=${_csrf.token}",
+				"diff" : "geogig/diff.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureRevert" : "geogig/featureRevert.do?${_csrf.parameterName}=${_csrf.token}",
 				"featureAttribute" : "geogig/featureAttribute.do?${_csrf.parameterName}=${_csrf.token}",
 				"catFeatureObject" : "geogig/catFeatureObject.do?${_csrf.parameterName}=${_csrf.token}"
@@ -451,14 +470,13 @@ html {
 		});
 
 		// EditTool 활성화
-		var epan = new gb.header.EditingTool({
-			targetElement : gbMap.getLowerDiv(),
+		var epan = new gb.edit.EditingTool({
+			targetElement : gbMap.getLowerDiv()[0],
 			map : gbMap.getUpperMap(),
 			featureRecord : frecord,
 			otree : otree,
 			wfsURL : urlList.getWFSFeature + urlList.token,
 			layerInfo : urlList.getLayerInfo + urlList.token,
-			imageTile : urlList.getLayerTile,
 			locale : locale || "en",
 			versioning : fhist,
 			isEditing : gb.module.isEditing
@@ -544,12 +562,13 @@ html {
 			}
 		});
 		// feature list
-		var featureList = new gb.footer.FeatureList({
+		var featureList = new gb.layer.FeatureList({
 			map : gbMap.getUpperMap(),
-			targetElement : gbMap.getLowerDiv(),
+			targetElement : gbMap.getLowerDiv()[0],
 			title : "All Feature List",
 			toggleTarget : "#feature-toggle-btn",
 			wfstURL : urlList.wfst + urlList.token,
+			locale : locale || "en",
 			layerInfoURL : urlList.getLayerInfo + urlList.token,
 			getFeatureURL : urlList.getWFSFeature + urlList.token,
 			isDisplay : false
@@ -586,12 +605,13 @@ html {
 		});
 
 		// command line
-		var commandLine = new gb.footer.CommandLine({
-			targetElement : gbMap.getLowerDiv(),
+		var commandLine = new gb.edit.CommandLine({
+			targetElement : gbMap.getLowerDiv()[0],
 			jstree : otree,
+			editTool : epan,
 			locale : locale,
 			title : "<spring:message code='lang.command' />",
-			serverURL : urlList.getWFSFeature + urlList.token,
+			// serverURL : urlList.getWFSFeature + urlList.token,
 			toggleTarget : "#cmd-toggle-btn",
 			isDisplay : false,
 			map : gbMap.getUpperMap()

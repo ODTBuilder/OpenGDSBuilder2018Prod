@@ -5,27 +5,32 @@
  * @memberof gb.versioning
  * @param {Object}
  *            obj - 생성자 옵션을 담은 객체
+ * @param {string}
+ *            obj.locale - 사용할 언어 ko | en
  * @param {Object}
  *            obj.url - 요청을 수행할 URL
- * @param {String}
- *            obj.url.serverTree - 서버 목록 트리를 요청할 컨트롤러 주소
- * 
- * @version 0.01
+ * @param {string}
+ *            obj.url.featureLog - 피처의 이력 조회를 요청할 URL ex)/featureLog.do
+ * @param {string}
+ *            obj.url.diff - 피처간의 비교를 요청할 URL ex)/diff.do
+ * @param {string}
+ *            obj.url.featureRevert - 피처의 되돌리기를 요청할 URL ex)/featureRevert.do
+ * @param {string}
+ *            obj.url.featureAttribute - 피처의 속성 조회를 요청할 URL
+ *            ex)/featureAttribute.do
+ * @param {string}
+ *            obj.url.catFeatureObject - 피처의 변경된 속성 조회를 요청할 URL
+ *            ex)/catFeatureObject.do
  * @author SOYIJUN
- * @date 2018. 10.26
  */
 gb.versioning.Feature = function(obj) {
 	var that = this;
-	var options = obj ? obj : {};
-	this.epsg = options.epsg ? options.epsg : undefined;
-	this.editingTool = options.editingTool ? options.editingTool : undefined;
-	var url = options.url ? options.url : {};
-	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
-	this.featureDiffURL = url.featureDiff ? url.featureDiff : undefined;
-	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
-	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
-	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
-	this.locale = options.locale ? options.locale : "en";
+	/**
+	 * 번역 정보
+	 * 
+	 * @private
+	 * @type {Object}
+	 */
 	this.translation = {
 		"close" : {
 			"ko" : "닫기",
@@ -115,6 +120,14 @@ gb.versioning.Feature = function(obj) {
 			"ko" : "객체 되돌리기",
 			"en" : "Reverting Feature"
 		},
+		"ourft" : {
+			"ko" : "현재 객체",
+			"en" : "Current Feature"
+		},
+		"theirft" : {
+			"ko" : "원격 객체",
+			"en" : "Remote Feature"
+		},
 		"conflft" : {
 			"ko" : "충돌 객체",
 			"en" : "Conflicted Feature"
@@ -154,50 +167,85 @@ gb.versioning.Feature = function(obj) {
 		"run" : {
 			"ko" : "수행",
 			"en" : "Run"
+		},
+		"commitdesc" : {
+			"ko" : "이 작업에 대한 설명을 입력해 주세요.",
+			"en" : 'Please provide a description of this action.'
+		},
+		"detail" : {
+			"ko" : "세부정보",
+			"en" : "Detail"
 		}
 	};
-	this.ofeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb",
-		"border" : "1px solid #ccc",
-		"border-radius" : "4px"
-	});
-	this.cfeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb",
-		"border" : "1px solid #ccc",
-		"border-radius" : "4px"
-	});
+	var options = obj ? obj : {};
+	this.epsg = options.epsg ? options.epsg : undefined;
+	this.editingTool = options.editingTool ? options.editingTool : undefined;
+	var url = options.url ? options.url : {};
+	this.featureLogURL = url.featureLog ? url.featureLog : undefined;
+	this.diffURL = url.diff ? url.diff : undefined;
+	this.catFeatureObjectURL = url.catFeatureObject ? url.catFeatureObject : undefined;
+	this.featureRevertURL = url.featureRevert ? url.featureRevert : undefined;
+	this.featureAttributeURL = url.featureAttribute ? url.featureAttribute : undefined;
+	this.locale = options.locale ? options.locale : "en";
 
+	/**
+	 * 디테일 창에서 왼쪽 지도 영역
+	 * 
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.ofeature = $("<div>").addClass("gb-feature-map-body");
+	/**
+	 * 디테일 창에서 오른쪽 지도 영역
+	 * 
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.cfeature = $("<div>").addClass("gb-feature-map-body");
+	/**
+	 * 디테일 창에서 왼쪽 지도(커밋된 객체)
+	 * 
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.omap = new ol.Map({
 		"target" : $(this.ofeature)[0],
 		"layers" : []
 	});
-
+	/**
+	 * 디테일 창에서 오른쪽 지도(최신 객체)
+	 * 
+	 * @private
+	 * @type {ol.Map}
+	 */
 	this.cmap = new ol.Map({
 		"target" : $(this.cfeature)[0],
 		"layers" : []
 	});
-
-	this.comfeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb",
-		"border" : "1px solid #ccc",
-		"border-radius" : "4px"
-	});
-	this.curfeature = $("<div>").css({
-		"width" : "100%",
-		"height" : "200px",
-		"background-color" : "#dbdbdb",
-		"border" : "1px solid #ccc",
-		"border-radius" : "4px"
-	});
-
+	/**
+	 * 충돌피처 영역(우리꺼)
+	 * 
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.comfeature = $("<div>").addClass("gb-feature-map-body");
+	/**
+	 * 충돌피처 영역(그들꺼)
+	 * 
+	 * @private
+	 * @type {HTMLElement}
+	 */
+	this.curfeature = $("<div>").addClass("gb-feature-map-body");
+	/**
+	 * @private
+	 * @type {HTMLElement}
+	 */
 	this.tbody = $("<div>").addClass("tbody").addClass("gb-versioning-feature-trg");
-	this.panel = new gb.panel.Base({
+	/**
+	 * @private
+	 * @type {gb.panel.PanelBase}
+	 */
+	this.panel = new gb.panel.PanelBase({
 		"width" : 500,
 		"height" : 550,
 		"positionX" : 4,
@@ -207,49 +255,38 @@ gb.versioning.Feature = function(obj) {
 	});
 
 	var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+	// 새로고침 버튼
 	var refBtn = $("<button>").addClass("gb-button-clear").append(refIcon).append(" " + that.translation.refresh[that.locale]).click(
 			function() {
 				that.refresh();
 			});
-	var refBtnarea = $("<div>").css({
-		"text-align" : "center"
-	}).append(refBtn);
+	var refBtnarea = $("<div>").addClass("gb-feature-text-center").append(refBtn);
 
 	var th1 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.author[that.locale]);
 	var th2 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.time[that.locale]);
 	var th3 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.type[that.locale]);
-	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.changes[that.locale]);
+	var th4 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.detail[that.locale]).addClass(
+			"gb-feature-text-center");
 	var th5 = $("<div>").addClass("th").addClass("gb-versioning-feature-td").text(that.translation.revert[that.locale]);
-	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4).append(th5);
-	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr).css({
-		"text-align" : "center"
-	});
+	var thr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").append(th1).append(th2).append(th3).append(th4);
+	var thead = $("<div>").addClass("thead").addClass("gb-versioning-feature-trg").append(thr);
 
-	var table = $("<div>").addClass("gb-table").css({
-		"display" : "table",
-		"width" : "100%",
-		"padding-left" : "6px"
-	}).append(thead).append(this.tbody);
+	var table = $("<div>").addClass("gb-table").addClass("gb-feature-history-table").append(thead).append(this.tbody);
 
 	var moreIcon = $("<i>").addClass("fas").addClass("fa-caret-down");
+	// 더 보기 버튼
 	var btn = $("<button>").addClass("gb-button-clear").append(moreIcon).append(" " + that.translation.readmore[that.locale]).click(
 			function() {
 				var geoserver = that.getServer();
 				var repo = that.getRepo();
 				var path = that.getPath();
-				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
-				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
-				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head);
+				var until = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").val();
+				var idx = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").attr("idx");
+				var head = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button-clear").val();
+				that.loadFeatureHistory(geoserver, repo, path, 6, idx, until, head, false);
 			});
-	var btnarea = $("<div>").css({
-		"text-align" : "center"
-	}).append(btn);
-	var body = $("<div>").css({
-		"overflow-y" : "auto",
-		"height" : "510px",
-		"margin" : "4px 0"
-	}).append(refBtnarea).append(table).append(btnarea);
+	var btnarea = $("<div>").addClass("gb-feature-text-center").append(btn);
+	var body = $("<div>").addClass("gb-feature-body").append(refBtnarea).append(table).append(btnarea);
 	this.panel.setPanelBody(body);
 
 	this.commits = {};
@@ -282,9 +319,26 @@ gb.versioning.Feature.prototype.open = function() {
 /**
  * 피처 이력을 요청한다.
  * 
+ * @private
  * @method gb.versioning.Feature#loadFeatureHistory
+ * @param {string}
+ *            server - 등록한 GeoServer의 이름
+ * @param {string}
+ *            repo - 레이어가 저장된 GeoGig 저장소의 이름
+ * @param {string}
+ *            path - 이력을 조회할 피처의 path
+ * @param {(string|number)}
+ *            limit - 불러올 이력의 개수
+ * @param {(string|number)}
+ *            idx - 새로 불러올 이력의 인덱스
+ * @param {string}
+ *            until - 새로 불러올 이력의 기준이 될 이력(특정하면 그 이력 이전에 발생한 변경사항만 가져옴)
+ * @param {string}
+ *            head - 현재 불러온 이력 중 최신 이력
+ * @param {boolean}
+ *            refresh - 현재 요청이 새로고침 요청인지 여부
  */
-gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head) {
+gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path, limit, idx, until, head, refresh) {
 	var that = this;
 	var params = {
 		"serverName" : server,
@@ -329,14 +383,18 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 			console.log(data);
 
 			if (data.success === "true") {
+				if (refresh) {
+					that.clearChangesTbody();
+				}
+				// 아이디 생성
 				that.setIDString(server + "/" + repo + "/" + path);
 				if (Array.isArray(data.simpleCommits)) {
 					that.setCommitsByInfo(server, repo, path);
 				}
-
+				// 이력 출력
 				for (var i = 0; i < data.simpleCommits.length; i++) {
 					if ((until !== undefined || head !== undefined) && (i === 0)) {
-						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").val();
+						var early = $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button-clear").val();
 						if (data.simpleCommits[i].commitId === early) {
 							if (data.simpleCommits.length === 1) {
 								var title = that.translation.message[that.locale];
@@ -346,54 +404,55 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 							continue;
 						}
 					}
-					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName).css({
-						"text-align" : "center"
-					});
-					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date);
-					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType);
-					var button = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-detail-btn").text(that.translation.detail[that.locale]).attr({
-						"title" : data.simpleCommits[i].message,
-						"value" : data.simpleCommits[i].commitId,
-						"idx" : data.simpleCommits[i].cIdx
-					}).click(function() {
-						var geoserver = that.getServer();
-						var repo = that.getRepo();
-						var path = that.getPath();
-						// var nidx = parseInt($(this).attr("idx"));
-						// var nidx = 0;
-						// var oidx = parseInt($(this).attr("idx"));
-						var oidx = $(this).val();
-						var nidx = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button").val();
-						// var oidx =
-						// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
-						that.openDetailChanges(geoserver, repo, path, nidx, oidx);
-					});
-					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-						"text-align" : "center"
-					}).append(button);
-
-					var rvButton = $("<button>").addClass("gb-button").addClass("gb-button-default").addClass(
-							"gb-versioning-feature-revert-btn").text(that.translation.run[that.locale]).click(function() {
-						var geoserver = that.getServer();
-						var repo = that.getRepo();
-						var path = that.getPath();
-						var ocommit = $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
-						var ncommit = $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
-						that.openRevertModal(geoserver, repo, path, ocommit, ncommit);
-					});
-					var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
-						"text-align" : "center"
-					}).append(rvButton);
+					var td1 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].authorName);
+					var td2 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].date).addClass(
+							"gb-feature-history-cell-date");
+					var td3 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(data.simpleCommits[i].changeType)
+							.addClass("gb-feature-history-cell-type");
+					var detailIcon = $("<i>").addClass("fas").addClass("fa-list");
+					var button = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-detail-btn").append(detailIcon)
+							.attr({
+								"title" : data.simpleCommits[i].message,
+								"value" : data.simpleCommits[i].commitId,
+								"idx" : data.simpleCommits[i].cIdx
+							}).click(function() {
+								var geoserver = that.getServer();
+								var repo = that.getRepo();
+								var path = that.getPath();
+								// var nidx = parseInt($(this).attr("idx"));
+								// var nidx = 0;
+								// var oidx = parseInt($(this).attr("idx"));
+								var oidx = $(this).val();
+								var nidx = $(that.getTBody()).find(".gb-versioning-feature-tr").first().find(".gb-button-clear").val();
+								// var oidx =
+								// $(that.getTBody()).find(".gb-versioning-feature-tr").last().find(".gb-button").attr("idx");
+								that.openDetailChanges(geoserver, repo, path, nidx, oidx);
+							});
+					var td4 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").append(button).addClass(
+							"gb-feature-text-center");
+					/*
+					 * var refIcon = $("<i>").addClass("fas").addClass("fa-sync-alt");
+					 * var rvButton = $("<button>").addClass("gb-button-clear").addClass("gb-versioning-feature-revert-btn").append(refIcon)
+					 * .click(function() { var geoserver = that.getServer(); var
+					 * repo = that.getRepo(); var path = that.getPath(); var
+					 * ocommit =
+					 * $(this).parents().eq(1).find(".gb-versioning-feature-detail-btn").val();
+					 * var ncommit =
+					 * $(this).parents().eq(2).children().first().find(".gb-versioning-feature-detail-btn").val();
+					 * that.openRevertModal(geoserver, repo, path, ocommit,
+					 * ncommit); }); var td5 = $("<div>").addClass("td").addClass("gb-versioning-feature-td").css({
+					 * "text-align" : "center", "width" : "100px"
+					 * }).append(rvButton);
+					 */
 
 					if (i === 0) {
 						$(button).prop("disabled", true);
-						$(rvButton).prop("disabled", true);
+						// $(rvButton).prop("disabled", true);
 					}
 
 					var msg = $("<div>").addClass("gb-tooltip-text").text(data.simpleCommits[i].message);
 					var tr = $("<div>").addClass("tr").addClass("gb-versioning-feature-tr").addClass("gb-tooltip").append(td1).append(td2)
-							.append(td3).append(td4).append(td5);
+							.append(td3).append(td4);
 					$(that.tbody).append(tr);
 				}
 			}
@@ -407,94 +466,67 @@ gb.versioning.Feature.prototype.loadFeatureHistory = function(server, repo, path
 /**
  * 피처 디테일 창을 연다.
  * 
+ * @private
  * @method gb.versioning.Feature#openDetailChanges
- * @param {String}
- *            server - 서버 이름
- * @param {String}
- *            repo - 레파지토리 이름
- * @param {String}
- *            path - 피처 패스
- * @param {Number}
- *            nidx - 최신 커밋 인덱스
- * @param {Number}
- *            oidx - 타겟 커밋 인덱스
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {number}
+ *            nid - 최신 커밋 아이디
+ * @param {number}
+ *            oid - 타겟 커밋 아이디
  */
-gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nidx, oidx) {
+gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path, nid, oid) {
 	var that = this;
 
-	var olabel = $("<div>").append(that.translation.cmft[that.locale]).addClass("gb-form").css({
-		"text-align" : "center"
-	});
+	// 커밋된 피처 영역 시작
+	var olabel = $("<div>").append(that.translation.cmft[that.locale]).addClass("gb-form").addClass("gb-feature-text-center");
 
 	var oheadtd1 = $("<th>").text(that.translation.name[that.locale]);
 	var oheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var oheadth = $("<tr>").append(oheadtd1).append(oheadtd2);
 	var oattrthead = $("<thead>").append(oheadth);
-	this.oattrtbody = $("<tbody>").css({
-		"overflow-y" : "auto",
-		"height" : "340px",
-		"width" : "354px"
-	});
+	this.oattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
 	var oattrtable = $("<table>").append(oattrthead).append(this.oattrtbody).addClass("gb-table");
-	var oattribute = $("<div>").append(oattrtable).css({
-		"height" : "240px",
-		"width" : "100%",
-		"overflow" : "auto"
-	});
-	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).css({
-		"float" : "left",
-		"width" : "50%",
-		"padding" : "10px"
-	});
-
-	var clabel = $("<div>").append(that.translation.latestft[that.locale]).addClass("gb-form").css({
-		"text-align" : "center"
-	});
+	var oattribute = $("<div>").append(oattrtable).addClass("gb-feature-attr-table-area");
+	var oarea = $("<div>").append(olabel).append(this.ofeature).append(oattribute).addClass("gb-feature-attr-area-half");
+	// 커밋 피처 영역 끝
+	// 최신 피처 영역 시작
+	var clabel = $("<div>").append(that.translation.latestft[that.locale]).addClass("gb-form").addClass("gb-feature-text-center");
 
 	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
 	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
-	this.cattrtbody = $("<tbody>").css({
-		"overflow-y" : "auto",
-		"height" : "340px",
-		"width" : "354px"
-	});
-	var cattrtable = $("<table>").append(cattrthead).append(this.cattrtbody).addClass("gb-table").css({
-		"width" : "100%",
-		"table-layout" : "fixed"
-	});
-	var cattribute = $("<div>").append(cattrtable).css({
-		"height" : "240px",
-		"width" : "100%",
-		"overflow" : "auto"
-	});
+	this.cattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
+	var cattrtable = $("<table>").append(cattrthead).append(this.cattrtbody).addClass("gb-table");
+	// .css({
+	// "width" : "100%",
+	// "table-layout" : "fixed"
+	// });
+	var cattribute = $("<div>").append(cattrtable).addClass("gb-feature-attr-table-area");
 
 	$(this.oattrtbody).on("scroll", function() {
 		$(that.cattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
 	});
 
-	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).css({
-		"float" : "left",
-		"width" : "50%",
-		"padding" : "10px"
-	});
+	var carea = $("<div>").append(clabel).append(this.cfeature).append(cattribute).addClass("gb-feature-attr-area-half");
+	// 최신 피처 영역 끝
 
-	var ocarea = $("<div>").css({
-		"height" : "496px"
-	}).append(oarea).append(carea);
+	var ocarea = $("<div>").addClass("gb-feature-compare-area").append(oarea).append(carea);
 
 	var body = $("<div>").append(ocarea);
 
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.close[that.locale]);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.use[that.locale]);
-	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			that.translation.close[that.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-left").addClass("gb-button").addClass("gb-button-primary").text(
+			that.translation.revert[that.locale]);
+	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.contrastchg[that.locale],
 		"width" : 770,
 		"height" : 840,
@@ -502,7 +534,9 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"body" : body,
 		"footer" : buttonArea
 	});
-
+	$(okBtn).click(function() {
+		that.openRevertModal(server, repo, path, oid, nid, modal);
+	});
 	$(closeBtn).click(function() {
 		modal.close();
 	});
@@ -512,11 +546,11 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 		"serverName" : server,
 		"repoName" : repo,
 		"path" : path,
-		"newCommitId" : nidx,
-		"oldCommitId" : oidx
+		"newCommitId" : nid,
+		"oldCommitId" : oid
 	}
 
-	var tranURL = this.getFeatureDiffURL();
+	var tranURL = this.getDiffURL();
 	if (tranURL.indexOf("?") !== -1) {
 		tranURL += "&";
 		tranURL += jQuery.param(params);
@@ -759,7 +793,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 							"serverName" : server,
 							"repoName" : repo,
 							"path" : path,
-							"commitId" : oidx
+							"commitId" : oid
 						}
 						console.log(oldParams);
 
@@ -865,7 +899,7 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 							"serverName" : server,
 							"repoName" : repo,
 							"path" : path,
-							"commitId" : nidx
+							"commitId" : nid
 						}
 						console.log(newParams);
 
@@ -977,33 +1011,39 @@ gb.versioning.Feature.prototype.openDetailChanges = function(server, repo, path,
 /**
  * 피처 revert 요청 모달을 연다.
  * 
+ * @private
  * @method gb.versioning.Feature#openRevertModal
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소
+ * @param {string}
+ *            path - 피처 path
+ * @param {string}
+ *            oc - 되돌릴 이전 커밋 아이디
+ * @param {string}
+ *            nc - 새로운 커밋 아이디
+ * @param {gb.modal.ModalBase}
+ *            cmpmodal - 요청 완료 후 닫을 모달 객체
  */
-gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc) {
+gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, oc, nc, cmpmodal) {
 	var that = this;
-	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
-	var msg2 = $("<div>").text(that.translation.revertmsg2[that.locale]).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
+	var msg1 = $("<div>").text(that.translation.revertmsg1[that.locale]).addClass("gb-feature-msg16");
+	var msg2 = $("<div>").text(that.translation.revertmsg2[that.locale]).addClass("gb-feature-msg16");
 	var inputMsg = $("<input>").attr({
-		"type" : "text"
+		"type" : "text",
+		"placeholder" : that.translation.commitdesc[that.locale]
 	}).addClass("gb-form");
 	var msg3 = $("<div>").append(inputMsg);
 
 	var body = $("<div>").append(msg1).append(msg2).append(msg3);
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.revert[that.locale]);
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			that.translation.cancel[that.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			that.translation.revert[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var commitModal = new gb.modal.Base({
+	var commitModal = new gb.modal.ModalBase({
 		"title" : that.translation.revert[that.locale],
 		"width" : 494,
 		"height" : 200,
@@ -1016,16 +1056,35 @@ gb.versioning.Feature.prototype.openRevertModal = function(server, repo, path, o
 	});
 	$(okBtn).click(function() {
 		var message = inputMsg.val();
-		that.revert(server, repo, path, oc, nc, message, message, commitModal);
+		that.revert(server, repo, path, oc, nc, message, message, commitModal, cmpmodal);
 	});
 };
 
 /**
  * 피처 revert 요청한다.
  * 
+ * @private
  * @method gb.versioning.Feature#revert
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {string}
+ *            oc - 되돌릴 이전 커밋 아이디
+ * @param {string}
+ *            nc - 새로운 커밋 아이디
+ * @param {string}
+ *            cm - 커밋 메세지
+ * @param {string}
+ *            mm - 머지 메세지
+ * @param {gb.modal.ModalBase}
+ *            rmodal - 완료 후 닫을 메세지 입력 모달 객체
+ * @param {gb.modal.ModalBase}
+ *            cmpmodal - 완료 후 닫을 피처 비교 모달 객체
  */
-gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal) {
+gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm, mm, rmodal, cmpmodal) {
 	var that = this;
 
 	var params = {
@@ -1061,18 +1120,17 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 		success : function(data) {
 			console.log(data);
 			if (data.success === "true") {
+				cmpmodal.close();
+				that.refresh();
+				// 충돌이 없으면
 				if (data.merge.conflicts === null) {
-					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).css({
-						"text-align" : "center",
-						"font-size" : "16px"
-					});
+					var msg1 = $("<div>").text(that.translation.revertsucc[that.locale]).addClass("gb-feature-msg16");
 					var body = $("<div>").append(msg1);
-					var closeBtn = $("<button>").css({
-						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.ok[that.locale]);
+					var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default")
+							.text(that.translation.ok[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(closeBtn);
-
-					var commitModal = new gb.modal.Base({
+					// 완료 메세지 출력
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1085,25 +1143,18 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 						that.runAfterSaveCallback();
 					});
 					rmodal.close();
+					// 충돌이 있으면
 				} else if (Array.isArray(data.merge.conflicts)) {
-					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).css({
-						"text-align" : "center",
-						"font-size" : "16px"
-					});
-					var msg2 = $("<div>").text(that.translation.conflictmsg1[that.locale]).css({
-						"text-align" : "center",
-						"font-size" : "16px"
-					});
+					var msg1 = $("<div>").text(that.translation.revertfail[that.locale]).addClass("gb-feature-msg16");
+					var msg2 = $("<div>").text(that.translation.conflictmsg1[that.locale]).addClass("gb-feature-msg16");
 					var body = $("<div>").append(msg1).append(msg2);
-					var closeBtn = $("<button>").css({
-						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
-					var okBtn = $("<button>").css({
-						"float" : "right"
-					}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.resolve[that.locale]);
+					var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default")
+							.text(that.translation.cancel[that.locale]);
+					var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+							that.translation.resolve[that.locale]);
 					var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
-
-					var commitModal = new gb.modal.Base({
+					// 오류 메세지 출력
+					var commitModal = new gb.modal.ModalBase({
 						"title" : that.translation.revert[that.locale],
 						"width" : 350,
 						"height" : 200,
@@ -1136,30 +1187,16 @@ gb.versioning.Feature.prototype.revert = function(server, repo, path, oc, nc, cm
 gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	var that = this;
 
-	var crepo = $("<div>").append(that.translation.revertingft[that.locale]).addClass("gb-form").css({
-		"text-align" : "center"
-	});
+	var crepo = $("<div>").append(that.translation.revertingft[that.locale]).addClass("gb-form").addClass("gb-feature-text-center");
 
 	var cheadtd1 = $("<th>").text(that.translation.name[that.locale]);
 	var cheadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var cheadth = $("<tr>").append(cheadtd1).append(cheadtd2);
 	var cattrthead = $("<thead>").append(cheadth);
-	var cattrtbody = $("<tbody>").css({
-		"overflow-y" : "auto",
-		"height" : "340px",
-		"width" : "354px"
-	});
+	var cattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
 	var cattrtable = $("<table>").append(cattrthead).append(cattrtbody).addClass("gb-table");
-	var cattribute = $("<div>").append(cattrtable).css({
-		"height" : "240px",
-		"width" : "100%",
-		"overflow" : "auto"
-	});
-	var carea = $("<div>").append(crepo).append(this.comfeature).append(cattribute).css({
-		"float" : "left",
-		"width" : "50%",
-		"padding" : "10px"
-	});
+	var cattribute = $("<div>").append(cattrtable).addClass("gb-feature-attr-table-area");
+	var carea = $("<div>").append(crepo).append(this.comfeature).append(cattribute).addClass("gb-feature-attr-area-half");
 	// this.conflictView = new ol.View({
 	// "center" : [ 0, 0 ],
 	// "zoom" : 1
@@ -1170,9 +1207,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	// "layers" : []
 	// });
 
-	var trepo = $("<div>").append(that.translation.conflft[that.locale]).addClass("gb-form").css({
-		"text-align" : "center"
-	});
+	var trepo = $("<div>").append(that.translation.conflft[that.locale]).addClass("gb-form").addClass("gb-feature-text-center");
 
 	// var tfeature = $("<div>").css({
 	// "width" : "100%",
@@ -1183,20 +1218,13 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	var theadtd2 = $("<th>").text(that.translation.value[that.locale]);
 	var theadth = $("<tr>").append(theadtd1).append(theadtd2);
 	var tattrthead = $("<thead>").append(theadth);
-	var tattrtbody = $("<tbody>").css({
-		"overflow-y" : "auto",
-		"height" : "340px",
-		"width" : "354px"
-	});
-	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table").css({
-		"width" : "100%",
-		"table-layout" : "fixed"
-	});
-	var tattribute = $("<div>").append(tattrtable).css({
-		"height" : "240px",
-		"width" : "100%",
-		"overflow" : "auto"
-	});
+	var tattrtbody = $("<tbody>").addClass("gb-feature-attr-tbody");
+	var tattrtable = $("<table>").append(tattrthead).append(tattrtbody).addClass("gb-table");
+	// .css({
+	// "width" : "100%",
+	// "table-layout" : "fixed"
+	// });
+	var tattribute = $("<div>").append(tattrtable).addClass("gb-feature-attr-table-area");
 
 	$(cattrtbody).on("scroll", function() {
 		$(tattrtbody).prop("scrollTop", this.scrollTop).prop("scrollLeft", this.scrollLeft);
@@ -1207,11 +1235,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 	// this.scrollLeft);
 	// });
 
-	var tarea = $("<div>").append(trepo).append(this.curfeature).append(tattribute).css({
-		"float" : "left",
-		"width" : "50%",
-		"padding" : "10px"
-	});
+	var tarea = $("<div>").append(trepo).append(this.curfeature).append(tattribute).addClass("gb-feature-attr-area-half");
 	// this.tmap = new ol.Map({
 	// "target" : $(tfeature)[0],
 	// "view" : this.conflictView,
@@ -1220,29 +1244,25 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 
 	var ctarea = $("<div>").append(carea).append(tarea);
 
-	var cubOpt = $("<option>").text(that.translation.revertingft[that.locale]).attr({
+	var cubOpt = $("<option>").text(that.translation.ourft[that.locale]).attr({
 		"value" : "ours"
 	});
-	var tabOpt = $("<option>").text(that.translation.conflft[that.locale]).attr({
+	var tabOpt = $("<option>").text(that.translation.theirft[that.locale]).attr({
 		"value" : "theirs"
 	});
 	var branchSelect = $("<select>").addClass("gb-form").append(cubOpt).append(tabOpt);
 	// $(branchSelect).val(val);
-	var sarea = $("<div>").append(branchSelect).css({
-		"padding" : "10px"
-	});
+	var sarea = $("<div>").append(branchSelect).addClass("gb-feature-conflict-select-area");
 
 	var body = $("<div>").append(ctarea).append(sarea);
 
-	var closeBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-default").text(that.translation.cancel[that.locale]);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.override[that.locale]);
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(
+			that.translation.cancel[that.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			that.translation.override[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : that.translation.compaconfl[that.locale],
 		"width" : 770,
 		"autoOpen" : true,
@@ -1379,10 +1399,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 							var name = attrs[i].name;
 							var value = attrs[i].value;
 							var td1 = $("<td>").text(name);
-							var td2 = $("<td>").text(value).css({
-								"word-break" : "break-word",
-								"overflow-wrap" : "break-word"
-							});
+							var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-value");
 							var tr = $("<tr>").append(td1).append(td2);
 							$(cattrtbody).append(tr);
 						}
@@ -1502,10 +1519,7 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 											var name = attrs[i].name;
 											var value = attrs[i].value;
 											var td1 = $("<td>").text(name);
-											var td2 = $("<td>").text(value).css({
-												"word-break" : "break-word",
-												"overflow-wrap" : "break-word"
-											});
+											var td2 = $("<td>").text(value).addClass("gb-feature-attr-tbody-value");
 											var tr = $("<tr>").append(td1).append(td2);
 											$(tattrtbody).append(tr);
 										}
@@ -1555,42 +1569,34 @@ gb.versioning.Feature.prototype.openConflictDetailModal = function() {
 
 			}
 		});
-	} else {
-
 	}
 };
 
 /**
- * 충돌 피처를 머지한다.
- * 
- * @method gb.versioning.Feature#mergeConflictFeature
- */
-gb.versioning.Feature.prototype.mergeConflictFeature = function() {
-
-};
-
-/**
- * 피처 로그 요청 URL을 반환한다.
+ * 피처의 이력 조회 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureLogURL
+ * @return {string} 요청 URL
  */
 gb.versioning.Feature.prototype.getFeatureLogURL = function() {
 	return this.featureLogURL;
 };
 
 /**
- * 피처 비교 객체 요청 URL을 반환한다.
+ * 피처 비교 URL을 반환한다.
  * 
- * @method gb.versioning.Feature#getFeatureDiffURL
+ * @method gb.versioning.Feature#getDiffURL
+ * @return {string} 요청 URL
  */
-gb.versioning.Feature.prototype.getFeatureDiffURL = function() {
-	return this.featureDiffURL;
+gb.versioning.Feature.prototype.getDiffURL = function() {
+	return this.diffURL;
 };
 
 /**
- * 피처 정보 반환 URL을 반환한다.
+ * 변경 피처 속성 조회 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getCatFeatureObjectURL
+ * @return {string} 요청 URL
  */
 gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
 	return this.catFeatureObjectURL;
@@ -1600,6 +1606,7 @@ gb.versioning.Feature.prototype.getCatFeatureObjectURL = function() {
  * 피처 되돌리기 요청 URL을 반환한다.
  * 
  * @method gb.versioning.Feature#getFeatureRevertURL
+ * @return {string}요청 URL
  */
 gb.versioning.Feature.prototype.getFeatureRevertURL = function() {
 	return this.featureRevertURL;
@@ -1627,6 +1634,7 @@ gb.versioning.Feature.prototype.clearChangesTbody = function() {
  * 피처이력 목록 테이블 바디를 반환한다.
  * 
  * @method gb.versioning.Feature#getTBody
+ * @return {HTMLElement} 피처 이력 목록을 표시하는 tbody 요소
  */
 gb.versioning.Feature.prototype.getTBody = function() {
 	return this.tbody;
@@ -1636,6 +1644,8 @@ gb.versioning.Feature.prototype.getTBody = function() {
  * 피처이력 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setCommits
+ * @param {Object}
+ *            obj - 피처 이력 객체
  */
 gb.versioning.Feature.prototype.setCommits = function(obj) {
 	this.commits = obj;
@@ -1645,6 +1655,7 @@ gb.versioning.Feature.prototype.setCommits = function(obj) {
  * 피처이력 객체를 반환한다.
  * 
  * @method gb.versioning.Feature#getCommits
+ * @return {Object} 피처 이력 객체
  */
 gb.versioning.Feature.prototype.getCommits = function() {
 	return this.commits;
@@ -1654,6 +1665,14 @@ gb.versioning.Feature.prototype.getCommits = function() {
  * 조회한 피처이력을 분류 보관한다.
  * 
  * @method gb.versioning.Feature#setCommitsByInfo
+ * @param {string}
+ *            server - GeoServer 이름
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
+ * @param {string}
+ *            path - 피처 path
+ * @param {Array.
+ *            <Object>} arr - 변경 이력 정보
  */
 gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, arr) {
 	if (server || repo || path || arr) {
@@ -1675,6 +1694,8 @@ gb.versioning.Feature.prototype.setCommitsByInfo = function(server, repo, path, 
  * 현재 편집중인 객체 path를 설정한다.
  * 
  * @method gb.versioning.Feature#setPath
+ * @param {string}
+ *            path - 피처 path
  */
 gb.versioning.Feature.prototype.setPath = function(path) {
 	this.curPath = path;
@@ -1684,6 +1705,7 @@ gb.versioning.Feature.prototype.setPath = function(path) {
  * 현재 편집중인 객체 path를 반환한다.
  * 
  * @method gb.versioning.Feature#getPath
+ * @return {string} 피처 path
  */
 gb.versioning.Feature.prototype.getPath = function() {
 	return this.curPath;
@@ -1693,6 +1715,8 @@ gb.versioning.Feature.prototype.getPath = function() {
  * 현재 편집중인 객체 repo 를 설정한다.
  * 
  * @method gb.versioning.Feature#setRepo
+ * @param {string}
+ *            repo - GeoGig 저장소 이름
  */
 gb.versioning.Feature.prototype.setRepo = function(repo) {
 	this.curRepo = repo;
@@ -1702,6 +1726,7 @@ gb.versioning.Feature.prototype.setRepo = function(repo) {
  * 현재 편집중인 객체 repo 를 반환한다.
  * 
  * @method gb.versioning.Feature#getRepo
+ * @return {string} GeoGig 저장소 이름
  */
 gb.versioning.Feature.prototype.getRepo = function() {
 	return this.curRepo;
@@ -1711,6 +1736,8 @@ gb.versioning.Feature.prototype.getRepo = function() {
  * 현재 편집중인 객체 server 를 설정한다.
  * 
  * @method gb.versioning.Feature#setServer
+ * @param {string}
+ *            server - GeoServer 이름
  */
 gb.versioning.Feature.prototype.setServer = function(server) {
 	this.curServer = server;
@@ -1720,6 +1747,7 @@ gb.versioning.Feature.prototype.setServer = function(server) {
  * 현재 편집중인 객체 server 를 반환한다.
  * 
  * @method gb.versioning.Feature#getServer
+ * @return {string} GeoServer 이름
  */
 gb.versioning.Feature.prototype.getServer = function() {
 	return this.curServer;
@@ -1729,6 +1757,8 @@ gb.versioning.Feature.prototype.getServer = function() {
  * 현재 편집중인 객체 idstring을 설정한다.
  * 
  * @method gb.versioning.Feature#setIDString
+ * @param {string}
+ *            id - 객체의 idstring
  */
 gb.versioning.Feature.prototype.setIDString = function(id) {
 	this.idstring = id;
@@ -1738,6 +1768,7 @@ gb.versioning.Feature.prototype.setIDString = function(id) {
  * 현재 편집중인 객체 idstring을 반환한다.
  * 
  * @method gb.versioning.Feature#getIDString
+ * @return {string} 객체의 idstring
  */
 gb.versioning.Feature.prototype.getIDString = function() {
 	return this.idstring;
@@ -1747,6 +1778,7 @@ gb.versioning.Feature.prototype.getIDString = function() {
  * panel 을 반환한다.
  * 
  * @method gb.versioning.Feature#getPanel
+ * @return {gb.panel.PanelBase} 피처 이력 패널 객체
  */
 gb.versioning.Feature.prototype.getPanel = function() {
 	return this.panel;
@@ -1759,11 +1791,10 @@ gb.versioning.Feature.prototype.getPanel = function() {
  */
 gb.versioning.Feature.prototype.refresh = function() {
 	if ($(this.getPanel().getPanel()).css("display") !== "none") {
-		this.clearChangesTbody();
 		var geoserver = this.getServer();
 		var repo = this.getRepo();
 		var path = this.getPath();
-		this.loadFeatureHistory(geoserver, repo, path, 10, 0);
+		this.loadFeatureHistory(geoserver, repo, path, 10, 0, undefined, undefined, true);
 	}
 };
 
@@ -1771,6 +1802,8 @@ gb.versioning.Feature.prototype.refresh = function() {
  * 현재 편집중인 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setFeature
+ * @param {ol.Feature}
+ *            feature - 현재 편집중인 피처 객체
  */
 gb.versioning.Feature.prototype.setFeature = function(feature) {
 	this.feature = feature;
@@ -1779,44 +1812,31 @@ gb.versioning.Feature.prototype.setFeature = function(feature) {
 /**
  * 현재 편집중인 객체를 반환한다.
  * 
- * @method gb.versioning.Feature#getIDString
+ * @method gb.versioning.Feature#getFeature
+ * @return {ol.Feature} 현재 편집중인 피처 객체
  */
 gb.versioning.Feature.prototype.getFeature = function() {
 	return this.feature;
 };
 
 /**
- * 다음 편집이력을 로드한다.
- * 
- * @method gb.versioning.Feature#loadMoreHistory
- */
-gb.versioning.Feature.prototype.loadMoreHistory = function() {
-
-};
-/**
- * 오류 메시지 창을 생성한다.
+ * 오류 메세지 창을 생성한다.
  * 
  * @method gb.versioning.Feature#messageModal
- * @param {Object}
- *            server - 작업 중인 서버 노드
- * @param {Object}
- *            repo - 작업 중인 리포지토리 노드
- * @param {Object}
- *            branch - 작업 중인 브랜치 노드
+ * @param {string}
+ *            title - 메세지 창의 제목
+ * @param {string}
+ *            msg - 메세지 내용
  */
 gb.versioning.Feature.prototype.messageModal = function(title, msg) {
 	var that = this;
-	var msg1 = $("<div>").text(msg).css({
-		"text-align" : "center",
-		"font-size" : "16px"
-	});
+	var msg1 = $("<div>").text(msg).addClass("gb-feature-msg16");
 	var body = $("<div>").append(msg1);
-	var okBtn = $("<button>").css({
-		"float" : "right"
-	}).addClass("gb-button").addClass("gb-button-primary").text(that.translation.ok[that.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(
+			that.translation.ok[that.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn);
 
-	var modal = new gb.modal.Base({
+	var modal = new gb.modal.ModalBase({
 		"title" : title,
 		"width" : 310,
 		"height" : 200,
@@ -1833,8 +1853,7 @@ gb.versioning.Feature.prototype.messageModal = function(title, msg) {
  * 왼쪽 ol.Map을 반환한다.
  * 
  * @method gb.versioning.Feature#getLeftMap
- * @return {ol.Map}
- * 
+ * @return {ol.Map} 왼쪽 지도 객체
  */
 gb.versioning.Feature.prototype.getLeftMap = function() {
 	return this.omap;
@@ -1844,8 +1863,7 @@ gb.versioning.Feature.prototype.getLeftMap = function() {
  * 오른쪽 ol.Map을 반환한다.
  * 
  * @method gb.versioning.Feature#getRightMap
- * @return {ol.Map}
- * 
+ * @return {ol.Map} 오른쪽 지도 객체
  */
 gb.versioning.Feature.prototype.getRightMap = function() {
 	return this.cmap;
@@ -1855,8 +1873,7 @@ gb.versioning.Feature.prototype.getRightMap = function() {
  * 왼쪽 피처 tbody를 반환한다.
  * 
  * @method gb.versioning.Feature#getLeftTBody
- * @return {element}
- * 
+ * @return {HTMLElement} 피처 속성을 표시하는 tbody 객체
  */
 gb.versioning.Feature.prototype.getLeftTBody = function() {
 	return this.oattrtbody;
@@ -1866,31 +1883,38 @@ gb.versioning.Feature.prototype.getLeftTBody = function() {
  * 오른쪽 피처 tbody를 반환한다.
  * 
  * @method gb.versioning.Feature#getRightTBody
- * @return {element}
- * 
+ * @return {HTMLElement} 피처 속성을 표시하는 tbody 객체
  */
 gb.versioning.Feature.prototype.getRightTBody = function() {
 	return this.cattrtbody;
 }
 
 /**
- * 레이어 저장후 함수를 실행한다.
+ * 레이어 저장후 타일 레이어를 새로고침 한다.
  * 
- * @method gb.versioning.Feature#afterSaveCallback
- * @return {element}
- * 
+ * @method gb.versioning.Feature#runAfterSaveCallback
  */
 gb.versioning.Feature.prototype.runAfterSaveCallback = function() {
 	this.editingTool.refreshTileLayer();
 }
 
 /**
- * 레이어 저장후 함수를 설정한다.
+ * EditingTool 객체를 설정한다.
  * 
  * @method gb.versioning.Feature#setEditingTool
- * @param {Function}
- *            fnc - 리버트 또는 충돌관리 후 변경된 레이어로 업데이트할 함수 설정
+ * @param {gb.edit.EditingTool}
+ *            tool - EditingTool 객체
  */
 gb.versioning.Feature.prototype.setEditingTool = function(tool) {
 	this.editingTool = tool;
+}
+
+/**
+ * EditingTool 객체를 반환한다.
+ * 
+ * @method gb.versioning.Feature#getEditingTool
+ * @return {gb.edit.EditingTool} EditingTool 객체
+ */
+gb.versioning.Feature.prototype.getEditingTool = function() {
+	return this.editingTool;
 }

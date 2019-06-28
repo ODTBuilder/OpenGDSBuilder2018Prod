@@ -21,26 +21,28 @@ import com.gitrnd.gdsbuilder.geogig.command.repository.DiffRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LogRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.LsTreeRepository;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureBlame;
+import com.gitrnd.gdsbuilder.geogig.command.repository.feature.FeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.command.repository.feature.RevertFeature;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.BeginTransaction;
 import com.gitrnd.gdsbuilder.geogig.command.transaction.EndTransaction;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame.BlameAttribute;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigCat;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.CatAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute.Attribute;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureDiff;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureRevert;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureSimpleLog.SimpleCommit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRepositoryLog.Commit.ChangeType;
+import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigRevisionTree.Node;
 import com.gitrnd.gdsbuilder.geogig.type.GeogigTransaction;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigBlame.BlameAttribute;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.CatAttribute;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigCat.FeatureType;
-import com.gitrnd.gdsbuilder.geogig.type.GeogigFeatureAttribute.Attribute;
 import com.gitrnd.gdsbuilder.geoserver.DTGeoserverManager;
 import com.gitrnd.qaproducer.common.security.LoginUser;
 
@@ -48,7 +50,7 @@ import com.gitrnd.qaproducer.common.security.LoginUser;
 public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
-	public GeogigDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
+	public GeogigDiff diff(DTGeoserverManager geoserverManager, String repoName, String path, String newCommitId,
 			String oldCommitId) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
@@ -73,6 +75,35 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			geogigDiff.setError(geogigStatus.getStatus());
 		}
 		return geogigDiff;
+	}
+
+	@Override
+	public GeogigFeatureDiff featureDiff(DTGeoserverManager geoserverManager, String repoName, String path,
+			String newCommitId, String oldCommitId) throws JAXBException {
+
+		String url = geoserverManager.getRestURL();
+		String user = geoserverManager.getUsername();
+		String pw = geoserverManager.getPassword();
+
+		FeatureDiff diff = new FeatureDiff();
+		GeogigFeatureDiff geogigFeatureDiff = null;
+		try {
+			geogigFeatureDiff = diff.executeCommand(url, user, pw, repoName, path, newCommitId, oldCommitId);
+		} catch (GeogigCommandException e) {
+			if (e.isXml()) {
+				JAXBContext jaxbContext = JAXBContext.newInstance(GeogigDiff.class);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+				geogigFeatureDiff = (GeogigFeatureDiff) unmarshaller
+						.unmarshal(new StringReader(e.getResponseBodyAsString()));
+			} else {
+				geogigFeatureDiff = new GeogigFeatureDiff();
+				geogigFeatureDiff.setError(e.getMessage());
+				geogigFeatureDiff.setSuccess("false");
+			}
+			GeogigExceptionStatus geogigStatus = GeogigExceptionStatus.getStatus(geogigFeatureDiff.getError());
+			geogigFeatureDiff.setError(geogigStatus.getStatus());
+		}
+		return geogigFeatureDiff;
 	}
 
 	@Override
@@ -151,7 +182,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 
 	@Override
 	public GeogigFeatureSimpleLog featureLog(DTGeoserverManager geoserverManager, String repoName, String path,
-			int limit, String until, String head, int index) throws JAXBException {
+			int limit, String until, int index) throws JAXBException {
 
 		String url = geoserverManager.getRestURL();
 		String user = geoserverManager.getUsername();
@@ -236,7 +267,7 @@ public class GeogigFeatureServiceImpl implements GeogigFeatureService {
 			GeogigTransaction transaction = beginTransaction.executeCommand(url, user, pw, repoName);
 			String transactionId = transaction.getTransaction().getId();
 			geogigFeatureRevert = revertFeature.executeCommand(url, user, pw, repoName, transactionId, oldCommitId,
-					newCommitId, path, commitMessage, mergeMessage, authorName, authorEmail);
+					newCommitId, path, commitMessage, mergeMessage, user, authorEmail);
 			if (geogigFeatureRevert.getMerge().getConflicts() != null) {
 				geogigFeatureRevert.setTransactionId(transactionId);
 			} else {

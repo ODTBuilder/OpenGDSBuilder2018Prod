@@ -4502,10 +4502,11 @@ gb.validation.OptionDefinition = function(obj) {
 	});
 	
 	// 모든 분류의 필터 속성명 입력 이벤트
-	$(this.panelBody).on("input", ".gb-optiondefinition-input-filterkey-all", function() {
-		that.inputFilterKey(this);
-		console.log(that.getStructure());
-	});
+// $(this.panelBody).on("input", ".gb-optiondefinition-input-filterkey-all",
+// function() {
+// that.inputFilterKey(this);
+// console.log(that.getStructure());
+// });
 
 	// 필터 허용값 입력 이벤트
 	$(this.panelBody).on("input", ".gb-optiondefinition-input-filtervalues", function() {
@@ -8553,6 +8554,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 			sec = true;
 		}
 	}
+	
+	var isAllCat = false;
+	if (this.nowRelationCategory === null) {
+		isAllCat = true;
+	}
+	
 	var strc = this.getStructure();
 	if (Array.isArray(strc["definition"])) {
 		var isExist = false;
@@ -8573,77 +8580,136 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 									// 있다면
 									// 배열인지?
 									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
-										var isExist = false;
 										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-										for (var a = 0; a < rel.length; a++) {
-											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-											if (rel[a]["name"] === this.nowRelationCategory) {
-												isExist = true;
-												var filterKey;
-												if (rel[a].hasOwnProperty("filter")) {
-													filterKey = rel[a]["filter"];
-													// 필터가 배열인지?
-													if (Array.isArray(filterKey)) {
-														var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx];
-														// 필터 배열 원소에 attribute
-														// 키가 있는지?
-														if (filterElem.hasOwnProperty("attribute")) {
-															// attribute 키가
-															// 배열인지?
-															if (Array.isArray(filterElem["attribute"])) {
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
-																};
+										// 모든 분류에 필터값을 설정할건지
+										if (isAllCat) {
+											var layerDef = this.getLayerDefinition().getStructure();
+											console.log(attrValues);
+											// 모든 레이어 정의에있는 분류와
+											for (var a = 0; a < layerDef.length; a++) {
+												var isExist = false;
+												var existIdx;
+												// 현재 릴레이션에 있는 분류를 비교해서
+												for (var b = 0; b < rel.length; b++) {
+													// 같은게 있는지
+													if(layerDef[a]["name"] === rel[b]["name"]){
+														// 같은 분류가 존재함
+														isExist = true;
+														// 같은 분류의 인덱스
+														existIdx = b;
+														break;
+													} 
+												}
+												// 전체 레이어 정의 분류와 릴레이션 레이어 분류와
+												// 같은게 있을때
+												if (isExist) {
+													// 해당 릴레이션의 인덱스로 객체를 특정하고
+													var erel = rel[existIdx];
+													// 정의할 객체 생성
+													var obj = {
+															"code" : null,
+															"attribute" : [
+																{
+																	"key" : attrKey,
+																	"values" : Array.isArray(attrValues) ? attrValues : null
+																}
+															]
+													}
+													// 새로 정의한 객체로 덮어쓰기
+													erel["filter"] = [obj];
+												} else {
+													var nrel = layerDef[a]["name"];
+													var obj = {
+															"code" : null,
+															"attribute" : [
+																{
+																	"key" : attrKey,
+																	"values" : Array.isArray(attrValues) ? attrValues : null
+																}
+															]
+													}
+													var filter = [obj];
+													var relObj = {
+															"name" : nrel,
+															"filter" : filter
+													};
+													rel.push(relObj);
+												}
+											}
+										} else {
+											var isExist = false;
+											for (var a = 0; a < rel.length; a++) {
+												// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과
+												// 같다면
+												if (rel[a]["name"] === this.nowRelationCategory) {
+													isExist = true;
+													var filterKey;
+													if (rel[a].hasOwnProperty("filter")) {
+														filterKey = rel[a]["filter"];
+														// 필터가 배열인지?
+														if (Array.isArray(filterKey)) {
+															var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx];
+															// 필터 배열 원소에
+															// attribute
+															// 키가 있는지?
+															if (filterElem.hasOwnProperty("attribute")) {
+																// attribute 키가
+																// 배열인지?
+																if (Array.isArray(filterElem["attribute"])) {
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																	};
+																} else {
+																	// 배열이 아닐때
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																	};
+																}
 															} else {
-																// 배열이 아닐때
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																// 필터 배열 원소에
+																// attribute
+																// 키가 없다면
+																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
+																		"code" : layerCode,
+																		"attribute" : [ {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																		} ]
 																};
 															}
 														} else {
-															// 필터 배열 원소에
-															// attribute
-															// 키가 없다면
-															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
-																	"code" : layerCode,
-																	"attribute" : [ {
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
-																	} ]
-															};
+															// 필터가 배열이 아니라면
+															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"] = [ {
+																"code" : layerCode,
+																"attribute" : [ {
+																	"key" : attrKey,
+																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																} ]
+															} ];
 														}
-													} else {
-														// 필터가 배열이 아니라면
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"] = [ {
-															"code" : layerCode,
-															"attribute" : [ {
-																"key" : attrKey,
-																"values" : Array.isArray(attrValues) ? attrValues : null,
-															} ]
-														} ];
 													}
 												}
 											}
-										}
-										if (!isExist) {
-											var attrElem = [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-											} ];
-											var codeElem = {
-													"code" : layerCode,
-													"attribute" : attrElem
-											};
-											var nameElem = {
-													"name" : this.nowRelationCategory,
-													"filter" : [ codeElem ]
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+											if (!isExist) {
+												var attrElem = [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+												} ];
+												var codeElem = {
+														"code" : layerCode,
+														"attribute" : attrElem
+												};
+												var nameElem = {
+														"name" : this.nowRelationCategory,
+														"filter" : [ codeElem ]
+												};
+												strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+											}
 										}
 									} else {
 										// 배열이 아니라면
@@ -8933,80 +8999,157 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 							if (sec) {
 								// 현재 옵션에 릴레이션 키가 있는지?
 								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
-									// 있다면
-									// 배열인지?
+									// 현재 옵션에 릴레이션 키가 있다면 배열인지?
 									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
-										var isExist = false;
 										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-										for (var a = 0; a < rel.length; a++) {
-											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-											if (rel[a]["name"] === this.nowRelationCategory) {
-												isExist = true;
-												var filterKey;
-												if (rel[a].hasOwnProperty("filter")) {
-													filterKey = rel[a]["filter"];
-													// 필터가 배열인지?
-													if (Array.isArray(filterKey)) {
-														var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx];
-														// 필터 배열 원소에 attribute
-														// 키가 있는지?
-														if (filterElem.hasOwnProperty("attribute")) {
-															// attribute 키가
-															// 배열인지?
-															if (Array.isArray(filterElem["attribute"])) {
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+										// 현재 옵션을 모든 분류에 적용할 것인지
+										if (isAllCat) {
+											var layerDef = this.getLayerDefinition().getStructure();
+											console.log(attrValues);
+											// 모든 레이어 정의에있는 분류와
+											for (var a = 0; a < layerDef.length; a++) {
+												var isExist = false;
+												var existIdx;
+												// 현재 릴레이션에 있는 분류를 비교해서
+												for (var b = 0; b < rel.length; b++) {
+													// 같은게 있는지
+													if(layerDef[a]["name"] === rel[b]["name"]){
+														// 같은 분류가 존재함
+														isExist = true;
+														// 같은 분류의 인덱스
+														existIdx = b;
+														break;
+													} 
+												}
+												// 전체 레이어 정의 분류와 릴레이션 레이어 분류와
+												// 같은게 있을때
+												if (isExist) {
+													// 해당 릴레이션의 인덱스로 객체를 특정하고
+													var erel = rel[existIdx];
+													// 필터 키 객체 꺼내기
+													var filterArr = erel["filter"];
+													// 필터 키 객체가 배열인지
+													if (Array.isArray(filterArr)) {
+														// 애트리뷰트 키가 있는지
+														if(filterArr[layerIdx].hasOwnProperty("attribute")){
+															// 애트리뷰트 키 객체가 배열인지
+															if (Array.isArray(filterArr[layerIdx]["attribute"])) {
+																var attrObj = {
 																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"values" : Array.isArray(attrValues) ? attrValues : null
 																};
-															} else {
-																// 배열이 아닐때
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
-																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+																filterArr[layerIdx]["attribute"][filterIdx] = attrObj;
+															}
+														}
+													} else {
+														// 정의할 객체 생성
+														var obj = {
+																"code" : null,
+																"attribute" : [
+																	{
 																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"values" : Array.isArray(attrValues) ? attrValues : null
+																	}
+																]
+														};
+														erel["filter"] = [obj];
+													}
+												} else {
+													var nrel = layerDef[a]["name"];
+													var obj = {
+															"code" : null,
+															"attribute" : [
+																{
+																	"key" : attrKey,
+																	"values" : Array.isArray(attrValues) ? attrValues : null
+																}
+															]
+													}
+													var filter = [obj];
+													var relObj = {
+															"name" : nrel,
+															"filter" : filter
+													};
+													rel.push(relObj);
+												}
+											}
+										} else {
+											// 현재 옵션을 특정 분류에 적용할 것인지
+											var isExist = false;
+// var rel =
+// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+											for (var a = 0; a < rel.length; a++) {
+												// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과
+												// 같다면
+												if (rel[a]["name"] === this.nowRelationCategory) {
+													isExist = true;
+													var filterKey;
+													if (rel[a].hasOwnProperty("filter")) {
+														filterKey = rel[a]["filter"];
+														// 필터가 배열인지?
+														if (Array.isArray(filterKey)) {
+															var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx];
+															// 필터 배열 원소에
+															// attribute
+															// 키가 있는지?
+															if (filterElem.hasOwnProperty("attribute")) {
+																// attribute 키가
+																// 배열인지?
+																if (Array.isArray(filterElem["attribute"])) {
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																	};
+																} else {
+																	// 배열이 아닐때
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
+																	strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																	};
+																}
+															} else {
+																// 필터 배열 원소에
+																// attribute
+																// 키가 없다면
+																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
+																		"code" : layerCode,
+																		"attribute" : [ {
+																			"key" : attrKey,
+																			"values" : Array.isArray(attrValues) ? attrValues : null,
+																		} ]
 																};
 															}
 														} else {
-															// 필터 배열 원소에
-															// attribute
-															// 키가 없다면
-															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
-																	"code" : layerCode,
-																	"attribute" : [ {
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null,
-																	} ]
-															};
+															// 필터가 배열이 아니라면
+															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"] = [ {
+																"code" : layerCode,
+																"attribute" : [ {
+																	"key" : attrKey,
+																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																} ]
+															} ];
 														}
-													} else {
-														// 필터가 배열이 아니라면
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"] = [ {
-															"code" : layerCode,
-															"attribute" : [ {
-																"key" : attrKey,
-																"values" : Array.isArray(attrValues) ? attrValues : null,
-															} ]
-														} ];
 													}
 												}
 											}
-										}
-										if (!isExist) {
-											var attrElem = [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-											} ];
-											var codeElem = {
-													"code" : layerCode,
-													"attribute" : attrElem
-											};
-											var nameElem = {
-													"name" : this.nowRelationCategory,
-													"filter" : [ codeElem ]
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+											if (!isExist) {
+												var attrElem = [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+												} ];
+												var codeElem = {
+														"code" : layerCode,
+														"attribute" : attrElem
+												};
+												var nameElem = {
+														"name" : this.nowRelationCategory,
+														"filter" : [ codeElem ]
+												};
+												strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+											}
 										}
 									} else {
 										// 현재 옵션에 릴레이션 키가 배열이 아니라면
@@ -9024,6 +9167,7 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
+
 								} else {
 									// 현재 옵션에 릴레이션 키가
 									// 없다면
@@ -9178,30 +9322,66 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 		if (!isExist) {
 			// 릴레이션 설정임
 			if (sec) {
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-						} ]
-				};
-				var optionsObj = [ {
-					"name" : this.nowRelationCategory,
-					"filter" : [ obj ]
-				} ];
+				if (isAllCat) {
+					var layerDef = this.getLayerDefinition().getStructure();
+					console.log(attrValues);
+					
+					var optionsObj = [];
 
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = {};
-				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+					var typeObj = {};
+					typeObj[type3] = {};
+					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+					
+					for (var i = 0; i < layerDef.length; i++) {
+						var name = layerDef[i].name;
+					
+						var obj = {
+								"code" : layerCode,
+								"attribute" : [ {
+									"key" : attrKey,
+									"values" : Array.isArray(attrValues) ? attrValues : null,
+								} ]
+						};
+						
+						var nameObj = {
+							"name" : name,
+							"filter" : [ obj ]
+						};
+						optionsObj.push(nameObj);
+						
+					}
+					var definitionObj = {
+							"name" : this.nowCategory,
+							"options" : typeObj
+					};
+					this.getStructure()["definition"].push(definitionObj);
+				} else {
+					// 해당 검수 타입이 설정되어 있지 않음
+					// 허용값이 입력되어있다면 값 변경
+					var obj = {
+							"code" : layerCode,
+							"attribute" : [ {
+								"key" : attrKey,
+								"values" : Array.isArray(attrValues) ? attrValues : null,
+							} ]
+					};
+					var optionsObj = [ {
+						"name" : this.nowRelationCategory,
+						"filter" : [ obj ]
+					} ];
 
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
+					var typeObj = {};
+					typeObj[type3] = {};
+					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+
+					var definitionObj = {
+							"name" : this.nowCategory,
+							"options" : typeObj
+					};
+					this.getStructure()["definition"].push(definitionObj);
+				}
 			} else {
 				// 릴레이션 설정 아님
 				// 해당 검수 타입이 설정되어 있지 않음
@@ -10384,14 +10564,7 @@ gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 		var inputAttr = $("<input>").attr({
 			"type" : "text",
 			"placeholder" : this.translation.attrNameEx[this.locale]
-		}).addClass("form-control");
-		
-		if (this.nowRelationCategory == null) {
-			$(inputAttr).addClass("gb-optiondefinition-input-filterkey-all");
-		}  else if (this.nowRelationCategory !== undefined) {
-			$(inputAttr).addClass("gb-optiondefinition-input-filterkey");
-		}
-		
+		}).addClass("form-control").addClass("gb-optiondefinition-input-filterkey");
 		var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
 
 		$(row).append(attrCol1).append(attrCol2);

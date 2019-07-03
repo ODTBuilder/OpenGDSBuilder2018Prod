@@ -171,6 +171,14 @@ gb.validation.LayerDefinition = function(obj) {
 		"emptyobj" : {
 			"en" : "There are no defined layers.",
 			"ko" : "정의된 레이어가 없습니다."
+		},
+		"canc" : {
+			"en" : "Cancel",
+			"ko" : "취소"
+		},
+		"del" : {
+			"en" : "Delete",
+			"ko" : "삭제"
 		}
 	}
 	/**
@@ -1277,8 +1285,8 @@ gb.validation.LayerDefinition.prototype.deleteCategoryModal = function(catname, 
 	var msg1 = $("<div>").text(this.translation.askDelCat[this.locale]).addClass("gb-layerdefinition-msg16");
 	var msg2 = $("<div>").text('"' + catname + '"').addClass("gb-layerdefinition-msg24");
 	var body = $("<div>").append(msg1).append(msg2);
-	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(this.translation.canc[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(this.translation.del[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delCatModalTitle[this.locale],
@@ -1314,8 +1322,8 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
 	var msg1 = $("<div>").text(this.translation.askDelLayer[this.locale]).addClass("gb-layerdefinition-msg16");
 	var msg2 = $("<div>").text('"' + layer + '"').addClass("gb-layerdefinition-msg24");
 	var body = $("<div>").append(msg1).append(msg2);
-	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(this.translation.canc[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(this.translation.del[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delLayerModalTitle[this.locale],
@@ -1348,8 +1356,8 @@ gb.validation.LayerDefinition.prototype.deleteLayerModal = function(layer, callb
 gb.validation.LayerDefinition.prototype.deleteFixedAttrModal = function(callback) {
 	var msg1 = $("<div>").text(this.translation.askDelFixed[this.locale]).addClass("gb-layerdefinition-msg16");
 	var body = $("<div>").append(msg1);
-	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text("Cancel");
-	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text("Delete");
+	var closeBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-default").text(this.translation.canc[this.locale]);
+	var okBtn = $("<button>").addClass("gb-button-float-right").addClass("gb-button").addClass("gb-button-primary").text(this.translation.del[this.locale]);
 	var buttonArea = $("<span>").addClass("gb-modal-buttons").append(okBtn).append(closeBtn);
 	var deleteModal = new gb.modal.ModalBase({
 		"title" : this.translation.delAttrModalTitle[this.locale],

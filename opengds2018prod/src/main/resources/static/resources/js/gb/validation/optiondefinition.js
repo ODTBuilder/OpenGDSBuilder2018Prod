@@ -37,479 +37,583 @@ gb.validation.OptionDefinition = function(obj) {
 	 * @type {Object}
 	 */
 	this.translation = {
-		"validItemChgMsg" : {
-			"ko" : "[검수 항목 정의]가 변경 되었습니다.",
-			"en" : "[Validation Item Definition] has been changed."
-		},
-		"borderLayerMsg" : {
-			"ko" : "도곽선으로 사용할 레이어 코드를 선택하세요.",
-			"en" : "Choose layer to be used as border layer"
-		},
-		"borderLayer" : {
-			"ko" : "도곽선 설정",
-			"en" : "Border Layer"
-		},
-		"dissolve" : {
-			"ko" : "인접 속성 병합 오류",
-			"en" : "Discord of adjacent attribute"
-		},
-		"fEntityInHole" : {
-			"ko" : "홀 존재 오류(임상도)",
-			"en" : "Holes in polygons"
-		},
-		"twistedPolygon" : {
-			"ko" : "꼬인 객체 오류",
-			"en" : "Twisted polygons"
-		},
-		"refAttributeMiss" : {
-			"ko" : "인접 요소 속성 오류",
-			"en" : "Missing attribute of adjacent features"
-		},
-		"nodeMiss" : {
-			"ko" : "노드 오류",
-			"en" : "Missing node"
-		},
-		"dRefEntityNone" : {
-			"ko" : "인접 요소 부재 오류",
-			"en" : "Missing adjacent feature"
-		},
-		"fRefEntityNone" : {
-			"ko" : "인접 요소 부재 오류",
-			"en" : "Missing adjacent feature"
-		},
-		"entityDuplicated" : {
-			"ko" : "요소 중복 오류",
-			"en" : "Duplicated features"
-		},
-		"selfEntity" : {
-			"ko" : "단독 존재 오류",
-			"en" : "Overlapping features"
-		},
-		"outBoundary" : {
-			"ko" : "경계 초과 오류",
-			"en" : "Feature crossing the boundary"
-		},
-		"pointDuplicated" : {
-			"ko" : "중복점 오류",
-			"en" : "Duplicated points"
-		},
-		"smallLength" : {
-			"ko" : "허용 범위 길이",
-			"en" : "Segments between length tolerance limit"
-		},
-		"smallArea" : {
-			"ko" : "허용 범위 면적",
-			"en" : "Areas between tolerance limit"
-		},
-		"conIntersected" : {
-			"ko" : "등고선 교차 오류",
-			"en" : "Contour line intersections"
-		},
-		"conOverDegree" : {
-			"ko" : "등고선 꺾임 오류",
-			"en" : "Unsmooth contour line curves"
-		},
-		"conBreak" : {
-			"ko" : "등고선 끊김 오류",
-			"en" : "Contour line disconnections"
-		},
-		"zValueAmbiguous" : {
-			"ko" : "고도값 오류",
-			"en" : "Wrong elevation"
-		},
-		"uselessPoint" : {
-			"ko" : "등고선 직선화 미처리",
-			"en" : "Useless points in contour line"
-		},
-		"overshoot" : {
-			"ko" : "기준점 초과",
-			"en" : "Feature crossing the sheet"
-		},
-		"entityOpenMiss" : {
-			"ko" : "객체 폐합 오류",
-			"en" : "Unclosed feature"
-		},
-		"oneAcre" : {
-			"ko" : "지류계 오류",
-			"en" : "Mismatching farmland size (Total)"
-		},
-		"oneStage" : {
-			"ko" : "경지계 오류",
-			"en" : "Excluded farmland (Part)"
-		},
-		"symbolOut" : {
-			"ko" : "객체 포함 오류",
-			"en" : "Symbol misplacement"
-		},
-		"buildingSiteMiss" : {
-			"ko" : "건물 부지 오류",
-			"en" : "Land and facility mismatch"
-		},
-		"boundaryMiss" : {
-			"ko" : "경계 누락 오류",
-			"en" : "Missing boundary"
-		},
-		"centerLineMiss" : {
-			"ko" : "중심선 누락 오류",
-			"en" : "Missing center line"
-		},
-		"entityInHole" : {
-			"ko" : "홀 중복 오류",
-			"en" : "Hole with entity"
-		},
-		"holeMisplacement" : {
-			"ko" : "홀 존재 오류",
-			"en" : "Hole misplacement"
-		},
-		"linearDisconnection" : {
-			"ko" : "선형 단락 오류",
-			"en" : "Linear disconnection"
-		},
-		"multiPart" : {
-			"ko" : "멀티 파트 오류",
-			"en" : "Selection of wrong multiple parts"
-		},
-		"bridgeName" : {
-			"ko" : "교량명 오류",
-			"en" : "Wrong bridge name"
-		},
-		"adminMiss" : {
-			"ko" : "행정 경계 오류",
-			"en" : "Administrative boundary mismatch"
-		},
-		"numericalValue" : {
-			"ko" : "수치값 오류",
-			"en" : "Wrong numerical value"
-		},
-		"ufidMiss" : {
-			"ko" : "UFID 오류",
-			"en" : "Missing UFID"
-		},
-		"refZValueMiss" : {
-			"ko" : "인접 요소 고도값 오류",
-			"en" : "Wrong elevation of adjacent feature"
-		},
-		"uavrgdph10" : {
-			"ko" : "평균 심도 오류(정위치)",
-			"en" : "Wrong mean depth(Graphic) (Underground)"
-		},
-		"uavrgdph20" : {
-			"ko" : "평균 심도 오류(구조화)",
-			"en" : "Wrong mean depth(Attribute) (Underground)"
-		},
-		"uleaderline" : {
-			"ko" : "지시선 교차 오류",
-			"en" : "Leader line overlapping (Underground)"
-		},
-		"uNodeMiss" : {
-			"ko" : "시설물 선형 노드 오류",
-			"en" : "Missing node on line (Underground)"
-		},
-		"uSymbolDirection" : {
-			"ko" : "시설물 심볼 방향 오류",
-			"en" : "Mismatching direction of symbol (Underground)"
-		},
-		"uSymbolInLine" : {
-			"ko" : "선형내 심볼 미존재 오류",
-			"en" : "Missing symbol on line (Underground)"
-		},
-		"uLineCross" : {
-			"ko" : "관로 상하월 오류",
-			"en" : "Crossing pipes (Underground)"
-		},
-		"uSymbolsDistance" : {
-			"ko" : "심볼 간격 오류",
-			"en" : "Distance between symbols (Underground)"
-		},
-		"uSymbolOut" : {
-			"ko" : "심볼 단독 존재 오류",
-			"en" : "Symbol misplacement (Underground)"
-		},
-		"fCodeLogicalAttribute" : {
-			"ko" : "F Code 오류",
-			"en" : "Wrong F Code (Forest)"
-		},
-		"fLabelLogicalAttribute" : {
-			"ko" : "Label 오류",
-			"en" : "Wrong F Label (Forest)"
-		},
-		"valItemSetting" : {
-			"ko" : "검수 항목 설정",
-			"en" : "Validation Items"
-		},
-		"chooseYourItem" : {
-			"ko" : "검수 항목을 선택하세요.",
-			"en" : "Choose your validation item."
-		},
-		"border" : {
-			"ko" : "도곽선",
-			"en" : "Map sheet border"
-		},
-		"notSet" : {
-			"ko" : "미설정",
-			"en" : "Not set"
-		},
-		"simpleCheck" : {
-			"ko" : "검수 수행(세부 설정 불필요)",
-			"en" : "Run"
-		},
-		"attrValidation" : {
-			"ko" : "속성 검수",
-			"en" : "Attribute"
-		},
-		"condValidation" : {
-			"ko" : "수치 조건",
-			"en" : "Condition"
-		},
-		"filterValidation" : {
-			"ko" : "속성 필터",
-			"en" : "Filter"
-		},
-		"addFilter" : {
-			"ko" : "필터 추가",
-			"en" : "Add filter"
-		},
-		"deleteFilter" : {
-			"ko" : "필터 삭제",
-			"en" : "Delete filter"
-		},
-		"layerRelation" : {
-			"ko" : "레이어 관계",
-			"en" : "Relation"
-		},
-		"selectRelationLayer" : {
-			"ko" : "관계 레이어 선택",
-			"en" : "Select relationship layer"
-		},
-		"selectRelationLayerDetail" : {
-			"ko" : "관계 레이어 세부 설정 선택",
-			"en" : "Select detail settings for the relationship layer"
-		},
-		"enterRelationLayerDetail" : {
-			"ko" : "관계 레이어 세부 설정 입력",
-			"en" : "Enter detail settings for the relationship layer"
-		},
-		"detailValidationSetting" : {
-			"ko" : "검수 세부 설정 선택",
-			"en" : "Detail setting"
-		},
-		"chooseYourDetail" : {
-			"ko" : "세부 설정 항목을 선택하세요.",
-			"en" : "Choose your detail option"
-		},
-		"addLayerCode" : {
-			"ko" : "레이어 코드 추가",
-			"en" : "Add layer code"
-		},
-		"code" : {
-			"ko" : "코드",
-			"en" : "Code"
-		},
-		"applyAll" : {
-			"ko" : "모두 적용",
-			"en" : "Apply all"
-		},
-		"deleteLayerCode" : {
-			"ko" : "레이어 코드 삭제",
-			"en" : "Delete layer code"
-		},
-		"addAttr" : {
-			"ko" : "속성 추가",
-			"en" : "Add attribute"
-		},
-		"attrName" : {
-			"ko" : "속성명",
-			"en" : "Attribute name"
-		},
-		"attrNameEx" : {
-			"ko" : "속성명 EX) 재질",
-			"en" : ""
-		// "en" : "Attribute name EX) material"
-		},
-		"acceptVal" : {
-			"ko" : "허용값",
-			"en" : "Acceptable values"
-		},
-		"acceptValEx" : {
-			"ko" : "허용값들을 쉼표로 구분하여 입력 ex) 1,2,3",
-			"en" : "Enter acceptable values separated by commas. ex) 1,2,3"
-		},
-		"figure" : {
-			"ko" : "수치",
-			"en" : "Figure"
-		},
-		"figureInterEx" : {
-			"ko" : "숫자형 기준값",
-			"en" : "Numeric value"
-		},
-		"condition" : {
-			"ko" : "조건",
-			"en" : "Condition"
-		},
-		"equal" : {
-			"ko" : "같음",
-			"en" : "Equal"
-		},
-		"excess" : {
-			"ko" : "초과",
-			"en" : "Exceeding"
-		},
-		"under" : {
-			"ko" : "미만",
-			"en" : "Under"
-		},
-		"interval" : {
-			"ko" : "간격",
-			"en" : "Interval"
-		},
-		"deleteAttr" : {
-			"ko" : "속성 삭제",
-			"en" : "Delete Attribute"
-		},
-		"enterDetailSetting" : {
-			"ko" : "검수 세부 설정 입력",
-			"en" : "Enter the detail fugure"
-		},
-		"detailGuide" : {
-			"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
-			"en" : "Add a new layer code, then enter details."
-		},
-		"selectCat" : {
-			"ko" : "분류 설정",
-			"en" : "Select Category"
-		},
-		"chooseYourCat" : {
-			"ko" : "검수할 분류를 선택하세요.",
-			"en" : "Choose the category to validate."
-		},
-		"allCat" : {
-			"ko" : "모든 분류",
-			"en" : "All categorys"
-		},
-		"notice" : {
-			"ko" : "알림",
-			"en" : "Notice"
-		},
-		"askReset" : {
-			"ko" : "해당 조건의 설정을 모두 삭제 하시겠습니까?",
-			"en" : "Are you sure you want to delete all of these settings on this item?"
-		},
-		"askDelCode" : {
-			"ko" : "레이어 코드를 삭제 하시겠습니까?",
-			"en" : "Are you sure you want to delete the layer code?"
-		},
-		"askDelAttr" : {
-			"ko" : "속성을 삭제 하시겠습니까?",
-			"en" : "Are you sure you want to delete the attribute?"
-		},
-		"delCatModalTitle" : {
-			"en" : "Delete Category",
-			"ko" : "분류 삭제"
-		},
-		"delLayerModalTitle" : {
-			"en" : "Delete Layer",
-			"ko" : "레이어 삭제"
-		},
-		"delOptModalTitle" : {
-			"en" : "Delete Option",
-			"ko" : "옵션 삭제"
-		},
-		"resetOptTitle" : {
-			"en" : "Clear Settings",
-			"ko" : "설정 모두 삭제"
-		},
-		"nodataoutput" : {
-			"en" : "No settings to export.",
-			"ko" : "내보낼 설정이 없습니다."
-		},
-		"emptyobj" : {
-			"en" : "There is no defined validation item.",
-			"ko" : "정의된 검수 항목이 없습니다."
-		},
-		"nobordercode" : {
-			"en" : "Border layer code is not entered.",
-			"ko" : "도곽선 Code가 입력되지 않았습니다."
-		},
-		"nobordergeom" : {
-			"en" : "Border layer geometry is not entered.",
-			"ko" : "도곽선 Geometry가 입력되지 않았습니다."
-		},
-		"invalidkeyname" : {
-			"en" : " - This key name is a invalid key name.",
-			"ko" : " 키 네임은 유효한 키 네임이 아닙니다."
-		},
-		"invalidkeyname" : {
-			"en" : " - This key name is invalid.",
-			"ko" : " - 키 네임은 유효하지 않습니다."
-		},
-		"invaliditem" : {
-			"en" : " - This validation item is invalid.",
-			"ko" : " - 검수 항목이 유효하지 않습니다."
-		},
-		"nocatname" : {
-			"en" : "th category name must be entered.",
-			"ko" : "번째 분류의 분류명을 입력해야 합니다."
-		},
-		"nolayercode" : {
-			"en" : " - layer code is not entered in the layer definition.",
-			"ko" : "레이어 코드는 레이어 정의에 입력되어 있지 않습니다."
-		},
-		"cat" : {
-			"en" : "Category",
-			"ko" : "분류"
-		},
-		"layercode" : {
-			"en" : "Layer code",
-			"ko" : "레이어 코드"
-		},
-		"valuesnullorarr" : {
-			"en" : "The values must be NULL or an array type.",
-			"ko" : "값은 NULL 또는 배열 형태여야 합니다."
-		},
-		"attrnullorarr" : {
-			"en" : "The attribute must be NULL or an array type.",
-			"ko" : "속성 검수는 NULL 또는 배열 형태여야 합니다."
-		},
-		"filternullorarr" : {
-			"en" : "The filter must be NULL or an array type.",
-			"ko" : "속성 필터는 NULL 또는 배열 형태여야 합니다."
-		},
-		"figurenullorarr" : {
-			"en" : "The condition must be NULL or an array type.",
-			"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
-		},
-		"tolernullorarr" : {
-			"en" : "The tolerance must be NULL or an array type.",
-			"ko" : "톨러런스 NULL 또는 배열 형태여야 합니다."
-		},
-		"relnullorarr" : {
-			"en" : "The condition must be NULL or an array type.",
-			"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
-		},
-		"defnull" : {
-			"en" : "The definition key must be an array.",
-			"ko" : "definition 키는 배열 형태여야 합니다."
-		},
-		"failimport" : {
-			"en" : "Setting input failed.",
-			"ko" : "설정 입력에 실패하였습니다."
-		},
-		"readfail" : {
-			"en" : "Unable to read file.",
-			"ko" : "파일을 읽을 수 없습니다."
-		},
-		"clearsetting" : {
-			"en" : "Clear Settings",
-			"ko" : "설정 모두 삭제"
-		},
-		"cancel" : {
-			"en" : "Cancel",
-			"ko" : "취소"
-		},
-		"delete" : {
-			"en" : "Delete",
-			"ko" : "삭제"
-		}
+			"validItemChgMsg" : {
+				"ko" : "[검수 항목 정의]가 변경 되었습니다.",
+				"en" : "[Validation Item Definition] has been changed."
+			},
+			"borderLayerMsg" : {
+				"ko" : "도곽선으로 사용할 레이어 코드를 선택하세요.",
+				"en" : "Choose layer to be used as border layer"
+			},
+			"borderLayer" : {
+				"ko" : "도곽선 설정",
+				"en" : "Border Layer"
+			},
+			"dissolve" : {
+				"ko" : "인접 속성 병합 오류",
+				"en" : "Discord of adjacent attribute"
+			},
+			"fEntityInHole" : {
+				"ko" : "홀 존재 오류(임상도)",
+				"en" : "Holes in polygons"
+			},
+			"twistedPolygon" : {
+				"ko" : "꼬인 객체 오류",
+				"en" : "Twisted polygons"
+			},
+			"refAttributeMiss" : {
+				"ko" : "인접 요소 속성 오류",
+				"en" : "Missing attribute of adjacent features"
+			},
+			"nodeMiss" : {
+				"ko" : "노드 오류",
+				"en" : "Missing node"
+			},
+			"dRefEntityNone" : {
+				"ko" : "인접 요소 부재 오류",
+				"en" : "Missing adjacent feature"
+			},
+			"fRefEntityNone" : {
+				"ko" : "인접 요소 부재 오류",
+				"en" : "Missing adjacent feature"
+			},
+			"entityDuplicated" : {
+				"ko" : "요소 중복 오류",
+				"en" : "Duplicated features"
+			},
+			"selfEntity" : {
+				"ko" : "단독 존재 오류",
+				"en" : "Overlapping features"
+			},
+			"outBoundary" : {
+				"ko" : "경계 초과 오류",
+				"en" : "Boundary mismatch"
+			},
+			"pointDuplicated" : {
+				"ko" : "중복점 오류",
+				"en" : "Duplicated points"
+			},
+			"smallLength" : {
+				"ko" : "허용 범위 길이",
+				"en" : "Segments between length tolerance limit"
+			},
+			"smallArea" : {
+				"ko" : "허용 범위 면적",
+				"en" : "Areas between tolerance limit"
+			},
+			"conIntersected" : {
+				"ko" : "등고선 교차 오류",
+				"en" : "Contour line intersections"
+			},
+			"conOverDegree" : {
+				"ko" : "등고선 꺾임 오류",
+				"en" : "Unsmooth contour line curves"
+			},
+			"conBreak" : {
+				"ko" : "등고선 끊김 오류",
+				"en" : "Contour line disconnections"
+			},
+			"zValueAmbiguous" : {
+				"ko" : "고도값 오류",
+				"en" : "Wrong elevation"
+			},
+			"uselessPoint" : {
+				"ko" : "등고선 직선화 미처리",
+				"en" : "Useless points in contour line"
+			},
+			"overshoot" : {
+				"ko" : "기준점 초과",
+				"en" : "Feature crossing the sheet"
+			},
+			"entityOpenMiss" : {
+				"ko" : "객체 폐합 오류",
+				"en" : "Unclosed feature"
+			},
+			"oneAcre" : {
+				"ko" : "지류계 오류",
+				"en" : "Mismatching farmland size (Total)"
+			},
+			"oneStage" : {
+				"ko" : "경지계 오류",
+				"en" : "Excluded farmland (Part)"
+			},
+			"symbolOut" : {
+				"ko" : "객체 포함 오류",
+				"en" : "Symbol misplacement"
+			},
+			"buildingSiteMiss" : {
+				"ko" : "건물 부지 오류",
+				"en" : "Land and facility mismatch"
+			},
+			"boundaryMiss" : {
+				"ko" : "경계 누락 오류",
+				"en" : "Missing boundary"
+			},
+			"centerLineMiss" : {
+				"ko" : "중심선 누락 오류",
+				"en" : "Missing centerline"
+			},
+			"entityInHole" : {
+				"ko" : "홀 중복 오류",
+				"en" : "Hole with entity"
+			},
+			"holeMisplacement" : {
+				"ko" : "홀 존재 오류",
+				"en" : "Hole misplacement"
+			},
+			"linearDisconnection" : {
+				"ko" : "선형 단락 오류",
+				"en" : "Linear disconnection"
+			},
+			"multiPart" : {
+				"ko" : "멀티 파트 오류",
+				"en" : "Selection of wrong multiple parts"
+			},
+			"bridgeName" : {
+				"ko" : "교량명 오류",
+				"en" : "Wrong bridge name"
+			},
+			"adminMiss" : {
+				"ko" : "행정 경계 오류",
+				"en" : "Administrative boundary mismatch"
+			},
+			"numericalValue" : {
+				"ko" : "수치값 오류",
+				"en" : "Wrong numerical value"
+			},
+			"ufidMiss" : {
+				"ko" : "UFID 오류",
+				"en" : "Missing UFID"
+			},
+			"refZValueMiss" : {
+				"ko" : "인접 요소 고도값 오류",
+				"en" : "Wrong elevation of adjacent feature"
+			},
+			"uavrgdph10" : {
+				"ko" : "평균 심도 오류(정위치)",
+				"en" : "Wrong mean depth(Graphic) (Underground)"
+			},
+			"uavrgdph20" : {
+				"ko" : "평균 심도 오류(구조화)",
+				"en" : "Wrong mean depth(Attribute) (Underground)"
+			},
+			"uleaderline" : {
+				"ko" : "지시선 교차 오류",
+				"en" : "Leader line overlapping (Underground)"
+			},
+			"uNodeMiss" : {
+				"ko" : "시설물 선형 노드 오류",
+				"en" : "Missing node on line (Underground)"
+			},
+			"uSymbolDirection" : {
+				"ko" : "시설물 심볼 방향 오류",
+				"en" : "Mismatching direction of symbol (Underground)"
+			},
+			"uSymbolInLine" : {
+				"ko" : "선형내 심볼 미존재 오류",
+				"en" : "Missing symbol on line (Underground)"
+			},
+			"uLineCross" : {
+				"ko" : "관로 상하월 오류",
+				"en" : "Crossing pipes (Underground)"
+			},
+			"uSymbolsDistance" : {
+				"ko" : "심볼 간격 오류",
+				"en" : "Distance between symbols (Underground)"
+			},
+			"uSymbolOut" : {
+				"ko" : "심볼 단독 존재 오류",
+				"en" : "Symbol misplacement (Underground)"
+			},
+			"fCodeLogicalAttribute" : {
+				"ko" : "F Code 오류",
+				"en" : "Wrong F Code (Forest)"
+			},
+			"fLabelLogicalAttribute" : {
+				"ko" : "Label 오류",
+				"en" : "Wrong F Label (Forest)"
+			},
+			"valItemSetting" : {
+				"ko" : "검수 항목 설정",
+				"en" : "Validation Items"
+			},
+			"chooseYourItem" : {
+				"ko" : "검수 항목을 선택하세요.",
+				"en" : "Choose your validation item."
+			},
+			"border" : {
+				"ko" : "도곽선",
+				"en" : "Map sheet border"
+			},
+			"notSet" : {
+				"ko" : "미설정",
+				"en" : "Not set"
+			},
+			"simpleCheck" : {
+				"ko" : "검수 수행(세부 설정 불필요)",
+				"en" : "Run"
+			},
+			"attrValidation" : {
+				"ko" : "속성 검수",
+				"en" : "Attribute"
+			},
+			"condValidation" : {
+				"ko" : "수치 조건",
+				"en" : "Condition"
+			},
+			"filterValidation" : {
+				"ko" : "속성 필터",
+				"en" : "Filter"
+			},
+			"addFilter" : {
+				"ko" : "필터 추가",
+				"en" : "Add filter"
+			},
+			"deleteFilter" : {
+				"ko" : "필터 삭제",
+				"en" : "Delete filter"
+			},
+			"layerRelation" : {
+				"ko" : "레이어 관계",
+				"en" : "Relation"
+			},
+			"selectRelationLayer" : {
+				"ko" : "관계 레이어 선택",
+				"en" : "Select relationship layer"
+			},
+			"selectRelationLayerDetail" : {
+				"ko" : "관계 레이어 세부 설정 선택",
+				"en" : "Select detail settings for the relationship layer"
+			},
+			"enterRelationLayerDetail" : {
+				"ko" : "관계 레이어 세부 설정 입력",
+				"en" : "Enter detail settings for the relationship layer"
+			},
+			"detailValidationSetting" : {
+				"ko" : "검수 세부 설정 선택",
+				"en" : "Detail setting"
+			},
+			"chooseYourDetail" : {
+				"ko" : "세부 설정 항목을 선택하세요.",
+				"en" : "Choose your detail option"
+			},
+			"addLayerCode" : {
+				"ko" : "레이어 코드 추가",
+				"en" : "Add layer code"
+			},
+			"code" : {
+				"ko" : "코드",
+				"en" : "Code"
+			},
+			"applyAll" : {
+				"ko" : "모두 적용",
+				"en" : "Apply all"
+			},
+			"deleteLayerCode" : {
+				"ko" : "레이어 코드 삭제",
+				"en" : "Delete layer code"
+			},
+			"addAttr" : {
+				"ko" : "속성 추가",
+				"en" : "Add attribute"
+			},
+			"attrName" : {
+				"ko" : "속성명",
+				"en" : "Attribute name"
+			},
+			"attrNameEx" : {
+				"ko" : "속성명 EX) 재질",
+				"en" : ""
+					// "en" : "Attribute name EX) material"
+			},
+			"acceptVal" : {
+				"ko" : "허용값",
+				"en" : "Acceptable values"
+			},
+			"acceptValEx" : {
+				"ko" : "허용값들을 쉼표로 구분하여 입력 ex) 1,2,3",
+				"en" : "Enter acceptable values separated by commas. ex) 1,2,3"
+			},
+			"figure" : {
+				"ko" : "수치",
+				"en" : "Figure"
+			},
+			"figureInterEx" : {
+				"ko" : "숫자형 기준값",
+				"en" : "Numeric value"
+			},
+			"condition" : {
+				"ko" : "조건",
+				"en" : "Condition"
+			},
+			"equal" : {
+				"ko" : "같음",
+				"en" : "Equal"
+			},
+			"excess" : {
+				"ko" : "초과",
+				"en" : "Exceeding"
+			},
+			"under" : {
+				"ko" : "미만",
+				"en" : "Under"
+			},
+			"andOver" : {
+				"ko" : "이상",
+				"en" : "and Over"
+			},
+			"andUnder" : {
+				"ko" : "이하",
+				"en" : "and Less"
+			},
+			"interval" : {
+				"ko" : "간격",
+				"en" : "Interval"
+			},
+			"deleteAttr" : {
+				"ko" : "속성 삭제",
+				"en" : "Delete Attribute"
+			},
+			"enterDetailSetting" : {
+				"ko" : "검수 세부 설정 입력",
+				"en" : "Enter the detail figure"
+			},
+			"detailGuide" : {
+				"ko" : "레이어 코드를 추가한 후, 세부 설정을 입력하세요.",
+				"en" : "Add a new layer code, then enter details."
+			},
+			"selectCat" : {
+				"ko" : "분류 설정",
+				"en" : "Select Category"
+			},
+			"chooseYourCat" : {
+				"ko" : "검수할 분류를 선택하세요.",
+				"en" : "Choose the category to validate."
+			},
+			"allCat" : {
+				"ko" : "모든 분류",
+				"en" : "All categorys"
+			},
+			"notice" : {
+				"ko" : "알림",
+				"en" : "Notice"
+			},
+			"askReset" : {
+				"ko" : "해당 조건의 설정을 모두 삭제 하시겠습니까?",
+				"en" : "Are you sure you want to delete all of these settings on this item?"
+			},
+			"askDelCode" : {
+				"ko" : "레이어 코드를 삭제 하시겠습니까?",
+				"en" : "Are you sure you want to delete the layer code?"
+			},
+			"askDelAttr" : {
+				"ko" : "속성을 삭제 하시겠습니까?",
+				"en" : "Are you sure you want to delete the attribute?"
+			},
+			"delCatModalTitle" : {
+				"en" : "Delete Category",
+				"ko" : "분류 삭제"
+			},
+			"delLayerModalTitle" : {
+				"en" : "Delete Layer",
+				"ko" : "레이어 삭제"
+			},
+			"delOptModalTitle" : {
+				"en" : "Delete Option",
+				"ko" : "옵션 삭제"
+			},
+			"resetOptTitle" : {
+				"en" : "Clear Settings",
+				"ko" : "설정 모두 삭제"
+			},
+			"nodataoutput" : {
+				"en" : "No settings to export.",
+				"ko" : "내보낼 설정이 없습니다."
+			},
+			"emptyobj" : {
+				"en" : "There is no defined validation item.",
+				"ko" : "정의된 검수 항목이 없습니다."
+			},
+			"nobordercode" : {
+				"en" : "Border layer code is not entered.",
+				"ko" : "도곽선 Code가 입력되지 않았습니다."
+			},
+			"nobordergeom" : {
+				"en" : "Border layer geometry is not entered.",
+				"ko" : "도곽선 Geometry가 입력되지 않았습니다."
+			},
+			"invalidkeyname" : {
+				"en" : " - This key name is a invalid key name.",
+				"ko" : " 키 네임은 유효한 키 네임이 아닙니다."
+			},
+			"invalidkeyname" : {
+				"en" : " - This key name is invalid.",
+				"ko" : " - 키 네임은 유효하지 않습니다."
+			},
+			"invaliditem" : {
+				"en" : " - This validation item is invalid.",
+				"ko" : " - 검수 항목이 유효하지 않습니다."
+			},
+			"nocatname" : {
+				"en" : "th category name must be entered.",
+				"ko" : "번째 분류의 분류명을 입력해야 합니다."
+			},
+			"nolayercode" : {
+				"en" : " - layer code is not entered in the layer definition.",
+				"ko" : "레이어 코드는 레이어 정의에 입력되어 있지 않습니다."
+			},
+			"cat" : {
+				"en" : "Category",
+				"ko" : "분류"
+			},
+			"layercode" : {
+				"en" : "Layer code",
+				"ko" : "레이어 코드"
+			},
+			"valuesnullorarr" : {
+				"en" : "The values must be NULL or an array type.",
+				"ko" : "값은 NULL 또는 배열 형태여야 합니다."
+			},
+			"attrnullorarr" : {
+				"en" : "The attribute must be NULL or an array type.",
+				"ko" : "속성 검수는 NULL 또는 배열 형태여야 합니다."
+			},
+			"filternullorarr" : {
+				"en" : "The filter must be NULL or an array type.",
+				"ko" : "속성 필터는 NULL 또는 배열 형태여야 합니다."
+			},
+			"figurenullorarr" : {
+				"en" : "The condition must be NULL or an array type.",
+				"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
+			},
+			"tolernullorarr" : {
+				"en" : "The tolerance must be NULL or an array type.",
+				"ko" : "톨러런스 NULL 또는 배열 형태여야 합니다."
+			},
+			"relnullorarr" : {
+				"en" : "The condition must be NULL or an array type.",
+				"ko" : "수치 조건은 NULL 또는 배열 형태여야 합니다."
+			},
+			"defnull" : {
+				"en" : "The definition key must be an array.",
+				"ko" : "definition 키는 배열 형태여야 합니다."
+			},
+			"failimport" : {
+				"en" : "Setting input failed.",
+				"ko" : "설정 입력에 실패하였습니다."
+			},
+			"readfail" : {
+				"en" : "Unable to read file.",
+				"ko" : "파일을 읽을 수 없습니다."
+			},
+			"clearsetting" : {
+				"en" : "Clear Settings",
+				"ko" : "설정 모두 삭제"
+			},
+			"cancel" : {
+				"en" : "Cancel",
+				"ko" : "취소"
+			},
+			"delete" : {
+				"en" : "Delete",
+				"ko" : "삭제"
+			},
+			"numericalValues": {
+				"en" : "Range discrepancy",
+				"ko" : "범위 불일치"
+			},
+			"fixValues": {
+				"en" : "Name of general house",
+				"ko" : "일반 주택의 주기"
+			},
+			"refAttributeMissB": {
+				"en" : "Centerline property mismatch",
+				"ko" : "중심선 속성 불일치"
+			},
+			"nfidIntegrity": {
+				"en" : "NFID Error of modified / deleted object",
+				"ko" : "수정/삭제 객체 NFID오류"
+			},
+			"nfidDuplicated": {
+				"en" : "Duplicated centerline NFID",
+				"ko" : "중심선 NFID 중복"
+			},
+			"refNFIDMiss": {
+				"en" : "Road boundary NFID mismatch",
+				"ko" : "경계면 참조 NFID 불일치"
+			},
+			"entityDangled": {
+				"en" : "Dangling entity",
+				"ko" : "댕글링"
+			},
+			"entityInHoleB": {
+				"en" : "Same entity as a hole",
+				"ko" : "홀(Hole)과동일한객체존재"
+			},
+			"conBreakB": {
+				"en" : "Contour line disconnections",
+				"ko" : "등고선 단락/등고선 미연결"
+			},
+			"outBoundaryB": {
+				"en" : "Boundary mismatch",
+				"ko" : "경계 불일치"
+			},
+			"underShootB": {
+				"en" : "Linestring not reaching the boundary",
+				"ko" : "언더슛"
+			},
+			"overShootB": {
+				"en" : "Linestring crossing the boundary",
+				"ko" : "오버슛"
+			},
+			"entityTwisted": {
+				"en" : "Twisted entity",
+				"ko" : "꼬임 선형 객체"
+			},
+			"smallAreaB": {
+				"en" : "Areas between tolerance limit",
+				"ko" : "미세 면적 객체"
+			},
+			"smallLengthB": {
+				"en" : "Areas between tolerance limit",
+				"ko" : "짧은 선형 객체"
+			},
+			"pointDuplicatedB": {
+				"en" : "Duplicated points",
+				"ko" : "정점 중복 선형 객체"
+			},
+			"entityDuplicatedB": {
+				"en" : "Duplicated features",
+				"ko" : "중복 객체"
+			},
+			"centerLineMissB": {
+				"en" : "Missing centerline",
+				"ko" : "중심선 미존재"
+			},
+			"nodeMissB": {
+				"en" : "Missing node",
+				"ko" : "중심선 누락/경계면 누락"
+			},
+			"centerLineDisconnected": {
+				"en" : "Defective centerline connection",
+				"ko" : "결함있는 연결"
+			},
+			"selfEntityB": {
+				"en" : "Overlapping features",
+				"ko" : "경계 침범"
+			},
+			"sliverEntity": {
+				"en" : "Slivers of entities",
+				"ko" : "슬리버 객체"
+			},
+			"conOverDegreeB": {
+				"en" : "Unsmooth contour line curves",
+				"ko" : "등고선 꺾임"
+			},
+			"conIntersectedB": {
+				"en" : "Contour line intersections",
+				"ko" : "등고선 교차"
+			}
 	}
 	/**
 	 * 검수 항목 정보
@@ -518,35 +622,1238 @@ gb.validation.OptionDefinition = function(obj) {
 	 * @type {Object}
 	 */
 	this.optItem = {
-		"BorderLayer" : {
-			"title" : this.translation.borderLayer[this.locale],
-			"alias" : "BorderLayer",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
-			"purpose" : "none",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+			"ConIntersectedB" : {
+				"title" : this.translation.conIntersectedB[this.locale],
+				"alias" : "ConIntersectedB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
+			"ConOverDegreeB" : {
+				"title" : this.translation.conOverDegreeB[this.locale],
+				"alias" : "ConOverDegreeB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
+			"SliverEntity" : {
+				"title" : this.translation.sliverEntity[this.locale],
+				"alias" : "SliverEntity",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"relation" : {
-				"name" : false,
+			"SelfEntityB" : {
+				"title" : this.translation.selfEntityB[this.locale],
+				"alias" : "SelfEntityB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"CenterLineDisconnected" : {
+				"title" : this.translation.centerLineDisconnected[this.locale],
+				"alias" : "CenterLineDisconnected",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"NodeMissB" : {
+				"title" : this.translation.nodeMissB[this.locale],
+				"alias" : "NodeMissB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"CenterLineMissB" : {
+				"title" : this.translation.centerLineMissB[this.locale],
+				"alias" : "CenterLineMissB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"EntityDuplicatedB" : {
+				"title" : this.translation.entityDuplicatedB[this.locale],
+				"alias" : "EntityDuplicatedB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"PointDuplicatedB" : {
+				"title" : this.translation.pointDuplicatedB[this.locale],
+				"alias" : "PointDuplicatedB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"SmallLengthB" : {
+				"title" : this.translation.smallLengthB[this.locale],
+				"alias" : "SmallLengthB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"SmallAreaB" : {
+				"title" : this.translation.smallAreaB[this.locale],
+				"alias" : "SmallAreaB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"EntityTwisted" : {
+				"title" : this.translation.entityTwisted[this.locale],
+				"alias" : "EntityTwisted",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"OverShootB" : {
+				"title" : this.translation.overShootB[this.locale],
+				"alias" : "OverShootB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"UnderShootB" : {
+				"title" : this.translation.underShootB[this.locale],
+				"alias" : "UnderShootB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"OutBoundaryB" : {
+				"title" : this.translation.outBoundaryB[this.locale],
+				"alias" : "OutBoundaryB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"ConBreakB" : {
+				"title" : this.translation.conBreakB[this.locale],
+				"alias" : "ConBreakB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"EntityInHoleB" : {
+				"title" : this.translation.entityInHoleB[this.locale],
+				"alias" : "EntityInHoleB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"EntityDangled" : {
+				"title" : this.translation.entityDangled[this.locale],
+				"alias" : "EntityDangled",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"RefNFIDMiss" : {
+				"title" : this.translation.refNFIDMiss[this.locale],
+				"alias" : "RefNFIDMiss",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"NFIDDuplicated" : {
+				"title" : this.translation.nfidDuplicated[this.locale],
+				"alias" : "NFIDDuplicated",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"NFIDIntegrity" : {
+				"title" : this.translation.nfidIntegrity[this.locale],
+				"alias" : "NFIDIntegrity",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"RefAttributeMissB" : {
+				"title" : this.translation.refAttributeMissB[this.locale],
+				"alias" : "RefAttributeMissB",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : true,
+							"key" : true,
+							"values" : true
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"FixValues" : {
+				"title" : this.translation.fixValues[this.locale],
+				"alias" : "FixValues",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"NumericalValues" : {
+				"title" : this.translation.numericalValues[this.locale],
+				"alias" : "NumericalValues",
+				"category" : [ "basic" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : true,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
+			},
+			"BorderLayer" : {
+				"title" : this.translation.borderLayer[this.locale],
+				"alias" : "BorderLayer",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
+				"purpose" : "none",
+				"noparam" : false,
 				"filter" : {
 					"code" : false,
 					"key" : false,
@@ -565,2360 +1872,2381 @@ gb.validation.OptionDefinition = function(obj) {
 					"value" : false,
 					"condition" : false,
 					"interval" : false
-				}
+				},
+				"relation" : {
+					"name" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					}
 
-			}
-		},
-		"Dissolve" : {
-			"title" : this.translation.dissolve[this.locale],
-			"alias" : "Dissolve",
-			"category" : [ "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
-					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
-			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
 				}
-			}
-		},
-		"FEntityInHole" : {
-			"title" : this.translation.fEntityInHole[this.locale],
-			"alias" : "FEntityInHole",
-			"category" : [ "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			},
+			"Dissolve" : {
+				"title" : this.translation.dissolve[this.locale],
+				"alias" : "Dissolve",
+				"category" : [ "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"TwistedPolygon" : {
-			"title" : this.translation.twistedPolygon[this.locale],
-			"alias" : "TwistedPolygon",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"FEntityInHole" : {
+				"title" : this.translation.fEntityInHole[this.locale],
+				"alias" : "FEntityInHole",
+				"category" : [ "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"RefAttributeMiss" : {
-			"title" : this.translation.refAttributeMiss[this.locale],
-			"alias" : "RefAttributeMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"TwistedPolygon" : {
+				"title" : this.translation.twistedPolygon[this.locale],
+				"alias" : "TwistedPolygon",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "adjacent",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"NodeMiss" : {
-			"title" : this.translation.nodeMiss[this.locale],
-			"alias" : "NodeMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"RefAttributeMiss" : {
+				"title" : this.translation.refAttributeMiss[this.locale],
+				"alias" : "RefAttributeMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "adjacent",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"DRefEntityNone" : {
-			"title" : this.translation.dRefEntityNone[this.locale],
-			"alias" : "DRefEntityNone",
-			"category" : [ "numetrical" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"NodeMiss" : {
+				"title" : this.translation.nodeMiss[this.locale],
+				"alias" : "NodeMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "adjacent",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"FRefEntityNone" : {
-			"title" : this.translation.fRefEntityNone[this.locale],
-			"alias" : "RefEntityNone",
-			"category" : [ "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"DRefEntityNone" : {
+				"title" : this.translation.dRefEntityNone[this.locale],
+				"alias" : "DRefEntityNone",
+				"category" : [ "numetrical" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "adjacent",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "adjacent",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"EntityDuplicated" : {
-			"title" : this.translation.entityDuplicated[this.locale],
-			"alias" : "EntityDuplicated",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"FRefEntityNone" : {
+				"title" : this.translation.fRefEntityNone[this.locale],
+				"alias" : "RefEntityNone",
+				"category" : [ "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "adjacent",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"SelfEntity" : {
-			"title" : this.translation.selfEntity[this.locale],
-			"alias" : "SelfEntity",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"EntityDuplicated" : {
+				"title" : this.translation.entityDuplicated[this.locale],
+				"alias" : "EntityDuplicated",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"OutBoundary" : {
-			"title" : this.translation.outBoundary[this.locale],
-			"alias" : "OutBoundary",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"SelfEntity" : {
+				"title" : this.translation.selfEntity[this.locale],
+				"alias" : "SelfEntity",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"PointDuplicated" : {
-			"title" : this.translation.pointDuplicated[this.locale],
-			"alias" : "PointDuplicated",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"OutBoundary" : {
+				"title" : this.translation.outBoundary[this.locale],
+				"alias" : "OutBoundary",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"SmallLength" : {
-			"title" : this.translation.smallLength[this.locale],
-			"alias" : "SmallLength",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"PointDuplicated" : {
+				"title" : this.translation.pointDuplicated[this.locale],
+				"alias" : "PointDuplicated",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"SmallArea" : {
-			"title" : this.translation.smallArea[this.locale],
-			"alias" : "SmallArea",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"SmallLength" : {
+				"title" : this.translation.smallLength[this.locale],
+				"alias" : "SmallLength",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ConIntersected" : {
-			"title" : this.translation.conIntersected[this.locale],
-			"alias" : "ConIntersected",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"SmallArea" : {
+				"title" : this.translation.smallArea[this.locale],
+				"alias" : "SmallArea",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ConOverDegree" : {
-			"title" : this.translation.conOverDegree[this.locale],
-			"alias" : "ConOverDegree",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ConIntersected" : {
+				"title" : this.translation.conIntersected[this.locale],
+				"alias" : "ConIntersected",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ConBreak" : {
-			"title" : this.translation.conBreak[this.locale],
-			"alias" : "ConBreak",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ConOverDegree" : {
+				"title" : this.translation.conOverDegree[this.locale],
+				"alias" : "ConOverDegree",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ZValueAmbiguous" : {
-			"title" : this.translation.zValueAmbiguous[this.locale],
-			"alias" : "ZValueAmbiguous",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ConBreak" : {
+				"title" : this.translation.conBreak[this.locale],
+				"alias" : "ConBreak",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : true,
-				"condition" : true,
-				"interval" : true
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UselessPoint" : {
-			"title" : this.translation.uselessPoint[this.locale],
-			"alias" : "UselessPoint",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ZValueAmbiguous" : {
+				"title" : this.translation.zValueAmbiguous[this.locale],
+				"alias" : "ZValueAmbiguous",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"OverShoot" : {
-			"title" : this.translation.overshoot[this.locale],
-			"alias" : "OverShoot",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"UselessPoint" : {
+				"title" : this.translation.uselessPoint[this.locale],
+				"alias" : "UselessPoint",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"EntityOpenMiss" : {
-			"title" : this.translation.entityOpenMiss[this.locale],
-			"alias" : "EntityOpenMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"OverShoot" : {
+				"title" : this.translation.overshoot[this.locale],
+				"alias" : "OverShoot",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"OneAcre" : {
-			"title" : this.translation.oneAcre[this.locale],
-			"alias" : "OneAcre",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"EntityOpenMiss" : {
+				"title" : this.translation.entityOpenMiss[this.locale],
+				"alias" : "EntityOpenMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"OneStage" : {
-			"title" : this.translation.oneStage[this.locale],
-			"alias" : "OneStage",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"OneAcre" : {
+				"title" : this.translation.oneAcre[this.locale],
+				"alias" : "OneAcre",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"SymbolOut" : {
-			"title" : this.translation.symbolOut[this.locale],
-			"alias" : "SymbolOut",
-			"category" : [ "numetrical" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"OneStage" : {
+				"title" : this.translation.oneStage[this.locale],
+				"alias" : "OneStage",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"BuildingSiteMiss" : {
-			"title" : this.translation.buildingSiteMiss[this.locale],
-			"alias" : "BuildingSiteMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"SymbolOut" : {
+				"title" : this.translation.symbolOut[this.locale],
+				"alias" : "SymbolOut",
+				"category" : [ "numetrical" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : true,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"BoundaryMiss" : {
-			"title" : this.translation.boundaryMiss[this.locale],
-			"alias" : "BoundaryMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"BuildingSiteMiss" : {
+				"title" : this.translation.buildingSiteMiss[this.locale],
+				"alias" : "BuildingSiteMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : true,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"CenterLineMiss" : {
-			"title" : this.translation.centerLineMiss[this.locale],
-			"alias" : "CenterLineMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"BoundaryMiss" : {
+				"title" : this.translation.boundaryMiss[this.locale],
+				"alias" : "BoundaryMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"EntityInHole" : {
-			"title" : this.translation.entityInHole[this.locale],
-			"alias" : "EntityInHole",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"CenterLineMiss" : {
+				"title" : this.translation.centerLineMiss[this.locale],
+				"alias" : "CenterLineMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"HoleMisplacement" : {
-			"title" : this.translation.holeMisplacement[this.locale],
-			"alias" : "HoleMisplacement",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"EntityInHole" : {
+				"title" : this.translation.entityInHole[this.locale],
+				"alias" : "EntityInHole",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"LinearDisconnection" : {
-			"title" : this.translation.linearDisconnection[this.locale],
-			"alias" : "LinearDisconnection",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"HoleMisplacement" : {
+				"title" : this.translation.holeMisplacement[this.locale],
+				"alias" : "HoleMisplacement",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"MultiPart" : {
-			"title" : this.translation.multiPart[this.locale],
-			"alias" : "MultiPart",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"LinearDisconnection" : {
+				"title" : this.translation.linearDisconnection[this.locale],
+				"alias" : "LinearDisconnection",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"BridgeName" : {
-			"title" : this.translation.bridgeName[this.locale],
-			"alias" : "BridgeName",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"MultiPart" : {
+				"title" : this.translation.multiPart[this.locale],
+				"alias" : "MultiPart",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : true,
-					"key" : true,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"AdminMiss" : {
-			"title" : this.translation.adminMiss[this.locale],
-			"alias" : "AdminMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"BridgeName" : {
+				"title" : this.translation.bridgeName[this.locale],
+				"alias" : "BridgeName",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : true,
+							"key" : true,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"NumericalValue" : {
-			"title" : this.translation.numericalValue[this.locale],
-			"alias" : "NumericalValue",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"AdminMiss" : {
+				"title" : this.translation.adminMiss[this.locale],
+				"alias" : "AdminMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UFIDMiss" : {
-			"title" : this.translation.ufidMiss[this.locale],
-			"alias" : "UFIDMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"NumericalValue" : {
+				"title" : this.translation.numericalValue[this.locale],
+				"alias" : "NumericalValue",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"RefZValueMiss" : {
-			"title" : this.translation.refZValueMiss[this.locale],
-			"alias" : "RefZValueMiss",
-			"category" : [ "numetrical", "underground", "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"UFIDMiss" : {
+				"title" : this.translation.ufidMiss[this.locale],
+				"alias" : "UFIDMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "adjacent",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : true,
-				"value" : true,
-				"condition" : true,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UAvrgDPH10" : {
-			"title" : this.translation.uavrgdph10[this.locale],
-			"alias" : "UAvrgDPH10",
-			"category" : [ "underground" ],
-			"version" : [ "qa1" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"RefZValueMiss" : {
+				"title" : this.translation.refZValueMiss[this.locale],
+				"alias" : "RefZValueMiss",
+				"category" : [ "numetrical", "underground", "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "adjacent",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : true,
+						"value" : true,
+						"condition" : true,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : true,
-					"value" : true,
-					"condition" : true,
-					"interval" : true
-				}
-			}
-		},
-		"UAvrgDPH20" : {
-			"title" : this.translation.uavrgdph20[this.locale],
-			"alias" : "UAvrgDPH20",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"UAvrgDPH10" : {
+				"title" : this.translation.uavrgdph10[this.locale],
+				"alias" : "UAvrgDPH10",
+				"category" : [ "underground" ],
+				"version" : [ "qa1" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : true,
-				"values" : true
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : true,
+							"value" : true,
+							"condition" : true,
+							"interval" : true
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : true,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ULeaderline" : {
-			"title" : this.translation.uleaderline[this.locale],
-			"alias" : "ULeaderline",
-			"category" : [ "underground" ],
-			"version" : [ "qa1" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"UAvrgDPH20" : {
+				"title" : this.translation.uavrgdph20[this.locale],
+				"alias" : "UAvrgDPH20",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : true,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"UNodeMiss" : {
-			"title" : this.translation.uNodeMiss[this.locale],
-			"alias" : "UNodeMiss",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ULeaderline" : {
+				"title" : this.translation.uleaderline[this.locale],
+				"alias" : "ULeaderline",
+				"category" : [ "underground" ],
+				"version" : [ "qa1" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"USymbolDirection" : {
-			"title" : this.translation.uSymbolDirection[this.locale],
-			"alias" : "USymbolDirection",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"UNodeMiss" : {
+				"title" : this.translation.uNodeMiss[this.locale],
+				"alias" : "UNodeMiss",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"USymbolInLine" : {
-			"title" : this.translation.uSymbolInLine[this.locale],
-			"alias" : "USymbolInLine",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"USymbolDirection" : {
+				"title" : this.translation.uSymbolDirection[this.locale],
+				"alias" : "USymbolDirection",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : true,
-				"values" : true
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"ULineCross" : {
-			"title" : this.translation.uLineCross[this.locale],
-			"alias" : "ULineCross",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"USymbolInLine" : {
+				"title" : this.translation.uSymbolInLine[this.locale],
+				"alias" : "USymbolInLine",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : true,
+						"values" : true
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"USymbolsDistance" : {
-			"title" : this.translation.uSymbolsDistance[this.locale],
-			"alias" : "USymbolsDistance",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"ULineCross" : {
+				"title" : this.translation.uLineCross[this.locale],
+				"alias" : "ULineCross",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : true,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"USymbolOut" : {
-			"title" : this.translation.uSymbolOut[this.locale],
-			"alias" : "USymbolOut",
-			"category" : [ "underground" ],
-			"version" : [ "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"USymbolsDistance" : {
+				"title" : this.translation.uSymbolsDistance[this.locale],
+				"alias" : "USymbolsDistance",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "graphic",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : true,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : false,
-				"key" : false,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : true,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"FCodeLogicalAttribute" : {
-			"title" : this.translation.fCodeLogicalAttribute[this.locale],
-			"alias" : "FCodeLogicalAttribute",
-			"category" : [ "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"USymbolOut" : {
+				"title" : this.translation.uSymbolOut[this.locale],
+				"alias" : "USymbolOut",
+				"category" : [ "underground" ],
+				"version" : [ "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "graphic",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : true,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : false,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"name" : false,
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
-			}
-		},
-		"FLabelLogicalAttribute" : {
-			"title" : this.translation.fLabelLogicalAttribute[this.locale],
-			"alias" : "FLabelLogicalAttribute",
-			"category" : [ "forest" ],
-			"version" : [ "qa1", "qa2" ],
-			"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+			"FCodeLogicalAttribute" : {
+				"title" : this.translation.fCodeLogicalAttribute[this.locale],
+				"alias" : "FCodeLogicalAttribute",
+				"category" : [ "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
-			"purpose" : "attribute",
-			"noparam" : false,
-			"filter" : {
-				"code" : false,
-				"key" : false,
-				"values" : false
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"name" : false,
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			},
-			"figure" : {
-				"code" : true,
-				"key" : true,
-				"values" : true,
-				"number" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"tolerance" : {
-				"code" : false,
-				"value" : false,
-				"condition" : false,
-				"interval" : false
-			},
-			"relation" : {
-				"filter" : {
-					"code" : false,
-					"key" : false,
-					"values" : false
-				},
-				"figure" : {
-					"code" : false,
-					"key" : false,
-					"values" : false,
-					"number" : false,
-					"condition" : false,
-					"interval" : false
-				},
-				"tolerance" : {
-					"code" : false,
-					"value" : false,
-					"condition" : false,
-					"interval" : false
-				}
+			"FLabelLogicalAttribute" : {
+				"title" : this.translation.fLabelLogicalAttribute[this.locale],
+				"alias" : "FLabelLogicalAttribute",
+				"category" : [ "forest" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
+					"text", "insert" ],
+					"purpose" : "attribute",
+					"noparam" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"relation" : {
+						"filter" : {
+							"code" : false,
+							"key" : false,
+							"values" : false
+						},
+						"figure" : {
+							"code" : false,
+							"key" : false,
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false
+						},
+						"tolerance" : {
+							"code" : false,
+							"value" : false,
+							"condition" : false,
+							"interval" : false
+						}
+					}
 			}
-		}
 	}
 
 	this.structure = {
-		"border" : null,
-		"definition" : []
+			"border" : null,
+			"definition" : []
 	};
 
 	// 수치지도, 지하시설물, 임상도
@@ -3111,6 +4439,10 @@ gb.validation.OptionDefinition = function(obj) {
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-relationdetailcategory", function() {
 		that.printDetailForm(this, false, true);
 	});
+	// 모든 분류 선택 후 버튼 릴레이션 카테고리 클릭시 다음 단계 세부 설정 종류 표시
+	$(this.panelBody).on("click", ".gb-optiondefinition-btn-relationdetailcategory-all", function() {
+		that.printDetailForm(this, false, true, true);
+	});
 
 	// 속성 필터 레이어 코드 추가 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-filteraddcode", function() {
@@ -3165,6 +4497,12 @@ gb.validation.OptionDefinition = function(obj) {
 
 	// 필터 속성명 입력 이벤트
 	$(this.panelBody).on("input", ".gb-optiondefinition-input-filterkey", function() {
+		that.inputFilterKey(this);
+		console.log(that.getStructure());
+	});
+	
+	// 모든 분류의 필터 속성명 입력 이벤트
+	$(this.panelBody).on("input", ".gb-optiondefinition-input-filterkey-all", function() {
 		that.inputFilterKey(this);
 		console.log(that.getStructure());
 	});
@@ -3339,14 +4677,14 @@ gb.validation.OptionDefinition.prototype.setMessagePopup = function(type, messag
 		break;
 	default:
 		alert = alert + "info";
-		break;
+	break;
 	}
 	var span = $("<span>").attr("aria-hidden", "true").html("&times;");
 	var xbtn = $("<button>").addClass("close").attr("type", "button").attr("data-dismiss", "alert").attr("aria-label", "Close")
-			.append(span);
+	.append(span);
 	var head = $("<strong>").text(this.translation.notice[this.locale]);
 	var div = $("<div>").addClass("alert").addClass(alert).addClass("alert-dismissible").attr("role", "alert").append(xbtn).append(head)
-			.append(" " + message);
+	.append(" " + message);
 	$(this.msg).append(div);
 };
 /**
@@ -3394,15 +4732,15 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn
 												if (rel[j].hasOwnProperty("tolerance")) {
 													if (Array.isArray(rel[j]["tolerance"])) {
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["tolerance"]
-																.splice(layerIdx, 1);
+														.splice(layerIdx, 1);
 														if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["tolerance"].length === 0) {
 															delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["tolerance"];
 														}
 														var types = Object
-																.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
+														.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
 														if (types.length === 1) {
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"]
-																	.splice(j, 1);
+															.splice(j, 1);
 															if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].length === 0) {
 																delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
 															}
@@ -3491,15 +4829,15 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 												if (rel[j].hasOwnProperty("figure")) {
 													if (Array.isArray(rel[j]["figure"])) {
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["figure"]
-																.splice(layerIdx, 1);
+														.splice(layerIdx, 1);
 														if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["figure"].length === 0) {
 															delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["figure"];
 														}
 														var types = Object
-																.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
+														.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
 														if (types.length === 1) {
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"]
-																	.splice(j, 1);
+															.splice(j, 1);
 															if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].length === 0) {
 																delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
 															}
@@ -3593,7 +4931,7 @@ gb.validation.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 												if (rel[j].hasOwnProperty("figure")) {
 													if (Array.isArray(rel[j]["figure"])) {
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["figure"][layerIdx]["attribute"]
-																.splice(filterIdx, 1);
+														.splice(filterIdx, 1);
 													}
 												}
 											}
@@ -3608,7 +4946,7 @@ gb.validation.OptionDefinition.prototype.deleteFigureRow = function(btn) {
 										var attr = strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"];
 										if (Array.isArray(attr)) {
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"]
-													.splice(filterIdx, 1);
+											.splice(filterIdx, 1);
 										}
 									}
 								}
@@ -3702,18 +5040,18 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 														// 필터 배열 원소에 attribute
 														// 키가 있는지?
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"][layerIdx] = {
-															"code" : layerCode,
-															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																"code" : layerCode,
+																"value" : number !== "" ? number : null,
+																		"condition" : typeof condition === "string" ? condition : null,
+																				"interval" : isNaN(interval) ? null : interval
 														};
 													} else {
 														// 톨러런스 키가 배열이 아니라면
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"] = [ {
 															"code" : layerCode,
 															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 														} ];
 													}
 												}
@@ -3721,28 +5059,28 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 										}
 										if (!isExist) {
 											var codeElem = {
-												"code" : layerCode,
-												"value" : number !== "" ? number : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"code" : layerCode,
+													"value" : number !== "" ? number : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"tolerance" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"tolerance" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
 									} else {
 										// 배열이 아니라면
 										var codeElem = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"tolerance" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"tolerance" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -3750,14 +5088,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 									// 현재 옵션에 릴레이션 키가
 									// 없다면
 									var codeElem = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"tolerance" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"tolerance" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -3768,19 +5106,19 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"])) {
 										// tolerance키가 배열형태임
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 									} else {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 									}
@@ -3788,10 +5126,10 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 								}
@@ -3802,27 +5140,27 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 							if (sec) {
 								// 없다면
 								var codeElem = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"tolerance" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"tolerance" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								var obj = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var optionObj = {
-									"tolerance" : [ obj ]
+										"tolerance" : [ obj ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 							}
@@ -3831,14 +5169,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 						// 해당 검수 타입이 설정되어 있지 않음
 						if (sec) {
 							var codeElem = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"tolerance" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"tolerance" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -3847,13 +5185,13 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var optionObj = {
-								"tolerance" : [ obj ]
+									"tolerance" : [ obj ]
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -3870,10 +5208,10 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -3886,8 +5224,8 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -3895,21 +5233,21 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = {
-					"tolerance" : [ obj ]
+						"tolerance" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -3997,18 +5335,18 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 														// 필터 배열 원소에 attribute
 														// 키가 있는지?
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"][layerIdx] = {
-															"code" : layerCode,
-															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																"code" : layerCode,
+																"value" : number !== "" ? number : null,
+																		"condition" : typeof condition === "string" ? condition : null,
+																				"interval" : isNaN(interval) ? null : interval
 														};
 													} else {
 														// 톨러런스 키가 배열이 아니라면
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"] = [ {
 															"code" : layerCode,
 															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 														} ];
 													}
 												}
@@ -4016,28 +5354,28 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 										}
 										if (!isExist) {
 											var codeElem = {
-												"code" : layerCode,
-												"value" : number !== "" ? number : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"code" : layerCode,
+													"value" : number !== "" ? number : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"tolerance" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"tolerance" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
 									} else {
 										// 배열이 아니라면
 										var codeElem = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"tolerance" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"tolerance" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -4045,14 +5383,14 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 									// 현재 옵션에 릴레이션 키가
 									// 없다면
 									var codeElem = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"tolerance" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"tolerance" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -4063,19 +5401,19 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"])) {
 										// tolerance키가 배열형태임
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 									} else {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 									}
@@ -4083,10 +5421,10 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 								}
@@ -4097,27 +5435,27 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 							if (sec) {
 								// 없다면
 								var codeElem = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"tolerance" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"tolerance" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								var obj = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var optionObj = {
-									"tolerance" : [ obj ]
+										"tolerance" : [ obj ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 							}
@@ -4126,14 +5464,14 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 						// 해당 검수 타입이 설정되어 있지 않음
 						if (sec) {
 							var codeElem = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"tolerance" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"tolerance" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -4142,13 +5480,13 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var optionObj = {
-								"tolerance" : [ obj ]
+									"tolerance" : [ obj ]
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -4165,10 +5503,10 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -4181,8 +5519,8 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -4190,21 +5528,21 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = {
-					"tolerance" : [ obj ]
+						"tolerance" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -4289,18 +5627,18 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 														// 필터 배열 원소에 attribute
 														// 키가 있는지?
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"][layerIdx] = {
-															"code" : layerCode,
-															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																"code" : layerCode,
+																"value" : number !== "" ? number : null,
+																		"condition" : typeof condition === "string" ? condition : null,
+																				"interval" : isNaN(interval) ? null : interval
 														};
 													} else {
 														// 톨러런스 키가 배열이 아니라면
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["tolerance"] = [ {
 															"code" : layerCode,
 															"value" : number !== "" ? number : null,
-															"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 														} ];
 													}
 												}
@@ -4308,28 +5646,28 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 										}
 										if (!isExist2) {
 											var codeElem = {
-												"code" : layerCode,
-												"value" : number !== "" ? number : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"code" : layerCode,
+													"value" : number !== "" ? number : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"tolerance" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"tolerance" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
 									} else {
 										// 배열이 아니라면
 										var codeElem = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"tolerance" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"tolerance" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -4337,14 +5675,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 									// 현재 옵션에 릴레이션 키가
 									// 없다면
 									var codeElem = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"tolerance" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"tolerance" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -4355,19 +5693,19 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"])) {
 										// tolerance키가 배열형태임
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 									} else {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"value" : number !== "" ? number : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+												"code" : layerCode,
+												"value" : number !== "" ? number : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 									}
@@ -4375,10 +5713,10 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"value" : number !== "" ? number : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+											"code" : layerCode,
+											"value" : number !== "" ? number : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"] = [ obj ];
 								}
@@ -4389,27 +5727,27 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 							if (sec) {
 								// 없다면
 								var codeElem = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"tolerance" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"tolerance" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 							} else {
 								// 해당 검수 항목이 설정되어 있지 않음
 								var obj = {
-									"code" : layerCode,
-									"value" : number !== "" ? number : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+										"code" : layerCode,
+										"value" : number !== "" ? number : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 								};
 								var optionObj = {
-									"tolerance" : [ obj ]
+										"tolerance" : [ obj ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 							}
@@ -4418,14 +5756,14 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 						// 해당 검수 타입이 설정되어 있지 않음
 						if (sec) {
 							var codeElem = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"tolerance" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"tolerance" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -4434,13 +5772,13 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"value" : number !== "" ? number : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+									"code" : layerCode,
+									"value" : number !== "" ? number : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
 							};
 							var optionObj = {
-								"tolerance" : [ obj ]
+									"tolerance" : [ obj ]
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -4457,10 +5795,10 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -4473,8 +5811,8 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -4482,21 +5820,21 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"value" : number !== "" ? number : null,
-					"condition" : typeof condition === "string" ? condition : null,
-					"interval" : isNaN(interval) ? null : interval
+						"code" : layerCode,
+						"value" : number !== "" ? number : null,
+								"condition" : typeof condition === "string" ? condition : null,
+										"interval" : isNaN(interval) ? null : interval
 				};
 				var optionsObj = {
-					"tolerance" : [ obj ]
+						"tolerance" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -4583,10 +5921,10 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 															}
 														} else {
 															relation[j]["tolerance"][layerIdx] = {
-																"code" : layerCode,
-																"value" : number,
-																"condition" : condition,
-																"interval" : interval
+																	"code" : layerCode,
+																	"value" : number,
+																	"condition" : condition,
+																	"interval" : interval
 															};
 														}
 														/*
@@ -4604,10 +5942,10 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 													// 필터키를 가지고 있지 않다면
 													relation[j]["tolerance"] = [];
 													relation[j]["tolerance"][layerIdx] = {
-														"code" : layerCode,
-														"value" : number,
-														"condition" : condition,
-														"interval" : interval
+															"code" : layerCode,
+															"value" : number,
+															"condition" : condition,
+															"interval" : interval
 													};
 												}
 											}
@@ -4622,10 +5960,10 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 									if (Array.isArray(figures)) {
 										if (figures[layerIdx] !== undefined) {
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-												"code" : layerCode,
-												"value" : number,
-												"condition" : condition,
-												"interval" : interval
+													"code" : layerCode,
+													"value" : number,
+													"condition" : condition,
+													"interval" : interval
 											};
 										}
 									}
@@ -4635,28 +5973,28 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 							// 검수 항목이 없음
 							if (sec) {
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {
-									"relation" : []
+										"relation" : []
 								};
 								var obj = {
-									"name" : this.nowRelationCategory,
-									"tolerance" : []
+										"name" : this.nowRelationCategory,
+										"tolerance" : []
 								};
 								obj["tolerance"][layerIdx] = {
-									"code" : layerCode,
-									"value" : number,
-									"condition" : condition,
-									"interval" : interval
+										"code" : layerCode,
+										"value" : number,
+										"condition" : condition,
+										"interval" : interval
 								}
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
 							} else {
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {
-									"tolerance" : []
+										"tolerance" : []
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-									"code" : layerCode,
-									"value" : number,
-									"condition" : condition,
-									"interval" : interval
+										"code" : layerCode,
+										"value" : number,
+										"condition" : condition,
+										"interval" : interval
 								};
 							}
 						}
@@ -4665,28 +6003,28 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 						strc["definition"][i]["options"][type3] = {};
 						if (sec) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {
-								"relation" : []
+									"relation" : []
 							};
 							var obj = {
-								"name" : this.nowRelationCategory,
-								"tolerance" : []
+									"name" : this.nowRelationCategory,
+									"tolerance" : []
 							};
 							obj["tolerance"][layerIdx] = {
-								"code" : layerCode,
-								"value" : number,
-								"condition" : condition,
-								"interval" : interval
+									"code" : layerCode,
+									"value" : number,
+									"condition" : condition,
+									"interval" : interval
 							}
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
 						} else {
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {
-								"tolerance" : []
+									"tolerance" : []
 							};
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][layerIdx] = {
-								"code" : layerCode,
-								"value" : number,
-								"condition" : condition,
-								"interval" : interval
+									"code" : layerCode,
+									"value" : number,
+									"condition" : condition,
+									"interval" : interval
 							};
 						}
 					}
@@ -4696,35 +6034,35 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 			if (!isExist) {
 				if (sec) {
 					var outerObj = {
-						"name" : this.nowCategory,
-						"options" : {}
+							"name" : this.nowCategory,
+							"options" : {}
 					};
 					outerObj["options"][type3] = {};
 					outerObj["options"][type3][this.nowOption.alias] = {
-						"relation" : [ {
-							"name" : this.nowRelationCategory,
+							"relation" : [ {
+								"name" : this.nowRelationCategory,
+								"tolerance" : [ {
+									"code" : layerCode,
+									"value" : number,
+									"condition" : condition,
+									"interval" : interval
+								} ]
+							} ]
+					};
+					strc["definition"].push(outerObj);
+				} else {
+					var outerObj = {
+							"name" : this.nowCategory,
+							"options" : {}
+					};
+					outerObj["options"][type3] = {};
+					outerObj["options"][type3][this.nowOption.alias] = {
 							"tolerance" : [ {
 								"code" : layerCode,
 								"value" : number,
 								"condition" : condition,
 								"interval" : interval
 							} ]
-						} ]
-					};
-					strc["definition"].push(outerObj);
-				} else {
-					var outerObj = {
-						"name" : this.nowCategory,
-						"options" : {}
-					};
-					outerObj["options"][type3] = {};
-					outerObj["options"][type3][this.nowOption.alias] = {
-						"tolerance" : [ {
-							"code" : layerCode,
-							"value" : number,
-							"condition" : condition,
-							"interval" : interval
-						} ]
 					};
 					strc["definition"].push(outerObj);
 				}
@@ -4930,26 +6268,26 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															}
 														} else {
@@ -4957,16 +6295,16 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
+																	} ]
 															};
 														}
 													} else {
@@ -4976,10 +6314,10 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 															"attribute" : [ {
 																"key" : attrKey,
 																"values" : Array.isArray(attrValues) ? attrValues : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number
-																		: null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
+																		"number" : number !== null && number !== undefined ? number !== "" ? number
+																				: null : null,
+																				"condition" : typeof condition === "string" ? condition : null,
+																						"interval" : isNaN(interval) ? null : interval
 															} ]
 														} ];
 													}
@@ -4990,17 +6328,17 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 											var attrElem = [ {
 												"key" : attrKey,
 												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"figure" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -5009,17 +6347,17 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"figure" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -5029,17 +6367,17 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 									var attrElem = [ {
 										"key" : attrKey,
 										"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"figure" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -5057,21 +6395,21 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -5080,14 +6418,14 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 									}
@@ -5095,14 +6433,14 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 								}
@@ -5115,17 +6453,17 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 								var attrElem = [ {
 									"key" : attrKey,
 									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -5134,18 +6472,18 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 								// 허용값이 입력되어있다면 값 변경
 								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"figure" : filterObj
+											"figure" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -5157,17 +6495,17 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 							var attrElem = [ {
 								"key" : attrKey,
 								"values" : Array.isArray(attrValues) ? attrValues : null,
-								"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"figure" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"figure" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -5176,18 +6514,18 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"figure" : filterObj
+									"figure" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -5204,14 +6542,14 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -5224,8 +6562,8 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -5233,25 +6571,25 @@ gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = {
-					"figure" : [ obj ]
+						"figure" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -5363,26 +6701,26 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															}
 														} else {
@@ -5390,16 +6728,16 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
+																	} ]
 															};
 														}
 													} else {
@@ -5409,10 +6747,10 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 															"attribute" : [ {
 																"key" : attrKey,
 																"values" : Array.isArray(attrValues) ? attrValues : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number
-																		: null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
+																		"number" : number !== null && number !== undefined ? number !== "" ? number
+																				: null : null,
+																				"condition" : typeof condition === "string" ? condition : null,
+																						"interval" : isNaN(interval) ? null : interval
 															} ]
 														} ];
 													}
@@ -5423,17 +6761,17 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 											var attrElem = [ {
 												"key" : attrKey,
 												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"figure" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -5442,17 +6780,17 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"figure" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -5462,17 +6800,17 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 									var attrElem = [ {
 										"key" : attrKey,
 										"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"figure" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -5490,21 +6828,21 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -5513,14 +6851,14 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 									}
@@ -5528,14 +6866,14 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 								}
@@ -5548,17 +6886,17 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 								var attrElem = [ {
 									"key" : attrKey,
 									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -5567,18 +6905,18 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 								// 허용값이 입력되어있다면 값 변경
 								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"figure" : filterObj
+											"figure" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -5590,17 +6928,17 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 							var attrElem = [ {
 								"key" : attrKey,
 								"values" : Array.isArray(attrValues) ? attrValues : null,
-								"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"figure" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"figure" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -5609,18 +6947,18 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"figure" : filterObj
+									"figure" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -5637,14 +6975,14 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -5657,8 +6995,8 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -5666,25 +7004,25 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = {
-					"figure" : [ obj ]
+						"figure" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -5796,26 +7134,26 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															}
 														} else {
@@ -5823,16 +7161,16 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
+																	} ]
 															};
 														}
 													} else {
@@ -5842,10 +7180,10 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 															"attribute" : [ {
 																"key" : attrKey,
 																"values" : Array.isArray(attrValues) ? attrValues : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number
-																		: null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
+																		"number" : number !== null && number !== undefined ? number !== "" ? number
+																				: null : null,
+																				"condition" : typeof condition === "string" ? condition : null,
+																						"interval" : isNaN(interval) ? null : interval
 															} ]
 														} ];
 													}
@@ -5856,17 +7194,17 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 											var attrElem = [ {
 												"key" : attrKey,
 												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"figure" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -5875,17 +7213,17 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"figure" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -5895,17 +7233,17 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 									var attrElem = [ {
 										"key" : attrKey,
 										"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"figure" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -5923,21 +7261,21 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -5946,14 +7284,14 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 									}
@@ -5961,14 +7299,14 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 								}
@@ -5981,17 +7319,17 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 								var attrElem = [ {
 									"key" : attrKey,
 									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -6000,18 +7338,18 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 								// 허용값이 입력되어있다면 값 변경
 								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"figure" : filterObj
+											"figure" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -6023,17 +7361,17 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 							var attrElem = [ {
 								"key" : attrKey,
 								"values" : Array.isArray(attrValues) ? attrValues : null,
-								"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"figure" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"figure" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -6042,18 +7380,18 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"figure" : filterObj
+									"figure" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -6070,14 +7408,14 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -6090,8 +7428,8 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -6099,25 +7437,25 @@ gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = {
-					"figure" : [ obj ]
+						"figure" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -6228,26 +7566,26 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															}
 														} else {
@@ -6255,16 +7593,16 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
+																	} ]
 															};
 														}
 													} else {
@@ -6274,10 +7612,10 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 															"attribute" : [ {
 																"key" : attrKey,
 																"values" : Array.isArray(attrValues) ? attrValues : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number
-																		: null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
+																		"number" : number !== null && number !== undefined ? number !== "" ? number
+																				: null : null,
+																				"condition" : typeof condition === "string" ? condition : null,
+																						"interval" : isNaN(interval) ? null : interval
 															} ]
 														} ];
 													}
@@ -6288,17 +7626,17 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 											var attrElem = [ {
 												"key" : attrKey,
 												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"figure" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -6307,17 +7645,17 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"figure" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -6327,17 +7665,17 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 									var attrElem = [ {
 										"key" : attrKey,
 										"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"figure" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -6355,21 +7693,21 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -6378,14 +7716,14 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 									}
@@ -6393,14 +7731,14 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 								}
@@ -6413,17 +7751,17 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 								var attrElem = [ {
 									"key" : attrKey,
 									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -6432,18 +7770,18 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 								// 허용값이 입력되어있다면 값 변경
 								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"figure" : filterObj
+											"figure" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -6455,17 +7793,17 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 							var attrElem = [ {
 								"key" : attrKey,
 								"values" : Array.isArray(attrValues) ? attrValues : null,
-								"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"figure" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"figure" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -6474,18 +7812,18 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"figure" : filterObj
+									"figure" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -6502,14 +7840,14 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -6522,8 +7860,8 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -6531,25 +7869,25 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = {
-					"figure" : [ obj ]
+						"figure" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -6606,7 +7944,7 @@ gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 												if (rel[j].hasOwnProperty("filter")) {
 													if (Array.isArray(rel[j]["filter"])) {
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["filter"][layerIdx]["attribute"]
-																.splice(filterIdx, 1);
+														.splice(filterIdx, 1);
 														/*
 														 * if
 														 * (rel[j]["filter"].length
@@ -6627,7 +7965,7 @@ gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 										var attr = strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"];
 										if (Array.isArray(attr)) {
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"]
-													.splice(filterIdx, 1);
+											.splice(filterIdx, 1);
 										}
 									}
 								}
@@ -6685,15 +8023,15 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 												if (rel[j].hasOwnProperty("filter")) {
 													if (Array.isArray(rel[j]["filter"])) {
 														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["filter"]
-																.splice(layerIdx, 1);
+														.splice(layerIdx, 1);
 														if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["filter"].length === 0) {
 															delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]["filter"];
 														}
 														var types = Object
-																.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
+														.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j]);
 														if (types.length === 1) {
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"]
-																	.splice(j, 1);
+															.splice(j, 1);
 															if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].length === 0) {
 																delete strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
 															}
@@ -6840,26 +8178,26 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
 																};
 															}
 														} else {
@@ -6867,16 +8205,16 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																				"number" : number !== null && number !== undefined ? number !== "" ? number
+																						: null
+																						: null,
+																						"condition" : typeof condition === "string" ? condition : null,
+																								"interval" : isNaN(interval) ? null : interval
+																	} ]
 															};
 														}
 													} else {
@@ -6886,10 +8224,10 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 															"attribute" : [ {
 																"key" : attrKey,
 																"values" : Array.isArray(attrValues) ? attrValues : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number
-																		: null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
+																		"number" : number !== null && number !== undefined ? number !== "" ? number
+																				: null : null,
+																				"condition" : typeof condition === "string" ? condition : null,
+																						"interval" : isNaN(interval) ? null : interval
 															} ]
 														} ];
 													}
@@ -6900,17 +8238,17 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 											var attrElem = [ {
 												"key" : attrKey,
 												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"figure" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -6919,17 +8257,17 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof condition === "string" ? condition : null,
+																	"interval" : isNaN(interval) ? null : interval
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"figure" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -6939,17 +8277,17 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 									var attrElem = [ {
 										"key" : attrKey,
 										"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-										"condition" : typeof condition === "string" ? condition : null,
-										"interval" : isNaN(interval) ? null : interval
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"figure" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -6967,21 +8305,21 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -6990,14 +8328,14 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-												"interval" : isNaN(interval) ? null : interval
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																	"condition" : typeof condition === "string" ? condition : null,
+																			"interval" : isNaN(interval) ? null : interval
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 									}
@@ -7005,14 +8343,14 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
 								}
@@ -7025,17 +8363,17 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 								var attrElem = [ {
 									"key" : attrKey,
 									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
+											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+													"condition" : typeof condition === "string" ? condition : null,
+															"interval" : isNaN(interval) ? null : interval
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -7044,18 +8382,18 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 								// 허용값이 입력되어있다면 값 변경
 								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-											"interval" : isNaN(interval) ? null : interval
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof condition === "string" ? condition : null,
+																		"interval" : isNaN(interval) ? null : interval
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"figure" : filterObj
+											"figure" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -7067,17 +8405,17 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 							var attrElem = [ {
 								"key" : attrKey,
 								"values" : Array.isArray(attrValues) ? attrValues : null,
-								"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-								"condition" : typeof condition === "string" ? condition : null,
-								"interval" : isNaN(interval) ? null : interval
+										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+												"condition" : typeof condition === "string" ? condition : null,
+														"interval" : isNaN(interval) ? null : interval
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"figure" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"figure" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -7086,18 +8424,18 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-									"condition" : typeof condition === "string" ? condition : null,
-									"interval" : isNaN(interval) ? null : interval
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+														"condition" : typeof condition === "string" ? condition : null,
+																"interval" : isNaN(interval) ? null : interval
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"figure" : filterObj
+									"figure" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -7114,14 +8452,14 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -7134,8 +8472,8 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -7143,25 +8481,25 @@ gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-						"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-						"condition" : typeof condition === "string" ? condition : null,
-						"interval" : isNaN(interval) ? null : interval
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+											"condition" : typeof condition === "string" ? condition : null,
+													"interval" : isNaN(interval) ? null : interval
+						} ]
 				};
 				var optionsObj = {
-					"figure" : [ obj ]
+						"figure" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -7255,16 +8593,16 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
 																};
 															}
 														} else {
@@ -7272,11 +8610,11 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																	} ]
 															};
 														}
 													} else {
@@ -7298,12 +8636,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 												"values" : Array.isArray(attrValues) ? attrValues : null,
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"filter" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"filter" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
@@ -7314,12 +8652,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 											"values" : Array.isArray(attrValues) ? attrValues : null,
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"filter" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"filter" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -7331,12 +8669,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 										"values" : Array.isArray(attrValues) ? attrValues : null,
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"filter" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"filter" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -7372,8 +8710,8 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 												strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["code"] = layerCode;
 												// 애트리뷰트 키가 배열이 아닐때
 												var obj = {
-													"key" : attrKey,
-													"values" : $(inp).split(",")
+														"key" : attrKey,
+														"values" : $(inp).split(",")
 												};
 												var attrValues = obj["values"];
 												for (var z = 0; z < attrValues.length; z++) {
@@ -7388,11 +8726,11 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 										var key = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val();
 										if (key !== undefined && key !== "") {
 											var obj = {
-												"code" : layerCode,
-												"attribute" : [ {
-													"key" : attrKey,
-													"values" : $(inp).val().split(",")
-												} ]
+													"code" : layerCode,
+													"attribute" : [ {
+														"key" : attrKey,
+														"values" : $(inp).val().split(",")
+													} ]
 											};
 											var attrValues = obj.attribute.values;
 											for (var z = 0; z < attrValues.length; z++) {
@@ -7416,14 +8754,14 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 									var key = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val();
 									if (key !== undefined && key !== "") {
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : $(inp).val().split(",")
-											// "values" :
-											// $(inp).val().replace(/(\s*)/g,
-											// '').split(",")
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : $(inp).val().split(",")
+													// "values" :
+													// $(inp).val().replace(/(\s*)/g,
+													// '').split(",")
+												} ]
 										};
 										var attrValues = obj.attribute.values;
 										for (var z = 0; z < attrValues.length; z++) {
@@ -7441,12 +8779,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 									"values" : Array.isArray(attrValues) ? attrValues : null,
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"filter" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"filter" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -7456,14 +8794,14 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 								var key = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val();
 								if (key !== undefined && key !== "") {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : $(inp).val().split(",")
-										// "values" :
-										// $(inp).val().replace(/(\s*)/g,
-										// '').split(",")
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : $(inp).val().split(",")
+												// "values" :
+												// $(inp).val().replace(/(\s*)/g,
+												// '').split(",")
+											} ]
 									};
 									var attrValues = obj.attribute.values;
 									for (var z = 0; z < attrValues.length; z++) {
@@ -7471,7 +8809,7 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 									}
 									var filterObj = [ obj ];
 									var optionObj = {
-										"filter" : filterObj
+											"filter" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -7486,12 +8824,12 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 								"values" : Array.isArray(attrValues) ? attrValues : null,
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"filter" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"filter" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -7502,13 +8840,14 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 							var key = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filterkey").val();
 							if (key !== undefined && key !== "") {
 								var obj = {
-									"code" : layerCode,
-									"attribute" : [ {
-										"key" : attrKey,
-										"values" : $(inp).val().split(",")
-									// "values" : $(inp).val().replace(/(\s*)/g,
-									// '').split(",")
-									} ]
+										"code" : layerCode,
+										"attribute" : [ {
+											"key" : attrKey,
+											"values" : $(inp).val().split(",")
+											// "values" :
+											// $(inp).val().replace(/(\s*)/g,
+											// '').split(",")
+										} ]
 								};
 								var attrValues = obj.attribute.values;
 								for (var z = 0; z < attrValues.length; z++) {
@@ -7516,7 +8855,7 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 								}
 								var filterObj = [ obj ];
 								var optionObj = {
-									"filter" : filterObj
+										"filter" : filterObj
 								};
 								var typeObj = {};
 								typeObj[this.nowOption.alias] = optionObj;
@@ -7573,6 +8912,10 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 			sec = true;
 		}
 	}
+	var isAllCat = false;
+	if (this.nowRelationCategory === null) {
+		isAllCat = true;
+	}
 	var strc = this.getStructure();
 	if (Array.isArray(strc["definition"])) {
 		var isExist = false;
@@ -7613,16 +8956,16 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 															if (Array.isArray(filterElem["attribute"])) {
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
 																};
 															} else {
 																// 배열이 아닐때
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["code"] = layerCode;
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"] = [];
 																strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx]["attribute"][filterIdx] = {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
 																};
 															}
 														} else {
@@ -7630,11 +8973,11 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 															// attribute
 															// 키가 없다면
 															strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["filter"][layerIdx] = {
-																"code" : layerCode,
-																"attribute" : [ {
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null,
-																} ]
+																	"code" : layerCode,
+																	"attribute" : [ {
+																		"key" : attrKey,
+																		"values" : Array.isArray(attrValues) ? attrValues : null,
+																	} ]
 															};
 														}
 													} else {
@@ -7656,28 +8999,28 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 												"values" : Array.isArray(attrValues) ? attrValues : null,
 											} ];
 											var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
+													"code" : layerCode,
+													"attribute" : attrElem
 											};
 											var nameElem = {
-												"name" : this.nowRelationCategory,
-												"filter" : [ codeElem ]
+													"name" : this.nowRelationCategory,
+													"filter" : [ codeElem ]
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 										}
 									} else {
-										// 배열이 아니라면
+										// 현재 옵션에 릴레이션 키가 배열이 아니라면
 										var attrElem = [ {
 											"key" : attrKey,
 											"values" : Array.isArray(attrValues) ? attrValues : null,
 										} ];
 										var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
+												"code" : layerCode,
+												"attribute" : attrElem
 										};
 										var nameElem = {
-											"name" : this.nowRelationCategory,
-											"filter" : [ codeElem ]
+												"name" : this.nowRelationCategory,
+												"filter" : [ codeElem ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
 									}
@@ -7689,12 +9032,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										"values" : Array.isArray(attrValues) ? attrValues : null,
 									} ];
 									var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
+											"code" : layerCode,
+											"attribute" : attrElem
 									};
 									var nameElem = {
-										"name" : this.nowRelationCategory,
-										"filter" : [ codeElem ]
+											"name" : this.nowRelationCategory,
+											"filter" : [ codeElem ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
 								}
@@ -7706,7 +9049,7 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										// filter키가 배열형태임
 										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx] === undefined) {
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx] = {
-												"code" : undefined
+													"code" : undefined
 											};
 										}
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["code"] = layerCode;
@@ -7714,15 +9057,15 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										if (Array
 												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"])) {
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"][filterIdx] = obj;
 										} else {
 											// attribute 키가 배열 형태가 아님
 											var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
 											};
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][layerIdx]["attribute"] = [ obj ];
 										}
@@ -7731,11 +9074,11 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										// filter키가 배열형태가 아님
 										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
 										var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-											} ]
+												"code" : layerCode,
+												"attribute" : [ {
+													"key" : attrKey,
+													"values" : Array.isArray(attrValues) ? attrValues : null,
+												} ]
 										};
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"] = [ obj ];
 									}
@@ -7743,11 +9086,11 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 									// filter 키가 설정되어있지 않음
 									// 허용값이 입력되어있다면 값 변경
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+											} ]
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"] = [ obj ];
 								}
@@ -7762,12 +9105,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 									"values" : Array.isArray(attrValues) ? attrValues : null,
 								} ];
 								var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
+										"code" : layerCode,
+										"attribute" : attrElem
 								};
 								var nameElem = {
-									"name" : this.nowRelationCategory,
-									"filter" : [ codeElem ]
+										"name" : this.nowRelationCategory,
+										"filter" : [ codeElem ]
 								};
 								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
@@ -7777,15 +9120,15 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 								var values = $(inp).parents().eq(1).find(".gb-optiondefinition-input-filtervalues").val();
 								if (values !== undefined && values !== "") {
 									var obj = {
-										"code" : layerCode,
-										"attribute" : [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-										} ]
+											"code" : layerCode,
+											"attribute" : [ {
+												"key" : attrKey,
+												"values" : Array.isArray(attrValues) ? attrValues : null,
+											} ]
 									};
 									var filterObj = [ obj ];
 									var optionObj = {
-										"filter" : filterObj
+											"filter" : filterObj
 									};
 									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
 								}
@@ -7799,12 +9142,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 								"values" : Array.isArray(attrValues) ? attrValues : null,
 							} ];
 							var codeElem = {
-								"code" : layerCode,
-								"attribute" : attrElem
+									"code" : layerCode,
+									"attribute" : attrElem
 							};
 							var nameElem = {
-								"name" : this.nowRelationCategory,
-								"filter" : [ codeElem ]
+									"name" : this.nowRelationCategory,
+									"filter" : [ codeElem ]
 							};
 							strc["definition"][i]["options"][type3] = {};
 							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
@@ -7813,15 +9156,15 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 						} else {
 							var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-								} ]
+									"code" : layerCode,
+									"attribute" : [ {
+										"key" : attrKey,
+										"values" : Array.isArray(attrValues) ? attrValues : null,
+									} ]
 							};
 							var filterObj = [ obj ];
 							var optionObj = {
-								"filter" : filterObj
+									"filter" : filterObj
 							};
 							var typeObj = {};
 							typeObj[this.nowOption.alias] = optionObj;
@@ -7838,11 +9181,11 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+						} ]
 				};
 				var optionsObj = [ {
 					"name" : this.nowRelationCategory,
@@ -7855,8 +9198,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			} else {
@@ -7864,22 +9207,22 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var obj = {
-					"code" : layerCode,
-					"attribute" : [ {
-						"key" : attrKey,
-						"values" : Array.isArray(attrValues) ? attrValues : null,
-					} ]
+						"code" : layerCode,
+						"attribute" : [ {
+							"key" : attrKey,
+							"values" : Array.isArray(attrValues) ? attrValues : null,
+						} ]
 				};
 				var optionsObj = {
-					"filter" : [ obj ]
+						"filter" : [ obj ]
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var definitionObj = {
-					"name" : this.nowCategory,
-					"options" : typeObj
+						"name" : this.nowCategory,
+						"options" : typeObj
 				};
 				this.getStructure()["definition"].push(definitionObj);
 			}
@@ -7937,7 +9280,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										if (Array.isArray(layerDef)) {
 											for (var a = 0; a < layerDef.length; a++) {
 												var obj = {
-													"filter" : null
+														"filter" : null
 												};
 												if (type3 === "attribute") {
 													obj["figure"] = null;
@@ -8000,12 +9343,12 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											def[i]["options"][type3] = {};
 										}
 										def[i]["options"][type3][this.nowOption.alias] = {
-											"relation" : []
+												"relation" : []
 										};
 
 										for (var a = 0; a < layerDef.length; a++) {
 											var obj = {
-												"filter" : null
+													"filter" : null
 											};
 											if (type3 === "attribute") {
 												obj["figure"] = null;
@@ -8046,7 +9389,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 
 									for (var a = 0; a < layerDef.length; a++) {
 										var obj = {
-											"filter" : null
+												"filter" : null
 										};
 										if (type3 === "attribute") {
 											obj["figure"] = null;
@@ -8099,17 +9442,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 					if ($(check).is(":checked")) {
 						// 체크함
 						var outerObj = {
-							"name" : this.nowCategory,
-							"options" : {}
+								"name" : this.nowCategory,
+								"options" : {}
 						};
 						outerObj["options"][type3] = {};
 						outerObj["options"][type3][this.nowOption.alias] = {
-							"relation" : []
+								"relation" : []
 						};
 
 						for (var a = 0; a < layerDef.length; a++) {
 							var obj = {
-								"filter" : null
+									"filter" : null
 							};
 							if (type3 === "attribute") {
 								obj["figure"] = null;
@@ -8137,17 +9480,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 				if ($(check).is(":checked")) {
 					// 체크함
 					var outerObj = {
-						"name" : this.nowCategory,
-						"options" : {}
+							"name" : this.nowCategory,
+							"options" : {}
 					};
 					outerObj["options"][type3] = {};
 					outerObj["options"][type3][this.nowOption.alias] = {
-						"relation" : []
+							"relation" : []
 					};
 
 					for (var a = 0; a < layerDef.length; a++) {
 						var obj = {
-							"filter" : null
+								"filter" : null
 						};
 						if (type3 === "attribute") {
 							obj["figure"] = null;
@@ -8193,7 +9536,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									// 체크박스가 체크되어 있는지?
 									if ($(check).is(":checked")) {
 										var obj = {
-											"filter" : null
+												"filter" : null
 										};
 										if (type3 === "attribute") {
 											obj["figure"] = null;
@@ -8220,7 +9563,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
 												} else {
 													def[i]["options"][type3][this.nowOption.alias] = {
-														"relation" : [ obj ]
+															"relation" : [ obj ]
 													};
 												}
 											}
@@ -8293,7 +9636,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									if ($(check).is(":checked")) {
 										// 쳌박스 쳌됨
 										var obj = {
-											"filter" : null
+												"filter" : null
 										};
 										if (type3 === "attribute") {
 											obj["figure"] = null;
@@ -8313,7 +9656,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 												def[i]["options"][type3] = {};
 											}
 											def[i]["options"][type3][this.nowOption.alias] = {
-												"relation" : [ obj ]
+													"relation" : [ obj ]
 											};
 										} else {
 											def[i]["options"][type3][this.nowOption.alias] = obj;
@@ -8348,7 +9691,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 								// 없을때
 								if ($(check).is(":checked")) {
 									var obj = {
-										"filter" : null
+											"filter" : null
 									};
 									if (type3 === "attribute") {
 										obj["figure"] = null;
@@ -8382,7 +9725,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											}
 										} else {
 											def[i]["options"][type3][this.nowOption.alias] = {
-												"relation" : [ obj ]
+													"relation" : [ obj ]
 											};
 										}
 									} else {
@@ -8426,7 +9769,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 					if ($(check).is(":checked")) {
 						// 체크함
 						var obj = {
-							"filter" : null
+								"filter" : null
 						};
 						if (type3 === "attribute") {
 							obj["figure"] = null;
@@ -8444,12 +9787,12 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 							obj["name"] = this.nowRelationCategory;
 							delete obj["relation"];
 							var outerObj = {
-								"name" : this.nowCategory,
-								"options" : {}
+									"name" : this.nowCategory,
+									"options" : {}
 							};
 							outerObj["options"][type3] = {};
 							outerObj["options"][type3][this.nowOption.alias] = {
-								"relation" : [ obj ]
+									"relation" : [ obj ]
 							}
 						} else {
 							var type3Obj = {};
@@ -8457,7 +9800,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 							var options = {};
 							options[type3] = type3Obj;
 							var outerObj = {
-								"name" : this.nowCategory
+									"name" : this.nowCategory
 							};
 							outerObj["options"] = options;
 						}
@@ -8471,7 +9814,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 				if ($(check).is(":checked")) {
 					// 체크함
 					var obj = {
-						"filter" : null
+							"filter" : null
 					};
 					if (type3 === "attribute") {
 						obj["figure"] = null;
@@ -8489,12 +9832,12 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						obj["name"] = this.nowRelationCategory;
 						delete obj["relation"];
 						var outerObj = {
-							"name" : this.nowCategory,
-							"options" : {}
+								"name" : this.nowCategory,
+								"options" : {}
 						};
 						outerObj["options"][type3] = {};
 						outerObj["options"][type3][this.nowOption.alias] = {
-							"relation" : [ obj ]
+								"relation" : [ obj ]
 						}
 					} else {
 						var type3Obj = {};
@@ -8502,7 +9845,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						var options = {};
 						options[type3] = type3Obj;
 						var outerObj = {
-							"name" : this.nowCategory
+								"name" : this.nowCategory
 						};
 						outerObj["options"] = options;
 					}
@@ -8622,19 +9965,25 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 		category = this.nowCategory;
 	}
 
-	if (Array.isArray(cat)) {
-		for (var i = 0; i < cat.length; i++) {
-			if (cat[i].name === category) {
-				var layers = cat[i].layers;
-				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
-				$(codeSelect).append(allCode);
-				for (var j = 0; j < layers.length; j++) {
-					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
-					$(codeSelect).append(option);
+	if (category === null) {
+		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+		$(codeSelect).append(allCode);
+	} else if(category !== undefined) {
+		if (Array.isArray(cat)) {
+			for (var i = 0; i < cat.length; i++) {
+				if (cat[i].name === category) {
+					var layers = cat[i].layers;
+					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+					$(codeSelect).append(allCode);
+					for (var j = 0; j < layers.length; j++) {
+						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
+						$(codeSelect).append(option);
+					}
 				}
 			}
-		}
+		}	
 	}
+	
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfilter").text(
@@ -8678,19 +10027,25 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 		category = this.nowCategory;
 	}
 
-	if (Array.isArray(cat)) {
-		for (var i = 0; i < cat.length; i++) {
-			if (cat[i].name === category) {
-				var layers = cat[i].layers;
-				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
-				$(codeSelect).append(allCode);
-				for (var j = 0; j < layers.length; j++) {
-					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
-					$(codeSelect).append(option);
+	if (category === null) {
+		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+		$(codeSelect).append(allCode);
+	} else if(category !== undefined) {
+		if (Array.isArray(cat)) {
+			for (var i = 0; i < cat.length; i++) {
+				if (cat[i].name === category) {
+					var layers = cat[i].layers;
+					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+					$(codeSelect).append(allCode);
+					for (var j = 0; j < layers.length; j++) {
+						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
+						$(codeSelect).append(option);
+					}
 				}
 			}
 		}
 	}
+	
 	var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayerfigure").text(
@@ -8735,19 +10090,25 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		category = this.nowCategory;
 	}
 
-	if (Array.isArray(cat)) {
-		for (var i = 0; i < cat.length; i++) {
-			if (cat[i].name === category) {
-				var layers = cat[i].layers;
-				var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
-				$(codeSelect).append(allCode);
-				for (var j = 0; j < layers.length; j++) {
-					var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
-					$(codeSelect).append(option);
+	if (category === null) {
+		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+		$(codeSelect).append(allCode);
+	} else if(category !== undefined) {
+		if (Array.isArray(cat)) {
+			for (var i = 0; i < cat.length; i++) {
+				if (cat[i].name === category) {
+					var layers = cat[i].layers;
+					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+					$(codeSelect).append(allCode);
+					for (var j = 0; j < layers.length; j++) {
+						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
+						$(codeSelect).append(option);
+					}
 				}
 			}
 		}
 	}
+	
 	var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 	var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-deletelayertolerance").text(
@@ -8763,7 +10124,7 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	var figureArea = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-tolerancearea");
 	// ============================
 	var optItem = this.optItem[this.nowOption.alias];
-	var row = $("<div>").addClass("row");ㅇ
+	var row = $("<div>").addClass("row");
 
 	if (sec) {
 
@@ -8783,7 +10144,9 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+		var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+		var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 		if (!optItem.relation.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
@@ -8822,7 +10185,9 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+		var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+		var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 		if (!optItem.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
@@ -9019,7 +10384,14 @@ gb.validation.OptionDefinition.prototype.addFilterRow = function(btn) {
 		var inputAttr = $("<input>").attr({
 			"type" : "text",
 			"placeholder" : this.translation.attrNameEx[this.locale]
-		}).addClass("form-control").addClass("gb-optiondefinition-input-filterkey");
+		}).addClass("form-control");
+		
+		if (this.nowRelationCategory == null) {
+			$(inputAttr).addClass("gb-optiondefinition-input-filterkey-all");
+		}  else if (this.nowRelationCategory !== undefined) {
+			$(inputAttr).addClass("gb-optiondefinition-input-filterkey");
+		}
+		
 		var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
 
 		$(row).append(attrCol1).append(attrCol2);
@@ -9098,7 +10470,9 @@ gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+	var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+	var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 	if (!optItem.figure.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
@@ -9157,7 +10531,9 @@ gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+	var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+	var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 	if (!optItem.tolerance.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
@@ -9177,7 +10553,7 @@ gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 	$(row).append(numCol1).append(numCol2);
 
 	var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-deletetolerancerow").text("조건 삭제")
-			.addClass("gb-optiondefinition-btn-with100");
+	.addClass("gb-optiondefinition-btn-with100");
 	var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 	$(row).append(delCol1);
 
@@ -9196,8 +10572,8 @@ gb.validation.OptionDefinition.prototype.setBorderLayer = function(sel) {
 	var strc = this.getStructure();
 	if ($(opt).attr("geom") !== "none") {
 		strc["border"] = {
-			"code" : $(opt).text(),
-			"geometry" : $(opt).attr("geom")
+				"code" : $(opt).text(),
+				"geometry" : $(opt).attr("geom")
 		};
 	} else if ($(opt).attr("geom") === "none") {
 		strc["border"] = null
@@ -9213,6 +10589,8 @@ gb.validation.OptionDefinition.prototype.setBorderLayer = function(sel) {
  *            idx - 현재 설정 단계
  * @param {boolean}
  *            rel - 릴레이션 레이어 설정 필요 여부
+ * @param {boolean}
+ *            all - 모든 분류 선택 여부
  */
 gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 	// 인덱스와 레이블을 받아서 해당 인덱스에 레이블 텍스트와 애트리뷰트에 밸류를 넣고 이후의 엘리먼트를 삭제한다.
@@ -9273,11 +10651,15 @@ gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 				}
 			} else {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-relationcategory");
-				if (this.nowRelationCategory !== undefined) {
+
+				if (this.nowRelationCategory == null) {
+					$(btn).text(this.translation.allCat[this.locale]);
+				}  else if (this.nowRelationCategory !== undefined) {
 					$(btn).text(this.nowRelationCategory);
 				} else {
 					$(btn).text(this.translation.selectRelationLayerDetail[this.locale]);
-				}
+				}	
+
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
@@ -9289,7 +10671,9 @@ gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-relationdetailcategory");
 				if (this.nowRelationDetailCategory !== undefined) {
 					$(btn).text(this.nowRelationDetailCategory.title);
-				} else {
+				} else if(this.nowRelationDetailCategory !== null){
+					$(btn).text(this.translation.allCat[this.locale]);
+				}else {
 					$(btn).text(this.translation.selectRelationLayerDetail[this.locale]);
 				}
 				var li = $("<li>").append(btn);
@@ -9352,7 +10736,7 @@ gb.validation.OptionDefinition.prototype.printCategory = function(rel) {
 	$(this.optionArea).empty();
 	if (rel) {
 		var allBtn = $("<button>").text(this.translation.allCat[this.locale]).addClass("btn").addClass("btn-default").addClass(
-				"gb-optiondefinition-btn-relationcategory-all").addClass("gb-optiondefinition-btn-with100");
+		"gb-optiondefinition-btn-relationcategory-all").addClass("gb-optiondefinition-btn-with100");
 		var col = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-all-relation").addClass("text-right").append(allBtn);
 		var row = $("<div>").addClass("row").append(col);
 		$(this.optionArea).append(row);
@@ -9537,16 +10921,20 @@ gb.validation.OptionDefinition.prototype.printOption = function(cat, navi) {
 gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, navi, sec, all) {
 	if (!navi && !sec) {
 		this.nowOption = {
-			"title" : $(opt).text(),
-			"alias" : $(opt).attr("value")
+				"title" : $(opt).text(),
+				"alias" : $(opt).attr("value")
 		};
 		this.nowDetailCategory = undefined;
 		this.nowRelationCategory = undefined;
 		this.nowRelationDetailCategory = undefined;
 		this.updateNavigation(2);
 	} else if (!navi && sec) {
-		this.nowRelationCategory = $(opt).text();
 		this.nowRelationDetailCategory = undefined;
+		if (all) {
+			this.nowRelationCategory = null;
+		} else {
+			this.nowRelationCategory = $(opt).text();
+		}
 		this.updateNavigation(4, true);
 	} else if (navi && !sec) {
 		this.nowDetailCategory = undefined;
@@ -9555,7 +10943,11 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 		this.updateNavigation(2);
 	} else if (navi && sec) {
 		this.nowRelationDetailCategory = undefined;
-		this.updateNavigation(4, true);
+		if (all) {
+			this.updateNavigation(4, true, true);
+		} else {
+			this.updateNavigation(4, true);				
+		}
 	}
 	$(this.optionArea).empty();
 
@@ -9602,7 +10994,7 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 		var className = "gb-optiondefinition-btn-detailcategory";
 		if (sec) {
 			if (all) {
-				className = "gb-optiondefinition-btn-relationdetailcategory";
+				className = "gb-optiondefinition-btn-relationdetailcategory-all";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.filterValidation[this.locale]).attr("value", "filter");
@@ -9817,13 +11209,15 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
  *            navi - 현재 위치를 객체 내에 업데이트 하지 않음
  * @param {boolean}
  *            sec - 릴레이션 레이어 설정 단계
+ * @param {boolean}
+ *            all - 모든 분류 선택 여부
  */
-gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec) {
+gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi, sec, all) {
 	if (!sec) {
 		if (!navi) {
 			this.nowDetailCategory = {
-				"title" : $(optcat).text(),
-				"alias" : $(optcat).attr("value")
+					"title" : $(optcat).text(),
+					"alias" : $(optcat).attr("value")
 			};
 		}
 		this.nowRelationCategory = undefined;
@@ -9832,10 +11226,14 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 	} else {
 		if (!navi) {
 			this.nowRelationDetailCategory = {
-				"title" : $(optcat).text(),
-				"alias" : $(optcat).attr("value")
+					"title" : $(optcat).text(),
+					"alias" : $(optcat).attr("value")
 			};
-			this.updateNavigation(5);
+			if (all) {
+				this.updateNavigation(5, false, all );	
+			} else {
+				this.updateNavigation(5);
+			}
 		}
 	}
 
@@ -9850,7 +11248,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		var addCodeBtnRow = $("<div>").addClass("row").append(addCodeBtnCol1);
 
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiltersetting")
-				.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
+		.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
@@ -9932,7 +11330,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfilter").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
+						"gb-optiondefinition-btn-deletelayerfilter").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfilter").addClass("gb-optiondefinition-btn-with100").text(this.translation.addFilter[this.locale]);
@@ -9971,7 +11369,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 								$(row).append(filterCol1).append(filterCol2);
 							}
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).addClass("gb-optiondefinition-btn-with100");
+							"gb-optiondefinition-btn-deletefilterrow").text(this.translation.deleteFilter[this.locale]).addClass("gb-optiondefinition-btn-with100");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row).append(delCol1);
 
@@ -10013,7 +11411,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 
 	} else if (type === "figure") {
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-clearfiguresetting")
-				.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
+		.text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
@@ -10094,11 +11492,11 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
+						"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure")
-								.text(this.translation.addAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
+						.text(this.translation.addAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
 
 						var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
@@ -10158,7 +11556,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 							var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 							var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-							$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+							var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+							var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+							$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 							if (nowFilter[a].attribute[b].condition !== undefined && nowFilter[a].attribute[b].condition !== null) {
 								$(codeSelect).val(nowFilter[a].attribute[b].condition);
 							}
@@ -10183,7 +11583,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							$(row2).append(numCol1).append(numCol2);
 
 							var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
-									"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
+							"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
 							var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
 							$(row2).append(delCol1);
 
@@ -10201,7 +11601,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 		}
 	} else if (type === "tolerance") {
 		var clearSettingBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-				"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
+		"gb-optiondefinition-btn-cleartolerancesetting").text(this.translation.clearsetting[this.locale]).addClass("gb-optiondefinition-btn-with100");
 		var clearSettingBtnCol1 = $("<div>").addClass("col-md-12").append(clearSettingBtn);
 		var clearSettingBtnRow = $("<div>").addClass("row").append(clearSettingBtnCol1);
 
@@ -10282,7 +11682,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var codeCol2 = $("<div>").addClass("col-md-9").append(codeSelect);
 
 						var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
-								"gb-optiondefinition-btn-deletelayertolerance").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
+						"gb-optiondefinition-btn-deletelayertolerance").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
 						var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
 
 						/*
@@ -10315,7 +11715,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 						var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 						var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 						var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
-						$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder);
+						var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+						var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+						$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 						if (nowFilter[a].condition !== undefined && nowFilter[a].condition !== null) {
 							$(codeSelect).val(nowFilter[a].condition);
 						}
@@ -10405,8 +11807,8 @@ gb.validation.OptionDefinition.prototype.getLayerDefinition = function() {
  */
 gb.validation.OptionDefinition.prototype.clearStructure = function() {
 	this.structure = {
-		"border" : null,
-		"definition" : []
+			"border" : null,
+			"definition" : []
 	};
 };
 /**
@@ -10476,7 +11878,7 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 												if (optionItem.indexOf(optionItemKeys[l]) === -1) {
 													isOK = false;
 													this.setMessagePopup("danger", optionItemKeys[l]
-															+ this.translation.invaliditem[this.locale]);
+													+ this.translation.invaliditem[this.locale]);
 													console.error("");
 												} else {
 													// 검수 항목 설정 객체 filter,
@@ -10512,17 +11914,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							var codeExist = false;
 																							for (var e = 0; e < layerStructure.length; e++) {
 																								if (layerStructure[e]
-																										.hasOwnProperty("name")) {
+																								.hasOwnProperty("name")) {
 																									if (layerStructure[e]["name"] === nowName) {
 																										nameExist = true;
 																										if (layerStructure[e]
-																												.hasOwnProperty("layers")) {
+																										.hasOwnProperty("layers")) {
 																											if (Array
 																													.isArray(layerStructure[e]["layers"])) {
 																												var layers = layerStructure[e]["layers"];
 																												for (var f = 0; f < layers.length; f++) {
 																													if (layers[f]
-																															.hasOwnProperty("code")) {
+																													.hasOwnProperty("code")) {
 																														if (layers[f]["code"] === nowCode) {
 																															codeExist = true;
 																														}
@@ -10532,10 +11934,10 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										} else {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															nowCode
-																																	+ this.translation.nolayercode[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													nowCode
+																													+ this.translation.nolayercode[this.locale]);
 																										}
 																									}
 																								}
@@ -10543,17 +11945,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							if (nameExist === false && codeExist === false) {
 																								isOK = false;
 																								this
-																										.setMessagePopup(
-																												"danger",
-																												this.translation.cat[this.locale]
-																														+ ": "
-																														+ nowName
-																														+ ", "
-																														+ this.translation.cat[this.locale]
-																														+ ": "
-																														+ nowCode
-																														+ " "
-																														+ this.translation.nolayercode[this.locale]);
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.cat[this.locale]
+																										+ ": "
+																										+ nowName
+																										+ ", "
+																										+ this.translation.cat[this.locale]
+																										+ ": "
+																										+ nowCode
+																										+ " "
+																										+ this.translation.nolayercode[this.locale]);
 																							}
 																						}
 																					}
@@ -10567,15 +11969,15 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										.indexOf(attrKeys[q]) === -1) {
 																									isOK = false;
 																									this
-																											.setMessagePopup(
-																													"danger",
-																													attrKeys[q]
-																															+ " "
-																															+ this.translation.invalidkeyname[this.locale]);
+																									.setMessagePopup(
+																											"danger",
+																											attrKeys[q]
+																											+ " "
+																											+ this.translation.invalidkeyname[this.locale]);
 																									console
-																											.error(attrKeys[q]
-																													+ " "
-																													+ this.translation.invalidkeyname[this.locale]);
+																									.error(attrKeys[q]
+																									+ " "
+																									+ this.translation.invalidkeyname[this.locale]);
 																								} else {
 																									if (attrKeys[q] === "values") {
 																										if (!Array
@@ -10583,9 +11985,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												&& attributes[p]["values"] !== null) {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															this.translation.valuesnullorarr[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													this.translation.valuesnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10595,9 +11997,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					} else {
 																						isOK = false;
 																						this
-																								.setMessagePopup(
-																										"danger",
-																										this.translation.attrnullorarr[this.locale]);
+																						.setMessagePopup(
+																								"danger",
+																								this.translation.attrnullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}
@@ -10632,17 +12034,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							var codeExist = false;
 																							for (var e = 0; e < layerStructure.length; e++) {
 																								if (layerStructure[e]
-																										.hasOwnProperty("name")) {
+																								.hasOwnProperty("name")) {
 																									if (layerStructure[e]["name"] === nowName) {
 																										nameExist = true;
 																										if (layerStructure[e]
-																												.hasOwnProperty("layers")) {
+																										.hasOwnProperty("layers")) {
 																											if (Array
 																													.isArray(layerStructure[e]["layers"])) {
 																												var layers = layerStructure[e]["layers"];
 																												for (var f = 0; f < layers.length; f++) {
 																													if (layers[f]
-																															.hasOwnProperty("code")) {
+																													.hasOwnProperty("code")) {
 																														if (layers[f]["code"] === nowCode) {
 																															codeExist = true;
 																														}
@@ -10652,11 +12054,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										} else {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															nowCode
-																																	+ " "
-																																	+ this.translation.nolayercode[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													nowCode
+																													+ " "
+																													+ this.translation.nolayercode[this.locale]);
 																										}
 																									}
 																								}
@@ -10664,17 +12066,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							if (nameExist === false && codeExist === false) {
 																								isOK = false;
 																								this
-																										.setMessagePopup(
-																												"danger",
-																												this.translation.cat[this.locale]
-																														+ ": "
-																														+ nowName
-																														+ ", "
-																														+ this.translation.cat[this.locale]
-																														+ ": "
-																														+ nowCode
-																														+ " "
-																														+ this.translation.nolayercode[this.locale]);
+																								.setMessagePopup(
+																										"danger",
+																										this.translation.cat[this.locale]
+																										+ ": "
+																										+ nowName
+																										+ ", "
+																										+ this.translation.cat[this.locale]
+																										+ ": "
+																										+ nowCode
+																										+ " "
+																										+ this.translation.nolayercode[this.locale]);
 																							}
 																						}
 																					}
@@ -10688,11 +12090,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										.indexOf(attrKeys[q]) === -1) {
 																									isOK = false;
 																									this
-																											.setMessagePopup(
-																													"danger",
-																													attrKeys[q]
-																															+ " "
-																															+ this.translation.invalidkeyname[this.locale]);
+																									.setMessagePopup(
+																											"danger",
+																											attrKeys[q]
+																											+ " "
+																											+ this.translation.invalidkeyname[this.locale]);
 																									console.error("");
 																								} else {
 																									if (attrKeys[q] === "values") {
@@ -10701,9 +12103,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												&& attributes[p]["values"] !== null) {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															this.translation.valuesnullorarr[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													this.translation.valuesnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10713,9 +12115,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					} else {
 																						isOK = false;
 																						this
-																								.setMessagePopup(
-																										"danger",
-																										this.translation.attrnullorarr[this.locale]);
+																						.setMessagePopup(
+																								"danger",
+																								this.translation.attrnullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}
@@ -10752,13 +12154,13 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																								if (layerStructure[e]["name"] === nowName) {
 																									nameExist = true;
 																									if (layerStructure[e]
-																											.hasOwnProperty("layers")) {
+																									.hasOwnProperty("layers")) {
 																										if (Array
 																												.isArray(layerStructure[e]["layers"])) {
 																											var layers = layerStructure[e]["layers"];
 																											for (var f = 0; f < layers.length; f++) {
 																												if (layers[f]
-																														.hasOwnProperty("code")) {
+																												.hasOwnProperty("code")) {
 																													if (layers[f]["code"] === nowCode) {
 																														codeExist = true;
 																													}
@@ -10768,11 +12170,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																									} else {
 																										isOK = false;
 																										this
-																												.setMessagePopup(
-																														"danger",
-																														nowCode
-																																+ " "
-																																+ this.translation.nolayercode[this.locale]);
+																										.setMessagePopup(
+																												"danger",
+																												nowCode
+																												+ " "
+																												+ this.translation.nolayercode[this.locale]);
 																									}
 																								}
 																							}
@@ -10780,17 +12182,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																						if (nameExist === false && codeExist === false) {
 																							isOK = false;
 																							this
-																									.setMessagePopup(
-																											"danger",
-																											this.translation.cat[this.locale]
-																													+ ": "
-																													+ nowName
-																													+ ", "
-																													+ this.translation.cat[this.locale]
-																													+ ": "
-																													+ nowCode
-																													+ " "
-																													+ this.translation.nolayercode[this.locale]);
+																							.setMessagePopup(
+																									"danger",
+																									this.translation.cat[this.locale]
+																									+ ": "
+																									+ nowName
+																									+ ", "
+																									+ this.translation.cat[this.locale]
+																									+ ": "
+																									+ nowCode
+																									+ " "
+																									+ this.translation.nolayercode[this.locale]);
 																						}
 																					}
 																				}
@@ -10824,11 +12226,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																								if (filterElem.indexOf(filterKeys[o]) === -1) {
 																									isOK = false;
 																									this
-																											.setMessagePopup(
-																													"danger",
-																													filterKeys[o]
-																															+ " "
-																															+ this.translation.invalidkeyname[this.locale]);
+																									.setMessagePopup(
+																											"danger",
+																											filterKeys[o]
+																											+ " "
+																											+ this.translation.invalidkeyname[this.locale]);
 																								} else {
 																									if (filterKeys[o] === "code") {
 																										if (filterArr[n]["code"] !== null
@@ -10841,17 +12243,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												var codeExist = false;
 																												for (var e = 0; e < layerStructure.length; e++) {
 																													if (layerStructure[e]
-																															.hasOwnProperty("name")) {
+																													.hasOwnProperty("name")) {
 																														if (layerStructure[e]["name"] === nowName) {
 																															nameExist = true;
 																															if (layerStructure[e]
-																																	.hasOwnProperty("layers")) {
+																															.hasOwnProperty("layers")) {
 																																if (Array
 																																		.isArray(layerStructure[e]["layers"])) {
 																																	var layers = layerStructure[e]["layers"];
 																																	for (var f = 0; f < layers.length; f++) {
 																																		if (layers[f]
-																																				.hasOwnProperty("code")) {
+																																		.hasOwnProperty("code")) {
 																																			if (layers[f]["code"] === nowCode) {
 																																				codeExist = true;
 																																			}
@@ -10861,11 +12263,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																															} else {
 																																isOK = false;
 																																this
-																																		.setMessagePopup(
-																																				"danger",
-																																				nowCode
-																																						+ " "
-																																						+ this.translation.nolayercode[this.locale]);
+																																.setMessagePopup(
+																																		"danger",
+																																		nowCode
+																																		+ " "
+																																		+ this.translation.nolayercode[this.locale]);
 																															}
 																														}
 																													}
@@ -10874,17 +12276,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																														&& codeExist === false) {
 																													isOK = false;
 																													this
-																															.setMessagePopup(
-																																	"danger",
-																																	this.translation.cat[this.locale]
-																																			+ ": "
-																																			+ nowName
-																																			+ ", "
-																																			+ this.translation.cat[this.locale]
-																																			+ ": "
-																																			+ nowCode
-																																			+ " "
-																																			+ this.translation.nolayercode[this.locale]);
+																													.setMessagePopup(
+																															"danger",
+																															this.translation.cat[this.locale]
+																															+ ": "
+																															+ nowName
+																															+ ", "
+																															+ this.translation.cat[this.locale]
+																															+ ": "
+																															+ nowCode
+																															+ " "
+																															+ this.translation.nolayercode[this.locale]);
 																												}
 																											}
 																										}
@@ -10894,21 +12296,21 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											var attributes = filterArr[n]["attribute"];
 																											for (var p = 0; p < attributes.length; p++) {
 																												var attrKeys = Object
-																														.keys(attributes[p]);
+																												.keys(attributes[p]);
 																												for (var q = 0; q < attrKeys.length; q++) {
 																													if (filterAttributeElem
 																															.indexOf(attrKeys[q]) === -1) {
 																														isOK = false;
 																														this
-																																.setMessagePopup(
-																																		"danger",
-																																		attrKeys[q]
-																																				+ " "
-																																				+ this.translation.invalidkeyname[this.locale]);
+																														.setMessagePopup(
+																																"danger",
+																																attrKeys[q]
+																																+ " "
+																																+ this.translation.invalidkeyname[this.locale]);
 																														console
-																																.error(attrKeys[q]
-																																		+ " "
-																																		+ this.translation.invalidkeyname[this.locale]);
+																														.error(attrKeys[q]
+																														+ " "
+																														+ this.translation.invalidkeyname[this.locale]);
 																													} else {
 																														if (attrKeys[q] === "values") {
 																															if (!Array
@@ -10916,11 +12318,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																	&& attributes[p]["values"] !== null) {
 																																isOK = false;
 																																this
-																																		.setMessagePopup(
-																																				"danger",
-																																				this.translation.valuesnullorarr[this.locale]);
+																																.setMessagePopup(
+																																		"danger",
+																																		this.translation.valuesnullorarr[this.locale]);
 																																console
-																																		.error("");
+																																.error("");
 																															}
 																														}
 																													}
@@ -10929,9 +12331,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										} else {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															this.translation.attrnullorarr[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													this.translation.attrnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -10942,9 +12344,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							&& !Array.isArray(filterArr)) {
 																						isOK = false;
 																						this
-																								.setMessagePopup(
-																										"danger",
-																										this.translation.filternullorarr[this.locale]);
+																						.setMessagePopup(
+																								"danger",
+																								this.translation.filternullorarr[this.locale]);
 																						console.error("");
 																					}
 																				} else if (relKeys[b] === "figure") {
@@ -10956,11 +12358,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																								if (figureElem.indexOf(figureKeys[o]) === -1) {
 																									isOK = false;
 																									this
-																											.setMessagePopup(
-																													"danger",
-																													figureKeys[o]
-																															+ " "
-																															+ this.translation.invalidkeyname[this.locale]);
+																									.setMessagePopup(
+																											"danger",
+																											figureKeys[o]
+																											+ " "
+																											+ this.translation.invalidkeyname[this.locale]);
 																									console.error("");
 																								} else {
 																									if (figureKeys[o] === "code") {
@@ -10974,17 +12376,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																												var codeExist = false;
 																												for (var e = 0; e < layerStructure.length; e++) {
 																													if (layerStructure[e]
-																															.hasOwnProperty("name")) {
+																													.hasOwnProperty("name")) {
 																														if (layerStructure[e]["name"] === nowName) {
 																															nameExist = true;
 																															if (layerStructure[e]
-																																	.hasOwnProperty("layers")) {
+																															.hasOwnProperty("layers")) {
 																																if (Array
 																																		.isArray(layerStructure[e]["layers"])) {
 																																	var layers = layerStructure[e]["layers"];
 																																	for (var f = 0; f < layers.length; f++) {
 																																		if (layers[f]
-																																				.hasOwnProperty("code")) {
+																																		.hasOwnProperty("code")) {
 																																			if (layers[f]["code"] === nowCode) {
 																																				codeExist = true;
 																																			}
@@ -10994,11 +12396,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																															} else {
 																																isOK = false;
 																																this
-																																		.setMessagePopup(
-																																				"danger",
-																																				nowCode
-																																						+ " "
-																																						+ this.translation.nolayercode[this.locale]);
+																																.setMessagePopup(
+																																		"danger",
+																																		nowCode
+																																		+ " "
+																																		+ this.translation.nolayercode[this.locale]);
 																															}
 																														}
 																													}
@@ -11007,17 +12409,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																														&& codeExist === false) {
 																													isOK = false;
 																													this
-																															.setMessagePopup(
-																																	"danger",
-																																	this.translation.cat[this.locale]
-																																			+ ": "
-																																			+ nowName
-																																			+ ", "
-																																			+ this.translation.cat[this.locale]
-																																			+ ": "
-																																			+ nowCode
-																																			+ " "
-																																			+ this.translation.nolayercode[this.locale]);
+																													.setMessagePopup(
+																															"danger",
+																															this.translation.cat[this.locale]
+																															+ ": "
+																															+ nowName
+																															+ ", "
+																															+ this.translation.cat[this.locale]
+																															+ ": "
+																															+ nowCode
+																															+ " "
+																															+ this.translation.nolayercode[this.locale]);
 																												}
 																											}
 																										}
@@ -11027,17 +12429,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											var attributes = figureArr[n]["attribute"];
 																											for (var p = 0; p < attributes.length; p++) {
 																												var attrKeys = Object
-																														.keys(attributes[p]);
+																												.keys(attributes[p]);
 																												for (var q = 0; q < attrKeys.length; q++) {
 																													if (figureAttributeElem
 																															.indexOf(attrKeys[q]) === -1) {
 																														isOK = false;
 																														this
-																																.setMessagePopup(
-																																		"danger",
-																																		attrKeys[q]
-																																				+ " "
-																																				+ this.translation.invalidkeyname[this.locale]);
+																														.setMessagePopup(
+																																"danger",
+																																attrKeys[q]
+																																+ " "
+																																+ this.translation.invalidkeyname[this.locale]);
 																														console.error("");
 																													} else {
 																														if (attrKeys[q] === "values") {
@@ -11046,11 +12448,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																																	&& attributes[p]["values"] !== null) {
 																																isOK = false;
 																																this
-																																		.setMessagePopup(
-																																				"danger",
-																																				this.translation.valuesnullorarr[this.locale]);
+																																.setMessagePopup(
+																																		"danger",
+																																		this.translation.valuesnullorarr[this.locale]);
 																																console
-																																		.error("");
+																																.error("");
 																															}
 																														}
 																													}
@@ -11059,9 +12461,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																										} else {
 																											isOK = false;
 																											this
-																													.setMessagePopup(
-																															"danger",
-																															this.translation.attrnullorarr[this.locale]);
+																											.setMessagePopup(
+																													"danger",
+																													this.translation.attrnullorarr[this.locale]);
 																											console.error("");
 																										}
 																									}
@@ -11072,9 +12474,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							&& !Array.isArray(figureArr)) {
 																						isOK = false;
 																						this
-																								.setMessagePopup(
-																										"danger",
-																										this.translation.figurenullorarr[this.locale]);
+																						.setMessagePopup(
+																								"danger",
+																								this.translation.figurenullorarr[this.locale]);
 																						console.error("");
 																					}
 																				} else if (relKeys[b] === "tolerance") {
@@ -11082,16 +12484,16 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																					if (Array.isArray(toleranceArr)) {
 																						for (var n = 0; n < toleranceArr.length; n++) {
 																							var toleranceKeys = Object
-																									.keys(toleranceArr[n]);
+																							.keys(toleranceArr[n]);
 																							for (var o = 0; o < toleranceKeys.length; o++) {
 																								if (toleranceElem.indexOf(toleranceKeys[o]) === -1) {
 																									isOK = false;
 																									this
-																											.setMessagePopup(
-																													"danger",
-																													toleranceKeys[o]
-																															+ " "
-																															+ this.translation.invalidkeyname[this.locale]);
+																									.setMessagePopup(
+																											"danger",
+																											toleranceKeys[o]
+																											+ " "
+																											+ this.translation.invalidkeyname[this.locale]);
 																								}
 																								if (toleranceKeys[o] === "code") {
 																									if (toleranceArr[n]["code"] !== null
@@ -11103,17 +12505,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																											var codeExist = false;
 																											for (var e = 0; e < layerStructure.length; e++) {
 																												if (layerStructure[e]
-																														.hasOwnProperty("name")) {
+																												.hasOwnProperty("name")) {
 																													if (layerStructure[e]["name"] === nowName) {
 																														nameExist = true;
 																														if (layerStructure[e]
-																																.hasOwnProperty("layers")) {
+																														.hasOwnProperty("layers")) {
 																															if (Array
 																																	.isArray(layerStructure[e]["layers"])) {
 																																var layers = layerStructure[e]["layers"];
 																																for (var f = 0; f < layers.length; f++) {
 																																	if (layers[f]
-																																			.hasOwnProperty("code")) {
+																																	.hasOwnProperty("code")) {
 																																		if (layers[f]["code"] === nowCode) {
 																																			codeExist = true;
 																																		}
@@ -11123,11 +12525,11 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																														} else {
 																															isOK = false;
 																															this
-																																	.setMessagePopup(
-																																			"danger",
-																																			nowCode
-																																					+ " "
-																																					+ this.translation.nolayercode[this.locale]);
+																															.setMessagePopup(
+																																	"danger",
+																																	nowCode
+																																	+ " "
+																																	+ this.translation.nolayercode[this.locale]);
 																														}
 																													}
 																												}
@@ -11136,17 +12538,17 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																													&& codeExist === false) {
 																												isOK = false;
 																												this
-																														.setMessagePopup(
-																																"danger",
-																																this.translation.cat[this.locale]
-																																		+ ": "
-																																		+ nowName
-																																		+ ", "
-																																		+ this.translation.cat[this.locale]
-																																		+ ": "
-																																		+ nowCode
-																																		+ " "
-																																		+ this.translation.nolayercode[this.locale]);
+																												.setMessagePopup(
+																														"danger",
+																														this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowName
+																														+ ", "
+																														+ this.translation.cat[this.locale]
+																														+ ": "
+																														+ nowCode
+																														+ " "
+																														+ this.translation.nolayercode[this.locale]);
 																											}
 																										}
 																									}
@@ -11157,9 +12559,9 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 																							&& !Array.isArray(toleranceArr)) {
 																						isOK = false;
 																						this
-																								.setMessagePopup(
-																										"danger",
-																										this.translation.tolernullorarr[this.locale]);
+																						.setMessagePopup(
+																								"danger",
+																								this.translation.tolernullorarr[this.locale]);
 																						console.error("");
 																					}
 																				}

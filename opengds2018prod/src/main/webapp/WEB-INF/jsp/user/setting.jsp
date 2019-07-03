@@ -87,18 +87,22 @@ input.radio:checked+label::before {
 						<spring:message code="lang.validationType" />
 					</h3>
 					<div class="row QA-Type-Sect" style="margin-bottom: 20px;" title="some tips">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<input type="radio" class="radio" name="qacat2" id="qacat21" value="numetrical" checked /> <label for="qacat21">
 								<spring:message code="lang.digitalMap" />
 							</label>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<input type="radio" class="radio" name="qacat2" id="qacat22" value="underground" /> <label for="qacat22"><spring:message
 									code="lang.underFacility" /></label>
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<input type="radio" class="radio" name="qacat2" id="qacat23" value="forest" /> <label for="qacat23"><spring:message
 									code="lang.forestMap" /> </label>
+						</div>
+						<div class="col-md-3">
+							<input type="radio" class="radio" name="qacat2" id="qacat24" value="basic" /> <label for="qacat24"><spring:message
+									code="lang.basicMap" /> </label>
 						</div>
 					</div>
 					<div class="row VersionArea QA-detail-sect" title="some tips">
@@ -408,7 +412,7 @@ input.radio:checked+label::before {
 			});
 
 			$("input[type=radio][name=qacat2]").change(function() {
-				if (this.value === "forest") {
+				if (this.value === "forest" || this.value === "basic") {
 					$(".VersionArea").hide();
 				} else if (this.value === "numetrical" || this.value === "underground") {
 					$(".VersionArea").show();

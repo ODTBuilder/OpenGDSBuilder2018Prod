@@ -306,8 +306,8 @@ gb.validation.OptionDefinition = function(obj) {
 				"en" : "Code"
 			},
 			"applyAll" : {
-				"ko" : "모두 적용",
-				"en" : "Apply all"
+				"ko" : "모든 레이어 코드",
+				"en" : "All layers"
 			},
 			"deleteLayerCode" : {
 				"ko" : "레이어 코드 삭제",
@@ -391,7 +391,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"en" : "Choose the category to validate."
 			},
 			"allCat" : {
-				"ko" : "모든 분류",
+				"ko" : "모든 레이어 분류",
 				"en" : "All categorys"
 			},
 			"notice" : {
@@ -8598,41 +8598,82 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 														// 같은 분류의 인덱스
 														existIdx = b;
 														break;
-													} 
+													}
 												}
 												// 전체 레이어 정의 분류와 릴레이션 레이어 분류와
 												// 같은게 있을때
 												if (isExist) {
 													// 해당 릴레이션의 인덱스로 객체를 특정하고
 													var erel = rel[existIdx];
-													// 정의할 객체 생성
-													var obj = {
-															"code" : null,
-															"attribute" : [
-																{
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null
-																}
-															]
+													// 필터 키 객체 꺼내기
+													var filterArr = erel["filter"];
+													// 레이어 코드는 널로 입력
+													var code = null;
+													// 속성 배열
+													var attribute = [];
+													// 입력 폼 영역
+													var filterArea = $(inp).parents().eq(2);
+													// 각 필터 폼 별 행 가져오기
+													var rows = $(filterArea).find(".row");
+													// 각 행별로
+													for (var c = 0; c < rows.length; c++) {
+														var row = rows[c];
+														// 속성명 가져오기
+														var attrName = $(row).find(".gb-optiondefinition-input-filterkey").val();
+														// 빈 속성명 값은 재끼기
+														if (attrName === "") {
+															continue;
+														}
+														// 속성값 가져오기
+														var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+														// 객체로 만들어서
+														var attrObj = {
+																"key" : attrName,
+																"values" : attrValues 
+														}; 
+														// 배열에 넣기
+														attribute[c] = attrObj;
 													}
-													// 새로 정의한 객체로 덮어쓰기
-													erel["filter"] = [obj];
+													// 필터 객체로 만들어서
+													var filterObj = {
+															"code" : code,
+															"attribute" : attribute
+													};
+													// 필터 배열에 넣기
+													erel["filter"] = [filterObj];
 												} else {
+													// 릴레이션 배열에 없을때
+													// 없는 이름을 가져오기
 													var nrel = layerDef[a]["name"];
-													var obj = {
-															"code" : null,
-															"attribute" : [
-																{
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null
-																}
-															]
+													// 모든 레이어코드는 널로 입력
+													var code = null;
+													var attribute = [];
+													var filterArea = $(inp).parents().eq(2);
+													var rows = $(filterArea).find(".row");
+													for (var c = 0; c < rows.length; c++) {
+														var row = rows[c];
+														var attrName = $(row).find(".gb-optiondefinition-input-filterkey").val();
+														// 빈 속성명 값은 재끼기
+														if (attrName === "") {
+															continue;
+														}
+														var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+														var attrObj = {
+																"key" : attrName,
+																"values" : attrValues 
+														}; 
+														attribute[c] = attrObj;
 													}
-													var filter = [obj];
+													var filterObj = {
+															"code" : null,
+															"attribute" : attribute
+													}
+													var filterArr = [filterObj];
 													var relObj = {
 															"name" : nrel,
-															"filter" : filter
+															"filter" : filterArr
 													};
+													// 릴레이션 배열에 푸시
 													rel.push(relObj);
 												}
 											}
@@ -9019,7 +9060,7 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 														// 같은 분류의 인덱스
 														existIdx = b;
 														break;
-													} 
+													}
 												}
 												// 전체 레이어 정의 분류와 릴레이션 레이어 분류와
 												// 같은게 있을때
@@ -9028,56 +9069,79 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 													var erel = rel[existIdx];
 													// 필터 키 객체 꺼내기
 													var filterArr = erel["filter"];
-													// 필터 키 객체가 배열인지
-													if (Array.isArray(filterArr)) {
-														// 애트리뷰트 키가 있는지
-														if(filterArr[layerIdx].hasOwnProperty("attribute")){
-															// 애트리뷰트 키 객체가 배열인지
-															if (Array.isArray(filterArr[layerIdx]["attribute"])) {
-																var attrObj = {
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null
-																};
-																filterArr[layerIdx]["attribute"][filterIdx] = attrObj;
-															}
+													// 레이어 코드는 널로 입력
+													var code = null;
+													// 속성 배열
+													var attribute = [];
+													// 입력 폼 영역
+													var filterArea = $(inp).parents().eq(2);
+													// 각 필터 폼 별 행 가져오기
+													var rows = $(filterArea).find(".row");
+													// 각 행별로
+													for (var c = 0; c < rows.length; c++) {
+														var row = rows[c];
+														// 속성명 가져오기
+														var attrName = $(row).find(".gb-optiondefinition-input-filterkey").val();
+														// 빈 속성명 값은 재끼기
+														if (attrName === "") {
+															continue;
 														}
-													} else {
-														// 정의할 객체 생성
-														var obj = {
-																"code" : null,
-																"attribute" : [
-																	{
-																		"key" : attrKey,
-																		"values" : Array.isArray(attrValues) ? attrValues : null
-																	}
-																]
-														};
-														erel["filter"] = [obj];
+														// 속성값 가져오기
+														var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+														// 객체로 만들어서
+														var attrObj = {
+																"key" : attrName,
+																"values" : attrValues 
+														}; 
+														// 배열에 넣기
+														attribute[c] = attrObj;
 													}
+													// 필터 객체로 만들어서
+													var filterObj = {
+															"code" : code,
+															"attribute" : attribute
+													};
+													// 필터 배열에 넣기
+													erel["filter"] = [filterObj];
 												} else {
+													// 릴레이션 배열에 없을때
+													// 없는 이름을 가져오기
 													var nrel = layerDef[a]["name"];
-													var obj = {
-															"code" : null,
-															"attribute" : [
-																{
-																	"key" : attrKey,
-																	"values" : Array.isArray(attrValues) ? attrValues : null
-																}
-															]
+													// 모든 레이어코드는 널로 입력
+													var code = null;
+													var attribute = [];
+													var filterArea = $(inp).parents().eq(2);
+													var rows = $(filterArea).find(".row");
+													for (var c = 0; c < rows.length; c++) {
+														var row = rows[c];
+														var attrName = $(row).find(".gb-optiondefinition-input-filterkey").val();
+														// 빈 속성명 값은 재끼기
+														if (attrName === "") {
+															continue;
+														}
+														var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+														var attrObj = {
+																"key" : attrName,
+																"values" : attrValues 
+														}; 
+														attribute[c] = attrObj;
 													}
-													var filter = [obj];
+													var filterObj = {
+															"code" : null,
+															"attribute" : attribute
+													}
+													var filterArr = [filterObj];
 													var relObj = {
 															"name" : nrel,
-															"filter" : filter
+															"filter" : filterArr
 													};
+													// 릴레이션 배열에 푸시
 													rel.push(relObj);
 												}
 											}
 										} else {
 											// 현재 옵션을 특정 분류에 적용할 것인지
 											var isExist = false;
-// var rel =
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
 											for (var a = 0; a < rel.length; a++) {
 												// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과
 												// 같다면
@@ -9335,21 +9399,35 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 					
 					for (var i = 0; i < layerDef.length; i++) {
 						var name = layerDef[i].name;
-					
-						var obj = {
-								"code" : layerCode,
-								"attribute" : [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-								} ]
-						};
 						
-						var nameObj = {
-							"name" : name,
-							"filter" : [ obj ]
+						var code = null;
+						var attribute = [];
+						var filterArea = $(inp).parents().eq(2);
+						var rows = $(filterArea).find(".row");
+						for (var c = 0; c < rows.length; c++) {
+							var row = rows[c];
+							var attrName = $(row).find(".gb-optiondefinition-input-filterkey").val();
+							// 빈 속성명 값은 재끼기
+							if (attrName === "") {
+								continue;
+							}
+							var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+							var attrObj = {
+									"key" : attrName,
+									"values" : attrValues
+							};
+							attribute[c] = attrObj;
+						}
+						var filterObj = {
+								"code" : null,
+								"attribute" : attribute
+						}
+						var filterArr = [filterObj];
+						var relObj = {
+								"name" : name,
+								"filter" : filterArr
 						};
-						optionsObj.push(nameObj);
-						
+						optionsObj.push(relObj);
 					}
 					var definitionObj = {
 							"name" : this.nowCategory,

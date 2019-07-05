@@ -613,7 +613,12 @@ gb.validation.OptionDefinition = function(obj) {
 			"conIntersectedB": {
 				"en" : "Contour line intersections",
 				"ko" : "등고선 교차"
+			},
+			"nomoreadd": {
+				"en" : "You can not set the same layer code twice.",
+				"ko" : "같은 레이어 코드를 두 번 설정할 수 없습니다."
 			}
+			
 	}
 	/**
 	 * 검수 항목 정보
@@ -4431,9 +4436,13 @@ gb.validation.OptionDefinition = function(obj) {
 		// that.printDetailForm(this, false);
 		that.printOptionCategory(this, false, true);
 	});
-	// 네비게이터 릴레이션 카테고리 클릭시 다음 단계 세부 설정 종류 표시
+	// 네비게이터 디테일 옵션 타입 선택시 해당 단계로 이동
 	$(this.panelBody).on("click", ".gb-optiondefinition-navi-relationdetailcategory", function() {
 		that.printOptionCategory(this, true, true);
+	});
+	// 네비게이터 디테일 옵션 타입 선택시 해당 단계로 이동 (모든 분류)
+	$(this.panelBody).on("click", ".gb-optiondefinition-navi-relationdetailcategory-all", function() {
+		that.printOptionCategory(this, true, true, true);
 	});
 	// 버튼 릴레이션 카테고리 클릭시 다음 단계 세부 설정 종류 표시
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-relationdetailcategory", function() {
@@ -10157,9 +10166,95 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 		}
 	}
 
+	var isAllCat = false;
+	if (this.nowRelationCategory === null) {
+		isAllCat = true;
+	}
+	
 	var category;
 	if (sec) {
 		category = this.nowRelationCategory;
+		if (isAllCat) {
+			var definition = this.getStructure()["definition"];
+			if (Array.isArray(definition)) {
+				for (var i = 0; i < definition.length; i++) {
+					var name = definition[i].name;
+					if (name === this.nowCategory) {
+						// 검수 항목 정보
+						var optItem = this.optItem[this.nowOption.alias];
+						// 검수 타입
+						var type3 = optItem["purpose"];
+						var optionType = definition[i]["options"][type3];
+						if (optionType !== undefined) {
+							var keys = Object.keys(optionType);
+							if (keys.indexOf(this.nowOption.alias) !== -1) {
+								var relation = definition[i]["options"][type3][this.nowOption.alias]["relation"];
+								if (Array.isArray(relation)) {
+									for (var j = 0; j < relation.length; j++) {
+										var filter = definition[i]["options"][type3][this.nowOption.alias]["relation"][j][type];
+										if (filter !== undefined) {
+											delete definition[i]["options"][type3][this.nowOption.alias]["relation"][j][type];
+										}
+										var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]["relation"][j]);
+										if (keys2.length === 1) {
+											definition[i]["options"][type3][this.nowOption.alias]["relation"][j] = undefined;
+										}
+									}
+									var isAllUndef = true;
+									for (var j = 0; j < relation.length; j++) {
+										if (relation[j] !== undefined) {
+											isAllUndef = false;
+										}										
+									}
+									if (isAllUndef) {
+										delete definition[i]["options"][type3][this.nowOption.alias]["relation"];
+									}
+									var optionKeys = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
+									if (optionKeys.length === 0) {
+										delete definition[i]["options"][type3][this.nowOption.alias];
+									}
+									var typeKeys = Object.keys(definition[i]["options"][type3]);
+									if (typeKeys.length === 0) {
+										delete definition[i]["options"][type3];
+									}
+									var optionsKeys = Object.keys(definition[i]["options"]);
+									if (optionsKeys.length === 0) {
+										delete definition[i]["options"];
+									}
+									var defObjKeys = Object.keys(definition[i]);
+									if (defObjKeys.length === 0 || defObjKeys.length === 1) {
+										definition.splice(i, 1);
+										i--;
+									}
+								}
+							}
+						}
+					}
+				}
+				var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
+
+				if (type === "filter") {
+					$(btn).attr({
+						"value" : "filter"
+					}).text(that.translation.filterValidation[that.locale]);
+				} else if (type === "figure") {
+					$(btn).attr({
+						"value" : "figure"
+					}).text(that.translation.attrValidation[that.locale]);
+				} else if (type === "tolerance") {
+					$(btn).attr({
+						"value" : "tolerance"
+					}).text(that.translation.condValidation[that.locale]);
+				} else if (type === "relation") {
+					$(btn).attr({
+						"value" : "relation"
+					}).text(that.translation.layerRelation[that.locale]);
+				}
+				that.printDetailForm(btn, false, true, true);
+			}
+		} else {
+
+		}
 	} else {
 		category = this.nowCategory;
 		var definition = this.getStructure()["definition"];
@@ -10188,29 +10283,30 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 						if (afterKeys.length === 0) {
 							delete definition[i]["options"][type3];
 						}
-						var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
-
-						if (type === "filter") {
-							$(btn).attr({
-								"value" : "filter"
-							}).text(that.translation.filterValidation[that.locale]);
-						} else if (type === "figure") {
-							$(btn).attr({
-								"value" : "figure"
-							}).text(that.translation.attrValidation[that.locale]);
-						} else if (type === "tolerance") {
-							$(btn).attr({
-								"value" : "tolerance"
-							}).text(that.translation.condValidation[that.locale]);
-						} else if (type === "relation") {
-							$(btn).attr({
-								"value" : "relation"
-							}).text(that.translation.layerRelation[that.locale]);
-						}
-						that.printDetailForm(btn, false);
+						
 					}
 				}
 			}
+			var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
+
+			if (type === "filter") {
+				$(btn).attr({
+					"value" : "filter"
+				}).text(that.translation.filterValidation[that.locale]);
+			} else if (type === "figure") {
+				$(btn).attr({
+					"value" : "figure"
+				}).text(that.translation.attrValidation[that.locale]);
+			} else if (type === "tolerance") {
+				$(btn).attr({
+					"value" : "tolerance"
+				}).text(that.translation.condValidation[that.locale]);
+			} else if (type === "relation") {
+				$(btn).attr({
+					"value" : "relation"
+				}).text(that.translation.layerRelation[that.locale]);
+			}
+			that.printDetailForm(btn, false);
 		}
 	}
 
@@ -10250,18 +10346,70 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFilter = function(btn) {
 	}
 
 	if (category === null) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-filtercode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 		$(codeSelect).append(allCode);
 	} else if(category !== undefined) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-filtercode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		if (Array.isArray(cat)) {
 			for (var i = 0; i < cat.length; i++) {
 				if (cat[i].name === category) {
+					// 현재 분류의 레이어 코드 
 					var layers = cat[i].layers;
+					// 레이어 코드 필터 영역
+					var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+					// 추가한 코드들
+					var well = $(tup).find(".well");
+					// 모든 코드 개수랑 추가한 코드 개수가 같으면
+					if (layers.length === well.length) {
+						// 추가안함
+						this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+						return;
+					}
 					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 					$(codeSelect).append(allCode);
 					for (var j = 0; j < layers.length; j++) {
 						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
 						$(codeSelect).append(option);
+						// 중복 확인
+						var isExist = false;
+						for (var k = 0; k < well.length; k++) {
+							var selec = $(well[k]).find(".gb-optiondefinition-select-filtercode");
+							if ($(selec).children('option').filter("option:selected").attr("geom") !== "none" && $(selec).children('option').filter("option:selected").text() === layers[j].code) {
+								isExist = true;
+								break;
+							}
+						}
+						if (!isExist) {
+							$(option).prop("selected", true);
+						}
+						// 중복 확인
 					}
 				}
 			}
@@ -10312,18 +10460,70 @@ gb.validation.OptionDefinition.prototype.addLayerCodeFigure = function(btn) {
 	}
 
 	if (category === null) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-figurecode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 		$(codeSelect).append(allCode);
 	} else if(category !== undefined) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-figurecode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		if (Array.isArray(cat)) {
 			for (var i = 0; i < cat.length; i++) {
 				if (cat[i].name === category) {
+					// 현재 분류의 레이어 코드 
 					var layers = cat[i].layers;
+					// 레이어 코드 필터 영역
+					var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+					// 추가한 코드들
+					var well = $(tup).find(".well");
+					// 모든 코드 개수랑 추가한 코드 개수가 같으면
+					if (layers.length === well.length) {
+						// 추가안함
+						this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+						return;
+					}
 					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 					$(codeSelect).append(allCode);
 					for (var j = 0; j < layers.length; j++) {
 						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
 						$(codeSelect).append(option);
+						// 중복 확인
+						var isExist = false;
+						for (var k = 0; k < well.length; k++) {
+							var selec = $(well[k]).find(".gb-optiondefinition-select-figurecode");
+							if ($(selec).children('option').filter("option:selected").attr("geom") !== "none" && $(selec).children('option').filter("option:selected").text() === layers[j].code) {
+								isExist = true;
+								break;
+							}
+						}
+						if (!isExist) {
+							$(option).prop("selected", true);
+						}
+						// 중복 확인
 					}
 				}
 			}
@@ -10375,18 +10575,70 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 	}
 
 	if (category === null) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-tolerancecode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 		$(codeSelect).append(allCode);
 	} else if(category !== undefined) {
+		var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+		var well = $(tup).find(".well");
+		var isExist = false;
+		for (var i = 0; i < well.length; i++) {
+			var selec = $(well[i]).find(".gb-optiondefinition-select-tolerancecode");
+			if ($(selec).children('option').filter("option:selected").attr("geom") === "none") {
+				isExist = true;
+				break;
+			}
+		}
+		if (isExist) {
+			this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+			return;
+		}
 		if (Array.isArray(cat)) {
 			for (var i = 0; i < cat.length; i++) {
 				if (cat[i].name === category) {
+					// 현재 분류의 레이어 코드 
 					var layers = cat[i].layers;
+					// 레이어 코드 필터 영역
+					var tup = $(btn).parents().eq(2).find(".gb-optiondefinition-tuplearea");
+					// 추가한 코드들
+					var well = $(tup).find(".well");
+					// 모든 코드 개수랑 추가한 코드 개수가 같으면
+					if (layers.length === well.length) {
+						// 추가안함
+						this.setMessagePopup("danger", this.translation.nomoreadd[this.locale]);
+						return;
+					}
 					var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
 					$(codeSelect).append(allCode);
 					for (var j = 0; j < layers.length; j++) {
 						var option = $("<option>").text(layers[j].code).attr("geom", layers[j].geometry);
 						$(codeSelect).append(option);
+						// 중복 확인
+						var isExist = false;
+						for (var k = 0; k < well.length; k++) {
+							var selec = $(well[k]).find(".gb-optiondefinition-select-tolerancecode");
+							if ($(selec).children('option').filter("option:selected").attr("geom") !== "none" && $(selec).children('option').filter("option:selected").text() === layers[j].code) {
+								isExist = true;
+								break;
+							}
+						}
+						if (!isExist) {
+							$(option).prop("selected", true);
+						}
+						// 중복 확인
 					}
 				}
 			}
@@ -10526,9 +10778,30 @@ gb.validation.OptionDefinition.prototype.selectFilterCode = function(sel) {
 			sec = true;
 		}
 	}
-
 	// 레이어 인덱스
 	var layerIdx = $(sel).parents().eq(2).index();
+	// 레이어 코드 필터 영역
+	var tup = $(sel).parents().eq(3);
+	// 추가한 코드들
+	var well = $(tup).find(".well");
+	// 중복인지
+	var isExist = false;
+	// 모든 웰을 돌면서
+	for (var i = 0; i < well.length; i++) {
+		// 현재 셀렉트 박스는 재끼고
+		if (i === layerIdx) {
+			continue;
+		}
+		// 셀렉트 박스를 찾아서
+		var selec = $(well[i]).find(".gb-optiondefinition-select-filtercode");
+		// 현재 값과 같으면 
+		if ($(selec).find("option:selected").text() === $(sel).find("option:selected").text()) {
+			// 다른걸로 바꿔야되는데..
+			console.log("duplicate");
+		}
+		// 모든 레이어 코드를 선택했으면 다른걸로 바꾸고
+	}
+	
 	// 레이어 코드
 	var layerCode = null;
 	if (!$(sel).prop("disabled")) {
@@ -10945,14 +11218,20 @@ gb.validation.OptionDefinition.prototype.updateNavigation = function(idx, rel) {
 				var li = $("<li>").addClass("active").text(this.translation.selectRelationLayerDetail[this.locale]);
 				$(this.navi).append(li);
 			} else {
-				var btn = $("<button>").addClass("btn").addClass("btn-link").addClass("gb-optiondefinition-navi-relationdetailcategory");
+				var btn = $("<button>").addClass("btn").addClass("btn-link");
+				if (this.nowRelationCategory == null) {
+					$(btn).addClass("gb-optiondefinition-navi-relationdetailcategory-all");
+				} else {
+					$(btn).addClass("gb-optiondefinition-navi-relationdetailcategory");
+				}
 				if (this.nowRelationDetailCategory !== undefined) {
 					$(btn).text(this.nowRelationDetailCategory.title);
-				} else if(this.nowRelationDetailCategory !== null){
-					$(btn).text(this.translation.allCat[this.locale]);
-				}else {
+				} else {
 					$(btn).text(this.translation.selectRelationLayerDetail[this.locale]);
 				}
+// else if(this.nowRelationDetailCategory !== null){
+// $(btn).text(this.translation.allCat[this.locale]);
+// }
 				var li = $("<li>").append(btn);
 				$(this.navi).append(li);
 			}
@@ -11583,7 +11862,6 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 											} else {
 												for (var k = 0; k < attrArr.length; k++) {
 													var jsonStr = JSON.stringify(attrArr[k]);
-//													var njson = JSON.parse(jsonStr);
 													if (!Object.is(JSON.stringify(tempAttrArr[k]), jsonStr)) {
 														isSame = false;
 													}
@@ -11592,8 +11870,6 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 													}
 												}	
 											}
-											
-											console.log(tempAttrArr);
 										}
 									}
 								}
@@ -11670,8 +11946,12 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							}
 						}
 					} else {
-						if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
-							nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
+						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+							if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty(type)) {
+								if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
+									nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
+								}
+							}
 						}
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
@@ -12021,8 +12301,12 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 								}
 							}
 						} else {
-							if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
-								nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
+							if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty(type)) {
+									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
+										nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
+									}
+								}
 							}
 						}
 					}

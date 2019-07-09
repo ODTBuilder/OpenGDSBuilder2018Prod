@@ -150,6 +150,9 @@ mybatis:
 - ### Geoserver Layer 분산 버전 관리(버저닝) 기능 지원<br>
 <img src="https://user-images.githubusercontent.com/11713603/50584579-bd565f80-0eb3-11e9-8318-a8672eef256a.jpg" alt="alt text" width="75%">
 
+### 8. 요청방법 ###
+- [Producer 인터페이스 설계서.pdf](https://github.com/ODTBuilder/OpenGDSBuilder2018Prod/blob/master/Producer%20%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%84%A4%EA%B3%84%EC%84%9C.pdf)를 참고
+
 사용 라이브러리
 =====
 1. jQuery 2.2.2 (MIT License, CC0) http://jquery.com/

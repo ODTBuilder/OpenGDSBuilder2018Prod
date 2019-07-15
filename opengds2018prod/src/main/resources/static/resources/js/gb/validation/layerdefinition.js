@@ -190,7 +190,9 @@ gb.validation.LayerDefinition = function(obj) {
 	 * @private
 	 * @type {Object}
 	 */
-	this.dataType = [ "DATE", "DATETIME", "INTEGER", "NUMBER", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
+	this.dataType = [ "DATE", "DATETIME", "TIMESTAMP", "INTEGER", "NUMBER", "NUMERIC", "VARCHAR", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
+	this.dataType.sort();
+	
 	var options = obj ? obj : {};
 	this.structure = [];
 	/**

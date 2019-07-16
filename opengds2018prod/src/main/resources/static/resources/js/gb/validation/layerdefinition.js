@@ -179,7 +179,12 @@ gb.validation.LayerDefinition = function(obj) {
 		"del" : {
 			"en" : "Delete",
 			"ko" : "삭제"
+		},
+		"notzero" : {
+			"en" : "The length of the numeric attribute type must be 1 or greater.",
+			"ko" : "숫자형 속성 타입의 길이는 1 이상이어야 합니다."
 		}
+		
 	}
 	/**
 	 * @private
@@ -192,7 +197,7 @@ gb.validation.LayerDefinition = function(obj) {
 	 */
 	this.dataType = [ "DATE", "DATETIME", "TIMESTAMP", "INTEGER", "NUMBER", "NUMERIC", "VARCHAR", "VARCHAR2", "VARCHAR3", "VARCHAR4" ];
 	this.dataType.sort();
-	
+
 	var options = obj ? obj : {};
 	this.structure = [];
 	/**
@@ -517,7 +522,7 @@ gb.validation.LayerDefinition.prototype.updateStructure = function() {
 
 						var r1col5 = $("<div>").addClass("col-md-1").text(this.translation.length[this.locale]);
 						// 데이터 길이 입력
-						var attrLength = $("<input>").attr("type", "number").addClass("form-control").addClass("gb-layerdefinition-input-attributelength").val(fix[k].length);
+						var attrLength = $("<input>").attr("type", "text").addClass("form-control").addClass("gb-layerdefinition-input-attributelength").val(fix[k].length);
 						var r1col6 = $("<div>").addClass("col-md-2").append(attrLength);
 
 						var r1col7 = $("<div>").addClass("col-md-1").text(this.translation.nullAllow[this.locale]);
@@ -822,10 +827,35 @@ gb.validation.LayerDefinition.prototype.checkAttributeNull = function(chk) {
  *            inp - 고정 속성값의 길이 입력 폼 객체
  */
 gb.validation.LayerDefinition.prototype.inputAttributeLength = function(inp) {
+	var that = this;
 	var catIdx = $(inp).parents().eq(12).index();
 	var layerIdx = $(inp).parents().eq(6).index();
 	var attrIdx = $(inp).parents().eq(3).index();
-
+	var value = $(inp).val();
+	var valArr = value.split(",");
+	valArr = valArr.splice(0, 2);
+	$(inp).val(valArr.toString());
+	var newVarArr = [];
+	var isZero = false;
+	for (var i = 0; i < valArr.length; i++) {
+		var temp = valArr[i].trim();
+		if (temp === "") {
+			temp = 0;
+		}
+		temp = parseInt(temp);
+		if (i === 0 && temp === 0) {
+			temp = 1;
+			isZero = true;
+		}
+		if (!isNaN(temp)) {
+			newVarArr[i] = temp;
+		}
+	}
+	if (isZero) {
+		$(inp).val(newVarArr.toString());
+		that.setMessage("danger", " " + that.translation.notzero[that.locale]);
+	}
+	// $(inp).val(newVarArr.toString());
 	var strc = this.getStructure();
 	if (Array.isArray(strc)) {
 		var cat = strc[catIdx];
@@ -836,10 +866,10 @@ gb.validation.LayerDefinition.prototype.inputAttributeLength = function(inp) {
 			if (Array.isArray(fix)) {
 				fixElem = fix[attrIdx];
 				if (fixElem !== undefined && fixElem !== null) {
-					fixElem["length"] = isNaN(parseInt($(inp).val())) ? null : parseInt($(inp).val());
+					fixElem["length"] = newVarArr.toString();
 				} else {
 					var obj = {
-						"length" : isNaN(parseInt($(inp).val())) ? null : parseInt($(inp).val())
+						"length" : newVarArr.toString()
 					};
 				}
 			}
@@ -1218,7 +1248,7 @@ gb.validation.LayerDefinition.prototype.addAttribute = function(btn) {
 
 	var r1col5 = $("<div>").addClass("col-md-1").text(this.translation.length[this.locale]);
 
-	var attrLength = $("<input>").attr("type", "number").addClass("form-control").addClass("gb-layerdefinition-input-attributelength");
+	var attrLength = $("<input>").attr("type", "text").addClass("form-control").addClass("gb-layerdefinition-input-attributelength");
 	var r1col6 = $("<div>").addClass("col-md-2").append(attrLength);
 
 	var r1col7 = $("<div>").addClass("col-md-1").text(this.translation.nullAllow[this.locale]);

@@ -1,5 +1,9 @@
 @CHARSET UTF-8;
 
+.gb-optiondefinition-check-noparamoption {
+	vertical-align: top;
+}
+
 .gb-repository-tree-btn-inline {
 	display: inline-block;
 }

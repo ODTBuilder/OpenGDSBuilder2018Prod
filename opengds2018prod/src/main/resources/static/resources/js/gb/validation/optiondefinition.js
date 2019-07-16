@@ -813,7 +813,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
 					"purpose" : "graphic",
-					"noparam" : false,
+					"noparam" : true,
 					"filter" : {
 						"code" : true,
 						"key" : true,
@@ -916,7 +916,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
 					"purpose" : "graphic",
-					"noparam" : false,
+					"noparam" : true,
 					"filter" : {
 						"code" : true,
 						"key" : true,
@@ -1076,12 +1076,12 @@ gb.validation.OptionDefinition = function(obj) {
 						"values" : true
 					},
 					"figure" : {
-						"code" : false,
-						"key" : false,
-						"values" : false,
-						"number" : false,
-						"condition" : false,
-						"interval" : false
+						"code" : true,
+						"key" : true,
+						"values" : true,
+						"number" : true,
+						"condition" : true,
+						"interval" : true
 					},
 					"tolerance" : {
 						"code" : true,
@@ -1171,7 +1171,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
 					"purpose" : "graphic",
-					"noparam" : false,
+					"noparam" : true,
 					"filter" : {
 						"code" : true,
 						"key" : true,
@@ -1222,7 +1222,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
 					"purpose" : "graphic",
-					"noparam" : false,
+					"noparam" : true,
 					"filter" : {
 						"code" : true,
 						"key" : true,
@@ -1375,7 +1375,7 @@ gb.validation.OptionDefinition = function(obj) {
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
 					"purpose" : "graphic",
-					"noparam" : false,
+					"noparam" : true,
 					"filter" : {
 						"code" : true,
 						"key" : true,
@@ -1762,12 +1762,12 @@ gb.validation.OptionDefinition = function(obj) {
 							"values" : true
 						},
 						"figure" : {
-							"code" : false,
-							"key" : false,
-							"values" : false,
-							"number" : false,
-							"condition" : false,
-							"interval" : false
+							"code" : true,
+							"key" : true,
+							"values" : true,
+							"number" : true,
+							"condition" : true,
+							"interval" : true
 						},
 						"tolerance" : {
 							"code" : false,
@@ -4649,7 +4649,7 @@ gb.validation.OptionDefinition = function(obj) {
 		// that.addLayerCodeFilter(this);
 		that.addFilterRowForNone(this);
 	});
-	
+
 	// 필터 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting", function() {
 		var callback = function() {
@@ -4657,7 +4657,7 @@ gb.validation.OptionDefinition = function(obj) {
 		};
 		that.deleteConfirmModal("reset", callback);
 	});
-	
+
 	// 필터 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiltersetting-nonepurpose", function() {
 		var callback = function() {
@@ -4665,7 +4665,7 @@ gb.validation.OptionDefinition = function(obj) {
 		};
 		that.deleteConfirmModal("reset", callback);
 	});
-	
+
 	// 피규어 세팅 클리어 버튼 클릭
 	$(this.panelBody).on("click", ".gb-optiondefinition-btn-clearfiguresetting", function() {
 		var callback = function() {
@@ -4715,13 +4715,13 @@ gb.validation.OptionDefinition = function(obj) {
 		that.inputFilterKeyForNone(this);
 		console.log(that.getStructure());
 	});
-	
+
 	// 필터 허용값 입력 이벤트
 	$(this.panelBody).on("input", ".gb-optiondefinition-input-filtervalues-fornone", function() {
 		that.inputFilterKeyForNone(this);
 		console.log(that.getStructure());
 	});
-	
+
 	// 모든 분류의 필터 속성명 입력 이벤트
 // $(this.panelBody).on("input", ".gb-optiondefinition-input-filterkey-all",
 // function() {
@@ -5271,6 +5271,9 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 							var wells = $(tup).find(".well");
 							for (var b = 0; b < wells.length; b++) {
 								var code = $(wells[b]).find(".gb-optiondefinition-select-tolerancecode").val();
+								if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+									code = null;
+								}
 								var value = !$(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 								var cond = !$(wells[b]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[b]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 								var inter = !$(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
@@ -5310,6 +5313,9 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 					var wells = $(tup).find(".well");
 					for (var a = 0; a < wells.length; a++) {
 						var code = $(wells[a]).find(".gb-optiondefinition-select-tolerancecode").val();
+						if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+							code = null;
+						}
 						var value = !$(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 						var cond = !$(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 						var inter = !$(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
@@ -5367,6 +5373,9 @@ gb.validation.OptionDefinition.prototype.inputToleranceInterval = function(inp) 
 				var wells = $(tup).find(".well");
 				for (var a = 0; a < wells.length; a++) {
 					var code = $(wells[a]).find(".gb-optiondefinition-select-tolerancecode").val();
+					if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+						code = null;
+					}
 					var value = !$(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 					var cond = !$(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 					var inter = !$(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
@@ -5537,6 +5546,9 @@ gb.validation.OptionDefinition.prototype.selectToleranceCondition = function(sel
 										var wells = $(tup).find(".well");
 										for (var a = 0; a < wells.length; a++) {
 											var code = $(wells[a]).find(".gb-optiondefinition-select-tolerancecode").val();
+											if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+												code = null;
+											}
 											var value = !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null;
 											var cond = $(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").val();
 											var inter = !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null;
@@ -5769,13 +5781,16 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 							var wells = $(tup).find(".well");
 							for (var b = 0; b < wells.length; b++) {
 								var code = $(wells[b]).find(".gb-optiondefinition-select-tolerancecode").val();
+								if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+									code = null;
+								}
 								var value = !$(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[b]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 								var cond = !$(wells[b]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[b]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 								var inter = !$(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[b]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
 								rel[a]["tolerance"][b] = {
 										"code" : code,
 										"value" : value,
-										"condition" : typeof cond === "string" ? cond : null,
+										"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
 												"interval" : inter
 								};
 							}
@@ -5808,13 +5823,16 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 					var wells = $(tup).find(".well");
 					for (var a = 0; a < wells.length; a++) {
 						var code = $(wells[a]).find(".gb-optiondefinition-select-tolerancecode").val();
+						if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+							code = null;
+						}
 						var value = !$(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 						var cond = !$(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 						var inter = !$(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
 						strc["definition"][i]["options"][type3][this.nowOption.alias]["tolerance"][a] = {
 								"code" : code,
 								"value" : value,
-								"condition" : typeof cond === "string" ? cond : null,
+								"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
 										"interval" : inter
 						};
 					}
@@ -5865,13 +5883,16 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				var wells = $(tup).find(".well");
 				for (var a = 0; a < wells.length; a++) {
 					var code = $(wells[a]).find(".gb-optiondefinition-select-tolerancecode").val();
+					if ($(wells[a]).find(".gb-optiondefinition-select-tolerancecode").children('option').filter("option:selected").attr("geom") === "none") {
+						code = null;
+					}
 					var value = !$(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-tolerancevalue").val()) : null : null;
 					var cond = !$(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").prop("disabled") ? $(wells[a]).find(".gb-optiondefinition-select-tolerancecondition").val() : null;
 					var inter = !$(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").prop("disabled") ? !isNaN(parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val())) ? parseFloat($(wells[a]).find(".gb-optiondefinition-input-toleranceinterval").val()) : null : null;
 					optionsObj["tolerance"][a] = {
 							"code" : code,
 							"value" : value,
-							"condition" : typeof cond === "string" ? cond : null,
+							"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
 									"interval" : inter
 					};
 				}
@@ -6302,451 +6323,454 @@ gb.validation.OptionDefinition.prototype.selectFigureCode = function(sel) {
  * @param {HTMLElement}
  *            inp - 간격값 입력 폼 객체
  */
-gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
-	var optItem = this.optItem[this.nowOption.alias];
-	var type3 = optItem["purpose"];
-	// 필터 인덱스
-	var filterIdx = $(inp).parents().eq(2).index();
-	// 레이어 인덱스
-	var layerIdx = $(inp).parents().eq(5).index();
-	// 레이어 코드
-	var layerCode = null;
-	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
-		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
-				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
-	}
-	// 속성명
-	var attrKey = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
-		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
-		// attrKey =
-		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
-		// '');
-	}
-	// 허용값
-	var attrValues = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
-		for (var i = 0; i < attrValues.length; i++) {
-			attrValues[i] = attrValues[i].trim();
-		}
-		// attrValues =
-		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
-		// '').split(",");
-	}
-	// 수치
-	var number = null;
-	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").prop("disabled")) {
-		var temp = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").val());
-		if (!isNaN(temp)) {
-			number = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").val());
-		}
-	}
-	// 조건
-	var condition = null;
-	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
-		condition = $(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").val();
-	}
-	// 간격
-	var interval = null;
-	if (!$(inp).prop("disabled")) {
-		var temp = parseFloat($(inp).val());
-		if (!isNaN(temp)) {
-			interval = temp;
-		}
-	}
-
-	var sec = false;
-	if (this.nowDetailCategory !== undefined) {
-		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
-			sec = true;
-		}
-	}
-	var strc = this.getStructure();
-	if (Array.isArray(strc["definition"])) {
-		var isExist = false;
-		// definition에서 현재 분류를 찾는다
-		for (var i = 0; i < strc["definition"].length; i++) {
-			if (strc["definition"][i]["name"] === this.nowCategory) {
-				isExist = true;
-				// options 키를 가지고 있는지?
-				if (strc["definition"][i].hasOwnProperty("options")) {
-					// 검수 타입이 설정 되어있는지
-					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
-						// 해당 검수 항목이 설정되어 있는지
-						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
-							// 현재 입력한 값이 릴레이션 필터 값인지?
-							if (sec) {
-								// 현재 옵션에 릴레이션 키가 있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
-									// 있다면
-									// 배열인지?
-									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
-										var isExist = false;
-										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-										for (var a = 0; a < rel.length; a++) {
-											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-											if (rel[a]["name"] === this.nowRelationCategory) {
-												isExist = true;
-												var filterKey;
-												if (!rel[a].hasOwnProperty("figure")) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
-												}
-												filterKey = rel[a]["figure"];
-												// 필터가 배열인지?
-												if (!Array.isArray(filterKey)) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
-												}
-												var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
-												if (filterElem === undefined) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {}
-												}
-												// 필터 배열 원소에 attribute
-												// 키가 있는지?
-												if (filterElem.hasOwnProperty("attribute")) {
-													// attribute 키가
-													// 배열인지?
-													if (!Array.isArray(filterElem["attribute"])) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
-													} 
-													// 배열이 아닐때
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-															"key" : attrKey,
-															"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																			"condition" : typeof condition === "string" ? condition : null,
-																					"interval" : isNaN(interval) ? null : interval
-													};
-												} else {
-													// 필터 배열 원소에
-													// attribute
-													// 키가 없다면
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
-															"code" : layerCode,
-															"attribute" : [ {
-																"key" : attrKey,
-																"values" : Array.isArray(attrValues) ? attrValues : null,
-																		"number" : number !== null && number !== undefined ? number !== "" ? number
-																				: null
-																				: null,
-																				"condition" : typeof condition === "string" ? condition : null,
-																						"interval" : isNaN(interval) ? null : interval
-															} ]
-													};
-												}
-// }
-// else {
-												// 필터가 배열이 아니라면
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"]
-// = [ {
-// "code" : layerCode,
-// "attribute" : [ {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number
-// : null : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// } ]
-// } ];
-// }
-// }
-											}
-										}
-										if (!isExist) {
-											var attrElem = [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ];
-											var codeElem = {
-													"code" : layerCode,
-													"attribute" : attrElem
-											};
-											var nameElem = {
-													"name" : this.nowRelationCategory,
-													"figure" : [ codeElem ]
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-										}
-									} else {
-										// 배열이 아니라면
-										var attrElem = [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-															"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-										} ];
-										var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
-										};
-										var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-									}
-								} else {
-									// 현재 옵션에 릴레이션 키가
-									// 없다면
-									var attrElem = [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ];
-									var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
-									};
-									var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-								}
-								// 여기까지 릴레이션
-							} else {
-								// filter 키가 설정되어있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
-									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"])) {
-										// filter키가 배열형태임
-										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
-										}
-										// attribute 키가 배열 형태임
-										if (Array
-												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
-											var tup = $(inp).parents().eq(6);
-											var wells = $(tup).find(".well");
-											for (var a = 0; a < wells.length; a++) {
-												var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
-												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
-												}
-												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
-												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined || !Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"])) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
-												}
-												var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
-												var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
-												for (var b = 0; b < fdetails.length; b++) {
-													var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
-													var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
-													var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
-													var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
-													var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
-															"key" : key,
-															"values" : Array.isArray(values) ? values : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																			"condition" : typeof cond === "string" ? cond : null,
-																					"interval" : isNaN(inter) ? null : inter
-													};
-												}
-											}
-										} else {
-											// attribute 키가 배열 형태가 아님
-											var obj = {
-													"key" : attrKey,
-													"values" : Array.isArray(attrValues) ? attrValues : null,
-															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																			"interval" : isNaN(interval) ? null : interval
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
-										}
-
-									} else {
-										// filter키가 배열형태가 아님
-										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
-										var obj = {
-												"code" : layerCode,
-												"attribute" : [ {
-													"key" : attrKey,
-													"values" : Array.isArray(attrValues) ? attrValues : null,
-															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																			"interval" : isNaN(interval) ? null : interval
-												} ]
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
-									}
-								} else {
-									// filter 키가 설정되어있지 않음
-									// 허용값이 입력되어있다면 값 변경
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
-								}
-							}
-						} else {
-							// 해당 검수항목이 설정되어 있지 않음
-							// 릴레이션임
-							if (sec) {
-								// 없다면
-								var attrElem = [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-													"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
-								} ];
-								var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
-								};
-								var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
-								};
-								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-							} else {
-								// 해당 검수 항목이 설정되어 있지 않음
-								// 허용값이 입력되어있다면 값 변경
-								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									var filterObj = [ obj ];
-									var optionObj = {
-											"figure" : filterObj
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
-								}
-							}
-						}
-					} else {
-						// 해당 검수 타입이 설정되어 있지 않음
-						if (sec) {
-							var attrElem = [ {
-								"key" : attrKey,
-								"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-														"interval" : isNaN(interval) ? null : interval
-							} ];
-							var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
-							};
-							var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
-							};
-							strc["definition"][i]["options"][type3] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
-						} else {
-							var obj = {
-									"code" : layerCode,
-									"attribute" : [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ]
-							};
-							var filterObj = [ obj ];
-							var optionObj = {
-									"figure" : filterObj
-							};
-							var typeObj = {};
-							typeObj[this.nowOption.alias] = optionObj;
-							strc["definition"][i]["options"][type3] = typeObj;
-						}
-					}
-				}
-			}
-		}
-		// 정의에 해당 분류가 없음
-		if (!isExist) {
-			// 릴레이션 설정임
-			if (sec) {
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = [ {
-					"name" : this.nowRelationCategory,
-					"figure" : [ obj ]
-				} ];
-
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = {};
-				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			} else {
-				// 릴레이션 설정 아님
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = {
-						"figure" : [ obj ]
-				};
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			}
-		}
-	}
-}
+//gb.validation.OptionDefinition.prototype.inputFigureInterval = function(inp) {
+//	var optItem = this.optItem[this.nowOption.alias];
+//	var type3 = optItem["purpose"];
+//	// 필터 인덱스
+//	var filterIdx = $(inp).parents().eq(2).index();
+//	// 레이어 인덱스
+//	var layerIdx = $(inp).parents().eq(5).index();
+//	// 레이어 코드
+//	var layerCode = null;
+//	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
+//		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
+//				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
+//	}
+//	// 속성명
+//	var attrKey = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
+//		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
+//		// attrKey =
+//		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+//		// '');
+//	}
+//	// 허용값
+//	var attrValues = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
+//		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+//		for (var i = 0; i < attrValues.length; i++) {
+//			attrValues[i] = attrValues[i].trim();
+//		}
+//		// attrValues =
+//		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+//		// '').split(",");
+//	}
+//	// 수치
+//	var number = null;
+//	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").prop("disabled")) {
+//		var temp = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").val());
+//		if (!isNaN(temp)) {
+//			number = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figurenumber").val());
+//		}
+//	}
+//	// 조건
+//	var condition = null;
+//	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
+//		condition = $(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").val();
+//	}
+//	// 간격
+//	var interval = null;
+//	if (!$(inp).prop("disabled")) {
+//		var temp = parseFloat($(inp).val());
+//		if (!isNaN(temp)) {
+//			interval = temp;
+//		}
+//	}
+//
+//	var sec = false;
+//	if (this.nowDetailCategory !== undefined) {
+//		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
+//			sec = true;
+//		}
+//	}
+//	var strc = this.getStructure();
+//	if (Array.isArray(strc["definition"])) {
+//		var isExist = false;
+//		// definition에서 현재 분류를 찾는다
+//		for (var i = 0; i < strc["definition"].length; i++) {
+//			if (strc["definition"][i]["name"] === this.nowCategory) {
+//				isExist = true;
+//				// options 키를 가지고 있는지?
+//				if (strc["definition"][i].hasOwnProperty("options")) {
+//					// 검수 타입이 설정 되어있는지
+//					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
+//						// 해당 검수 항목이 설정되어 있는지
+//						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+//							// 현재 입력한 값이 릴레이션 필터 값인지?
+//							if (sec) {
+//								// 현재 옵션에 릴레이션 키가 있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
+//									// 있다면
+//									// 배열인지?
+//									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
+//										var isExist = false;
+//										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+//										for (var a = 0; a < rel.length; a++) {
+//											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
+//											if (rel[a]["name"] === this.nowRelationCategory) {
+//												isExist = true;
+//												var filterKey;
+//												if (!rel[a].hasOwnProperty("figure")) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+//												}
+//												filterKey = rel[a]["figure"];
+//												// 필터가 배열인지?
+//												if (!Array.isArray(filterKey)) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+//												}
+//												var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
+//												if (filterElem === undefined) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {}
+//												}
+//												// 필터 배열 원소에 attribute
+//												// 키가 있는지?
+//												if (filterElem.hasOwnProperty("attribute")) {
+//													// attribute 키가
+//													// 배열인지?
+//													if (!Array.isArray(filterElem["attribute"])) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+//													} 
+//													// 배열이 아닐때
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
+//															"key" : attrKey,
+//															"values" : Array.isArray(attrValues) ? attrValues : null,
+//																	"number" : number !== null && number !== undefined ? number !== "" ? number
+//																			: null
+//																			: null,
+//																			"condition" : typeof condition === "string" ? condition : null,
+//																					"interval" : isNaN(interval) ? null : interval
+//													};
+//												} else {
+//													// 필터 배열 원소에
+//													// attribute
+//													// 키가 없다면
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {
+//															"code" : layerCode,
+//															"attribute" : [ {
+//																"key" : attrKey,
+//																"values" : Array.isArray(attrValues) ? attrValues : null,
+//																		"number" : number !== null && number !== undefined ? number !== "" ? number
+//																				: null
+//																				: null,
+//																				"condition" : typeof condition === "string" ? condition : null,
+//																						"interval" : isNaN(interval) ? null : interval
+//															} ]
+//													};
+//												}
+//// }
+//// else {
+//												// 필터가 배열이 아니라면
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"]
+//// = [ {
+//// "code" : layerCode,
+//// "attribute" : [ {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number
+//// : null : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// } ]
+//// } ];
+//// }
+//// }
+//											}
+//										}
+//										if (!isExist) {
+//											var attrElem = [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ];
+//											var codeElem = {
+//													"code" : layerCode,
+//													"attribute" : attrElem
+//											};
+//											var nameElem = {
+//													"name" : this.nowRelationCategory,
+//													"figure" : [ codeElem ]
+//											};
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//										}
+//									} else {
+//										// 배열이 아니라면
+//										var attrElem = [ {
+//											"key" : attrKey,
+//											"values" : Array.isArray(attrValues) ? attrValues : null,
+//													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//															"condition" : typeof condition === "string" ? condition : null,
+//																	"interval" : isNaN(interval) ? null : interval
+//										} ];
+//										var codeElem = {
+//												"code" : layerCode,
+//												"attribute" : attrElem
+//										};
+//										var nameElem = {
+//												"name" : this.nowRelationCategory,
+//												"figure" : [ codeElem ]
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//									}
+//								} else {
+//									// 현재 옵션에 릴레이션 키가
+//									// 없다면
+//									var attrElem = [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ];
+//									var codeElem = {
+//											"code" : layerCode,
+//											"attribute" : attrElem
+//									};
+//									var nameElem = {
+//											"name" : this.nowRelationCategory,
+//											"figure" : [ codeElem ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//								}
+//								// 여기까지 릴레이션
+//							} else {
+//								// filter 키가 설정되어있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
+//									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"])) {
+//										// filter키가 배열형태임
+//										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
+//										}
+//										// attribute 키가 배열 형태임
+//										if (Array
+//												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
+//											var tup = $(inp).parents().eq(6);
+//											var wells = $(tup).find(".well");
+//											for (var a = 0; a < wells.length; a++) {
+//												var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
+//												if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+//													code = null;
+//												}
+//												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
+//												}
+//												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
+//												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined || !Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"])) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
+//												}
+//												var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
+//												var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+//												for (var b = 0; b < fdetails.length; b++) {
+//													var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+//													var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
+//													var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+//													var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+//													var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
+//															"key" : key,
+//															"values" : Array.isArray(values) ? values : null,
+//																	"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																			"condition" : typeof cond === "string" ? cond : null,
+//																					"interval" : isNaN(inter) ? null : inter
+//													};
+//												}
+//											}
+//										} else {
+//											// attribute 키가 배열 형태가 아님
+//											var obj = {
+//													"key" : attrKey,
+//													"values" : Array.isArray(attrValues) ? attrValues : null,
+//															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																	"condition" : typeof condition === "string" ? condition : null,
+//																			"interval" : isNaN(interval) ? null : interval
+//											};
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
+//										}
+//
+//									} else {
+//										// filter키가 배열형태가 아님
+//										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
+//										var obj = {
+//												"code" : layerCode,
+//												"attribute" : [ {
+//													"key" : attrKey,
+//													"values" : Array.isArray(attrValues) ? attrValues : null,
+//															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																	"condition" : typeof condition === "string" ? condition : null,
+//																			"interval" : isNaN(interval) ? null : interval
+//												} ]
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
+//									}
+//								} else {
+//									// filter 키가 설정되어있지 않음
+//									// 허용값이 입력되어있다면 값 변경
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
+//								}
+//							}
+//						} else {
+//							// 해당 검수항목이 설정되어 있지 않음
+//							// 릴레이션임
+//							if (sec) {
+//								// 없다면
+//								var attrElem = [ {
+//									"key" : attrKey,
+//									"values" : Array.isArray(attrValues) ? attrValues : null,
+//											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//													"condition" : typeof condition === "string" ? condition : null,
+//															"interval" : isNaN(interval) ? null : interval
+//								} ];
+//								var codeElem = {
+//										"code" : layerCode,
+//										"attribute" : attrElem
+//								};
+//								var nameElem = {
+//										"name" : this.nowRelationCategory,
+//										"figure" : [ codeElem ]
+//								};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//							} else {
+//								// 해당 검수 항목이 설정되어 있지 않음
+//								// 허용값이 입력되어있다면 값 변경
+//								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									var filterObj = [ obj ];
+//									var optionObj = {
+//											"figure" : filterObj
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
+//								}
+//							}
+//						}
+//					} else {
+//						// 해당 검수 타입이 설정되어 있지 않음
+//						if (sec) {
+//							var attrElem = [ {
+//								"key" : attrKey,
+//								"values" : Array.isArray(attrValues) ? attrValues : null,
+//										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//												"condition" : typeof condition === "string" ? condition : null,
+//														"interval" : isNaN(interval) ? null : interval
+//							} ];
+//							var codeElem = {
+//									"code" : layerCode,
+//									"attribute" : attrElem
+//							};
+//							var nameElem = {
+//									"name" : this.nowRelationCategory,
+//									"figure" : [ codeElem ]
+//							};
+//							strc["definition"][i]["options"][type3] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+//						} else {
+//							var obj = {
+//									"code" : layerCode,
+//									"attribute" : [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ]
+//							};
+//							var filterObj = [ obj ];
+//							var optionObj = {
+//									"figure" : filterObj
+//							};
+//							var typeObj = {};
+//							typeObj[this.nowOption.alias] = optionObj;
+//							strc["definition"][i]["options"][type3] = typeObj;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		// 정의에 해당 분류가 없음
+//		if (!isExist) {
+//			// 릴레이션 설정임
+//			if (sec) {
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = [ {
+//					"name" : this.nowRelationCategory,
+//					"figure" : [ obj ]
+//				} ];
+//
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = {};
+//				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			} else {
+//				// 릴레이션 설정 아님
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = {
+//						"figure" : [ obj ]
+//				};
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			}
+//		}
+//	}
+//}
 /**
  * 피규어 조건의 비교 조건을 설정한다.
  * 
@@ -7187,506 +7211,509 @@ gb.validation.OptionDefinition.prototype.selectFigureCondition = function(sel) {
  * @param {HTMLElement}
  *            inp - 기준값 입력 폼 객체
  */
-gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
-	var optItem = this.optItem[this.nowOption.alias];
-	var type3 = optItem["purpose"];
-	// 필터 인덱스
-	var filterIdx = $(inp).parents().eq(2).index();
-	// 레이어 인덱스
-	var layerIdx = $(inp).parents().eq(5).index();
-	// 레이어 코드
-	var layerCode = null;
-	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
-		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
-				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
-	}
-	// 속성명
-	var attrKey = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("diabled")) {
-		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
-		// attrKey =
-		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
-		// '');
-	}
-	// 허용값
-	var attrValues = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
-		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
-		// attrValues =
-		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
-		// '').split(",");
-		for (var i = 0; i < attrValues.length; i++) {
-			attrValues[i] = attrValues[i].trim();
-		}
-	}
-	// 수치
-	var number = null;
-	if (!$(inp).prop("disabled")) {
-		var temp = parseFloat($(inp).val());
-		if (!isNaN(temp)) {
-			number = parseFloat($(inp).val());
-		}
-	}
-	// 조건
-	var condition = null;
-	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
-		condition = $(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").val();
-	}
-	// 간격
-	var interval = null;
-	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figureinterval").prop("disabled")) {
-		var temp = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figureinterval").val());
-		if (!isNaN(temp)) {
-			interval = temp;
-		}
-	}
-
-	var sec = false;
-	if (this.nowDetailCategory !== undefined) {
-		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
-			sec = true;
-		}
-	}
-	var strc = this.getStructure();
-	if (Array.isArray(strc["definition"])) {
-		var isExist = false;
-		// definition에서 현재 분류를 찾는다
-		for (var i = 0; i < strc["definition"].length; i++) {
-			if (strc["definition"][i]["name"] === this.nowCategory) {
-				isExist = true;
-				// options 키를 가지고 있는지?
-				if (strc["definition"][i].hasOwnProperty("options")) {
-					// 검수 타입이 설정 되어있는지
-					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
-						// 해당 검수 항목이 설정되어 있는지
-						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
-							// 현재 입력한 값이 릴레이션 필터 값인지?
-							if (sec) {
-								// 현재 옵션에 릴레이션 키가 있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
-									// 있다면
-									// 배열인지?
-									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
-										var isExist = false;
-										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-										for (var a = 0; a < rel.length; a++) {
-											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-											if (rel[a]["name"] === this.nowRelationCategory) {
-												isExist = true;
-												var filterKey;
-												if (rel[a].hasOwnProperty("figure")) {
-													filterKey = rel[a]["figure"];
-													// 필터가 배열인지?
-													if (!Array.isArray(filterKey)) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
-													}
-													var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
-													if (filterElem === undefined) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {}
-													}
-													// 필터 배열 원소에 attribute
-													// 키가 있는지?
-													if (!filterElem.hasOwnProperty("attribute")) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
-													}
-													// attribute 키가
-													// 배열인지?
-													if (!Array.isArray(filterElem["attribute"])) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
-													}
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-															"key" : attrKey,
-															"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																			"condition" : typeof condition === "string" ? condition : null,
-																					"interval" : isNaN(interval) ? null : interval
-													};
-// } else {
-// // 배열이 아닐때
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"]
-// = layerCode;
-
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx]
-// = {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number
-// : null
-// : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// };
-// }
-// } else {
-// // 필터 배열 원소에
-// // attribute
-// // 키가 없다면
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]
-// = {
-// "code" : layerCode,
-// "attribute" : [ {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number
-// : null
-// : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// } ]
-// };
-// }
-// } else {
-// // 필터가 배열이 아니라면
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"]
-// = [ {
-// "code" : layerCode,
-// "attribute" : [ {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number
-// : null : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// } ]
-// } ];
-// }
-												}
-											}
-										}
-										if (!isExist) {
-											var attrElem = [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ];
-											var codeElem = {
-													"code" : layerCode,
-													"attribute" : attrElem
-											};
-											var nameElem = {
-													"name" : this.nowRelationCategory,
-													"figure" : [ codeElem ]
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-										}
-									} else {
-										// 배열이 아니라면
-										var attrElem = [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-															"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-										} ];
-										var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
-										};
-										var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-									}
-								} else {
-									// 현재 옵션에 릴레이션 키가
-									// 없다면
-									var attrElem = [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ];
-									var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
-									};
-									var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-								}
-								// 여기까지 릴레이션
-							} else {
-								// filter 키가 설정되어있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
-									// filter키가 배열형태임
-									if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
-									}
-									// attribute 키가 배열 형태임
-									if (Array
-											.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
-										var tup = $(inp).parents().eq(6);
-										var wells = $(tup).find(".well");
-										for (var a = 0; a < wells.length; a++) {
-											var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
-											if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
-												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
-											}
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
-											var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
-											var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
-											for (var b = 0; b < fdetails.length; b++) {
-												var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
-												var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
-												var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
-												var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
-												var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
-												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
-												}
-												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
-														"key" : key,
-														"values" : Array.isArray(values) ? values : null,
-																"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																		"condition" : typeof cond === "string" ? cond : null,
-																				"interval" : isNaN(inter) ? null : inter
-												};
-											}
-										}
-									} else {
-										// attribute 키가 배열 형태가 아님
-										var obj = {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
-									}
-// if
-// (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"]))
-// {
-// // filter키가 배열형태임
-// if
-// (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]
-// === undefined) {
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]
-// = {};
-// }
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["code"]
-// = layerCode;
-// // attribute 키가 배열 형태임
-// if (Array
-// .isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"]))
-// {
-// var obj = {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number :
-// null : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// };
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx]
-// = obj;
-// } else {
-// // attribute 키가 배열 형태가 아님
-// var obj = {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number :
-// null : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// };
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"]
-// = [ obj ];
-// }
-
-// } else {
-// // filter키가 배열형태가 아님
-// // 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
-// var obj = {
-// "code" : layerCode,
-// "attribute" : [ {
-// "key" : attrKey,
-// "values" : Array.isArray(attrValues) ? attrValues : null,
-// "number" : number !== null && number !== undefined ? number !== "" ? number :
-// null : null,
-// "condition" : typeof condition === "string" ? condition : null,
-// "interval" : isNaN(interval) ? null : interval
-// } ]
-// };
-// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [
-// obj ];
-// }
-								} else {
-									// filter 키가 설정되어있지 않음
-									// 허용값이 입력되어있다면 값 변경
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
-								}
-							}
-						} else {
-							// 해당 검수항목이 설정되어 있지 않음
-							// 릴레이션임
-							if (sec) {
-								// 없다면
-								var attrElem = [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-													"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
-								} ];
-								var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
-								};
-								var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
-								};
-								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-							} else {
-								// 해당 검수 항목이 설정되어 있지 않음
-								// 허용값이 입력되어있다면 값 변경
-								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									var filterObj = [ obj ];
-									var optionObj = {
-											"figure" : filterObj
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
-								}
-							}
-						}
-					} else {
-						// 해당 검수 타입이 설정되어 있지 않음
-						if (sec) {
-							var attrElem = [ {
-								"key" : attrKey,
-								"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-														"interval" : isNaN(interval) ? null : interval
-							} ];
-							var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
-							};
-							var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
-							};
-							strc["definition"][i]["options"][type3] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
-						} else {
-							var obj = {
-									"code" : layerCode,
-									"attribute" : [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ]
-							};
-							var filterObj = [ obj ];
-							var optionObj = {
-									"figure" : filterObj
-							};
-							var typeObj = {};
-							typeObj[this.nowOption.alias] = optionObj;
-							strc["definition"][i]["options"][type3] = typeObj;
-						}
-					}
-				}
-			}
-		}
-		// 정의에 해당 분류가 없음
-		if (!isExist) {
-			// 릴레이션 설정임
-			if (sec) {
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = [ {
-					"name" : this.nowRelationCategory,
-					"figure" : [ obj ]
-				} ];
-
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = {};
-				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			} else {
-				// 릴레이션 설정 아님
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = {
-						"figure" : [ obj ]
-				};
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			}
-		}
-	}
-};
+//gb.validation.OptionDefinition.prototype.inputFigureNumber = function(inp) {
+//	var optItem = this.optItem[this.nowOption.alias];
+//	var type3 = optItem["purpose"];
+//	// 필터 인덱스
+//	var filterIdx = $(inp).parents().eq(2).index();
+//	// 레이어 인덱스
+//	var layerIdx = $(inp).parents().eq(5).index();
+//	// 레이어 코드
+//	var layerCode = null;
+//	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
+//		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
+//				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
+//	}
+//	// 속성명
+//	var attrKey = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").prop("diabled")) {
+//		attrKey = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().trim();
+//		// attrKey =
+//		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+//		// '');
+//	}
+//	// 허용값
+//	var attrValues = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").prop("disabled")) {
+//		attrValues = $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+//		// attrValues =
+//		// $(inp).parents().eq(2).find(".gb-optiondefinition-input-figurevalues").val().replace(/(\s*)/g,
+//		// '').split(",");
+//		for (var i = 0; i < attrValues.length; i++) {
+//			attrValues[i] = attrValues[i].trim();
+//		}
+//	}
+//	// 수치
+//	var number = null;
+//	if (!$(inp).prop("disabled")) {
+//		var temp = parseFloat($(inp).val());
+//		if (!isNaN(temp)) {
+//			number = parseFloat($(inp).val());
+//		}
+//	}
+//	// 조건
+//	var condition = null;
+//	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
+//		condition = $(inp).parents().eq(1).find(".gb-optiondefinition-select-figurecondition").val();
+//	}
+//	// 간격
+//	var interval = null;
+//	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figureinterval").prop("disabled")) {
+//		var temp = parseFloat($(inp).parents().eq(1).find(".gb-optiondefinition-input-figureinterval").val());
+//		if (!isNaN(temp)) {
+//			interval = temp;
+//		}
+//	}
+//
+//	var sec = false;
+//	if (this.nowDetailCategory !== undefined) {
+//		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
+//			sec = true;
+//		}
+//	}
+//	var strc = this.getStructure();
+//	if (Array.isArray(strc["definition"])) {
+//		var isExist = false;
+//		// definition에서 현재 분류를 찾는다
+//		for (var i = 0; i < strc["definition"].length; i++) {
+//			if (strc["definition"][i]["name"] === this.nowCategory) {
+//				isExist = true;
+//				// options 키를 가지고 있는지?
+//				if (strc["definition"][i].hasOwnProperty("options")) {
+//					// 검수 타입이 설정 되어있는지
+//					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
+//						// 해당 검수 항목이 설정되어 있는지
+//						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+//							// 현재 입력한 값이 릴레이션 필터 값인지?
+//							if (sec) {
+//								// 현재 옵션에 릴레이션 키가 있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
+//									// 있다면
+//									// 배열인지?
+//									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
+//										var isExist = false;
+//										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+//										for (var a = 0; a < rel.length; a++) {
+//											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
+//											if (rel[a]["name"] === this.nowRelationCategory) {
+//												isExist = true;
+//												var filterKey;
+//												if (rel[a].hasOwnProperty("figure")) {
+//													filterKey = rel[a]["figure"];
+//													// 필터가 배열인지?
+//													if (!Array.isArray(filterKey)) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+//													}
+//													var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
+//													if (filterElem === undefined) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {}
+//													}
+//													// 필터 배열 원소에 attribute
+//													// 키가 있는지?
+//													if (!filterElem.hasOwnProperty("attribute")) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+//													}
+//													// attribute 키가
+//													// 배열인지?
+//													if (!Array.isArray(filterElem["attribute"])) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+//													}
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
+//															"key" : attrKey,
+//															"values" : Array.isArray(attrValues) ? attrValues : null,
+//																	"number" : number !== null && number !== undefined ? number !== "" ? number
+//																			: null
+//																			: null,
+//																			"condition" : typeof condition === "string" ? condition : null,
+//																					"interval" : isNaN(interval) ? null : interval
+//													};
+//// } else {
+//// // 배열이 아닐때
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"]
+//// = layerCode;
+//
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx]
+//// = {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number
+//// : null
+//// : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// };
+//// }
+//// } else {
+//// // 필터 배열 원소에
+//// // attribute
+//// // 키가 없다면
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]
+//// = {
+//// "code" : layerCode,
+//// "attribute" : [ {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number
+//// : null
+//// : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// } ]
+//// };
+//// }
+//// } else {
+//// // 필터가 배열이 아니라면
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"]
+//// = [ {
+//// "code" : layerCode,
+//// "attribute" : [ {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number
+//// : null : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// } ]
+//// } ];
+//// }
+//												}
+//											}
+//										}
+//										if (!isExist) {
+//											var attrElem = [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ];
+//											var codeElem = {
+//													"code" : layerCode,
+//													"attribute" : attrElem
+//											};
+//											var nameElem = {
+//													"name" : this.nowRelationCategory,
+//													"figure" : [ codeElem ]
+//											};
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//										}
+//									} else {
+//										// 배열이 아니라면
+//										var attrElem = [ {
+//											"key" : attrKey,
+//											"values" : Array.isArray(attrValues) ? attrValues : null,
+//													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//															"condition" : typeof condition === "string" ? condition : null,
+//																	"interval" : isNaN(interval) ? null : interval
+//										} ];
+//										var codeElem = {
+//												"code" : layerCode,
+//												"attribute" : attrElem
+//										};
+//										var nameElem = {
+//												"name" : this.nowRelationCategory,
+//												"figure" : [ codeElem ]
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//									}
+//								} else {
+//									// 현재 옵션에 릴레이션 키가
+//									// 없다면
+//									var attrElem = [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ];
+//									var codeElem = {
+//											"code" : layerCode,
+//											"attribute" : attrElem
+//									};
+//									var nameElem = {
+//											"name" : this.nowRelationCategory,
+//											"figure" : [ codeElem ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//								}
+//								// 여기까지 릴레이션
+//							} else {
+//								// filter 키가 설정되어있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
+//									// filter키가 배열형태임
+//									if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
+//									}
+//									// attribute 키가 배열 형태임
+//									if (Array
+//											.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
+//										var tup = $(inp).parents().eq(6);
+//										var wells = $(tup).find(".well");
+//										for (var a = 0; a < wells.length; a++) {
+//											var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
+//											if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+//												code = null;
+//											}
+//											if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
+//												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
+//											}
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
+//											var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
+//											var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+//											for (var b = 0; b < fdetails.length; b++) {
+//												var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+//												var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
+//												var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+//												var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+//												var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+//												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
+//												}
+//												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
+//														"key" : key,
+//														"values" : Array.isArray(values) ? values : null,
+//																"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																		"condition" : typeof cond === "string" ? cond : null,
+//																				"interval" : isNaN(inter) ? null : inter
+//												};
+//											}
+//										}
+//									} else {
+//										// attribute 키가 배열 형태가 아님
+//										var obj = {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
+//									}
+//// if
+//// (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"]))
+//// {
+//// // filter키가 배열형태임
+//// if
+//// (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]
+//// === undefined) {
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]
+//// = {};
+//// }
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["code"]
+//// = layerCode;
+//// // attribute 키가 배열 형태임
+//// if (Array
+//// .isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"]))
+//// {
+//// var obj = {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number :
+//// null : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// };
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"][filterIdx]
+//// = obj;
+//// } else {
+//// // attribute 키가 배열 형태가 아님
+//// var obj = {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number :
+//// null : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// };
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"]
+//// = [ obj ];
+//// }
+//
+//// } else {
+//// // filter키가 배열형태가 아님
+//// // 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
+//// var obj = {
+//// "code" : layerCode,
+//// "attribute" : [ {
+//// "key" : attrKey,
+//// "values" : Array.isArray(attrValues) ? attrValues : null,
+//// "number" : number !== null && number !== undefined ? number !== "" ? number :
+//// null : null,
+//// "condition" : typeof condition === "string" ? condition : null,
+//// "interval" : isNaN(interval) ? null : interval
+//// } ]
+//// };
+//// strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [
+//// obj ];
+//// }
+//								} else {
+//									// filter 키가 설정되어있지 않음
+//									// 허용값이 입력되어있다면 값 변경
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
+//								}
+//							}
+//						} else {
+//							// 해당 검수항목이 설정되어 있지 않음
+//							// 릴레이션임
+//							if (sec) {
+//								// 없다면
+//								var attrElem = [ {
+//									"key" : attrKey,
+//									"values" : Array.isArray(attrValues) ? attrValues : null,
+//											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//													"condition" : typeof condition === "string" ? condition : null,
+//															"interval" : isNaN(interval) ? null : interval
+//								} ];
+//								var codeElem = {
+//										"code" : layerCode,
+//										"attribute" : attrElem
+//								};
+//								var nameElem = {
+//										"name" : this.nowRelationCategory,
+//										"figure" : [ codeElem ]
+//								};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//							} else {
+//								// 해당 검수 항목이 설정되어 있지 않음
+//								// 허용값이 입력되어있다면 값 변경
+//								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									var filterObj = [ obj ];
+//									var optionObj = {
+//											"figure" : filterObj
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
+//								}
+//							}
+//						}
+//					} else {
+//						// 해당 검수 타입이 설정되어 있지 않음
+//						if (sec) {
+//							var attrElem = [ {
+//								"key" : attrKey,
+//								"values" : Array.isArray(attrValues) ? attrValues : null,
+//										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//												"condition" : typeof condition === "string" ? condition : null,
+//														"interval" : isNaN(interval) ? null : interval
+//							} ];
+//							var codeElem = {
+//									"code" : layerCode,
+//									"attribute" : attrElem
+//							};
+//							var nameElem = {
+//									"name" : this.nowRelationCategory,
+//									"figure" : [ codeElem ]
+//							};
+//							strc["definition"][i]["options"][type3] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+//						} else {
+//							var obj = {
+//									"code" : layerCode,
+//									"attribute" : [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ]
+//							};
+//							var filterObj = [ obj ];
+//							var optionObj = {
+//									"figure" : filterObj
+//							};
+//							var typeObj = {};
+//							typeObj[this.nowOption.alias] = optionObj;
+//							strc["definition"][i]["options"][type3] = typeObj;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		// 정의에 해당 분류가 없음
+//		if (!isExist) {
+//			// 릴레이션 설정임
+//			if (sec) {
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = [ {
+//					"name" : this.nowRelationCategory,
+//					"figure" : [ obj ]
+//				} ];
+//
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = {};
+//				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			} else {
+//				// 릴레이션 설정 아님
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = {
+//						"figure" : [ obj ]
+//				};
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			}
+//		}
+//	}
+//};
 /**
  * 피규어 조건의 속성명을 설정한다.
  * 
@@ -7715,6 +7742,12 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 			sec = true;
 		}
 	}
+
+	var isAllCat = false;
+	if (this.nowRelationCategory === null) {
+		isAllCat = true;
+	}
+
 	var strc = this.getStructure();
 	if (Array.isArray(strc["definition"])) {
 		var isExist = false;
@@ -7743,60 +7776,211 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 						if (!Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
 							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [];
 						}
-						var isExist = false;
 						var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-						for (var a = 0; a < rel.length; a++) {
-							// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-							if (rel[a]["name"] === this.nowRelationCategory) {
-								isExist = true;
-								var filterKey;
-								if (rel[a].hasOwnProperty("figure")) {
-									filterKey = rel[a]["figure"];
-									// 필터가 배열인지?
-									if (!Array.isArray(filterKey)) {
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+						if (isAllCat) {
+							var layerDef = this.getLayerDefinition().getStructure();
+							// 모든 레이어 정의에있는 분류와
+							for (var a = 0; a < layerDef.length; a++) {
+								var isExist2 = false;
+								var existIdx;
+								// 현재 릴레이션에 있는 분류를 비교해서
+								for (var b = 0; b < rel.length; b++) {
+									// 같은게 있는지
+									if(layerDef[a]["name"] === rel[b]["name"]){
+										// 같은 분류가 존재함
+										isExist2 = true;
+										// 같은 분류의 인덱스
+										existIdx = b;
+										break;
 									}
-									var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
-									// 필터 배열 원소에 attribute
-									// 키가 있는지?
-									if (!filterElem.hasOwnProperty("attribute")) {
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+								}
+								// 전체 레이어 정의 분류와 릴레이션 레이어 분류와
+								// 같은게 있을때
+								if (isExist2) {
+									// 해당 릴레이션의 인덱스로 객체를 특정하고
+									var erel = rel[existIdx];
+									if (erel === undefined) {
+										rel[existIdx] = {};
 									}
-									// attribute 키가
-									// 배열인지?
-									if (!Array.isArray(filterElem["attribute"])) {
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+									// 필터 키 객체 꺼내기
+									var filterArr = erel["figure"];
+									if (filterArr === undefined || !Array.isArray(filterArr)) {
+										erel["figure"] = [];
 									}
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-													"number" : number !== null && number !== undefined ? number !== "" ? number
-															: null
-															: null,
-															"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
+									// 레이어 코드는 널로 입력
+									var code = null;
+									// 속성 배열
+									var attribute = [];
+									// 입력 폼 영역
+									var filterArea = $(inp).parents().eq(3);
+									var rows = $(filterArea).find(".gb-optiondefinition-figurearea-row");
+									// 각 행별로
+									for (var c = 0; c < rows.length; c++) {
+										var row = rows[c];
+
+										var fidx = !$(row).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(row).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(row).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+										var key = !$(row).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(row).find(".gb-optiondefinition-input-figurekey").val() : null;
+										var formValues = $(row).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+										var values = !$(row).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+										var number = !$(row).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(row).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(row).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+										var cond = !$(row).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(row).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(row).find(".gb-optiondefinition-select-figurecondition").val() : null;
+										var inter = !$(row).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(row).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(row).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+
+										var attrObj = {
+												"fidx": fidx,
+												"key" : key,
+												"values" : values,
+												"number" : number,
+												"condition" : cond,
+												"interval" : inter
+										}; 
+										// 배열에 넣기
+										attribute[c] = attrObj;
+									}
+									// 필터 객체로 만들어서
+									var filterObj = {
+											"code" : code,
+											"attribute" : attribute
 									};
+									// 필터 배열에 넣기
+									erel["figure"] = [filterObj];
+								} else {
+									// 릴레이션 배열에 없을때
+									// 없는 이름을 가져오기
+									var nrel = layerDef[a]["name"];
+									// 모든 레이어코드는 널로 입력
+									var code = null;
+									var attribute = [];
+									var filterArea = $(inp).parents().eq(3);
+									var rows = $(filterArea).find(".gb-optiondefinition-figurearea-row");
+// var rows = $(filterArea).find(".row");
+									for (var c = 0; c < rows.length; c++) {
+										var row = rows[c];
+										var fidx = !$(row).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(row).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(row).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+										var key = !$(row).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(row).find(".gb-optiondefinition-input-figurekey").val() : null;
+										var formValues = $(row).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+										var values = !$(row).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+										var number = !$(row).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(row).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(row).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+										var cond = !$(row).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(row).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(row).find(".gb-optiondefinition-select-figurecondition").val()  : null;
+										var inter = !$(row).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(row).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(row).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+
+										var attrObj = {
+												"fidx": fidx,
+												"key" : key,
+												"values" : values,
+												"number" : number,
+												"condition" : cond,
+												"interval" : inter
+										}; 
+										attribute[c] = attrObj;
+									}
+									var filterObj = {
+											"code" : null,
+											"attribute" : attribute
+									}
+									var filterArr = [filterObj];
+									var relObj = {
+											"name" : nrel,
+											"figure" : filterArr
+									};
+									// 릴레이션 배열에 푸시
+									rel.push(relObj);
 								}
 							}
-						}
-						if (!isExist) {
-							var attrElem = [ {
-								"key" : attrKey,
-								"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-														"interval" : isNaN(interval) ? null : interval
-							} ];
-							var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
-							};
-							var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
-							};
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+						} else {
+							var isExist2= false;
+							var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+							for (var a = 0; a < rel.length; a++) {
+								// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
+								if (rel[a]["name"] === this.nowRelationCategory) {
+									isExist2 = true;
+									var filterKey;
+									if (rel[a].hasOwnProperty("figure")) {
+										filterKey = rel[a]["figure"];
+										// 필터가 배열인지?
+										if (!Array.isArray(filterKey)) {
+											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+										}
+
+										var tup = $(inp).parents().eq(6);
+										var wells = $(tup).find(".well");
+										for (var c = 0; c < wells.length; c++) {
+											var code = $(wells[c]).find(".gb-optiondefinition-select-figurecode").val();
+											if ($(wells[c]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+												code = null;
+											}
+											if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c] === undefined) {
+												strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c] = {};	
+											}
+											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c]["code"] = code;
+											if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c]["attribute"] === undefined || !Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][a]["attribute"])) {
+												strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c]["attribute"] = [];
+											}
+											var farea = $(wells[c]).find(".gb-optiondefinition-figurearea");
+											var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+											for (var b = 0; b < fdetails.length; b++) {
+												var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+												var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+												var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+												var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+												var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+												var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+												var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+												strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][c]["attribute"][b] = {
+														"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
+																"key" : key,
+																"values" : Array.isArray(values) ? values : null,
+																		"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																				"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
+																						"interval" : isNaN(inter) ? null : inter
+												};
+											}
+										}
+									}
+								}
+							}
+							if (!isExist2) {
+								var tup = $(inp).parents().eq(6);
+								var wells = $(tup).find(".well");
+								for (var c = 0; c < wells.length; c++) {
+									var code = $(wells[c]).find(".gb-optiondefinition-select-figurecode").val();
+									if ($(wells[c]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+										code = null;
+									}
+
+									var attrElem = [];
+
+									var codeElem = {
+											"code" : code,
+											"attribute" : attrElem
+									};
+
+									var farea = $(wells[c]).find(".gb-optiondefinition-figurearea");
+									var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+									for (var b = 0; b < fdetails.length; b++) {
+										var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+										var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+										var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+										var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+										var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+										var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+										var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+										attrElem[b] = {
+												"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
+														"key" : key,
+														"values" : Array.isArray(values) ? values : null,
+																"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																		"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
+																				"interval" : isNaN(inter) ? null : inter
+										};
+									}
+								}
+								var nameElem = {
+										"name" : this.nowRelationCategory,
+										"figure" : [ codeElem ]
+								};
+								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+							}							
 						}
 						// 여기까지 릴레이션
 					} else {
@@ -7820,6 +8004,9 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 						var wells = $(tup).find(".well");
 						for (var a = 0; a < wells.length; a++) {
 							var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
+							if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+								code = null;
+							}
 							if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
 							}
@@ -7830,23 +8017,23 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 							var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
 							var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
 							for (var b = 0; b < fdetails.length; b++) {
-								var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+								var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
 								var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
-								var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
+								var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+								var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 								var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
-								var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+								var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() ===  "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
 								var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
 										"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
 												"key" : key,
 												"values" : Array.isArray(values) ? values : null,
 														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof cond === "string" ? cond : null,
+																"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
 																		"interval" : isNaN(inter) ? null : inter
 								};
 							}
 						}
-
 					}
 				}
 			}
@@ -7855,33 +8042,117 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 		if (!isExist) {
 			// 릴레이션 설정임
 			if (sec) {
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = [ {
-					"name" : this.nowRelationCategory,
-					"figure" : [ obj ]
-				} ];
+				if (isAllCat) {
+// var rel =
+// strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+					var layerDef = this.getLayerDefinition().getStructure();
+					var relObj = [];
+					// 모든 레이어 정의에있는 분류와
+					for (var a = 0; a < layerDef.length; a++) {
+						var tup = $(inp).parents().eq(6);
+						var wells = $(tup).find(".well");
+						for (var c = 0; c < wells.length; c++) {
+							var code = $(wells[c]).find(".gb-optiondefinition-select-figurecode").val();
+							if ($(wells[c]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+								code = null;
+							}
+							var attrElem = [];
 
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = {};
-				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+							var codeElem = {
+									"code" : code,
+									"attribute" : attrElem
+							};
 
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
+							var farea = $(wells[c]).find(".gb-optiondefinition-figurearea");
+							var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+							for (var b = 0; b < fdetails.length; b++) {
+								var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val()=== "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+								var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+								var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+								var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+								var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+								var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+								var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+								attrElem[b] = {
+										"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
+												"key" : key,
+												"values" : Array.isArray(values) ? values : null,
+														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+																"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
+																		"interval" : isNaN(inter) ? null : inter
+								};
+							}
+						}
+
+						var figureObj = {
+								"name" : layerDef[a]["name"],
+								"figure" : [ codeElem ]		
+						};
+						relObj.push(figureObj);
+					}
+					
+					var typeObj = {};
+					typeObj[type3] = {};
+					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["relation"] = relObj;
+
+					var definitionObj = {
+							"name" : this.nowCategory,
+							"options" : typeObj
+					};
+					this.getStructure()["definition"].push(definitionObj);
+				} else {
+					var tup = $(inp).parents().eq(6);
+					var wells = $(tup).find(".well");
+					for (var c = 0; c < wells.length; c++) {
+						var code = $(wells[c]).find(".gb-optiondefinition-select-figurecode").val();
+						if ($(wells[c]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+							code = null;
+						}
+						var attrElem = [];
+
+						var codeElem = {
+								"code" : code,
+								"attribute" : attrElem
+						};
+
+						var farea = $(wells[c]).find(".gb-optiondefinition-figurearea");
+						var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+						for (var b = 0; b < fdetails.length; b++) {
+							var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null :  $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+							var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
+							var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+							var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+							var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+							var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+							var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+							attrElem[b] = {
+									"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
+											"key" : key,
+											"values" : Array.isArray(values) ? values : null,
+													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+															"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
+																	"interval" : isNaN(inter) ? null : inter
+							};
+						}
+					}
+
+					var optionsObj = [ {
+						"name" : this.nowRelationCategory,
+						"figure" : [ codeElem ]
+					} ];
+
+					var typeObj = {};
+					typeObj[type3] = {};
+					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+
+					var definitionObj = {
+							"name" : this.nowCategory,
+							"options" : typeObj
+					};
+					this.getStructure()["definition"].push(definitionObj);
+				}
 			} else {
 				// 릴레이션 설정 아님
 				// 해당 검수 타입이 설정되어 있지 않음
@@ -7898,6 +8169,9 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 				var wells = $(tup).find(".well");
 				for (var a = 0; a < wells.length; a++) {
 					var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
+					if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+						code = null;
+					}
 					if (optionsObj["figure"][a] === undefined) {
 						optionsObj["figure"][a] = {};	
 					}
@@ -7908,18 +8182,19 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 					var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
 					var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
 					for (var b = 0; b < fdetails.length; b++) {
-						var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
+						var fidx = !$(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figuretofilter").val() : null;
 						var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val() : null;
-						var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
+						var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",");
+						var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 						var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
-						var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+						var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() === "null" ? null : $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
 						var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
 						optionsObj["figure"][a]["attribute"][b] = {
 								"fidx" : !isNaN(parseInt(fidx)) ? parseInt(fidx) : null,
 										"key" : key,
 										"values" : Array.isArray(values) ? values : null,
 												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof cond === "string" ? cond : null,
+														"condition" : typeof cond === "string" ? cond === "null" ? null : cond : null,
 																"interval" : isNaN(inter) ? null : inter
 						};
 					}
@@ -7952,9 +8227,9 @@ gb.validation.OptionDefinition.prototype.deleteFilterRow = function(btn) {
 
 	var optItem = this.optItem[this.nowOption.alias];
 	var type3 = optItem["purpose"];
-	
+
 	var strc = this.getStructure();
-	
+
 	if (type3 === "none") {
 		if(strc["filter"] !== undefined){
 			var arr;
@@ -8163,425 +8438,428 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 		$(layerElem).remove();
 	}
 };
-/**
- * 피규어 조건의 허용값을 설정한다.
- * 
- * @private
- * @method gb.validation.OptionDefinition#inputFigureValues
- * @param {HTMLElement}
- *            inp - 허용값 입력 폼 객체
- */
-gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
-	var optItem = this.optItem[this.nowOption.alias];
-	var type3 = optItem["purpose"];
-	// 필터 인덱스
-	var filterIdx = $(inp).parents().eq(2).index();
-	// 레이어 인덱스
-	var layerIdx = $(inp).parents().eq(5).index();
-	// 레이어 코드
-	var layerCode = null;
-	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
-		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
-				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
-	}
-	// 속성명
-	var attrKey = null;
-	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
-		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().trim();
-		// attrKey =
-		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
-		// '');
-	}
-	// 허용값
-	var attrValues = null;
-	if (!$(inp).prop("disabled")) {
-		attrValues = $(inp).val().split(",");
-		for (var i = 0; i < attrValues.length; i++) {
-			attrValues[i] = attrValues[i].trim();
-		}
-		// attrValues = $(inp).val().replace(/(\s*)/g, '').split(",");
-	}
-	// 수치
-	var number = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").prop("disabled")) {
-		var temp = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").val());
-		if (!isNaN(temp)) {
-			number = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").val());
-		}
-	}
-	// 조건
-	var condition = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
-		condition = $(inp).parents().eq(2).find(".gb-optiondefinition-select-figurecondition").val();
-	}
-	// 간격
-	var interval = null;
-	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figureinterval").prop("disabled")) {
-		var temp = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figureinterval").val());
-		if (!isNaN(temp)) {
-			interval = temp;
-		}
-	}
-
-	var sec = false;
-	if (this.nowDetailCategory !== undefined) {
-		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
-			sec = true;
-		}
-	}
-	var strc = this.getStructure();
-	if (Array.isArray(strc["definition"])) {
-		var isExist = false;
-		// definition에서 현재 분류를 찾는다
-		for (var i = 0; i < strc["definition"].length; i++) {
-			if (strc["definition"][i]["name"] === this.nowCategory) {
-				isExist = true;
-				// options 키를 가지고 있는지?
-				if (strc["definition"][i].hasOwnProperty("options")) {
-					// 검수 타입이 설정 되어있는지
-					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
-						// 해당 검수 항목이 설정되어 있는지
-						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
-							// 현재 입력한 값이 릴레이션 필터 값인지?
-							if (sec) {
-								// 현재 옵션에 릴레이션 키가 있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
-									// 있다면
-									// 배열인지?
-									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
-										var isExist = false;
-										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
-										for (var a = 0; a < rel.length; a++) {
-											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
-											if (rel[a]["name"] === this.nowRelationCategory) {
-												isExist = true;
-												var filterKey;
-												if (rel[a].hasOwnProperty("figure")) {
-													filterKey = rel[a]["figure"];
-													// 필터가 배열인지?
-													if (!Array.isArray(filterKey)) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
-													}
-													var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
-													if (filterElem === undefined) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {};
-													}
-													// 필터 배열 원소에 attribute
-													// 키가 있는지?
-													if (!filterElem.hasOwnProperty("attribute")) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
-													}
-													// attribute 키가
-													// 배열인지?
-													if (!Array.isArray(filterElem["attribute"])) {
-														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
-													}
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
-															"key" : attrKey,
-															"values" : Array.isArray(attrValues) ? attrValues : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number
-																			: null
-																			: null,
-																			"condition" : typeof condition === "string" ? condition : null,
-																					"interval" : isNaN(interval) ? null : interval
-													};
-												}
-											}
-										}
-										if (!isExist) {
-											var attrElem = [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ];
-											var codeElem = {
-													"code" : layerCode,
-													"attribute" : attrElem
-											};
-											var nameElem = {
-													"name" : this.nowRelationCategory,
-													"figure" : [ codeElem ]
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-										}
-									} else {
-										// 배열이 아니라면
-										var attrElem = [ {
-											"key" : attrKey,
-											"values" : Array.isArray(attrValues) ? attrValues : null,
-													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-															"condition" : typeof condition === "string" ? condition : null,
-																	"interval" : isNaN(interval) ? null : interval
-										} ];
-										var codeElem = {
-												"code" : layerCode,
-												"attribute" : attrElem
-										};
-										var nameElem = {
-												"name" : this.nowRelationCategory,
-												"figure" : [ codeElem ]
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
-									}
-								} else {
-									// 현재 옵션에 릴레이션 키가
-									// 없다면
-									var attrElem = [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ];
-									var codeElem = {
-											"code" : layerCode,
-											"attribute" : attrElem
-									};
-									var nameElem = {
-											"name" : this.nowRelationCategory,
-											"figure" : [ codeElem ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-								}
-								// 여기까지 릴레이션
-							} else {
-								// filter 키가 설정되어있는지?
-								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
-									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"])) {
-										// filter키가 배열형태임
-										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
-										}
-										// attribute 키가 배열 형태임
-										if (Array
-												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
-											var tup = $(inp).parents().eq(6);
-											var wells = $(tup).find(".well");
-											for (var a = 0; a < wells.length; a++) {
-												var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
-												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
-												}
-												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
-												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined) {
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
-												}
-												var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
-												var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
-												for (var b = 0; b < fdetails.length; b++) {
-													var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val().trim() : null;
-													var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
-													for (var c = 0; c < values.length; c++) {
-														values[c] = values[c].trim();
-													}
-													var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
-													var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
-													var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
-													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
-															"key" : key,
-															"values" : Array.isArray(values) ? values : null,
-																	"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																			"condition" : typeof cond === "string" ? cond : null,
-																					"interval" : isNaN(inter) ? null : inter
-													};
-												}
-											}
-										} else {
-											// attribute 키가 배열 형태가 아님
-											var obj = {
-													"key" : attrKey,
-													"values" : Array.isArray(attrValues) ? attrValues : null,
-															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																			"interval" : isNaN(interval) ? null : interval
-											};
-											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
-										}
-									} else {
-										// filter키가 배열형태가 아님
-										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
-										var obj = {
-												"code" : layerCode,
-												"attribute" : [ {
-													"key" : attrKey,
-													"values" : Array.isArray(attrValues) ? attrValues : null,
-															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																	"condition" : typeof condition === "string" ? condition : null,
-																			"interval" : isNaN(interval) ? null : interval
-												} ]
-										};
-										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
-									}
-								} else {
-									// filter 키가 설정되어있지 않음
-									// 허용값이 입력되어있다면 값 변경
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
-								}
-							}
-						} else {
-							// 해당 검수항목이 설정되어 있지 않음
-							// 릴레이션임
-							if (sec) {
-								// 없다면
-								var attrElem = [ {
-									"key" : attrKey,
-									"values" : Array.isArray(attrValues) ? attrValues : null,
-											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-													"condition" : typeof condition === "string" ? condition : null,
-															"interval" : isNaN(interval) ? null : interval
-								} ];
-								var codeElem = {
-										"code" : layerCode,
-										"attribute" : attrElem
-								};
-								var nameElem = {
-										"name" : this.nowRelationCategory,
-										"figure" : [ codeElem ]
-								};
-								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-							} else {
-								// 해당 검수 항목이 설정되어 있지 않음
-								// 허용값이 입력되어있다면 값 변경
-								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
-									var obj = {
-											"code" : layerCode,
-											"attribute" : [ {
-												"key" : attrKey,
-												"values" : Array.isArray(attrValues) ? attrValues : null,
-														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-																"condition" : typeof condition === "string" ? condition : null,
-																		"interval" : isNaN(interval) ? null : interval
-											} ]
-									};
-									var filterObj = [ obj ];
-									var optionObj = {
-											"figure" : filterObj
-									};
-									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
-								}
-							}
-						}
-					} else {
-						// 해당 검수 타입이 설정되어 있지 않음
-						if (sec) {
-							var attrElem = [ {
-								"key" : attrKey,
-								"values" : Array.isArray(attrValues) ? attrValues : null,
-										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-												"condition" : typeof condition === "string" ? condition : null,
-														"interval" : isNaN(interval) ? null : interval
-							} ];
-							var codeElem = {
-									"code" : layerCode,
-									"attribute" : attrElem
-							};
-							var nameElem = {
-									"name" : this.nowRelationCategory,
-									"figure" : [ codeElem ]
-							};
-							strc["definition"][i]["options"][type3] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
-
-							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
-						} else {
-							var obj = {
-									"code" : layerCode,
-									"attribute" : [ {
-										"key" : attrKey,
-										"values" : Array.isArray(attrValues) ? attrValues : null,
-												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-														"condition" : typeof condition === "string" ? condition : null,
-																"interval" : isNaN(interval) ? null : interval
-									} ]
-							};
-							var filterObj = [ obj ];
-							var optionObj = {
-									"figure" : filterObj
-							};
-							var typeObj = {};
-							typeObj[this.nowOption.alias] = optionObj;
-							strc["definition"][i]["options"][type3] = typeObj;
-						}
-					}
-				}
-			}
-		}
-		// 정의에 해당 분류가 없음
-		if (!isExist) {
-			// 릴레이션 설정임
-			if (sec) {
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = [ {
-					"name" : this.nowRelationCategory,
-					"figure" : [ obj ]
-				} ];
-
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = {};
-				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			} else {
-				// 릴레이션 설정 아님
-				// 해당 검수 타입이 설정되어 있지 않음
-				// 허용값이 입력되어있다면 값 변경
-				var obj = {
-						"code" : layerCode,
-						"attribute" : [ {
-							"key" : attrKey,
-							"values" : Array.isArray(attrValues) ? attrValues : null,
-									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
-											"condition" : typeof condition === "string" ? condition : null,
-													"interval" : isNaN(interval) ? null : interval
-						} ]
-				};
-				var optionsObj = {
-						"figure" : [ obj ]
-				};
-				var typeObj = {};
-				typeObj[type3] = {};
-				typeObj[type3][this.nowOption.alias] = optionsObj;
-
-				var definitionObj = {
-						"name" : this.nowCategory,
-						"options" : typeObj
-				};
-				this.getStructure()["definition"].push(definitionObj);
-			}
-		}
-	}
-}
+///**
+// * 피규어 조건의 허용값을 설정한다.
+// * 
+// * @private
+// * @method gb.validation.OptionDefinition#inputFigureValues
+// * @param {HTMLElement}
+// *            inp - 허용값 입력 폼 객체
+// */
+//gb.validation.OptionDefinition.prototype.inputFigureValues = function(inp) {
+//	var optItem = this.optItem[this.nowOption.alias];
+//	var type3 = optItem["purpose"];
+//	// 필터 인덱스
+//	var filterIdx = $(inp).parents().eq(2).index();
+//	// 레이어 인덱스
+//	var layerIdx = $(inp).parents().eq(5).index();
+//	// 레이어 코드
+//	var layerCode = null;
+//	if (!$(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").prop("disabled")) {
+//		layerCode = $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode option").filter(":selected").attr("geom") === "none" ? null
+//				: $(inp).parents().eq(5).find(".gb-optiondefinition-select-figurecode").val();
+//	}
+//	// 속성명
+//	var attrKey = null;
+//	if (!$(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").prop("disabled")) {
+//		attrKey = $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().trim();
+//		// attrKey =
+//		// $(inp).parents().eq(1).find(".gb-optiondefinition-input-figurekey").val().replace(/(\s*)/g,
+//		// '');
+//	}
+//	// 허용값
+//	var attrValues = null;
+//	if (!$(inp).prop("disabled")) {
+//		attrValues = $(inp).val().split(",");
+//		for (var i = 0; i < attrValues.length; i++) {
+//			attrValues[i] = attrValues[i].trim();
+//		}
+//		// attrValues = $(inp).val().replace(/(\s*)/g, '').split(",");
+//	}
+//	// 수치
+//	var number = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").prop("disabled")) {
+//		var temp = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").val());
+//		if (!isNaN(temp)) {
+//			number = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figurenumber").val());
+//		}
+//	}
+//	// 조건
+//	var condition = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-select-figurecondition").prop("disabled")) {
+//		condition = $(inp).parents().eq(2).find(".gb-optiondefinition-select-figurecondition").val();
+//	}
+//	// 간격
+//	var interval = null;
+//	if (!$(inp).parents().eq(2).find(".gb-optiondefinition-input-figureinterval").prop("disabled")) {
+//		var temp = parseFloat($(inp).parents().eq(2).find(".gb-optiondefinition-input-figureinterval").val());
+//		if (!isNaN(temp)) {
+//			interval = temp;
+//		}
+//	}
+//
+//	var sec = false;
+//	if (this.nowDetailCategory !== undefined) {
+//		if (this.nowDetailCategory.alias === "relation" && this.nowRelationCategory !== undefined) {
+//			sec = true;
+//		}
+//	}
+//	var strc = this.getStructure();
+//	if (Array.isArray(strc["definition"])) {
+//		var isExist = false;
+//		// definition에서 현재 분류를 찾는다
+//		for (var i = 0; i < strc["definition"].length; i++) {
+//			if (strc["definition"][i]["name"] === this.nowCategory) {
+//				isExist = true;
+//				// options 키를 가지고 있는지?
+//				if (strc["definition"][i].hasOwnProperty("options")) {
+//					// 검수 타입이 설정 되어있는지
+//					if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
+//						// 해당 검수 항목이 설정되어 있는지
+//						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+//							// 현재 입력한 값이 릴레이션 필터 값인지?
+//							if (sec) {
+//								// 현재 옵션에 릴레이션 키가 있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
+//									// 있다면
+//									// 배열인지?
+//									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"])) {
+//										var isExist = false;
+//										var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+//										for (var a = 0; a < rel.length; a++) {
+//											// 필터키 안에 분류 이름이 현재 릴레이션 분류 이름과 같다면
+//											if (rel[a]["name"] === this.nowRelationCategory) {
+//												isExist = true;
+//												var filterKey;
+//												if (rel[a].hasOwnProperty("figure")) {
+//													filterKey = rel[a]["figure"];
+//													// 필터가 배열인지?
+//													if (!Array.isArray(filterKey)) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"] = [];
+//													}
+//													var filterElem = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx];
+//													if (filterElem === undefined) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx] = {};
+//													}
+//													// 필터 배열 원소에 attribute
+//													// 키가 있는지?
+//													if (!filterElem.hasOwnProperty("attribute")) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+//													}
+//													// attribute 키가
+//													// 배열인지?
+//													if (!Array.isArray(filterElem["attribute"])) {
+//														strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"] = [];
+//													}
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["code"] = layerCode;
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][a]["figure"][layerIdx]["attribute"][filterIdx] = {
+//															"key" : attrKey,
+//															"values" : Array.isArray(attrValues) ? attrValues : null,
+//																	"number" : number !== null && number !== undefined ? number !== "" ? number
+//																			: null
+//																			: null,
+//																			"condition" : typeof condition === "string" ? condition : null,
+//																					"interval" : isNaN(interval) ? null : interval
+//													};
+//												}
+//											}
+//										}
+//										if (!isExist) {
+//											var attrElem = [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ];
+//											var codeElem = {
+//													"code" : layerCode,
+//													"attribute" : attrElem
+//											};
+//											var nameElem = {
+//													"name" : this.nowRelationCategory,
+//													"figure" : [ codeElem ]
+//											};
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//										}
+//									} else {
+//										// 배열이 아니라면
+//										var attrElem = [ {
+//											"key" : attrKey,
+//											"values" : Array.isArray(attrValues) ? attrValues : null,
+//													"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//															"condition" : typeof condition === "string" ? condition : null,
+//																	"interval" : isNaN(interval) ? null : interval
+//										} ];
+//										var codeElem = {
+//												"code" : layerCode,
+//												"attribute" : attrElem
+//										};
+//										var nameElem = {
+//												"name" : this.nowRelationCategory,
+//												"figure" : [ codeElem ]
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"].push(nameElem);
+//									}
+//								} else {
+//									// 현재 옵션에 릴레이션 키가
+//									// 없다면
+//									var attrElem = [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ];
+//									var codeElem = {
+//											"code" : layerCode,
+//											"attribute" : attrElem
+//									};
+//									var nameElem = {
+//											"name" : this.nowRelationCategory,
+//											"figure" : [ codeElem ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//								}
+//								// 여기까지 릴레이션
+//							} else {
+//								// filter 키가 설정되어있는지?
+//								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty("figure")) {
+//									if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"])) {
+//										// filter키가 배열형태임
+//										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] === undefined) {
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx] = {};
+//										}
+//										// attribute 키가 배열 형태임
+//										if (Array
+//												.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"])) {
+//											var tup = $(inp).parents().eq(6);
+//											var wells = $(tup).find(".well");
+//											for (var a = 0; a < wells.length; a++) {
+//												var code = $(wells[a]).find(".gb-optiondefinition-select-figurecode").val();
+//												if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+//													code = null;
+//												}
+//												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] === undefined) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a] = {};	
+//												}
+//												strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["code"] = code;
+//												if (strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] === undefined) {
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"] = [];
+//												}
+//												var farea = $(wells[a]).find(".gb-optiondefinition-figurearea");
+//												var fdetails = $(farea).find(".gb-optiondefinition-figurearea-row");
+//												for (var b = 0; b < fdetails.length; b++) {
+//													var key = !$(fdetails[b]).find(".gb-optiondefinition-input-figurekey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurekey").val().trim() : null;
+//													var values = !$(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-figurevalues").val().split(",") : null;
+//													for (var c = 0; c < values.length; c++) {
+//														values[c] = values[c].trim();
+//													}
+//													var number = !$(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figurenumber").val()) : null : null;
+//													var cond = !$(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-select-figurecondition").val() : null;
+//													var inter = !$(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").prop("disabled") ? !isNaN(parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val())) ? parseFloat($(fdetails[b]).find(".gb-optiondefinition-input-figureinterval").val()) : null : null;
+//													strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][a]["attribute"][b] = {
+//															"key" : key,
+//															"values" : Array.isArray(values) ? values : null,
+//																	"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																			"condition" : typeof cond === "string" ? cond : null,
+//																					"interval" : isNaN(inter) ? null : inter
+//													};
+//												}
+//											}
+//										} else {
+//											// attribute 키가 배열 형태가 아님
+//											var obj = {
+//													"key" : attrKey,
+//													"values" : Array.isArray(attrValues) ? attrValues : null,
+//															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																	"condition" : typeof condition === "string" ? condition : null,
+//																			"interval" : isNaN(interval) ? null : interval
+//											};
+//											strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"][layerIdx]["attribute"] = [ obj ];
+//										}
+//									} else {
+//										// filter키가 배열형태가 아님
+//										// 허용값이 입력되어있다면 값 변경 / 값은 위에 변수에 할당되어있음
+//										var obj = {
+//												"code" : layerCode,
+//												"attribute" : [ {
+//													"key" : attrKey,
+//													"values" : Array.isArray(attrValues) ? attrValues : null,
+//															"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																	"condition" : typeof condition === "string" ? condition : null,
+//																			"interval" : isNaN(interval) ? null : interval
+//												} ]
+//										};
+//										strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
+//									}
+//								} else {
+//									// filter 키가 설정되어있지 않음
+//									// 허용값이 입력되어있다면 값 변경
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias]["figure"] = [ obj ];
+//								}
+//							}
+//						} else {
+//							// 해당 검수항목이 설정되어 있지 않음
+//							// 릴레이션임
+//							if (sec) {
+//								// 없다면
+//								var attrElem = [ {
+//									"key" : attrKey,
+//									"values" : Array.isArray(attrValues) ? attrValues : null,
+//											"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//													"condition" : typeof condition === "string" ? condition : null,
+//															"interval" : isNaN(interval) ? null : interval
+//								} ];
+//								var codeElem = {
+//										"code" : layerCode,
+//										"attribute" : attrElem
+//								};
+//								var nameElem = {
+//										"name" : this.nowRelationCategory,
+//										"figure" : [ codeElem ]
+//								};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//								strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//							} else {
+//								// 해당 검수 항목이 설정되어 있지 않음
+//								// 허용값이 입력되어있다면 값 변경
+//								if (Array.isArray(attrValues) && attrValues.length === 1 && attrValues[0] === "" ? false : true) {
+//									var obj = {
+//											"code" : layerCode,
+//											"attribute" : [ {
+//												"key" : attrKey,
+//												"values" : Array.isArray(attrValues) ? attrValues : null,
+//														"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//																"condition" : typeof condition === "string" ? condition : null,
+//																		"interval" : isNaN(interval) ? null : interval
+//											} ]
+//									};
+//									var filterObj = [ obj ];
+//									var optionObj = {
+//											"figure" : filterObj
+//									};
+//									strc["definition"][i]["options"][type3][this.nowOption.alias] = optionObj;
+//								}
+//							}
+//						}
+//					} else {
+//						// 해당 검수 타입이 설정되어 있지 않음
+//						if (sec) {
+//							var attrElem = [ {
+//								"key" : attrKey,
+//								"values" : Array.isArray(attrValues) ? attrValues : null,
+//										"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//												"condition" : typeof condition === "string" ? condition : null,
+//														"interval" : isNaN(interval) ? null : interval
+//							} ];
+//							var codeElem = {
+//									"code" : layerCode,
+//									"attribute" : attrElem
+//							};
+//							var nameElem = {
+//									"name" : this.nowRelationCategory,
+//									"figure" : [ codeElem ]
+//							};
+//							strc["definition"][i]["options"][type3] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ nameElem ];
+//
+//							strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+//						} else {
+//							var obj = {
+//									"code" : layerCode,
+//									"attribute" : [ {
+//										"key" : attrKey,
+//										"values" : Array.isArray(attrValues) ? attrValues : null,
+//												"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//														"condition" : typeof condition === "string" ? condition : null,
+//																"interval" : isNaN(interval) ? null : interval
+//									} ]
+//							};
+//							var filterObj = [ obj ];
+//							var optionObj = {
+//									"figure" : filterObj
+//							};
+//							var typeObj = {};
+//							typeObj[this.nowOption.alias] = optionObj;
+//							strc["definition"][i]["options"][type3] = typeObj;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		// 정의에 해당 분류가 없음
+//		if (!isExist) {
+//			// 릴레이션 설정임
+//			if (sec) {
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = [ {
+//					"name" : this.nowRelationCategory,
+//					"figure" : [ obj ]
+//				} ];
+//
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = {};
+//				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			} else {
+//				// 릴레이션 설정 아님
+//				// 해당 검수 타입이 설정되어 있지 않음
+//				// 허용값이 입력되어있다면 값 변경
+//				var obj = {
+//						"code" : layerCode,
+//						"attribute" : [ {
+//							"key" : attrKey,
+//							"values" : Array.isArray(attrValues) ? attrValues : null,
+//									"number" : number !== null && number !== undefined ? number !== "" ? number : null : null,
+//											"condition" : typeof condition === "string" ? condition : null,
+//													"interval" : isNaN(interval) ? null : interval
+//						} ]
+//				};
+//				var optionsObj = {
+//						"figure" : [ obj ]
+//				};
+//				var typeObj = {};
+//				typeObj[type3] = {};
+//				typeObj[type3][this.nowOption.alias] = optionsObj;
+//
+//				var definitionObj = {
+//						"name" : this.nowCategory,
+//						"options" : typeObj
+//				};
+//				this.getStructure()["definition"].push(definitionObj);
+//			}
+//		}
+//	}
+//}
 /**
  * 필터 조건의 허용값을 설정한다.
  * 
@@ -8815,6 +9093,9 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 												var wells = $(tup).find(".well");
 												for (var a = 0; a < wells.length; a++) {
 													var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+													if ($(wells[a]).find(".gb-optiondefinition-select-figurecode").children('option').filter("option:selected").attr("geom") === "none") {
+														code = null;
+													}
 													var relObj = {
 															"name" : this.nowRelationCategory,
 															"filter" : []
@@ -8886,6 +9167,9 @@ gb.validation.OptionDefinition.prototype.inputFilterValues = function(inp) {
 								var wells = $(tup).find(".well");
 								for (var a = 0; a < wells.length; a++) {
 									var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+									if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+										code = null;
+									}
 									if (strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][a] === undefined) {
 										strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][a] = {};	
 									}
@@ -9133,6 +9417,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										for (var d = 0; d < attrValues.length; d++) {
 											attrValues[d] = attrValues[d].trim(); 
 										}
+										if (attrValues.length === 1 && attrValues[0] === "") {
+											attrValues = null;
+										}
 										// 객체로 만들어서
 										var attrObj = {
 												"key" : attrName,
@@ -9167,6 +9454,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										var attrValues = $(row).find(".gb-optiondefinition-input-filtervalues").val().split(",");
 										for (var d = 0; d < attrValues.length; d++) {
 											attrValues[d] = attrValues[d].trim(); 
+										}
+										if (attrValues.length === 1 && attrValues[0] === "") {
+											attrValues = null;
 										}
 										var attrObj = {
 												"key" : attrName,
@@ -9209,6 +9499,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 									var wells = $(tup).find(".well");
 									for (var a = 0; a < wells.length; a++) {
 										var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+										if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+											code = null;
+										}
 										if (strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][r]["filter"][a] === undefined) {
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][r]["filter"][a] = {};	
 										}
@@ -9220,7 +9513,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 										var fdetails = $(farea).find(".row");
 										for (var b = 0; b < fdetails.length; b++) {
 											var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey").val() : null;
-											var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",") : null;
+											var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+											var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 											strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][r]["filter"][a]["attribute"][b] = {
 													"key" : key,
 													"values" : Array.isArray(values) ? values : null
@@ -9234,6 +9528,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 								var wells = $(tup).find(".well");
 								for (var a = 0; a < wells.length; a++) {
 									var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+									if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+										code = null;
+									}
 									var relObj = {
 											"name" : this.nowRelationCategory,
 											"filter" : []
@@ -9242,7 +9539,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 									var fdetails = $(farea).find(".row");
 									for (var b = 0; b < fdetails.length; b++) {
 										var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey").val() : null;
-										var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",") : null;
+										var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+										var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 										if(relObj["filter"][a] === undefined){
 											relObj["filter"][a] = {};
 										}
@@ -9272,6 +9570,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 						var wells = $(tup).find(".well");
 						for (var a = 0; a < wells.length; a++) {
 							var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+							if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+								code = null;
+							}
 							if (strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][a] === undefined) {
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][a] = {};	
 							}
@@ -9283,7 +9584,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 							var fdetails = $(farea).find(".row");
 							for (var b = 0; b < fdetails.length; b++) {
 								var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey").val() : null;
-								var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",") : null;
+								var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+								var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 								strc["definition"][i]["options"][type3][this.nowOption.alias]["filter"][a]["attribute"][b] = {
 										"key" : key,
 										"values" : Array.isArray(values) ? values : null
@@ -9366,6 +9668,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 					var wells = $(tup).find(".well");
 					for (var a = 0; a < wells.length; a++) {
 						var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+						if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+							code = null;
+						}
 						if (typeObj[type3][this.nowOption.alias]["relation"][0]["filter"][a] === undefined) {
 							typeObj[type3][this.nowOption.alias]["relation"][0]["filter"][a] = {};	
 						}
@@ -9377,7 +9682,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 						var fdetails = $(farea).find(".row");
 						for (var b = 0; b < fdetails.length; b++) {
 							var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey").val() : null;
-							var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",") : null;
+							var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+							var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 							typeObj[type3][this.nowOption.alias]["relation"][0]["filter"][a]["attribute"][b] = {
 									"key" : key,
 									"values" : Array.isArray(values) ? values : null
@@ -9406,6 +9712,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 				var wells = $(tup).find(".well");
 				for (var a = 0; a < wells.length; a++) {
 					var code = $(wells[a]).find(".gb-optiondefinition-select-filtercode").val();
+					if ($(wells[a]).find(".gb-optiondefinition-select-filtercode").children('option').filter("option:selected").attr("geom") === "none") {
+						code = null;
+					}
 					if (typeObj[type3][this.nowOption.alias]["filter"][a] === undefined) {
 						typeObj[type3][this.nowOption.alias]["filter"][a] = {};	
 					}
@@ -9417,7 +9726,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 					var fdetails = $(farea).find(".row");
 					for (var b = 0; b < fdetails.length; b++) {
 						var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey").val() : null;
-						var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",") : null;
+						var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").val().split(",");
+						var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 						typeObj[type3][this.nowOption.alias]["filter"][a]["attribute"][b] = {
 								"key" : key,
 								"values" : Array.isArray(values) ? values : null
@@ -9476,7 +9786,8 @@ gb.validation.OptionDefinition.prototype.inputFilterKeyForNone = function(inp) {
 		var fdetails = $(farea).find(".row");
 		for (var b = 0; b < fdetails.length; b++) {
 			var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey-fornone").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey-fornone").val() : null;
-			var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").val().split(",") : null;
+			var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").val().split(",");
+			var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
 			strc["filter"]["attribute"][b] = {
 					"key" : key,
 					"values" : Array.isArray(values) ? values : null
@@ -9490,9 +9801,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKeyForNone = function(inp) {
 		var fdetails = $(farea).find(".row");
 		for (var b = 0; b < fdetails.length; b++) {
 			var key = !$(fdetails[b]).find(".gb-optiondefinition-input-filterkey-fornone").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filterkey-fornone").val() : null;
-			var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").prop("disabled") ? $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").val().split(",") : null;
-			for (var i = 0; i < values.length; i++) {
-				values[i] = !isNaN(parseInt(values[i])) ? parseInt(values[i]) : null; 
+			var formValues = $(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").val().split(",");
+			var values = !$(fdetails[b]).find(".gb-optiondefinition-input-filtervalues-fornone").prop("disabled") ? formValues.length === 1 && formValues[0] === "" ? null : formValues : null;
+			if (Array.isArray(values)) {
+				for (var i = 0; i < values.length; i++) {
+					values[i] = !isNaN(parseInt(values[i])) ? parseInt(values[i]) : null; 
+				}				
 			}
 			strc["filter"]["state"][b] = {
 					"key" : key,
@@ -9554,17 +9868,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 												var obj = {
 														"filter" : null
 												};
-												if (type3 === "attribute") {
-													obj["figure"] = null;
-													obj["relation"] = null;
-												} else if (type3 === "graphic") {
-													obj["tolerance"] = null;
-													obj["relation"] = null;
-												} else if (type3 === "adjacent") {
-													obj["figure"] = null;
-													obj["tolerance"] = null;
-													obj["relation"] = null;
-												}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+												obj["figure"] = null;
+												obj["tolerance"] = null;
+												obj["relation"] = null;
+// }
 												obj["name"] = layerDef[a].name;
 												delete obj["relation"];
 												def[i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
@@ -9622,17 +9936,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											var obj = {
 													"filter" : null
 											};
-											if (type3 === "attribute") {
-												obj["figure"] = null;
-												obj["relation"] = null;
-											} else if (type3 === "graphic") {
-												obj["tolerance"] = null;
-												obj["relation"] = null;
-											} else if (type3 === "adjacent") {
-												obj["figure"] = null;
-												obj["tolerance"] = null;
-												obj["relation"] = null;
-											}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+											obj["figure"] = null;
+											obj["tolerance"] = null;
+											obj["relation"] = null;
+// }
 											obj["name"] = layerDef[a].name;
 											delete obj["relation"];
 											def[i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
@@ -9663,17 +9977,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-										if (type3 === "attribute") {
-											obj["figure"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "graphic") {
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "adjacent") {
-											obj["figure"] = null;
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+										obj["figure"] = null;
+										obj["tolerance"] = null;
+										obj["relation"] = null;
+// }
 
 										obj["name"] = layerDef[a].name;
 										delete obj["relation"];
@@ -9726,17 +10040,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 							var obj = {
 									"filter" : null
 							};
-							if (type3 === "attribute") {
-								obj["figure"] = null;
-								obj["relation"] = null;
-							} else if (type3 === "graphic") {
-								obj["tolerance"] = null;
-								obj["relation"] = null;
-							} else if (type3 === "adjacent") {
-								obj["figure"] = null;
-								obj["tolerance"] = null;
-								obj["relation"] = null;
-							}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+							obj["figure"] = null;
+							obj["tolerance"] = null;
+							obj["relation"] = null;
+// }
 
 							obj["name"] = layerDef[a].name;
 							delete obj["relation"];
@@ -9764,17 +10078,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						var obj = {
 								"filter" : null
 						};
-						if (type3 === "attribute") {
-							obj["figure"] = null;
-							obj["relation"] = null;
-						} else if (type3 === "graphic") {
-							obj["tolerance"] = null;
-							obj["relation"] = null;
-						} else if (type3 === "adjacent") {
-							obj["figure"] = null;
-							obj["tolerance"] = null;
-							obj["relation"] = null;
-						}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+						obj["figure"] = null;
+						obj["tolerance"] = null;
+						obj["relation"] = null;
+// }
 
 						obj["name"] = layerDef[a].name;
 						delete obj["relation"];
@@ -9810,17 +10124,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-										if (type3 === "attribute") {
-											obj["figure"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "graphic") {
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "adjacent") {
-											obj["figure"] = null;
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+										obj["figure"] = null;
+										obj["tolerance"] = null;
+										obj["relation"] = null;
+// }
 										if (sec) {
 											obj["name"] = this.nowRelationCategory;
 											delete obj["relation"];
@@ -9909,17 +10223,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-										if (type3 === "attribute") {
-											obj["figure"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "graphic") {
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										} else if (type3 === "adjacent") {
-											obj["figure"] = null;
-											obj["tolerance"] = null;
-											obj["relation"] = null;
-										}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+										obj["figure"] = null;
+										obj["tolerance"] = null;
+										obj["relation"] = null;
+// }
 										if (sec) {
 											obj["name"] = this.nowRelationCategory;
 											delete obj["relation"];
@@ -9964,17 +10278,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									var obj = {
 											"filter" : null
 									};
-									if (type3 === "attribute") {
-										obj["figure"] = null;
-										obj["relation"] = null;
-									} else if (type3 === "graphic") {
-										obj["tolerance"] = null;
-										obj["relation"] = null;
-									} else if (type3 === "adjacent") {
-										obj["figure"] = null;
-										obj["tolerance"] = null;
-										obj["relation"] = null;
-									}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+									obj["figure"] = null;
+									obj["tolerance"] = null;
+									obj["relation"] = null;
+// }
 
 									if (sec) {
 										obj["name"] = this.nowRelationCategory;
@@ -10042,17 +10356,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						var obj = {
 								"filter" : null
 						};
-						if (type3 === "attribute") {
-							obj["figure"] = null;
-							obj["relation"] = null;
-						} else if (type3 === "graphic") {
-							obj["tolerance"] = null;
-							obj["relation"] = null;
-						} else if (type3 === "adjacent") {
-							obj["figure"] = null;
-							obj["tolerance"] = null;
-							obj["relation"] = null;
-						}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+						obj["figure"] = null;
+						obj["tolerance"] = null;
+						obj["relation"] = null;
+// }
 
 						if (sec) {
 							obj["name"] = this.nowRelationCategory;
@@ -10087,17 +10401,17 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 					var obj = {
 							"filter" : null
 					};
-					if (type3 === "attribute") {
-						obj["figure"] = null;
-						obj["relation"] = null;
-					} else if (type3 === "graphic") {
-						obj["tolerance"] = null;
-						obj["relation"] = null;
-					} else if (type3 === "adjacent") {
-						obj["figure"] = null;
-						obj["tolerance"] = null;
-						obj["relation"] = null;
-					}
+// if (type3 === "attribute") {
+// obj["figure"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "graphic") {
+// obj["tolerance"] = null;
+// obj["relation"] = null;
+// } else if (type3 === "adjacent") {
+					obj["figure"] = null;
+					obj["tolerance"] = null;
+					obj["relation"] = null;
+// }
 
 					if (sec) {
 						obj["name"] = this.nowRelationCategory;
@@ -10253,7 +10567,68 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 				that.printDetailForm(btn, false, true, true);
 			}
 		} else {
+			var definition = this.getStructure()["definition"];
+			if (Array.isArray(definition)) {
+				for (var i = 0; i < definition.length; i++) {
+					var name = definition[i].name;
+					if (name === this.nowCategory) {
+						// 검수 항목 정보
+						var optItem = this.optItem[this.nowOption.alias];
+						// 검수 타입
+						var type3 = optItem["purpose"];
+						var optionType = definition[i]["options"][type3];
+						if (optionType !== undefined) {
+							var keys = Object.keys(optionType);
+							if (keys.indexOf(this.nowOption.alias) !== -1) {
+								var relation = definition[i]["options"][type3][this.nowOption.alias]["relation"];
+								if (Array.isArray(relation)) {
+									for (var j = 0; j < relation.length; j++) {
+										var name = relation[j]["name"];
+										if (name === this.nowRelationCategory) {
+											var filter = definition[i]["options"][type3][this.nowOption.alias]["relation"][j][type];
+											if (filter !== undefined) {
+												delete definition[i]["options"][type3][this.nowOption.alias]["relation"][j][type];
+											}
+											var relKeys = Object.keys(definition[i]["options"][type3][this.nowOption.alias]["relation"][j]);
+											if (relKeys.length === 1) {
+												delete definition[i]["options"][type3][this.nowOption.alias]["relation"];
+											}
+											var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
+											if (keys2.length === 0) {
+												delete definition[i]["options"][type3][this.nowOption.alias];
+											}
+										}
+									}
+								}
+							}
+							var afterKeys = Object.keys(optionType);
+							if (afterKeys.length === 0) {
+								delete definition[i]["options"][type3];
+							}
+						}
+					}
+				}
+				var btn = $("<button>").addClass("gb-optiondefinition-btn-detailcategory");
 
+				if (type === "filter") {
+					$(btn).attr({
+						"value" : "filter"
+					}).text(that.translation.filterValidation[that.locale]);
+				} else if (type === "figure") {
+					$(btn).attr({
+						"value" : "figure"
+					}).text(that.translation.attrValidation[that.locale]);
+				} else if (type === "tolerance") {
+					$(btn).attr({
+						"value" : "tolerance"
+					}).text(that.translation.condValidation[that.locale]);
+				} else if (type === "relation") {
+					$(btn).attr({
+						"value" : "relation"
+					}).text(that.translation.layerRelation[that.locale]);
+				}
+				that.printDetailForm(btn, false);
+			}
 		}
 	} else {
 		category = this.nowCategory;
@@ -10677,12 +11052,13 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 
 		var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
+		var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 		var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 		var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+		$(codeSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 		if (!optItem.relation.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
@@ -10718,12 +11094,13 @@ gb.validation.OptionDefinition.prototype.addLayerCodeTolerance = function(btn) {
 
 		var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 		var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
+		var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 		var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 		var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 		var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 		var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 		var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-		$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+		$(codeSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 		if (!optItem.tolerance.condition) {
 			$(codeSelect).prop("disabled", true);
 		}
@@ -11016,7 +11393,7 @@ gb.validation.OptionDefinition.prototype.addFilterRowForNone = function(btn) {
 		tup = $("<div>").addClass("gb-optiondefinition-tuplearea");
 		$(btn).parents().eq(2).append(tup);
 	}
-	
+
 	var filterArea = $(tup).find(".gb-optiondefinition-filterarea")[0];
 	if (filterArea === undefined) {
 		filterArea = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-filterarea");
@@ -11071,7 +11448,7 @@ gb.validation.OptionDefinition.prototype.refreshFigureToFilterSelect = function(
 												var attrLabel = this.translation.attrName[this.locale];
 												var attrName = attributes[k]["key"];
 												var valuesLabel = this.translation.acceptVal[this.locale];
-												var values = attributes[k]["values"].toString();
+												var values = attributes[k]["values"];
 												var opt = $("<option>").attr("value", k).text(attrLabel+": "+attrName+" / "+valuesLabel+": "+values);
 												$(filterSelect).append(opt);
 											}
@@ -11136,7 +11513,7 @@ gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 												var attrLabel = this.translation.attrName[this.locale];
 												var attrName = attributes[k]["key"];
 												var valuesLabel = this.translation.acceptVal[this.locale];
-												var values = attributes[k]["values"].toString();
+												var values = attributes[k]["values"];
 												var opt = $("<option>").attr("value", k).text(attrLabel+": "+attrName+" / "+valuesLabel+": "+values);
 												$(filterSelect).append(opt);
 											}
@@ -11195,12 +11572,13 @@ gb.validation.OptionDefinition.prototype.addFigureRow = function(btn) {
 
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecondition");
+	var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 	var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 	var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+	$(codeSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 	if (!optItem.figure.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
@@ -11256,12 +11634,13 @@ gb.validation.OptionDefinition.prototype.addToleranceRow = function(btn) {
 
 	var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 	var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
+	var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 	var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 	var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 	var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 	var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 	var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-	$(codeSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+	$(codeSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 	if (!optItem.tolerance.condition) {
 		$(codeSelect).prop("disabled", true);
 	}
@@ -11899,32 +12278,8 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 		if (sec) {
 			if (all) {
 				className = "gb-optiondefinition-btn-relationdetailcategory-all";
-				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
-					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
-							this.translation.filterValidation[this.locale]).attr("value", "filter");
-					var col = $("<div>").addClass("col-md-3").append(filterBtn);
-					$(row).append(col);
-				}
-				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
-						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
-					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
-							this.translation.attrValidation[this.locale]).attr("value", "figure");
-					var col = $("<div>").addClass("col-md-3").append(figBtn);
-					$(row).append(col);
-				}
-				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
-						|| optItem.relation.tolerance.interval) {
-					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
-							this.translation.condValidation[this.locale]).attr("value", "tolerance");
-					var col = $("<div>").addClass("col-md-3").append(tolBtn);
-					$(row).append(col);
-				}
 				if (optItem.relation.name
-						&& (!optItem.relation.filter.code && !optItem.relation.filter.key && !optItem.relation.filter.values
-								&& !optItem.relation.figure.code && !optItem.relation.figure.key && !optItem.relation.figure.values
-								&& !optItem.relation.figure.number && !optItem.relation.figure.condition
-								&& !optItem.relation.figure.interval && !optItem.relation.tolerance.code
-								&& !optItem.relation.tolerance.value && !optItem.relation.tolerance.condition && !optItem.relation.tolerance.interval)) {
+						&& (optItem.relation.filter.code && optItem.relation.filter.key && optItem.relation.filter.values)) {
 					var strc = this.getStructure();
 					var layerDef = this.getLayerDefinition().getStructure();
 					var names = [];
@@ -11972,8 +12327,6 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 					var col = $("<div>").addClass("col-md-12").append(label);
 					$(row).append(col);
 				}
-			} else {
-				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
 					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
 							this.translation.filterValidation[this.locale]).attr("value", "filter");
@@ -11994,12 +12347,10 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
+			} else {
+				className = "gb-optiondefinition-btn-relationdetailcategory";
 				if (optItem.relation.name
-						&& (!optItem.relation.filter.code && !optItem.relation.filter.key && !optItem.relation.filter.values
-								&& !optItem.relation.figure.code && !optItem.relation.figure.key && !optItem.relation.figure.values
-								&& !optItem.relation.figure.number && !optItem.relation.figure.condition
-								&& !optItem.relation.figure.interval && !optItem.relation.tolerance.code
-								&& !optItem.relation.tolerance.value && !optItem.relation.tolerance.condition && !optItem.relation.tolerance.interval)) {
+						&& (optItem.relation.filter.code && optItem.relation.filter.key && optItem.relation.filter.values)) {
 					var strc = this.getStructure();
 					var flag = false;
 					if (strc["definition"].length > 0) {
@@ -12034,6 +12385,26 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 					}).addClass("gb-optiondefinition-check-noparamoption").prop("checked", flag);
 					var label = $("<label>").append(check).append(this.translation.simpleCheck[this.locale]);
 					var col = $("<div>").addClass("col-md-12").append(label);
+					$(row).append(col);
+				}
+				if (optItem.relation.filter.code || optItem.relation.filter.key || optItem.relation.filter.values) {
+					var filterBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
+							this.translation.filterValidation[this.locale]).attr("value", "filter");
+					var col = $("<div>").addClass("col-md-3").append(filterBtn);
+					$(row).append(col);
+				}
+				if (optItem.relation.figure.code || optItem.relation.figure.key || optItem.relation.figure.values
+						|| optItem.relation.figure.number || optItem.relation.figure.condition || optItem.relation.figure.interval) {
+					var figBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
+							this.translation.attrValidation[this.locale]).attr("value", "figure");
+					var col = $("<div>").addClass("col-md-3").append(figBtn);
+					$(row).append(col);
+				}
+				if (optItem.relation.tolerance.code || optItem.relation.tolerance.value || optItem.relation.tolerance.condition
+						|| optItem.relation.tolerance.interval) {
+					var tolBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(className).addClass("gb-optiondefinition-btn-with100").text(
+							this.translation.condValidation[this.locale]).attr("value", "tolerance");
+					var col = $("<div>").addClass("col-md-3").append(tolBtn);
 					$(row).append(col);
 				}
 			}
@@ -12222,6 +12593,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 									}
 								}
 							}
+							if (tempAttrArr.length === 0) {
+								isSame = false;
+							}
 							// 같으면
 							if (isSame) {
 								var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
@@ -12301,6 +12675,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 								}
 							}
 						}
+					}
+					if (!Array.isArray(nowFilter)) {
+						nowFilter = [];
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
@@ -12418,6 +12795,205 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 				if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
 					// 릴레이션인지 확인
 					var nowFilter = [];
+					// ===========================================
+					if (sec) {
+						var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
+						// 모든 분류 조회인지
+						if (all) {
+							// 임시 배열 객체
+							var tempAttrArr = [];
+							// 같은지
+							var isSame = true;
+							// 모든 릴레이션에서
+							for (var j = 0; j < rel.length; j++) {
+								var relObj = rel[j];
+								// 필터객체를 꺼내서
+								if (Array.isArray(relObj["figure"])) {
+									// 모든 코드 조건인지 확인
+									if (relObj["figure"].length === 1 && relObj["figure"][0]["code"] === null) {
+										// 애트리뷰트 객체를 꺼내서
+										var attrArr = relObj["figure"][0]["attribute"];
+										// 배열인지 확인해서
+										if (Array.isArray(attrArr)) {
+											if (j === 0) {
+												// 최초값을 비교를 위해 임시 저장
+												for (var k = 0; k < attrArr.length; k++) {
+													var jsonStr = JSON.stringify(attrArr[k]);
+													var njson = JSON.parse(jsonStr);
+													tempAttrArr.push(njson);
+												}	
+											} else {
+												for (var k = 0; k < attrArr.length; k++) {
+													var jsonStr = JSON.stringify(attrArr[k]);
+													if (!Object.is(JSON.stringify(tempAttrArr[k]), jsonStr)) {
+														isSame = false;
+													}
+													if (!isSame) {
+														console.log("다름");
+													}
+												}	
+											}
+										}
+									}
+								}
+							}
+							if (tempAttrArr.length === 0) {
+								isSame = false;
+							}
+							// 같으면
+							if (isSame) {
+								var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
+								
+								var codeSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecode");
+								var allCode = $("<option>").text(this.translation.applyAll[this.locale]).attr("geom", "none");
+								$(codeSelect).append(allCode);
+								var codeCol2 = $("<div>").addClass("col-md-7").append(codeSelect);
+
+								var delBtn = $("<button>").addClass("btn").addClass("btn-default").addClass(
+								"gb-optiondefinition-btn-deletelayerfigure").text(this.translation.deleteLayerCode[this.locale]).addClass("gb-optiondefinition-btn-with100");
+								var delBtnCol = $("<div>").addClass("col-md-2").append(delBtn);
+
+								var addBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-addfigure")
+								.text(this.translation.addAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
+								var addBtnCol = $("<div>").addClass("col-md-2").append(addBtn);
+
+								var addFigureRow = $("<div>").addClass("row").append(codeCol1).append(codeCol2).append(delBtnCol).append(addBtnCol);
+								
+								var figureArea = $("<div>").addClass("col-md-12").addClass("gb-optiondefinition-figurearea");
+
+								// 임시 저장된 최초값으로
+								for (var b = 0; b < tempAttrArr.length; b++) {
+									var connFilterRow = $("<div>").addClass("row");
+									var connFilterCol1 = $("<div>").addClass("col-md-2").text(this.translation.connFilter[this.locale] + ":");
+
+									var filterSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figuretofilter");
+									var noSelectOpt = $("<option>").attr("value", "null").text(this.translation.noselect[this.locale]);
+									$(filterSelect).append(noSelectOpt);
+									
+									if (!optItem.relation.figure.filter) {
+										$(filterSelect).prop("disabled", true);
+									}
+									var connFilterCol2 = $("<div>").addClass("col-md-10").append(filterSelect);
+
+									$(connFilterRow).append(connFilterCol1).append(connFilterCol2);
+									
+									var row = $("<div>").addClass("row");
+									
+									var attrCol1 = $("<div>").addClass("col-md-1").text(this.translation.attrName[this.locale] + ":");
+									var inputAttr = $("<input>").attr({
+										"type" : "text",
+										"placeholder" : this.translation.attrNameEx[this.locale]
+									}).addClass("form-control").addClass("gb-optiondefinition-input-figurekey");
+									if (tempAttrArr[b].key !== undefined && tempAttrArr[b].key !== null) {
+										$(inputAttr).val(tempAttrArr[b].key);
+									}
+									if (!optItem.relation.figure.key) {
+										$(inputAttr).prop("disabled", true);
+									}
+									var attrCol2 = $("<div>").addClass("col-md-2").append(inputAttr);
+
+									$(row).append(attrCol1).append(attrCol2);
+
+									var filterCol1 = $("<div>").addClass("col-md-1").text(this.translation.acceptVal[this.locale] + ":");
+									var inputValues = $("<input>").attr({
+										"type" : "text",
+										"placeholder" : this.translation.acceptValEx[this.locale]
+									}).addClass("form-control").addClass("gb-optiondefinition-input-figurevalues");
+									if (tempAttrArr[b].values !== undefined && tempAttrArr[b].values !== null) {
+										$(inputValues).val(tempAttrArr[b].values.toString());
+									}
+									if (!optItem.relation.figure.values) {
+										$(inputValues).prop("disabled", true);
+									}
+									var filterCol2 = $("<div>").addClass("col-md-8").append(inputValues);
+									$(row).append(filterCol1).append(filterCol2);
+
+									var row2 = $("<div>").addClass("row");
+
+									var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.figure[this.locale] + ":");
+									var inputNum = $("<input>").attr({
+										"type" : "number",
+										"placeholder" : this.translation.figureInterEx[this.locale]
+									}).addClass("form-control").addClass("gb-optiondefinition-input-figurenumber");
+									if (tempAttrArr[b].number !== undefined &&tempAttrArr[b].number !== null) {
+										$(inputNum).val(tempAttrArr[b].number);
+									}
+									if (!optItem.figure.number) {
+										$(inputNum).prop("disabled", true);
+									}
+									var numCol2 = $("<div>").addClass("col-md-3").append(inputNum);
+									$(row2).append(numCol1).append(numCol2);
+
+									var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
+									var condSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecondition");
+									var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
+									var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
+									var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
+									var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
+									var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
+									var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
+									$(condSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+									if (tempAttrArr[b].condition !== undefined && tempAttrArr[b].condition !== null) {
+										$(condSelect).val(tempAttrArr[b].condition);
+									}
+									if (!optItem.relation.figure.condition) {
+										$(condSelect).prop("disabled", true);
+									}
+									var condCol2 = $("<div>").addClass("col-md-2").append(condSelect);
+									$(row2).append(codeCol1).append(condCol2);
+
+									var numCol1 = $("<div>").addClass("col-md-1").text(this.translation.interval[this.locale] + ":");
+									var inputNum = $("<input>").attr({
+										"type" : "number",
+										"placeholder" : this.translation.figureInterEx[this.locale]
+									}).addClass("form-control").addClass("gb-optiondefinition-input-figureinterval");
+									if (tempAttrArr[b].interval !== undefined &&tempAttrArr[b].interval !== null) {
+										$(inputNum).val(tempAttrArr[b].interval);
+									}
+									if (!optItem.relation.figure.interval) {
+										$(inputNum).prop("disabled", true);
+									}
+									var numCol2 = $("<div>").addClass("col-md-2").append(inputNum);
+									$(row2).append(numCol1).append(numCol2);
+
+									var btnDel = $("<button>").addClass("btn").addClass("btn-default").addClass(
+									"gb-optiondefinition-btn-deletefigurerow").text(this.translation.deleteAttr[this.locale]).addClass("gb-optiondefinition-btn-with100");
+									var delCol1 = $("<div>").addClass("col-md-2").append(btnDel);
+									$(row2).append(delCol1);
+
+									var outerRow = $("<div>").addClass("gb-optiondefinition-figurearea-row").append(connFilterRow).append(row).append(row2);
+									$(figureArea).append(outerRow);
+								}
+								// =============필터=================
+								var figureAreaRow = $("<div>").addClass("row").append(figureArea);
+								var totalArea = $("<div>").addClass("well").append(addFigureRow).append(figureAreaRow);
+								$(tupleArea).append(totalArea);
+								// ============레이어 코드=============
+							}
+							return;
+						}
+						if (Array.isArray(rel)) {
+							for (var j = 0; j < rel.length; j++) {
+								if (rel[j]["name"] === this.nowRelationCategory) {
+									if (rel[j].hasOwnProperty(type)) {
+										nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"][j][type];
+									}
+								}
+							}
+						}
+					} else {
+						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+							if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty(type)) {
+								if (Array.isArray(strc["definition"][i]["options"][type3][this.nowOption.alias][type])) {
+									nowFilter = strc["definition"][i]["options"][type3][this.nowOption.alias][type];
+								}
+							}
+						}
+					}
+					if (!Array.isArray(nowFilter)) {
+						nowFilter = [];
+					}
+					// ===========================================
 					if (sec) {
 						var rel = strc["definition"][i]["options"][type3][this.nowOption.alias]["relation"];
 						if (Array.isArray(rel)) {
@@ -12437,6 +13013,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 								}
 							}
 						}
+					}
+					if (!Array.isArray(nowFilter)) {
+						nowFilter = [];
 					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
@@ -12523,7 +13102,7 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 																	var attrLabel = this.translation.attrName[this.locale];
 																	var attrName = attributes[k]["key"];
 																	var valuesLabel = this.translation.acceptVal[this.locale];
-																	var values = attributes[k]["values"].toString();
+																	var values = attributes[k]["values"];
 																	var opt = $("<option>").attr("value", k).text(attrLabel+": "+attrName+" / "+valuesLabel+": "+values);
 																	if(nowFilter[a]["attribute"][b]["fidx"] !== undefined && nowFilter[a]["attribute"][b]["fidx"] === k){
 																		$(opt).prop("selected", true);
@@ -12596,12 +13175,13 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 
 							var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 							var condSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-figurecondition");
+							var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 							var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 							var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 							var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 							var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 							var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-							$(condSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+							$(condSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 							if (nowFilter[a].attribute[b].condition !== undefined && nowFilter[a].attribute[b].condition !== null) {
 								$(condSelect).val(nowFilter[a].attribute[b].condition);
 							}
@@ -12692,6 +13272,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							}
 						}
 					}
+					if (!Array.isArray(nowFilter)) {
+						nowFilter = [];
+					}
 					for (var a = 0; a < nowFilter.length; a++) {
 						// ============레이어 코드=============
 						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.code[this.locale] + ":");
@@ -12759,12 +13342,13 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 
 						var codeCol1 = $("<div>").addClass("col-md-1").text(this.translation.condition[this.locale] + ":");
 						var condSelect = $("<select>").addClass("form-control").addClass("gb-optiondefinition-select-tolerancecondition");
+						var optionNone = $("<option>").text(this.translation.noselect[this.locale]).attr("value", "null");
 						var optionEqual = $("<option>").text(this.translation.equal[this.locale]).attr("value", "equal");
 						var optionOver = $("<option>").text(this.translation.excess[this.locale]).attr("value", "over");
 						var optionUnder = $("<option>").text(this.translation.under[this.locale]).attr("value", "under");
 						var optionAndOver = $("<option>").text(this.translation.andOver[this.locale]).attr("value", "andover");
 						var optionAndUnder = $("<option>").text(this.translation.andUnder[this.locale]).attr("value", "andunder");
-						$(condSelect).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
+						$(condSelect).append(optionNone).append(optionEqual).append(optionOver).append(optionUnder).append(optionAndOver).append(optionAndUnder);
 						if (nowFilter[a].condition !== undefined && nowFilter[a].condition !== null) {
 							$(condSelect).val(nowFilter[a].condition);
 						}

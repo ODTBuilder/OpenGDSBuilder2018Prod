@@ -780,7 +780,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -883,7 +883,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -985,7 +985,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1036,7 +1036,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1076,18 +1076,18 @@ gb.validation.OptionDefinition = function(obj) {
 						"values" : true
 					},
 					"figure" : {
-						"code" : true,
-						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
 					},
 					"tolerance" : {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1138,7 +1138,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1291,7 +1291,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1342,7 +1342,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1444,7 +1444,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1495,7 +1495,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1546,7 +1546,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1588,17 +1588,17 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1649,7 +1649,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1700,7 +1700,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : false,
@@ -1742,10 +1742,10 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
@@ -1757,17 +1757,18 @@ gb.validation.OptionDefinition = function(obj) {
 					"relation" : {
 						"name" : true,
 						"filter" : {
-							"code" : true,
-							"key" : true,
-							"values" : true
+							"code" : false,
+							"key" : false,
+							"values" : false
 						},
 						"figure" : {
 							"code" : true,
 							"key" : true,
-							"values" : true,
-							"number" : true,
-							"condition" : true,
-							"interval" : true
+							"values" : false,
+							"number" : false,
+							"condition" : false,
+							"interval" : false,
+							"filter" : false
 						},
 						"tolerance" : {
 							"code" : false,
@@ -1794,10 +1795,10 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
@@ -1847,9 +1848,9 @@ gb.validation.OptionDefinition = function(obj) {
 						"code" : true,
 						"key" : true,
 						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
@@ -1898,17 +1899,17 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
 						"code" : true,
 						"value" : true,
 						"condition" : true,
-						"interval" : true
+						"interval" : false
 					},
 					"relation" : {
 						"name" : true,
@@ -1950,10 +1951,10 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
-						"number" : true,
-						"condition" : true,
-						"interval" : true,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {
@@ -2002,10 +2003,10 @@ gb.validation.OptionDefinition = function(obj) {
 					"figure" : {
 						"code" : true,
 						"key" : true,
-						"values" : true,
+						"values" : false,
 						"number" : true,
 						"condition" : true,
-						"interval" : true,
+						"interval" : false,
 						"filter" : true
 					},
 					"tolerance" : {

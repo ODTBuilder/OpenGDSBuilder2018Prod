@@ -183,10 +183,22 @@ gb.modal.ModalBase.prototype.close = function() {
  * @method gb.modal.ModalBase#refreshPosition
  */
 gb.modal.ModalBase.prototype.refreshPosition = function() {
+	var maskHeight = $(document).height();  
+	var maskWidth = $(window).width();
+	
+	var dialogTop =  (maskHeight) - (this.getHeight()*3);  
+	var dialogLeft = (maskWidth/2) - (this.getWidth()/2);
+	
 	$(this.modal).css({
-		"top" : ($(window).innerHeight() / 2) - (this.getHeight()/2+50) + "px",
-		"left" : ($(window).innerWidth() / 2) - (this.getWidth()/2) + "px"
+		"top" : 0,
+		"left" : dialogLeft,
+		"position" : "fixed",
+		"margin" : "50px auto"
 	});
+//	$(this.modal).css({
+//		"top" : ($(window).innerHeight() / 2) - (this.getHeight()/2+50) + "px",
+//		"left" : ($(window).innerWidth() / 2) - (this.getWidth()/2) + "px"
+//	});
 };
 /**
  * 너비를 설정한다.

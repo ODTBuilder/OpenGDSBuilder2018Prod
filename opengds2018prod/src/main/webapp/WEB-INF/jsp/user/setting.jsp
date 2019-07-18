@@ -264,6 +264,9 @@ input.radio:checked+label::before {
 				xhr.setRequestHeader(header, token);
 			});
 
+			$(window).bind('beforeunload', function(){
+				return 'Are you sure you want to leave?';
+			});
 // 			$(".QA-Type-Sect").tooltip({
 // 				"html" : true,
 // 				"placement" : "right"

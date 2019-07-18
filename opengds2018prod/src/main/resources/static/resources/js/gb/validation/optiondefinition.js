@@ -3648,7 +3648,7 @@ gb.validation.OptionDefinition = function(obj) {
 						"interval" : false
 					},
 					"relation" : {
-						"name" : true,
+						"name" : false,
 						"filter" : {
 							"code" : false,
 							"key" : false,
@@ -7991,13 +7991,13 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 			if (strc["definition"][i]["name"] === this.nowCategory) {
 				isExist = true;
 				// options 키를 가지고 있는지?
-				if (strc["definition"][i].hasOwnProperty("options")) {
+				if (strc["definition"][i].hasOwnProperty("options") && !!strc["definition"][i]["options"]) {
 					// 검수 타입이 설정 되어있는지
-					if (!strc["definition"][i]["options"].hasOwnProperty(type3)) {
+					if (!strc["definition"][i]["options"].hasOwnProperty(type3) || !strc["definition"][i]["options"][type3]) {
 						strc["definition"][i]["options"][type3] = {};
 					}
 					// 해당 검수 항목이 설정되어 있는지
-					if (!strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+					if (!strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias) || !strc["definition"][i]["options"][type3][this.nowOption.alias]) {
 						strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
 					}
 					// 현재 입력한 값이 릴레이션 필터 값인지?
@@ -12705,8 +12705,8 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 					if (strc["definition"].length > 0) {
 						for (var i = 0; i < strc["definition"].length; i++) {
 							if (strc["definition"][i]["name"] === this.nowCategory) {
-								if (strc["definition"][i].hasOwnProperty("options")) {
-									if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
+								if (strc["definition"][i].hasOwnProperty("options") && !!strc["definition"][i]["options"]) {
+									if (strc["definition"][i]["options"].hasOwnProperty(type3) && !!strc["definition"][i]["options"][type3]) {
 										if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
 											if (!strc["definition"][i]["options"][type3][this.nowOption.alias]) {
 												continue;
@@ -13011,7 +13011,7 @@ gb.validation.OptionDefinition.prototype.printOptionCategory = function(opt, nav
 				var col = $("<div>").addClass("col-md-3").append(tolBtn);
 				$(row).append(col);
 			}
-			if (!optItem.noparam && optItem.relation.name && !sec) {
+			if (!optItem.noparam && (optItem.relation.name || (optItem.relation.filter.code || optItem.relation.figure.code || optItem.relation.tolerance.code)) && !sec) {
 				var strc = this.getStructure()["definition"];
 				console.log(strc);
 				var relBtn = $("<button>").addClass("btn").addClass("btn-default").addClass("gb-optiondefinition-btn-detailcategory").addClass("gb-optiondefinition-btn-with100").text(this.translation.layerRelation[this.locale]).attr("value", "relation");
@@ -13374,7 +13374,9 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 				var type3 = optItem["purpose"];
 				// 그중에 현재 옵션의 목적이 3 타입중 어떤건지?
 				if (strc["definition"][i]["options"].hasOwnProperty(type3)) {
-					// 릴레이션인지 확인
+					if (!strc["definition"][i]["options"][type3]) {
+						continue;
+					}
 					var nowFilter = [];
 					// ===========================================
 					if (sec) {
@@ -13563,9 +13565,6 @@ gb.validation.OptionDefinition.prototype.printDetailForm = function(optcat, navi
 							}
 						}
 					} else {
-						if (!strc["definition"][i]["options"][type3]) {
-							continue;
-						}
 						if (strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
 							if (!!strc["definition"][i]["options"][type3][this.nowOption.alias]) {
 								if (strc["definition"][i]["options"][type3][this.nowOption.alias].hasOwnProperty(type)) {

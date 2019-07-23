@@ -447,10 +447,6 @@ gb.validation.OptionDefinition = function(obj) {
 				"ko" : "도곽선 Geometry가 입력되지 않았습니다."
 			},
 			"invalidkeyname" : {
-				"en" : " - This key name is a invalid key name.",
-				"ko" : " 키 네임은 유효한 키 네임이 아닙니다."
-			},
-			"invalidkeyname" : {
 				"en" : " - This key name is invalid.",
 				"ko" : " - 키 네임은 유효하지 않습니다."
 			},
@@ -5002,10 +4998,10 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeTolerance = function(btn
 								}
 							}
 							var optionKeys = Object.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]);
-							if (optionKeys.length === 0) {
+							if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 								delete strc["definition"][i]["options"][type3][this.nowOption.alias];
 								var typeKeys = Object.keys(strc["definition"][i]["options"][type3]);
-								if (typeKeys.length === 0) {
+								if (typeKeys.length === 0 || (typeKeys.length === 1 && typeKeys[0] === "run")) {
 									delete strc["definition"][i]["options"][type3];
 									var keys = Object.keys(strc["definition"][i]["options"]);
 									if (keys.length === 0) {
@@ -5102,10 +5098,10 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFigure = function(btn) {
 								}
 							}
 							var optionKeys = Object.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]);
-							if (optionKeys.length === 0) {
+							if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 								delete strc["definition"][i]["options"][type3][this.nowOption.alias];
 								var typeKeys = Object.keys(strc["definition"][i]["options"][type3]);
-								if (typeKeys.length === 0) {
+								if (typeKeys.length === 0 || (typeKeys.length === 1 && typeKeys[0] === "run")) {
 									delete strc["definition"][i]["options"][type3];
 									var keys = Object.keys(strc["definition"][i]["options"]);
 									if (keys.length === 0) {
@@ -5757,11 +5753,13 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				}
 				// 검수 타입이 설정 되어있는지
 				if (!strc["definition"][i]["options"].hasOwnProperty(type3)) {
-					strc["definition"][i]["options"][type3] = {}; 
+					strc["definition"][i]["options"][type3] = {};
+					strc["definition"][i]["options"][type3]["run"] = true;
 				}
 				// 해당 검수 항목이 설정되어 있는지
 				if (!strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
 					strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+					strc["definition"][i]["options"][type3][this.nowOption.alias]["run"] = true;
 				}
 				// 현재 입력한 값이 릴레이션 필터 값인지?
 				if (sec) {
@@ -5871,7 +5869,9 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 
 				var typeObj = {};
 				typeObj[type3] = {};
+				typeObj[type3]["run"] = true;
 				typeObj[type3][this.nowOption.alias] = {};
+				typeObj[type3][this.nowOption.alias]["run"] = true;
 				typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 				var definitionObj = {
@@ -5885,10 +5885,12 @@ gb.validation.OptionDefinition.prototype.inputToleranceValue = function(inp) {
 				// 허용값이 입력되어있다면 값 변경
 
 				var optionsObj = {
+						"run" : true,
 						"tolerance" : []
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
+				typeObj[type3]["run"] = true;
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				// tolerance키가 배열형태임
@@ -6042,9 +6044,9 @@ gb.validation.OptionDefinition.prototype.selectToleranceCode = function(sel) {
 													if (Array.isArray(relation[j]["tolerance"])) {
 														var tolerElem = relation[j]["tolerance"][layerIdx];
 														if (tolerElem !== undefined) {
-//															if (tolerElem.hasOwnProperty("code")) {
+// if (tolerElem.hasOwnProperty("code")) {
 															relation[j]["tolerance"][layerIdx]["code"] = layerCode
-//															}
+// }
 														} else {
 															relation[j]["tolerance"][layerIdx] = {
 																	"code" : layerCode,
@@ -6298,11 +6300,13 @@ gb.validation.OptionDefinition.prototype.selectFigureCode = function(sel) {
 													if (Array.isArray(relation[j]["figure"])) {
 														for (var k = 0; k < relation[j]["figure"].length; k++) {
 															if (relation[j]["figure"][k] !== undefined && relation[j]["figure"][k] !== null) {
-																// 코드 키를 가지고 있는지?
+																// 코드 키를 가지고
+																// 있는지?
 																if (relation[j]["figure"][k].hasOwnProperty("code")) {
 																	relation[j]["figure"][k]["code"] = layerCode;
 																} else {
-																	// 코드 키를 가지고 있지
+																	// 코드 키를 가지고
+																	// 있지
 																	// 않다면
 																}
 															}
@@ -7995,10 +7999,12 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 					// 검수 타입이 설정 되어있는지
 					if (!strc["definition"][i]["options"].hasOwnProperty(type3) || !strc["definition"][i]["options"][type3]) {
 						strc["definition"][i]["options"][type3] = {};
+						strc["definition"][i]["options"][type3]["run"] = true;
 					}
 					// 해당 검수 항목이 설정되어 있는지
 					if (!strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias) || !strc["definition"][i]["options"][type3][this.nowOption.alias]) {
 						strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+						strc["definition"][i]["options"][type3][this.nowOption.alias]["run"] = true;
 					}
 					// 현재 입력한 값이 릴레이션 필터 값인지?
 					if (sec) {
@@ -8328,7 +8334,9 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 					
 					var typeObj = {};
 					typeObj[type3] = {};
+					typeObj[type3]["run"] = true;
 					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["run"] = true;
 					typeObj[type3][this.nowOption.alias]["relation"] = relObj;
 
 					var definitionObj = {
@@ -8379,7 +8387,9 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 
 					var typeObj = {};
 					typeObj[type3] = {};
+					typeObj[type3]["run"] = true;
 					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["run"] = true;
 					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 					var definitionObj = {
@@ -8394,10 +8404,12 @@ gb.validation.OptionDefinition.prototype.inputFigureKey = function(inp) {
 				// 허용값이 입력되어있다면 값 변경
 
 				var optionsObj = {
+						"run" : true,
 						"figure" : []
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
+				typeObj[type3]["run"] = true;
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var tup = $(inp).parents().eq(6);
@@ -8660,10 +8672,10 @@ gb.validation.OptionDefinition.prototype.deleteLayerCodeFilter = function(btn) {
 								}
 							}
 							var optionKeys = Object.keys(strc["definition"][i]["options"][type3][this.nowOption.alias]);
-							if (optionKeys.length === 0) {
+							if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 								delete strc["definition"][i]["options"][type3][this.nowOption.alias];
 								var typeKeys = Object.keys(strc["definition"][i]["options"][type3]);
-								if (typeKeys.length === 0) {
+								if (typeKeys.length === 0 || (typeKeys.length === 1 && typeKeys[0] === "run")) {
 									delete strc["definition"][i]["options"][type3];
 									var keys = Object.keys(strc["definition"][i]["options"]);
 									if (keys.length === 0) {
@@ -9685,10 +9697,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 					// 검수 타입이 설정 되어있는지
 					if (!strc["definition"][i]["options"].hasOwnProperty(type3)) {
 						strc["definition"][i]["options"][type3] = {};
+						strc["definition"][i]["options"][type3]["run"] = true;
 					}
 					// 해당 검수 항목이 설정되어 있는지
 					if (!strc["definition"][i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
 						strc["definition"][i]["options"][type3][this.nowOption.alias] = {};
+						strc["definition"][i]["options"][type3][this.nowOption.alias]["run"] = true;
 					}	
 					// 현재 입력한 값이 릴레이션 필터 값인지?
 					if (sec) {
@@ -9947,7 +9961,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 
 					var typeObj = {};
 					typeObj[type3] = {};
+					typeObj[type3]["run"] = true;
 					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["run"] = true;
 					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 					for (var i = 0; i < layerDef.length; i++) {
@@ -10000,7 +10016,9 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 
 					var typeObj = {};
 					typeObj[type3] = {};
+					typeObj[type3]["run"] = true;
 					typeObj[type3][this.nowOption.alias] = {};
+					typeObj[type3][this.nowOption.alias]["run"] = true;
 					typeObj[type3][this.nowOption.alias]["relation"] = optionsObj;
 
 					var tup = $(inp).parents().eq(5);
@@ -10041,10 +10059,12 @@ gb.validation.OptionDefinition.prototype.inputFilterKey = function(inp) {
 				// 해당 검수 타입이 설정되어 있지 않음
 				// 허용값이 입력되어있다면 값 변경
 				var optionsObj = {
-						"filter" : []
+						"filter" : [],
+						"run" : true
 				};
 				var typeObj = {};
 				typeObj[type3] = {};
+				typeObj[type3]["run"] = true;
 				typeObj[type3][this.nowOption.alias] = optionsObj;
 
 				var tup = $(inp).parents().eq(5);
@@ -10200,26 +10220,15 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									// 있을때
 									// 체크박스가 체크되어 있는지?
 									if ($(check).is(":checked")) {
-
 										def[i]["options"][type3][this.nowOption.alias]["relation"] = [];
 										if (Array.isArray(layerDef)) {
 											for (var a = 0; a < layerDef.length; a++) {
 												var obj = {
 														"filter" : null
 												};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 												obj["figure"] = null;
 												obj["tolerance"] = null;
-												obj["relation"] = null;
-// }
 												obj["name"] = layerDef[a].name;
-												delete obj["relation"];
 												def[i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
 											}
 										}
@@ -10239,11 +10248,11 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 																delete def[i]["options"][type3][this.nowOption.alias]["relation"];
 															}
 															var itemNames = Object.keys(def[i]["options"][type3][this.nowOption.alias]);
-															if (itemNames.length === 0) {
+															if (itemNames.length === 0 || (itemNames.length === 1 && itemNames[0] === "run")) {
 																delete def[i]["options"][type3][this.nowOption.alias];
 															}
 															var typeNames = Object.keys(def[i]["options"][type3]);
-															if (typeNames.length === 0) {
+															if (typeNames.length === 0 || (typeNames.length === 1 && typeNames[0] === "run")) {
 																delete def[i]["options"][type3];
 															}
 															var names = Object.keys(def[i]["options"]);
@@ -10266,8 +10275,10 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										// 쳌박스 쳌됨
 										if (def[i]["options"][type3] === undefined) {
 											def[i]["options"][type3] = {};
+											def[i]["options"][type3]["run"] = true;
 										}
 										def[i]["options"][type3][this.nowOption.alias] = {
+												"run" : true,
 												"relation" : []
 										};
 
@@ -10275,19 +10286,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											var obj = {
 													"filter" : null
 											};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 											obj["figure"] = null;
 											obj["tolerance"] = null;
-											obj["relation"] = null;
-// }
 											obj["name"] = layerDef[a].name;
-											delete obj["relation"];
 											def[i]["options"][type3][this.nowOption.alias]["relation"].push(obj);
 										}
 									} else {
@@ -10306,9 +10307,11 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									}
 									if (!def[i]["options"].hasOwnProperty(type3) || !def[i]["options"][type3]) {
 										def[i]["options"][type3] = {};
+										def[i]["options"][type3]["run"] = true;
 									}
 									if (!def[i]["options"][type3].hasOwnProperty(this.nowOption.alias) || !def[i]["options"][type3][this.nowOption.alias]) {
 										def[i]["options"][type3][this.nowOption.alias] = {};
+										def[i]["options"][type3][this.nowOption.alias]["run"] = true;
 									}
 									def[i]["options"][type3][this.nowOption.alias]["relation"] = [];
 
@@ -10316,21 +10319,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 										obj["figure"] = null;
 										obj["tolerance"] = null;
-										obj["relation"] = null;
-// }
-
 										obj["name"] = layerDef[a].name;
-										delete obj["relation"];
-
 									}
 								} else {
 									// 체크 안됨
@@ -10345,11 +10336,11 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										}
 									}
 									var itemNames = Object.keys(def[i]["options"][type3][this.nowOption.alias]);
-									if (itemNames.length === 0) {
+									if (itemNames.length === 0 || (itemNames.length === 1 && itemNames[0] === "run")) {
 										delete def[i]["options"][type3][this.nowOption.alias];
 									}
 									var optionKeys = Object.keys(def[i]["options"][type3]);
-									if (optionKeys.length === 0) {
+									if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 										delete def[i]["options"][type3];
 									}
 									var typeKeys = Object.keys(def[i]["options"]);
@@ -10371,7 +10362,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 								"options" : {}
 						};
 						outerObj["options"][type3] = {};
+						outerObj["options"][type3]["run"] = true;
 						outerObj["options"][type3][this.nowOption.alias] = {
+								"run" : true,
 								"relation" : []
 						};
 
@@ -10379,20 +10372,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 							var obj = {
 									"filter" : null
 							};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 							obj["figure"] = null;
 							obj["tolerance"] = null;
-							obj["relation"] = null;
-// }
-
 							obj["name"] = layerDef[a].name;
-							delete obj["relation"];
 							outerObj["options"][type3][this.nowOption.alias]["relation"].push(obj);
 						}
 						this.getStructure()["definition"].push(outerObj);
@@ -10409,7 +10391,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 							"options" : {}
 					};
 					outerObj["options"][type3] = {};
+					outerObj["options"][type3]["run"] = true;
 					outerObj["options"][type3][this.nowOption.alias] = {
+							"run" : true,
 							"relation" : []
 					};
 
@@ -10417,20 +10401,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						var obj = {
 								"filter" : null
 						};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 						obj["figure"] = null;
 						obj["tolerance"] = null;
-						obj["relation"] = null;
-// }
-
 						obj["name"] = layerDef[a].name;
-						delete obj["relation"];
 						outerObj["options"][type3][this.nowOption.alias]["relation"].push(obj);
 					}
 					this.getStructure()["definition"].push(outerObj);
@@ -10463,17 +10436,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 										obj["figure"] = null;
 										obj["tolerance"] = null;
 										obj["relation"] = null;
-// }
 										if (sec) {
 											obj["name"] = this.nowRelationCategory;
 											delete obj["relation"];
@@ -10485,13 +10450,16 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											} else {
 												if (def[i]["options"][type3][this.nowOption.alias] !== undefined) {
 													def[i]["options"][type3][this.nowOption.alias]["relation"] = [ obj ];
+													def[i]["options"][type3][this.nowOption.alias]["run"] = true;
 												} else {
 													def[i]["options"][type3][this.nowOption.alias] = {
-															"relation" : [ obj ]
+															"relation" : [ obj ],
+															"run" : true
 													};
 												}
 											}
 										} else {
+											obj["run"] = true;
 											def[i]["options"][type3][this.nowOption.alias] = obj;
 										}
 									} else {
@@ -10516,11 +10484,11 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 																	delete def[i]["options"][type3][this.nowOption.alias]["relation"];
 																}
 																var itemNames = Object.keys(def[i]["options"][type3][this.nowOption.alias]);
-																if (itemNames.length === 0) {
+																if (itemNames.length === 0 || (itemNames.length === 1 && itemNames[0] === "run")) {
 																	delete def[i]["options"][type3][this.nowOption.alias];
 																}
 																var typeNames = Object.keys(def[i]["options"][type3]);
-																if (typeNames.length === 0) {
+																if (typeNames.length === 0 || (typeNames.length === 1 && typeNames[0] === "run")) {
 																	delete def[i]["options"][type3];
 																}
 																var names = Object.keys(def[i]["options"]);
@@ -10543,7 +10511,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 												}
 											}
 											var optionKeys = Object.keys(def[i]["options"][type3]);
-											if (optionKeys.length === 0) {
+											if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 												delete def[i]["options"][type3];
 											}
 											var typeKeys = Object.keys(def[i]["options"]);
@@ -10562,27 +10530,22 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										var obj = {
 												"filter" : null
 										};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 										obj["figure"] = null;
 										obj["tolerance"] = null;
 										obj["relation"] = null;
-// }
 										if (sec) {
 											obj["name"] = this.nowRelationCategory;
 											delete obj["relation"];
 											if (def[i]["options"][type3] === undefined) {
 												def[i]["options"][type3] = {};
+												def[i]["options"][type3]["run"] = true;
 											}
 											def[i]["options"][type3][this.nowOption.alias] = {
+													"run" : true,
 													"relation" : [ obj ]
 											};
 										} else {
+											obj["run"] = true;
 											def[i]["options"][type3][this.nowOption.alias] = obj;
 										}
 									} else {
@@ -10599,7 +10562,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 												}
 											}
 											var optionKeys = Object.keys(def[i]["options"][type3]);
-											if (optionKeys.length === 0) {
+											if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 												delete def[i]["options"][type3];
 											}
 											var typeKeys = Object.keys(def[i]["options"]);
@@ -10617,17 +10580,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									var obj = {
 											"filter" : null
 									};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 									obj["figure"] = null;
 									obj["tolerance"] = null;
 									obj["relation"] = null;
-// }
 
 									if (sec) {
 										obj["name"] = this.nowRelationCategory;
@@ -10637,9 +10592,11 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										}
 										if (!def[i]["options"].hasOwnProperty(type3)) {
 											def[i]["options"][type3] = {};
+											def[i]["options"][type3]["run"] = true;
 										}
 										if (!def[i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
 											def[i]["options"][type3][this.nowOption.alias] = {};
+											def[i]["options"][type3][this.nowOption.alias]["run"] = true;
 										}
 										if (def[i]["options"][type3][this.nowOption.alias].hasOwnProperty("relation")) {
 											if (Array.isArray(def[i]["options"][type3][this.nowOption.alias]["relation"])) {
@@ -10649,18 +10606,22 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 											}
 										} else {
 											def[i]["options"][type3][this.nowOption.alias] = {
+													"run" : true,
 													"relation" : [ obj ]
 											};
 										}
 									} else {
 										if (def[i]["options"].hasOwnProperty(type3)) {
 											if (def[i]["options"][type3].hasOwnProperty(this.nowOption.alias)) {
+												obj["run"] = true;
 												def[i]["options"][type3][this.nowOption.alias] = obj;
 											}
 										} else {
 											if (def[i]["options"][type3] === undefined) {
 												def[i]["options"][type3] = {};
+												def[i]["options"][type3]["run"] = true;
 											}
+											obj["run"] = true;
 											def[i]["options"][type3][this.nowOption.alias] = obj;
 										}
 									}
@@ -10675,7 +10636,7 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 										}
 									}
 									var optionKeys = Object.keys(def[i]["options"][type3]);
-									if (optionKeys.length === 0) {
+									if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 										delete def[i]["options"][type3];
 									}
 									var typeKeys = Object.keys(def[i]["options"]);
@@ -10695,17 +10656,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 						var obj = {
 								"filter" : null
 						};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 						obj["figure"] = null;
 						obj["tolerance"] = null;
 						obj["relation"] = null;
-// }
 
 						if (sec) {
 							obj["name"] = this.nowRelationCategory;
@@ -10715,11 +10668,15 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 									"options" : {}
 							};
 							outerObj["options"][type3] = {};
+							outerObj["options"][type3]["run"] = true;
 							outerObj["options"][type3][this.nowOption.alias] = {
+									"run" : true,
 									"relation" : [ obj ]
 							}
 						} else {
 							var type3Obj = {};
+							type3Obj["run"] = true;
+							obj["run"] = true;
 							type3Obj[this.nowOption.alias] = obj;
 							var options = {};
 							options[type3] = type3Obj;
@@ -10740,17 +10697,9 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 					var obj = {
 							"filter" : null
 					};
-// if (type3 === "attribute") {
-// obj["figure"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "graphic") {
-// obj["tolerance"] = null;
-// obj["relation"] = null;
-// } else if (type3 === "adjacent") {
 					obj["figure"] = null;
 					obj["tolerance"] = null;
 					obj["relation"] = null;
-// }
 
 					if (sec) {
 						obj["name"] = this.nowRelationCategory;
@@ -10760,11 +10709,15 @@ gb.validation.OptionDefinition.prototype.setNoParamOption = function(check, all)
 								"options" : {}
 						};
 						outerObj["options"][type3] = {};
+						outerObj["options"][type3]["run"] = true;
 						outerObj["options"][type3][this.nowOption.alias] = {
+								"run" : true,
 								"relation" : [ obj ]
 						}
 					} else {
 						var type3Obj = {};
+						type3Obj["run"] = true;
+						obj["run"] = true;
 						type3Obj[this.nowOption.alias] = obj;
 						var options = {};
 						options[type3] = type3Obj;
@@ -10863,15 +10816,15 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 										delete definition[i]["options"][type3][this.nowOption.alias]["relation"];
 									}
 									var optionKeys = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
-									if (optionKeys.length === 0) {
+									if (optionKeys.length === 0 || (optionKeys.length === 1 && optionKeys[0] === "run")) {
 										delete definition[i]["options"][type3][this.nowOption.alias];
 									}
 									var typeKeys = Object.keys(definition[i]["options"][type3]);
-									if (typeKeys.length === 0) {
+									if (typeKeys.length === 0 || (typeKeys.length === 1 && typeKeys[0] === "run")) {
 										delete definition[i]["options"][type3];
 									}
-									var optionsKeys = Object.keys(definition[i]["options"]);
-									if (optionsKeys.length === 0) {
+									var optionsKeys2 = Object.keys(definition[i]["options"]);
+									if (optionsKeys2.length === 0) {
 										delete definition[i]["options"];
 									}
 									var defObjKeys = Object.keys(definition[i]);
@@ -10933,7 +10886,7 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 												delete definition[i]["options"][type3][this.nowOption.alias]["relation"];
 											}
 											var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
-											if (keys2.length === 0) {
+											if (keys2.length === 0 || (keys2.length === 1 && keys2[0] === "run")) {
 												delete definition[i]["options"][type3][this.nowOption.alias];
 											}
 										}
@@ -10941,8 +10894,17 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 								}
 							}
 							var afterKeys = Object.keys(optionType);
-							if (afterKeys.length === 0) {
+							if (afterKeys.length === 0 || (afterKeys.length === 1 && afterKeys[0] === "run")) {
 								delete definition[i]["options"][type3];
+							}
+							var optionsKeys = Object.keys(definition[i]["options"]);
+							if (optionsKeys.length === 0) {
+								delete definition[i]["options"];
+							}
+							var defObjKeys = Object.keys(definition[i]);
+							if (defObjKeys.length === 0 || defObjKeys.length === 1) {
+								definition.splice(i, 1);
+								i--;
 							}
 						}
 					}
@@ -10989,15 +10951,23 @@ gb.validation.OptionDefinition.prototype.clearSetting = function(type) {
 								delete definition[i]["options"][type3][this.nowOption.alias][type];
 							}
 							var keys2 = Object.keys(definition[i]["options"][type3][this.nowOption.alias]);
-							if (keys2.length === 0) {
+							if (keys2.length === 0 || (keys2.length === 1 && keys2[0] === "run")) {
 								delete definition[i]["options"][type3][this.nowOption.alias];
 							}
 						}
 						var afterKeys = Object.keys(optionType);
-						if (afterKeys.length === 0) {
+						if (afterKeys.length === 0 || (afterKeys.length === 1 && afterKeys[0] === "run")) {
 							delete definition[i]["options"][type3];
 						}
-
+						var optionsKeys = Object.keys(definition[i]["options"]);
+						if (optionsKeys.length === 0) {
+							delete definition[i]["options"];
+						}
+						var defObjKeys = Object.keys(definition[i]);
+						if (defObjKeys.length === 0 || defObjKeys.length === 1) {
+							definition.splice(i, 1);
+							i--;
+						}
 					}
 				}
 			}
@@ -14051,7 +14021,8 @@ gb.validation.OptionDefinition.prototype.setStructure = function(strc) {
 	var defElem = [ "name", "options" ];
 	var optionElem = [ "attribute", "graphic", "adjacent" ];
 	var optionItem = Object.keys(this.optItem);
-	var optionNameElem = [ "filter", "figure", "tolerance", "relation" ];
+	optionItem.push("run");
+	var optionNameElem = [ "filter", "figure", "tolerance", "relation", "run" ];
 	var filterElem = [ "code", "attribute" ];
 	var filterAttributeElem = [ "key", "values" ];
 	var figureElem = [ "code", "attribute" ];

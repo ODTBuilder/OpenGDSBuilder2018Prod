@@ -594,7 +594,7 @@ gb.validation.LayerDefinition.prototype.clearStructure = function() {
 gb.validation.LayerDefinition.prototype.setStructure = function(strc) {
 	var isOK = true;
 	var elemName = [ "name", "layers" ];
-	var elemLayers = [ "fix", "code", "geometry" ];
+	var elemLayers = [ "fix", "code", "geometry", "run", "fixrun" ];
 	var elemFix = [ "name", "type", "isnull", "length", "values" ];
 	if (Array.isArray(strc)) {
 		for (var i = 0; i < strc.length; i++) {
@@ -1041,6 +1041,8 @@ gb.validation.LayerDefinition.prototype.inputLayerCode = function(inp) {
 		if (Array.isArray(layers)) {
 			var layer = layers[codeIdx];
 			layer["code"] = $(inp).val();
+			layer["run"] = true;
+			layer["fixrun"] = true;
 		}
 	}
 };
@@ -1197,7 +1199,9 @@ gb.validation.LayerDefinition.prototype.addLayer = function(btn) {
 	var obj = {
 		"code" : null,
 		"geometry" : $(geomSelect).val(),
-		"fix" : null
+		"fix" : null,
+		"run" : true,
+		"fixrun" : true
 	}
 	console.log(obj);
 	var catIdx = $(well).parents().eq(5).index();

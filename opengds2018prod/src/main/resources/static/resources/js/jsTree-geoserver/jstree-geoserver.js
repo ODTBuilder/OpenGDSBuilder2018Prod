@@ -841,6 +841,26 @@ $.jstree.plugins.geoserver = function(options, parent) {
 											serverType : "geoserver"
 										})
 									});
+									
+									var attributes = [];
+									if (data[i].attInfo instanceof Object) {
+										var attribute;
+										for ( var j in data[i].attInfo) {
+											attribute = new gb.layer.Attribute({
+												originFieldName : j.replace(/(\s*)/g, ''),
+												fieldName : j.replace(/(\s*)/g, ''),
+												type : data[i].attInfo[j].type,
+												decimal : data[i].attInfo[j].type === "Double" ? 30 : null,
+												size : 256,
+												isUnique : false,
+												nullable : data[i].attInfo[j].nillable === "true" ? true : false,
+												isNew : true
+											});
+
+											attributes.push(attribute);
+										}
+									}
+									
 									var gitChild = {
 										"fake" : "child",
 										"geoserver" : params["serverName"],
@@ -849,7 +869,8 @@ $.jstree.plugins.geoserver = function(options, parent) {
 										"geometry" : data[i].geomType,
 										"editable" : true,
 										"sld" : data[i].sld,
-										"native" : data[i].nativeName
+										"native" : data[i].nativeName,
+										"attribute": attributes
 									};
 									if (geogig["repo"] !== undefined && geogig["branch"] !== undefined) {
 										gitChild["geogigRepo"] = geogig["repo"];

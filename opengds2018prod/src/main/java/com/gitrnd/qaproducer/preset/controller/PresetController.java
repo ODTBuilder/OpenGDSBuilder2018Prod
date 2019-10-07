@@ -55,6 +55,12 @@ public class PresetController {
 		case "forest":
 			cat = 5;
 			break;
+		case "basic":
+			cat = 7;
+			break;
+		case "open":
+			cat = 8;
+			break;
 		default:
 			break;
 		}

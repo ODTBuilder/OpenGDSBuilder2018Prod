@@ -87,7 +87,7 @@ input.radio:checked+label::before {
 						<spring:message code="lang.validationType" />
 					</h3>
 					<div class="row QA-Type-Sect" style="margin-bottom: 20px;" title="some tips">
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<input type="radio" class="radio" name="qacat2" id="qacat21" value="numetrical" checked /> <label for="qacat21">
 								<spring:message code="lang.digitalMap" />
 							</label>
@@ -96,13 +96,17 @@ input.radio:checked+label::before {
 							<input type="radio" class="radio" name="qacat2" id="qacat22" value="underground" /> <label for="qacat22"><spring:message
 									code="lang.underFacility" /></label>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<input type="radio" class="radio" name="qacat2" id="qacat23" value="forest" /> <label for="qacat23"><spring:message
 									code="lang.forestMap" /> </label>
 						</div>
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<input type="radio" class="radio" name="qacat2" id="qacat24" value="basic" /> <label for="qacat24"><spring:message
 									code="lang.basicMap" /> </label>
+						</div>
+						<div class="col-md-3">
+							<input type="radio" class="radio" name="qacat2" id="qacat25" value="open" /> <label for="qacat25"><spring:message
+									code="lang.openDigitalMap" /> </label>
 						</div>
 					</div>
 					<div class="row VersionArea QA-detail-sect" title="some tips">
@@ -415,7 +419,7 @@ input.radio:checked+label::before {
 			});
 
 			$("input[type=radio][name=qacat2]").change(function() {
-				if (this.value === "forest" || this.value === "basic") {
+				if (this.value === "forest" || this.value === "basic" || this.value === "open") {
 					$(".VersionArea").hide();
 				} else if (this.value === "numetrical" || this.value === "underground") {
 					$(".VersionArea").show();
@@ -494,6 +498,14 @@ input.radio:checked+label::before {
 		    <c:when test="${title eq 'Forest Map'}">
 		    $("#qacat23").prop("checked", true);
 		    $("#qacat23").trigger("change");
+		    </c:when>
+		    <c:when test="${title eq 'Basic Map'}">
+		    $("#qacat24").prop("checked", true);
+		    $("#qacat24").trigger("change");
+		    </c:when>
+		    <c:when test="${title eq 'Open Digital Map'}">
+		    $("#qacat25").prop("checked", true);
+		    $("#qacat25").trigger("change");
 		    </c:when>
 		    <c:otherwise>
 		    $("#qacat21").prop("checked", true);

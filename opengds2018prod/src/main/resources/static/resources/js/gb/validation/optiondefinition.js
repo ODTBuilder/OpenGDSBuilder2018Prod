@@ -637,8 +637,19 @@ gb.validation.OptionDefinition = function(obj) {
 			"editingState": {
 				"en" : "Editing State",
 				"ko" : "편집 상태 속성"
+			},
+			"attributeFixMiss": {
+				"en" : "Erroneous Required Attribute",
+				"ko" : "필수 속성 오류"
+			},
+			"attributeMiss": {
+				"en" : "Erroneous Attribute",
+				"ko" : "속성 오류"
+			},
+			"layerMiss": {
+				"en" : "Erroneous Layer",
+				"ko" : "계층 오류"
 			}
-
 	}
 	/**
 	 * 검수 항목 정보
@@ -647,6 +658,206 @@ gb.validation.OptionDefinition = function(obj) {
 	 * @type {Object}
 	 */
 	this.optItem = {
+			"ZValueAmbiguous2" : {
+				"title" : this.translation.numericalValues[this.locale],
+				"alias" : "ZValueAmbiguous2",
+				"category" : [ "open" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
+				"purpose" : "attribute",
+				"noparam" : false,
+				"filter" : {
+					"code" : true,
+					"key" : true,
+					"values" : true
+				},
+				"figure" : {
+					"code" : true,
+					"key" : true,
+					"values" : true,
+					"number" : true,
+					"condition" : true,
+					"interval" : true
+				},
+				"tolerance" : {
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"relation" : {
+					"name" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					}
+				}
+			},
+			"AttributeMiss" : {
+				"title" : this.translation.attributeMiss[this.locale],
+				"alias" : "AttributeMiss",
+				"category" : [ "open" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
+				"purpose" : "attribute",
+				"noparam" : true,
+				"filter" : {
+					"code" : false,
+					"key" : false,
+					"values" : false
+				},
+				"figure" : {
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"tolerance" : {
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"relation" : {
+					"name" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					}
+				}
+			},
+			"LayerMiss" : {
+				"title" : this.translation.layerMiss[this.locale],
+				"alias" : "LayerMiss",
+				"category" : [ "open" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
+				"purpose" : "graphic",
+				"noparam" : true,
+				"filter" : {
+					"code" : false,
+					"key" : false,
+					"values" : false
+				},
+				"figure" : {
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"tolerance" : {
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"relation" : {
+					"name" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					}
+				}
+			},
+			"AttributeFixMiss" : {
+				"title" : this.translation.attributeFixMiss[this.locale],
+				"alias" : "AttributeFixMiss",
+				"category" : [ "open" ],
+				"version" : [ "qa1", "qa2" ],
+				"geometry" : [ "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline" ],
+				"purpose" : "attribute",
+				"noparam" : true,
+				"filter" : {
+					"code" : false,
+					"key" : false,
+					"values" : false
+				},
+				"figure" : {
+					"code" : false,
+					"key" : false,
+					"values" : false,
+					"number" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"tolerance" : {
+					"code" : false,
+					"value" : false,
+					"condition" : false,
+					"interval" : false
+				},
+				"relation" : {
+					"name" : false,
+					"filter" : {
+						"code" : false,
+						"key" : false,
+						"values" : false
+					},
+					"figure" : {
+						"code" : false,
+						"key" : false,
+						"values" : false,
+						"number" : false,
+						"condition" : false,
+						"interval" : false
+					},
+					"tolerance" : {
+						"code" : false,
+						"value" : false,
+						"condition" : false,
+						"interval" : false
+					}
+				}
+			},
 			"EditingState" : {
 				"title" : this.translation.editingState[this.locale],
 				"alias" : "EditingState",
@@ -804,7 +1015,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"ConIntersectedB" : {
 				"title" : this.translation.conIntersectedB[this.locale],
 				"alias" : "ConIntersectedB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -856,7 +1067,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"ConOverDegreeB" : {
 				"title" : this.translation.conOverDegreeB[this.locale],
 				"alias" : "ConOverDegreeB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -958,7 +1169,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"SelfEntityB" : {
 				"title" : this.translation.selfEntityB[this.locale],
 				"alias" : "SelfEntityB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1060,7 +1271,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"NodeMissB" : {
 				"title" : this.translation.nodeMissB[this.locale],
 				"alias" : "NodeMissB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1162,7 +1373,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"EntityDuplicatedB" : {
 				"title" : this.translation.entityDuplicatedB[this.locale],
 				"alias" : "EntityDuplicatedB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1213,7 +1424,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"PointDuplicatedB" : {
 				"title" : this.translation.pointDuplicatedB[this.locale],
 				"alias" : "PointDuplicatedB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1264,7 +1475,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"SmallLengthB" : {
 				"title" : this.translation.smallLengthB[this.locale],
 				"alias" : "SmallLengthB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1315,7 +1526,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"SmallAreaB" : {
 				"title" : this.translation.smallAreaB[this.locale],
 				"alias" : "SmallAreaB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1366,7 +1577,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"EntityTwisted" : {
 				"title" : this.translation.entityTwisted[this.locale],
 				"alias" : "EntityTwisted",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1417,7 +1628,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"OverShootB" : {
 				"title" : this.translation.overShootB[this.locale],
 				"alias" : "OverShootB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1519,7 +1730,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"OutBoundaryB" : {
 				"title" : this.translation.outBoundaryB[this.locale],
 				"alias" : "OutBoundaryB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1570,7 +1781,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"ConBreakB" : {
 				"title" : this.translation.conBreakB[this.locale],
 				"alias" : "ConBreakB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1881,7 +2092,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"RefAttributeMissB" : {
 				"title" : this.translation.refAttributeMissB[this.locale],
 				"alias" : "RefAttributeMissB",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -1933,7 +2144,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"FixValues" : {
 				"title" : this.translation.fixValues[this.locale],
 				"alias" : "FixValues",
-				"category" : [ "basic" ],
+				"category" : [ "basic", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -2343,7 +2554,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"DRefEntityNone" : {
 				"title" : this.translation.dRefEntityNone[this.locale],
 				"alias" : "DRefEntityNone",
-				"category" : [ "numetrical" ],
+				"category" : [ "numetrical", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],
@@ -2955,7 +3166,7 @@ gb.validation.OptionDefinition = function(obj) {
 			"UselessPoint" : {
 				"title" : this.translation.uselessPoint[this.locale],
 				"alias" : "UselessPoint",
-				"category" : [ "numetrical", "underground", "forest" ],
+				"category" : [ "numetrical", "underground", "forest", "open" ],
 				"version" : [ "qa1", "qa2" ],
 				"geometry" : [ "point", "multipoint", "linestring", "multilinestring", "polygon", "multipolygon", "polyline", "lwpolyline",
 					"text", "insert" ],

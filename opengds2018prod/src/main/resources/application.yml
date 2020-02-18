@@ -9,6 +9,7 @@ spring:
       exchange: opengds_qa_exchange
       routing-key: opengds_qa_key
       routing-key-mobile: opengds_mobile_qa_key
+      routing-key-generalization: opengds_generalization_key
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://175.116.181.42:5432/opengds_2018?charSet=UTF-8&prepareThreshold=1
@@ -30,7 +31,7 @@ spring:
       max-file-size: 10485760KB
       max-request-size: 10485760KB
 server:
-  port: 8080
+  port: 8088
   context-path: /geodt
   servlet:
     session:
@@ -42,7 +43,7 @@ server:
     whitelabel:
       enabled: false
 gitrnd:
-  serverhost: 175.116.181.34
+  serverhost: 175.116.181.32
   apache:
     host: 127.0.0.1
     port: 8888

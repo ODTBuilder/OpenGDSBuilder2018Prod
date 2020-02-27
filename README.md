@@ -153,6 +153,9 @@ mybatis:
 ### 8. 요청방법 ###
 - [Producer 인터페이스 설계서.pdf](https://github.com/ODTBuilder/OpenGDSBuilder2018Prod/blob/master/Producer%20%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%84%A4%EA%B3%84%EC%84%9C.pdf)를 참고
 
+### 9. 사용자매뉴얼 ###
+- [GeoDT_Web(공간정보 편집도구)_v1.0_사용자매뉴얼.pdf](https://github.com/ODTBuilder/OpenGDSBuilder2018Prod/blob/master/GeoDT_Web(공간정보 편집도구)_v1.0_사용자매뉴얼.pdf)
+
 사용 라이브러리
 =====
 1. jQuery 2.2.2 (MIT License, CC0) http://jquery.com/
